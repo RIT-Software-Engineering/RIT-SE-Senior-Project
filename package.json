@@ -1,0 +1,15 @@
+{
+  "name": "rit-se-senior-project-website",
+  "version": "0.0.1",
+  "description": "A website containing information for SE students and coaches, and project sponsors",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "txa2269@seniorproject.se.rit.edu:/home/txa2269/site/.git"
+  },
+  "author": "Tom Amaral",
+  "license": "UNLICENSED"
+}
