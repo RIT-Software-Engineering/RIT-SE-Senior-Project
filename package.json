@@ -11,5 +11,8 @@
     "url": "txa2269@seniorproject.se.rit.edu:/home/txa2269/site/.git"
   },
   "author": "Tom Amaral",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
