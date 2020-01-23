@@ -2,7 +2,7 @@
   "name": "rit-se-senior-project-website",
   "version": "0.0.1",
   "description": "A website containing information for SE students and coaches, and project sponsors",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
