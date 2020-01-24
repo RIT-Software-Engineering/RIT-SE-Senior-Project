@@ -12,6 +12,7 @@
   * [Student Focused Area](#student-focused-area)
   * [Coach Focused Area](#coach-focused-area)
 * [Toolchain](#toolchain)
+* [Database Schema](#database-schema)
 
 ### [Overview](#overview)
 The senior project website redesign involves creating a completely
@@ -46,3 +47,18 @@ The coaching area shall hold information and resources available to senior proje
 
 ### [Toolchain](#toolchain)
 The website shall utilize a virtual linux server provided by the SE department. Back-end functionality will be supported through the use of Node.js. Database functionality shall be provided through the use of SQLite. Front-end UI shall utilize the Semantic-UI framework along with plain HTML, CSS, and Javascript. Images will be stored on the filesystem and will be managed in Node.js, with file references residing in the database.
+
+### [Database Schema](#database-schema)
+
+TABLE senior_projects (
+* **id:** unique integer not null primary key,
+* **priority:** integer not null,
+* **title:** text not null,
+* **members:** text not null,
+* **sponsor:** text not null,
+* **coach:** text not null,
+* **synopsis:** text not null,
+* **poster:** text not null,
+* **website:** text not null
+
+);
