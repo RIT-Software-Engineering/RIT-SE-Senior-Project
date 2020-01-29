@@ -4,48 +4,83 @@
 const PATH = require('path');
 const SQLITE3 = require('sqlite3').verbose();
 const CONFIG = require('./db_config');
-
-let seniorProjectsDB;
-
 /**
- * @function openReadWrite Opens the database in memory with read/write capabilities
+ * @class DBHandler takes a table name and creates an object to interact with the specified table. 
+ * Table names can be set post-instantiation in order to interact with other tables.
  */
-function openReadWrite() {
-    seniorProjectsDB = new SQLITE3.Database(PATH.join(__dirname, CONFIG.dbFileName), SQLITE3.OPEN_READWRITE, (err) => {
-        if (err) {
-            console.error(err.message);
+module.exports = class DBHandler {
+
+    constructor(tableName) {
+        if (Object.values(CONFIG.tableNames).includes(tableName)) {
+            this.currentTable = tableName
+            /**
+             * @property The senior projects DB. Internal class use only.
+             * @private
+             * */
+            this.seniorProjectsDB;
         }
-    });
-}
+        else {
+            throw new Error(`The given table name: "${tableName}" is not in the list of valid table names from db_config.js.`);
+        }
+    }
 
-function selectAll() {
-    if (seniorProjectsDB) {
-        let sql = `SELECT * FROM senior_projects`;
-
-        seniorProjectsDB.all(sql, [], (err, rows) => {
+    /**
+     * Opens up the database for read/write access. Internal class use only.
+     * @private
+     */
+    openReadWrite() {
+        this.seniorProjectsDB = new SQLITE3.Database(PATH.join(__dirname, CONFIG.dbFileName), SQLITE3.OPEN_READWRITE, (err) => {
             if (err) {
-                throw err;
+                console.error(err.message);
             }
-            console.log(rows); // DEBUGGING
         });
     }
-}
-
-/**
- * Takes an array of values and inserts them into a new row in the senior_projects table
- * Array must be of size nine
- * @param {Array} values 
- */
-function insert(values) {
-    if (seniorProjectsDB) {
-        seniorProjectsDB.run(`INSERT INTO senior_projects (id, priority, title, members, sponsor, coach, synopsis, poster, website) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, values);
+    /**
+     * Closes the database. Internal class use only.
+     * @private 
+     */
+    closeDB() {
+        if(this.seniorProjectsDB) {
+            this.seniorProjectsDB.close();
+        }
     }
-}
-let test1 = [1, 1, 'toms test', 'tom', 'also tom', 'its tom', 'toms test row', '/path/to/file', PATH.join(__dirname + '/img/test.jpg')];
-let test2 = [2, 1, 'toms test 2', 'tom', 'also tom', 'its tom', 'toms test row', '/path/to/file', PATH.join(__dirname + '/img/test.jpg')];
 
-//openReadWrite();
-insert();
-//selectAll();
-//seniorProjectsDB.close();
+    /**
+     * Takes an array of values and inserts them into a new row in the current table
+     * @param {Array} values must match the field count of the table
+    */
+    insert(values) {
+        this.openReadWrite();
+        if (this.seniorProjectsDB) {
+            this.seniorProjectsDB.run(`INSERT INTO ` + this.currentTable + ` (id, priority, title, members, sponsor, coach, synopsis, poster, website) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, values);
+        }
+        this.closeDB();
+    }
+
+    /**
+     * Selects all rows from the current table
+     */
+    selectAll() {
+        return new Promise((resolve) => {
+            this.openReadWrite();
+            let result;
+            if (this.seniorProjectsDB) {
+                let sql = 'SELECT * FROM ' + this.currentTable;
+                
+                this.seniorProjectsDB.all(sql, [], (err, rows) => {
+                    if (err) {
+                        throw err;
+                    }
+                    resolve(rows);
+                });
+            }
+            this.closeDB();
+        });
+    }
+    
+};
+
+
+
+
