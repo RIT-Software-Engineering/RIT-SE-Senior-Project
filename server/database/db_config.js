@@ -2,8 +2,12 @@
  * Responsible for maintaining variables and configurations for database management
  */
 
-const path = require('path');
-
  module.exports = {
-     dbFileName: 'senior_projects.db'
+    dbFileName: 'senior_projects.db',
+    /**
+     * @property An enumeration of the valid table names in the database
+     */
+    tableNames: {
+        senior_projects: 'senior_projects'
+    }
  }
