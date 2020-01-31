@@ -4,6 +4,7 @@
 const PATH = require('path');
 const SQLITE3 = require('sqlite3').verbose();
 const CONFIG = require('./db_config');
+
 /**
  * @class DBHandler takes a table name and creates an object to interact with the specified table. 
  * Table names can be set post-instantiation in order to interact with other tables.
@@ -59,6 +60,23 @@ module.exports = class DBHandler {
     }
 
     /**
+     * Takes a row id and deletes the row from the current table
+     * @param {int} id row id of the row to be deleted
+     */
+    deleteById(id) {
+        this.openReadWrite();
+        if(this.seniorProjectsDB) {
+            this.seniorProjectsDB.run(`DELETE FROM ` + this.currentTable + ` WHERE id=?`, id, function(error) {
+                if(err) {
+                    console.error(err.message);
+                }
+                console.log(`Row deleted: ${this.changes}`);
+            })
+        }
+        this.closeDB();
+    }
+
+    /**
      * Selects all rows from the current table
      */
     selectAll() {
@@ -80,7 +98,3 @@ module.exports = class DBHandler {
     }
     
 };
-
-
-
-
