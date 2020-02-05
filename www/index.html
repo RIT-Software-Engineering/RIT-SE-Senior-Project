@@ -1,14 +1,107 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Test Page</title>
+        <title>SE Senior Project</title>
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
-        <script src="/semantic/dist/semantic.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="index.css">
     </head>
     <body>
-        <p>Congrats, it works.</p>
+    <div id="page">
+
         
+        <div class="ui inverted blue segment">
+            <h1 id="mainHeader" class="ui header" >
+                <img class="ui image" src="se_logo.png">
+                SE Senior Project
+            </h1>
+            
+            <div id="navButtons" class="ui right floated buttons">
+                <button class="ui button">Home</button>
+                <button class="ui button">Senior Projects</button>
+                <button class="ui button">Students</button>
+                <button class="ui button">Coaches</button>
+            </div>
+            
+            
+        </div>
+        <br>
+        <div id="contentGrid" class="ui stackable grid container">
+            <div class="row">
+                <h2>Overview</h2>
+                <p class="overviewText" >Senior Project is a capstone course completed by every Software Engineering senior. 
+                    Small teams of students are assigned to solve challenging, real-world software issues 
+                    for companies and organizations. External corporate and non-profit sponsors submit proposals 
+                    for projects that teams of 4 or 5 students will work on.</p>
+                <p class="overviewText" >Over the course of two terms, each team works with a project sponsor, applying the software engineering 
+                    skills that the students learned in class and on co-op. They carry the project from inception through an entire software 
+                    development lifecycle. The end result is a functional software tool ready for use by the sponsor's organization.</p>
+            </div>
+            
+            <div class="row">
+                <h2>Exemplary Projects</h2>
+            </div>
+
+            <br>
+
+            <div class="ui segment row">
+                <img class="ui image"  src="TeamJS-Thumb.jpg">
+                <div class="projectText">
+                    <h3 class="ui header projectTitle">Creating an Interactive Vocabulary Practice Program</h3>
+                    <div class="ui basic segment grid projectGrid">
+                        <div class="row">
+                            <div class="eight wide column">
+                                <h4>Team:</h4>
+                                <p>Team.js</p>
+                                <h4>Students:</h4>
+                                <p>John Renner, Michael Timbrook, Matthew Witte, Johnathan Sellers</p>
+                            </div>
+                            <div class="eight wide column">
+                                <h4>Sponsor:</h4>
+                                <p>RIT NTID-Liberal Studies</p>
+                                <h4>Faculty Coach:</h4>
+                                <p>Don Boyd</p>
+                                
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ui segment row">
+                <img class="ui image"  src="TeamJS-Thumb.jpg">
+                <div class="projectText">
+                    <h3 class="ui header projectTitle">Creating an Interactive Vocabulary Practice Program</h3>
+                    <div class="ui basic segment grid projectGrid">
+                        <div class="row">
+                            <div class="eight wide column">
+                                <h4>Team:</h4>
+                                <p>Team.js</p>
+                                <h4>Students:</h4>
+                                <p>John Renner, Michael Timbrook, Matthew Witte, Johnathan Sellers</p>
+                            </div>
+                            <div class="eight wide column">
+                                <h4>Sponsor:</h4>
+                                <p>RIT NTID-Liberal Studies</p>
+                                <h4>Faculty Coach:</h4>
+                                <p>Don Boyd</p>
+                                
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <footer>
+            <div style="height: 4em;"class="ui inverted blue segment">Im a footer!</div>
+        </footer>
+    </div>
         <script src="test.js"></script>
     </body>
+
 </html>
