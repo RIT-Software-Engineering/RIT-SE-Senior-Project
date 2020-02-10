@@ -8,7 +8,7 @@
 }
 
 #navButtons {
-    margin-top: 18px;
+    /* margin-top: 18px; */
 }
 
 #contentGrid {
@@ -18,18 +18,18 @@
     font-size: 16pt;
 }
 
-.projectText {
-    margin-left: 6em;
-}
 
 .projectTitle {
     margin-top: -5px;
 }
 
-
-
 .projectGrid {
     margin-left: -1em !important;
+}
+
+.rowSpacer {
+    display: none;
+    height: 2em;
 }
 
 footer {
@@ -43,18 +43,17 @@ footer {
         #navButtons {
             display: none;
         }
+        .rowSpacer {
+            display: initial;
+        }
 }
 
 @media only screen and (max-device-width: 768px) {
     #navButtons {
         display: none;
     }
+    .rowSpacer {
+        display: initial;
+    }
 }
 
-@media only screen and (max-width: 970px) {
-    
-}
-
-@media only screen and (max-device-width: 970px) {
-
-}

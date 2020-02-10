@@ -14,3 +14,6 @@ console.log('hello world');
 //     img.src = '/db/getPoster?fileName=' + filename;
 //     document.body.appendChild(img);
 // });
+$('.ui.accordion')
+  .accordion()
+;
