@@ -4,7 +4,7 @@
 }
 
 #mainHeader {
-    display: inline;
+    color: white;
 }
 
 #navButtons {
@@ -43,4 +43,18 @@ footer {
         #navButtons {
             display: none;
         }
+}
+
+@media only screen and (max-device-width: 768px) {
+    #navButtons {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 970px) {
+    
+}
+
+@media only screen and (max-device-width: 970px) {
+
 }
