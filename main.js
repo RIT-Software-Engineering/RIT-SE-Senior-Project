@@ -15,12 +15,20 @@ let DBHandler = require('./server/database/db');
 // var test1 = [1, 1, "Tom's Test Row", 'Tom', 'S. Malachowsky', 'S. Malachowsky', 'A test row', 'test.jpg', 'www.google.com'];
 
 // handler.insert(test1);
-
+let handler = new DBHandler(DB_CONFIG.tableNames.senior_projects);
 
 app.get('/db/selectAll', (req, res) => {
-    let handler = new DBHandler(DB_CONFIG.tableNames.senior_projects);
     handler.selectAll().then(function(value) {
         console.log(value);
+        res.send(value);
+    });
+});
+
+app.get('/db/selectExemplary', (req, res) => {
+    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.senior_projects + ' WHERE priority = ?';
+    let values = [0];
+
+    handler.select(sql, values).then(function(value) {
         res.send(value);
     });
 });
