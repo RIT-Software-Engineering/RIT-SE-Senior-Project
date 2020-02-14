@@ -82,7 +82,6 @@ module.exports = class DBHandler {
     selectAll() {
         return new Promise((resolve) => {
             this.openReadWrite();
-            let result;
             if (this.seniorProjectsDB) {
                 let sql = 'SELECT * FROM ' + this.currentTable;
                 
@@ -97,4 +96,20 @@ module.exports = class DBHandler {
         });
     }
     
+    select(sql, values) {
+        return new Promise((resolve) => {
+            this.openReadWrite();
+            if(this.seniorProjectsDB) {
+                this.seniorProjectsDB.all(sql, values, (err, rows) => {
+                    if (err) {
+                        throw err;
+                    }
+                    resolve(rows);
+                });
+            }
+            
+            this.closeDB();
+        });
+    }
+
 };
