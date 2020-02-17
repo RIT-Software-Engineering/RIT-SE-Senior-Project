@@ -50,11 +50,10 @@ module.exports = class DBHandler {
      * Takes an array of values and inserts them into a new row in the current table
      * @param {Array} values must match the field count of the table
     */
-    insert(values) {
+    insert(sql, values) {
         this.openReadWrite();
         if (this.seniorProjectsDB) {
-            this.seniorProjectsDB.run(`INSERT INTO ` + this.currentTable + ` (id, priority, title, members, sponsor, coach, synopsis, poster, website) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, values);
+            this.seniorProjectsDB.run(sql, values);
         }
         this.closeDB();
     }
