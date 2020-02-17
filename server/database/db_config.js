@@ -3,7 +3,7 @@
  */
 
  module.exports = {
-    dbFileName: 'senior_projects.db',
+    dbFileName: 'senior_project.db',
     /**
      * @property An enumeration of the valid table names in the database
      */
