@@ -4,7 +4,6 @@ $.get('/db/selectExemplary', function(data) {
     $('#exemplaryProjectsDiv').append(createProjectElement(data[0]));
 }).then(() => {
     $('.ui.accordion').accordion();
-
 });
 
 
@@ -42,7 +41,6 @@ function createProjectElement(dbObject) {
     teamHeader.innerText = 'Team:';
     teamColumn.appendChild(teamHeader);
     
-    //TODO modify database to store team name
     var teamName = document.createElement('p');
     teamName.innerText = dbObject.teamName;
     teamColumn.appendChild(teamName);
@@ -95,42 +93,3 @@ function createProjectElement(dbObject) {
 
     return project;
 }
-
-/* <div class="ui segment stackable padded grid">
-    <div class="row">
-        <h3 class="ui header projectTitle">Creating an Interactive Vocabulary Practice Program</h3>
-    </div>
-    <div class="three column row">
-        <div class="column">
-            <img class="ui image"  src="TeamJS-Thumb.jpg">
-        </div>
-        <div class="column">
-            
-                <h4>Team:</h4>
-                        <p>Team.js</p>
-                        <h4>Students:</h4>
-                        <p>John Renner, Michael Timbrook, Matthew Witte, Johnathan Sellers</p>
-            
-            
-        </div>
-        <div class="column">
-            <div style="width: 50%;">
-                <h4>Sponsor:</h4>
-                        <p>RIT NTID-Liberal Studies</p>
-                        <h4>Faculty Coach:</h4>
-                        <p>Don Boyd</p>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="ui accordion">
-            <div class="title">
-            <i class="dropdown icon"></i>
-            Project Synopsis
-            </div>
-            <div class="content">
-            <p class="transition hidden">The vocabulary program is a tool for teachers to teach advanced vocabulary skills to deaf students whose hearing loss has significantly reduced their access to auditory English learning. ASL and other sign based communication modalities in some instances do not mark all English word forms and word roots. The vocabulary program provides a platform for teachers to strengthen student skills through repetition and various forms of enforcements. Teachers would be able to construct and share lessons that focus on specific sets of words. These lessons would include information such as context sentences, definitions, roots, synonyms, and antonyms. The lessons will be populated with existing corpus references, but will allow for editing by teachers for further customization. Teachers will then be able to assign lessons to students for completion and the program will provide metrics of success after the completion of a lesson. These metrics will encompass grading as well as give information about certain aspects of the lesson such as completion time and completion percentage. The program will be accessed through a web portal. The focus of the project will be to create one model lesson that is thoroughly vetted and will systematically produce a stable and simple workflow for both teachers and students alike.</p>
-            </div>
-        </div>
-    </div>
-</div> */
