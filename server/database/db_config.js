@@ -10,6 +10,8 @@
      */
     tableNames: {
         senior_projects:    'senior_projects',
-        sponsor_info:       'sponsor_info'
+        sponsor_info:       'sponsor_info',
+        student_info:       'student_info',
+        coach_info:         'coach_info'
     }
  }
