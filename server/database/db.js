@@ -11,18 +11,16 @@ const CONFIG = require('./db_config');
  */
 module.exports = class DBHandler {
 
-    constructor(tableName) {
-        if (Object.values(CONFIG.tableNames).includes(tableName)) {
-            this.currentTable = tableName
-            /**
-             * @property The senior projects DB. Internal class use only.
-             * @private
-             * */
-            this.seniorProjectsDB;
-        }
-        else {
-            throw new Error(`The given table name: "${tableName}" is not in the list of valid table names from db_config.js.`);
-        }
+    constructor() {
+        /**
+         * @property The senior projects DB. Internal class use only.
+         * @private
+         * */
+        this.seniorProjectsDB;
+        
+        // else {
+        //     throw new Error(`The given table name: "${tableName}" is not in the list of valid table names from db_config.js.`);
+        // }
     }
 
     /**
@@ -47,7 +45,7 @@ module.exports = class DBHandler {
     }
 
     /**
-     * Takes an array of values and inserts them into a new row in the current table
+     * Takes an array of values and inserts them into a new row
      * @param {Array} values must match the field count of the table
     */
     insert(sql, values) {
@@ -62,10 +60,10 @@ module.exports = class DBHandler {
      * Takes a row id and deletes the row from the current table
      * @param {int} id row id of the row to be deleted
      */
-    deleteById(id) {
+    deleteById(sql, values) {
         this.openReadWrite();
         if(this.seniorProjectsDB) {
-            this.seniorProjectsDB.run(`DELETE FROM ` + this.currentTable + ` WHERE id=?`, id, function(error) {
+            this.seniorProjectsDB.run(sql, values, function(error) {
                 if(err) {
                     console.error(err.message);
                 }
@@ -78,11 +76,11 @@ module.exports = class DBHandler {
     /**
      * Selects all rows from the current table
      */
-    selectAll() {
+    selectAll(table) {
         return new Promise((resolve) => {
             this.openReadWrite();
             if (this.seniorProjectsDB) {
-                let sql = 'SELECT * FROM ' + this.currentTable;
+                let sql = 'SELECT * FROM ' + table;
                 
                 this.seniorProjectsDB.all(sql, [], (err, rows) => {
                     if (err) {
