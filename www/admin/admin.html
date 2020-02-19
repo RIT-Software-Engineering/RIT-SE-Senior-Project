@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin Interface</title>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="admin.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="page">
+            <div class="ui inverted basic blue segment"style="height: 6em; width: 100%; position: absolute; left: 0; top: 0;  z-index: -1;">
+            </div>
+            <br>
+            <div class="ui container grid">
+                <div class="row">
+                    <h1 class="ui header">
+                        Senior Project
+                        <div class="sub header" style="color:rgb(218, 218, 218) ; font-weight: 400;">Administrative Interface</div>
+                    </h1>
+                </div>
+                <div class="row">
+                    <div class="ui top attached blue tabular menu">
+                        <a class="item active" data-tab="dashboard">
+                          Dashboard
+                        </a>
+                        <a class="item" data-tab="sponsorInfo">
+                          Sponsor Info
+                        </a>
+                        <a class="item" data-tab="students">
+                            Students
+                        </a>
+                        <a class="item" data-tab="coaches">
+                            Coaches
+                        </a>
+                    </div>
+                    <div class="ui bottom attached segment tab active" data-tab="dashboard">
+                        <p>Under construction</p>
+                    </div>
+                    <div class="ui bottom attached segment tab" data-tab="sponsorInfo">
+                        <p>sponsor info</p>
+                    </div>
+                    <div class="ui bottom attached segment tab" data-tab="students">
+                        <p>Students table</p>
+                    </div>
+                    <div class="ui bottom attached segment tab" data-tab="coaches">
+                        <p>Coaches</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="admin.js"></script>
+    </body>
+</html>
