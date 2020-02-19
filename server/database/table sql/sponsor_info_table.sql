@@ -1,6 +1,6 @@
 CREATE TABLE sponsor_info (
-    id          INTEGER PRIMARY KEY NOT NULL,
-    company     TEXT,
+    sponsorId   INTEGER AUTOINCREMENT,
+    company     TEXT PRIMARY KEY NOT NULL,
     division    TEXT,
     type        TEXT,
     fname       TEXT,
