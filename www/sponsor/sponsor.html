@@ -31,13 +31,20 @@
                     <div class="column" style="padding-right: 0em;">
                         <div id="navButtons" class="ui right floated buttons">
                             <button class="ui button">Home</button>
-                            <button class="ui button">Senior Projects</button>
+                            <button class="ui button">Sponsor a Project</button>
                             <button class="ui button">Students</button>
                             <button class="ui button">Coaches</button>
                         </div>
                     </div>
                     
                 </div>
+                <div class="row">
+                    <h2 class="ui header">Become a Project Sponsor</h2>
+                </div>
+                <div class="row">
+                    <button id="proposalBtn" class="ui button">Submit a Project Proposal</button>
+                </div>
+
                 <div class="row">
                     <h2 class="ui header">Sponsor F.A.Q</h2>
                 </div>
@@ -147,6 +154,59 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Project Proposal Modal HTML -->
+            <div class="ui longer modal">
+                <div class="header">
+                    Project Proposal Form
+                </div>
+                <div class="content">
+                    <form class="ui form">
+                        <div class="field">
+                            <label>Project Title</label>
+                            <input type="text">
+                        </div>
+
+                        <div class="field">
+                            <label>Organiztion Name</label>
+                            <input type="text">
+                        </div>
+
+                        <div class="field">
+                            <label>Primary Contact Name</label>
+                            <input type="text">
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Email</label>
+                                <input type="text">
+                            </div>
+    
+                            <div class="field">
+                                <label>Phone</label>
+                                <input type="text">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Project Background Information</label>
+                            <textarea></textarea>
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="actions">
+                    <div class="ui deny left floated left labeled icon button">
+                        Cancel
+                        <i class="times icon"></i>
+                    </div>
+                    <div class="ui positive left labeled icon button">
+                        Submit
+                        <i class="checkmark icon"></i>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <script src="sponsor.js"></script>
     </body>
