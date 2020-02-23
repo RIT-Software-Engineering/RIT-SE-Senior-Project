@@ -1,4 +1,6 @@
-$('.ui.accordion').accordion()
+$('.ui.accordion').accordion();
+
+$('.ui.checkbox').checkbox();
 
 $('.ui.modal').modal({
     closable: false
