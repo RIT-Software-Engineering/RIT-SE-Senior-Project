@@ -30,10 +30,8 @@
                     
                     <div class="column" style="padding-right: 0em;">
                         <div id="navButtons" class="ui right floated buttons">
-                            <button class="ui button">Home</button>
-                            <button class="ui button">Sponsor a Project</button>
-                            <button class="ui button">Students</button>
-                            <button class="ui button">Coaches</button>
+                            <button class="ui button" onclick="location.href = '../index.html'">Home</button>
+                            <button class="ui button" onclick="location.href = 'sponsor/sponsor.html'">Sponsor a Project</button>
                         </div>
                     </div>
                     
@@ -156,11 +154,11 @@
             </div>
 
             <!-- Project Proposal Modal HTML -->
-            <div class="ui longer modal">
+            <div class="ui modal">
                 <div class="header">
                     Project Proposal Form
                 </div>
-                <div class="content">
+                <div class="scrolling content">
                     <form class="ui form">
                         <div class="field">
                             <label>Project Title</label>
@@ -193,7 +191,67 @@
                             <textarea></textarea>
                         </div>
                         
+                        <div class="field">
+                            <label>Project Description</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Project Scope</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Project Challenges</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Constraints & Assumptions</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Sponsor-Provided Resources</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Project Background Information</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Project Search Keywords</label>
+                            <input type="text">
+                        </div>
+
+                        <p>Test</p>
+
+                        <div class="field">
+                            <label>Sponsor and Project Specific Deliverables</label>
+                            <textarea></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label>Proprietary Information</label>
+                            <textarea></textarea>
+                        </div>
+
+                        
+                        <div class="field">
+                            <label>Sponsor personnel will be available to meet with the team once per week during the time set for meeting with the sponsor which is 
+                                Tuesday and Thursday (fall/spring) or Monday and Wednesday (spring/summer) from 5:00 – 6:15pm Eastern US time. We will give a selection 
+                                preference to proposals whose sponsors are available during this time.
+                            </label>
+                            <br>
+                            <div class="ui checkbox">
+                              <input type="checkbox" tabindex="0" class="hidden">
+                              <label>I agree</label>
+                            </div>
+                          </div>
                     </form>
+                    <br>
                 </div>
                 <div class="actions">
                     <div class="ui deny left floated left labeled icon button">
