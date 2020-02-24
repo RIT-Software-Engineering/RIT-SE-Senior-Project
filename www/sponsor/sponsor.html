@@ -41,12 +41,13 @@
                     
                 </div>
                 <div class="row">
-                    <p>Please reference the <a href="../doc/ProposalInstructions.pdf" target="_blank">proposal instructions</a> as you go through the form.
+                    <p>Please reference the <a href="../doc/ProposalInstructions.pdf" target="_blank">proposal instructions</a> as you prepare your project proposal.
                         
                     </p>
                 </div>
                 <div class="row">
-                    <button id="proposalBtn" class="ui button">Submit a Project Proposal</button>
+                    <p>Web form coming soon! In the meantime, a document version of the proposal form, found <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/Senior%20Project%20-%20Proposal.docx">here</a>, can be completed and sent to <a href="mailto:seniorprojects@se.rit.edu">seniorprojects@se.rit.edu</a>.</p>
+                    <!-- <button id="proposalBtn" class="ui button">Submit a Project Proposal</button> -->
                 </div>
 
                 <div class="ui divider"></div>
@@ -167,81 +168,76 @@
                     Project Proposal Form
                 </div>
                 <div class="scrolling content">
-                    <form class="ui form">
-                        <div class="field">
+                    <form id="proposalForm" class="ui form">
+                        <div class="required field">
                             <label>Project Title</label>
-                            <input type="text">
+                            <input name="title" type="text">
                         </div>
 
-                        <div class="field">
+                        <div class="required field">
                             <label>Organiztion Name</label>
-                            <input type="text">
+                            <input name="organization" type="text">
                         </div>
 
-                        <div class="field">
+                        <div class="required field">
                             <label>Primary Contact Name</label>
-                            <input type="text">
+                            <input name="primary_contact" type="text">
                         </div>
                         <div class="two fields">
-                            <div class="field">
+                            <div class="required field">
                                 <label>Email</label>
-                                <input type="text">
+                                <input name="contact_email" type="text">
                             </div>
     
-                            <div class="field">
+                            <div class="required field">
                                 <label>Phone</label>
-                                <input type="text">
+                                <input name="contact_phone" type="text">
                             </div>
                         </div>
 
                         <div class="field">
                             <label>Project Background Information</label>
-                            <textarea></textarea>
+                            <textarea name="background_info"></textarea>
                         </div>
                         
                         <div class="field">
                             <label>Project Description</label>
-                            <textarea></textarea>
+                            <textarea name="project_description" ></textarea>
                         </div>
 
                         <div class="field">
                             <label>Project Scope</label>
-                            <textarea></textarea>
+                            <textarea name="project_scope"></textarea>
                         </div>
 
                         <div class="field">
                             <label>Project Challenges</label>
-                            <textarea></textarea>
+                            <textarea name="project_challenges"></textarea>
                         </div>
 
                         <div class="field">
                             <label>Constraints & Assumptions</label>
-                            <textarea></textarea>
+                            <textarea name="constraints_assumptions"></textarea>
                         </div>
 
                         <div class="field">
                             <label>Sponsor-Provided Resources</label>
-                            <textarea></textarea>
-                        </div>
-
-                        <div class="field">
-                            <label>Project Background Information</label>
-                            <textarea></textarea>
+                            <textarea name="sponsor_provided_resources"></textarea>
                         </div>
 
                         <div class="field">
                             <label>Project Search Keywords</label>
-                            <input type="text">
+                            <input name="project_search_keywords" type="text">
                         </div>
 
-                        <div class="field">
+                        <div class="required field">
                             <label>Sponsor and Project Specific Deliverables</label>
-                            <textarea></textarea>
+                            <textarea name="sponsor_deliverables"></textarea>
                         </div>
 
                         <div class="field">
                             <label>Proprietary Information</label>
-                            <textarea></textarea>
+                            <textarea name="proprietary_info"></textarea>
                         </div>
 
                         <br>
@@ -253,22 +249,46 @@
                             preference to proposals whose sponsors are available during this time.
                         </p>
                         
-                        <div class="field">
+                        <div class="required field">
                             <div class="ui checkbox">
-                                <input type="checkbox" tabindex="0" class="hidden">
+                                <input name="sponsor_avail_checked" type="checkbox" tabindex="0" class="hidden">
                                 <label>I agree</label>
                             </div>
                         </div>
                         <div class="field">
                             <label>If you will not be available during the standard senior project meeting time above, please give your timing constraints.</label>
-                            <input type="text">
+                            <input name="sponsor_alternate_time" type="text">
                         </div>
 
                         <br>
                         <div class="ui divider"></div>
 
+                        <h3>Project Agreements and Assignment of Rights</h3>
+                        <div class="required field">
+                            <p>RIT policy gives students full ownership of any work done as part of coursework which includes their work on senior project. 
+                                As the sponsor of a course project, you can select one of three approaches for dealing with ownership of project artifacts 
+                                and intellectual property, and the disclosure of proprietary information. If you seek assignment of rights, the individual 
+                                team members will sign a project agreement based on the rights that you want.
+                            </p>
+                            <p>
+                                Please get any corporate and legal clearances that you feel are needed to use the unmodified project agreement, before 
+                                submitting your project proposal. This is necessary to prevent any delays in starting a project. A team will not be assigned 
+                                to a project if the sponsor has not confirmed that the project agreements are OK. Indicate that this has been done by checking 
+                                box below.
+                            </p>
+                            <div class="ui checkbox">
+                                <h4>Corporate and Legal Clearance of Project Agreement</h4>
+                                <p>
+                                    We have the necessary corporate or legal clearances to use the unmodified project agreement. 
+                                    (Note: The project agreements are cleared for RIT internal projects.)
+                                </p>
+                                <input name="project_agreements_checked" type="checkbox" tabindex="0" class="hidden">
+                                <label>I agree</label>
+                            </div>
+                        </div>
+
                         <div class="grouped fields">
-                            <h3>Assignment of Rights</h3>
+                            <h4>Assignment of Rights</h4>
                             <p>Select one of the following approaches for assignment of the rights to the project artifacts and intellectual property, 
                                 and the disclosure of proprietary information. 
                             </p>
@@ -323,18 +343,50 @@
                           </div>
                     </form>
                     <br>
+                    <h3>
+                        The agreements and policies can be found at:
+                    </h3>
+                    <ul>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectAgreement.doc">
+                                Student Course Project Intellectual Property and Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectLimitedAgreement.doc">
+                                Student Course Project Limited Use and Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectOpenSourceAgreement.doc">
+                                Student Course Project Open Source Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/FacultyCourseProjectAgreement.doc">
+                                Faculty Course Project Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.rit.edu/academicaffairs/policiesmanual/c030">
+                                RIT Intellectual Property Policy C03.0. The project agreements are consistent with section C03.0 1.V.B.2
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <br>
                     <h3>Please review your answers before submitting.</h3>
                     <br>
                 </div>
                 <div class="actions">
-                    <div class="ui deny left floated left labeled icon button">
+                    <button class="ui deny left floated left labeled icon button" onclick="$('.ui.form').form('clear'); console.log('hello');">
                         Cancel
                         <i class="times icon"></i>
-                    </div>
-                    <div class="ui positive left labeled icon button">
+                    </button>
+                    <button class="ui positive left labeled icon button" type="submit" form="proposalForm">
                         Submit
                         <i class="checkmark icon"></i>
-                    </div>
+                    </button>
                 </div>
             </div>
 
