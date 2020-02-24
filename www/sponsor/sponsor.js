@@ -9,3 +9,12 @@ $('.ui.modal').modal({
 $('#proposalBtn').on('click', function(data) {
     $('.ui.modal').modal('show');
 });
+
+// form validation
+
+$('.ui.form').form({
+
+    fields: {
+        
+    }
+});
