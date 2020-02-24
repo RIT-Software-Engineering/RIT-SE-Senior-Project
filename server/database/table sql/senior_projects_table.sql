@@ -1,7 +1,7 @@
 CREATE TABLE senior_projects (
-    project_id              int autoincrement primary key unique not null,
+    project_id              int autoincrement primary key unique,
     priority                int,
-    title                   text,
+    title                   text unique,
     organization            text,
     primary_contact         text,
     contact_email           text,
