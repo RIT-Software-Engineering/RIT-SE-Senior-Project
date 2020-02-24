@@ -11,10 +11,18 @@ p {
     font-size: 14pt;
 }
 
+form p {
+    font-size: 12pt;
+}
+
 .ui.accordion li {
     font-size: 14pt;
     padding: 5px;
     line-height: 1.5em;
+}
+
+.ui.radio.checkbox label {
+    font-weight: bold;
 }
 
 .ui.accordion .title {
