@@ -1,5 +1,5 @@
-INSERT INTO senior_projects (priority, title, team, members, sponsor, coach, poster, synopsis) 
-VALUES (
+INSERT INTO senior_projects (priority, title, team_name, members, sponsor, coach, poster, synopsis) 
+VALUES 
     (0, "Business Action Tracking", "BAT Team", "Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy", "Lockheed Martin - Enterprise Business Services", "Sam Malachowsky", "BAT-Thumb.jpg",
     "Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, user-friendly task management tool to be used across teams in a corporate setting. The system can be 
     used to create, update, and monitor actions to their completion. Actions can be hierarchical, associated with a project, and/or interdepartmental. An action is assigned to an actor and contains basic fields, including name, description, due date, and status. 
@@ -34,4 +34,4 @@ VALUES (
     and a streamlined user experience to provide maximum efficiency when using the software."
     )
 
-);
+;
