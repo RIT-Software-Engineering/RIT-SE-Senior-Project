@@ -27,10 +27,6 @@
     margin-left: -1em !important;
 }
 
-.rowSpacer {
-    display: none;
-    height: 2em;
-}
 
 footer {
     position: absolute;
@@ -43,17 +39,11 @@ footer {
         #navButtons {
             display: none;
         }
-        .rowSpacer {
-            display: initial;
-        }
 }
 
 @media only screen and (max-device-width: 768px) {
     #navButtons {
         display: none;
-    }
-    .rowSpacer {
-        display: initial;
     }
 }
 
