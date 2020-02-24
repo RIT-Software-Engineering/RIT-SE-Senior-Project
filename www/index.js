@@ -1,7 +1,12 @@
 
 $.get('/db/selectExemplary', function(data) {
     console.log(data);
-    $('#exemplaryProjectsDiv').append(createProjectElement(data[0]));
+
+    for(var i = 0; i < data.length; i++) {
+
+        $('#exemplaryProjectsDiv').append(createProjectElement(data[i]));
+    }
+
 }).then(() => {
     $('.ui.accordion').accordion();
 });
@@ -30,6 +35,7 @@ function createProjectElement(dbObject) {
     contentRow.appendChild(posterColumn);
 
     var poster = document.createElement('img');
+    poster.style.border = "3px solid #DDDDDD";
     poster.src = '/db/getPoster?fileName=' + dbObject.poster;
     posterColumn.appendChild(poster);
 
@@ -42,7 +48,7 @@ function createProjectElement(dbObject) {
     teamColumn.appendChild(teamHeader);
     
     var teamName = document.createElement('p');
-    teamName.innerText = dbObject.teamName;
+    teamName.innerText = dbObject.team_name;
     teamColumn.appendChild(teamName);
     
     var memberHeader = document.createElement('h4');
