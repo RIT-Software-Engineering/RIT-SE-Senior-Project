@@ -5,12 +5,17 @@
 
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+
 const port = 3000;
 const path = require('path')
 const DB_CONFIG = require('./server/database/db_config');
 const DBHandler = require('./server/database/db');
 
 let db = new DBHandler();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //#region 'Select All' Routes
 
@@ -51,11 +56,18 @@ app.get('/db/selectExemplary', (req, res) => {
 });
 //#endregion
 
+app.post('/db/submitProposal', (req, res) => {
+    res.send(req.body)
+});
+
+
 app.get('/db/getPoster', (req, res) => {
     let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
 
     res.sendFile(path.join(__dirname, '/server/posters/' + screenedFileName));
 });
+
+
 
 app.use('/', express.static('./www'));
 app.use('/', express.static('./www/admin'));
