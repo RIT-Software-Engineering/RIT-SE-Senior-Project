@@ -46,8 +46,8 @@
                     </p>
                 </div>
                 <div class="row">
-                    <p>Web form coming soon! In the meantime, a document version of the proposal form, found <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/Senior%20Project%20-%20Proposal.docx">here</a>, can be completed and sent to <a href="mailto:seniorprojects@se.rit.edu">seniorprojects@se.rit.edu</a>.</p>
-                    <!-- <button id="proposalBtn" class="ui button">Submit a Project Proposal</button> -->
+                    <!-- <p>Web form coming soon! In the meantime, a document version of the proposal form, found <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/Senior%20Project%20-%20Proposal.docx">here</a>, can be completed and sent to <a href="mailto:seniorprojects@se.rit.edu">seniorprojects@se.rit.edu</a>.</p> -->
+                    <button id="proposalBtn" class="ui button">Submit a Project Proposal</button>
                 </div>
 
                 <div class="ui divider"></div>
@@ -168,7 +168,7 @@
                     Project Proposal Form
                 </div>
                 <div class="scrolling content">
-                    <form id="proposalForm" class="ui form">
+                    <form id="proposalForm" class="ui form" method="POST" action="/db/submitProposal">
                         <div class="required field">
                             <label>Project Title</label>
                             <input name="title" type="text">
@@ -230,7 +230,7 @@
                             <input name="project_search_keywords" type="text">
                         </div>
 
-                        <div class="required field">
+                        <div class="field">
                             <label>Sponsor and Project Specific Deliverables</label>
                             <textarea name="sponsor_deliverables"></textarea>
                         </div>
@@ -264,37 +264,39 @@
                         <div class="ui divider"></div>
 
                         <h3>Project Agreements and Assignment of Rights</h3>
-                        <div class="required field">
-                            <p>RIT policy gives students full ownership of any work done as part of coursework which includes their work on senior project. 
-                                As the sponsor of a course project, you can select one of three approaches for dealing with ownership of project artifacts 
-                                and intellectual property, and the disclosure of proprietary information. If you seek assignment of rights, the individual 
-                                team members will sign a project agreement based on the rights that you want.
-                            </p>
-                            <p>
-                                Please get any corporate and legal clearances that you feel are needed to use the unmodified project agreement, before 
-                                submitting your project proposal. This is necessary to prevent any delays in starting a project. A team will not be assigned 
-                                to a project if the sponsor has not confirmed that the project agreements are OK. Indicate that this has been done by checking 
-                                box below.
-                            </p>
-                            <div class="ui checkbox">
-                                <h4>Corporate and Legal Clearance of Project Agreement</h4>
+                        <p>RIT policy gives students full ownership of any work done as part of coursework which includes their work on senior project. 
+                            As the sponsor of a course project, you can select one of three approaches for dealing with ownership of project artifacts 
+                            and intellectual property, and the disclosure of proprietary information. If you seek assignment of rights, the individual 
+                            team members will sign a project agreement based on the rights that you want.
+                        </p>
+                        <p>
+                            Please get any corporate and legal clearances that you feel are needed to use the unmodified project agreement, before 
+                            submitting your project proposal. This is necessary to prevent any delays in starting a project. A team will not be assigned 
+                            to a project if the sponsor has not confirmed that the project agreements are OK. Indicate that this has been done by checking 
+                            box below.
+                        </p>
+                        <h4>Corporate and Legal Clearance of Project Agreement</h4>
                                 <p>
                                     We have the necessary corporate or legal clearances to use the unmodified project agreement. 
                                     (Note: The project agreements are cleared for RIT internal projects.)
                                 </p>
+                        <div class="required field">
+                            <div class="ui checkbox">
                                 <input name="project_agreements_checked" type="checkbox" tabindex="0" class="hidden">
                                 <label>I agree</label>
                             </div>
                         </div>
+                        
+                        <br> 
 
                         <div class="grouped fields">
-                            <h4>Assignment of Rights</h4>
+                            <h3>Assignment of Rights</h3>
                             <p>Select one of the following approaches for assignment of the rights to the project artifacts and intellectual property, 
                                 and the disclosure of proprietary information. 
                             </p>
                             <div class="field">
-                                <div class="ui radio checkbox checked">
-                                    <input type="radio" name="rights" checked="" tabindex="0" class="hidden">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="rights" value="full_rights" checked="" tabindex="0" class="hidden">
                                     <label>Assignment of Full Rights</label>
                                     <br>
                                     <p>If a team is assigned to this project, all students on the team will sign a standard Student Course 
@@ -309,7 +311,7 @@
                             <div class="ui hidden divider"></div>
                             <div class="field">
                               <div class="ui radio checkbox">
-                                <input type="radio" name="rights" tabindex="0" class="hidden">
+                                <input type="radio" name="rights" value="limited_use" tabindex="0" class="hidden">
                                 <label>Assignment of Limited Use Rights</label>
                                 <br>
                                 <p>
@@ -327,7 +329,7 @@
                             <div class="ui hidden divider"></div>
                             <div class="field">
                               <div class="ui radio checkbox">
-                                <input type="radio" name="rights" tabindex="0" class="hidden">
+                                <input type="radio" name="rights" value="open_source" tabindex="0" class="hidden">
                                 <label>Open Source Project</label>
                                 <br>
                                 <p>
@@ -383,7 +385,7 @@
                         Cancel
                         <i class="times icon"></i>
                     </button>
-                    <button class="ui positive left labeled icon button" type="submit" form="proposalForm">
+                    <button id="formSubmit" class="ui blue left labeled icon button" type="submit" form="proposalForm">
                         Submit
                         <i class="checkmark icon"></i>
                     </button>
