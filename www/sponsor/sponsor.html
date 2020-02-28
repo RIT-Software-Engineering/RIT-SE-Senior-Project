@@ -31,7 +31,7 @@
                     <div class="column" style="padding-right: 0em;">
                         <div id="navButtons" class="ui right floated buttons">
                             <button class="ui button" onclick="location.href = '../index.html'">Home</button>
-                            <button class="ui button" onclick="location.href = 'sponsor/sponsor.html'">Sponsor a Project</button>
+                            <button class="ui button" onclick="location.href = 'sponsor.html'">Sponsor a Project</button>
                         </div>
                     </div>
                     
@@ -169,27 +169,27 @@
                 </div>
                 <div class="scrolling content">
                     <form id="proposalForm" class="ui form" method="POST" action="/db/submitProposal">
-                        <div class="required field">
+                        <div class="field">
                             <label>Project Title</label>
                             <input name="title" type="text">
                         </div>
 
-                        <div class="required field">
+                        <div class="field">
                             <label>Organiztion Name</label>
                             <input name="organization" type="text">
                         </div>
 
-                        <div class="required field">
+                        <div class="field">
                             <label>Primary Contact Name</label>
                             <input name="primary_contact" type="text">
                         </div>
                         <div class="two fields">
-                            <div class="required field">
+                            <div class="field">
                                 <label>Email</label>
                                 <input name="contact_email" type="text">
                             </div>
     
-                            <div class="required field">
+                            <div class="field">
                                 <label>Phone</label>
                                 <input name="contact_phone" type="text">
                             </div>
@@ -249,7 +249,7 @@
                             preference to proposals whose sponsors are available during this time.
                         </p>
                         
-                        <div class="required field">
+                        <div class="field">
                             <div class="ui checkbox">
                                 <input name="sponsor_avail_checked" type="checkbox" tabindex="0" class="hidden">
                                 <label>I agree</label>
@@ -280,7 +280,7 @@
                                     We have the necessary corporate or legal clearances to use the unmodified project agreement. 
                                     (Note: The project agreements are cleared for RIT internal projects.)
                                 </p>
-                        <div class="required field">
+                        <div class="field">
                             <div class="ui checkbox">
                                 <input name="project_agreements_checked" type="checkbox" tabindex="0" class="hidden">
                                 <label>I agree</label>
@@ -381,7 +381,7 @@
                     <br>
                 </div>
                 <div class="actions">
-                    <button class="ui deny left floated left labeled icon button" onclick="$('.ui.form').form('clear'); console.log('hello');">
+                    <button class="ui deny left floated left labeled icon button" onclick="$('.ui.form').form('clear');">
                         Cancel
                         <i class="times icon"></i>
                     </button>
