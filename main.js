@@ -6,6 +6,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const { check, validationResult, body } = require('express-validator');
+
 
 const port = 3000;
 const path = require('path')
@@ -15,6 +17,8 @@ const DBHandler = require('./server/database/db');
 let db = new DBHandler();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json())
+
 
 
 //#region 'Select All' Routes
@@ -56,7 +60,28 @@ app.get('/db/selectExemplary', (req, res) => {
 });
 //#endregion
 
-app.post('/db/submitProposal', (req, res) => {
+app.post('/db/submitProposal', [
+    body('title').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('organization').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('primary_contact').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('contact_email').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('contact_phone').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('background_info').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('project_description').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('project_scope').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('project_challenges').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('sponsor_provided_resources').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('constraints_assumptions').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('sponsor_deliverables').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('proprietary_info').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('sponsor_alternate_time').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('sponsor_avail_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('project_agreements_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('rights').not().isEmpty().trim().escape().withMessage("Cannot be empty")
+],
+(req, res) => {
+    var result = validationResult(req)
+    req.body.result = result
     res.send(req.body)
 });
 
