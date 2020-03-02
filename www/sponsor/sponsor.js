@@ -34,6 +34,6 @@ $('.ui.form').form({
         sponsor_deliverables    :   'empty',
         sponsor_avail_checked   :   'checked',
         project_agreements_checked :'checked',
-        rights                  :   'checked'
+        assignment_of_rights    :   'checked'
     }
 });
