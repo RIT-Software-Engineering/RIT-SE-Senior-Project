@@ -1,5 +1,6 @@
 /**
  * Responsible for coordinating interactions with the senior_projects database
+ * Wiki for sqlite3 on nodejs can be found at @see https://github.com/mapbox/node-sqlite3/wiki
 */
 const PATH = require('path');
 const SQLITE3 = require('sqlite3').verbose();
@@ -17,10 +18,9 @@ module.exports = class DBHandler {
          * @private
          * */
         this.seniorProjectsDB;
+
+        this.closeDB = this.closeDB.bind(this);
         
-        // else {
-        //     throw new Error(`The given table name: "${tableName}" is not in the list of valid table names from db_config.js.`);
-        // }
     }
 
     /**
@@ -32,6 +32,7 @@ module.exports = class DBHandler {
             if (err) {
                 console.error(err.message);
             }
+            console.log('Opened Database ');
         });
     }
     /**
@@ -41,72 +42,53 @@ module.exports = class DBHandler {
     closeDB() {
         if(this.seniorProjectsDB) {
             this.seniorProjectsDB.close();
+            console.log('Closed database ');
         }
     }
 
     /**
-     * Takes an array of values and inserts them into a new row
-     * @param {Array} values must match the field count of the table
+     * Takes a sql statement and corresponding array of values and executes it.
+     * @param {String} sql The sql query to execute. Use prepared statements.
+     * @param {Array} values corresponding values, if any, to prepare into the query
+     * @returns {Promise} The resulting rows, if any, of the query. For operations such as insert, it will be empty.
     */
-    insert(sql, values) {
-        this.openReadWrite();
-        if (this.seniorProjectsDB) {
-            this.seniorProjectsDB.run(sql, values);
-        }
-        this.closeDB();
-    }
-
-    /**
-     * Takes a row id and deletes the row from the current table
-     * @param {int} id row id of the row to be deleted
-     */
-    deleteById(sql, values) {
-        this.openReadWrite();
-        if(this.seniorProjectsDB) {
-            this.seniorProjectsDB.run(sql, values, function(error) {
-                if(err) {
-                    console.error(err.message);
-                }
-                console.log(`Row deleted: ${this.changes}`);
-            })
-        }
-        this.closeDB();
+    query(sql, values) {
+        return new Promise((resolve, reject) => {
+            this.openReadWrite();
+            if (this.seniorProjectsDB) {
+                this.seniorProjectsDB.all(sql, values, (err, rows) => {
+                    this.closeDB();
+                    
+                    if (err) 
+                        reject(err);
+    
+                    else
+                        resolve(rows);
+                });
+            }
+        });
     }
 
     /**
      * Selects all rows from the current table
+     * @param {String} table The name of the table to select all from
+     * @returns {Promise} All of the rows of the given table.
      */
     selectAll(table) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.openReadWrite();
             if (this.seniorProjectsDB) {
                 let sql = 'SELECT * FROM ' + table;
                 
                 this.seniorProjectsDB.all(sql, [], (err, rows) => {
-                    if (err) {
-                        throw err;
-                    }
-                    resolve(rows);
+                    this.closeDB();
+                    if (err) 
+                        reject(err);
+                    
+                    else
+                        resolve(rows);
                 });
             }
-            this.closeDB();
         });
     }
-    
-    select(sql, values) {
-        return new Promise((resolve) => {
-            this.openReadWrite();
-            if(this.seniorProjectsDB) {
-                this.seniorProjectsDB.all(sql, values, (err, rows) => {
-                    if (err) {
-                        throw err;
-                    }
-                    resolve(rows);
-                });
-            }
-            
-            this.closeDB();
-        });
-    }
-
 };
