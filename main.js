@@ -54,7 +54,7 @@ app.get('/db/selectExemplary', (req, res) => {
     let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.senior_projects + ' WHERE priority = ?';
     let values = [0];
 
-    db.select(sql, values).then(function(value) {
+    db.query(sql, values).then(function(value) {
         res.send(value);
     });
 });
@@ -70,19 +70,47 @@ app.post('/db/submitProposal', [
     body('project_description').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     body('project_scope').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     body('project_challenges').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('sponsor_provided_resources').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('sponsor_provided_resources').trim().escape(),
     body('constraints_assumptions').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     body('sponsor_deliverables').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('proprietary_info').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('sponsor_alternate_time').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    body('proprietary_info').trim().escape(),
+    body('sponsor_alternate_time').trim().escape(),
     body('sponsor_avail_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     body('project_agreements_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('rights').not().isEmpty().trim().escape().withMessage("Cannot be empty")
+    body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty")
 ],
-(req, res) => {
+async (req, res) => {
     var result = validationResult(req)
-    req.body.result = result
-    res.send(req.body)
+    
+    // Insert into the database
+    if (result.errors.length == 0) {
+        let sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
+                (title, organization, primary_contact, contact_email, contact_phone, 
+                background_info, project_description, project_scope, project_challenges, 
+                sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
+                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+        
+        let body = req.body;
+
+        let params =    [
+                        body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone,
+                        body.background_info, body.project_description, body.project_scope, body.project_challenges,
+                        body.sponsor_provided_resources, body.constraints_assumptions, body.sponsor_deliverables,
+                        body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
+                        body.assignment_of_rights
+                        ];
+        db.query(sql, params).then(() =>{
+            
+            db.query(`SELECT * FROM ${DB_CONFIG.tableNames.senior_projects} WHERE project_id = (SELECT MAX(project_id) FROM ${DB_CONFIG.tableNames.senior_projects})`, []).then((rows) => {
+                res.send(rows);
+            });
+           
+        }).catch((err) => {
+            console.log(err);
+            res.sendStatus(500);
+        })
+    }
 });
 
 
