@@ -7,7 +7,8 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const { check, validationResult, body } = require('express-validator');
-
+const PDFDoc = require('pdfkit');
+const fs = require('fs');
 
 const port = 3000;
 const path = require('path')
@@ -101,10 +102,22 @@ async (req, res) => {
                         body.assignment_of_rights
                         ];
         db.query(sql, params).then(() =>{
+            let doc = new PDFDoc;
+            doc.pipe(fs.createWriteStream(path.join(__dirname, `/server/proposal_docs/${body.organization + '_' + body.title}.pdf`)));
+
+            doc.font('Times-Roman');
+
+            for (var key of DB_CONFIG.senior_project_proposal_keys) {
+                doc.fill('black').fontSize(16).text(key.replace('/_/g', ' ').charAt(0).toUpperCase()), {
+                    underline: true
+                }; 
+                doc.fontSize(12).text(body[key]);  // Text value from proposal
+                doc.moveDown();
+                doc.save();
+            }
             
-            db.query(`SELECT * FROM ${DB_CONFIG.tableNames.senior_projects} WHERE project_id = (SELECT MAX(project_id) FROM ${DB_CONFIG.tableNames.senior_projects})`, []).then((rows) => {
-                res.send(rows);
-            });
+            doc.end();
+            res.sendFile(path.join(__dirname, '/www/sponsor/submitted.html'));
            
         }).catch((err) => {
             console.log(err);
