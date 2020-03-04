@@ -62,23 +62,23 @@ app.get('/db/selectExemplary', (req, res) => {
 //#endregion
 
 app.post('/db/submitProposal', [
-    body('title').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('organization').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('primary_contact').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('contact_email').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('contact_phone').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('background_info').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('project_description').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('project_scope').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('project_challenges').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('sponsor_provided_resources').trim().escape(),
-    body('constraints_assumptions').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('sponsor_deliverables').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('proprietary_info').trim().escape(),
-    body('sponsor_alternate_time').trim().escape(),
+    body('title').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('organization').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('primary_contact').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('contact_email').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('contact_phone').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('background_info').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('project_description').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('project_scope').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('project_challenges').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('sponsor_provided_resources').trim().escape().isLength({max: 5000}),
+    body('constraints_assumptions').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('sponsor_deliverables').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    body('proprietary_info').trim().escape().isLength({max: 5000}),
+    body('sponsor_alternate_time').trim().escape().isLength({max: 5000}),
     body('sponsor_avail_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     body('project_agreements_checked').not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-    body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty")
+    body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000})
 ],
 async (req, res) => {
     var result = validationResult(req)
@@ -108,7 +108,7 @@ async (req, res) => {
             doc.font('Times-Roman');
 
             for (var key of DB_CONFIG.senior_project_proposal_keys) {
-                doc.fill('black').fontSize(16).text(key.replace('/_/g', ' ').charAt(0).toUpperCase()), {
+                doc.fill('black').fontSize(16).text(key.replace('/_/g', ' ')), {
                     underline: true
                 }; 
                 doc.fontSize(12).text(body[key]);  // Text value from proposal
@@ -123,6 +123,9 @@ async (req, res) => {
             console.log(err);
             res.sendStatus(500);
         })
+    }
+    else {
+        // Handle backend validation error here :)
     }
 });
 
