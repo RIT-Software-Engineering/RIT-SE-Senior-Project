@@ -45,11 +45,6 @@
                     </div>
                     <div id="proposals" class="ui bottom attached segment tab" data-tab="proposals">
                         
-                        
-
-
-
-
                     </div>
                     <div class="ui bottom attached segment tab" data-tab="sponsorInfo">
                         <p>sponsor info</p>
@@ -75,9 +70,8 @@
                     link.innerText = data[i]
                     link.target = "_blank"
                     $('#proposals').append(link)
-                }
-                
-                
+                    $('#proposals').append(document.createElement('br'));
+                }  
             });
 
         </script>
