@@ -138,7 +138,7 @@ async (req, res) => {
             }
             
             doc.end();
-            res.sendFile(path.join(__dirname, '/www/sponsor/submitted.html'));
+            res.sendFile(path.join(__dirname, '/www/html/submitted.html'));
            
         }).catch((err) => {
             console.log(err);
@@ -187,6 +187,10 @@ app.get('/admin', authAdmin, (req, res) => {
 
 app.get('/sponsor', (req, res) => {
     res.sendFile(path.join(__dirname, 'www/html/sponsor.html'));
+});
+
+app.get('/proposalForm', (req, res) => {
+    res.sendFile(path.join(__dirname, './www/html/proposalForm.html'));
 });
 
 //#endregion
