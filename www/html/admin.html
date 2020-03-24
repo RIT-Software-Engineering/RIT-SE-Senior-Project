@@ -25,10 +25,13 @@
                 <div class="row">
                     <div class="ui top attached blue tabular menu">
                         <a class="item active" data-tab="dashboard">
-                          Dashboard
+                            Dashboard
+                        </a>
+                        <a class="item" data-tab="proposals">
+                            Proposals
                         </a>
                         <a class="item" data-tab="sponsorInfo">
-                          Sponsor Info
+                            Sponsor Info
                         </a>
                         <a class="item" data-tab="students">
                             Students
@@ -39,6 +42,14 @@
                     </div>
                     <div class="ui bottom attached segment tab active" data-tab="dashboard">
                         <p>Under construction</p>
+                    </div>
+                    <div id="proposals" class="ui bottom attached segment tab" data-tab="proposals">
+                        
+                        
+
+
+
+
                     </div>
                     <div class="ui bottom attached segment tab" data-tab="sponsorInfo">
                         <p>sponsor info</p>
@@ -52,6 +63,23 @@
                 </div>
             </div>
         </div>
-        <script src="admin.js"></script>
+        <script>
+            $('.tabular.menu .item').tab();
+
+            $.get('/getProposalPdfs', function(data) {
+                console.log(data)
+
+                for (var i = 0; i < data.length; i++) {
+                    var link = document.createElement('a');
+                    link.href = "/" + data[i]
+                    link.innerText = data[i]
+                    link.target = "_blank"
+                    $('#proposals').append(link)
+                }
+                
+                
+            });
+
+        </script>
     </body>
 </html>
