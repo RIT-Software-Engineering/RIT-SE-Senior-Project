@@ -13,6 +13,7 @@
   "author": "Tom Amaral",
   "license": "UNLICENSED",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
     "pdfkit": "^0.11.0",
