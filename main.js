@@ -61,6 +61,25 @@ app.get('/db/selectExemplary', (req, res) => {
         res.send(value);
     });
 });
+
+/**
+ * Responds with a list of links to pdf versions of proposal forms
+ */
+app.get('/getProposalPdfs', (req, res) => {
+    fs.readdir(path.join(__dirname, './server/proposal_docs'), function(err, files) {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        let fileLinks = [];
+        files.forEach(function(file) {
+            fileLinks.push(file.toString());
+        });
+        
+        res.send(fileLinks);
+    });
+});
+
 //#endregion
 
 app.post('/db/submitProposal', [
@@ -155,17 +174,23 @@ let authAdmin = function(req, res, next) {
     }
 }
 
+
+//#region Page routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'www/html/index.html'));
 });
 
 app.get('/admin', authAdmin, (req, res) => {
+    app.use(express.static('./server/proposal_docs'));
     res.sendFile(path.join(__dirname, 'www/html/admin.html'));
 });
 
 app.get('/sponsor', (req, res) => {
     res.sendFile(path.join(__dirname, 'www/html/sponsor.html'));
 });
+
+//#endregion
+
 
 
 // Expose posters, js, and css as public resources
