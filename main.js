@@ -10,6 +10,8 @@ const { check, validationResult, body } = require('express-validator');
 const PDFDoc = require('pdfkit');
 const fs = require('fs');
 
+const auth = require('basic-auth');
+
 const port = 3000;
 const path = require('path')
 const DB_CONFIG = require('./server/database/db_config');
@@ -137,8 +139,38 @@ app.get('/db/getPoster', (req, res) => {
 });
 
 
+let authAdmin = function(req, res, next) {
+    let user = auth(req);
+    if (!user || !user.name || !user.pass) {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+        return;
+    }
+    if (user.name === 'M' && user.pass === '123') {
+        next();
+    } else {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+        return;
+    }
+}
 
-app.use('/', express.static('./www'));
-app.use('/', express.static('./www/admin'));
-app.use('/', express.static('./server/posters'));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'www/html/index.html'));
+});
+
+app.get('/admin', authAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'www/html/admin.html'));
+});
+
+app.get('/sponsor', (req, res) => {
+    res.sendFile(path.join(__dirname, 'www/html/sponsor.html'));
+});
+
+
+// Expose posters, js, and css as public resources
+app.use(express.static('./server/posters'));
+app.use(express.static('./www/script'));
+app.use(express.static('./www/style'));
+
 app.listen(port);
