@@ -124,7 +124,9 @@ async (req, res) => {
                         ];
         db.query(sql, params).then(() =>{
             let doc = new PDFDoc;
-            doc.pipe(fs.createWriteStream(path.join(__dirname, `/server/proposal_docs/${body.organization + '_' + body.title}.pdf`)));
+            let date = new Date();
+            let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`; 
+            doc.pipe(fs.createWriteStream(path.join(__dirname, `/server/proposal_docs/${body.organization + '_' + body.title + '_' + timeString}.pdf`)));
 
             doc.font('Times-Roman');
 
