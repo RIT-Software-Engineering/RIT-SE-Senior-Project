@@ -115,6 +115,11 @@ async (req, res) => {
         
         let body = req.body;
 
+        // Append date to proposal title
+        let date = new Date();
+        let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;          
+        body.title = body.title + ' ' + timeString;
+
         let params =    [
                         body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone,
                         body.background_info, body.project_description, body.project_scope, body.project_challenges,
@@ -122,11 +127,10 @@ async (req, res) => {
                         body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
                         body.assignment_of_rights
                         ];
+
         db.query(sql, params).then(() =>{
             let doc = new PDFDoc;
-            let date = new Date();
-            let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`; 
-            doc.pipe(fs.createWriteStream(path.join(__dirname, `/server/proposal_docs/${body.organization + '_' + body.title + '_' + timeString}.pdf`)));
+            doc.pipe(fs.createWriteStream(path.join(__dirname, `/server/proposal_docs/${body.organization + '_' + body.title}.pdf`)));
 
             doc.font('Times-Roman');
 
