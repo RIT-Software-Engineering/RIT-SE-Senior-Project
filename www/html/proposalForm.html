@@ -19,6 +19,26 @@
             </div>
             <br>
             <div class="ui container grid">
+                <div class="two column row">
+                    <div class="column" style="padding-left: 0em;">
+                        <h1 id="mainHeader" class="ui header" >
+                            
+                            Senior Project
+                            <div id="subHeader" class="sub header">Department of Software Engineering, RIT</div>
+                        </h1>
+                    </div>
+                    
+                    <div class="column" style="padding-right: 0em;">
+                        <div id="navButtons" class="ui right floated buttons">
+                            <button class="ui button" onclick="location.href = '/'">Home</button>
+                            <button class="ui button" onclick="location.href = '/sponsor'">Sponsor a Project</button>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <h2>Submit A Project Proposal</h2>
+                </div>
                 <form id="proposalForm" class="ui form" method="POST" action="/db/submitProposal">
                     <div class="field">
                         <label>Project Title</label>
@@ -196,52 +216,90 @@
                     </div>
                 </form>
                 <br>
-                <h3>
-                    The agreements and policies can be found at:
-                </h3>
-                <ul>
-                    <li>
-                        <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectAgreement.doc">
-                            Student Course Project Intellectual Property and Non-Disclosure Agreement
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectLimitedAgreement.doc">
-                            Student Course Project Limited Use and Non-Disclosure Agreement
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectOpenSourceAgreement.doc">
-                            Student Course Project Open Source Agreement
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/FacultyCourseProjectAgreement.doc">
-                            Faculty Course Project Non-Disclosure Agreement
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="http://www.rit.edu/academicaffairs/policiesmanual/c030">
-                            RIT Intellectual Property Policy C03.0. The project agreements are consistent with section C03.0 1.V.B.2
-                        </a>
-                    </li>
-                </ul>
-                
-                <br>
-                <h3>Please review your answers before submitting.</h3>
-                <br>
-                <div class="actions">
-                    <button class="ui deny left floated left labeled icon button" onclick="$('.ui.form').form('clear');">
-                        Cancel
-                        <i class="times icon"></i>
-                    </button>
-                    <button id="formSubmit" class="ui blue left labeled icon button" type="submit" form="proposalForm">
-                        Submit
-                        <i class="checkmark icon"></i>
-                    </button>
+                <div class="row">
+                    
+                    <h3>The agreements and policies can be found at:</h3>
                 </div>
+                <div class="row">
+                    <ul>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectAgreement.doc">
+                                Student Course Project Intellectual Property and Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectLimitedAgreement.doc">
+                                Student Course Project Limited Use and Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectOpenSourceAgreement.doc">
+                                Student Course Project Open Source Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.se.rit.edu/~swen-561/CourseInformation/FacultyCourseProjectAgreement.doc">
+                                Faculty Course Project Non-Disclosure Agreement
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank" href="http://www.rit.edu/academicaffairs/policiesmanual/c030">
+                                RIT Intellectual Property Policy C03.0. The project agreements are consistent with section C03.0 1.V.B.2
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <h3>Please review your answers before submitting.</h3>
+                </div>
+
+                <div class="two column row">
+                    <div class="column">
+                        <button class="ui deny left floated left labeled icon button" onclick="$('.ui.form').form('clear'); location.href='/sponsor';">
+                            Cancel
+                            <i class="times icon"></i>
+                        </button>
+                    </div>
+                    <div class="column">
+                        <button id="formSubmit" class="ui blue right floated left labeled icon button" type="submit" form="proposalForm">
+                            Submit
+                            <i class="checkmark icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row"></div>
             </div>
         </div>
+
+        <footer>
+            <div style="min-height: 8em; width: 100%; background-color: #747474;"class="ui basic segment">
+                <br>
+                <div class="ui container stackable grid">
+                    <div class="three column row">
+                        <div class="column">
+                            <h3>B. THOMAS GOLISANO <br>
+                                COLLEGE OF COMPUTING & <br>
+                                INFORMATION SCIENCES    
+                            </h3>
+                        </div>
+                        <div class="column">
+                            <h4>Department of Software Engineering<br>
+                                Golisano Building 70, Room 1690<br>
+                                134 Lomb Memorial Drive<br>
+                                Rochester, NY 14623-5608</h4>
+                        </div>
+                        <div class="column">
+                            <h4><i class="ui mail icon"></i> contact@seniorproject.se.rit.edu</h4>
+                        </div>
+                    </div>
+                    <div class="centered row">
+                        <h5><i class="ui icon copyright"></i> 2020 All Rights Reserved</h5>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <script src="sponsor.js"></script>
     </body>
 </html>
