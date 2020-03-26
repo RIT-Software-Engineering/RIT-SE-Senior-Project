@@ -135,10 +135,10 @@ async (req, res) => {
             doc.font('Times-Roman');
 
             for (var key of DB_CONFIG.senior_project_proposal_keys) {
-                doc.fill('black').fontSize(16).text(key.replace('/_/g', ' ')), {
+                doc.fill('blue').fontSize(16).text(key.replace('/_/g', ' ')), {
                     underline: true
                 }; 
-                doc.fontSize(12).text(body[key]);  // Text value from proposal
+                doc.fontSize(12).fill('black').text(body[key]);  // Text value from proposal
                 doc.moveDown();
                 doc.save();
             }
