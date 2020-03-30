@@ -153,6 +153,8 @@ async (req, res) => {
     }
     else {
         // Handle backend validation error here :)
+
+
     }
 });
 
@@ -207,5 +209,6 @@ app.get('/proposalForm', (req, res) => {
 app.use(express.static('./server/posters'));
 app.use(express.static('./www/script'));
 app.use(express.static('./www/style'));
+app.use(express.static('./www/doc'));
 
 app.listen(port);
