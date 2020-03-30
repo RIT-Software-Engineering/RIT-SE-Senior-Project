@@ -152,9 +152,7 @@ async (req, res) => {
         })
     }
     else {
-        // Handle backend validation error here :)
-
-
+        res.sendFile(path.join(__dirname, '/www/html/submittedError.html'));
     }
 });
 
