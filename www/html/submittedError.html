@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Senior Project | Department of Software Engineering</title>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.3/dist/semantic.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="sponsor.css">
+
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="ui inverted basic blue segment"style="height: 6em; width: 100%; position: absolute; left: 0; top: 0;  z-index: -1;">
+            
+        </div>
+        <br>
+        <div id="contentGrid" class="ui stackable grid container">
+            <div class="two column row">
+                <div class="column" style="padding-left: 0em;">
+                    <h1 id="mainHeader" class="ui header" style="color: white;">
+                        
+                        Senior Project
+                        <div id="subHeader" class="sub header">Department of Software Engineering, RIT</div>
+                    </h1>
+                </div>
+                
+                <div class="column" style="padding-right: 0em;">
+                    <div id="navButtons" class="ui right floated buttons">
+                        <button class="ui button" onclick="location.href = '/'">Home</button>
+                        <button class="ui button" onclick="location.href = '/sponsor'">Sponsor a Project</button>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="centered row">
+                <h2>Error in proposal submission</h2>
+            </div>
+            <div class="ui divider"></div>
+            <div class="centered row">
+                <h3>Please ensure all required fields are filled out and your responses do not exceed 5000 characters per field.</h3>
+            </div>       
+            <div class="centered row">
+                <h4>Contact <a href="mailto:seniorprojects@se.rit.edu">seniorprojects@se.rit.edu</a> for any additional questions</h4>
+            </div> 
+        </div>
+        <script>
+            // Automatically move back to the sponsor page after a few seconds
+            setTimeout(function() {
+                location.href = '/sponsor';
+            }, 10000);
+        </script>
+    </body>
+</html>
