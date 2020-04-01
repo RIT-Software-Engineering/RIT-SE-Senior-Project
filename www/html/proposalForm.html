@@ -39,7 +39,7 @@
                 <div class="row">
                     <h2>Submit A Project Proposal</h2>
                 </div>
-                <form id="proposalForm" class="ui form" method="POST" action="/db/submitProposal">
+                <form id="proposalForm" class="ui form" method="POST" action="/db/submitProposal" enctype="multipart/form-data">
                     <div class="field">
                         <label>Project Title</label>
                         <input name="title" type="text">
@@ -64,6 +64,11 @@
                             <label>Phone</label>
                             <input name="contact_phone" type="text">
                         </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Add additional PDF or image resources:</label>
+                        <input name="additional_files" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple>
                     </div>
 
                     <div class="field">
