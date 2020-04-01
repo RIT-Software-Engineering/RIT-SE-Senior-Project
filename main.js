@@ -9,8 +9,8 @@ const bodyParser = require('body-parser');
 const { check, validationResult, body } = require('express-validator');
 const PDFDoc = require('pdfkit');
 const fs = require('fs');
-
 const auth = require('basic-auth');
+const fileupload = require('express-fileupload');
 
 const port = 3000;
 const path = require('path')
@@ -20,7 +20,11 @@ const DBHandler = require('./server/database/db');
 let db = new DBHandler();
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json())
+app.use(express.json());
+app.use(fileupload({ 
+    safeFileNames: true, 
+    preserveExtension: true
+}));
 
 
 
@@ -102,12 +106,13 @@ app.post('/db/submitProposal', [
     body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000})
 ],
 async (req, res) => {
-    var result = validationResult(req)
+    var result = validationResult(req);
+
     
     // Insert into the database
     if (result.errors.length == 0) {
         let sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
-                (title, organization, primary_contact, contact_email, contact_phone, 
+                (title, organization, primary_contact, contact_email, contact_phone,
                 background_info, project_description, project_scope, project_challenges, 
                 sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
                 proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
@@ -120,13 +125,37 @@ async (req, res) => {
         let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;          
         body.title = body.title + ' ' + timeString;
 
-        let params =    [
-                        body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone,
-                        body.background_info, body.project_description, body.project_scope, body.project_challenges,
-                        body.sponsor_provided_resources, body.constraints_assumptions, body.sponsor_deliverables,
-                        body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
-                        body.assignment_of_rights
-                        ];
+        if (req.files && req.files.additional_files) {
+
+            if (req.files.additional_files.length > 5) { // Don't allow more than 5 files
+                res.sendFile(path.join(__dirname, '/www/html/submittedError.html'));
+                return;
+            }
+
+            fs.mkdirSync(`./server/sponsor_proposal_files/${body.title}`, { recursive: true });
+            
+            for (var x = 0; x < req.files.additional_files.length; x++ ) {
+                if (req.files.additional_files[x].size > 50 * 1024 * 1024 ) { // 50mb limit exceeded
+                    res.sendFile(path.join(__dirname, '/www/html/submittedError.html'));
+                    return;
+                }
+                
+                req.files.additional_files[x].mv(`./server/sponsor_proposal_files/${body.title}/${req.files.additional_files[x].name}`, function(err) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).send(err);
+                    }
+                });
+            }
+        }
+
+        let params = [
+            body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone,
+            body.background_info, body.project_description, body.project_scope, body.project_challenges,
+            body.sponsor_provided_resources, body.constraints_assumptions, body.sponsor_deliverables,
+            body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
+            body.assignment_of_rights
+        ];
 
         db.query(sql, params).then(() =>{
             let doc = new PDFDoc;
