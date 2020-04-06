@@ -16,6 +16,8 @@ const port = 3000;
 const path = require('path')
 const DB_CONFIG = require('./server/database/db_config');
 const DBHandler = require('./server/database/db');
+const CONFIG = require('./server/config');
+
 
 let db = new DBHandler();
 
@@ -140,6 +142,11 @@ async (req, res) => {
                     return;
                 }
                 
+                if (!CONFIG.accepted_file_types.includes(path.extname(req.files.additional_files[x]))) { // send an error if the file is not an accepted type
+                    res.sendFile(path.join(__dirname, '/www/html/submittedError.html'));
+                    return;
+                }
+
                 req.files.additional_files[x].mv(`./server/sponsor_proposal_files/${body.title}/${req.files.additional_files[x].name}`, function(err) {
                     if (err) {
                         console.log(err);
