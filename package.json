@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
     "express-validator": "^6.4.0",
+    "nodemon": "^2.0.2",
     "pdfkit": "^0.11.0",
     "sqlite3": "^4.1.1"
   }
