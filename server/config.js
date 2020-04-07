@@ -16,7 +16,9 @@ module.exports = {
         '.xls',
         '.xlsx',
         '.ppt',
-        '.pptx'
+        '.pptx',
+        '.rtf',
+        '.csv'
     ],
     www_path: path.join(__dirname + '/../www/')
 
