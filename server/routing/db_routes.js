@@ -53,7 +53,7 @@ db_router.get('/selectExemplary', (req, res) => {
 /**
  * Responds with a list of links to pdf versions of proposal forms
  */
-db_router.get('/getProposalPdfs', (req, res) => {
+db_router.get('/getProposalPdfNames', CONFIG.authAdmin, (req, res) => {
     fs.readdir(path.join(__dirname, '../proposal_docs'), function(err, files) {
         if (err) {
             res.status(500).send(err);
@@ -66,6 +66,21 @@ db_router.get('/getProposalPdfs', (req, res) => {
         
         res.send(fileLinks);
     });
+});
+
+db_router.get('/getProposalPdf', CONFIG.authAdmin, (req, res) => {
+    if (req.query.name) {
+        res.sendFile(path.join(__dirname, '../proposal_docs/' + req.query.name));
+    } else
+        res.send('File not found')
+});
+
+db_router.get('/getProposalAttachment', CONFIG.authAdmin, (req, res) => {
+    if (req.query.proposalTitle && req.query.name) {
+        res.sendFile(path.join(__dirname, '../sponsor_proposal_files/' + req.query.proposalTitle + '/' + req.query.name))
+    } else
+        res.send('File not found')
+
 });
 
 //#endregion
