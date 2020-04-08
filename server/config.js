@@ -1,8 +1,29 @@
 /**
  * A place for global variables to be configured and made available
 */
-
+const auth = require('basic-auth');
 const path = require('path');
+
+let authAdmin = function(req, res, next) {
+    let user = auth(req);
+    if (!user || !user.name || !user.pass) {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+        return;
+    }
+    if (user.name === 'M' && user.pass === '123') {
+        //console.log(req)
+        //console.log('**********************')
+        //console.log(res)
+        res.removeHeader('Authorization')
+        next();
+    } else {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+        return;
+    }
+}
+
 
 
 module.exports = {
@@ -20,6 +41,7 @@ module.exports = {
         '.rtf',
         '.csv'
     ],
-    www_path: path.join(__dirname + '/../www/')
+    www_path: path.join(__dirname + '/../www/'),
+    authAdmin
 
 }
