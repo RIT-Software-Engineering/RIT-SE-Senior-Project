@@ -6,6 +6,7 @@ CREATE TABLE senior_projects (
     primary_contact         text,
     contact_email           text,
     contact_phone           text,
+    attachments             text,
     background_info         text,
     project_description     text,
     project_scope           text,
