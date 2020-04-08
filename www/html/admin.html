@@ -61,12 +61,12 @@
         <script>
             $('.tabular.menu .item').tab();
 
-            $.get('/getProposalPdfs', function(data) {
+            $.get('/getProposalPdfNames', function(data) {
                 console.log(data)
 
                 for (var i = 0; i < data.length; i++) {
                     var link = document.createElement('a');
-                    link.href = "/" + data[i]
+                    link.href = "/db/getProposal?name=" + data[i]
                     link.innerText = data[i]
                     link.target = "_blank"
                     $('#proposals').append(link)
