@@ -104,10 +104,10 @@ async (req, res) => {
         
         let body = req.body;
 
-        // db_routerend date to proposal title
+        // prepend date to proposal title
         let date = new Date();
         let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;          
-        body.title = body.title + ' ' + timeString;
+        body.title = timeString + ' ' + body.title;
 
         if (req.files && req.files.additional_files) {
 
