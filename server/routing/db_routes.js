@@ -70,17 +70,46 @@ db_router.get('/getProposalPdfNames', CONFIG.authAdmin, (req, res) => {
 
 db_router.get('/getProposalPdf', CONFIG.authAdmin, (req, res) => {
     if (req.query.name) {
-        res.sendFile(path.join(__dirname, '../proposal_docs/' + req.query.name));
+        let name = req.query.name.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
+        res.sendFile(path.join(__dirname, '../proposal_docs/' + name));
     } else
         res.send('File not found')
 });
 
+db_router.get('/getProposalAttachmentNames', CONFIG.authAdmin, (req, res) => {
+    if (req.query.proposalTitle) {
+        let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
+        proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
+        console.log(proposalTitle)
+        fs.readdir(path.join(__dirname, `../sponsor_proposal_files/${proposalTitle}`), function(err, files) {
+            if (err) {
+                res.status(500).send(err);
+                return;
+            }
+            console.log(files)
+            let fileLinks = [];
+            files.forEach(function(file) {
+                fileLinks.push(file.toString());
+            });
+            
+            res.send(fileLinks);
+        });
+    }
+    else {
+        res.status(404).send('Bad request');
+    }
+});
+
 db_router.get('/getProposalAttachment', CONFIG.authAdmin, (req, res) => {
     if (req.query.proposalTitle && req.query.name) {
-        res.sendFile(path.join(__dirname, '../sponsor_proposal_files/' + req.query.proposalTitle + '/' + req.query.name))
+        let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
+        proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'))
+        console.log(proposalTitle)
+        let name = req.query.name.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
+
+        res.sendFile(path.join(__dirname, '../sponsor_proposal_files/' + proposalTitle + '/' + name))
     } else
         res.send('File not found')
-
 });
 
 //#endregion
