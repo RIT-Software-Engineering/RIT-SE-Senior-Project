@@ -44,7 +44,9 @@
                         <p>Under construction</p>
                     </div>
                     <div id="proposals" class="ui bottom attached segment tab" data-tab="proposals">
-                        
+                        <table id="proposalTable">
+                            <tr><th>Proposal</th> <th>Attachments</th></tr>
+                        </table>
                     </div>
                     <div class="ui bottom attached segment tab" data-tab="sponsorInfo">
                         <p>sponsor info</p>
@@ -59,21 +61,42 @@
             </div>
         </div>
         <script>
-            $('.tabular.menu .item').tab();
+            $(document).ready(() => {
+            
+                $('.tabular.menu .item').tab();
 
-            $.get('/getProposalPdfNames', function(data) {
-                console.log(data)
 
-                for (var i = 0; i < data.length; i++) {
-                    var link = document.createElement('a');
-                    link.href = "/db/getProposal?name=" + data[i]
-                    link.innerText = data[i]
-                    link.target = "_blank"
-                    $('#proposals').append(link)
-                    $('#proposals').append(document.createElement('br'));
-                }  
-            });
 
+                $.get('/db/getProposalPdfNames', function(titleList) {
+                    
+                    for (var i = 0; i < titleList.length; i++) {
+                        var link = document.createElement('a');
+                        link.href = "/db/getProposalPdf?name=" + titleList[i];
+                        link.innerText = titleList[i];
+                        link.target = "_blank";
+
+                        var tr = document.createElement('tr');
+                        var pdfTd = document.createElement('td');
+                        pdfTd.appendChild(link);
+                        tr.appendChild(pdfTd);
+
+                        let proposalTitle = titleList[i]
+
+                        $.get('/db/getProposalAttachmentNames?proposalTitle=' + titleList[i], function(fileNames) {
+                            var filesTd = document.createElement('td');
+                            for (var x = 0; x < fileNames.length; x++) {
+                                var filelink = document.createElement('a');
+                                filelink.href = `/db/getProposalAttachment?proposalTitle=${proposalTitle}&name=${fileNames[x]}`;
+                                filelink.innerText = fileNames[x];
+                                filelink.target = "_blank";
+                                filesTd.appendChild(filelink);
+                            }
+                            tr.appendChild(filesTd);
+                        });
+                        $('#proposalTable').append(tr);
+                    }  
+                });
+            })
         </script>
     </body>
 </html>
