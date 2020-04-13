@@ -8,3 +8,8 @@ table {
 td {
     width: 50%;
 }
+
+.segment {
+    height: 80vh;
+    overflow: auto;
+}
