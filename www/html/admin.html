@@ -40,8 +40,41 @@
                             Coaches
                         </a>
                     </div>
-                    <div class="ui bottom attached segment tab active" data-tab="dashboard">
-                        <p>Under construction</p>
+                    <div id="dashboard" class="ui bottom attached segment tab active" data-tab="dashboard" >
+                        <h2 align="center">Semester 2195</h2>
+                        <div >
+                            <h3>Test team 1</h3>
+                            <svg width="100%" height="70" style="border: solid 2px black">
+                                <!-- Completed task graphic example-->
+                                <rect id="team1-1" x="1%" y="10" width="3%" height="50"
+                                style="fill:green;stroke:black;stroke-width:1;" data-title="Help!" data-content="I'm stuck in this box :("/>
+                                <rect id="team1-2" x="5%" y="10" width="3%" height="50"
+                                style="fill:green;stroke:black;stroke-width:1;" />
+                                <rect id="team1-3" x="9%" y="10" width="3%" height="50"
+                                style="fill:green;stroke:black;stroke-width:1;" />
+                                <rect id="team1-4" x="13%" y="10" width="3%" height="50"
+                                style="fill:green;stroke:black;stroke-width:1;" />
+
+                                <!-- Overdue task graphic example -->
+                                <rect id="team1-5" x="17%" y="10" width="9%" height="50"
+                                style="fill:red;stroke:black;stroke-width:1;" />
+
+                                <!-- In progress task graphic example -->
+                                <rect id="team1-6" x="27%" y="10" width="9%" height="50"
+                                style="fill:yellow;stroke:black;stroke-width:1;" />
+
+                                <!-- Not yet released task graphic example-->
+                                <rect id="team1-7" x="37%" y="10" width="3%" height="50"
+                                style="fill:grey;stroke:black;stroke-width:1;" />
+                                <rect id="team1-8" x="41%" y="10" width="3%" height="50"
+                                style="fill:grey;stroke:black;stroke-width:1;" />
+                                <rect id="team1-9" x="45%" y="10" width="3%" height="50"
+                                style="fill:grey;stroke:black;stroke-width:1;" />
+
+                            </svg>
+                        </div>
+                        <br>
+                        
                     </div>
                     <div id="proposals" class="ui bottom attached segment tab" data-tab="proposals">
                         <table id="proposalTable">
@@ -61,10 +94,96 @@
             </div>
         </div>
         <script>
-            $(document).ready(() => {
             
+            $(document).ready(() => {
+                function createTimelineElement(name, tasks) {
+                let header = document.createElement('h3')
+                header.innerText = name
+                let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+
+                svg.setAttribute('width', '100%')
+                svg.setAttribute('height', '70')
+
+                var xCoord = 1
+                tasks.forEach((task, index) => {
+                    let width = (task.state === 'yellow' || task.state === 'red') ? 9 : 3
+                    
+                    let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+                    rect.setAttribute('width', `${width}%`)
+                    rect.setAttribute('height', '50')
+                    
+                    rect.setAttribute('x', `${xCoord}%`)
+
+                    xCoord += width + 1
+
+                    rect.style.cssText = `fill:${task.state};stroke:black;stroke-width:1;`
+                    
+                    rect.id = `${name.replace(/\s/g,'')}-${index}`
+
+                    // Set tooltip and modal
+                    rect.setAttribute('data-title', task.name)
+                    rect.setAttribute('data-content', task.text)
+                    svg.appendChild(rect)
+                })
+                
+
+                $('#dashboard').append(header)
+                $('#dashboard').append(svg)
+            }
+                let taskObjects = [
+                    {
+                        name : 'task1',
+                        text : 'test text',
+                        state : 'green'
+                    },
+                    {
+                        name : 'task2',
+                        text : 'test text',
+                        state : 'green'
+                    },
+                    {
+                        name : 'task3',
+                        text : 'test text',
+                        state : 'green'
+                    },
+                    {
+                        name : 'task4',
+                        text : 'test text',
+                        state : 'red'
+                    },
+                    {
+                        name : 'task5',
+                        text : 'test text',
+                        state : 'yellow'
+                    },
+                    {
+                        name : 'task6',
+                        text : 'test text',
+                        state : 'grey'
+                    },
+                    {
+                        name : 'task7',
+                        text : 'test text',
+                        state : 'grey'
+                    },
+                    {
+                        name : 'task8',
+                        text : 'test text',
+                        state : 'grey'
+                    }
+                ]
+
+                createTimelineElement('Test Team 1', taskObjects)
+
+                $('svg rect').popup({    
+                    on: 'click'
+                })
+                        
+
                 $('.tabular.menu .item').tab();
 
+                
+                
 
 
                 $.get('/db/getProposalPdfNames', function(titleList) {
@@ -97,6 +216,10 @@
                     }  
                 });
             })
+
+            function createTooltip(text) {
+
+            }
         </script>
     </body>
 </html>
