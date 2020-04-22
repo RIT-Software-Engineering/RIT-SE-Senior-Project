@@ -1,4 +1,4 @@
-CREATE TABLE senior_projects (
+CREATE TABLE projects (
     project_id              INTEGER primary key autoincrement,
     priority                int,
     status                  text,
