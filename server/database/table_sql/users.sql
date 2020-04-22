@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    system_id   INTEGER,
+    system_id   INTEGER PRIMARY KEY,
     fname       TEXT,
     lname       TEXT,
     email       TEXT,
