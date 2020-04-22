@@ -1,12 +1,12 @@
 CREATE TABLE sponsor_info (
-    sponsorId   INTEGER AUTOINCREMENT,
-    company     TEXT PRIMARY KEY NOT NULL,
-    division    TEXT,
-    type        TEXT,
+    sponsor_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     fname       TEXT,
     lname       TEXT,
+    company     TEXT,
+    division    TEXT,
     email       TEXT,
     phone       TEXT,
     association TEXT,
+    type        TEXT,
     notes       TEXT
 );
