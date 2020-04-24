@@ -1,6 +1,6 @@
-INSERT INTO sponsor_info (company, division, type, fname, lname, email, phone, association, notes)
+INSERT INTO sponsor_info (fname, lname, company, division, email, phone)
 VALUES 
-    ("Test Company One", "Testing", "Internal", "Joe", "Smith", "joe.smith@email.com", "+1 585 555 5555", "None", "Met at a testing conference"),
-    ("Test Company Two", "Testing", "Internal", "Tim", "Dyer", "tim.dyer@email.com", "+1 585 555 5555", "None", "Met at a testing conference"),
-    ("Test Company Three", "Testing", "Internal", "Dork", "Smith", "dork.smith@email.com", "+1 585 555 5555", "None", "Joe Smith's brother, from Test Company One")
+    ("Tom", "Test", "Test Company", "Testing Division", "tom.test@company.com", "+1 555 555 5555"),
+    ("Joe", "Smith", "Apple Inc", "Software Dev", "joe.smith@company.com", "+1 555 555 6666"),
+    ("Phil", "Martin", "McDonalds", "Marketing", "phil.martin@company.com", "+1 555 777 7777")
     ;
