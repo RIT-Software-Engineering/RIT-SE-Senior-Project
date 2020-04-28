@@ -231,53 +231,17 @@ db_router.get('/getPoster', (req, res) => {
 });
 
 
-db_router.get('/getAllTeamTimelines', authAdmin, (req, res) => {
-    // Needs better name, references the idea of 'Semester groups'
-    // i.e. Fall 2019 - Spring 2020
-    let block = {
-        name: 'Fall 2019 - Spring 2020', // some plain text readable name
-        status : 'future / active / archived',
-        attributes : 'table reference'
-    }
-
-    // Sub table belonging to a semester
-    let attribute = {
-        dates : {
-            posterDueDate : ''
-        },
-
-        long_description : '',
-        short_description : ''
-    }
-
+db_router.get('/getAllTeamTimelines', CONFIG.authAdmin, (req, res) => {
+    let sql = 
+    `
+        SELECT 
+    `
     
-    let taskObjects = [
-        {
-            name : 'task3',
-            text : 'test text',
-            state : 'green',
-            studentAction: '',
-            coachAction: ''
-        },
-        {
-            name : 'task4',
-            text : 'test text',
-            state : 'red'
-        },
-        {
-            name : 'task5',
-            text : 'test text',
-            state : 'yellow'
-        },
-        {
-            name : 'task6',
-            text : 'test text',
-            state : 'grey'
-        }
-    ]
 
-
-    res.send(payload);
 }); 
+
+db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
+
+});
 
 module.exports = db_router;
