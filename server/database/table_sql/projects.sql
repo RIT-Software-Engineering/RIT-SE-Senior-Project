@@ -23,6 +23,8 @@ CREATE TABLE projects (
     assignment_of_rights    text,
     team_name               text,
     FOREIGN KEY (sponsor) REFERENCES sponsors(sponsor_id),
+    FOREIGN KEY (coach1) REFERENCES users(system_id),
+    FOREIGN KEY (coach2) REFERENCES users(system_id),
     poster                  text,
     video                   text,
     website                 text,
