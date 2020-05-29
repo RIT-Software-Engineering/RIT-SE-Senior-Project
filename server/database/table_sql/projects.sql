@@ -31,6 +31,8 @@ CREATE TABLE projects (
     sponsor                 integer,
     coach1                  integer,
     coach2                  integer,
+    semester                integer,
+    FOREIGN KEY (semester) REFERENCES semester_group(semester_id),
     FOREIGN KEY (sponsor) REFERENCES sponsors(sponsor_id),
     FOREIGN KEY (coach1) REFERENCES users(system_id),
     FOREIGN KEY (coach2) REFERENCES users(system_id)
