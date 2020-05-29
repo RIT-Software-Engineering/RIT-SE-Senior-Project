@@ -1,3 +1,5 @@
+DROP TABLE projects;
+
 CREATE TABLE projects (
     project_id              INTEGER primary key autoincrement,
     status                  text,   -- Submitted, Needs Revision, Future Project, Candidate, In Progress, Complete
@@ -22,11 +24,14 @@ CREATE TABLE projects (
     project_agreements_checked  int,
     assignment_of_rights    text,
     team_name               text,
-    FOREIGN KEY (sponsor) REFERENCES sponsors(sponsor_id),
-    FOREIGN KEY (coach1) REFERENCES users(system_id),
-    FOREIGN KEY (coach2) REFERENCES users(system_id),
     poster                  text,
     video                   text,
     website                 text,
-    synopsis                text
+    synopsis                text,
+    sponsor                 integer,
+    coach1                  integer,
+    coach2                  integer,
+    FOREIGN KEY (sponsor) REFERENCES sponsors(sponsor_id),
+    FOREIGN KEY (coach1) REFERENCES users(system_id),
+    FOREIGN KEY (coach2) REFERENCES users(system_id)
 );

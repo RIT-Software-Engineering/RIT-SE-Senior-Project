@@ -1,3 +1,5 @@
+DROP TABLE semester_group;
+
 CREATE TABLE semester_group (
     semester_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT UNIQUE NOT NULL,

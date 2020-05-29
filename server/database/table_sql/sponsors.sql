@@ -1,3 +1,5 @@
+DROP TABLE sponsors;
+
 CREATE TABLE sponsors (
     sponsor_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     fname       TEXT,
