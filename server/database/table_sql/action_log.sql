@@ -1,4 +1,4 @@
-DROP TABLE action_log;
+DROP TABLE IF EXISTS action_log;
 
 CREATE TABLE action_log (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT, -- internal id for this row

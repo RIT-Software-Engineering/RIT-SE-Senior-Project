@@ -1,4 +1,4 @@
-DROP TABLE archive;
+DROP TABLE IF EXISTS archive;
 
 CREATE TABLE archive (
     archive_id      INTEGER PRIMARY KEY AUTOINCREMENT,

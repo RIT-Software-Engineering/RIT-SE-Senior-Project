@@ -1,4 +1,4 @@
-DROP TABLE actions;
+DROP TABLE IF EXISTS actions;
 
 CREATE TABLE actions (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT,
