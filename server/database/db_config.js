@@ -9,10 +9,7 @@
      * (  its an object so you can modify the actual table names without touching the code :P  )
      */
     tableNames: {
-        senior_projects:    'senior_projects',
-        sponsor_info:       'sponsor_info',
-        student_info:       'student_info',
-        coach_info:         'coach_info'
+        senior_projects:    'archive',
     },
     senior_project_proposal_keys : [
         'title', 
