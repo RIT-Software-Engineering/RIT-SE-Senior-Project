@@ -232,16 +232,100 @@ db_router.get('/getPoster', (req, res) => {
 
 
 db_router.get('/getAllTeamTimelines', CONFIG.authAdmin, (req, res) => {
-    let sql = 
-    `
-        SELECT 
-    `
+    
     
 
 }); 
 
 db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
+    let taskObjects = [
+        {
+            name : 'task1',
+            text : 'test text',
+            state : 'green'
+        },{
+            name : 'task1',
+            text : 'test text',
+            state : 'green'
+        },{
+            name : 'task1',
+            text : 'test text',
+            state : 'green'
+        },{
+            name : 'task1',
+            text : 'test text',
+            state : 'green'
+        },{
+            name : 'task1',
+            text : 'test text',
+            state : 'green'
+        },
+        {
+            name : 'task2',
+            text : 'test text',
+            state : 'green'
+        },
+        {
+            name : 'task3',
+            text : 'test text',
+            state : 'green'
+        },
+        {
+            name : 'task4',
+            text : 'test text',
+            state : 'red'
+        },
+        {
+            name : 'task5',
+            text : 'test text',
+            state : 'yellow'
+        },
+        {
+            name : 'task6',
+            text : 'test text',
+            state : 'grey'
+        },
+        {
+            name : 'task7',
+            text : 'test text',
+            state : 'grey'
+        },
+        {
+            name : 'task8',
+            text : 'test text',
+            state : 'grey'
+        }
+    ]
+    /**
+     * Select all the team names of projects where status is 'in progress'
+     */
+    let sql = 
+    `
+        SELECT projects.team_name, semester_group.name
+        FROM projects
+        JOIN semester_group 
+            ON projects.semester = semester_group.semester_id
+        WHERE projects.status = "in progress"
+    `
+
+    db.query(sql).then((values) =>{
+       console.log(values)
+    }).catch((err) => {
+        console.log(err);
+        res.status(500);
+    })
+
+
+    res.send(taskObjects)
 
 });
+
+function buildTaskList() {
+    /*
+        We need the team name, all the tasks for the semester group,
+        and the status of each task.
+        the status can be calculated by 
+    */
+}
 
 module.exports = db_router;
