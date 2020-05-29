@@ -52,7 +52,7 @@ module.exports = class DBHandler {
      * @param {Array} values corresponding values, if any, to prepare into the query
      * @returns {Promise} The resulting rows, if any, of the query. For operations such as insert, it will be empty.
     */
-    query(sql, values) {
+    query(sql, values = []) {
         return new Promise((resolve, reject) => {
             this.openReadWrite();
             if (this.seniorProjectsDB) {
