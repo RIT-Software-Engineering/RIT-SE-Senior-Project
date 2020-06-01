@@ -89,8 +89,6 @@
                     let container = document.createElement('div')
                     container.style.cssText = 'width: 100%; height: 70px; border: 1px solid black; display: flex;'
                     
-
-
                     var totalWeight = 0;
                     tasks.forEach((task, index) => {
                         if (task.state === 'yellow' || task.state === 'red')
@@ -120,27 +118,25 @@
                         rect.setAttribute('data-position', 'top center')
                         container.appendChild(rect)
                     })
-                
 
-                 $('#dashboard').append(header)
-                 $('#dashboard').append(container)
+                    $('#dashboard').append(header)
+                    $('#dashboard').append(container)
                 }
 
                 
-                
-                //createTimelineElement('Test Team 1', taskObjects)
-
-                $('div').popup({    
+                $.get('/db/getTeamTimeline', function(tasks) {
+                    createTimelineElement('Test Team 1', tasks)
+                }).then(() => {
+                    $('div').popup({    
                     on: 'click'
+                    })
                 })
+
+                
                         
 
                 $('.tabular.menu .item').tab();
                 $('.ui.accordion').accordion()
-
-                
-                
-
 
                 $.get('/db/getProposalPdfNames', function(titleList) {
                     
