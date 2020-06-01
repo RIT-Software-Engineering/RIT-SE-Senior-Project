@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS actions;
-
 CREATE TABLE actions (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     semester        INTEGER NOT NULL, 

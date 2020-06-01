@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (
     system_id   INTEGER PRIMARY KEY,
     fname       TEXT,

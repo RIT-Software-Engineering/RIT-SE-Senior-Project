@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS projects;
-
 CREATE TABLE projects (
     project_id              INTEGER primary key autoincrement,
     status                  text,   -- Submitted, Needs Revision, Future Project, Candidate, In Progress, Complete

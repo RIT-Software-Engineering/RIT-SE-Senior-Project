@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS action_log;
-
 CREATE TABLE action_log (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT, -- internal id for this row
     action_template INTEGER NOT NULL,                  -- the id of the template action this is formatted on

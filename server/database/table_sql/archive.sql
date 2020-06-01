@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS archive;
-
 CREATE TABLE archive (
     archive_id      INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id      INTEGER,
