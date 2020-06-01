@@ -26,8 +26,7 @@ app.use(fileupload({
 // Attach route handlers
 app.use('/', routing);
 
-// Expose posters, js, and css as public resources
-app.use(express.static('./server/posters'));
+// Expose js and css as public resources
 app.use(express.static('./www/script'));
 app.use(express.static('./www/style'));
 app.use(express.static('./www/doc'));
