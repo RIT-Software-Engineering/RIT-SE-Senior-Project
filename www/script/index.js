@@ -36,7 +36,7 @@ function createProjectElement(dbObject) {
 
     var poster = document.createElement('img');
     poster.style.border = "3px solid #DDDDDD";
-    poster.src = '/db/getPoster?fileName=' + dbObject.poster;
+    poster.src = '/db/getPoster?fileName=' + dbObject.poster_thumb;
     posterColumn.appendChild(poster);
 
     var teamColumn = document.createElement('div');
