@@ -124,14 +124,17 @@
                 }
 
                 
-                $.get('/db/getTeamTimeline', function(tasks) {
-                    createTimelineElement('Test Team 1', tasks)
-                }).then(() => {
-                    $('div').popup({    
-                    on: 'click'
-                    })
+                // $.get('/db/getTeamTimeline', function(tasks) {
+                //     createTimelineElement('Test Team 1', tasks)
+                // }).then(() => {
+                //     $('div').popup({    
+                //     on: 'click'
+                //     })
+                // })
+                
+                $.get('/db/getActiveTimelines', function(timelines) {
+                    console.log(timelines)
                 })
-
                 
                         
 
