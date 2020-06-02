@@ -231,101 +231,81 @@ db_router.get('/getPoster', (req, res) => {
 });
 
 
-db_router.get('/getAllTeamTimelines', CONFIG.authAdmin, (req, res) => {
-    
-    
-
+db_router.get('/getActiveTimelines', CONFIG.authAdmin, (req, res) => {
+    calculateActiveTimelines().then((timelines) => {
+        res.send(timelines)
+    }, (err) => {
+        console.log(err)
+        res.status(500).send()
+    })
 }); 
 
 db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
-    let taskObjects = [
-        {
-            name : 'task1',
-            text : 'test text',
-            state : 'green'
-        },{
-            name : 'task1',
-            text : 'test text',
-            state : 'green'
-        },{
-            name : 'task1',
-            text : 'test text',
-            state : 'green'
-        },{
-            name : 'task1',
-            text : 'test text',
-            state : 'green'
-        },{
-            name : 'task1',
-            text : 'test text',
-            state : 'green'
-        },
-        {
-            name : 'task2',
-            text : 'test text',
-            state : 'green'
-        },
-        {
-            name : 'task3',
-            text : 'test text',
-            state : 'green'
-        },
-        {
-            name : 'task4',
-            text : 'test text',
-            state : 'red'
-        },
-        {
-            name : 'task5',
-            text : 'test text',
-            state : 'yellow'
-        },
-        {
-            name : 'task6',
-            text : 'test text',
-            state : 'grey'
-        },
-        {
-            name : 'task7',
-            text : 'test text',
-            state : 'grey'
-        },
-        {
-            name : 'task8',
-            text : 'test text',
-            state : 'grey'
-        }
-    ]
-    /**
-     * Select all the team names of projects where status is 'in progress'
-     */
-    let sql = 
-    `
-        SELECT projects.team_name, semester_group.name
-        FROM projects
-        JOIN semester_group 
-            ON projects.semester = semester_group.semester_id
-        WHERE projects.status = "in progress"
-    `
-
-    db.query(sql).then((values) =>{
-       console.log(values)
-    }).catch((err) => {
-        console.log(err);
-        res.status(500);
-    })
-
-
-    res.send(taskObjects)
-
+   
 });
 
-function buildTaskList() {
-    /*
+function calculateActiveTimelines() {
+    return new Promise((resolve, reject) => {
+        /*
         We need the team name, all the tasks for the semester group,
-        and the status of each task.
-        the status can be calculated by 
-    */
+        and the status of each task for each team.
+        the status can be calculated by dynamically checking the 
+        action target against entries in the action_log table
+        */
+
+        /**
+         * Select all the team names of projects where status is 'in progress'
+         */
+        let getTeams = 
+        `
+            SELECT projects.team_name, semester_group.name as "semester_name", semester_group.semester_id as "semester_id"
+            FROM projects
+            JOIN semester_group 
+                ON projects.semester = semester_group.semester_id
+            WHERE projects.status = "in progress"
+        `
+
+        /**
+         * Timeline : {
+         *  team_name
+         *  semester_name
+         *  semester_id
+         *  actions: [
+         *      {
+         *          *all action attributes*
+         *          state (grey, green, yellow, red)
+         *      }
+         *  ]
+         *  ? team details ?
+         *  ? coach details ?
+         * }
+         */
+        
+        let activeTimelines = []
+        
+        db.query(getTeams).then((teams) =>{
+            console.log(teams)
+            getActions = 
+            `
+                SELECT actions.*, semester_group.name as "semester_name"
+                FROM actions
+                JOIN semester_group
+                    ON semester = semester_group.semester_id
+                ORDER BY semester DESC
+            `
+            db.query(getActions).then((actions) => {
+                console.log(actions)
+
+
+                resolve(activeTimelines)
+            }).catch((err) => {
+                reject(err)
+            })
+
+        }).catch((err) => {
+            reject(err)
+        })
+    })
 }
 
 module.exports = db_router;
