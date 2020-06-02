@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    system_id   TEXT PRIMARY KEY NOT NULL,
+    system_id   TEXT PRIMARY KEY NOT NULL UNIQUE,
     fname       TEXT,
     lname       TEXT,
     email       TEXT,
