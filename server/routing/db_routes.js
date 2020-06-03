@@ -256,16 +256,13 @@ function calculateActiveTimelines() {
         /**
          * Select all the team names of projects where status is 'in progress'
          */
-        let getTeams = 
-        `
-            SELECT projects.team_name, semester_group.name as "semester_name", semester_group.semester_id as "semester_id"
-            FROM projects
-            JOIN semester_group 
-                ON projects.semester = semester_group.semester_id
-            WHERE projects.status = "in progress"
-        `
+        
 
         /**
+         * Semester Block : [
+         *  Timeline
+         * ]
+         * 
          * Timeline : {
          *  team_name
          *  semester_name
@@ -276,35 +273,70 @@ function calculateActiveTimelines() {
          *          state (grey, green, yellow, red)
          *      }
          *  ]
-         *  ? team details ?
-         *  ? coach details ?
+         *  team details (name, email) 
+         *  coach details (name, email)
          * }
          */
         
         let activeTimelines = []
         
-        db.query(getTeams).then((teams) =>{
-            console.log(teams)
-            getActions = 
-            `
-                SELECT actions.*, semester_group.name as "semester_name"
-                FROM actions
-                JOIN semester_group
-                    ON semester = semester_group.semester_id
-                ORDER BY semester DESC
-            `
-            db.query(getActions).then((actions) => {
-                console.log(actions)
+        let getTeams = 
+        `
+            SELECT  projects.team_name, 
+                    semester_group.name as "semester_name", 
+                    semester_group.semester_id as "semester_id",
+                    actions.action_title,
+                    actions.action_target,
+                    action_log.system_id
+            FROM projects
+            LEFT JOIN semester_group 
+                ON projects.semester = semester_group.semester_id
+            LEFT JOIN actions
+                ON actions.semester = projects.semester
+            LEFT JOIN action_log
+                ON action_log.action_template = actions.action_id
+            WHERE projects.status = "in progress"
+            ORDER BY projects.team_name
+        `
+
+        db.query(getTeams).then((values) => {
+            console.log(values)
 
 
-                resolve(activeTimelines)
-            }).catch((err) => {
-                reject(err)
-            })
-
+            resolve([])
         }).catch((err) => {
-            reject(err)
+            console.log(err)
         })
+
+        // db.query(getTeams).then((teams) =>{
+            
+        //     getActions = 
+        //     `
+        //         SELECT actions.*, semester_group.name as "semester_name"
+        //         FROM actions
+        //         JOIN semester_group
+        //             ON semester = semester_group.semester_id
+        //         ORDER BY semester DESC
+        //     `
+        //     db.query(getActions).then((actions) => {
+        //         console.log(teams)
+        //         for (var team of teams) {
+        //             let timeline = {
+        //                 team_name: team["team_name"],
+        //                 semester_id: team["semester_id"],
+        //                 semester_name: team["semester_name"]
+        //             }
+                    
+        //         }
+
+        //         resolve(activeTimelines)
+        //     }).catch((err) => {
+        //         reject(err)
+        //     })
+
+        // }).catch((err) => {
+        //     reject(err)
+        // })
     })
 }
 
