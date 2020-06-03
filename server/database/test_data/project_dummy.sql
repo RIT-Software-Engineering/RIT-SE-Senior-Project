@@ -22,14 +22,14 @@ INSERT INTO projects (status, title, organization, primary_contact, contact_emai
         "in progress", "In Progress Project", "Progress LLC", "Progressor", "progressor@progress.com", "555 555 5454", NULL, 
         "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
         "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", "The Null Pointers",
-        1, NULL, NULL, NULL, NULL, 1, "dxkvse"
+        1, NULL, NULL, NULL, NULL, 3, "dxkvse"
     ),
 
     (
         "in progress", "Lenel onGuard Datawarehouse", "Lenel S2", "Damian", "xxx1234@lenel.com", "333 333 3333", NULL, 
         "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
         "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", "Drop Table Admin",
-        6, NULL, NULL, NULL, NULL, 2, "llkiee"
+        6, NULL, NULL, NULL, NULL, 4, "llkiee"
     ),
 
     (
