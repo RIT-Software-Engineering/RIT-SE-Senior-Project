@@ -12,7 +12,7 @@ actions (
 
 VALUES
     (
-        1,
+        3,
         "Individual Test Form 1",
         0,
         "This is the first test form for individuals",
@@ -29,7 +29,7 @@ VALUES
         "
     ),
     (
-        1, 
+        3, 
         "Report Submission", 
         0, 
         "Turn in your <b>interim</b> report",
@@ -45,7 +45,7 @@ VALUES
     
     ),
     (
-        1, "Team Name Submission", 0, "Come up <u>with</u> team name", 
+        3, "Team Name Submission", 0, "Come up <u>with</u> team name", 
         "team",
         "2019-10-13",
         "2019-10-30",
@@ -56,7 +56,7 @@ VALUES
         "
     ),
     (
-        2,
+        4,
         "Individual Test Form 1",
         0,
         "This is the first test form for individuals",
@@ -73,7 +73,7 @@ VALUES
         "
     ),
     (
-        2, 
+        4, 
         "Report Submission", 
         0, 
         "Turn in your <b>interim</b> report",
@@ -89,7 +89,7 @@ VALUES
     
     ),
     (
-        2, "Team Name Submission", 0, "Come up <u>with</u> team name", 
+        4, "Team Name Submission", 0, "Come up <u>with</u> team name", 
         "team",
         "2020-1-13",
         "2020-1-30",
