@@ -254,11 +254,6 @@ function calculateActiveTimelines() {
         */
 
         /**
-         * Select all the team names of projects where status is 'in progress'
-         */
-        
-
-        /**
          * Semester Block : [
          *  Timeline
          * ]
@@ -283,11 +278,18 @@ function calculateActiveTimelines() {
         let getTeams = 
         `
             SELECT  projects.team_name, 
-                    semester_group.name as "semester_name", 
-                    semester_group.semester_id as "semester_id",
+                    semester_group.name AS "semester_name", 
+                    semester_group.semester_id AS "semester_id",
                     actions.action_title,
                     actions.action_target,
-                    action_log.system_id
+                    action_log.system_id AS "submitter",
+                    (
+                        SELECT group_concat(distinct fname)
+                        FROM users
+                        WHERE projects.project_id = users.project
+                        
+                    ) student
+                    
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
