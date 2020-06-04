@@ -284,18 +284,28 @@ function calculateActiveTimelines() {
                         SELECT  "[" || group_concat(
                             "{" ||
                                 "'action_title'" || ":" || "'" || action_title || "'" || "," ||
-                                "'submitter'" || ":" || "'" || submitter || "'" || 
+                                "'state'" || ":" || "'" || state || "'" || "," ||
+                                "'submitter'" || ":" || "'" || submitter || "'" || "," ||
+                                "'count'" || ":" || "'" || count || "'" ||
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, start_date, end_date, semester,
+                            SELECT action_title, start_date, end_date, semester, action_target,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     ELSE system_id
-                                END AS 'submitter'
+                                END AS 'submitter',
+                                CASE
+                                    WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
+                                    ELSE 'grey'
+                                    --WHEN action_target IS 'individual' AND COUNT()
+                                END AS 'state',
+                                COUNT(action_template) AS count
                             FROM actions
                             LEFT JOIN action_log
                                 ON action_log.action_template = actions.action_id
+                            GROUP BY action_log.action_template
+                            ORDER BY actions.action_id ASC
                         )
                         WHERE semester = projects.semester
                     ) actions,
