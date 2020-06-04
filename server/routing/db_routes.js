@@ -280,23 +280,42 @@ function calculateActiveTimelines() {
             SELECT  projects.team_name, 
                     semester_group.name AS "semester_name", 
                     semester_group.semester_id AS "semester_id",
-                    actions.action_title,
-                    actions.action_target,
-                    action_log.system_id AS "submitter",
+                    --actions.action_title,
+                    --actions.action_target,
+                    --action_log.system_id AS "submitter",
+                    --(
+                    --    SELECT action
+                    --) actions,
                     (
-                        SELECT group_concat(distinct fname)
+                        SELECT  group_concat(
+                            '{' ||
+                                'action_title' || ':' || action_title || ',' ||
+                                'submitter' || ':' || system_id || 
+                            '}'
+                        )
+                        FROM actions
+                        LEFT JOIN action_log
+                            on actions.action_id = action_log.action_template
+                        WHERE actions.semester = projects.semester
+                    ) actions,
+                    (
+                        SELECT group_concat(fname || ' ' || lname || ' (' || email || ')')
                         FROM users
                         WHERE projects.project_id = users.project
-                        
-                    ) student
+                    ) team_members,
+                    (
+                        SELECT group_concat(fname || ' ' || lname || ' (' || email || ')')
+                        FROM users
+                        WHERE projects.coach1 = users.system_id OR projects.coach2 = users.system_id
+                    ) coach
                     
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-            LEFT JOIN actions
-                ON actions.semester = projects.semester
-            LEFT JOIN action_log
-                ON action_log.action_template = actions.action_id
+            --LEFT JOIN actions
+                --ON actions.semester = projects.semester
+            --LEFT JOIN action_log
+                --ON action_log.action_template = actions.action_id
             WHERE projects.status = "in progress"
             ORDER BY projects.team_name
         `
