@@ -45,7 +45,8 @@ VALUES
     
     ),
     (
-        3, "Team Name Submission", 0, "Come up <u>with</u> team name", 
+        3, "Team Name Submission", 0, 
+        "Come up <u>with</u> team name", 
         "team",
         "2019-10-13",
         "2019-10-30",
