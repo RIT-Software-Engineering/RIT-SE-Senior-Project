@@ -3,7 +3,7 @@ VALUES
     ("dxb2269", "Dude", "Bro", "dxb2269@rit.edu", "student", 3, 3),
     ("abc123", "John", "Smith", "abc123@rit.edu", "student", 3, 3),
     ("cba123", "Jack", "James", "cba123@rit.edu", "student", 3, 3),
-    ("xyz123", "Jack", "James", "xyz123@rit.edu", "student", 3, 3),
+    ("xyz123", "Gal", "Girl", "xyz123@rit.edu", "student", 3, 3),
     ("txa2269", "Tom", "Amaral", "txa2268@rit.edu", "student", 4, 4),
     ("srs1234", "Shawn", "Struble", "srs1234@rit.edu", "student", 4, 4),
     ("cxw1234", "Calvin", "Wu", "cxw1234@rit.edu", "student", 4, 4),
