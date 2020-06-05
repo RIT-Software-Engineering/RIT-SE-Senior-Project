@@ -290,16 +290,19 @@ function calculateActiveTimelines() {
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, start_date, due_date, semester, action_target, system_id,
+                            SELECT action_title, start_date, due_date, semester, action_target, date('now') AS today,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
                                     ELSE system_id
                                 END AS 'submitter',
                                 CASE
-                                    WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
+                                    WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                                     WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
                                     WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS 4 THEN 'green'
+                                    WHEN  start_date <= '2020-6-5'AND due_date >= '2020-6-5' THEN 'yellow'
+                                    WHEN '2020-6-5' > due_date AND system_id IS NULL THEN 'red'
                                     ELSE 'grey'
                                 END AS 'state',
                                 COUNT(distinct system_id) AS count
