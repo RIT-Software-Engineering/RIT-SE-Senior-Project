@@ -290,22 +290,24 @@ function calculateActiveTimelines() {
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, start_date, end_date, semester, action_target,
+                            SELECT action_title, start_date, due_date, semester, action_target, system_id,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
+                                    WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
                                     ELSE system_id
                                 END AS 'submitter',
                                 CASE
+                                    WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
                                     WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS 4 THEN 'green'
                                     ELSE 'grey'
-                                    --WHEN action_target IS 'individual' AND COUNT()
                                 END AS 'state',
-                                COUNT(action_template) AS count
+                                COUNT(distinct system_id) AS count
                             FROM actions
                             LEFT JOIN action_log
                                 ON action_log.action_template = actions.action_id
-                            GROUP BY action_log.action_template
-                            ORDER BY actions.action_id ASC
+                            GROUP BY actions.action_id
+                            ORDER BY actions.start_date ASC
                         )
                         WHERE semester = projects.semester
                     ) actions,
@@ -326,7 +328,8 @@ function calculateActiveTimelines() {
             WHERE projects.status = "in progress"
             ORDER BY projects.team_name
         `
-
+        let today = new Date()
+        getTeams = getTeams.replace("date('now')", `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
         db.query(getTeams).then((values) => {
             console.log(values)
 
