@@ -284,13 +284,19 @@ function calculateActiveTimelines() {
                         SELECT  "[" || group_concat(
                             "{" ||
                                 "'action_title'" || ":" || "'" || action_title || "'" || "," ||
+                                "'is_null'" || ":" || "'" || is_null || "'" || "," ||
+                                "'desc'" || ":" || "'" || short_desc || "'" || "," ||
+                                "'start_date'" || ":" || "'" || start_date || "'" || "," ||
+                                "'due_date'" || ":" || "'" || due_date || "'" || "," ||
+                                "'target'" || ":" || "'" || action_target || "'" || "," ||
                                 "'state'" || ":" || "'" || state || "'" || "," ||
                                 "'submitter'" || ":" || "'" || submitter || "'" || "," ||
+                                "'page_html'" || ":" || "'" || page_html || "'" || "," ||
                                 "'count'" || ":" || "'" || count || "'" ||
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, start_date, due_date, semester, action_target, date('now') AS today,
+                            SELECT action_title, start_date, due_date, semester, action_target, is_null, short_desc, page_html,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
@@ -301,8 +307,8 @@ function calculateActiveTimelines() {
                                     WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                                     WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
                                     WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS 4 THEN 'green'
-                                    WHEN  start_date <= '2020-6-5'AND due_date >= '2020-6-5' THEN 'yellow'
-                                    WHEN '2020-6-5' > due_date AND system_id IS NULL THEN 'red'
+                                    WHEN  start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
+                                    WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
                                     ELSE 'grey'
                                 END AS 'state',
                                 COUNT(distinct system_id) AS count
@@ -333,6 +339,7 @@ function calculateActiveTimelines() {
         `
         let today = new Date()
         getTeams = getTeams.replace("date('now')", `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
+
         db.query(getTeams).then((values) => {
             console.log(values)
 
