@@ -82,39 +82,49 @@
         <script>
             
             $(document).ready(() => {
-                function createTimelineElement(name, tasks) {
+                function createTimelineElement(timeline) {
+
 
                     let header = document.createElement('h3')
-                    header.innerText = name
+                    header.innerText = timeline.team_name
                     let container = document.createElement('div')
                     container.style.cssText = 'width: 100%; height: 70px; border: 1px solid black; display: flex;'
                     
                     var totalWeight = 0;
-                    tasks.forEach((task, index) => {
-                        if (task.state === 'yellow' || task.state === 'red')
+                    timeline.actions.forEach((action, index) => {
+                        if (action.state === 'yellow' || action.state === 'red')
                             totalWeight += 3
                         else 
                             totalWeight += 1
                     })
 
-                    var baseSize = (100 - Object.keys(tasks).length - 1)  / totalWeight
+                    var baseSize = (100 - timeline.actions.length - 1)  / totalWeight
 
-                    tasks.forEach((task, index) => {
+                    timeline.actions.forEach((action, index) => {
                         let width = baseSize
                         let rect = document.createElement('div')
                         
-                        if (task.state === 'yellow' || task.state === 'red') {
-                            rect.innerHTML = `<div style="margin: auto; width: 50%; text-align: center; text-wrap: wrap; vertical-align: middle;">test</div>`
+                        if (action.state === 'yellow' || action.state === 'red') {
+                            rect.innerHTML = `<div style="margin: auto; width: 50%; text-align: center; text-wrap: wrap; vertical-align: middle;">${action.action_title}</div>`
                             width = baseSize * 3
                         }
 
-                        rect.style.cssText = `display: flex; align-items: center; border: 1px black solid; background-color: ${task.state}; width: ${width}%; height: 80%; margin-top: auto; margin-bottom: auto; margin-left: 1%;`
+                        rect.style.cssText = `display: flex; align-items: center; border: 1px black solid; background-color: ${action.state}; width: ${width}%; height: 80%; margin-top: auto; margin-bottom: auto; margin-left: 1%;`
 
                         rect.id = `${name.replace(/\s/g,'')}-${index}`
 
                         // Set tooltip and modal
-                        rect.setAttribute('data-title', task.name)
-                        rect.setAttribute('data-content', task.text)
+                        let toolTipHtml = `
+                            <div class="header">
+                                ${action.action_title}
+                            </div>
+                            <div class="content">
+                                <p>${action.short_desc}</p>
+                                <p>Starts: ${action.start_date}</p>
+                                <p>Due: ${action.due_date}</p>
+                            </div>
+                        `
+                        rect.setAttribute('data-html', toolTipHtml)
                         rect.setAttribute('data-position', 'top center')
                         container.appendChild(rect)
                     })
@@ -134,6 +144,14 @@
                 
                 $.get('/db/getActiveTimelines', function(timelines) {
                     console.log(timelines)
+                    for(var timeline of timelines) {
+                        createTimelineElement(timeline)
+                        
+                    }
+                }).then(() => {
+                    $('div').popup({    
+                    on: 'click'
+                    })
                 })
                 
                         
