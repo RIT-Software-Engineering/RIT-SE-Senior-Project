@@ -344,40 +344,10 @@ function calculateActiveTimelines() {
             console.log(values)
 
 
-            resolve([])
+            resolve(values)
         }).catch((err) => {
-            console.log(err)
+            reject(err)
         })
-
-        // db.query(getTeams).then((teams) =>{
-            
-        //     getActions = 
-        //     `
-        //         SELECT actions.*, semester_group.name as "semester_name"
-        //         FROM actions
-        //         JOIN semester_group
-        //             ON semester = semester_group.semester_id
-        //         ORDER BY semester DESC
-        //     `
-        //     db.query(getActions).then((actions) => {
-        //         console.log(teams)
-        //         for (var team of teams) {
-        //             let timeline = {
-        //                 team_name: team["team_name"],
-        //                 semester_id: team["semester_id"],
-        //                 semester_name: team["semester_name"]
-        //             }
-                    
-        //         }
-
-        //         resolve(activeTimelines)
-        //     }).catch((err) => {
-        //         reject(err)
-        //     })
-
-        // }).catch((err) => {
-        //     reject(err)
-        // })
     })
 }
 
