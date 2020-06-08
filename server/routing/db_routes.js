@@ -283,16 +283,16 @@ function calculateActiveTimelines() {
                     (
                         SELECT  "[" || group_concat(
                             "{" ||
-                                "'action_title'" || ":" || "'" || action_title || "'" || "," ||
-                                "'is_null'" || ":" || "'" || is_null || "'" || "," ||
-                                "'desc'" || ":" || "'" || short_desc || "'" || "," ||
-                                "'start_date'" || ":" || "'" || start_date || "'" || "," ||
-                                "'due_date'" || ":" || "'" || due_date || "'" || "," ||
-                                "'target'" || ":" || "'" || action_target || "'" || "," ||
-                                "'state'" || ":" || "'" || state || "'" || "," ||
-                                "'submitter'" || ":" || "'" || submitter || "'" || "," ||
-                                "'page_html'" || ":" || "'" || page_html || "'" || "," ||
-                                "'count'" || ":" || "'" || count || "'" ||
+                                """action_title"""  || ":" || """" || action_title  || """" || "," ||
+                                """is_null"""       || ":" || """" || is_null       || """" || "," ||
+                                """short_desc"""          || ":" || """" || short_desc    || """" || "," ||
+                                """start_date"""    || ":" || """" || start_date    || """" || "," ||
+                                """due_date"""      || ":" || """" || due_date      || """" || "," ||
+                                """target"""        || ":" || """" || action_target || """" || "," ||
+                                """state"""         || ":" || """" || state         || """" || "," ||
+                                """submitter"""     || ":" || """" || submitter     || """" || "," ||
+                               -- """page_html"""     || ":" || """" || page_html     || """" || "," ||
+                                """count"""         || ":" || """" || count         || """" ||
                             "}"
                         ) || "]"
                         FROM (
@@ -316,7 +316,6 @@ function calculateActiveTimelines() {
                             LEFT JOIN action_log
                                 ON action_log.action_template = actions.action_id
                             GROUP BY actions.action_id
-                            ORDER BY actions.start_date ASC
                         )
                         WHERE semester = projects.semester
                     ) actions,
@@ -335,15 +334,18 @@ function calculateActiveTimelines() {
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
             WHERE projects.status = "in progress"
-            ORDER BY projects.team_name
+            ORDER BY projects.semester DESC
         `
-        let today = new Date()
-        getTeams = getTeams.replace("date('now')", `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
-
+        let today = new Date() // Fat workaround, sqlite is broken doo doo
+        getTeams = getTeams.split("date('now')").join( `'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`)
+        console.log(getTeams)
         db.query(getTeams).then((values) => {
-            console.log(values)
-
-
+            for(var timeline in values) {
+                values[timeline].actions = JSON.parse(values[timeline].actions.replace('\\', ''))
+                values[timeline].actions = values[timeline].actions.sort(function(a, b) {
+                    return Date.parse(a.start_date) - Date.parse(b.start_date)
+                })
+            }
             resolve(values)
         }).catch((err) => {
             reject(err)
