@@ -338,7 +338,7 @@ function calculateActiveTimelines() {
         `
         let today = new Date() // Fat workaround, sqlite is broken doo doo
         getTeams = getTeams.split("date('now')").join( `'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`)
-        console.log(getTeams)
+        
         db.query(getTeams).then((values) => {
             for(var timeline in values) {
                 values[timeline].actions = JSON.parse(values[timeline].actions.replace('\\', ''))
