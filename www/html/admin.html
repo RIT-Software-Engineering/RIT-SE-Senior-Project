@@ -44,14 +44,7 @@
                         </a>
                     </div>
                     <div id="dashboard" class="ui bottom attached segment tab active" data-tab="dashboard" >
-                        <div class="ui styled fluid accordion">
-                            <div class="title ">
-                                <h3><i class="dropdown icon"></i>Block Spring/Summer 19-20</h3>
-                              </div>
-                              <div class="content ">
-                                  
-                              </div>
-                        </div>
+                        
                         
                     </div>
                     <div id="proposals" class="ui bottom attached segment tab" data-tab="proposals">
@@ -83,12 +76,10 @@
             
             $(document).ready(() => {
                 function createTimelineElement(timeline) {
-
-
                     let header = document.createElement('h3')
                     header.innerText = timeline.team_name
                     let container = document.createElement('div')
-                    container.style.cssText = 'width: 100%; height: 70px; border: 1px solid black; display: flex;'
+                    container.style.cssText = 'width: 100%; height: 70px;  display: flex;'
                     
                     var totalWeight = 0;
                     timeline.actions.forEach((action, index) => {
@@ -129,35 +120,53 @@
                         container.appendChild(rect)
                     })
 
-                    $('#dashboard').append(header)
-                    $('#dashboard').append(container)
+                    let timelineElement = document.createElement('div')
+
+                    timelineElement.appendChild(header)
+                    timelineElement.appendChild(container)
+
+                    return timelineElement
                 }
 
                 
-                // $.get('/db/getTeamTimeline', function(tasks) {
-                //     createTimelineElement('Test Team 1', tasks)
-                // }).then(() => {
-                //     $('div').popup({    
-                //     on: 'click'
-                //     })
-                // })
-                
                 $.get('/db/getActiveTimelines', function(timelines) {
                     console.log(timelines)
-                    for(var timeline of timelines) {
-                        createTimelineElement(timeline)
-                        
+
+                    while(timelines.length > 0) {
+                        let timeline = timelines.shift()
+                        let semesterGroup;
+
+                        if (document.getElementById(`semester${timeline.semester_id}`)) {
+                            semesterGroup = document.getElementById(`semester${timeline.semester_id}`)                        
+                        }
+                        else {
+                            semesterGroup = document.createElement('div')
+                            semesterGroup.classList.add('ui', 'styled', 'fluid', 'accordion')
+                            semesterGroup.id = `semester${timeline.semester_id}`
+
+                            let semesterTitle = document.createElement('div')
+                            semesterTitle.classList.add('title')
+                            semesterTitle.innerHTML = `<h3><i class="dropdown icon"></i>${timeline.semester_name}</h3>`
+                            
+                            let semesterContent = document.createElement('div')
+                            semesterContent.classList.add('content')
+
+                            semesterGroup.appendChild(semesterTitle)
+                            semesterGroup.appendChild(semesterContent)
+                            $('#dashboard').append(semesterGroup)
+                            $('#dashboard').append(document.createElement('br'))
+                        }
+
+                        semesterGroup.children[1].appendChild( createTimelineElement(timeline))
                     }
                 }).then(() => {
                     $('div').popup({    
-                    on: 'click'
+                        on: 'click'
                     })
+                    $('.ui.accordion').accordion()
                 })
                 
-                        
-
                 $('.tabular.menu .item').tab();
-                $('.ui.accordion').accordion()
 
                 $.get('/db/getProposalPdfNames', function(titleList) {
                     
@@ -189,10 +198,6 @@
                     }  
                 });
             })
-
-            function createTooltip(text) {
-
-            }
         </script>
     </body>
 </html>
