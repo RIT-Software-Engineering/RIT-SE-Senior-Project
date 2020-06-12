@@ -73,69 +73,103 @@
             </div>
         </div>
         <script>
+            function onModalBtnClick(actionModalId) {
+                $(`#${actionModalId}`).modal('show')
+                $('div').popup('hide all')
+            }
             
-            $(document).ready(() => {
-                function createTimelineElement(timeline) {
-                    let header = document.createElement('h3')
-                    header.innerText = timeline.team_name
-                    let container = document.createElement('div')
-                    container.style.cssText = 'width: 100%; height: 70px;  display: flex;'
+            function createActionModal(action) {
+                console.log(action.page_html)
+                let modalHtml = document.createElement('div')
+                
+                modalHtml.classList.add('ui', 'overlay', 'fullscreen', 'modal')
+                modalHtml.innerHTML = 
+                `
+                    <div class="header">${action.action_title}</div>
+                    <div class="content">
+                        ${action.page_html}
+                    </div>
+                    <div class="actions">
+                        <div class="ui red basic cancel button" onclick="$('.ui.modal').modal('close')">
+                            <i class="remove icon"></i>
+                            Cancel
+                        </div>
+                    </div>
+                `
+                return modalHtml
+            }
+
+            function createTimelineElement(timeline) {
+                let header = document.createElement('h3')
+                header.innerText = timeline.team_name
+                let container = document.createElement('div')
+                container.style.cssText = 'width: 100%; height: 70px;  display: flex;'
+                
+                var totalWeight = 0;
+                timeline.actions.forEach((action, index) => {
+                    if (action.state === 'yellow' || action.state === 'red')
+                        totalWeight += 3
+                    else 
+                        totalWeight += 1
+                })
+
+                var baseSize = (100 - timeline.actions.length - 1)  / totalWeight
+
+                timeline.actions.forEach((action, index) => {
+                    let width = baseSize
+                    let rect = document.createElement('div')
                     
-                    var totalWeight = 0;
-                    timeline.actions.forEach((action, index) => {
-                        if (action.state === 'yellow' || action.state === 'red')
-                            totalWeight += 3
-                        else 
-                            totalWeight += 1
-                    })
+                    if (action.state === 'yellow' || action.state === 'red') {
+                        rect.innerHTML = `<div style="margin: auto; width: 50%; text-align: center; text-wrap: wrap; vertical-align: middle;">${action.action_title}</div>`
+                        width = baseSize * 3
+                    }
 
-                    var baseSize = (100 - timeline.actions.length - 1)  / totalWeight
+                    rect.style.cssText = `display: flex; align-items: center; border: 1px black solid; background-color: ${action.state}; width: ${width}%; height: 80%; margin-top: auto; margin-bottom: auto; margin-left: 1%;`
 
-                    timeline.actions.forEach((action, index) => {
-                        let width = baseSize
-                        let rect = document.createElement('div')
-                        
-                        if (action.state === 'yellow' || action.state === 'red') {
-                            rect.innerHTML = `<div style="margin: auto; width: 50%; text-align: center; text-wrap: wrap; vertical-align: middle;">${action.action_title}</div>`
-                            width = baseSize * 3
-                        }
+                    rect.id = `${name.replace(/\s/g,'')}-${index}`
 
-                        rect.style.cssText = `display: flex; align-items: center; border: 1px black solid; background-color: ${action.state}; width: ${width}%; height: 80%; margin-top: auto; margin-bottom: auto; margin-left: 1%;`
+                    let actionModal = createActionModal(action)
+                    actionModal.id = `${timeline.team_name}${action.action_id}`.replace(/\s/g, '')
+                    console.log(actionModal.id)
+                    var buttonClick = function buttonClick() {
+                        $(`#${actionModal.id}`).modal('show')
+                    }
+                    // Set tooltip and modal
+                    let toolTipHtml = `
+                        <div class="header">
+                            ${action.action_title}
+                        </div>
+                        <div class="content">
+                            <p>${action.short_desc}</p>
+                            <p>Starts: ${action.start_date}</p>
+                            <p>Due: ${action.due_date}</p>
+                            ${actionModal.outerHTML}
+                            <div class="ui button" onclick="onModalBtnClick('${actionModal.id}')">Proceed</div>
+                        </div>
+                    `
+                    rect.setAttribute('data-html', toolTipHtml)
+                    rect.setAttribute('data-position', 'top center')
 
-                        rect.id = `${name.replace(/\s/g,'')}-${index}`
+                    container.appendChild(rect)
+                })
 
-                        // Set tooltip and modal
-                        let toolTipHtml = `
-                            <div class="header">
-                                ${action.action_title}
-                            </div>
-                            <div class="content">
-                                <p>${action.short_desc}</p>
-                                <p>Starts: ${action.start_date}</p>
-                                <p>Due: ${action.due_date}</p>
-                            </div>
-                        `
-                        rect.setAttribute('data-html', toolTipHtml)
-                        rect.setAttribute('data-position', 'top center')
-                        container.appendChild(rect)
-                    })
+                let timelineElement = document.createElement('div')
 
-                    let timelineElement = document.createElement('div')
+                timelineElement.appendChild(header)
+                timelineElement.appendChild(container)
 
-                    timelineElement.appendChild(header)
-                    timelineElement.appendChild(container)
+                return timelineElement
+            }
 
-                    return timelineElement
-                }
-
+            // API calls
+            $(document).ready(() => {
                 
                 $.get('/db/getActiveTimelines', function(timelines) {
                     console.log(timelines)
 
-                    while(timelines.length > 0) {
-                        let timeline = timelines.shift()
+                    for(var timeline of timelines) {
                         let semesterGroup;
-
+                      
                         if (document.getElementById(`semester${timeline.semester_id}`)) {
                             semesterGroup = document.getElementById(`semester${timeline.semester_id}`)                        
                         }
@@ -164,6 +198,7 @@
                         on: 'click'
                     })
                     $('.ui.accordion').accordion()
+                    $('.ui.modal').modal()
                 })
                 
                 $('.tabular.menu .item').tab();
