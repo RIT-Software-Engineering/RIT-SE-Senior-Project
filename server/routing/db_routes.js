@@ -284,8 +284,9 @@ function calculateActiveTimelines() {
                         SELECT  "[" || group_concat(
                             "{" ||
                                 """action_title"""  || ":" || """" || action_title  || """" || "," ||
+                                """action_id"""     || ":" || """" || action_id      || """" || "," ||
                                 """is_null"""       || ":" || """" || is_null       || """" || "," ||
-                                """short_desc"""          || ":" || """" || short_desc    || """" || "," ||
+                                """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
                                 """start_date"""    || ":" || """" || start_date    || """" || "," ||
                                 """due_date"""      || ":" || """" || due_date      || """" || "," ||
                                 """target"""        || ":" || """" || action_target || """" || "," ||
@@ -296,7 +297,7 @@ function calculateActiveTimelines() {
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, start_date, due_date, semester, action_target, is_null, short_desc, page_html,
+                            SELECT action_title, action_id, start_date, due_date, semester, action_target, is_null, short_desc, page_html,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
