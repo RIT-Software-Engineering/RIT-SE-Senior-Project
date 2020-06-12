@@ -291,7 +291,7 @@ function calculateActiveTimelines() {
                                 """target"""        || ":" || """" || action_target || """" || "," ||
                                 """state"""         || ":" || """" || state         || """" || "," ||
                                 """submitter"""     || ":" || """" || submitter     || """" || "," ||
-                               -- """page_html"""     || ":" || """" || page_html     || """" || "," ||
+                                """page_html"""     || ":" || """" || page_html     || """" || "," ||
                                 """count"""         || ":" || """" || count         || """" ||
                             "}"
                         ) || "]"
@@ -341,7 +341,7 @@ function calculateActiveTimelines() {
         
         db.query(getTeams).then((values) => {
             for(var timeline in values) {
-                values[timeline].actions = JSON.parse(values[timeline].actions.replace('\\', ''))
+                values[timeline].actions = JSON.parse(values[1].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
                 values[timeline].actions = values[timeline].actions.sort(function(a, b) {
                     return Date.parse(a.start_date) - Date.parse(b.start_date)
                 })
