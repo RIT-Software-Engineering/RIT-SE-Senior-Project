@@ -244,6 +244,14 @@ db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
    
 });
 
+db_router.post('/submitAction', [
+    body('*').trim().escape()
+], (req, res) => {
+    let result = validationResult(req)
+
+    console.log(result)
+})
+
 function calculateActiveTimelines() {
     return new Promise((resolve, reject) => {
         /*
