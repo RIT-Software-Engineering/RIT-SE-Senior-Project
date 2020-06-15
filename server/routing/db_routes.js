@@ -249,7 +249,7 @@ db_router.post('/submitAction', [
 ], (req, res) => {
     let result = validationResult(req)
 
-    console.log(result)
+    console.log(req.body)
 })
 
 function calculateActiveTimelines() {
@@ -350,7 +350,9 @@ function calculateActiveTimelines() {
         
         db.query(getTeams).then((values) => {
             for(var timeline in values) {
-                values[timeline].actions = JSON.parse(values[1].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
+                console.log(values[timeline].actions)
+                values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
+                
                 values[timeline].actions = values[timeline].actions.sort(function(a, b) {
                     return Date.parse(a.start_date) - Date.parse(b.start_date)
                 })
