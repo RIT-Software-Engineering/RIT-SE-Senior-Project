@@ -78,10 +78,10 @@
                 $('div').popup('hide all')
             }
             
-            function createActionModal(action) {
-                console.log(action.page_html)
+            function createActionModal(action, id) {
+                console.log(action)
                 let modalHtml = document.createElement('div')
-                
+                modalHtml.id = id
                 modalHtml.classList.add('ui', 'overlay', 'fullscreen', 'modal')
                 modalHtml.innerHTML = 
                 `
@@ -89,12 +89,14 @@
                     <div class="content">
                         ${action.page_html}
                     </div>
-                    <div class="actions">
-                        <div class="ui red basic cancel button" onclick="$('.ui.modal').modal('close')">
+                    <div class="actions" >
+                        <div style="margin-bottom : 10px" class="ui red basic cancel left floated button" onclick="$('#${id}').find('form')[0].reset(); $('.ui.modal').modal('close');">
                             <i class="remove icon"></i>
                             Cancel
                         </div>
+
                     </div>
+                    
                 `
                 return modalHtml
             }
@@ -127,9 +129,8 @@
                     rect.style.cssText = `display: flex; align-items: center; border: 1px black solid; background-color: ${action.state}; width: ${width}%; height: 80%; margin-top: auto; margin-bottom: auto; margin-left: 1%;`
 
                     rect.id = `${name.replace(/\s/g,'')}-${index}`
-
-                    let actionModal = createActionModal(action)
-                    actionModal.id = `${timeline.team_name}${action.action_id}`.replace(/\s/g, '')
+                    let actionModal = createActionModal(action, `${timeline.team_name}${action.action_id}`.replace(/\s/g, ''))
+                
                     console.log(actionModal.id)
                     var buttonClick = function buttonClick() {
                         $(`#${actionModal.id}`).modal('show')
