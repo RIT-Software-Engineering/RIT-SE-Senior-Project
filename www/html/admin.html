@@ -8,7 +8,7 @@
 
         <link rel="stylesheet" type="text/css" href="admin.css">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
     </head>
     <body>
         <div id="page">
@@ -78,11 +78,18 @@
                 $('div').popup('hide all')
             }
             
+            function onActionSubmit(modalId) {
+                $(`#${modalId} form`)[0].submit(function(e) {
+                    e.preventDefault()
+                })
+                $('.ui.modal').modal('hide');
+            }
+
             function createActionModal(action, id) {
                 console.log(action)
                 let modalHtml = document.createElement('div')
                 modalHtml.id = id
-                modalHtml.classList.add('ui', 'overlay', 'fullscreen', 'modal')
+                modalHtml.classList.add('ui', 'fullscreen', 'modal')
                 modalHtml.innerHTML = 
                 `
                     <div class="header">${action.action_title}</div>
@@ -90,7 +97,10 @@
                         ${action.page_html}
                     </div>
                     <div class="actions" >
-                        <div style="margin-bottom : 10px" class="ui red basic cancel left floated button" onclick="$('#${id}').find('form')[0].reset(); $('.ui.modal').modal('close');">
+                        <div style="margin-bottom : 10px" class="ui green basic right floated button" onclick="onActionSubmit('${id}')">
+                            Submit    
+                        </div>
+                        <div style="margin-bottom : 10px" class="ui red basic left floated button" onclick="$('#${id}').find('form')[0].reset(); $('.ui.modal').modal('hide');">
                             <i class="remove icon"></i>
                             Cancel
                         </div>
