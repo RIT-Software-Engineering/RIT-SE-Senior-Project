@@ -248,8 +248,8 @@ db_router.post('/submitAction', [
     body('*').trim().escape()
 ], (req, res) => {
     let result = validationResult(req)
-
     console.log(req.body)
+    res.redirect('/admin') // Temporary, ideally it would redirect to the dashboard of the level of the submitter
 })
 
 function calculateActiveTimelines() {
@@ -350,9 +350,7 @@ function calculateActiveTimelines() {
         
         db.query(getTeams).then((values) => {
             for(var timeline in values) {
-                console.log(values[timeline].actions)
                 values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
-                
                 values[timeline].actions = values[timeline].actions.sort(function(a, b) {
                     return Date.parse(a.start_date) - Date.parse(b.start_date)
                 })
