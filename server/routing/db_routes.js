@@ -249,39 +249,30 @@ db_router.post('/submitAction', [
 ], (req, res) => {
     let result = validationResult(req)
     console.log(req.body)
-    res.redirect('/admin') // Temporary, ideally it would redirect to the dashboard of the level of the submitter
+    console.log(req.files)
+    let insertAction = `
+        INSERT INTO action_log(
+            action_template,
+            system_id,
+            project,
+            form_data,
+            files
+            )
+        VALUES (?,?,?,?,?)
+    `
+    let params = [
+
+    ]
+    // db.query(insertAction, params).then((values) => {
+
+    // }).catch((err) => {
+    //     res.sendStatus(500)
+    // })
+    res.end()//res.redirect('/admin') // Temporary, ideally it would redirect to the dashboard of the level of the submitter, but without knowing the login api, hard to design for
 })
 
 function calculateActiveTimelines() {
     return new Promise((resolve, reject) => {
-        /*
-        We need the team name, all the tasks for the semester group,
-        and the status of each task for each team.
-        the status can be calculated by dynamically checking the 
-        action target against entries in the action_log table
-        */
-
-        /**
-         * Semester Block : [
-         *  Timeline
-         * ]
-         * 
-         * Timeline : {
-         *  team_name
-         *  semester_name
-         *  semester_id
-         *  actions: [
-         *      {
-         *          *all action attributes*
-         *          state (grey, green, yellow, red)
-         *      }
-         *  ]
-         *  team details (name, email) 
-         *  coach details (name, email)
-         * }
-         */
-        
-        let activeTimelines = []
         
         let getTeams = 
         `
