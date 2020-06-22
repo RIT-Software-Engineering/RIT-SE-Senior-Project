@@ -73,41 +73,59 @@
             </div>
         </div>
         <script>
-            function onModalBtnClick(actionModalId) {
-                $(`#${actionModalId}`).modal('show')
-                $('div').popup('hide all')
-            }
+            function submitBtnClick () {
+                console.log('test')
             
-            function onActionSubmit(modalId) {
-                $(`#${modalId} form`)[0].submit(function(e) {
-                    e.preventDefault()
-                })
+            }
+            function onModalBtnClick(actionModalId) {
+                    $(`#${actionModalId}`).modal('show')
+                    $('div').popup('hide all')
+                }
+                
+            
+            function onActionSubmit(formId) {
+                $('#'+formId).submit()
                 $('.ui.modal').modal('hide');
             }
 
             function createActionModal(action, id) {
-                console.log(action)
                 let modalHtml = document.createElement('div')
                 modalHtml.id = id
                 modalHtml.classList.add('ui', 'fullscreen', 'modal')
-                modalHtml.innerHTML = 
-                `
-                    <div class="header">${action.action_title}</div>
-                    <div class="content">
-                        ${action.page_html}
-                    </div>
-                    <div class="actions" >
-                        <div style="margin-bottom : 10px" class="ui green basic right floated button" onclick="onActionSubmit('${id}')">
+                
+                let header = document.createElement('div')
+                header.classList.add('header')
+                header.innerText = action.action_title
+                modalHtml.appendChild(header)
+
+                let content = document.createElement('div')
+                content.classList.add('content')
+                let pageHtml = $(action.page_html)
+                for (var ele of pageHtml) {
+                    if (ele.nodeName === 'FORM') {
+                        ele.id = `${id}Form`
+                    }
+                }
+                
+                $(content).append(pageHtml)
+                modalHtml.appendChild(content)
+
+                let controls = `<div class="actions" >
+                        <div style="margin-bottom : 10px" class="ui green basic right floated button" onclick="onActionSubmit('${id}Form')">
                             Submit    
                         </div>
-                        <div style="margin-bottom : 10px" class="ui red basic left floated button" onclick="$('#${id}').find('form')[0].reset(); $('.ui.modal').modal('hide');">
+                        <div style="margin-bottom : 10px" class="ui red basic left floated button" onclick="$('#${id}Form')[0].reset(); $('.ui.modal').modal('hide');">
                             <i class="remove icon"></i>
                             Cancel
                         </div>
 
-                    </div>
-                    
-                `
+                    </div>`
+
+                let buttons = document.createElement('div')
+                buttons.classList.add('actions')
+                buttons.innerHTML = controls
+                modalHtml.appendChild(buttons)
+
                 return modalHtml
             }
 
@@ -140,8 +158,7 @@
 
                     rect.id = `${name.replace(/\s/g,'')}-${index}`
                     let actionModal = createActionModal(action, `${timeline.team_name}${action.action_id}`.replace(/\s/g, ''))
-                
-                    console.log(actionModal.id)
+                    console.log(actionModal)
                     var buttonClick = function buttonClick() {
                         $(`#${actionModal.id}`).modal('show')
                     }
@@ -158,9 +175,15 @@
                             <div class="ui button" onclick="onModalBtnClick('${actionModal.id}')">Proceed</div>
                         </div>
                     `
+                    // console.log(actionModal.querySelector(`#${actionModal.id}Submit`))
+                    // actionModal.querySelector(`#${actionModal.id}Submit`).onclick = function(e) {
+                    //     console.log('test')
+                    //     console.log(new FormData(actionModal.getElementsByTagName('form')[0]))
+                    // }
+                    
+
                     rect.setAttribute('data-html', toolTipHtml)
                     rect.setAttribute('data-position', 'top center')
-
                     container.appendChild(rect)
                 })
 
@@ -172,9 +195,9 @@
                 return timelineElement
             }
 
+            
             // API calls
-            $(document).ready(() => {
-                
+            $(document).ready(() => {    
                 $.get('/db/getActiveTimelines', function(timelines) {
                     console.log(timelines)
 
