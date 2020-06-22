@@ -7,6 +7,7 @@ INSERT INTO action_log(
 )
 VALUES 
     (3, "dxb2269", 3, "{""team_name"": ""The Null Pointers""}", null),
+    (4, "txa2269", 4, "{""name"": ""Tom""}", null),
     (6, "txa2269", 4, "{""team_name"": ""Drop Table Admin""}", null),
     (1, "dxb2269", 3, "{""name"": ""Dude""}", null),
     (1, "abc123", 3, "{""name"": ""John""}", null),
