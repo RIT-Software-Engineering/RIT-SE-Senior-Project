@@ -268,7 +268,7 @@ db_router.post('/submitAction', [
     // }).catch((err) => {
     //     res.sendStatus(500)
     // })
-    res.end()//res.redirect('/admin') // Temporary, ideally it would redirect to the dashboard of the level of the submitter, but without knowing the login api, hard to design for
+    res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
 })
 
 function calculateActiveTimelines() {
