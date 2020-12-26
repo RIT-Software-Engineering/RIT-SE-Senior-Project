@@ -134,7 +134,7 @@ db_router.post('/submitProposal', [
     body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000})
 ],
 async (req, res) => {
-    var result = validationResult(req);
+    let result = validationResult(req);
 
     
     // Insert into the database
@@ -164,7 +164,7 @@ async (req, res) => {
 
             fs.mkdirSync(`../sponsor_proposal_files/${body.title}`, { recursive: true });
             
-            for (var x = 0; x < req.files.attachments.length; x++ ) {
+            for (let x = 0; x < req.files.attachments.length; x++ ) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024 ) { // 15mb limit exceeded
                     res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
                     return;
@@ -201,7 +201,7 @@ async (req, res) => {
 
             doc.font('Times-Roman');
 
-            for (var key of DB_CONFIG.senior_project_proposal_keys) {
+            for (let key of DB_CONFIG.senior_project_proposal_keys) {
                 doc.fill('blue').fontSize(16).text(key.replace('/_/g', ' ')), {
                     underline: true
                 }; 
@@ -340,7 +340,7 @@ function calculateActiveTimelines() {
         getTeams = getTeams.split("date('now')").join( `'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`)
         
         db.query(getTeams).then((values) => {
-            for(var timeline in values) {
+            for(let timeline in values) {
                 values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
                 values[timeline].actions = values[timeline].actions.sort(function(a, b) {
                     return Date.parse(a.start_date) - Date.parse(b.start_date)
