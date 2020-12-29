@@ -13,7 +13,7 @@ const fileupload = require('express-fileupload');
 const routing = require('./server/routing/index');
 
 // Constants
-const port = 3000;
+const port = 3001;
 
 // Set up body parsing and file upload configurations
 app.use(bodyParser.urlencoded({ extended: true }));
