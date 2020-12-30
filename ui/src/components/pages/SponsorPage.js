@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react';
+import Header from './../shared/Header';
+import Footer from './../shared/Footer';
 
 function SponsorPage() {
 
@@ -8,21 +10,7 @@ function SponsorPage() {
             </div>
             <br/>
             <div id="contentGrid" class="ui stackable grid container">
-                <div class="two column row">
-                    <div class="column" style={{paddingLeft: "0em"}}>
-                        <h1 id="mainHeader" class="ui header" >
-                            Senior Project
-                            <div id="subHeader" class="sub header">Department of Software Engineering, RIT</div>
-                        </h1>
-                    </div>
-
-                    <div class="column" style={{paddingRight: "0em"}}>
-                        <div id="navButtons" class="ui right floated buttons">
-                            <button class="ui button" onclick="location.href = '/'">Home</button>
-                            <button class="ui button" onclick="location.href = '/sponsor'">Sponsor a Project</button>
-                        </div>
-                    </div>
-                </div>
+                <Header />
                 <div class="row">
                     <h2 class="ui header">Become a Project Sponsor</h2>
                 </div>
@@ -152,6 +140,7 @@ function SponsorPage() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
 );
 
