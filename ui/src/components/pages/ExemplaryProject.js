@@ -15,6 +15,7 @@ function ExemplaryProject({ project }) {
                     <img
                         src={`${basePosterURL}${project.poster_thumb}`}
                         style={{ border: "3px solid rgb(221, 221, 221)" }}
+                        alt="Project Poster"
                     />
                 </div>
                 <div className="column">
