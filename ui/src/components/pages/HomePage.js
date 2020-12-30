@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import ExemplaryProject from './ExemplaryProject';
 
 function HomePage() {
 
@@ -6,13 +7,11 @@ function HomePage() {
 
     useEffect(() => {
         fetch('http://localhost:3001/db/selectExemplary')
-            .then(response => {
-                return response.json()
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log(data);
+                setProjects(data);
             })
-    })
+    }, [setProjects])
 
     return (
         <div id="page">
@@ -61,7 +60,9 @@ function HomePage() {
             
             <div id="exemplaryProjectsDiv">
                 {/* <!-- Attach exemplary project elements here --> */}
-                
+                {projects.map((project, idx) => {
+                    return <ExemplaryProject project={project} key={idx}/>
+                })}
             </div>
         </div>
         <br/>
