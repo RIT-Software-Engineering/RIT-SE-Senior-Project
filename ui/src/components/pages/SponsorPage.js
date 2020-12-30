@@ -6,15 +6,15 @@ function SponsorPage() {
 
     return(
         <div id="page">
-            <div class="ui inverted basic blue segment"style={{height: "6em", width: "100%", position: "absolute", left: "0", top: "0", zIndex: "-1"}}>
+            <div className="ui inverted basic blue segment"style={{height: "6em", width: "100%", position: "absolute", left: "0", top: "0", zIndex: "-1"}}>
             </div>
             <br/>
-            <div id="contentGrid" class="ui stackable grid container">
+            <div id="contentGrid" className="ui stackable grid container">
                 <Header />
-                <div class="row">
-                    <h2 class="ui header">Become a Project Sponsor</h2>
+                <div className="row">
+                    <h2 className="ui header">Become a Project Sponsor</h2>
                 </div>
-                <div class="row">
+                <div className="row">
                     <p>
                         Please reference the
                         <a href="../doc/ProposalInstructions.pdf" target="_blank">
@@ -23,27 +23,27 @@ function SponsorPage() {
                         as you prepare your project proposal.
                     </p>
                 </div>
-                <div class="row">
-                    <button id="proposalBtn" class="ui button" onclick="location.href = '/proposalForm'">Submit a Project Proposal</button>
+                <div className="row">
+                    <button id="proposalBtn" className="ui button" onclick="location.href = '/proposalForm'">Submit a Project Proposal</button>
                 </div>
 
-                <div class="ui divider"></div>
+                <div className="ui divider"></div>
 
-                <div class="row">
-                    <h2 class="ui header">Sponsor F.A.Q.</h2>
+                <div className="row">
+                    <h2 className="ui header">Sponsor F.A.Q.</h2>
                 </div>
-                <div class="row">
+                <div className="row">
 
                     <p>
                         Is your organization interested in sponsoring a Senior Project? Browse the FAQs below for more information.
                     </p>
                     <br/>
-                    <div class="ui styled fluid accordion">
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                    <div className="ui styled fluid accordion">
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             How will my organization benefit from sponsoring a Senior Project?
                         </div>
-                        <div class="content">
+                        <div className="content">
                             <ul>
                                 <li>Help educate the next generation of software engineers who you might want as employees</li>
                                 <li>Get the benefits of any work the team does in clarifying your problem, designing a solution, and building a working system</li>
@@ -52,11 +52,11 @@ function SponsorPage() {
                         </div>
 
 
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             What is the size, scope and duration of these projects?
                         </div>
-                        <div class="content">
+                        <div className="content">
                             <ul>
                                 <li>Teams generally consist of four or five seniors. Students work on the project for two terms (about 30 weeks). During this time, each team member is expected to devote an average of ten hours/week on the project.</li>
                                 <li>Project scope should be determined with this level of effort in mind. Also remember that it is unlikely that students will have detailed knowledge of the sponsor's domain. Time for acquiring this knowledge must be factored into the project’s scope.</li>
@@ -69,12 +69,12 @@ function SponsorPage() {
                         </div>
 
 
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             Who works on the project?
                         </div>
 
-                        <div class="content">
+                        <div className="content">
                             <ul>
                                 <li>The project sponsor works with a senior team and their faculty coach.</li>
                                 <li>The students are responsible for the completion of the project. The faculty coach acts primarily as guide and mentor.</li>
@@ -82,11 +82,11 @@ function SponsorPage() {
                             </ul>
                         </div>
 
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             What process is followed over the course of the project?
                         </div>
-                        <div class="content">
+                        <div className="content">
                             <ul>
                                 <li>The ideal project is one where the student team demonstrates their skills in requirements elicitation and analysis, architecture and design, implementation, testing, and delivery over the course of two terms.</li>
                                 <li>The specific process each team uses is part of the negotiation between the sponsor and team, under the guidance of the team’s faculty coach.</li>
@@ -95,11 +95,11 @@ function SponsorPage() {
                         </div>
 
 
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             What are my responsibilities and commitments as a sponsor?
                         </div>
-                        <div class="content">
+                        <div className="content">
                             <ul>
                                 <li>During the project, you are expected to commit the resources needed to ensure the project’s success, including personnel, documents, specifications, etc.</li>
                                 <li>Specific responsibilities include:</li>
@@ -119,11 +119,11 @@ function SponsorPage() {
                         </div>
 
 
-                        <div class="title">
-                            <i class="dropdown icon"></i>
+                        <div className="title">
+                            <i className="dropdown icon"></i>
                             How are proposals reviewed?
                         </div>
-                        <div class="content">
+                        <div className="content">
                             <ol>
                                 <li>Any comments and editing suggested by the Senior Project Coordinator is the first review. The Coordinator rarely removes a proposal at this point, and passes all proposals to the next review stage. You should, however, address the Coordinator's comments because they typically track the comments made in the second review stage.</li>
                                 <li>We have always been in the fortunate position to receive more project proposals than the number of teams we will have. The software engineering faculty do the second review and vet proposals down to 2 or 3 more than the number of teams we will have. The top reasons for discarding a proposal are:

@@ -3,7 +3,6 @@ import React from "react";
 const basePosterURL = "http://localhost:3001/db/getPoster?fileName=";
 
 function ExemplaryProject({ project }) {
-    console.log(project);
     return (
         <div className="ui segment stackable padded grid">
             <div className="row">
