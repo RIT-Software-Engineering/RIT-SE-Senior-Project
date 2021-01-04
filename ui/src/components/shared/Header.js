@@ -13,8 +13,8 @@ function Header() {
 
             <div className="column" style={{paddingRight: "0em"}}>
                 <div id="navButtons" className="ui right floated buttons">
-                    <button className="ui button" onClick="location.href = '/'">Home</button>
-                    <button className="ui button" onClick="location.href = '/sponsor'">Sponsor a Project</button>
+                    <button className="ui button" onClick={() => {window.location.href = '/'}}>Home</button>
+                    <button className="ui button" onClick={() => {window.location.href = '/sponsor'}}>Sponsor a Project</button>
                 </div>
             </div>
         </div>
