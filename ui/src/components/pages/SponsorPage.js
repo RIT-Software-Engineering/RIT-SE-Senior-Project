@@ -16,15 +16,15 @@ function SponsorPage() {
                 </div>
                 <div className="row">
                     <p>
-                        Please reference the
+                        Please reference the {' '}
                         <a href="../doc/ProposalInstructions.pdf" target="_blank">
                             proposal instructions
-                        </a>
-                        as you prepare your project proposal.
+                        </a> 
+                        {' '} as you prepare your project proposal.
                     </p>
                 </div>
                 <div className="row">
-                    <button id="proposalBtn" className="ui button" onclick="location.href = '/proposalForm'">Submit a Project Proposal</button>
+                    <button id="proposalBtn" className="ui button" onClick={() => window.location.href = '/proposalForm'}>Submit a Project Proposal</button>
                 </div>
 
                 <div className="ui divider"></div>
