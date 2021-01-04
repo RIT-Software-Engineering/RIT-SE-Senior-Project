@@ -1,8 +1,49 @@
 import React from 'react'
 
 function ProposalPage() {
+
+    const submitMockProposal = async () => {
+        fetch('http://localhost:3001/db/submitProposal',{
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: "wacky",
+                organization: "wacky",
+                primary_contact: "wacky",
+                contact_email: "wacky",
+                contact_phone: "wacky",
+                background_info: "wacky",
+                project_description: "wacky",
+                project_scope: "wacky",
+                project_challenges: "wacky",
+                sponsor_provided_resources: "wacky",
+                constraints_assumptions: "wacky",
+                sponsor_deliverables: "wacky",
+                proprietary_info: "wacky",
+                sponsor_alternate_time: "wacky",
+                sponsor_avail_checked: "wacky",
+                project_agreements_checked: "wacky",
+                assignment_of_rights: "wacky",
+            })
+        }).then((response) => {
+            if(response.status === 200) {
+                // TODO: Show success of some sort
+                alert("Proposal Submitted")
+            } else {
+                // TODO: Redirect to failed page
+                alert("Not submitted: "+ response.statusText);
+            }
+        }).catch((error) => {
+            // TODO: Redirect to failed page or handle errors
+            console.log(error);
+        })
+    }
+
     return (
         <div id="page">
+            <button onClick={() => {submitMockProposal()}}>SUBMIT MOCK PROPOSAL</button>
             <div className="ui inverted basic blue segment" style={{height: "6em", width: "100%", position: "absolute", left: 0, top: 0,  zIndex: -1}}>
             </div>
             <br />
