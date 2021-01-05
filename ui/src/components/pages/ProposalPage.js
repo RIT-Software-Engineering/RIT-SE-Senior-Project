@@ -1,49 +1,82 @@
-import React from 'react'
+import React, {useState} from 'react';
 
 function ProposalPage() {
 
-    const submitMockProposal = async () => {
+    const [formData, setActualFormData] = useState({
+            title: "",
+            organization: "",
+            primary_contact: "",
+            contact_email: "",
+            contact_phone: "",
+            background_info: "",
+            project_description: "",
+            project_scope: "",
+            project_challenges: "",
+            sponsor_provided_resources: "",
+            constraints_assumptions: "",
+            sponsor_deliverables: "",
+            proprietary_info: "",
+            sponsor_alternate_time: "",
+            sponsor_avail_checked: "",
+            project_agreements_checked: "",
+            assignment_of_rights: "",
+    })
+
+    const setFormData = (event) => {
+        const target = event.target;
+        let value;
+        console.log(target.type, target.value);
+        switch (target.type) {
+            case "textarea":
+            case "text":
+            case "radio":
+                value = target.value;
+                break;
+            case "checkbox":
+                value = target.checked;
+                break;
+            case "file":
+                value = target.files[0];
+                break;
+            default:
+                console.error("Input type not handled...not setting data");
+                return;
+        }
+        const name = target.name;
+    
+        setActualFormData({
+            ...formData,
+            [name]: value
+        });
+    }
+
+    const submitMockProposal = async (event) => {
+        event.preventDefault();
+
+        const body = new FormData();
+        Object.keys(formData).forEach((key) => {
+            body.append(key, formData[key]);
+        })
+
         fetch('http://localhost:3001/db/submitProposal',{
             method: "post",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: "wacky",
-                organization: "wacky",
-                primary_contact: "wacky",
-                contact_email: "wacky",
-                contact_phone: "wacky",
-                background_info: "wacky",
-                project_description: "wacky",
-                project_scope: "wacky",
-                project_challenges: "wacky",
-                sponsor_provided_resources: "wacky",
-                constraints_assumptions: "wacky",
-                sponsor_deliverables: "wacky",
-                proprietary_info: "wacky",
-                sponsor_alternate_time: "wacky",
-                sponsor_avail_checked: "wacky",
-                project_agreements_checked: "wacky",
-                assignment_of_rights: "wacky",
-            })
+            body: body,
         }).then((response) => {
             if(response.status === 200) {
                 // TODO: Show success of some sort
                 alert("Proposal Submitted")
             } else {
-                // TODO: Redirect to failed page
+                // TODO: Show submission failed of some sort
                 alert("Not submitted: "+ response.statusText);
             }
         }).catch((error) => {
             // TODO: Redirect to failed page or handle errors
-            console.log(error);
+            console.error(error);
         })
     }
 
     return (
         <div id="page">
-            <button onClick={() => {submitMockProposal()}}>SUBMIT MOCK PROPOSAL</button>
             <div className="ui inverted basic blue segment" style={{height: "6em", width: "100%", position: "absolute", left: 0, top: 0,  zIndex: -1}}>
             </div>
             <br />
@@ -68,81 +101,81 @@ function ProposalPage() {
                 <div className="row">
                     <h2>Submit A Project Proposal</h2>
                 </div>
-                <form id="proposalForm" className="ui form" method="POST" action="http://localhost:3001/db/submitProposal" encType="multipart/form-data">
+                <form id="proposalForm" className="ui form" onSubmit={(e) => {submitMockProposal(e)}} >
                     <div className="field">
                         <label>Project Title</label>
-                        <input name="title" type="text" />
+                        <input name="title" type="text" onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <div className="field">
                         <label>Organization Name</label>
-                        <input name="organization" type="text" />
+                        <input name="organization" type="text" onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <div className="field">
                         <label>Primary Contact Name</label>
-                        <input name="primary_contact" type="text" />
+                        <input name="primary_contact" type="text" onChange={(e)=>{setFormData(e)}} />
                     </div>
                     <div className="two fields">
                         <div className="field">
                             <label>Email</label>
-                            <input name="contact_email" type="text" />
+                            <input name="contact_email" type="text" onChange={(e)=>{setFormData(e)}} />
                         </div>
 
                         <div className="field">
                             <label>Phone</label>
-                            <input name="contact_phone" type="text" />
+                            <input name="contact_phone" type="text" onChange={(e)=>{setFormData(e)}} />
                         </div>
                     </div>
 
                     <div className="field">
                         <label>Add additional PDF or image resources:</label>
-                        <input name="attachments" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple />
+                        <input name="attachments" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <div className="field">
                         <label>Project Background Information</label>
-                        <textarea name="background_info"></textarea>
+                        <textarea name="background_info" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
                     
                     <div className="field">
                         <label>Project Description</label>
-                        <textarea name="project_description" ></textarea>
+                        <textarea name="project_description" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Project Scope</label>
-                        <textarea name="project_scope"></textarea>
+                        <textarea name="project_scope" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Project Challenges</label>
-                        <textarea name="project_challenges"></textarea>
+                        <textarea name="project_challenges" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Constraints & Assumptions</label>
-                        <textarea name="constraints_assumptions"></textarea>
+                        <textarea name="constraints_assumptions" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Sponsor-Provided Resources</label>
-                        <textarea name="sponsor_provided_resources"></textarea>
+                        <textarea name="sponsor_provided_resources" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Project Search Keywords</label>
-                        <input name="project_search_keywords" type="text" />
+                        <input name="project_search_keywords" type="text" onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <div className="field">
                         <label>Sponsor and Project Specific Deliverables</label>
-                        <textarea name="sponsor_deliverables"></textarea>
+                        <textarea name="sponsor_deliverables" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <div className="field">
                         <label>Proprietary Information</label>
-                        <textarea name="proprietary_info"></textarea>
+                        <textarea name="proprietary_info" onChange={(e)=>{setFormData(e)}} ></textarea>
                     </div>
 
                     <br />
@@ -156,13 +189,13 @@ function ProposalPage() {
                     
                     <div className="field">
                         <div className="ui checkbox">
-                            <input name="sponsor_avail_checked" type="checkbox" tabIndex="0"/>
+                            <input name="sponsor_avail_checked" type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
                     </div>
                     <div className="field">
                         <label>If you will not be available during the standard senior project meeting time above, please give your timing constraints.</label>
-                        <input name="sponsor_alternate_time" type="text" />
+                        <input name="sponsor_alternate_time" type="text" onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <br />
@@ -187,7 +220,7 @@ function ProposalPage() {
                             </p>
                     <div className="field">
                         <div className="ui checkbox">
-                            <input name="project_agreements_checked" type="checkbox" tabIndex="0"/>
+                            <input name="project_agreements_checked" type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
                     </div>
@@ -201,7 +234,7 @@ function ProposalPage() {
                         </p>
                         <div className="field">
                             <div className="ui radio checkbox">
-                                <input type="radio" name="assignment_of_rights" value="full_rights" tabIndex="0"/>
+                                <input type="radio" name="assignment_of_rights" value="full_rights" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
                                 <label>Assignment of Full Rights</label>
                                 <br />
                                 <p>If a team is assigned to this project, all students on the team will sign a standard Student Course 
@@ -216,7 +249,7 @@ function ProposalPage() {
                         <div className="ui hidden divider"></div>
                         <div className="field">
                             <div className="ui radio checkbox">
-                                <input type="radio" name="assignment_of_rights" value="limited_use" tabIndex="0"/>
+                                <input type="radio" name="assignment_of_rights" value="limited_use" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
                                 <label>Assignment of Limited Use Rights</label>
                                 <br />
                                 <p>
@@ -234,7 +267,7 @@ function ProposalPage() {
                         <div className="ui hidden divider"></div>
                         <div className="field">
                         <div className="ui radio checkbox">
-                            <input type="radio" name="assignment_of_rights" value="open_source" tabIndex="0"/>
+                            <input type="radio" name="assignment_of_rights" value="open_source" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
                             <label>Open Source Project</label>
                             <br />
                             <p>
@@ -251,7 +284,6 @@ function ProposalPage() {
                 </form>
                 <br />
                 <div className="row">
-                    
                     <h3>The agreements and policies can be found at:</h3>
                 </div>
                 <div className="row">

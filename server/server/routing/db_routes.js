@@ -136,7 +136,6 @@ db_router.post('/submitProposal', [
 async (req, res) => {
     let result = validationResult(req);
 
-    
     // Insert into the database
     if (result.errors.length == 0) {
         let sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
@@ -158,21 +157,18 @@ async (req, res) => {
         if (req.files && req.files.attachments) {
 
             if (req.files.attachments.length > 5) { // Don't allow more than 5 files
-                res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
-                return;
+                return res.status(400).send("Maximum of 5 files allowed");
             }
 
             fs.mkdirSync(`../sponsor_proposal_files/${body.title}`, { recursive: true });
             
             for (let x = 0; x < req.files.attachments.length; x++ ) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024 ) { // 15mb limit exceeded
-                    res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
-                    return;
+                    return res.status(400).send("File too large");
                 }
                 
                 if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x]))) { // send an error if the file is not an accepted type
-                    res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
-                    return;
+                    return res.status(400).send("Filetype not accepted");
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0
@@ -211,15 +207,14 @@ async (req, res) => {
             }
             
             doc.end();
-            res.sendFile(path.join(CONFIG.www_path, '/html/submitted.html'));
-           
+            return res.status(200).send();
         }).catch((err) => {
             console.log(err);
-            res.sendStatus(500);
+            return res.status(500).send(err);
         })
     }
     else {
-        res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
+        return res.status(400).send("Input is invalid");
     }
 });
 
@@ -241,7 +236,7 @@ db_router.get('/getActiveTimelines', CONFIG.authAdmin, (req, res) => {
 }); 
 
 db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
-   
+
 });
 
 db_router.post('/submitAction', [
