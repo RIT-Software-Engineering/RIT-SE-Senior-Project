@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
+import { useHistory } from 'react-router-dom';
+import Header from './../shared/Header';
+import Footer from './../shared/Footer';
 
 function ProposalPage() {
 
+    const history = useHistory();
     const [formData, setActualFormData] = useState({})
 
     const setFormData = (event) => {
@@ -63,23 +67,7 @@ function ProposalPage() {
             </div>
             <br />
             <div className="ui container grid">
-                <div className="two column row">
-                    <div className="column" style={{paddingLeft: "0em"}}>
-                        <h1 id="mainHeader" className="ui header" >
-                            
-                            Senior Project
-                            <div id="subHeader" className="sub header">Department of Software Engineering, RIT</div>
-                        </h1>
-                    </div>
-                    
-                    <div className="column" style={{paddingRight: "0em"}}>
-                        <div id="navButtons" className="ui right floated buttons">
-                            <button className="ui button" onClick={() => {window.location.href = '/'}}>Home</button>
-                            <button className="ui button" onClick={() => {window.location.href = '/sponsor'}}>Sponsor a Project</button>
-                        </div>
-                    </div>
-                    
-                </div>
+                <Header/>
                 <div className="row">
                     <h2>Submit A Project Proposal</h2>
                 </div>
@@ -304,7 +292,7 @@ function ProposalPage() {
 
                 <div className="two column row">
                     <div className="column">
-                        <button className="ui deny left floated left labeled icon button" onClick={() => {window.location.href='/sponsor'}}>
+                        <button className="ui deny left floated left labeled icon button" onClick={() => {history.push('/sponsor')}}>
                             Cancel
                             <i className="times icon"></i>
                         </button>
@@ -319,6 +307,7 @@ function ProposalPage() {
 
                 <div className="row"></div>
             </div>
+            <Footer/>
         </div>
     )
 }

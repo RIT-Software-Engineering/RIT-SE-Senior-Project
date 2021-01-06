@@ -1,8 +1,11 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import Header from './../shared/Header';
 import Footer from './../shared/Footer';
 
 function SponsorPage() {
+
+    const history = useHistory();
 
     return(
         <div id="page">
@@ -24,7 +27,7 @@ function SponsorPage() {
                     </p>
                 </div>
                 <div className="row">
-                    <button id="proposalBtn" className="ui button" onClick={() => window.location.href = '/proposalForm'}>Submit a Project Proposal</button>
+                    <button id="proposalBtn" className="ui button" onClick={() => history.push('/proposalForm')}>Submit a Project Proposal</button>
                 </div>
 
                 <div className="ui divider"></div>

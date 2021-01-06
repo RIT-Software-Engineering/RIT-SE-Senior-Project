@@ -1,6 +1,9 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 function Header() {
+
+    const history = useHistory();
 
     return (
         <div className="two column row">
@@ -13,8 +16,8 @@ function Header() {
 
             <div className="column" style={{paddingRight: "0em"}}>
                 <div id="navButtons" className="ui right floated buttons">
-                    <button className="ui button" onClick={() => {window.location.href = '/'}}>Home</button>
-                    <button className="ui button" onClick={() => {window.location.href = '/sponsor'}}>Sponsor a Project</button>
+                    <button className="ui button" onClick={() => {history.push('/')}}>Home</button>
+                    <button className="ui button" onClick={() => {history.push('/sponsor')}}>Sponsor a Project</button>
                 </div>
             </div>
         </div>
