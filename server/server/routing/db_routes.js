@@ -42,7 +42,7 @@ db_router.get('/selectAllCoachInfo', (req, res) => {
 });
 
 db_router.get('/selectExemplary', (req, res) => {
-    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.senior_projects + ' WHERE priority = ?';
+    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.archive + ' WHERE priority = ?';
     let values = [0];
 
     db.query(sql, values).then(function(value) {
