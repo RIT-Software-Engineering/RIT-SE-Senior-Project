@@ -10,6 +10,7 @@ module.exports = {
      */
     tableNames: {
         senior_projects: 'projects',
+        archive: 'archive',
     },
     senior_project_proposal_keys : [
         'title', 
