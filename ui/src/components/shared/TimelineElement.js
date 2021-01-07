@@ -35,7 +35,7 @@ export default function(props){
                 <p>{action.short_desc}</p>
                 <p>Starts: {action.start_date}</p>
                 <p>Due: {action.due_date}</p>
-                <ActionModal {...action} />
+                <ActionModal key={"action-" + action.action_title + "-" + index} {...action} />
             </div>
         );
 

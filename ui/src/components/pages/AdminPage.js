@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { Tab } from 'semantic-ui-react'
-import ActionModal from './../shared/ActionModal';
 import TimelineElement from "../shared/TimelineElement";
 
 export default function AdminPage() {
 
     let [timelines, setTimelines] = useState([]);
-    let timelineData = [];
 
     useEffect(() => {
-        fetch("http://localhost:3001/db/getActiveTimelines")
-            .then((response) => response.json())
-            .then((timelinesData) => {
-                timelineData = timelinesData;
-                let timelineElementArray = [];
-                for(let i = 0; i < timelinesData.length; i++){
-                    let data = timelinesData[i];
-                    timelineElementArray.push(<TimelineElement key={"timeline-" + i} {...data} />);
-                }
-                setTimelines(timelineElementArray);
+        if(timelines.length === 0){
+            fetch("http://localhost:3001/db/getActiveTimelines")
+                .then((response) => response.json())
+                .then((timelinesData) => {
+                    let timelineElementArray = [];
+                    for(let i = 0; i < timelinesData.length; i++){
+                        let data = timelinesData[i];
+                        timelineElementArray.push(<TimelineElement key={"timeline-" + i} {...data} />);
+                    }
+                    setTimelines(timelineElementArray);
 
-            })
-            .catch((error) => {
-                alert("Failed to get data" + error);
-            })
-    }, [timelineData]);
+                })
+                .catch((error) => {
+                    alert("Failed to get data" + error);
+                })
+        }
+    }, [timelines]);
 
     const panes = [
-        //{ menuItem: 'Dashboard', render: () => <Tab.Pane><ActionModal action_title="H" page_html="<p>H</p>" id={42}/></Tab.Pane> },
         { menuItem: 'Dashboard', render: () => <Tab.Pane>{timelines}</Tab.Pane> },
         { menuItem: 'Proposals', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Sponsor Info', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
