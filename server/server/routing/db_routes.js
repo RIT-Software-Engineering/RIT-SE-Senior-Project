@@ -226,7 +226,7 @@ db_router.get('/getPoster', (req, res) => {
 });
 
 
-db_router.get('/getActiveTimelines', CONFIG.authAdmin, (req, res) => {
+db_router.get('/getActiveTimelines', (req, res) => {
     calculateActiveTimelines().then((timelines) => {
         res.send(timelines)
     }, (err) => {
@@ -235,7 +235,7 @@ db_router.get('/getActiveTimelines', CONFIG.authAdmin, (req, res) => {
     })
 }); 
 
-db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
+db_router.get('/getTeamTimeline', (req, res) => {
 
 });
 
