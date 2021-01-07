@@ -1,5 +1,6 @@
 import React from "react";
 import ActionModal from "./ActionModal";
+import { Popup } from 'semantic-ui-react'
 
 export default function(props){
     let totalWeight = 0;
@@ -28,19 +29,24 @@ export default function(props){
             );
         }
 
+        let toolTipContent = (
 
-        let toolTipHtml = (
-            <div>
-                <div className="header">
-                    {action.action_title}
-                </div>
-                <div className="content">
-                    <p>{action.short_desc}</p>
-                    <p>Starts: {action.start_date}</p>
-                    <p>Due: {action.due_date}</p>
-                    <ActionModal {...action} />
-                </div>
+            <div className="content">
+                <p>{action.short_desc}</p>
+                <p>Starts: {action.start_date}</p>
+                <p>Due: {action.due_date}</p>
+                <ActionModal {...action} />
             </div>
+        );
+
+        let popup = (
+            < Popup
+                key = {action.action_title}
+                header = {action.action_title}
+                content = {toolTipContent}
+                trigger = {rectInnerHtml}
+                on = 'click'
+            />
         );
 
         let rect = (
@@ -57,8 +63,7 @@ export default function(props){
                     marginLeft: "1%"
                 }
             } id={props.team_name.replace(/\s/g,'') + '-' + index} className="rect">
-                {rectInnerHtml}
-                {toolTipHtml}
+                {popup}
             </div>
         );
 
@@ -72,7 +77,7 @@ export default function(props){
                 {props.team_name}
             </h3>
             <div className="container">
-                {/*{actionsComponents}*/}
+                {actionsComponents}
             </div>
         </div>
     );

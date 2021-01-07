@@ -16,7 +16,7 @@ export default function AdminPage() {
                 let timelineElementArray = [];
                 for(let i = 0; i < timelinesData.length; i++){
                     let data = timelinesData[i];
-                    timelineElementArray.push(<TimelineElement {...data} />);
+                    timelineElementArray.push(<TimelineElement key={"timeline-" + i} {...data} />);
                 }
                 setTimelines(timelineElementArray);
 
