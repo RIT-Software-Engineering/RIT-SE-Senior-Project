@@ -1,32 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { Tab } from 'semantic-ui-react'
-import TimelineElement from "../shared/TimelineElement";
+import TimeLines from '../shared/TimeLines';
 
 export default function AdminPage() {
 
-    let [timelines, setTimelines] = useState([]);
+    const [timelines, setTimelines] = useState([]);
 
     useEffect(() => {
-        if(timelines.length === 0){
-            fetch("http://localhost:3001/db/getActiveTimelines")
-                .then((response) => response.json())
-                .then((timelinesData) => {
-                    let timelineElementArray = [];
-                    for(let i = 0; i < timelinesData.length; i++){
-                        let data = timelinesData[i];
-                        timelineElementArray.push(<TimelineElement key={"timeline-" + i} {...data} />);
-                    }
-                    setTimelines(timelineElementArray);
-
-                })
-                .catch((error) => {
-                    alert("Failed to get data" + error);
-                })
-        }
-    }, [timelines]);
+        fetch("http://localhost:3001/db/getActiveTimelines")
+            .then((response) => response.json())
+            .then((timelinesData) => {
+                setTimelines(timelinesData)
+            })
+            .catch((error) => {
+                alert("Failed to get timeline data" + error);
+            })
+    }, []);
 
     const panes = [
-        { menuItem: 'Dashboard', render: () => <Tab.Pane>{timelines}</Tab.Pane> },
+        { menuItem: 'Dashboard', render: () => <Tab.Pane><TimeLines timelines={timelines}/></Tab.Pane> },
         { menuItem: 'Proposals', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Sponsor Info', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Students', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
