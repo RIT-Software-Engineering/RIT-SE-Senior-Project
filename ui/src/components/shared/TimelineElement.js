@@ -55,7 +55,7 @@ export default function TimelineElement(props){
                     alignItems: "center",
                     border: "1px black solid",
                     backgroundColor: action.state,
-                    width: {width} + "%",
+                    width: width + "%",
                     height: "80%",
                     marginTop: "auto",
                     marginBottom: "auto",
@@ -78,7 +78,7 @@ export default function TimelineElement(props){
             <h3>
                 {props.team_name}
             </h3>
-            <div className="container">
+            <div className="container" style={{width: '100%', height: '70px', display: 'flex'}}>
                 {actionsComponents}
             </div>
         </div>

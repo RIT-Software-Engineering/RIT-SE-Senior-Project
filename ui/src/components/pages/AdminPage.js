@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Tab } from 'semantic-ui-react'
 import TimeLines from '../shared/TimeLines';
+import './../../css/admin.css'
 
 export default function AdminPage() {
 
