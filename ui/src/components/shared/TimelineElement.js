@@ -2,24 +2,24 @@ import React from "react";
 import ActionModal from "./ActionModal";
 import { Popup } from 'semantic-ui-react'
 
-export default function(props){
+export default function TimelineElement(props){
     let totalWeight = 0;
     let actionsComponents = [];
 
-    props.actions.forEach((action, index) => {
-       if (action.state === 'yellow' || action.state === 'red'){
-           totalWeight += 3;
-       }
-       else {
-           totalWeight += 1;
-       }
+    props.actions.forEach((action) => {
+        if (action.state === 'yellow' || action.state === 'red'){
+            totalWeight += 3;
+        }
+        else {
+            totalWeight += 1;
+        }
     });
 
     let baseSize = (100 - props.actions.length - 1) / totalWeight;
 
     props.actions.forEach((action, index) => {
         let width = baseSize;
-        let rectInnerHtml = (<div style={{}}></div>);
+        let rectInnerHtml = (<div style={{}} key={index}></div>);
         if (action.state === 'yellow' || action.state === 'red') {
             width = baseSize * 3;
             rectInnerHtml = (
@@ -30,7 +30,6 @@ export default function(props){
         }
 
         let toolTipContent = (
-
             <div className="content">
                 <p>{action.short_desc}</p>
                 <p>Starts: {action.start_date}</p>
@@ -50,8 +49,8 @@ export default function(props){
         );
 
         let rect = (
-            <div style={
-                {
+            <div
+                style={{
                     display: "flex",
                     alignItems: "center",
                     border: "1px black solid",
@@ -61,8 +60,11 @@ export default function(props){
                     marginTop: "auto",
                     marginBottom: "auto",
                     marginLeft: "1%"
-                }
-            } id={props.team_name.replace(/\s/g,'') + '-' + index} className="rect">
+                }}
+                id={props.team_name.replace(/\s/g,'') + '-' + index} 
+                className="rect"
+                key={index}
+            >
                 {popup}
             </div>
         );
