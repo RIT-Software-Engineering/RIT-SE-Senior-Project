@@ -42,7 +42,7 @@ export default function ActionModal(props){
 
 
     function onActionSubmit(id){
-        console.log(document.getElementsByClassName());
+        console.log(document.getElementsByClassName('form'));
     }
 
     function onActionCancel(){

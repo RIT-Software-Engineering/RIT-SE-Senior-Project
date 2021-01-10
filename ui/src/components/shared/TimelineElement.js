@@ -1,6 +1,6 @@
 import React from "react";
 import ActionModal from "./ActionModal";
-import { Popup } from 'semantic-ui-react'
+import ToolTip from "./ToolTip";
 
 export default function TimelineElement(props){
     let totalWeight = 0;
@@ -19,7 +19,7 @@ export default function TimelineElement(props){
 
     props.actions.forEach((action, index) => {
         let width = baseSize;
-        let rectInnerHtml = (<div style={{}} key={index}></div>);
+        let rectInnerHtml = (<div style={{}}></div>);
         if (action.state === 'yellow' || action.state === 'red') {
             width = baseSize * 3;
             rectInnerHtml = (
@@ -28,25 +28,6 @@ export default function TimelineElement(props){
                 </div>
             );
         }
-
-        let toolTipContent = (
-            <div className="content">
-                <p>{action.short_desc}</p>
-                <p>Starts: {action.start_date}</p>
-                <p>Due: {action.due_date}</p>
-                <ActionModal key={"action-" + action.action_title + "-" + index} {...action} />
-            </div>
-        );
-
-        let popup = (
-            < Popup
-                key = {action.action_title}
-                header = {action.action_title}
-                content = {toolTipContent}
-                trigger = {rectInnerHtml}
-                on = 'click'
-            />
-        );
 
         let rect = (
             <div
@@ -65,11 +46,19 @@ export default function TimelineElement(props){
                 className="rect"
                 key={index}
             >
-                {popup}
+                {rectInnerHtml}
             </div>
         );
 
-        actionsComponents.push(rect);
+        let actionModal = (<ActionModal key={"action-" + action.action_title + "-" + index} {...action} />);
+        let toolTip = (<ToolTip
+            actionModal={actionModal}
+            trigger={rect}
+            key={"tooltip-" + action.action_title + "-" + index}
+            action={action}
+        />);
+
+        actionsComponents.push(toolTip);
     });
 
 
