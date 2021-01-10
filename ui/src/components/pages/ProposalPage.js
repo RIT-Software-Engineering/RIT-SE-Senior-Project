@@ -1,17 +1,20 @@
 import React, {useState} from 'react';
 import { useHistory } from 'react-router-dom';
+import { Modal, Form, Radio } from 'semantic-ui-react'
 import Header from './../shared/Header';
 import Footer from './../shared/Footer';
+
+const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 
 function ProposalPage() {
 
     const history = useHistory();
-    const [formData, setActualFormData] = useState({})
+    const [formData, setActualFormData] = useState({});
+    const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
 
     const setFormData = (event) => {
         const target = event.target;
         let value;
-        console.log(target.type, target.value);
         switch (target.type) {
             case "textarea":
             case "text":
@@ -36,6 +39,14 @@ function ProposalPage() {
         });
     }
 
+    // Semantic UI inputs pass data in a different format than regular HTML5 inputs so this function manipulates the 
+    // data before sending to setFormData()
+    // TODO: Consider changing rest of inputs on this page to SemanticUI inputs and covert the setFormData function to
+    // handle Semantic UI inputs instead of regular HTML5 inputs 
+    const setFormDataSemanticUI = (value, name) => {
+        setFormData({target: {type: 'radio', value: value, name: name}})
+    }
+
     const submitMockProposal = async (event) => {
         event.preventDefault();
 
@@ -49,11 +60,9 @@ function ProposalPage() {
             body: body,
         }).then((response) => {
             if(response.status === 200) {
-                // TODO: Show success of some sort
-                alert("Proposal Submitted")
+                setModalOpen(MODAL_STATUS.SUCCESS)
             } else {
-                // TODO: Show submission failed of some sort
-                alert("Not submitted: "+ response.statusText);
+                setModalOpen(MODAL_STATUS.FAIL)
             }
         }).catch((error) => {
             // TODO: Redirect to failed page or handle errors
@@ -61,8 +70,57 @@ function ProposalPage() {
         })
     }
 
+    const generateModalContent = () => {
+        switch (modalOpen) {
+            case MODAL_STATUS.SUCCESS:
+                return (
+                    <h1>Success</h1>
+                )
+            case MODAL_STATUS.FAIL:
+                return (
+                    <h1>Submission failed</h1>
+                )
+            default:
+                return;
+        }
+    }
+
+    const generateModalActions = () => {
+        switch (modalOpen) {
+            case MODAL_STATUS.SUCCESS:
+                return [{content:"Yay!", positive: true, key:0}];
+            case MODAL_STATUS.FAIL:
+                return [{content:"Keep editing...", positive: true, key:0}];
+            default:
+                return;
+        }
+    }
+
+    const closeModal = () => {
+        switch (modalOpen) {
+            case MODAL_STATUS.SUCCESS:
+                setActualFormData({})
+                setModalOpen(MODAL_STATUS.CLOSED);
+                break;
+                case MODAL_STATUS.FAIL:
+                setModalOpen(MODAL_STATUS.CLOSED);
+                break; 
+            default:
+                console.error(`MODAL_STATUS of '${modalOpen}' not handled`);
+        }
+    }
+
+    console.log("formData.sponsor_avail_checked", formData.sponsor_avail_checked);
+
     return (
         <div id="page">
+            <Modal
+                open={!!modalOpen}
+                content={generateModalContent()}
+                actions={generateModalActions()}
+                onClose={() => closeModal()}
+                dimmer="blurring"
+            />
             <div className="ui inverted basic blue segment" style={{height: "6em", width: "100%", position: "absolute", left: 0, top: 0,  zIndex: -1}}>
             </div>
             <br />
@@ -71,82 +129,82 @@ function ProposalPage() {
                 <div className="row">
                     <h2>Submit A Project Proposal</h2>
                 </div>
-                <form id="proposalForm" className="ui form" onSubmit={(e) => {submitMockProposal(e)}} >
-                    <div className="field">
+                <Form id="proposalForm" className="ui form" onSubmit={(e) => {submitMockProposal(e)}} >
+                    <Form.Field>
                         <label>Project Title</label>
-                        <input name="title" type="text" onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="title" value={formData.title || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Organization Name</label>
-                        <input name="organization" type="text" onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="organization" value={formData.organization || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Primary Contact Name</label>
-                        <input name="primary_contact" type="text" onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="primary_contact" value={formData.primary_contact || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
                     <div className="two fields">
-                        <div className="field">
+                        <Form.Field>
                             <label>Email</label>
-                            <input name="contact_email" type="text" onChange={(e)=>{setFormData(e)}} />
-                        </div>
+                            <input name="contact_email" value={formData.contact_email || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                        </Form.Field>
 
-                        <div className="field">
+                        <Form.Field>
                             <label>Phone</label>
-                            <input name="contact_phone" type="text" onChange={(e)=>{setFormData(e)}} />
-                        </div>
+                            <input name="contact_phone" value={formData.contact_phone || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                        </Form.Field>
                     </div>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Add additional PDF or image resources:</label>
-                        <input name="attachments" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="attachments" value={formData.attachments || ""} type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Project Background Information</label>
-                        <textarea name="background_info" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="background_info" value={formData.background_info || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
                     
-                    <div className="field">
+                    <Form.Field>
                         <label>Project Description</label>
-                        <textarea name="project_description" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="project_description" value={formData.project_description || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Project Scope</label>
-                        <textarea name="project_scope" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="project_scope" value={formData.project_scope || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Project Challenges</label>
-                        <textarea name="project_challenges" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="project_challenges" value={formData.project_challenges || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Constraints & Assumptions</label>
-                        <textarea name="constraints_assumptions" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="constraints_assumptions" value={formData.constraints_assumptions || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Sponsor-Provided Resources</label>
-                        <textarea name="sponsor_provided_resources" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="sponsor_provided_resources" value={formData.sponsor_provided_resources || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Project Search Keywords</label>
-                        <input name="project_search_keywords" type="text" onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="project_search_keywords" value={formData.project_search_keywords || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Sponsor and Project Specific Deliverables</label>
-                        <textarea name="sponsor_deliverables" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="sponsor_deliverables" value={formData.sponsor_deliverables || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
-                    <div className="field">
+                    <Form.Field>
                         <label>Proprietary Information</label>
-                        <textarea name="proprietary_info" onChange={(e)=>{setFormData(e)}} ></textarea>
-                    </div>
+                        <textarea name="proprietary_info" value={formData.proprietary_info || ""} onChange={(e)=>{setFormData(e)}} ></textarea>
+                    </Form.Field>
 
                     <br />
                     <div className="ui divider"></div>
@@ -157,16 +215,16 @@ function ProposalPage() {
                         preference to proposals whose sponsors are available during this time.
                     </p>
                     
-                    <div className="field">
+                    <Form.Field>
                         <div className="ui checkbox">
-                            <input name="sponsor_avail_checked" type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
+                            <input name="sponsor_avail_checked" checked={formData.sponsor_avail_checked || false} type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
-                    </div>
-                    <div className="field">
+                    </Form.Field>
+                    <Form.Field>
                         <label>If you will not be available during the standard senior project meeting time above, please give your timing constraints.</label>
-                        <input name="sponsor_alternate_time" type="text" onChange={(e)=>{setFormData(e)}} />
-                    </div>
+                        <input name="sponsor_alternate_time" value={formData.sponsor_alternate_time || ""} type="text" onChange={(e)=>{setFormData(e)}} />
+                    </Form.Field>
 
                     <br />
                     <div className="ui divider"></div>
@@ -188,12 +246,12 @@ function ProposalPage() {
                                 We have the necessary corporate or legal clearances to use the unmodified project agreement. 
                                 (Note: The project agreements are cleared for RIT internal projects.)
                             </p>
-                    <div className="field">
+                    <Form.Field>
                         <div className="ui checkbox">
-                            <input name="project_agreements_checked" type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
+                            <input name="project_agreements_checked" checked={formData.project_agreements_checked || false} type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
-                    </div>
+                    </Form.Field>
                     
                     <br /> 
 
@@ -202,10 +260,16 @@ function ProposalPage() {
                         <p>Select one of the following approaches for assignment of the rights to the project artifacts and intellectual property, 
                             and the disclosure of proprietary information. 
                         </p>
-                        <div className="field">
+                        <Form.Field>
                             <div className="ui radio checkbox">
-                                <input type="radio" name="assignment_of_rights" value="full_rights" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
-                                <label>Assignment of Full Rights</label>
+                                <Radio 
+                                    label="Assignment of Full Rights"
+                                    name="assignment_of_rights"
+                                    checked={formData.assignment_of_rights === "full_rights"}
+                                    value="full_rights"
+                                    tabIndex="0"
+                                    onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                                />
                                 <br />
                                 <p>If a team is assigned to this project, all students on the team will sign a standard Student Course 
                                     Project Intellectual Property and Non-Disclosure Agreement.  This agreement assigns the rights to 
@@ -215,12 +279,18 @@ function ProposalPage() {
                                     revealing proprietary information.
                                 </p>
                             </div>
-                        </div>
+                        </Form.Field>
                         <div className="ui hidden divider"></div>
-                        <div className="field">
+                        <Form.Field>
                             <div className="ui radio checkbox">
-                                <input type="radio" name="assignment_of_rights" value="limited_use" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
-                                <label>Assignment of Limited Use Rights</label>
+                                <Radio
+                                    label="Assignment of Limited Use Rights"
+                                    name="assignment_of_rights"
+                                    checked={formData.assignment_of_rights === "limited_use"}
+                                    value="limited_use"
+                                    tabIndex="0"
+                                    onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                                />
                                 <br />
                                 <p>
                                     If a team is assigned to this project, all students on the team will sign a standard Student Course 
@@ -233,12 +303,18 @@ function ProposalPage() {
                                     the same process for revealing proprietary information.
                                 </p>
                             </div>
-                        </div>
+                        </Form.Field>
                         <div className="ui hidden divider"></div>
-                        <div className="field">
+                        <Form.Field>
                         <div className="ui radio checkbox">
-                            <input type="radio" name="assignment_of_rights" value="open_source" tabIndex="0" onChange={(e)=>{setFormData(e)}} />
-                            <label>Open Source Project</label>
+                            <Radio
+                                label="Open Source Project"
+                                name="assignment_of_rights"
+                                checked={formData.assignment_of_rights === "open_source"}
+                                value="open_source"
+                                tabIndex="0"
+                                onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                            />
                             <br />
                             <p>
                                 If a team is assigned to this project, all students on the team will sign a standard Student Course 
@@ -249,9 +325,9 @@ function ProposalPage() {
                                 information.
                             </p>
                         </div>
-                        </div>
+                        </Form.Field>
                     </div>
-                </form>
+                </Form>
                 <br />
                 <div className="row">
                     <h3>The agreements and policies can be found at:</h3>
@@ -298,7 +374,7 @@ function ProposalPage() {
                         </button>
                     </div>
                     <div className="column">
-                        <button id="formSubmit" className="ui blue right floated left labeled icon button" type="submit" form="proposalForm">
+                        <button id="formSubmit" className="ui blue right floated left labeled icon button" form="proposalForm">
                             Submit
                             <i className="checkmark icon"></i>
                         </button>
