@@ -1,5 +1,4 @@
 import React from "react";
-import ActionModal from "./ActionModal";
 import ToolTip from "./ToolTip";
 
 export default function TimelineElement(props){
@@ -43,9 +42,7 @@ export default function TimelineElement(props){
             </div>
         );
 
-        let actionModal = (<ActionModal key={"action-" + action.action_title + "-" + index} {...action} />);
         let toolTip = (<ToolTip
-            actionModal={actionModal}
             trigger={rect}
             key={"tooltip-" + action.action_title + "-" + index}
             action={action}
