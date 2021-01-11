@@ -51,6 +51,44 @@ db_router.get('/selectExemplary', (req, res) => {
 });
 
 /**
+ * Responds with list of proposals where each proposal has the proposals name and list of links to the proposal's attachment
+ * In other words, this attempts to combine .get('getProposalPdfNames') and .get('/getProposalAttachmentNames')
+ * 
+ * Response returns data formatted as followed:
+ *      [{title: PROPOSAL_TITLE, attachments: [PROPOSAL_ATTACHMENT1, PROPOSAL_ATTACHMENT2]}, {...}, {...}, ...]
+ */
+db_router.get('/getProposals', CONFIG.authAdmin, (req, res) => {
+    fs.readdir(path.join(__dirname, '../proposal_docs'), function(err, files) {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        let proposals = [];
+        files.forEach(function(file) {
+            let proposalTitle = file.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
+            proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
+            fs.readdir(path.join(__dirname, `../sponsor_proposal_files/${proposalTitle}`), function(err, attachments) {
+                if (err) {
+                    // FIXME: the /sponsor_proposal_files/ directory doesn't exist and files aren't put in it.
+                    console.warn("err", err);
+                    proposals.push({title: file, attachments: []});
+                } else {
+                    let attachmentLinks = [];
+                    attachments.forEach(function(file) {
+                        attachmentLinks.push(file.toString());
+                    });
+                    proposals.push({title: file, attachments: attachmentLinks});
+                }
+            });
+        });
+        // FIXME: This is broken because fs.readdir is asynchronous
+        // so while proposals is being set above, this res.send is happening before fs.readdir is finished
+        console.log("proposals", proposals);
+        res.send(proposals);
+    });
+})
+
+/**
  * Responds with a list of links to pdf versions of proposal forms
  */
 db_router.get('/getProposalPdfNames', CONFIG.authAdmin, (req, res) => {
