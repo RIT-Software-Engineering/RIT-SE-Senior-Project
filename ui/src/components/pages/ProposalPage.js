@@ -10,6 +10,7 @@ function ProposalPage() {
 
     const history = useHistory();
     const [formData, setActualFormData] = useState({});
+    const [formFiles, setFormFiles] = useState(null);
     const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
 
     const setFormData = (event) => {
@@ -25,8 +26,8 @@ function ProposalPage() {
                 value = target.checked;
                 break;
             case "file":
-                value = target.files[0];
-                break;
+                setFormFiles(target.files);
+                return;
             default:
                 console.error("Input type not handled...not setting data");
                 return;
@@ -59,6 +60,10 @@ function ProposalPage() {
         Object.keys(formData).forEach((key) => {
             body.append(key, formData[key]);
         })
+
+        for (let i = 0; i < formFiles?.length || 0; i++) {
+            body.append('attachments', formFiles[i]);
+        }
 
         fetch('http://localhost:3001/db/submitProposal',{
             method: "post",
@@ -105,6 +110,7 @@ function ProposalPage() {
         switch (modalOpen) {
             case MODAL_STATUS.SUCCESS:
                 setActualFormData({})
+                setFormFiles(null)
                 setModalOpen(MODAL_STATUS.CLOSED);
                 break;
                 case MODAL_STATUS.FAIL:
@@ -143,7 +149,8 @@ function ProposalPage() {
 
                     <Form.Field>
                         <label>Add additional PDF or image resources:</label>
-                        <input name="attachments" value={formData.attachments || ""} type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
+                        {/* TODO: this filed does not get reset when a proposal is submitted */}
+                        <input name="attachments" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
                     </Form.Field>
 
                     <Form.TextArea label="Project Background Information" name="background_info" value={formData.background_info || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
