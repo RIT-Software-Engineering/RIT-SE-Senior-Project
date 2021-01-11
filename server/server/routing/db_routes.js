@@ -67,7 +67,7 @@ db_router.get('/getProposals', CONFIG.authAdmin, (req, res) => {
         files.forEach(function(file) {
             let proposalTitle = file.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
             proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
-            fs.readdir(path.join(__dirname, `../sponsor_proposal_files/${proposalTitle}`), function(err, attachments) {
+            fs.readdir(path.join(__dirname, `./server/sponsor_proposal_files/${proposalTitle}`), function(err, attachments) {
                 if (err) {
                     // FIXME: the /sponsor_proposal_files/ directory doesn't exist and files aren't put in it.
                     console.warn("err", err);
@@ -119,7 +119,7 @@ db_router.get('/getProposalAttachmentNames', CONFIG.authAdmin, (req, res) => {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
         proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
         console.log(proposalTitle)
-        fs.readdir(path.join(__dirname, `../sponsor_proposal_files/${proposalTitle}`), function(err, files) {
+        fs.readdir(path.join(__dirname, `./server/sponsor_proposal_files/${proposalTitle}`), function(err, files) {
             if (err) {
                 res.status(500).send(err);
                 return;
@@ -145,7 +145,7 @@ db_router.get('/getProposalAttachment', CONFIG.authAdmin, (req, res) => {
         console.log(proposalTitle)
         let name = req.query.name.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
 
-        res.sendFile(path.join(__dirname, '../sponsor_proposal_files/' + proposalTitle + '/' + name))
+        res.sendFile(path.join(__dirname, './server/sponsor_proposal_files/' + proposalTitle + '/' + name))
     } else
         res.send('File not found')
 });
@@ -176,12 +176,6 @@ async (req, res) => {
 
     // Insert into the database
     if (result.errors.length == 0) {
-        let sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
-                (title, organization, primary_contact, contact_email, contact_phone, attachments,
-                background_info, project_description, project_scope, project_challenges, 
-                sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
-                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
         
         let body = req.body;
 
@@ -198,21 +192,20 @@ async (req, res) => {
                 return res.status(400).send("Maximum of 5 files allowed");
             }
 
-            fs.mkdirSync(`../sponsor_proposal_files/${body.title}`, { recursive: true });
+            fs.mkdirSync(`./server/sponsor_proposal_files/${body.title}`, { recursive: true });
             
             for (let x = 0; x < req.files.attachments.length; x++ ) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024 ) { // 15mb limit exceeded
                     return res.status(400).send("File too large");
                 }
-                
-                if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x]))) { // send an error if the file is not an accepted type
+                if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x].name))) { // send an error if the file is not an accepted type
                     return res.status(400).send("Filetype not accepted");
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0
                 filenamesCSV += (x == 0) ? `${req.files.attachments[x].name}` : `, ${req.files.attachments[x].name}`;
 
-                req.files.attachments[x].mv(`../sponsor_proposal_files/${body.title}/${req.files.attachments[x].name}`, function(err) {
+                req.files.attachments[x].mv(`./server/sponsor_proposal_files/${body.title}/${req.files.attachments[x].name}`, function(err) {
                     if (err) {
                         console.log(err);
                         return res.status(500).send(err);
@@ -220,9 +213,15 @@ async (req, res) => {
                 });
             }
         }
+        const sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
+                (status, title, organization, primary_contact, contact_email, contact_phone, attachments,
+                background_info, project_description, project_scope, project_challenges, 
+                sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
+                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
-        let params = [
-            body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone, filenamesCSV,
+        const params = [
+            "submitted", body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone, filenamesCSV,
             body.background_info, body.project_description, body.project_scope, body.project_challenges,
             body.sponsor_provided_resources, body.constraints_assumptions, body.sponsor_deliverables,
             body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
