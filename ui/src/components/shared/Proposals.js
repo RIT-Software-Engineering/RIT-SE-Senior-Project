@@ -3,7 +3,7 @@ import { Icon } from 'semantic-ui-react';
 
 export default function Proposals() {
 
-    const [proposals, setProposals] = useState([])
+    const [proposals, setProposals] = useState();
 
     useEffect(() => {
         fetch("http://localhost:3001/db/getProposalPdfNames")
@@ -33,31 +33,39 @@ export default function Proposals() {
             })
     }, []);
 
-    if(!proposals.length) {
+    const renderProposals = () => {
+        if(proposals.length === 0) {
+            return <tr><td>No proposals</td></tr>;
+        }
+
+        return proposals.map((proposal, idx) => {
+            return(
+                <tr key={idx}>
+                    <td>
+                        <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}`} target="_blank" rel="noreferrer">
+                            {proposal.title}
+                        </a>
+                    </td>
+                    <td>
+                        {proposal.proposalAttachments?.map((attachment, idx) => {
+                            return (<a href={`/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer" key={idx}>
+                                        {attachment}
+                                    </a>
+                        )})}
+                    </td>
+                </tr>
+            ) 
+        })
+    }
+
+    if(!proposals) {
         return <Icon name="spinner"/>
     }
 
     return (
         <table>
             <tbody>
-                {proposals.map((proposal, idx) => {
-                    return(
-                        <tr key={idx}>
-                            <td>
-                                <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}`} target="_blank" rel="noreferrer">
-                                    {proposal.title}
-                                </a>
-                            </td>
-                            <td>
-                                {proposal.proposalAttachments?.map((attachment, idx) => {
-                                    return (<a href={`/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer" key={idx}>
-                                                {attachment}
-                                            </a>
-                                )})}
-                            </td>
-                        </tr>
-                    ) 
-                })}
+                {renderProposals()}
             </tbody>
         </table>
     )
