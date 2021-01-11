@@ -41,7 +41,7 @@ export default function AdminPage() {
                     </h1>
                 </div>
                 <div className="row">
-                    <Tab panes={panes} className="menu"/>
+                    <Tab panes={panes} className="admin-menu"/>
                 </div>
             </div>
         </div>

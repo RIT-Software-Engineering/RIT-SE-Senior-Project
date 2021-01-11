@@ -19,11 +19,11 @@ export default function TimelineElement(props){
 
     props.actions.forEach((action, index) => {
         let width = baseSize;
-        let rectInnerHtml = (<div style={{}}></div>);
+        let rectInnerHtml = (<div></div>);
         if (action.state === 'yellow' || action.state === 'red') {
             width = baseSize * 3;
             rectInnerHtml = (
-                <div style={{margin: "auto", width: "50%", textAlign: "center", textWrap: "wrap", verticalAlign: "middle"}}>
+                <div className = "action-bar-text">
                     {action.action_title}
                 </div>
             );
@@ -32,18 +32,11 @@ export default function TimelineElement(props){
         let rect = (
             <div
                 style={{
-                    display: "flex",
-                    alignItems: "center",
-                    border: "1px black solid",
                     backgroundColor: action.state,
                     width: width + "%",
-                    height: "80%",
-                    marginTop: "auto",
-                    marginBottom: "auto",
-                    marginLeft: "1%"
                 }}
                 id={props.team_name.replace(/\s/g,'') + '-' + index} 
-                className="rect"
+                className="action-bar"
                 key={index}
             >
                 {rectInnerHtml}
@@ -67,7 +60,7 @@ export default function TimelineElement(props){
             <h3>
                 {props.team_name}
             </h3>
-            <div className="container" style={{width: '100%', height: '70px', display: 'flex'}}>
+            <div className="actions-container">
                 {actionsComponents}
             </div>
         </div>
