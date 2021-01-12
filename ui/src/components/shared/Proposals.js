@@ -21,7 +21,7 @@ export default function Proposals() {
     const renderProposals = () => {
 
         if(!proposals) {
-            return<TableRow textAlign='center'><TableCell><Icon name="spinner"/></TableCell></TableRow>;
+            return <TableRow textAlign='center'><TableCell><Icon name="spinner"/></TableCell></TableRow>;
         }
 
         if(proposals.length === 0) {
@@ -50,9 +50,11 @@ export default function Proposals() {
                 </TableCell>
                 <TableCell>
                 {proposal.attachments?.split(', ').map((attachment, attachmentIdx) => {
-                    return (<><a href={`/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer" key={attachmentIdx}>
-                                {attachment}
-                            </a><br/></>)
+                    return (<React.Fragment key={attachmentIdx}>
+                                <a href={`http://localhost:3001/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer">
+                                    {attachment}
+                                </a><br/>
+                            </React.Fragment>)
                 })}
                 </TableCell>
             </TableRow>
