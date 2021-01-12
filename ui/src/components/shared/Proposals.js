@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Icon } from 'semantic-ui-react';
+import { Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react';
 
 export default function Proposals() {
 
@@ -19,39 +19,58 @@ export default function Proposals() {
     }, []);
 
     const renderProposals = () => {
-        if(proposals.length === 0) {
-            return <tr><td>No proposals</td></tr>;
+
+        if(!proposals) {
+            return<TableRow textAlign='center'><TableCell><Icon name="spinner"/></TableCell></TableRow>;
         }
 
-        return proposals.map((proposal, idx) => {
-            return(
-                <tr key={idx}>
-                    <td>
-                        <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`} target="_blank" rel="noreferrer">
-                            {proposal.title}
-                        </a>
-                    </td>
-                    <td>
-                        {proposal.attachments?.split(', ').map((attachment, idx) => {
-                            return (<a href={`/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer" key={idx}>
-                                        {attachment}
-                                    </a>
-                        )})}
-                    </td>
-                </tr>
-            ) 
-        })
-    }
+        if(proposals.length === 0) {
+            return <TableRow textAlign='center'><TableCell>No proposals</TableCell></TableRow>;
+        }
 
-    if(!proposals) {
-        return <Icon name="spinner"/>
+        return(proposals.map((proposal, idx) => {
+            let rowColor;
+            switch (proposal.status) {
+                case "submitted":
+                    rowColor="negative"
+                    break;
+                case "completed":
+                    rowColor="positive"
+                    break;
+                default:
+                    break;
+            }
+
+            return <TableRow warning={rowColor === "warning"} negative={rowColor === "negative"} positive={rowColor === "positive"} key={idx}>
+                <TableCell>{proposal.status}</TableCell>
+                <TableCell>
+                    <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`} target="_blank" rel="noreferrer">
+                        {proposal.title}
+                    </a>
+                </TableCell>
+                <TableCell>
+                {proposal.attachments?.split(', ').map((attachment, attachmentIdx) => {
+                    return (<><a href={`/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer" key={attachmentIdx}>
+                                {attachment}
+                            </a><br/></>)
+                })}
+                </TableCell>
+            </TableRow>
+        }));
     }
 
     return (
-        <table>
-            <tbody>
+        <Table sortable>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>Status</TableHeaderCell>
+                    <TableHeaderCell>Title</TableHeaderCell>
+                    <TableHeaderCell>Attachments</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
                 {renderProposals()}
-            </tbody>
-        </table>
+            </TableBody>
+        </Table>
     )
 }
