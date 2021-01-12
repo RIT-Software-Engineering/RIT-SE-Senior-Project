@@ -113,11 +113,8 @@ db_router.get('/getProposalAttachmentNames', CONFIG.authAdmin, (req, res) => {
 db_router.get('/getProposalAttachment', CONFIG.authAdmin, (req, res) => {
     if (req.query.proposalTitle && req.query.name) {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
-        proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'))
-        console.log(proposalTitle)
         let name = req.query.name.replace(/\\|\//g, ''); // attempt to avoid any path traversal issues
-
-        res.sendFile(path.join(__dirname, './server/sponsor_proposal_files/' + proposalTitle + '/' + name))
+        res.sendFile(path.join(__dirname, '../sponsor_proposal_files/' + proposalTitle + '/' + name))
     } else
         res.send('File not found')
 });
