@@ -51,41 +51,13 @@ db_router.get('/selectExemplary', (req, res) => {
 });
 
 /**
- * Responds with list of proposals where each proposal has the proposals name and list of links to the proposal's attachment
- * In other words, this attempts to combine .get('getProposalPdfNames') and .get('/getProposalAttachmentNames')
+ * Responds with proposals from database
  * 
- * Response returns data formatted as followed:
- *      [{title: PROPOSAL_TITLE, attachments: [PROPOSAL_ATTACHMENT1, PROPOSAL_ATTACHMENT2]}, {...}, {...}, ...]
+ * TODO: Add pagination
  */
-db_router.get('/getProposals', CONFIG.authAdmin, (req, res) => {
-    fs.readdir(path.join(__dirname, '../proposal_docs'), function(err, files) {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        let proposals = [];
-        files.forEach(function(file) {
-            let proposalTitle = file.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
-            proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
-            fs.readdir(path.join(__dirname, `./server/sponsor_proposal_files/${proposalTitle}`), function(err, attachments) {
-                if (err) {
-                    // FIXME: the /sponsor_proposal_files/ directory doesn't exist and files aren't put in it.
-                    console.warn("err", err);
-                    proposals.push({title: file, attachments: []});
-                } else {
-                    let attachmentLinks = [];
-                    attachments.forEach(function(file) {
-                        attachmentLinks.push(file.toString());
-                    });
-                    proposals.push({title: file, attachments: attachmentLinks});
-                }
-            });
-        });
-        // FIXME: This is broken because fs.readdir is asynchronous
-        // so while proposals is being set above, this res.send is happening before fs.readdir is finished
-        console.log("proposals", proposals);
-        res.send(proposals);
-    });
+db_router.get('/getProposals', CONFIG.authAdmin, async (req, res) => {
+    db.selectAll(DB_CONFIG.tableNames.senior_projects)
+        .then(proposals => res.send(proposals));
 })
 
 /**
