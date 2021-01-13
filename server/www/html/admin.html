@@ -101,7 +101,7 @@
                 let content = document.createElement('div')
                 content.classList.add('content')
                 let pageHtml = $(action.page_html)
-                for (var ele of pageHtml) {
+                for (let ele of pageHtml) {
                     if (ele.nodeName === 'FORM') {
                         ele.id = `${id}Form`
                     }
@@ -135,7 +135,7 @@
                 let container = document.createElement('div')
                 container.style.cssText = 'width: 100%; height: 70px;  display: flex;'
                 
-                var totalWeight = 0;
+                let totalWeight = 0;
                 timeline.actions.forEach((action, index) => {
                     if (action.state === 'yellow' || action.state === 'red')
                         totalWeight += 3
@@ -143,7 +143,7 @@
                         totalWeight += 1
                 })
 
-                var baseSize = (100 - timeline.actions.length - 1)  / totalWeight
+                let baseSize = (100 - timeline.actions.length - 1)  / totalWeight
 
                 timeline.actions.forEach((action, index) => {
                     let width = baseSize
@@ -159,7 +159,7 @@
                     rect.id = `${name.replace(/\s/g,'')}-${index}`
                     let actionModal = createActionModal(action, `${timeline.team_name}${action.action_id}`.replace(/\s/g, ''))
                     console.log(actionModal)
-                    var buttonClick = function buttonClick() {
+                    let buttonClick = function buttonClick() {
                         $(`#${actionModal.id}`).modal('show')
                     }
                     // Set tooltip and modal
@@ -201,7 +201,7 @@
                 $.get('/db/getActiveTimelines', function(timelines) {
                     console.log(timelines)
 
-                    for(var timeline of timelines) {
+                    for(let timeline of timelines) {
                         let semesterGroup;
                       
                         if (document.getElementById(`semester${timeline.semester_id}`)) {
@@ -239,23 +239,23 @@
 
                 $.get('/db/getProposalPdfNames', function(titleList) {
                     
-                    for (var i = 0; i < titleList.length; i++) {
-                        var link = document.createElement('a');
+                    for (let i = 0; i < titleList.length; i++) {
+                        let link = document.createElement('a');
                         link.href = "/db/getProposalPdf?name=" + titleList[i];
                         link.innerText = titleList[i];
                         link.target = "_blank";
 
-                        var tr = document.createElement('tr');
-                        var pdfTd = document.createElement('td');
+                        let tr = document.createElement('tr');
+                        let pdfTd = document.createElement('td');
                         pdfTd.appendChild(link);
                         tr.appendChild(pdfTd);
 
                         let proposalTitle = titleList[i]
 
                         $.get('/db/getProposalAttachmentNames?proposalTitle=' + titleList[i], function(fileNames) {
-                            var filesTd = document.createElement('td');
-                            for (var x = 0; x < fileNames.length; x++) {
-                                var filelink = document.createElement('a');
+                            let filesTd = document.createElement('td');
+                            for (let x = 0; x < fileNames.length; x++) {
+                                let filelink = document.createElement('a');
                                 filelink.href = `/db/getProposalAttachment?proposalTitle=${proposalTitle}&name=${fileNames[x]}`;
                                 filelink.innerText = fileNames[x];
                                 filelink.target = "_blank";

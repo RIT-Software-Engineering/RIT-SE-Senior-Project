@@ -26,7 +26,7 @@ function dropAllTables() {
         `
         db.query(sql).then((values)=> {
             let delString = ""
-            for (var obj of values) {
+            for (let obj of values) {
                 delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`
                 db.query(delString).catch((err) => {
                     reject(`${obj["name"]} : ${err}`)

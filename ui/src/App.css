@@ -1,0 +1,43 @@
+#page {
+    position: relative;
+    min-height: 100vh;
+}
+
+#mainHeader {
+    color: white;
+}
+
+#contentGrid {
+    padding-bottom: 6em; /*Keep this bigger than footer height! */
+}
+.overviewText {
+    font-size: 16pt;
+}
+
+
+.projectTitle {
+    margin-top: -5px;
+}
+
+.projectGrid {
+    margin-left: -1em !important;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 4em;
+}
+
+@media only screen and (max-width: 768px) {
+        #navButtons {
+            display: none;
+        }
+}
+
+@media only screen and (max-device-width: 768px) {
+    #navButtons {
+        display: none;
+    }
+}
