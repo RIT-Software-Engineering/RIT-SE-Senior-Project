@@ -42,51 +42,13 @@ db_router.get('/selectAllCoachInfo', (req, res) => {
 });
 
 db_router.get('/selectExemplary', (req, res) => {
-    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.archive + ' WHERE priority = ?';
+    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.senior_projects + ' WHERE priority = ?';
     let values = [0];
 
     db.query(sql, values).then(function(value) {
         res.send(value);
     });
 });
-
-/**
- * Responds with list of proposals where each proposal has the proposals name and list of links to the proposal's attachment
- * In other words, this attempts to combine .get('getProposalPdfNames') and .get('/getProposalAttachmentNames')
- * 
- * Response returns data formatted as followed:
- *      [{title: PROPOSAL_TITLE, attachments: [PROPOSAL_ATTACHMENT1, PROPOSAL_ATTACHMENT2]}, {...}, {...}, ...]
- */
-db_router.get('/getProposals', CONFIG.authAdmin, (req, res) => {
-    fs.readdir(path.join(__dirname, '../proposal_docs'), function(err, files) {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        let proposals = [];
-        files.forEach(function(file) {
-            let proposalTitle = file.replace(/\\|\//g, '') // attempt to avoid any path traversal issues, get the name with no extension
-            proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf('.'));
-            fs.readdir(path.join(__dirname, `../sponsor_proposal_files/${proposalTitle}`), function(err, attachments) {
-                if (err) {
-                    // FIXME: the /sponsor_proposal_files/ directory doesn't exist and files aren't put in it.
-                    console.warn("err", err);
-                    proposals.push({title: file, attachments: []});
-                } else {
-                    let attachmentLinks = [];
-                    attachments.forEach(function(file) {
-                        attachmentLinks.push(file.toString());
-                    });
-                    proposals.push({title: file, attachments: attachmentLinks});
-                }
-            });
-        });
-        // FIXME: This is broken because fs.readdir is asynchronous
-        // so while proposals is being set above, this res.send is happening before fs.readdir is finished
-        console.log("proposals", proposals);
-        res.send(proposals);
-    });
-})
 
 /**
  * Responds with a list of links to pdf versions of proposal forms
@@ -172,8 +134,9 @@ db_router.post('/submitProposal', [
     body('assignment_of_rights').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000})
 ],
 async (req, res) => {
-    let result = validationResult(req);
+    var result = validationResult(req);
 
+    
     // Insert into the database
     if (result.errors.length == 0) {
         let sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
@@ -195,18 +158,21 @@ async (req, res) => {
         if (req.files && req.files.attachments) {
 
             if (req.files.attachments.length > 5) { // Don't allow more than 5 files
-                return res.status(400).send("Maximum of 5 files allowed");
+                res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
+                return;
             }
 
             fs.mkdirSync(`../sponsor_proposal_files/${body.title}`, { recursive: true });
             
-            for (let x = 0; x < req.files.attachments.length; x++ ) {
+            for (var x = 0; x < req.files.attachments.length; x++ ) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024 ) { // 15mb limit exceeded
-                    return res.status(400).send("File too large");
+                    res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
+                    return;
                 }
                 
                 if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x]))) { // send an error if the file is not an accepted type
-                    return res.status(400).send("Filetype not accepted");
+                    res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
+                    return;
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0
@@ -235,7 +201,7 @@ async (req, res) => {
 
             doc.font('Times-Roman');
 
-            for (let key of DB_CONFIG.senior_project_proposal_keys) {
+            for (var key of DB_CONFIG.senior_project_proposal_keys) {
                 doc.fill('blue').fontSize(16).text(key.replace('/_/g', ' ')), {
                     underline: true
                 }; 
@@ -245,14 +211,15 @@ async (req, res) => {
             }
             
             doc.end();
-            return res.status(200).send();
+            res.sendFile(path.join(CONFIG.www_path, '/html/submitted.html'));
+           
         }).catch((err) => {
             console.log(err);
-            return res.status(500).send(err);
+            res.sendStatus(500);
         })
     }
     else {
-        return res.status(400).send("Input is invalid");
+        res.sendFile(path.join(CONFIG.www_path, '/html/submittedError.html'));
     }
 });
 
@@ -264,7 +231,7 @@ db_router.get('/getPoster', (req, res) => {
 });
 
 
-db_router.get('/getActiveTimelines', (req, res) => {
+db_router.get('/getActiveTimelines', CONFIG.authAdmin, (req, res) => {
     calculateActiveTimelines().then((timelines) => {
         res.send(timelines)
     }, (err) => {
@@ -273,8 +240,8 @@ db_router.get('/getActiveTimelines', (req, res) => {
     })
 }); 
 
-db_router.get('/getTeamTimeline', (req, res) => {
-
+db_router.get('/getTeamTimeline', CONFIG.authAdmin, (req, res) => {
+   
 });
 
 db_router.post('/submitAction', [
@@ -373,7 +340,7 @@ function calculateActiveTimelines() {
         getTeams = getTeams.split("date('now')").join( `'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`)
         
         db.query(getTeams).then((values) => {
-            for(let timeline in values) {
+            for(var timeline in values) {
                 values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ''))
                 values[timeline].actions = values[timeline].actions.sort(function(a, b) {
                     return Date.parse(a.start_date) - Date.parse(b.start_date)
