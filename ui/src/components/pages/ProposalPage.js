@@ -9,7 +9,7 @@ const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 function ProposalPage() {
 
     const history = useHistory();
-    const [formData, setActualFormData] = useState({});
+    const [formData, setActualFormData] = useState({assignment_of_rights: "full_rights"});
     const [formFiles, setFormFiles] = useState(null);
     const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
 
@@ -131,12 +131,12 @@ function ProposalPage() {
                     <h2>Submit A Project Proposal</h2>
                 </div>
                 <Form id="proposalForm" className="ui form" onSubmit={(e) => {submitProposal(e)}} >
-                    <Form.Input label="Project Title" name="title" value={formData.title || ""} onChange={(e)=>{setFormData(e)}} />
-                    <Form.Input label="Organization Name" name="organization" value={formData.organization || ""} onChange={(e)=>{setFormData(e)}} />
-                    <Form.Input label="Primary Contact Name" name="primary_contact" value={formData.primary_contact || ""} onChange={(e)=>{setFormData(e)}} />
+                    <Form.Input required label="Project Title" name="title" value={formData.title || ""} onChange={(e)=>{setFormData(e)}} />
+                    <Form.Input required label="Organization Name" name="organization" value={formData.organization || ""} onChange={(e)=>{setFormData(e)}} />
+                    <Form.Input required label="Primary Contact Name" name="primary_contact" value={formData.primary_contact || ""} onChange={(e)=>{setFormData(e)}} />
                     <div className="two fields">
-                        <Form.Input label="Email" name="contact_email" value={formData.contact_email || ""} onChange={(e)=>{setFormData(e)}} />
-                        <Form.Input label="Phone" name="contact_phone" value={formData.contact_phone || ""} onChange={(e)=>{setFormData(e)}} />
+                        <Form.Input required label="Email" name="contact_email" value={formData.contact_email || ""} onChange={(e)=>{setFormData(e)}} />
+                        <Form.Input required label="Phone" name="contact_phone" value={formData.contact_phone || ""} onChange={(e)=>{setFormData(e)}} />
                     </div>
 
                     <Form.Field>
@@ -145,14 +145,14 @@ function ProposalPage() {
                         <input name="attachments" type="file" accept=".pdf, .png, .jpg, .jpeg" multiple onChange={(e)=>{setFormData(e)}} />
                     </Form.Field>
 
-                    <Form.TextArea label="Project Background Information" name="background_info" value={formData.background_info || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
-                    <Form.TextArea label="Project Description" name="project_description" value={formData.project_description || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
-                    <Form.TextArea label="Project Scope" name="project_scope" value={formData.project_scope || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
-                    <Form.TextArea label="Project Challenges" name="project_challenges" value={formData.project_challenges || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
-                    <Form.TextArea label="Constraints & Assumptions" name="constraints_assumptions" value={formData.constraints_assumptions || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Project Background Information" name="background_info" value={formData.background_info || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Project Description" name="project_description" value={formData.project_description || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Project Scope" name="project_scope" value={formData.project_scope || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Project Challenges" name="project_challenges" value={formData.project_challenges || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Constraints & Assumptions" name="constraints_assumptions" value={formData.constraints_assumptions || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
                     <Form.TextArea label="Sponsor-Provided Resources" name="sponsor_provided_resources" value={formData.sponsor_provided_resources || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
                     <Form.Input label="Project Search Keywords" name="project_search_keywords" value={formData.project_search_keywords || ""} onChange={(e)=>{setFormData(e)}} />
-                    <Form.TextArea label="Sponsor and Project Specific Deliverables" name="sponsor_deliverables" value={formData.sponsor_deliverables || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
+                    <Form.TextArea required label="Sponsor and Project Specific Deliverables" name="sponsor_deliverables" value={formData.sponsor_deliverables || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
                     <Form.TextArea label="Proprietary Information" name="proprietary_info" value={formData.proprietary_info || ""} onChange={(e)=>{setFormData(e)}} ></Form.TextArea>
 
                     <Divider section/>
@@ -163,9 +163,9 @@ function ProposalPage() {
                         preference to proposals whose sponsors are available during this time.
                     </p>
                     
-                    <Form.Field>
+                    <Form.Field required>
                         <div className="ui checkbox">
-                            <input name="sponsor_avail_checked" checked={formData.sponsor_avail_checked || false} type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
+                            <input required name="sponsor_avail_checked" checked={formData.sponsor_avail_checked || false} type="checkbox" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
                     </Form.Field>
@@ -190,87 +190,70 @@ function ProposalPage() {
                             We have the necessary corporate or legal clearances to use the unmodified project agreement. 
                             (Note: The project agreements are cleared for RIT internal projects.)
                         </p>
-                    <Form.Field>
+                    <Form.Field required>
                         <div className="ui checkbox">
-                            <input name="project_agreements_checked" checked={formData.project_agreements_checked || false} type="checkbox" tabIndex="0" onChange={(e)=>{setFormData(e)}}/>
+                            <input required name="project_agreements_checked" checked={formData.project_agreements_checked || false} type="checkbox" onChange={(e)=>{setFormData(e)}}/>
                             <label>I agree</label>
                         </div>
                     </Form.Field>
                     
                     <br /> 
 
-                    <div className="grouped fields">
+                    <Form.Field required>
                         <h3>Assignment of Rights</h3>
                         <p>Select one of the following approaches for assignment of the rights to the project artifacts and intellectual property, 
                             and the disclosure of proprietary information. 
                         </p>
-                        <Form.Field>
-                            <div className="ui radio checkbox">
-                                <Radio 
-                                    label="Assignment of Full Rights"
-                                    name="assignment_of_rights"
-                                    checked={formData.assignment_of_rights === "full_rights"}
-                                    value="full_rights"
-                                    tabIndex="0"
-                                    onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
-                                />
-                                <br />
-                                <p>If a team is assigned to this project, all students on the team will sign a standard Student Course 
-                                    Project Intellectual Property and Non-Disclosure Agreement.  This agreement assigns the rights to 
-                                    the team’s project work to the sponsor, and describes the process whereby the project sponsor can 
-                                    reveal proprietary information to the team. For non-RIT projects, the faculty coach will sign a 
-                                    standard Faculty Course Project Non-Disclosure Agreement which describes the same process for 
-                                    revealing proprietary information.
-                                </p>
-                            </div>
-                        </Form.Field>
-                        <Divider hidden/>
-                        <Form.Field>
-                            <div className="ui radio checkbox">
-                                <Radio
-                                    label="Assignment of Limited Use Rights"
-                                    name="assignment_of_rights"
-                                    checked={formData.assignment_of_rights === "limited_use"}
-                                    value="limited_use"
-                                    tabIndex="0"
-                                    onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
-                                />
-                                <br />
-                                <p>
-                                    If a team is assigned to this project, all students on the team will sign a standard Student Course 
-                                    Project Limited Use and Non-Disclosure Agreement.  This agreement assigns the sponsor rights to the 
-                                    team’s project work for internal or non-commercial use by the sponsor. The sponsor may maintain and 
-                                    extend the project but not transfer it to a third party or use it in a commercial product. The project 
-                                    team will retain patent and commercialization rights. The agreement also describes the process 
-                                    whereby the project sponsor can reveal proprietary information to the team. For non-RIT projects, 
-                                    the faculty coach will sign a standard Faculty Course Project Non-Disclosure Agreement which describes 
-                                    the same process for revealing proprietary information.
-                                </p>
-                            </div>
-                        </Form.Field>
-                        <Divider hidden/>
-                        <Form.Field>
-                        <div className="ui radio checkbox">
-                            <Radio
-                                label="Open Source Project"
-                                name="assignment_of_rights"
-                                checked={formData.assignment_of_rights === "open_source"}
-                                value="open_source"
-                                tabIndex="0"
-                                onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
-                            />
-                            <br />
-                            <p>
-                                If a team is assigned to this project, all students on the team will sign a standard Student Course 
-                                Project Open Source Agreement. The team will develop this as an open source project and will publish 
-                                all artifacts via an open source mechanism agreed upon through discussions with the project sponsor. 
-                                The sponsor will gain access to project artifacts only through this open source repository. No rights 
-                                need to be assigned exclusively to the project sponsor, and there will be no transfer of proprietary 
-                                information.
-                            </p>
-                        </div>
-                        </Form.Field>
-                    </div>
+                        <Radio
+                            label="Assignment of Full Rights"
+                            name="assignment_of_rights"
+                            checked={formData.assignment_of_rights === "full_rights"}
+                            value="full_rights"
+                            onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                        />
+                        <p>
+                            If a team is assigned to this project, all students on the team will sign a standard Student Course 
+                            Project Intellectual Property and Non-Disclosure Agreement.  This agreement assigns the rights to 
+                            the team’s project work to the sponsor, and describes the process whereby the project sponsor can 
+                            reveal proprietary information to the team. For non-RIT projects, the faculty coach will sign a 
+                            standard Faculty Course Project Non-Disclosure Agreement which describes the same process for 
+                            revealing proprietary information.
+                        </p>
+                        <Divider hidden/><br />
+                        <Radio
+                            label="Assignment of Limited Use Rights"
+                            name="assignment_of_rights"
+                            checked={formData.assignment_of_rights === "limited_use"}
+                            value="limited_use"
+                            onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                        />
+                        <p>
+                            If a team is assigned to this project, all students on the team will sign a standard Student Course 
+                            Project Limited Use and Non-Disclosure Agreement.  This agreement assigns the sponsor rights to the 
+                            team’s project work for internal or non-commercial use by the sponsor. The sponsor may maintain and 
+                            extend the project but not transfer it to a third party or use it in a commercial product. The project 
+                            team will retain patent and commercialization rights. The agreement also describes the process 
+                            whereby the project sponsor can reveal proprietary information to the team. For non-RIT projects, 
+                            the faculty coach will sign a standard Faculty Course Project Non-Disclosure Agreement which describes 
+                            the same process for revealing proprietary information.
+                        </p>
+                        <Divider hidden/><br />
+                        <Radio
+                            label="Open Source Project"
+                            name="assignment_of_rights"
+                            checked={formData.assignment_of_rights === "open_source"}
+                            value="open_source"
+                            onChange={(e, {value})=>{setFormDataSemanticUI(value, 'assignment_of_rights')}}
+                        />
+                        <p>
+                            If a team is assigned to this project, all students on the team will sign a standard Student Course 
+                            Project Open Source Agreement. The team will develop this as an open source project and will publish 
+                            all artifacts via an open source mechanism agreed upon through discussions with the project sponsor. 
+                            The sponsor will gain access to project artifacts only through this open source repository. No rights 
+                            need to be assigned exclusively to the project sponsor, and there will be no transfer of proprietary 
+                            information.
+                        </p>
+                    </Form.Field>
                 </Form>
                 <br />
                 <div className="row">
