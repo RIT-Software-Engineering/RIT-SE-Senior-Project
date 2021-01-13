@@ -4,6 +4,7 @@
   "description": "A website containing information for SE students and coaches, and project sponsors",
   "main": "main.js",
   "scripts": {
+    "start": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,6 +15,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "basic-auth": "^2.0.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
     "express-validator": "^6.4.0",
