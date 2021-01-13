@@ -2,15 +2,14 @@
  * Responsible for maintaining variables and configurations for database management
  */
 
-module.exports = {
+ module.exports = {
     dbFileName: 'senior_project.db',
     /**
      * @property An enumeration of the valid table names in the database 
      * (  its an object so you can modify the actual table names without touching the code :P  )
      */
     tableNames: {
-        senior_projects: 'projects',
-        archive: 'archive',
+        senior_projects:    'archive',
     },
     senior_project_proposal_keys : [
         'title', 
@@ -31,4 +30,5 @@ module.exports = {
         'project_agreements_checked',
         'assignment_of_rights'
     ]
-}
+
+ }
