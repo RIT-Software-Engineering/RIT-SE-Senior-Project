@@ -1,20 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Popup} from "semantic-ui-react";
+import ActionModal from "./ActionModal";
 
 function ToolTip (props){
+
+    const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+
+    let isOpenCallback = function(isOpen){
+        setCloseOnDocClick(!isOpen);
+    };
 
     return (
         < Popup
             header={props.action.action_title}
             content={
                 <div className="content">
-                    <p>{props.action.short_desc}</p>
+                    <p dangerouslySetInnerHTML={{ __html: props.action.short_desc}} />
                     <p>Starts: {props.action.start_date}</p>
                     <p>Due: {props.action.due_date}</p>
-                    {props.actionModal}
+                    <ActionModal key={props.action.action_id} {...props.action} isOpenCallback={isOpenCallback}/>
                 </div>
             }
-            closeOnDocumentClick={false}
+            closeOnDocumentClick={closeOnDocClick}
             style={{zIndex: 100}}
             trigger={props.trigger}
             on='click'
