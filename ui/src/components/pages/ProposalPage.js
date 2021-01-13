@@ -80,27 +80,20 @@ function ProposalPage() {
         })
     }
 
-    const generateModalContent = () => {
+    const generateModalFields = () => {
         switch (modalOpen) {
             case MODAL_STATUS.SUCCESS:
-                return (
-                    <h1>Success</h1>
-                )
+                return {
+                    header: "Success",
+                    content: "Your proposal has been received. We will review it and get back to you if our students decide to move forward with it",
+                    actions: [{header: "Success!", content:"Yay!", positive: true, key:0}]
+                }
             case MODAL_STATUS.FAIL:
-                return (
-                    <h1>Submission failed</h1>
-                )
-            default:
-                return;
-        }
-    }
-
-    const generateModalActions = () => {
-        switch (modalOpen) {
-            case MODAL_STATUS.SUCCESS:
-                return [{content:"Yay!", positive: true, key:0}];
-            case MODAL_STATUS.FAIL:
-                return [{content:"Keep editing...", positive: true, key:0}];
+                return {
+                    header: "There was an issue...",
+                    content: "We were unable to submit your proposal. You can try again later or contact our support team that we don't have...",
+                    actions: [{header: "There was an issue", content:"Keep editing...", positive: true, key:0}]
+                }
             default:
                 return;
         }
@@ -125,8 +118,7 @@ function ProposalPage() {
         <div id="page">
             <Modal
                 open={!!modalOpen}
-                content={generateModalContent()}
-                actions={generateModalActions()}
+                {...generateModalFields()}
                 onClose={() => closeModal()}
                 dimmer="blurring"
             />
