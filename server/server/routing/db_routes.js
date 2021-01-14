@@ -291,9 +291,62 @@ db_router.post('/submitAction', [
     // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
 });
 
+db_router.get('/getActions', (req, res) => {
+    let getActionsQuery =
+    `
+        SELECT *
+        FROM actions
+        ORDER BY action_id desc
+    `;
+    db.query(getActionsQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+});
+
+db_router.post('/editAction',
+    body('page_html').unescape()
+, (req, res) => {
+
+    let body = req.body;
+
+    let updateQuery = `
+        UPDATE actions
+        SET semester = ?,
+            action_title = ?,
+            action_target = ?,
+            is_null = ?,
+            short_desc = ?,
+            start_date = ?,
+            due_date = ?,
+            page_html = ?
+        WHERE action_id = ?
+    `;
+
+    let params = [
+        body.semester,
+        body.action_title,
+        body.action_target,
+        body.is_null,
+        body.short_desc,
+        body.start_date,
+        body.due_date,
+        body.page_html,
+        body.action_id
+    ];
+
+    db.query(updateQuery, params).then(() => {
+        return res.status(200).send();
+    }).catch((err) => {
+        return res.status(500).send(err)
+    });
+
+});
+
 db_router.get('/getSemesters', (req, res) => {
     let getSemestersQuery =
-            `
+    `
         SELECT *
         FROM semester_group
         ORDER BY semester_id desc

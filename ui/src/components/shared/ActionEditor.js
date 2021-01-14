@@ -1,5 +1,5 @@
 import React from 'react';
-import SemesterPanel from "./SemesterPanel";
+import ActionPanel from "./ActionPanel";
 import {Accordion} from "semantic-ui-react";
 
 export default function ActionEditor(props) {
@@ -12,7 +12,7 @@ export default function ActionEditor(props) {
                 key: actionData.action_id,
                 title: actionData.action_title,
                 content: {
-                    // content: <SemesterPanel {...semesterData}/>
+                    content: <ActionPanel {...actionData}/>
                 }
             })
         }

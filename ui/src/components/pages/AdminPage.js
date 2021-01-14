@@ -9,7 +9,9 @@ import ActionEditor from "../shared/ActionEditor";
 export default function AdminPage() {
 
     const [timelines, setTimelines] = useState([]);
-    const [semesters, setSemesters] = useState([]);
+    const [semesters, setSemestersData] = useState([]);
+    const [actions, setActionsData] = useState([]);
+
 
     useEffect(() => {
         fetch("http://localhost:3001/db/getActiveTimelines")
@@ -25,11 +27,21 @@ export default function AdminPage() {
         fetch("http://localhost:3001/db/getSemesters")
             .then((response) => response.json())
             .then((semestersData) => {
-                setSemesters(semestersData);
+                setSemestersData(semestersData);
                 // console.log('semestersData', semestersData);
             })
             .catch((error) => {
                 alert("Failed to get semesters data" + error);
+            })
+
+        fetch("http://localhost:3001/db/getActions")
+            .then((response) => response.json())
+            .then((actionsData) => {
+                setActionsData(actionsData);
+                console.log('actionsData', actionsData);
+            })
+            .catch((error) => {
+                alert("Failed to get actionss data" + error);
             })
     }, []);
 
@@ -42,7 +54,7 @@ export default function AdminPage() {
         { menuItem: 'Team Files', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Admin', render: () => <Tab.Pane>
                 <SemesterEditor semesters = {semesters}/>
-                <ActionEditor/>
+                <ActionEditor actions = {actions}/>
         </Tab.Pane> },
     ]
 
