@@ -23,6 +23,12 @@
     margin-left: -1em !important;
 }
 
+.pagination-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 footer {
     position: absolute;
     bottom: 0;

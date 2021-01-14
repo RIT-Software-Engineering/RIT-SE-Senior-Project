@@ -65,16 +65,18 @@ function HomePage() {
                 {projectData.projects.map((project, idx) => {
                     return <ExemplaryProject project={project} key={idx}/>
                 })}
-                <Pagination
-                    defaultActivePage={1}
-                    ellipsisItem={null}
-                    firstItem={null}
-                    lastItem={null}
-                    prevItem={{ content: <Icon name="angle left" />, icon: true }}
-                    nextItem={{ content: <Icon name="angle right" />, icon: true }}
-                    totalPages={Math.ceil(projectData.totalProjects/projectsPerPage)}
-                    onPageChange={(event, data) => {getPaginationData(data.activePage - 1)}}
-                />
+                <div className="pagination-container">
+                    <Pagination
+                        defaultActivePage={1}
+                        ellipsisItem={null}
+                        firstItem={null}
+                        lastItem={null}
+                        prevItem={{ content: <Icon name="angle left" />, icon: true }}
+                        nextItem={{ content: <Icon name="angle right" />, icon: true }}
+                        totalPages={Math.ceil(projectData.totalProjects/projectsPerPage)}
+                        onPageChange={(event, data) => {getPaginationData(data.activePage - 1)}}
+                    />
+                </div>
             </div>
         </div>
         <br/>
