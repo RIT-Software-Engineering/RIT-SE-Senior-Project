@@ -59,7 +59,7 @@ function ProposalPage() {
         const body = new FormData();
         Object.keys(formData).forEach((key) => {
             body.append(key, formData[key]);
-        })
+        });
 
         for (let i = 0; i < formFiles?.length || 0; i++) {
             body.append('attachments', formFiles[i]);

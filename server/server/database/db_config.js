@@ -11,6 +11,7 @@ module.exports = {
     tableNames: {
         senior_projects: 'projects',
         archive: 'archive',
+        semester: 'semester_group'
     },
     senior_project_proposal_keys : [
         'title', 

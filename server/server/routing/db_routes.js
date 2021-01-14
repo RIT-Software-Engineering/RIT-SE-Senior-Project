@@ -262,9 +262,10 @@ db_router.get('/getTeamTimeline', (req, res) => {
 db_router.post('/submitAction', [
     body('*').trim().escape()
 ], (req, res) => {
-    let result = validationResult(req)
+    let result = validationResult(req);
     console.log(req.body)
     console.log(req.files)
+    let body = req.body;
     let insertAction = `
         INSERT INTO action_log(
             action_template,
@@ -276,15 +277,66 @@ db_router.post('/submitAction', [
         VALUES (?,?,?,?,?)
     `
     let params = [
-
+        body.action_template,
+        body.system_id,
+        body.project,
+        body.form_data,
+        req.files
     ]
     // db.query(insertAction, params).then((values) => {
 
     // }).catch((err) => {
     //     res.sendStatus(500)
     // })
-    res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
-})
+    // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
+});
+
+db_router.get('/getSemesters', (req, res) => {
+    let getSemestersQuery =
+            `
+        SELECT *
+        FROM semester_group
+        ORDER BY semester_id desc
+    `;
+    db.query(getSemestersQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+});
+
+db_router.post('/editSemester', [
+    body('*').trim()
+], (req, res) => {
+
+    let body = req.body;
+
+    let updateQuery = `
+        UPDATE semester_group
+        SET name = ?,
+            dept = ?,
+            start_date = ?,
+            end_date = ?
+        WHERE semester_id = ?
+    `
+
+    let params = [
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.semester_id
+    ];
+
+    console.log('query and params', updateQuery, params);
+
+    db.query(updateQuery, params).then(() => {
+        return res.status(200).send();
+    }).catch((err) => {
+        return res.status(500).send(err)
+    });
+
+});
 
 function calculateActiveTimelines() {
     return new Promise((resolve, reject) => {
