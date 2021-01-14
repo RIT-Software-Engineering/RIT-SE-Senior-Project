@@ -119,7 +119,7 @@ export default function ActionPanel(props) {
         let field = formFieldArray[i];
         if(field['type'] === 'input'){
             fieldComponents.push(
-                <Form.Field>
+                <Form.Field key={field['name']}>
                     <label>{field['label']}</label>
                     <Form.Input
                         placeholder={field['placeholder']}
@@ -132,7 +132,7 @@ export default function ActionPanel(props) {
         }
         else if (field['type'] === 'textArea'){
             fieldComponents.push(
-                <Form.Field>
+                <Form.Field key={field['name']}>
                     <label>{field['label']}</label>
                     <Form.TextArea
                         placeholder={field['placeholder']}

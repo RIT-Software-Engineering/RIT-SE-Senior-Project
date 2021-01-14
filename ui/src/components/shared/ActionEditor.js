@@ -12,16 +12,22 @@ export default function ActionEditor(props) {
                 key: actionData.action_id,
                 title: actionData.action_title,
                 content: {
-                    content: <ActionPanel {...actionData}/>
+                    content: <ActionPanel {...actionData} key={'editAction-' + i}/>
                 }
             })
         }
     }
 
+    let actionsToEdit = <Accordion fluid styled panels={actionPanels} key={'actionEditor'} />;
 
     return(
         <div>
-            <Accordion fluid styled panels={actionPanels} key={'actionEditor'} />
+            <Accordion fluid styled panels={[{
+                key: 'actionEditor',
+                title: 'Action Editor',
+                content: {content:actionsToEdit}
+            }]}
+            />
         </div>
     );
 

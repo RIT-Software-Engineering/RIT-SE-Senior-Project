@@ -13,15 +13,21 @@ export default function SemesterEditor(props) {
                 key: semesterData.semester_id,
                 title: semesterData.name,
                 content: {
-                    content: <SemesterPanel {...semesterData}/>
+                    content: <SemesterPanel {...semesterData} key={'editSemester-' + i}/>
                 }
             })
         }
     }
+    let semestersToEdit = (<Accordion fluid styled panels={semesterPanels} key={'semestersToEdit'} />);
 
 return(
     <div>
-        <Accordion fluid styled panels={semesterPanels} key={'semesterEditor'} />
+        <Accordion fluid styled panels={[{
+            key: 'semesterEditor',
+            title: 'Semester Editor',
+            content: {content:semestersToEdit}
+        }]}
+        />
     </div>
 );
 
