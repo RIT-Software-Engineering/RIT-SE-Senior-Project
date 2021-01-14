@@ -283,12 +283,14 @@ db_router.post('/submitAction', [
         body.form_data,
         req.files
     ]
-    // db.query(insertAction, params).then((values) => {
-
+    // db.query(insertAction, params).then(() => {
+    //
     // }).catch((err) => {
     //     res.sendStatus(500)
     // })
     // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
+    return res.status(200).send();
+
 });
 
 db_router.get('/getActions', (req, res) => {
