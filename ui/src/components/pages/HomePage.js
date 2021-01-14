@@ -2,18 +2,34 @@ import React, {useState, useEffect} from 'react';
 import ExemplaryProject from './ExemplaryProject';
 import Header from './../shared/Header';
 import Footer from './../shared/Footer';
+import { Icon, Pagination } from 'semantic-ui-react';
+
+const projectsPerPage = 2;
 
 function HomePage() {
 
-    const [projects, setProjects] = useState([])
-
+    const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
+    
     useEffect(() => {
-        fetch('http://localhost:3001/db/selectExemplary')
-            .then(response => response.json())
-            .then(data => {
-                setProjects(data);
+        getPaginationData(0);
+    }, []);
+
+    const getPaginationData = (page) => {
+        fetch(`http://localhost:3001/db/selectExemplary?resultLimit=${projectsPerPage}&offset=${projectsPerPage*page}`)
+            .then(response => { 
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    throw response;
+                }
             })
-    }, [setProjects])
+            .then(data => {
+                setProjectData(data);
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
 
     return (
         <div id="page">
@@ -46,9 +62,21 @@ function HomePage() {
             
             <div id="exemplaryProjectsDiv">
                 {/* <!-- Attach exemplary project elements here --> */}
-                {projects.map((project, idx) => {
+                {projectData.projects.map((project, idx) => {
                     return <ExemplaryProject project={project} key={idx}/>
                 })}
+                <div className="pagination-container">
+                    <Pagination
+                        defaultActivePage={1}
+                        ellipsisItem={null}
+                        firstItem={null}
+                        lastItem={null}
+                        prevItem={{ content: <Icon name="angle left" />, icon: true }}
+                        nextItem={{ content: <Icon name="angle right" />, icon: true }}
+                        totalPages={Math.ceil(projectData.totalProjects/projectsPerPage)}
+                        onPageChange={(event, data) => {getPaginationData(data.activePage - 1)}}
+                    />
+                </div>
             </div>
         </div>
         <br/>

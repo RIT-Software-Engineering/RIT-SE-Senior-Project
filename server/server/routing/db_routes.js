@@ -42,11 +42,25 @@ db_router.get('/selectAllCoachInfo', (req, res) => {
 });
 
 db_router.get('/selectExemplary', (req, res) => {
-    let sql = 'SELECT * FROM ' + DB_CONFIG.tableNames.archive + ' WHERE priority = ?';
-    let values = [0];
+    const { resultLimit, offset } = req.query
 
-    db.query(sql, values).then(function(value) {
-        res.send(value);
+    const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive}
+        WHERE priority >= 0
+        AND oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive}
+                            ORDER BY priority ASC LIMIT ${offset})
+        ORDER BY priority ASC LIMIT ${resultLimit}`;
+
+    const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE priority >= 0`;
+
+    const projectsPromise = db.query(projectsQuery);
+    const rowCountPromise = db.query(rowCountQuery)
+
+    Promise.all([rowCountPromise, projectsPromise]).then(([[rowCount], projects]) => {
+        // FIXME: The rowCount variable isn't pretty -- Maybe consider changing how db.query works to better accommodate those kinds of request?
+        res.send({totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects});
+    }).catch(error => {
+        console.error(error)
+        res.status(500).send(error)
     });
 });
 
