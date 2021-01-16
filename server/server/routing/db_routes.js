@@ -47,12 +47,12 @@ db_router.get('/selectExemplary', (req, res) => {
     const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive}
         WHERE priority >= 0
         AND oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive}
-                            ORDER BY priority ASC LIMIT ${offset})
-        ORDER BY priority ASC LIMIT ${resultLimit}`;
+                            ORDER BY priority ASC LIMIT ?)
+        ORDER BY priority ASC LIMIT ?`;
 
     const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE priority >= 0`;
 
-    const projectsPromise = db.query(projectsQuery);
+    const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
     const rowCountPromise = db.query(rowCountQuery)
 
     Promise.all([rowCountPromise, projectsPromise]).then(([[rowCount], projects]) => {
@@ -73,6 +73,23 @@ db_router.get('/getProposals', CONFIG.authAdmin, async (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.senior_projects)
         .then(proposals => res.send(proposals));
 })
+
+/**
+ * Updates a proposal with the given information
+ */
+db_router.patch('/updateProposalStatus', CONFIG.authAdmin, [
+        // v-- I'm not entirely sure this does anything
+        body('*').trim().escape().isJSON().isAlphanumeric()
+    ], (req, res) => {
+        const query = `UPDATE ${DB_CONFIG.tableNames.senior_projects} SET status = ? WHERE project_id = ?`
+        db.query(query, [req.body.status, req.body.project_id])
+            .then(() => {
+                res.sendStatus(200);
+            }).catch((error) => {
+                console.error(error);
+                res.sendStatus(500);
+            })
+});
 
 /**
  * Responds with a list of links to pdf versions of proposal forms
