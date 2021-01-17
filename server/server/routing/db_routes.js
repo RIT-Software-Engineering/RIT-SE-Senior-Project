@@ -9,6 +9,7 @@ const path = require('path');
 const DB_CONFIG = require('../database/db_config');
 const DBHandler = require('../database/db');
 const CONFIG = require('../config');
+const { nanoid } = require('nanoid');
 
 // Globals
 let db = new DBHandler();
@@ -153,7 +154,8 @@ db_router.get('/getProposalAttachment', CONFIG.authAdmin, (req, res) => {
 //#endregion
 
 db_router.post('/submitProposal', [
-    body('title').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
+    // TODO: Should the max length be set to something smaller than 5000?
+    body('title').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 50}),
     body('organization').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
     body('primary_contact').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
     body('contact_email').not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({max: 5000}),
@@ -182,7 +184,7 @@ async (req, res) => {
         // prepend date to proposal title
         let date = new Date();
         let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;          
-        body.title = timeString + '_' + body.title;
+        const title = `${timeString}_${nanoid()}_${body.title.substring(0,30)}`
 
         let filenamesCSV = '';
         // Attachment Handling
@@ -192,7 +194,7 @@ async (req, res) => {
                 return res.status(400).send("Maximum of 5 files allowed");
             }
 
-            fs.mkdirSync(`./server/sponsor_proposal_files/${body.title}`, { recursive: true });
+            fs.mkdirSync(`./server/sponsor_proposal_files/${title}`, { recursive: true });
             
             for (let x = 0; x < req.files.attachments.length; x++ ) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024 ) { // 15mb limit exceeded
@@ -203,9 +205,9 @@ async (req, res) => {
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0
-                filenamesCSV += (x == 0) ? `${req.files.attachments[x].name}` : `, ${req.files.attachments[x].name}`;
+                filenamesCSV += (x === 0) ? `${req.files.attachments[x].name}` : `, ${req.files.attachments[x].name}`;
 
-                req.files.attachments[x].mv(`./server/sponsor_proposal_files/${body.title}/${req.files.attachments[x].name}`, function(err) {
+                req.files.attachments[x].mv(`./server/sponsor_proposal_files/${title}/${req.files.attachments[x].name}`, function(err) {
                     if (err) {
                         console.log(err);
                         return res.status(500).send(err);
@@ -214,14 +216,14 @@ async (req, res) => {
             }
         }
         const sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects} 
-                (status, title, organization, primary_contact, contact_email, contact_phone, attachments,
+                (status, title, display_name, organization, primary_contact, contact_email, contact_phone, attachments,
                 background_info, project_description, project_scope, project_challenges, 
                 sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
                 proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
         const params = [
-            "submitted", body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone, filenamesCSV,
+            "submitted", title, body.title, body.organization, body.primary_contact, body.contact_email, body.contact_phone, filenamesCSV,
             body.background_info, body.project_description, body.project_scope, body.project_challenges,
             body.sponsor_provided_resources, body.constraints_assumptions, body.sponsor_deliverables,
             body.proprietary_info, body.sponsor_alternate_time, body.sponsor_avail_checked, body.project_agreements_checked,
@@ -230,7 +232,7 @@ async (req, res) => {
 
         db.query(sql, params).then(() =>{
             let doc = new PDFDoc;
-            doc.pipe(fs.createWriteStream(path.join(__dirname, `../proposal_docs/${body.title}.pdf`)));
+            doc.pipe(fs.createWriteStream(path.join(__dirname, `../proposal_docs/${title}.pdf`)));
 
             doc.font('Times-Roman');
 

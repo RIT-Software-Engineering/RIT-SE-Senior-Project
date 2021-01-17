@@ -1,7 +1,7 @@
 CREATE TABLE projects (
     project_id              INTEGER primary key autoincrement,
     status                  text,   -- Submitted, Needs Revision, Future Project, Candidate, In Progress, Completed, Archived (not related to archive table)
-    display_name            text unique,
+    display_name            text,
     title                   text unique,
     organization            text,
     primary_contact         text,

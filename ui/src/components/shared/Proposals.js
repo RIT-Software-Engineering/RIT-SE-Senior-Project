@@ -98,7 +98,7 @@ export default function Proposals() {
                 <TableCell>{proposal.status}</TableCell>
                 <TableCell>
                     <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`} target="_blank" rel="noreferrer">
-                        {proposal.title}
+                        {proposal.display_name || proposal.title}
                     </a>
                 </TableCell>
                 <TableCell>
