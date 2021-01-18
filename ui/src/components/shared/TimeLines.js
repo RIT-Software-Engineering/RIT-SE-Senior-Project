@@ -1,8 +1,23 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Accordion } from 'semantic-ui-react';
 import TimelineElement from './TimelineElement';
 
-export default function TimeLines({ timelines }) {
+export default function TimeLines() {
+
+    const [timelines, setTimelines] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:3001/db/getActiveTimelines")
+            .then((response) => response.json())
+            .then((timelinesData) => {
+                setTimelines(timelinesData)
+                // console.log('timelinesData', timelinesData);
+            })
+            .catch((error) => {
+                alert("Failed to get timeline data" + error);
+            });
+
+    }, []);
 
     let semesters = {};
     timelines?.forEach( (timeline, idx) => {

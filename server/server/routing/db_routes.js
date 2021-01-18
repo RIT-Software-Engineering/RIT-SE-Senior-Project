@@ -281,9 +281,10 @@ db_router.get('/getTeamTimeline', (req, res) => {
 db_router.post('/submitAction', [
     body('*').trim().escape()
 ], (req, res) => {
-    let result = validationResult(req)
+    let result = validationResult(req);
     console.log(req.body)
     console.log(req.files)
+    let body = req.body;
     let insertAction = `
         INSERT INTO action_log(
             action_template,
@@ -295,15 +296,123 @@ db_router.post('/submitAction', [
         VALUES (?,?,?,?,?)
     `
     let params = [
-
+        body.action_template,
+        body.system_id,
+        body.project,
+        body.form_data,
+        req.files
     ]
-    // db.query(insertAction, params).then((values) => {
-
+    // db.query(insertAction, params).then(() => {
+    //
     // }).catch((err) => {
     //     res.sendStatus(500)
     // })
-    res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
-})
+    // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
+    return res.status(200).send();
+
+});
+
+db_router.get('/getActions', (req, res) => {
+    let getActionsQuery =
+    `
+        SELECT *
+        FROM actions
+        JOIN semester_group
+        ON actions.semester = semester_group.semester_id
+        ORDER BY action_id desc
+    `;
+    db.query(getActionsQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+});
+
+db_router.post('/editAction',
+    body('page_html').unescape()
+, (req, res) => {
+
+    let body = req.body;
+
+    let updateQuery = `
+        UPDATE actions
+        SET semester = ?,
+            action_title = ?,
+            action_target = ?,
+            is_null = ?,
+            short_desc = ?,
+            start_date = ?,
+            due_date = ?,
+            page_html = ?
+        WHERE action_id = ?
+    `;
+
+    let params = [
+        body.semester,
+        body.action_title,
+        body.action_target,
+        body.is_null,
+        body.short_desc,
+        body.start_date,
+        body.due_date,
+        body.page_html,
+        body.action_id
+    ];
+
+    db.query(updateQuery, params).then(() => {
+        return res.status(200).send();
+    }).catch((err) => {
+        return res.status(500).send(err)
+    });
+
+});
+
+db_router.get('/getSemesters', (req, res) => {
+    let getSemestersQuery =
+    `
+        SELECT *
+        FROM semester_group
+        ORDER BY semester_id desc
+    `;
+    db.query(getSemestersQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+});
+
+db_router.post('/editSemester', [
+    body('*').trim()
+], (req, res) => {
+
+    let body = req.body;
+
+    let updateQuery = `
+        UPDATE semester_group
+        SET name = ?,
+            dept = ?,
+            start_date = ?,
+            end_date = ?
+        WHERE semester_id = ?
+    `
+
+    let params = [
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.semester_id
+    ];
+
+    console.log('query and params', updateQuery, params);
+
+    db.query(updateQuery, params).then(() => {
+        return res.status(200).send();
+    }).catch((err) => {
+        return res.status(500).send(err)
+    });
+
+});
 
 function calculateActiveTimelines() {
     return new Promise((resolve, reject) => {
