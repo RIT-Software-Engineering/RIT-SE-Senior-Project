@@ -1,8 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
+import {Modal} from "semantic-ui-react";
+
+const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 
 export default function ActionPanel(props) {
+
+    const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+
 
 
     const [formData, setFormData] = useState({
@@ -21,6 +27,39 @@ export default function ActionPanel(props) {
     useEffect(() => {
     }, [formData]);
 
+
+    const generateModalFields = () => {
+        switch (submissionModalOpen) {
+            case MODAL_STATUS.SUCCESS:
+                return {
+                    header: "Success",
+                    content: "The action has been updated.",
+                    actions: [{header: "Success!", content:"Done", positive: true, key:0}]
+                };
+            case MODAL_STATUS.FAIL:
+                return {
+                    header: "There was an issue...",
+                    content: "We were unable to receive your update to the action.",
+                    actions: [{header: "There was an issue", content:"Keep editing...", positive: true, key:0}]
+                };
+            default:
+                return;
+        }
+    };
+
+    const closeSubmissionModal = () => {
+        switch (submissionModalOpen) {
+            case MODAL_STATUS.SUCCESS:
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                break;
+            case MODAL_STATUS.FAIL:
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                break;
+            default:
+                console.error(`MODAL_STATUS of '${submissionModalOpen}' not handled`);
+        }
+    };
+
     const handleSubmit = async function(e){
         let body = new FormData();
 
@@ -35,11 +74,9 @@ export default function ActionPanel(props) {
             body: body,
         }).then((response) => {
             if(response.status === 200) {
-                // setModalOpen(MODAL_STATUS.SUCCESS)
-                // console.log('success: ', response);
+                setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
             } else {
-                // setModalOpen(MODAL_STATUS.FAIL)
-                // console.log('fail: ', response);
+                setSubmissionModalOpen(MODAL_STATUS.FAIL);
             }
         }).catch((error) => {
             // TODO: handle errors
@@ -150,5 +187,10 @@ export default function ActionPanel(props) {
         <Form onSubmit={(e) => {handleSubmit(e)}}>
             {fieldComponents}
             <Button type='submit'>Submit</Button>
+            <Modal
+                open={!!submissionModalOpen}
+                {...generateModalFields()}
+                onClose={() => closeSubmissionModal()}
+            />
         </Form>);
 }

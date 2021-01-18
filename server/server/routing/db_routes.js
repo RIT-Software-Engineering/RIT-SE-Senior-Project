@@ -298,6 +298,8 @@ db_router.get('/getActions', (req, res) => {
     `
         SELECT *
         FROM actions
+        JOIN semester_group
+        ON actions.semester = semester_group.semester_id
         ORDER BY action_id desc
     `;
     db.query(getActionsQuery).then((values) => {
