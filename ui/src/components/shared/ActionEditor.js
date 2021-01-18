@@ -1,14 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ActionPanel from "./ActionPanel";
 import {Accordion} from "semantic-ui-react";
 
 export default function ActionEditor() {
+
+    const [actions, setActionsData] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:3001/db/getActions")
+            .then((response) => response.json())
+            .then((actionsData) => {
+                setActionsData(actionsData);
+                console.log('actionsData', actionsData);
+            })
+            .catch((error) => {
+                alert("Failed to get actionss data" + error);
+            })
+    }, []);
+
     let semesterPanels = [];
 
-    if(props.actions){
+    if(actions){
         let semesterMap = {};
-        for(let i = 0; i < props.actions.length; i ++){
-            let actionData = props.actions[i];
+        for(let i = 0; i < actions.length; i ++){
+            let actionData = actions[i];
             if (!semesterMap[actionData.name]) { semesterMap[actionData.name] = []; }
             semesterMap[actionData.name].push (<Accordion fluid styled panels={[{
                 key: actionData.action_id,

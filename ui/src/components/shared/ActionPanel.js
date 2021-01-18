@@ -9,8 +9,6 @@ export default function ActionPanel(props) {
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
 
-
-
     const [formData, setFormData] = useState({
             action_id: props.action_id || '',
             action_title: props.action_title || '',
@@ -23,9 +21,6 @@ export default function ActionPanel(props) {
             page_html: props.page_html || '',
 
     });
-
-    useEffect(() => {
-    }, [formData]);
 
 
     const generateModalFields = () => {

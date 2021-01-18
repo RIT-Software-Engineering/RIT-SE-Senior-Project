@@ -1,14 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Accordion} from "semantic-ui-react";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterEditor(props) {
 
-    let semesterPanels = [];
+    const [semesters, setSemestersData] = useState([]);
 
-    if(props.semesters){
-        for(let i = 0; i < props.semesters.length; i ++){
-            let semesterData = props.semesters[i];
+    useEffect(() => {
+        fetch("http://localhost:3001/db/getSemesters")
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+                // console.log('semestersData', semestersData);
+            })
+            .catch((error) => {
+                alert("Failed to get semesters data" + error);
+            })
+    }, []);
+
+        let semesterPanels = [];
+
+    if(semesters){
+        for(let i = 0; i < semesters.length; i ++){
+            let semesterData = semesters[i];
             semesterPanels.push({
                 key: semesterData.semester_id,
                 title: semesterData.name,

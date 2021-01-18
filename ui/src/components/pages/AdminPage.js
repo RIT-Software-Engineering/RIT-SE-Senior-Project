@@ -8,53 +8,16 @@ import ActionEditor from "../shared/ActionEditor";
 
 export default function AdminPage() {
 
-    const [timelines, setTimelines] = useState([]);
-    const [semesters, setSemestersData] = useState([]);
-    const [actions, setActionsData] = useState([]);
-
-
-    useEffect(() => {
-        fetch("http://localhost:3001/db/getActiveTimelines")
-            .then((response) => response.json())
-            .then((timelinesData) => {
-                setTimelines(timelinesData)
-                // console.log('timelinesData', timelinesData);
-            })
-            .catch((error) => {
-                alert("Failed to get timeline data" + error);
-            });
-
-        fetch("http://localhost:3001/db/getSemesters")
-            .then((response) => response.json())
-            .then((semestersData) => {
-                setSemestersData(semestersData);
-                // console.log('semestersData', semestersData);
-            })
-            .catch((error) => {
-                alert("Failed to get semesters data" + error);
-            })
-
-        fetch("http://localhost:3001/db/getActions")
-            .then((response) => response.json())
-            .then((actionsData) => {
-                setActionsData(actionsData);
-                console.log('actionsData', actionsData);
-            })
-            .catch((error) => {
-                alert("Failed to get actionss data" + error);
-            })
-    }, []);
-
     const panes = [
-        { menuItem: 'Dashboard', render: () => <Tab.Pane><TimeLines timelines={timelines}/></Tab.Pane> },
+        { menuItem: 'Dashboard', render: () => <Tab.Pane><TimeLines/></Tab.Pane> },
         { menuItem: 'Proposals', render: () => <Tab.Pane><Proposals/></Tab.Pane> },
         { menuItem: 'Sponsor Info', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Students', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Coaches', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Team Files', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Admin', render: () => <Tab.Pane>
-                <SemesterEditor semesters = {semesters}/>
-                <ActionEditor actions = {actions}/>
+                <SemesterEditor />
+                <ActionEditor />
         </Tab.Pane> },
     ]
 
