@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react';
+import "../../css/admin-proposal.css";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -82,17 +83,22 @@ export default function Proposals() {
             const proposal = proposals[proposal_id];
             let rowColor;
             switch (proposal.status) {
-                case "submitted":
-                    rowColor="negative"
+                case PROJECT_STATUSES.ARCHIVED:
+                case PROJECT_STATUSES.COMPLETE:
+                    rowColor="proposal-row-gray"
                     break;
-                case "completed":
-                    rowColor="positive"
+                case PROJECT_STATUSES.CANDIDATE:
+                    rowColor="proposal-row-green"
+                    break;
+                case PROJECT_STATUSES.IN_PROGRESS:
+                    rowColor="proposal-row-yellow"
                     break;
                 default:
+                    rowColor=""
                     break;
             }
 
-            return <TableRow warning={rowColor === "warning"} negative={rowColor === "negative"} positive={rowColor === "positive"} key={idx}>
+            return <TableRow className={rowColor} key={idx}>
                 <TableCell>{proposal.title.split("_")[0]}</TableCell>{/* TODO: This is dumb -- Consider adding submission date to projects table */}
                 <TableCell>{generateActions(proposal)}</TableCell>
                 <TableCell>{proposal.status}</TableCell>
