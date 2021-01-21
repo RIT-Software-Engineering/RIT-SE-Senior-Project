@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react';
+import _ from 'lodash';
 import "../../css/admin-proposal.css";
 
 const PROJECT_STATUSES = {
@@ -12,9 +13,20 @@ const PROJECT_STATUSES = {
     ARCHIVED: "archive",
 }
 
+const COLUMNS = {
+    DATE: 'date',
+    ACTION: 'action',
+    STATUS: 'status',
+    TITLE: 'title',
+    ATTACHMENTS: 'attachments',
+}
+
+const ASCENDING = 'ascending';
+const DESCENDING = 'descending';
+
 export default function Proposals() {
 
-    const [proposals, setProposals] = useState();
+    const [proposalData, setProposalData] = useState({});
 
     useEffect(() => {
 
@@ -22,18 +34,24 @@ export default function Proposals() {
         fetch("http://localhost:3001/db/getProposals")
             .then((response) => response.json())
             .then((proposals) => {
-                const restructuredProposals = {}
+                const newProposalData = {
+                    proposals: [],
+                    column: COLUMNS.DATE,
+                    direction: DESCENDING,
+                }
                 proposals.forEach((proposal) => {
-                    restructuredProposals[proposal.project_id] = proposal;
+                    proposal.date = proposal.title.split("_")[0];
+                    newProposalData.proposals.push(proposal);
                 })
-                setProposals(restructuredProposals)
+                newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE])
+                setProposalData(newProposalData)
             })
             .catch((error) => {
                 alert("Failed to get proposal data " + error);
             })
     }, []);
 
-    const generateActions = (proposal) => {
+    const generateActions = (proposal, idx) => {
         const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
             return {key:  idx, text: PROJECT_STATUSES[status], value: PROJECT_STATUSES[status]}
         })
@@ -45,7 +63,9 @@ export default function Proposals() {
             options={options}
             defaultValue={proposal.status}
             onChange={(event, change) => {
-                setProposals({...proposals, [proposal.project_id]: {...proposal, loading: true}})
+                const updatedProposals = [...proposalData.proposals];
+                updatedProposals[idx].loading = true;
+                setProposalData({...proposalData, proposals: updatedProposals});
                 fetch("http://localhost:3001/db/updateProposalStatus", {
                     method: "PATCH",
                     headers: {
@@ -58,29 +78,58 @@ export default function Proposals() {
                 })
                 .then((response) => {
                     if (response.ok) {
-                        setProposals({...proposals, [proposal.project_id]: {...proposal, status: change.value, loading: false}})
+                        let updatedProposals = [...proposalData.proposals];
+                        updatedProposals[idx].loading = false;
+                        updatedProposals[idx].status = change.value;
+                        updatedProposals = _.sortBy(updatedProposals, [proposalData.column])
+                        if(proposalData.direction === ASCENDING) {
+                            updatedProposals.reverse();
+                        }
+                        setProposalData({...proposalData, proposals: updatedProposals});
                     } else {
                         throw response;
                     }
                 }).catch((error) => {
+                    let undoProposals = [...proposalData];
+                    undoProposals[idx].loading = false;
+                    setProposalData(undoProposals);
                     console.error(error);
                 })
             }}
         />
     }
 
+    const changeSort = (column) => {
+        if(proposalData.column === column) {
+            setProposalData({
+                column: column,
+                direction: proposalData.direction === ASCENDING ? DESCENDING : ASCENDING,
+                proposals: proposalData.proposals.slice().reverse(),
+            })
+            return;
+        }
+
+        setProposalData({
+            direction: DESCENDING,
+            column: column,
+            proposals: _.sortBy(proposalData.proposals, [column])
+        })
+
+    }
+
     const renderProposals = () => {
 
-        if(!proposals) {
+        console.log(proposalData);
+        if(!proposalData.proposals) {
             return <TableRow textAlign='center'><TableCell><Icon name="spinner"/></TableCell></TableRow>;
         }
 
-        if(Object.keys(proposals).length === 0) {
+        if(proposalData.proposals?.length === 0) {
             return <TableRow textAlign='center'><TableCell>No proposals</TableCell></TableRow>;
         }
 
-        return(Object.keys(proposals).map((proposal_id, idx) => {
-            const proposal = proposals[proposal_id];
+
+        return(proposalData.proposals.map((proposal, idx) => {
             let rowColor;
             switch (proposal.status) {
                 case PROJECT_STATUSES.ARCHIVED:
@@ -99,8 +148,8 @@ export default function Proposals() {
             }
 
             return <TableRow className={rowColor} key={idx}>
-                <TableCell>{proposal.title.split("_")[0]}</TableCell>{/* TODO: This is dumb -- Consider adding submission date to projects table */}
-                <TableCell>{generateActions(proposal)}</TableCell>
+                <TableCell>{proposal.date}</TableCell>{/* TODO: This is dumb -- Consider adding submission date to projects table */}
+                <TableCell>{generateActions(proposal, idx)}</TableCell>
                 <TableCell>{proposal.status}</TableCell>
                 <TableCell>
                     <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`} target="_blank" rel="noreferrer">
@@ -124,11 +173,36 @@ export default function Proposals() {
         <Table sortable>
             <TableHeader>
                 <TableRow>
-                    <TableHeaderCell>Date</TableHeaderCell>
-                    <TableHeaderCell>Action</TableHeaderCell>
-                    <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell>Title</TableHeaderCell>
-                    <TableHeaderCell>Attachments</TableHeaderCell>
+                    <TableHeaderCell
+                        sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                        onClick={() => changeSort(COLUMNS.DATE)}
+                    >
+                        Date
+                    </TableHeaderCell>
+                    <TableHeaderCell
+                        sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
+                        onClick={() => changeSort(COLUMNS.ACTION)}
+                    >
+                        Action
+                    </TableHeaderCell>
+                    <TableHeaderCell
+                        sorted={proposalData.column === COLUMNS.STATUS ? proposalData.direction : null}
+                        onClick={() => changeSort(COLUMNS.STATUS)}
+                    >
+                        Status
+                    </TableHeaderCell>
+                    <TableHeaderCell
+                        sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
+                        onClick={() => changeSort(COLUMNS.TITLE)}
+                    >
+                        Title
+                    </TableHeaderCell>
+                    <TableHeaderCell
+                        sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
+                        onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
+                    >
+                        Attachments
+                    </TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
