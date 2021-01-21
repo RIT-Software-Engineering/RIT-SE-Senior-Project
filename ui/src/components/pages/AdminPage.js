@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Tab } from 'semantic-ui-react'
 import Proposals from '../shared/Proposals';
 import TimeLines from '../shared/TimeLines';
 import './../../css/admin.css'
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
+import StudentsTab from "../shared/StudentsTab";
 
 export default function AdminPage() {
 
@@ -12,7 +13,7 @@ export default function AdminPage() {
         { menuItem: 'Dashboard', render: () => <Tab.Pane><TimeLines/></Tab.Pane> },
         { menuItem: 'Proposals', render: () => <Tab.Pane><Proposals/></Tab.Pane> },
         { menuItem: 'Sponsor Info', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-        { menuItem: 'Students', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+        { menuItem: 'Students', render: () => <Tab.Pane><StudentsTab/></Tab.Pane> },
         { menuItem: 'Coaches', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Team Files', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
         { menuItem: 'Admin', render: () => <Tab.Pane>
