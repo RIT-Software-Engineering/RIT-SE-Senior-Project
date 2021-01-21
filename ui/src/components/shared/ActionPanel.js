@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import {Modal} from "semantic-ui-react";
+import {Dropdown, Modal} from "semantic-ui-react";
 
 const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 
@@ -10,17 +10,24 @@ export default function ActionPanel(props) {
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
 
     const [formData, setFormData] = useState({
-            action_id: props.action_id || '',
-            action_title: props.action_title || '',
-            semester: props.semester || '',
-            action_target: props.action_target || '',
-            is_null: props.is_null || '',
-            short_desc: props.short_desc || '',
-            start_date: props.start_date || '',
-            due_date: props.due_date || '',
-            page_html: props.page_html || '',
+            action_id: props.actionData.action_id || '',
+            action_title: props.actionData.action_title || '',
+            semester: props.actionData.semester || '',
+            action_target: props.actionData.action_target || '',
+            is_null: props.actionData.is_null || '',
+            short_desc: props.actionData.short_desc || '',
+            start_date: props.actionData.start_date || '',
+            due_date: props.actionData.due_date || '',
+            page_html: props.actionData.page_html || '',
 
     });
+
+    let semesterMap = {};
+
+    for (let i = 0; i < props.semesterData.length; i ++){
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
 
 
     const generateModalFields = () => {
@@ -80,6 +87,7 @@ export default function ActionPanel(props) {
     };
 
     const handleChange = (e, { name, value }) => {
+        console.log('form field name and value: ', name, value);
         setFormData({
             ...formData,
             [name]: value
@@ -95,7 +103,7 @@ export default function ActionPanel(props) {
             value: formData['action_title'],
         },
         {
-            type: 'input',
+            type: 'dropdown',
             label: 'Semester',
             placeHolder: 'Semester',
             name: 'semester',
@@ -152,8 +160,8 @@ export default function ActionPanel(props) {
         if(field['type'] === 'input'){
             fieldComponents.push(
                 <Form.Field key={field['name']}>
-                    <label>{field['label']}</label>
                     <Form.Input
+                        label={field['label']}
                         placeholder={field['placeholder']}
                         name = {field['name']}
                         value = {field['value']}
@@ -165,13 +173,36 @@ export default function ActionPanel(props) {
         else if (field['type'] === 'textArea'){
             fieldComponents.push(
                 <Form.Field key={field['name']}>
-                    <label>{field['label']}</label>
                     <Form.TextArea
                         placeholder={field['placeholder']}
+                        label={field['label']}
                         name = {field['name']}
                         value = {field['value']}
                         style={{ minHeight: 200 }}
                         onChange = {handleChange}
+                    />
+                </Form.Field>
+            )
+        }
+        else if (field['type'] === 'dropdown'){
+            const options = Object.keys(semesterMap).map((semester_id, idx) => {
+                return {key:  idx, text: semesterMap[semester_id], value: semester_id}
+            });
+
+            fieldComponents.push(
+            );
+
+            fieldComponents.push(
+                <Form.Field key={field['name']}>
+                    <label>{field['label']}</label>
+                    <Dropdown
+                        selection
+                        options={options}
+                        loading={props.semesterData.loading}
+                        disabled={props.semesterData.loading}
+                        value={field['value'].toString()}
+                        name = {field['name']}
+                        onChange={handleChange}
                     />
                 </Form.Field>
             )

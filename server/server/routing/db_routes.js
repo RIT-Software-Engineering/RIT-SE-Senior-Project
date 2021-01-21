@@ -54,7 +54,7 @@ db_router.get('/getActiveSemesters', (req, res) => {
 
 
 db_router.get('/getActiveProjects', (req, res) => {
-    let getSemestersQuery =
+    let getProjectsQuery =
         `
         SELECT *
         FROM projects
@@ -62,7 +62,7 @@ db_router.get('/getActiveProjects', (req, res) => {
         ON projects.semester = semester_group.semester_id
         WHERE projects.semester IS NOT NULL
     `;
-    db.query(getSemestersQuery).then((values) => {
+    db.query(getProjectsQuery).then((values) => {
         res.send(values);
     }).catch((err) => {
         res.status(500).send(err);
