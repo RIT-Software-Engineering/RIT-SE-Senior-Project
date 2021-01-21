@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react';
+import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Button, Message } from 'semantic-ui-react';
 import _ from 'lodash';
 import "../../css/admin-proposal.css";
 
@@ -27,6 +27,19 @@ const DESCENDING = 'descending';
 export default function Proposals() {
 
     const [proposalData, setProposalData] = useState({});
+    const [messages, setMessages] = useState([]);
+
+    const addMessage = (positive) => {
+        if (positive) {
+            setMessages([...messages, {positive, header: "Success!", content: "Action was successfully updated"}]);
+        } else {
+            setMessages([...messages, {positive, header: "Uh oh...", content: "We were unable to update that action, please try again later."}]);
+        }
+        // FIXME: This causes a race condition if messages are added too fast...
+        setTimeout(() => {
+            setMessages(messages.slice(1));
+        }, 5000);
+    }
 
     useEffect(() => {
 
@@ -56,47 +69,65 @@ export default function Proposals() {
             return {key:  idx, text: PROJECT_STATUSES[status], value: PROJECT_STATUSES[status]}
         })
 
-        return <Dropdown 
-            selection
-            loading={proposal.loading}
-            disabled={proposal.loading}
-            options={options}
-            defaultValue={proposal.status}
-            onChange={(event, change) => {
-                const updatedProposals = [...proposalData.proposals];
-                updatedProposals[idx].loading = true;
-                setProposalData({...proposalData, proposals: updatedProposals});
-                fetch("http://localhost:3001/db/updateProposalStatus", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        project_id: proposal.project_id,
-                        status: change.value
-                    })
-                })
-                .then((response) => {
-                    if (response.ok) {
-                        let updatedProposals = [...proposalData.proposals];
-                        updatedProposals[idx].loading = false;
-                        updatedProposals[idx].status = change.value;
-                        updatedProposals = _.sortBy(updatedProposals, [proposalData.column])
-                        if(proposalData.direction === ASCENDING) {
-                            updatedProposals.reverse();
-                        }
-                        setProposalData({...proposalData, proposals: updatedProposals});
-                    } else {
-                        throw response;
+        return <>
+            <Dropdown 
+                selection
+                disabled={proposal.loading}
+                options={options}
+                value={proposal.editedStatus || proposal.status}
+                onChange={(event, change) => {
+                    const updatedProposals = [...proposalData.proposals];
+                    updatedProposals[idx].editedStatus = change.value;
+                    setProposalData({...proposalData, proposals: updatedProposals});
+                }}
+            />
+            <Button 
+                disabled={proposal.loading}
+                loading={proposal.loading}
+                onClick={(event) => {
+                    if(!proposalData.proposals[idx].editedStatus) {
+                        return;
                     }
-                }).catch((error) => {
-                    let undoProposals = [...proposalData];
-                    undoProposals[idx].loading = false;
-                    setProposalData(undoProposals);
-                    console.error(error);
-                })
-            }}
-        />
+                    const updatedProposals = [...proposalData.proposals];
+                    updatedProposals[idx].loading = true;
+                    setProposalData({...proposalData, proposals: updatedProposals});
+                    fetch("http://localhost:3001/db/updateProposalStatus", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            project_id: proposal.project_id,
+                            status: proposalData.proposals[idx].editedStatus
+                        })
+                    })
+                    .then((response) => {
+                        if (response.ok) {
+                            let updatedProposals = [...proposalData.proposals];
+                            updatedProposals[idx].loading = false;
+                            updatedProposals[idx].status = updatedProposals[idx].editedStatus;
+                            updatedProposals[idx].editedStatus = null;
+                            updatedProposals = _.sortBy(updatedProposals, [proposalData.column]);
+                            if(proposalData.direction === ASCENDING) {
+                                updatedProposals.reverse();
+                            }
+                            setProposalData({...proposalData, proposals: updatedProposals});
+                            addMessage(true)
+                        } else {
+                            throw response;
+                        }
+                    }).catch((error) => {
+                        let undoProposals = [...proposalData.proposals];
+                        undoProposals[idx].loading = false;
+                        setProposalData({...proposalData, proposals: undoProposals});
+                        addMessage(false)
+                        console.error(error);
+                    })
+                }}
+            >
+                Submit
+            </Button>
+        </>
     }
 
     const changeSort = (column) => {
@@ -119,7 +150,6 @@ export default function Proposals() {
 
     const renderProposals = () => {
 
-        console.log(proposalData);
         if(!proposalData.proposals) {
             return <TableRow textAlign='center'><TableCell><Icon name="spinner"/></TableCell></TableRow>;
         }
@@ -149,8 +179,8 @@ export default function Proposals() {
 
             return <TableRow className={rowColor} key={idx}>
                 <TableCell>{proposal.date}</TableCell>{/* TODO: This is dumb -- Consider adding submission date to projects table */}
-                <TableCell>{generateActions(proposal, idx)}</TableCell>
                 <TableCell>{proposal.status}</TableCell>
+                <TableCell>{generateActions(proposal, idx)}</TableCell>
                 <TableCell>
                     <a href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`} target="_blank" rel="noreferrer">
                         {proposal.display_name || proposal.title}
@@ -170,44 +200,54 @@ export default function Proposals() {
     }
 
     return (
-        <Table sortable>
-            <TableHeader>
-                <TableRow>
-                    <TableHeaderCell
-                        sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
-                        onClick={() => changeSort(COLUMNS.DATE)}
-                    >
-                        Date
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                        sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
-                        onClick={() => changeSort(COLUMNS.ACTION)}
-                    >
-                        Action
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                        sorted={proposalData.column === COLUMNS.STATUS ? proposalData.direction : null}
-                        onClick={() => changeSort(COLUMNS.STATUS)}
-                    >
-                        Status
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                        sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
-                        onClick={() => changeSort(COLUMNS.TITLE)}
-                    >
-                        Title
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                        sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
-                        onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
-                    >
-                        Attachments
-                    </TableHeaderCell>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {renderProposals()}
-            </TableBody>
-        </Table>
+        <>
+            {messages.map((message) => {
+                return <Message 
+                    floating
+                    className={message.positive ? 'success' : 'negative'}
+                    header={message.header}
+                    content={message.content}
+                />})
+            }
+            <Table sortable>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.DATE)}
+                        >
+                            Date
+                        </TableHeaderCell>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.STATUS ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.STATUS)}
+                        >
+                            Status
+                        </TableHeaderCell>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.ACTION)}
+                        >
+                            Action
+                        </TableHeaderCell>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.TITLE)}
+                        >
+                            Title
+                        </TableHeaderCell>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
+                        >
+                            Attachments
+                        </TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {renderProposals()}
+                </TableBody>
+            </Table>
+        </>
     )
 }
