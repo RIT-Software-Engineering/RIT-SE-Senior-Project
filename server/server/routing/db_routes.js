@@ -459,6 +459,7 @@ function calculateActiveTimelines() {
             SELECT  projects.team_name, 
                     semester_group.name AS "semester_name", 
                     semester_group.semester_id AS "semester_id",
+                    semester_group.end_date AS "end_date",
                     (
                         SELECT  "[" || group_concat(
                             "{" ||
