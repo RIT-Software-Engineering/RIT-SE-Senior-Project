@@ -1,10 +1,5 @@
-import React, {useState} from 'react';
-import Form from "semantic-ui-react/dist/commonjs/collections/Form";
-import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import {Modal} from "semantic-ui-react";
+import React from 'react';
 import DatabaseTableEditor from "./DatabaseTableEditor";
-
-const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 
 export default function SemesterPanel(props){
 
