@@ -22,12 +22,12 @@ export default function SemesterEditor(props) {
 
     if(semesters){
         for(let i = 0; i < semesters.length; i ++){
-            let semesterData = semesters[i];
+            let semester = semesters[i];
             semesterPanels.push({
-                key: semesterData.semester_id,
-                title: semesterData.name,
+                key: semester.semester_id,
+                title: semester.name,
                 content: {
-                    content: <SemesterPanel {...semesterData} key={'editSemester-' + i}/>
+                    content: <SemesterPanel semester={semester} semesterData={semesters} key={'editSemester-' + i}/>
                 }
             })
         }

@@ -23,13 +23,85 @@ db_router.get('/selectAllSponsorInfo', (req, res) => {
 });
 
 db_router.get('/selectAllStudentInfo', (req, res) => {
-    res.status(404).send('Sorry, route not yet available');
-    /*
-    db.selectAll(DB_CONFIG.tableNames.student_info).then(function(value) {
-        console.log(value);
-        res.send(value);
+    let getStudentsQuery =
+        `
+        SELECT *
+        FROM users
+        LEFT JOIN semester_group
+        ON users.semester_group = semester_group.semester_id
+        WHERE type = 'student'
+        ORDER BY semester_group desc
+    `;
+    db.query(getStudentsQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
     });
-    */
+});
+
+db_router.post('/editUser',
+    (req, res) => {
+
+        let body = req.body;
+
+        let updateQuery = `
+        UPDATE users
+        SET fname = ?,
+            lname = ?,
+            email = ?,
+            type = ?,
+            semester_group = ?,
+            project = ?
+        WHERE system_id = ?
+    `;
+
+        let params = [
+            body.fname,
+            body.lname,
+            body.email,
+            body.type,
+            body.semester_group,
+            body.project,
+            body.system_id
+        ];
+
+        // db.query(updateQuery, params).then(() => {
+        //     return res.status(200).send();
+        // }).catch((err) => {
+        //     res.sendStatus(500)
+        // })
+        return res.status(200).send();
+
+    });
+
+db_router.get('/getActiveSemesters', (req, res) => {
+    let getSemestersQuery =
+        `
+        SELECT *
+        FROM semester_group
+    `;
+    db.query(getSemestersQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
+});
+
+
+db_router.get('/getActiveProjects', (req, res) => {
+    let getProjectsQuery =
+        `
+        SELECT *
+        FROM projects
+        LEFT JOIN semester_group 
+        ON projects.semester = semester_group.semester_id
+        WHERE projects.semester IS NOT NULL
+    `;
+    db.query(getProjectsQuery).then((values) => {
+        res.send(values);
+    }).catch((err) => {
+        res.status(500).send(err);
+    });
 });
 
 db_router.get('/selectAllCoachInfo', (req, res) => {
@@ -422,6 +494,7 @@ function calculateActiveTimelines() {
             SELECT  projects.team_name, 
                     semester_group.name AS "semester_name", 
                     semester_group.semester_id AS "semester_id",
+                    semester_group.end_date AS "end_date",
                     (
                         SELECT  "[" || group_concat(
                             "{" ||

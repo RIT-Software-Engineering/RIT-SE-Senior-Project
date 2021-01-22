@@ -5,17 +5,26 @@ import {Accordion} from "semantic-ui-react";
 export default function ActionEditor() {
 
     const [actions, setActionsData] = useState([]);
+    const [semesters, setSemestersData] = useState([]);
+
 
     useEffect(() => {
         fetch("http://localhost:3001/db/getActions")
             .then((response) => response.json())
             .then((actionsData) => {
                 setActionsData(actionsData);
-                console.log('actionsData', actionsData);
             })
             .catch((error) => {
                 alert("Failed to get actionss data" + error);
             })
+        fetch("http://localhost:3001/db/getSemesters")
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+            })
+            .catch((error) => {
+                alert("Failed to get semestersData data" + error);
+            });
     }, []);
 
     let semesterPanels = [];
@@ -29,24 +38,20 @@ export default function ActionEditor() {
                 key: actionData.action_id,
                 title: actionData.action_title,
                 content: {
-                    content: <ActionPanel {...actionData} key={'editAction-' + i}/>
+                    content: <ActionPanel actionData={actionData} semesterData={semesters} key={'editAction-' + i}/>
                 }
             }]} key={'editingTheAction-'+i} />)
         }
-        console.log('semesterMap: ', Object.entries(semesterMap));
         for (const [key, value] of Object.entries(semesterMap)) {
-            console.log('key, value', key, value);
             semesterPanels.push(
                 <Accordion fluid styled panels={[{
                     key: 'actionEditor-semester-selector-'+key,
                     title: key,
                     content: {content:value}
-                }]} key={'actionEditor'} />
+                }]}  />
             )
         }
     }
-
-    console.log('semester panels: ', semesterPanels);
 
     return(
         <div>

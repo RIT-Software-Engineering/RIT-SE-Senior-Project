@@ -4,7 +4,7 @@ import HomePage from './components/pages/HomePage';
 import SponsorPage from './components/pages/SponsorPage';
 import ProposalPage from './components/pages/ProposalPage';
 import ErrorPage from './components/pages/ErrorPage';
-import AdminPage from './components/pages/AdminPage';
+import DashboardPage from './components/pages/DashboardPage';
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
           <Route path='/' component={HomePage} exact/>
           <Route path='/sponsor' component={SponsorPage} />
           <Route path='/proposalForm' component={ProposalPage} />
-          <Route path='/admin' component={AdminPage} />
+          <Route path='/dashboard' component={DashboardPage} />
           <Route component={ErrorPage} />
         </Switch>
 
