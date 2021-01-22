@@ -47,7 +47,6 @@ export default function DashboardPage() {
     else if (role === 'student'){
         panes = [
             { menuItem: 'Dashboard', render: () => <Tab.Pane><TimeLines/></Tab.Pane> },
-            { menuItem: 'Students', render: () => <Tab.Pane><StudentsTab/></Tab.Pane> },
             { menuItem: 'Team Files', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> }
         ]
     }
