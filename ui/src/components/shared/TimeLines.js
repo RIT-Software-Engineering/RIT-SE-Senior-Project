@@ -5,6 +5,7 @@ import TimelineElement from './TimelineElement';
 export default function TimeLines() {
 
     const [timelines, setTimelines] = useState([]);
+    const [activeSemesters, setActiveSemesters] = useState({});
 
     useEffect(() => {
         fetch("http://localhost:3001/db/getActiveTimelines")
@@ -28,17 +29,41 @@ export default function TimeLines() {
         }
     });
 
+    function handleTitleClick(e, itemProps){
+        let isSemesterActive = activeSemesters[itemProps.content];
+        setActiveSemesters({
+            ...activeSemesters,
+            [itemProps.content]: !isSemesterActive
+        });
+    }
+
     const generateTimeLines = () => {
         return Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
+            if(activeSemesters[semesterData[0]?.semester_name] === undefined){
+                const parts = semesterData[0].end_date.split("/");
+                const endDate = new Date(parseInt(parts[2], 10),
+                    parseInt(parts[1], 10) - 1,
+                    parseInt(parts[0], 10));
+                const today = new Date();
+                const active = endDate > today;
+                activeSemesters[semesterData[0]?.semester_name] = active;
+            }
+
             const semester = [{
                 key: semesterData[0]?.semester_id,
                 title: semesterData[0]?.semester_name,
+                active: activeSemesters[semesterData[0]?.semester_name],
                 content: {
                     content: semesterData?.map((timelineElementData) => <TimelineElement key={"timeline-" } {...timelineElementData} />)
-                }
-            }]
-            return (<Accordion fluid styled panels={semester} key={idx} />)
+                },
+                semester_id: semesterData[0]?.semester_id
+            }];
+            return (<Accordion fluid styled
+                               panels={semester}
+                               key={idx}
+                               onTitleClick={handleTitleClick}
+            />)
         })
     }
 
