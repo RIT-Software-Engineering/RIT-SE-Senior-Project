@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Accordion} from "semantic-ui-react";
+import StudentEditPanel from "./StudentEditPanel";
 
 export default function StudentsTab(){
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
 
+    const unassignedStudentsStr = 'Unassigned students';
 
     useEffect(() => {
         fetch("http://localhost:3001/db/selectAllStudentInfo")
@@ -58,18 +60,18 @@ export default function StudentsTab(){
 
                 if(student.project){
                     if (!semesterMap[student.name][student.project]) { semesterMap[student.name][student.project] = []; }
-                    semesterMap[student.name][student.project].push(<p>This will be a student component who's name is {student.fname + ' ' + student.lname}</p>);
+                    semesterMap[student.name][student.project].push(<StudentEditPanel student={student}/>);
 
                 }
                 else{
-                    if (!semesterMap[student.name]['Unassigned students']) { semesterMap[student.name]['Unassigned students'] = []; }
-                    semesterMap[student.name]['Unassigned students'].push(<p>This will be a student component who's name is {student.fname + ' ' + student.lname}</p>);
+                    if (!semesterMap[student.name][unassignedStudentsStr]) { semesterMap[student.name][unassignedStudentsStr] = []; }
+                    semesterMap[student.name][unassignedStudentsStr].push(<StudentEditPanel student={student}/>);
                 }
 
             }
             else{
-                if (!semesterMap['Unassigned students']) { semesterMap['Unassigned students'] = []; }
-                semesterMap['Unassigned students'].push(<p>This will be a student component who's name is {student.fname + ' ' + student.lname}</p>);
+                if (!semesterMap[unassignedStudentsStr]) { semesterMap[unassignedStudentsStr] = []; }
+                semesterMap[unassignedStudentsStr].push(<StudentEditPanel student={student}/>);
 
             }
         }
@@ -95,13 +97,25 @@ export default function StudentsTab(){
                 let val = projects || {};
 
                 for (const [projectId, studentPanels] of Object.entries(val)) {
-                    projectPanels.push(
-                        <Accordion fluid styled panels={[{
-                            key: 'StudentsTab-project-selector-' + projectMap[projectId]||'Unassigned students',
-                            title: projectMap[projectId] || 'Unassigned students',
-                            content: {content:studentPanels}
-                        }]} />
-                    );
+                    console.log('projectId: ', projectId);
+                    if(projectId !== unassignedStudentsStr){
+                        projectPanels.push(
+                            <Accordion fluid styled panels={[{
+                                key: 'StudentsTab-project-selector-' + projectMap[projectId],
+                                title: projectMap[projectId],
+                                content: {content:studentPanels}
+                            }]} />
+                        );
+                    }
+                    else {
+                        projectPanels.push(
+                            <Accordion fluid styled panels={[{
+                                key: 'StudentsTab-project-selector-' + unassignedStudentsStr,
+                                title: unassignedStudentsStr,
+                                content: {content:studentPanels}
+                            }]} />
+                        );
+                    }
                 }
 
 
