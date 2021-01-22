@@ -39,6 +39,41 @@ db_router.get('/selectAllStudentInfo', (req, res) => {
     });
 });
 
+db_router.post('/editUser',
+    (req, res) => {
+
+        let body = req.body;
+
+        let updateQuery = `
+        UPDATE users
+        SET fname = ?,
+            lname = ?,
+            email = ?,
+            type = ?,
+            semester_group = ?,
+            project = ?
+        WHERE system_id = ?
+    `;
+
+        let params = [
+            body.fname,
+            body.lname,
+            body.email,
+            body.type,
+            body.semester_group,
+            body.project,
+            body.system_id
+        ];
+
+        // db.query(updateQuery, params).then(() => {
+        //     return res.status(200).send();
+        // }).catch((err) => {
+        //     res.sendStatus(500)
+        // })
+        return res.status(200).send();
+
+    });
+
 db_router.get('/getActiveSemesters', (req, res) => {
     let getSemestersQuery =
         `

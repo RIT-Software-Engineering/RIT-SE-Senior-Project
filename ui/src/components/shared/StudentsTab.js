@@ -60,22 +60,39 @@ export default function StudentsTab(){
 
                 if(student.project){
                     if (!semesterMap[student.name][student.project]) { semesterMap[student.name][student.project] = []; }
-                    semesterMap[student.name][student.project].push(<StudentEditPanel student={student}/>);
+                    semesterMap[student.name][student.project].push(
+                        <Accordion fluid styled panels={[{
+                            key: 'Student-selector-' + student.fname + ' ' + student.lname,
+                            title: student.fname + ' ' + student.lname,
+                            content: {content:<StudentEditPanel studentData={student} semesterData={semesters} editProject={true}/>}
+                        }]} />
+                    );
 
                 }
                 else{
                     if (!semesterMap[student.name][unassignedStudentsStr]) { semesterMap[student.name][unassignedStudentsStr] = []; }
-                    semesterMap[student.name][unassignedStudentsStr].push(<StudentEditPanel student={student}/>);
+                    semesterMap[student.name][unassignedStudentsStr].push(
+                        <Accordion fluid styled panels={[{
+                            key: 'Student-selector-' + student.fname + ' ' + student.lname,
+                            title: student.fname + ' ' + student.lname,
+                            content: {content:<StudentEditPanel studentData={student} semesterData={semesters} editProject={true}/>}
+                        }]} />
+                    );
                 }
 
             }
             else{
                 if (!semesterMap[unassignedStudentsStr]) { semesterMap[unassignedStudentsStr] = []; }
-                semesterMap[unassignedStudentsStr].push(<StudentEditPanel student={student}/>);
+                semesterMap[unassignedStudentsStr].push(
+                    <Accordion fluid styled panels={[{
+                        key: 'Student-selector-' + student.fname + ' ' + student.lname,
+                        title: student.fname + ' ' + student.lname,
+                        content: {content:<StudentEditPanel studentData={student} semesterData={semesters} editProject={false}/>}
+                    }]} />
+                );
 
             }
         }
-        console.log('semesterMap: ', semesterMap);
         return semesterMap
     }
 
@@ -97,8 +114,12 @@ export default function StudentsTab(){
                 let val = projects || {};
 
                 for (const [projectId, studentPanels] of Object.entries(val)) {
-                    console.log('projectId: ', projectId);
-                    if(projectId !== unassignedStudentsStr){
+                    if(semesterName === unassignedStudentsStr){
+                        projectPanels.push(
+                            studentPanels
+                        );
+                    }
+                    else if(projectId !== unassignedStudentsStr){
                         projectPanels.push(
                             <Accordion fluid styled panels={[{
                                 key: 'StudentsTab-project-selector-' + projectMap[projectId],
