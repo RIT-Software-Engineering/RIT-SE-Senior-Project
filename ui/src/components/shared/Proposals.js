@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Button, Message } from 'semantic-ui-react';
+import ProjectEditor from "../shared/ProjectEditor";
 import _ from 'lodash';
 import "../../css/admin-proposal.css";
 
@@ -19,6 +20,7 @@ const COLUMNS = {
     STATUS: 'status',
     TITLE: 'title',
     ATTACHMENTS: 'attachments',
+    EDIT: 'edit',
 }
 
 const ASCENDING = 'ascending';
@@ -69,8 +71,9 @@ export default function Proposals() {
             return {key:  idx, text: PROJECT_STATUSES[status], value: PROJECT_STATUSES[status]}
         })
 
-        return <>
+        return <div className="proposal-status-action">
             <Dropdown 
+                className='button'
                 selection
                 disabled={proposal.loading}
                 options={options}
@@ -84,6 +87,7 @@ export default function Proposals() {
             <Button 
                 disabled={proposal.loading}
                 loading={proposal.loading}
+                color={proposal.editedStatus && "yellow"}
                 onClick={(event) => {
                     if(!proposalData.proposals[idx].editedStatus) {
                         return;
@@ -127,7 +131,7 @@ export default function Proposals() {
             >
                 Submit
             </Button>
-        </>
+        </div>
     }
 
     const changeSort = (column) => {
@@ -186,7 +190,7 @@ export default function Proposals() {
                         {proposal.display_name || proposal.title}
                     </a>
                 </TableCell>
-                <TableCell>
+                <TableCell className="attachments">
                 {proposal.attachments?.split(', ').map((attachment, attachmentIdx) => {
                     return (<React.Fragment key={attachmentIdx}>
                                 <a href={`http://localhost:3001/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`} target="_blank" rel="noreferrer">
@@ -194,6 +198,9 @@ export default function Proposals() {
                                 </a><br/>
                             </React.Fragment>)
                 })}
+                </TableCell>
+                <TableCell>
+                    <ProjectEditor project={proposal} />
                 </TableCell>
             </TableRow>
         }));
@@ -209,7 +216,12 @@ export default function Proposals() {
                     content={message.content}
                 />})
             }
-            <Table sortable>
+            <h1>Edit Projects</h1>
+                <a href="http://localhost:3000/proposal-form" target="_blank" rel="noreferrer">
+                    <Icon name="plus"/>Create Project
+                </a>
+            <h3>Projects</h3>
+            <Table sortable fluid>
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell
@@ -241,6 +253,12 @@ export default function Proposals() {
                             onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
                         >
                             Attachments
+                        </TableHeaderCell>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.EDIT)}
+                        >
+                            Edit
                         </TableHeaderCell>
                     </TableRow>
                 </TableHeader>
