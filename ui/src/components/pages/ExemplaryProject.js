@@ -1,5 +1,5 @@
 import React from "react";
-import { Accordion } from 'semantic-ui-react'
+import { Accordion } from "semantic-ui-react";
 
 const basePosterURL = "http://localhost:3001/db/getPoster?fileName=";
 
@@ -32,11 +32,15 @@ function ExemplaryProject({ project }) {
                 </div>
             </div>
             <div className="row">
-                <Accordion panels={[{
-                    key:0,
-                    title: project.title,
-                    content: {content: <p>{project.synopsis}</p>}
-                }]}/>
+                <Accordion
+                    panels={[
+                        {
+                            key: 0,
+                            title: project.title,
+                            content: { content: <p>{project.synopsis}</p> },
+                        },
+                    ]}
+                />
             </div>
         </div>
     );

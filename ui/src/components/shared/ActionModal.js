@@ -1,12 +1,11 @@
-import React, {useState} from "react";
-import { Button, Modal } from 'semantic-ui-react';
+import React, { useState } from "react";
+import { Button, Modal } from "semantic-ui-react";
 
-const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
+const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
-export default function ActionModal(props){
+export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
-
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -14,13 +13,14 @@ export default function ActionModal(props){
                 return {
                     header: "Success",
                     content: "Your submission has been received.",
-                    actions: [{header: "Success!", content:"Done", positive: true, key:0}]
+                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
-                    content: "We were unable to receive your submission. You can try again later or contact our support team that we don't have...",
-                    actions: [{header: "There was an issue", content:"Keep editing...", positive: true, key:0}]
+                    content:
+                        "We were unable to receive your submission. You can try again later or contact our support team that we don't have...",
+                    actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
                 };
             default:
                 return;
@@ -42,8 +42,7 @@ export default function ActionModal(props){
         props.isOpenCallback(false);
     };
 
-    return(
-
+    return (
         <Modal
             onClose={() => {
                 setOpen(false);
@@ -61,24 +60,23 @@ export default function ActionModal(props){
                 <Modal.Description>
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
                 </Modal.Description>
-                <Modal
-                    open={!!submissionModalOpen}
-                    {...generateModalFields()}
-                    onClose={() => closeSubmissionModal()}
-                />
+                <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
             </Modal.Content>
             <Modal.Actions>
-                <Button color='black' onClick={() => {
-                    onActionCancel();
-                    setOpen(false);
-                    props.isOpenCallback(false);
-                }}>
+                <Button
+                    color="black"
+                    onClick={() => {
+                        onActionCancel();
+                        setOpen(false);
+                        props.isOpenCallback(false);
+                    }}
+                >
                     Cancel
                 </Button>
                 <Button
                     content="Submit"
-                    labelPosition='right'
-                    icon='checkmark'
+                    labelPosition="right"
+                    icon="checkmark"
                     onClick={() => {
                         onActionSubmit(props.id);
                     }}
@@ -86,35 +84,30 @@ export default function ActionModal(props){
                 />
             </Modal.Actions>
         </Modal>
-
     );
 
-
-    function onActionSubmit(id){
+    function onActionSubmit(id) {
         let form = document.forms.item(0);
-        if(form === null){
-        }
-        else{
-            const formData = new FormData(document.querySelector('form'));
-            fetch('http://localhost:3001/db/submitAction',{
+        if (form === null) {
+        } else {
+            const formData = new FormData(document.querySelector("form"));
+            fetch("http://localhost:3001/db/submitAction", {
                 method: "post",
                 body: formData,
-            }).then((response) => {
-                if(response.status === 200) {
-                    setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-                } else {
-                    setSubmissionModalOpen(MODAL_STATUS.FAIL);
-                }
-            }).catch((error) => {
-                // TODO: Redirect to failed page or handle errors
-                console.error(error);
             })
+                .then((response) => {
+                    if (response.status === 200) {
+                        setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+                    } else {
+                        setSubmissionModalOpen(MODAL_STATUS.FAIL);
+                    }
+                })
+                .catch((error) => {
+                    // TODO: Redirect to failed page or handle errors
+                    console.error(error);
+                });
         }
     }
 
-
-
-    function onActionCancel(){
-
-    }
+    function onActionCancel() {}
 }

@@ -14,7 +14,6 @@
     font-size: 16pt;
 }
 
-
 .projectTitle {
     margin-top: -5px;
 }
@@ -37,9 +36,9 @@ footer {
 }
 
 @media only screen and (max-width: 768px) {
-        #navButtons {
-            display: none;
-        }
+    #navButtons {
+        display: none;
+    }
 }
 
 @media only screen and (max-device-width: 768px) {
