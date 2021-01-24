@@ -254,61 +254,60 @@ function ProposalPage() {
                             information.
                         </p>
                     </Form.Field>
+                    <br />
+                    <div className="row">
+                        <h3>The agreements and policies can be found at:</h3>
+                    </div>
+                    <div className="row">
+                        <ul>
+                            <li>
+                                <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectAgreement.doc">
+                                    Student Course Project Intellectual Property and Non-Disclosure Agreement
+                                </a>
+                            </li>
+                            <li>
+                                <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectLimitedAgreement.doc">
+                                    Student Course Project Limited Use and Non-Disclosure Agreement
+                                </a>
+                            </li>
+                            <li>
+                                <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectOpenSourceAgreement.doc">
+                                    Student Course Project Open Source Agreement
+                                </a>
+                            </li>
+                            <li>
+                                <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/FacultyCourseProjectAgreement.doc">
+                                    Faculty Course Project Non-Disclosure Agreement
+                                </a>
+                            </li>
+                            <li>
+                                <a target="_blank" rel="noreferrer" href="http://www.rit.edu/academicaffairs/policiesmanual/c030">
+                                    RIT Intellectual Property Policy C03.0. The project agreements are consistent with section C03.0 1.V.B.2
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="row">
+                        <h3>Please review your answers before submitting.</h3>
+                    </div>
+
+                    <div className="two column row">
+                        <div className="column">
+                            <button className="ui deny left floated left labeled icon button" onClick={() => {history.push('/sponsor')}}>
+                                Cancel
+                                <i className="times icon"></i>
+                            </button>
+                        </div>
+                        <div className="column">
+                            <button id="formSubmit" className="ui blue right floated left labeled icon button" form="proposalForm">
+                                Submit
+                                <i className="checkmark icon"></i>
+                            </button>
+                        </div>
+                    </div>
                 </Form>
-                <br />
-                <div className="row">
-                    <h3>The agreements and policies can be found at:</h3>
-                </div>
-                <div className="row">
-                    <ul>
-                        <li>
-                            <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectAgreement.doc">
-                                Student Course Project Intellectual Property and Non-Disclosure Agreement
-                            </a>
-                        </li>
-                        <li>
-                            <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectLimitedAgreement.doc">
-                                Student Course Project Limited Use and Non-Disclosure Agreement
-                            </a>
-                        </li>
-                        <li>
-                            <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/StudentCourseProjectOpenSourceAgreement.doc">
-                                Student Course Project Open Source Agreement
-                            </a>
-                        </li>
-                        <li>
-                            <a target="_blank" rel="noreferrer" href="http://www.se.rit.edu/~swen-561/CourseInformation/FacultyCourseProjectAgreement.doc">
-                                Faculty Course Project Non-Disclosure Agreement
-                            </a>
-                        </li>
-                        <li>
-                            <a target="_blank" rel="noreferrer" href="http://www.rit.edu/academicaffairs/policiesmanual/c030">
-                                RIT Intellectual Property Policy C03.0. The project agreements are consistent with section C03.0 1.V.B.2
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="row">
-                    <h3>Please review your answers before submitting.</h3>
-                </div>
-
-                <div className="two column row">
-                    <div className="column">
-                        <button className="ui deny left floated left labeled icon button" onClick={() => {history.push('/sponsor')}}>
-                            Cancel
-                            <i className="times icon"></i>
-                        </button>
-                    </div>
-                    <div className="column">
-                        <button id="formSubmit" className="ui blue right floated left labeled icon button" form="proposalForm">
-                            Submit
-                            <i className="checkmark icon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="row"></div>
+                    <div className="row"></div>
             </div>
             <Footer/>
         </div>

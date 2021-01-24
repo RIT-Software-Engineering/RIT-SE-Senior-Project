@@ -1,12 +1,12 @@
 import React from 'react'
 import { Tab } from 'semantic-ui-react'
+import { useLocation } from "react-router";
 import Proposals from '../shared/Proposals';
 import TimeLines from '../shared/TimeLines';
-import './../../css/admin.css'
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
-import {useLocation} from "react-router";
+import './../../css/dashboard.css'
 
 export default function DashboardPage() {
     function useQuery() {

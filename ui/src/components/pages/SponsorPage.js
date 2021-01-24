@@ -106,7 +106,7 @@ function SponsorPage() {
                     </p>
                 </div>
                 <div className="row">
-                    <button id="proposalBtn" className="ui button" onClick={() => history.push('/proposalForm')}>Submit a Project Proposal</button>
+                    <button id="proposalBtn" className="ui button" onClick={() => history.push('/proposal-form')}>Submit a Project Proposal</button>
                 </div>
 
                 <div className="ui divider"></div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Dropdown, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Button, Message } from 'semantic-ui-react';
 import ProjectEditor from "../shared/ProjectEditor";
 import _ from 'lodash';
-import "../../css/admin-proposal.css";
+import "../../css/dashboard-proposal.css";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -246,7 +246,7 @@ export default function Proposals() {
                             sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
                             onClick={() => changeSort(COLUMNS.TITLE)}
                         >
-                            Title
+                            Name (pdf)
                         </TableHeaderCell>
                         <TableHeaderCell
                             sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
