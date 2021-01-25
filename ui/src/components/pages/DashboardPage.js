@@ -113,26 +113,5 @@ export default function DashboardPage() {
     } else {
     }
 
-    return (
-        <div id="page">
-            <div
-                className="ui inverted basic blue segment"
-                style={{ height: "6em", width: "100%", position: "absolute", left: "0", top: "0", zIndex: -1 }}
-            ></div>
-            <br />
-            <div className="ui container grid">
-                <div className="row">
-                    <h1 className="ui header">
-                        Senior Project
-                        <div className="sub header" style={{ color: "rgb(218, 218, 218)", fontWeight: "400" }}>
-                            Administrative Interface
-                        </div>
-                    </h1>
-                </div>
-                <div className="row">
-                    <Tab panes={panes} className="admin-menu" />
-                </div>
-            </div>
-        </div>
-    );
+    return <Tab panes={panes} className="admin-menu" />;
 }

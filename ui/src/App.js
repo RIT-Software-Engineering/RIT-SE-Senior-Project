@@ -5,16 +5,27 @@ import SponsorPage from "./components/pages/SponsorPage";
 import ProposalPage from "./components/pages/ProposalPage";
 import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
+import Header from "./components/shared/Header";
+import Footer from "./components/shared/Footer";
+import { Container } from "semantic-ui-react";
 
 function App() {
     return (
-        <Switch>
-            <Route path="/" component={HomePage} exact />
-            <Route path="/sponsor" component={SponsorPage} />
-            <Route path="/proposal-form" component={ProposalPage} />
-            <Route path="/dashboard" component={DashboardPage} />
-            <Route component={ErrorPage} />
-        </Switch>
+        <>
+            <Header />
+            <div id="page">
+                <Container>
+                    <Switch>
+                        <Route path="/" component={HomePage} exact />
+                        <Route path="/sponsor" component={SponsorPage} />
+                        <Route path="/proposal-form" component={ProposalPage} />
+                        <Route path="/dashboard" component={DashboardPage} />
+                        <Route component={ErrorPage} />
+                    </Switch>
+                </Container>
+            </div>
+            <Footer />
+        </>
     );
 }
 

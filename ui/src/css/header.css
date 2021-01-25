@@ -1,0 +1,23 @@
+#header {
+    height: var(--header-height);
+    background-color: #f76902;
+}
+
+#header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+    #navButtons {
+        display: none;
+    }
+}
+
+@media only screen and (max-device-width: 768px) {
+    #navButtons {
+        display: none;
+    }
+}

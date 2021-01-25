@@ -1,0 +1,5 @@
+#footer {
+    min-height: var(--footer-height);
+    background-color: black;
+    color: white;
+}

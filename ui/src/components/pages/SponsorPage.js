@@ -1,8 +1,6 @@
 import React from "react";
 import { Accordion } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
-import Header from "./../shared/Header";
-import Footer from "./../shared/Footer";
 
 function SponsorPage() {
     const history = useHistory();
@@ -181,48 +179,39 @@ function SponsorPage() {
     ];
 
     return (
-        <div id="page">
-            <div
-                className="ui inverted basic blue segment"
-                style={{ height: "6em", width: "100%", position: "absolute", left: "0", top: "0", zIndex: "-1" }}
-            ></div>
-            <br />
-            <div id="contentGrid" className="ui stackable grid container">
-                <Header />
-                <div className="row">
-                    <h2 className="ui header">Become a Project Sponsor</h2>
-                </div>
-                <div className="row">
-                    <p>
-                        Please reference the{" "}
-                        <a href="../doc/ProposalInstructions.pdf" target="_blank">
-                            proposal instructions
-                        </a>{" "}
-                        as you prepare your project proposal.
-                    </p>
-                </div>
-                <div className="row">
-                    <button id="proposalBtn" className="ui button" onClick={() => history.push("/proposal-form")}>
-                        Submit a Project Proposal
-                    </button>
-                </div>
-
-                <div className="ui divider"></div>
-
-                <div className="row">
-                    <h2 className="ui header">Sponsor F.A.Q.</h2>
-                </div>
-                <div className="row">
-                    <p>
-                        Is your organization interested in sponsoring a Senior Project? Browse the FAQs below for more
-                        information.
-                    </p>
-                    <br />
-                    <Accordion styled fluid panels={questions} />
-                </div>
+        <>
+            <div className="row">
+                <h2 className="ui header">Become a Project Sponsor</h2>
             </div>
-            <Footer />
-        </div>
+            <div className="row">
+                <p>
+                    Please reference the{" "}
+                    <a href="../doc/ProposalInstructions.pdf" target="_blank">
+                        proposal instructions
+                    </a>{" "}
+                    as you prepare your project proposal.
+                </p>
+            </div>
+            <div className="row">
+                <button id="proposalBtn" className="ui button" onClick={() => history.push("/proposal-form")}>
+                    Submit a Project Proposal
+                </button>
+            </div>
+
+            <div className="ui divider"></div>
+
+            <div className="row">
+                <h2 className="ui header">Sponsor F.A.Q.</h2>
+            </div>
+            <div className="row">
+                <p>
+                    Is your organization interested in sponsoring a Senior Project? Browse the FAQs below for more
+                    information.
+                </p>
+                <br />
+                <Accordion styled fluid panels={questions} />
+            </div>
+        </>
     );
 }
 export default SponsorPage;
