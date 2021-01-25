@@ -1,0 +1,30 @@
+.proposal-row-gray {
+    background: #dddddd;
+    color: #666666;
+}
+
+.proposal-row-yellow {
+    background: #fffaf3;
+    color: #573a08;
+}
+
+.proposal-row-green {
+    background: #fcfff5;
+    color: #2c662d;
+}
+
+.proposal-status-action {
+    display: flex;
+    justify-content: space-between;
+}
+
+.proposal-status-action .dropdown {
+    margin-right: 0.33em;
+}
+
+td.attachments {
+    max-width: 25em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
