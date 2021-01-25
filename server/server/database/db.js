@@ -1,17 +1,16 @@
 /**
  * Responsible for coordinating interactions with the senior_projects database
  * Wiki for sqlite3 on nodejs can be found at @see https://github.com/mapbox/node-sqlite3/wiki
-*/
-const PATH = require('path');
-const SQLITE3 = require('sqlite3').verbose();
-const CONFIG = require('./db_config');
+ */
+const PATH = require("path");
+const SQLITE3 = require("sqlite3").verbose();
+const CONFIG = require("./db_config");
 
 /**
- * @class DBHandler takes a table name and creates an object to interact with the specified table. 
+ * @class DBHandler takes a table name and creates an object to interact with the specified table.
  * Table names can be set post-instantiation in order to interact with other tables.
  */
 module.exports = class DBHandler {
-
     constructor() {
         /**
          * @property The senior projects DB. Internal class use only.
@@ -20,7 +19,6 @@ module.exports = class DBHandler {
         this.seniorProjectsDB;
 
         this.closeDB = this.closeDB.bind(this);
-        
     }
 
     /**
@@ -28,21 +26,25 @@ module.exports = class DBHandler {
      * @private
      */
     openReadWrite() {
-        this.seniorProjectsDB = new SQLITE3.Database(PATH.join(__dirname, CONFIG.dbFileName), SQLITE3.OPEN_READWRITE, (err) => {
-            if (err) {
-                console.error(err.message);
+        this.seniorProjectsDB = new SQLITE3.Database(
+            PATH.join(__dirname, CONFIG.dbFileName),
+            SQLITE3.OPEN_READWRITE,
+            (err) => {
+                if (err) {
+                    console.error(err.message);
+                }
+                console.log("Opened Database ");
             }
-            console.log('Opened Database ');
-        });
+        );
     }
     /**
      * Closes the database. Internal class use only.
-     * @private 
+     * @private
      */
     closeDB() {
-        if(this.seniorProjectsDB) {
+        if (this.seniorProjectsDB) {
             this.seniorProjectsDB.close();
-            console.log('Closed database ');
+            console.log("Closed database ");
         }
     }
 
@@ -51,18 +53,14 @@ module.exports = class DBHandler {
      * @param {String} sql The sql query to execute. Use prepared statements.
      * @param {Array} values corresponding values, if any, to prepare into the query
      * @returns {Promise} The resulting rows, if any, of the query. For operations such as insert, it will be empty.
-    */
+     */
     query(sql, values = []) {
         return new Promise((resolve, reject) => {
             this.openReadWrite();
             if (this.seniorProjectsDB) {
                 this.seniorProjectsDB.all(sql, values, (err, rows) => {
-                    
-                    if (err) 
-                        reject(err);
-    
-                    else
-                        resolve(rows);
+                    if (err) reject(err);
+                    else resolve(rows);
                 });
             }
         });
@@ -77,15 +75,12 @@ module.exports = class DBHandler {
         return new Promise((resolve, reject) => {
             this.openReadWrite();
             if (this.seniorProjectsDB) {
-                let sql = 'SELECT * FROM ' + table;
-                
+                let sql = "SELECT * FROM " + table;
+
                 this.seniorProjectsDB.all(sql, [], (err, rows) => {
                     this.closeDB();
-                    if (err) 
-                        reject(err);
-                    
-                    else
-                        resolve(rows);
+                    if (err) reject(err);
+                    else resolve(rows);
                 });
             }
         });

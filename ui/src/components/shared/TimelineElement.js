@@ -1,15 +1,14 @@
 import React from "react";
 import ToolTip from "./ToolTip";
 
-export default function TimelineElement(props){
+export default function TimelineElement(props) {
     let totalWeight = 0;
     let actionsComponents = [];
 
     props.actions.forEach((action) => {
-        if (action.state === 'yellow' || action.state === 'red'){
+        if (action.state === "yellow" || action.state === "red") {
             totalWeight += 3;
-        }
-        else {
+        } else {
             totalWeight += 1;
         }
     });
@@ -18,14 +17,10 @@ export default function TimelineElement(props){
 
     props.actions.forEach((action, index) => {
         let width = baseSize;
-        let rectInnerHtml = (<div></div>);
-        if (action.state === 'yellow' || action.state === 'red') {
+        let rectInnerHtml = <div></div>;
+        if (action.state === "yellow" || action.state === "red") {
             width = baseSize * 3;
-            rectInnerHtml = (
-                <div className = "action-bar-text">
-                    {action.action_title}
-                </div>
-            );
+            rectInnerHtml = <div className="action-bar-text">{action.action_title}</div>;
         }
 
         let rect = (
@@ -34,7 +29,7 @@ export default function TimelineElement(props){
                     backgroundColor: action.state,
                     width: width + "%",
                 }}
-                id={props.team_name.replace(/\s/g,'') + '-' + index} 
+                id={props.team_name.replace(/\s/g, "") + "-" + index}
                 className="action-bar"
                 key={index}
             >
@@ -42,24 +37,15 @@ export default function TimelineElement(props){
             </div>
         );
 
-        let toolTip = (<ToolTip
-            trigger={rect}
-            key={"tooltip-" + action.action_title + "-" + index}
-            action={action}
-        />);
+        let toolTip = <ToolTip trigger={rect} key={"tooltip-" + action.action_title + "-" + index} action={action} />;
 
         actionsComponents.push(toolTip);
     });
 
-
     return (
         <div>
-            <h3>
-                {props.team_name}
-            </h3>
-            <div className="actions-container">
-                {actionsComponents}
-            </div>
+            <h3>{props.team_name}</h3>
+            <div className="actions-container">{actionsComponents}</div>
         </div>
     );
 }

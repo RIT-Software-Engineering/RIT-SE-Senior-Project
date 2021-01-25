@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {Accordion} from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Accordion } from "semantic-ui-react";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterEditor(props) {
-
     const [semesters, setSemestersData] = useState([]);
 
     useEffect(() => {
@@ -15,34 +14,38 @@ export default function SemesterEditor(props) {
             })
             .catch((error) => {
                 alert("Failed to get semesters data" + error);
-            })
+            });
     }, []);
 
-        let semesterPanels = [];
+    let semesterPanels = [];
 
-    if(semesters){
-        for(let i = 0; i < semesters.length; i ++){
+    if (semesters) {
+        for (let i = 0; i < semesters.length; i++) {
             let semester = semesters[i];
             semesterPanels.push({
                 key: semester.semester_id,
                 title: semester.name,
                 content: {
-                    content: <SemesterPanel semester={semester} semesterData={semesters} key={'editSemester-' + i}/>
-                }
-            })
+                    content: <SemesterPanel semester={semester} semesterData={semesters} key={"editSemester-" + i} />,
+                },
+            });
         }
     }
-    let semestersToEdit = (<Accordion fluid styled panels={semesterPanels} key={'semestersToEdit'} />);
+    let semestersToEdit = <Accordion fluid styled panels={semesterPanels} key={"semestersToEdit"} />;
 
-return(
-    <div>
-        <Accordion fluid styled panels={[{
-            key: 'semesterEditor',
-            title: 'Semester Editor',
-            content: {content:semestersToEdit}
-        }]}
-        />
-    </div>
-);
-
+    return (
+        <div>
+            <Accordion
+                fluid
+                styled
+                panels={[
+                    {
+                        key: "semesterEditor",
+                        title: "Semester Editor",
+                        content: { content: semestersToEdit },
+                    },
+                ]}
+            />
+        </div>
+    );
 }

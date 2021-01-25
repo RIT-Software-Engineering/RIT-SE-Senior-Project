@@ -1,49 +1,20 @@
+:root {
+    --header-height: 6em;
+    --footer-height: 12em;
+    --page-padding: 1.5em;
+}
+
 #page {
-    position: relative;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--page-padding) - var(--page-padding));
+    margin: var(--page-padding) 0 var(--page-padding) 0;
 }
 
-#mainHeader {
-    color: white;
-}
-
-#contentGrid {
-    padding-bottom: 6em; /*Keep this bigger than footer height! */
-}
 .overviewText {
     font-size: 16pt;
-}
-
-
-.projectTitle {
-    margin-top: -5px;
-}
-
-.projectGrid {
-    margin-left: -1em !important;
 }
 
 .pagination-container {
     width: 100%;
     display: flex;
     justify-content: center;
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 4em;
-}
-
-@media only screen and (max-width: 768px) {
-        #navButtons {
-            display: none;
-        }
-}
-
-@media only screen and (max-device-width: 768px) {
-    #navButtons {
-        display: none;
-    }
 }
