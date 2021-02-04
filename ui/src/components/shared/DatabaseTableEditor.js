@@ -106,6 +106,20 @@ export default function DatabaseTableEditor(props) {
                     </Form.Field>
                 );
                 break;
+            case "date":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.Input
+                            label={field.label}
+                            type="date"
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
             case "textArea":
                 fieldComponents.push(
                     <Form.Field key={field.name}>
