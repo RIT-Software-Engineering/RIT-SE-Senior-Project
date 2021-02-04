@@ -11,7 +11,7 @@ import {
     Button,
     Message,
 } from "semantic-ui-react";
-import ProjectEditor from "../shared/ProjectEditor";
+import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
 import "../../css/dashboard-proposal.css";
 
@@ -37,9 +37,23 @@ const COLUMNS = {
 const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
-export default function Proposals() {
-    const [proposalData, setProposalData] = useState({});
+export default function Proposals(props) {
     const [messages, setMessages] = useState([]);
+    const [proposalData, setProposalData] = useState({});
+
+    useEffect(() => {
+        const newProposalData = {
+            proposals: [],
+            column: COLUMNS.DATE,
+            direction: DESCENDING,
+        };
+        props.proposalData.forEach((proposal) => {
+            proposal.date = proposal.title.split("_")[0];
+            newProposalData.proposals.push(proposal);
+        });
+        newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE]);
+        setProposalData(newProposalData);
+    }, [props.proposalData]);
 
     const addMessage = (positive) => {
         if (positive) {
@@ -59,28 +73,6 @@ export default function Proposals() {
             setMessages(messages.slice(1));
         }, 5000);
     };
-
-    useEffect(() => {
-        // TODO: Do pagination
-        fetch("http://localhost:3001/db/getProposals")
-            .then((response) => response.json())
-            .then((proposals) => {
-                const newProposalData = {
-                    proposals: [],
-                    column: COLUMNS.DATE,
-                    direction: DESCENDING,
-                };
-                proposals.forEach((proposal) => {
-                    proposal.date = proposal.title.split("_")[0];
-                    newProposalData.proposals.push(proposal);
-                });
-                newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE]);
-                setProposalData(newProposalData);
-            })
-            .catch((error) => {
-                alert("Failed to get proposal data " + error);
-            });
-    }, []);
 
     const generateActions = (proposal, idx) => {
         const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
@@ -239,11 +231,19 @@ export default function Proposals() {
                         })}
                     </TableCell>
                     <TableCell>
-                        <ProjectEditor project={proposal} />
+                        <ProjectEditorModal project={proposal} />
                     </TableCell>
                 </TableRow>
             );
         });
+    };
+
+    const semesterName = () => {
+        if (props.semester === null) {
+            return <h4>No semester</h4>;
+        }
+
+        return props.semester?.name && <h4>{props.semester.name}</h4>;
     };
 
     return (
@@ -258,13 +258,9 @@ export default function Proposals() {
                     />
                 );
             })}
-            <h1>Edit Projects</h1>
-            <a href="http://localhost:3000/proposal-form" target="_blank" rel="noreferrer">
-                <Icon name="plus" />
-                Create Project
-            </a>
-            <h3>Projects</h3>
-            <Table sortable fluid>
+
+            {semesterName()}
+            <Table sortable>
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell
