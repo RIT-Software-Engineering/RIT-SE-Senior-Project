@@ -97,7 +97,6 @@ export default function DatabaseTableEditor(props) {
                     <Form.Field key={field.name}>
                         <Form.Input
                             label={field.label}
-                            // type="date"
                             placeholder={field.placeholder}
                             name={field.name}
                             value={formData[field.name]}
@@ -137,10 +136,7 @@ export default function DatabaseTableEditor(props) {
             case "dropdown":
                 const options = Object.keys(semesterMap).map((semester_id, idx) => {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
-                });
-    
-                fieldComponents.push();
-    
+                });    
                 fieldComponents.push(
                     <Form.Field key={field.name}>
                         <label>{field.label}</label>
@@ -156,6 +152,8 @@ export default function DatabaseTableEditor(props) {
                     </Form.Field>
                 );
                 break;
+            default:
+                return;
         }
     }
 
