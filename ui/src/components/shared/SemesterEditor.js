@@ -4,13 +4,13 @@ import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterEditor(props) {
     const [semesters, setSemestersData] = useState([]);
-
+    const getSemestersRoute = "http://localhost:3001/db/getSemesters";
+    
     useEffect(() => {
-        fetch("http://localhost:3001/db/getSemesters")
+        fetch(getSemestersRoute)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                // console.log('semestersData', semestersData);
             })
             .catch((error) => {
                 alert("Failed to get semesters data" + error);

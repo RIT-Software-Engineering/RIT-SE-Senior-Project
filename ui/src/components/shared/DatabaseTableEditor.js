@@ -91,52 +91,57 @@ export default function DatabaseTableEditor(props) {
 
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        if (field["type"] === "input") {
-            fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <Form.Input
-                        label={field["label"]}
-                        placeholder={field["placeholder"]}
-                        name={field["name"]}
-                        value={formData[field["name"]]}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
-        } else if (field["type"] === "textArea") {
-            fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <Form.TextArea
-                        placeholder={field["placeholder"]}
-                        label={field["label"]}
-                        name={field["name"]}
-                        value={formData[field["name"]]}
-                        style={{ minHeight: 200 }}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
-        } else if (field["type"] === "dropdown") {
-            const options = Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            });
-
-            fieldComponents.push();
-
-            fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <label>{field["label"]}</label>
-                    <Dropdown
-                        selection
-                        options={options}
-                        loading={props.semesterData.loading}
-                        disabled={props.semesterData.loading}
-                        value={formData[field["name"]].toString()}
-                        name={field["name"]}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
+        switch(field.type) {
+            case "input":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.Input
+                            label={field.label}
+                            // type="date"
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "textArea":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.TextArea
+                            placeholder={field.placeholder}
+                            label={field.label}
+                            name={field.name}
+                            value={formData[field.name]}
+                            style={{ minHeight: 200 }}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "dropdown":
+                const options = Object.keys(semesterMap).map((semester_id, idx) => {
+                    return { key: idx, text: semesterMap[semester_id], value: semester_id };
+                });
+    
+                fieldComponents.push();
+    
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <label>{field.label}</label>
+                        <Dropdown
+                            selection
+                            options={options}
+                            loading={props.semesterData.loading}
+                            disabled={props.semesterData.loading}
+                            value={formData[field.name].toString()}
+                            name={field.name}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
         }
     }
 

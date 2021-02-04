@@ -53,13 +53,13 @@ export default function ActionPanel(props) {
             name: "short_desc",
         },
         {
-            type: "input",
+            type: "date",
             label: "Start Date",
             placeHolder: "Start Date",
             name: "start_date",
         },
         {
-            type: "input",
+            type: "date",
             label: "Due Date",
             placeHolder: "Due Date",
             name: "due_date",

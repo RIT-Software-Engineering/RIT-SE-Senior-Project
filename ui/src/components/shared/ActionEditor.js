@@ -6,8 +6,11 @@ export default function ActionEditor() {
     const [actions, setActionsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
 
+    const getActionsRoute = "http://localhost:3001/db/getActions";
+    const getSemestersRoute = "http://localhost:3001/db/getSemesters";
+    
     useEffect(() => {
-        fetch("http://localhost:3001/db/getActions")
+        fetch(getActionsRoute)
             .then((response) => response.json())
             .then((actionsData) => {
                 setActionsData(actionsData);
@@ -15,7 +18,7 @@ export default function ActionEditor() {
             .catch((error) => {
                 alert("Failed to get actionss data" + error);
             });
-        fetch("http://localhost:3001/db/getSemesters")
+        fetch(getSemestersRoute)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
