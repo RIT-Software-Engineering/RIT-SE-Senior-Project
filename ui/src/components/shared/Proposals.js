@@ -11,9 +11,10 @@ import {
     Button,
     Message,
 } from "semantic-ui-react";
-import ProjectEditor from "../shared/ProjectEditor";
+import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
 import "../../css/dashboard-proposal.css";
+import { config } from "../util/constants";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -37,9 +38,23 @@ const COLUMNS = {
 const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
-export default function Proposals() {
-    const [proposalData, setProposalData] = useState({});
+export default function Proposals(props) {
     const [messages, setMessages] = useState([]);
+    const [proposalData, setProposalData] = useState({});
+
+    useEffect(() => {
+        const newProposalData = {
+            proposals: [],
+            column: COLUMNS.DATE,
+            direction: DESCENDING,
+        };
+        props.proposalData.forEach((proposal) => {
+            proposal.date = proposal.title.split("_")[0];
+            newProposalData.proposals.push(proposal);
+        });
+        newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE]);
+        setProposalData(newProposalData);
+    }, [props.proposalData]);
 
     const addMessage = (positive) => {
         if (positive) {
@@ -59,28 +74,6 @@ export default function Proposals() {
             setMessages(messages.slice(1));
         }, 5000);
     };
-
-    useEffect(() => {
-        // TODO: Do pagination
-        fetch("http://localhost:3001/db/getProposals")
-            .then((response) => response.json())
-            .then((proposals) => {
-                const newProposalData = {
-                    proposals: [],
-                    column: COLUMNS.DATE,
-                    direction: DESCENDING,
-                };
-                proposals.forEach((proposal) => {
-                    proposal.date = proposal.title.split("_")[0];
-                    newProposalData.proposals.push(proposal);
-                });
-                newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE]);
-                setProposalData(newProposalData);
-            })
-            .catch((error) => {
-                alert("Failed to get proposal data " + error);
-            });
-    }, []);
 
     const generateActions = (proposal, idx) => {
         const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
@@ -112,7 +105,7 @@ export default function Proposals() {
                         const updatedProposals = [...proposalData.proposals];
                         updatedProposals[idx].loading = true;
                         setProposalData({ ...proposalData, proposals: updatedProposals });
-                        fetch("http://localhost:3001/db/updateProposalStatus", {
+                        fetch(config.url.API_PATCH_EDIT_PROPOSAL_STATUS, {
                             method: "PATCH",
                             headers: {
                                 "Content-Type": "application/json",
@@ -215,7 +208,7 @@ export default function Proposals() {
                     <TableCell>{generateActions(proposal, idx)}</TableCell>
                     <TableCell>
                         <a
-                            href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`}
+                            href={`${config.url.API_GET_PROPOSAL_PDF}?name=${proposal.title}.pdf`}
                             target="_blank"
                             rel="noreferrer"
                         >
@@ -227,7 +220,7 @@ export default function Proposals() {
                             return (
                                 <React.Fragment key={attachmentIdx}>
                                     <a
-                                        href={`http://localhost:3001/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`}
+                                        href={`${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${proposal.title}&name=${attachment}`}
                                         target="_blank"
                                         rel="noreferrer"
                                     >
@@ -239,11 +232,19 @@ export default function Proposals() {
                         })}
                     </TableCell>
                     <TableCell>
-                        <ProjectEditor project={proposal} />
+                        <ProjectEditorModal project={proposal} />
                     </TableCell>
                 </TableRow>
             );
         });
+    };
+
+    const semesterName = () => {
+        if (props.semester === null) {
+            return <h4>No semester</h4>;
+        }
+
+        return props.semester?.name && <h4>{props.semester.name}</h4>;
     };
 
     return (
@@ -258,13 +259,9 @@ export default function Proposals() {
                     />
                 );
             })}
-            <h1>Edit Projects</h1>
-            <a href="http://localhost:3000/proposal-form" target="_blank" rel="noreferrer">
-                <Icon name="plus" />
-                Create Project
-            </a>
-            <h3>Projects</h3>
-            <Table sortable fluid>
+
+            {semesterName()}
+            <Table sortable>
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
+import { config } from "../util/constants";
 import "../../css/proposal.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -63,7 +64,7 @@ function ProposalPage() {
             body.append("attachments", formFiles[i]);
         }
 
-        fetch("http://localhost:3001/db/submitProposal", {
+        fetch(config.url.API_POST_SUBMIT_PROJECT, {
             method: "post",
             body: body,
         })

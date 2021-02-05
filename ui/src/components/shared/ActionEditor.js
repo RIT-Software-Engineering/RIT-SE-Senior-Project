@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ActionPanel from "./ActionPanel";
 import { Accordion } from "semantic-ui-react";
+import { config } from "../util/constants";
 
 export default function ActionEditor() {
     const [actions, setActionsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
-
-    const getActionsRoute = "http://localhost:3001/db/getActions";
-    const getSemestersRoute = "http://localhost:3001/db/getSemesters";
     
     useEffect(() => {
-        fetch(getActionsRoute)
+        fetch(config.url.API_GET_ACTIONS)
             .then((response) => response.json())
             .then((actionsData) => {
                 setActionsData(actionsData);
@@ -18,7 +16,7 @@ export default function ActionEditor() {
             .catch((error) => {
                 alert("Failed to get actionss data" + error);
             });
-        fetch(getSemestersRoute)
+        fetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);

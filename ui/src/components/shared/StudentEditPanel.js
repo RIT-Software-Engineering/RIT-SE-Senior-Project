@@ -1,4 +1,5 @@
 import React from "react";
+import { config } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function StudentEditPanel(props) {
@@ -19,7 +20,7 @@ export default function StudentEditPanel(props) {
         FAIL: "We were unable to receive your update to the student's info.",
     };
 
-    let submitRoute = "http://localhost:3001/db/editUser";
+    let submitRoute = config.url.API_POST_EDIT_USER;
 
     let formFieldArray = [
         {

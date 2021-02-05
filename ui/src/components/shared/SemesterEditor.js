@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
+import { config } from "../util/constants";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterEditor(props) {
     const [semesters, setSemestersData] = useState([]);
-    const getSemestersRoute = "http://localhost:3001/db/getSemesters";
     
     useEffect(() => {
-        fetch(getSemestersRoute)
+        fetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);

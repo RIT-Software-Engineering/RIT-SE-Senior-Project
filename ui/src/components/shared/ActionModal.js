@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal } from "semantic-ui-react";
+import { config } from "../util/constants";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -91,7 +92,7 @@ export default function ActionModal(props) {
         if (form === null) {
         } else {
             const formData = new FormData(document.querySelector("form"));
-            fetch("http://localhost:3001/db/submitAction", {
+            fetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",
                 body: formData,
             })

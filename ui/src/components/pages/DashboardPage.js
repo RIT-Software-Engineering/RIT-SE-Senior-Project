@@ -6,6 +6,8 @@ import TimeLines from "../shared/TimeLines";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
+import ProposalTable from "../shared/ProposalTable";
+import ProjectEditor from "../shared/ProjectEditor";
 import "./../../css/dashboard.css";
 
 export default function DashboardPage() {
@@ -32,7 +34,7 @@ export default function DashboardPage() {
                 menuItem: "Proposals",
                 render: () => (
                     <Tab.Pane>
-                        <Proposals />
+                        <ProposalTable />
                     </Tab.Pane>
                 ),
             },
@@ -53,6 +55,7 @@ export default function DashboardPage() {
                     <Tab.Pane>
                         <SemesterEditor />
                         <ActionEditor />
+                        <ProjectEditor />
                     </Tab.Pane>
                 ),
             },

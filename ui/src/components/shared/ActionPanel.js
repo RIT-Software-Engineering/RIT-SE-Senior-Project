@@ -1,5 +1,6 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
+import { config } from "../util/constants";
 
 export default function ActionPanel(props) {
     let initialState = {
@@ -19,7 +20,7 @@ export default function ActionPanel(props) {
         FAIL: "We were unable to receive your update to the action.",
     };
 
-    let submitRoute = "http://localhost:3001/db/editAction";
+    let submitRoute = config.url.API_POST_EDIT_ACTION;
 
     let formFieldArray = [
         {
