@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import ActionPanel from "./ActionPanel";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
+import ActionTable from "./ActionTable";
 
 export default function ActionEditor() {
     const [actions, setActionsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
-    
+
     useEffect(() => {
         fetch(config.url.API_GET_ACTIONS)
             .then((response) => response.json())
@@ -35,43 +35,10 @@ export default function ActionEditor() {
             if (!semesterMap[actionData.name]) {
                 semesterMap[actionData.name] = [];
             }
-            semesterMap[actionData.name].push(
-                <Accordion
-                    fluid
-                    styled
-                    panels={[
-                        {
-                            key: actionData.action_id,
-                            title: actionData.action_title,
-                            content: {
-                                content: (
-                                    <ActionPanel
-                                        actionData={actionData}
-                                        semesterData={semesters}
-                                        key={"editAction-" + i}
-                                    />
-                                ),
-                            },
-                        },
-                    ]}
-                    key={"editingTheAction-" + i}
-                />
-            );
+            semesterMap[actionData.name].push(actionData);
         }
-        for (const [key, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(
-                <Accordion
-                    fluid
-                    styled
-                    panels={[
-                        {
-                            key: "actionEditor-semester-selector-" + key,
-                            title: key,
-                            content: { content: value },
-                        },
-                    ]}
-                />
-            );
+        for (const [, value] of Object.entries(semesterMap)) {
+            semesterPanels.push(<ActionTable actions={value} semesterData={semesters} />);
         }
     }
 
