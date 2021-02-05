@@ -10,6 +10,7 @@ export default function ProjectEditor() {
     const content = () => {
         return Object.keys(proposalData)
             .sort()
+            .reverse()
             .map((semester_id) => {
                 return (
                     <Proposals

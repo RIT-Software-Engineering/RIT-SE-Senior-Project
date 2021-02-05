@@ -13,8 +13,9 @@ import {
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
-import "../../css/dashboard-proposal.css";
 import { config } from "../util/constants";
+import { formatDateTime } from "../util/utils";
+import "../../css/dashboard-proposal.css";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -44,14 +45,10 @@ export default function Proposals(props) {
 
     useEffect(() => {
         const newProposalData = {
-            proposals: [],
+            proposals: props.proposalData,
             column: COLUMNS.DATE,
             direction: DESCENDING,
         };
-        props.proposalData.forEach((proposal) => {
-            proposal.date = proposal.title.split("_")[0];
-            newProposalData.proposals.push(proposal);
-        });
         newProposalData.proposals = _.sortBy(newProposalData.proposals, [COLUMNS.DATE]);
         setProposalData(newProposalData);
     }, [props.proposalData]);
@@ -202,7 +199,7 @@ export default function Proposals(props) {
 
             return (
                 <TableRow className={rowColor} key={idx}>
-                    <TableCell>{proposal.date}</TableCell>
+                    <TableCell>{formatDateTime(proposal.submission_datetime)}</TableCell>
                     {/* TODO: This is dumb -- Consider adding submission date to projects table */}
                     <TableCell>{proposal.status}</TableCell>
                     <TableCell>{generateActions(proposal, idx)}</TableCell>
