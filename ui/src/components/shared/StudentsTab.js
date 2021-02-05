@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
+import { config } from "../util/constants";
 import StudentEditPanel from "./StudentEditPanel";
 
 export default function StudentsTab() {
@@ -10,7 +11,7 @@ export default function StudentsTab() {
     const unassignedStudentsStr = "Unassigned students";
 
     useEffect(() => {
-        fetch("http://localhost:3001/db/selectAllStudentInfo")
+        fetch(config.url.API_GET_STUDENT_INFO)
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
@@ -19,7 +20,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
-        fetch("http://localhost:3001/db/getActiveSemesters")
+        fetch(config.url.API_GET_ACTIVE_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
@@ -28,7 +29,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
-        fetch("http://localhost:3001/db/getActiveProjects")
+        fetch(config.url.API_GET_ACTIVE_PROJECTS)
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);

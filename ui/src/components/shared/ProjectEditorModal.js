@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Dropdown, Modal, Input } from "semantic-ui-react";
+import { config } from "../util/constants";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -228,7 +229,7 @@ export default function ProjectEditor(props) {
     };
 
     const submitProject = (event, target) => {
-        fetch("http://localhost:3001/db/editProject", {
+        fetch(config.url.API_POST_EDIT_PROJECT, {
             method: "post",
             body: JSON.stringify(Object.assign({}, props.project, editedProject)),
             headers: {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import Proposals from "./Proposals";
+import { config } from "../util/constants";
 
 export default function ProjectEditor() {
     const [proposalData, setProposalData] = useState({});
@@ -22,7 +23,7 @@ export default function ProjectEditor() {
 
     useEffect(() => {
         // TODO: Do pagination
-        fetch("http://localhost:3001/db/getProjects?type=project")
+        fetch(config.url.API_GET_PROJECTS + "?type=project")
             .then((response) => response.json())
             .then((proposals) => {
                 const groupedProposalData = {};
@@ -40,7 +41,7 @@ export default function ProjectEditor() {
             });
 
         // TODO: This fetch is done in multiple places and is inefficient - Figure out a better method of dealing with getting semester names. Maybe put it in redux?
-        fetch("http://localhost:3001/db/getSemesters")
+        fetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 const formattedSemesterData = {};
@@ -86,7 +87,7 @@ export default function ProjectEditor() {
                 >
                     <Icon name="mail" />
                 </Button>
-                <Button icon href="http://localhost:3000/proposal-form" target="_blank" rel="noreferrer">
+                <Button icon href={config.url.PROPOSAL_FORM} target="_blank" rel="noreferrer">
                     <Icon name="plus" />
                 </Button>
             </div>

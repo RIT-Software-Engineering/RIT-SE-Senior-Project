@@ -14,6 +14,7 @@ import {
 import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
 import "../../css/dashboard-proposal.css";
+import { config } from "../util/constants";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -104,7 +105,7 @@ export default function Proposals(props) {
                         const updatedProposals = [...proposalData.proposals];
                         updatedProposals[idx].loading = true;
                         setProposalData({ ...proposalData, proposals: updatedProposals });
-                        fetch("http://localhost:3001/db/updateProposalStatus", {
+                        fetch(config.url.API_PATCH_EDIT_PROPOSAL_STATUS, {
                             method: "PATCH",
                             headers: {
                                 "Content-Type": "application/json",
@@ -207,7 +208,7 @@ export default function Proposals(props) {
                     <TableCell>{generateActions(proposal, idx)}</TableCell>
                     <TableCell>
                         <a
-                            href={`http://localhost:3001/db/getProposalPdf?name=${proposal.title}.pdf`}
+                            href={`${config.url.API_GET_PROPOSAL_PDF}?name=${proposal.title}.pdf`}
                             target="_blank"
                             rel="noreferrer"
                         >
@@ -219,7 +220,7 @@ export default function Proposals(props) {
                             return (
                                 <React.Fragment key={attachmentIdx}>
                                     <a
-                                        href={`http://localhost:3001/db/getProposalAttachment?proposalTitle=${proposal.title}&name=${attachment}`}
+                                        href={`${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${proposal.title}&name=${attachment}`}
                                         target="_blank"
                                         rel="noreferrer"
                                     >
