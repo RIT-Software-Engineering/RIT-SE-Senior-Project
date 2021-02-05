@@ -1,4 +1,5 @@
 import React from "react";
+import { config } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function SemesterPanel(props) {
@@ -15,7 +16,7 @@ export default function SemesterPanel(props) {
         FAIL: "We were unable to receive your update to the semester.",
     };
 
-    let submitRoute = "http://localhost:3001/db/editSemester";
+    let submitRoute = config.url.API_POST_EDIT_SEMESTER;
 
     let formFieldArray = [
         {

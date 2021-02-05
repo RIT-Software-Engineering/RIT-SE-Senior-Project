@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ExemplaryProject from "../shared/ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
+import { config } from "../util/constants";
 
 const projectsPerPage = 2;
 
@@ -13,7 +14,7 @@ function HomePage() {
 
     const getPaginationData = (page) => {
         fetch(
-            `http://localhost:3001/db/selectExemplary?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}`
+            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}`
         )
             .then((response) => {
                 if (response.ok) {

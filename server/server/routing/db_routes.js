@@ -130,13 +130,155 @@ db_router.get("/selectExemplary", (req, res) => {
 });
 
 /**
- * Responds with proposals from database
+ * Responds with projects from database
  *
  * TODO: Add pagination
  */
-db_router.get("/getProposals", CONFIG.authAdmin, async (req, res) => {
-    db.selectAll(DB_CONFIG.tableNames.senior_projects).then((proposals) => res.send(proposals));
+db_router.get("/getProjects", CONFIG.authAdmin, async (req, res) => {
+    let query;
+    switch (req.query.type) {
+        case "proposal":
+            query = `SELECT * 
+                FROM projects 
+                WHERE 
+                    semester IS NULL 
+                    OR (semester NOT NULL 
+                    AND status IN ("submitted", "needs revision", "future project", "candidate"))
+            `;
+            break;
+        case "project":
+            query = `
+                SELECT * 
+                FROM projects 
+                WHERE status NOT IN ("submitted", "needs revision", "future project", "candidate")
+            `;
+            break;
+        default:
+            res.status(500).send("Invalid type");
+            return;
+    }
+    db.query(query).then((proposals) => res.send(proposals));
 });
+
+db_router.post(
+    "/editProject",
+    CONFIG.authAdmin,
+    [
+        // TODO: Should the max length be set to something smaller than 5000?
+        body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("primary_contact").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("contact_email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("contact_phone").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("background_info").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("project_description")
+            .not()
+            .isEmpty()
+            .trim()
+            .escape()
+            .withMessage("Cannot be empty")
+            .isLength({ max: 5000 }),
+        body("project_scope").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        body("project_challenges")
+            .not()
+            .isEmpty()
+            .trim()
+            .escape()
+            .withMessage("Cannot be empty")
+            .isLength({ max: 5000 }),
+        body("constraints_assumptions")
+            .not()
+            .isEmpty()
+            .trim()
+            .escape()
+            .withMessage("Cannot be empty")
+            .isLength({ max: 5000 }),
+        body("sponsor_provided_resources").trim().escape().isLength({ max: 5000 }),
+        body("project_search_keywords").trim().escape().isLength({ max: 5000 }),
+        body("sponsor_deliverables")
+            .not()
+            .isEmpty()
+            .trim()
+            .escape()
+            .withMessage("Cannot be empty")
+            .isLength({ max: 5000 }),
+        body("proprietary_info").trim().escape().isLength({ max: 5000 }),
+        body("sponsor_alternate_time").trim().escape().isLength({ max: 5000 }),
+        body("sponsor_avail_checked").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("project_agreements_checked").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("assignment_of_rights")
+            .not()
+            .isEmpty()
+            .trim()
+            .escape()
+            .withMessage("Cannot be empty")
+            .isLength({ max: 5000 }),
+
+        body("team_name").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("poster").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("video").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("website").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("coach1").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("coach2").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("semester").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    ],
+    (req, res) => {
+        let body = req.body;
+
+        const sql = `UPDATE ${DB_CONFIG.tableNames.senior_projects} 
+        SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
+        background_info=?, project_description=?, project_scope=?, project_challenges=?, 
+        sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
+        proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?, 
+        team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, coach1=?, coach2=?, semester=?
+        WHERE project_id = ?`;
+
+        const params = [
+            body.status,
+            body.title,
+            body.display_name,
+            body.organization,
+            body.primary_contact,
+            body.contact_email,
+            body.contact_phone,
+            body.background_info,
+            body.project_description,
+            body.project_scope,
+            body.project_challenges,
+            body.sponsor_provided_resources,
+            body.project_search_keywords,
+            body.constraints_assumptions,
+            body.sponsor_deliverables,
+            body.proprietary_info,
+            body.sponsor_alternate_time,
+            body.sponsor_avail_checked,
+            body.project_agreements_checked,
+            body.assignment_of_rights,
+            body.team_name,
+            body.poster,
+            body.video,
+            body.website,
+            body.synopsis,
+            body.sponsor,
+            body.coach1,
+            body.coach2,
+            body.semester,
+            body.project_id,
+        ];
+
+        db.query(sql, params)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
+    }
+);
 
 /**
  * Updates a proposal with the given information

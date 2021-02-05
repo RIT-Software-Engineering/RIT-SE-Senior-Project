@@ -5,6 +5,14 @@
 
 "use strict";
 
+/**
+ *
+ * FOR DEVELOPMENT USE ONLY
+ *
+ * UNCOMMENT THIS TO RESET DATABASE
+ */
+// require("./db_setup");
+
 // Imports
 const express = require("express");
 const cors = require("cors");

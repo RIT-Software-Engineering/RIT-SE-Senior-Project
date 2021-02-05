@@ -1,7 +1,8 @@
 import React from "react";
 import { Accordion } from "semantic-ui-react";
+import { config } from "../util/constants";
 
-const basePosterURL = "http://localhost:3001/db/getPoster?fileName=";
+const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 function ExemplaryProject({ project }) {
     return (

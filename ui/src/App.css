@@ -18,3 +18,28 @@
     display: flex;
     justify-content: center;
 }
+
+.accordion-button-group {
+    display: flex;
+}
+
+.accordion-button-group .accordion-buttons-container {
+    position: absolute;
+    right: 1em;
+    margin: 2px 1em !important;
+}
+
+.accordion-buttons-container > * {
+    margin: 0 0 0 0 !important;
+    border-radius: 0 !important;
+}
+
+.accordion-buttons-container :first-child {
+    margin: 0 0 0 0 !important;
+    border-radius: 0.28571429rem 0 0 0.28571429rem !important;
+}
+
+.accordion-buttons-container :last-child {
+    margin: 0 0 0 0 !important;
+    border-radius: 0 0.28571429rem 0.28571429rem 0 !important;
+}
