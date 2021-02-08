@@ -18,7 +18,6 @@ export default function ActionTable(props) {
             return (
                 <TableRow>
                     <TableCell>{action.action_title}</TableCell>
-
                     <TableCell>{action.action_target}</TableCell>
                     <TableCell>{action.start_date}</TableCell>
                     <TableCell>{action.due_date}</TableCell>
@@ -57,6 +56,7 @@ export default function ActionTable(props) {
                 styled
                 panels={[
                     {
+                        key: "actionEditor",
                         title: props.actions[0].name,
                         content: {
                             content: (

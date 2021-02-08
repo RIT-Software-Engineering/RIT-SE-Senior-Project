@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
-import SemesterPanel from "./SemesterPanel";
+import SemesterTable from "./SemesterTable";
 
 export default function SemesterEditor(props) {
     const [semesters, setSemestersData] = useState([]);
@@ -17,21 +17,7 @@ export default function SemesterEditor(props) {
             });
     }, []);
 
-    let semesterPanels = [];
-
-    if (semesters) {
-        for (let i = 0; i < semesters.length; i++) {
-            let semester = semesters[i];
-            semesterPanels.push({
-                key: semester.semester_id,
-                title: semester.name,
-                content: {
-                    content: <SemesterPanel semester={semester} semesterData={semesters} key={"editSemester-" + i} />,
-                },
-            });
-        }
-    }
-    let semestersToEdit = <Accordion fluid styled panels={semesterPanels} key={"semestersToEdit"} />;
+    let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters}/>;
 
     return (
         <div>
