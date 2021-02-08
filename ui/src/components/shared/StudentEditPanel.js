@@ -52,8 +52,8 @@ export default function StudentEditPanel(props) {
     if (editProject) {
         formFieldArray.push({
             type: "input",
-            label: "Project Id",
-            placeHolder: "Project Id",
+            label: "Project ID",
+            placeHolder: "Project ID",
             name: "project",
         });
     }

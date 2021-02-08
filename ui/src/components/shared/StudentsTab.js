@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
-import StudentEditPanel from "./StudentEditPanel";
+import StudentTeamTable from "./StudentTeamTable";
+import StudentRow from "./StudentRow";
 
 export default function StudentsTab() {
     const [students, setStudentsData] = useState([]);
@@ -15,7 +16,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
-                console.log("studentsData", studentsData);
             })
             .catch((error) => {
                 alert("Failed to get students data" + error);
@@ -24,7 +24,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                console.log("semestersData", semestersData);
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
@@ -33,7 +32,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
-                console.log("projectsData", projectsData);
             })
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
@@ -70,78 +68,20 @@ export default function StudentsTab() {
                     if (!semesterMap[student.name][student.project]) {
                         semesterMap[student.name][student.project] = [];
                     }
-                    semesterMap[student.name][student.project].push(
-                        <Accordion
-                            fluid
-                            styled
-                            panels={[
-                                {
-                                    key: "Student-selector-" + student.fname + " " + student.lname,
-                                    title: student.fname + " " + student.lname,
-                                    content: {
-                                        content: (
-                                            <StudentEditPanel
-                                                studentData={student}
-                                                semesterData={semesters}
-                                                editProject={true}
-                                            />
-                                        ),
-                                    },
-                                },
-                            ]}
-                        />
-                    );
+                    semesterMap[student.name][student.project].push(<StudentRow student={student} />);
                 } else {
+                    // if a student hasn't been assigned a project yet
                     if (!semesterMap[student.name][unassignedStudentsStr]) {
                         semesterMap[student.name][unassignedStudentsStr] = [];
                     }
-                    semesterMap[student.name][unassignedStudentsStr].push(
-                        <Accordion
-                            fluid
-                            styled
-                            panels={[
-                                {
-                                    key: "Student-selector-" + student.fname + " " + student.lname,
-                                    title: student.fname + " " + student.lname,
-                                    content: {
-                                        content: (
-                                            <StudentEditPanel
-                                                studentData={student}
-                                                semesterData={semesters}
-                                                editProject={true}
-                                            />
-                                        ),
-                                    },
-                                },
-                            ]}
-                        />
-                    );
+                    semesterMap[student.name][unassignedStudentsStr].push(<StudentRow student={student} />);
                 }
             } else {
+                //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(
-                    <Accordion
-                        fluid
-                        styled
-                        panels={[
-                            {
-                                key: "Student-selector-" + student.fname + " " + student.lname,
-                                title: student.fname + " " + student.lname,
-                                content: {
-                                    content: (
-                                        <StudentEditPanel
-                                            studentData={student}
-                                            semesterData={semesters}
-                                            editProject={false}
-                                        />
-                                    ),
-                                },
-                            },
-                        ]}
-                    />
-                );
+                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} />);
             }
         }
         return semesterMap;
@@ -165,34 +105,24 @@ export default function StudentsTab() {
 
                 for (const [projectId, studentPanels] of Object.entries(val)) {
                     if (semesterName === unassignedStudentsStr) {
-                        projectPanels.push(studentPanels);
-                    } else if (projectId !== unassignedStudentsStr) {
+                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
                         projectPanels.push(
-                            <Accordion
-                                fluid
-                                styled
-                                panels={[
-                                    {
-                                        key: "StudentsTab-project-selector-" + projectMap[projectId],
-                                        title: projectMap[projectId],
-                                        content: { content: studentPanels },
-                                    },
-                                ]}
+                            <StudentTeamTable
+                                key={key}
+                                title={"Unassigned Students"}
+                                content={studentPanels}
+                                unassignedSemester={true}
                             />
                         );
-                    } else {
+                    } else if (projectId !== unassignedStudentsStr) {
+                        let key = "StudentsTab-project-selector-" + projectMap[projectId];
                         projectPanels.push(
-                            <Accordion
-                                fluid
-                                styled
-                                panels={[
-                                    {
-                                        key: "StudentsTab-project-selector-" + unassignedStudentsStr,
-                                        title: unassignedStudentsStr,
-                                        content: { content: studentPanels },
-                                    },
-                                ]}
-                            />
+                            <StudentTeamTable key={key} title={projectMap[projectId]} content={studentPanels} />
+                        );
+                    } else {
+                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
+                        projectPanels.push(
+                            <StudentTeamTable key={key} title={projectMap[projectId]} content={studentPanels} />
                         );
                     }
                 }
