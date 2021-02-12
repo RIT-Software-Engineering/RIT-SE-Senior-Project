@@ -8,6 +8,7 @@ import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/Header";
 import Footer from "./components/shared/Footer";
 import { Container } from "semantic-ui-react";
+import DevOnlyDatabaseViewer from "./components/shared/DevOnlyDatabaseViewer";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
                         <Route path="/dashboard" component={DashboardPage} />
+                        <Route path="/database" component={DevOnlyDatabaseViewer} />
                         <Route component={ErrorPage} />
                     </Switch>
                 </Container>

@@ -14,6 +14,50 @@ const { nanoid } = require("nanoid");
 let db = new DBHandler();
 
 // Routes
+
+
+/**
+ * *******************************************************************************************************
+ * FIXME: WARNING: FOR DEVELOPMENT USE ONLY -- MAKE SURE THAT THIS NEVER EVER EVER GETS USED IN PRODUCTION
+ * 
+ */
+
+db_router.get("/devOnlyGetAllTables", (req, res) => {
+
+    const query = `
+        SELECT name FROM sqlite_master 
+            WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'
+            UNION ALL 
+            SELECT name FROM sqlite_temp_master 
+            WHERE type IN ('table','view') 
+            ORDER BY 1
+    `
+
+    db.query(query)
+        .then((values) => {
+            // console.log(values);
+            res.send(values);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
+});
+
+db_router.get("/devOnlyGetTableData", (req, res) => {
+    db.query(`SELECT * FROM ${req.query.table}`)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err);
+        });
+});
+
+/**
+ * *******************************************************************************************************
+ */
+
 db_router.get("/selectAllSponsorInfo", (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         console.log(value);
