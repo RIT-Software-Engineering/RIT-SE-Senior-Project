@@ -10,6 +10,7 @@ import {
     TableRow,
     Button,
     Message,
+    Accordion,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
@@ -238,26 +239,14 @@ export default function Proposals(props) {
 
     const semesterName = () => {
         if (props.semester === null) {
-            return <h4>No semester</h4>;
+            return "No semester";
         }
 
-        return props.semester?.name && <h4>{props.semester.name}</h4>;
+        return props.semester?.name && props.semester.name;
     };
 
-    return (
-        <>
-            {messages.map((message) => {
-                return (
-                    <Message
-                        floating
-                        className={message.positive ? "success" : "negative"}
-                        header={message.header}
-                        content={message.content}
-                    />
-                );
-            })}
-
-            {semesterName()}
+    const table = () => {
+        return (
             <Table sortable>
                 <TableHeader>
                     <TableRow>
@@ -301,6 +290,22 @@ export default function Proposals(props) {
                 </TableHeader>
                 <TableBody>{renderProposals()}</TableBody>
             </Table>
+        );
+    };
+
+    return (
+        <>
+            {messages.map((message) => {
+                return (
+                    <Message
+                        floating
+                        className={message.positive ? "success" : "negative"}
+                        header={message.header}
+                        content={message.content}
+                    />
+                );
+            })}
+            <Accordion panels={[{ key: 0, title: semesterName(), content: { content: table() } }]} />
         </>
     );
 }
