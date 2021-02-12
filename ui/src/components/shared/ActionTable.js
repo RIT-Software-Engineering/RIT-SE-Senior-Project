@@ -1,14 +1,12 @@
 import React from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-    Button,
-    Modal,
-    Accordion,
+import { 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableHeader, 
+    TableHeaderCell, 
+    TableRow, 
+    Accordion, 
 } from "semantic-ui-react";
 import ActionPanel from "./ActionPanel";
 
@@ -16,32 +14,17 @@ export default function ActionTable(props) {
     const renderActions = () => {
         return props.actions.map((action, i) => {
             return (
-                <TableRow>
+                <TableRow key={i}>
                     <TableCell>{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
                     <TableCell>{action.start_date}</TableCell>
                     <TableCell>{action.due_date}</TableCell>
                     <TableCell>
-                        <Modal
-                            trigger={<Button icon="edit" />}
+                        <ActionPanel
+                            actionData={action}
+                            semesterData={props.semesterData}
                             header={`Currently Editing "${action.action_title}"`}
-                            content={{
-                                content: (
-                                    <ActionPanel
-                                        actionData={action}
-                                        semesterData={props.semesterData}
-                                        key={"editAction-" + i}
-                                    />
-                                ),
-                            }}
-                            actions={[
-                                {
-                                    key: "submit",
-                                    content: "Submit",
-                                    // onClick: (event, target) => submitProject(event, target),
-                                    positive: true,
-                                },
-                            ]}
+                            key={"editAction-" + i}
                         />
                     </TableCell>
                 </TableRow>
@@ -62,7 +45,7 @@ export default function ActionTable(props) {
                             content: (
                                 <Table sortable>
                                     <TableHeader>
-                                        <TableRow>
+                                        <TableRow key={"actionEditorTableHeaders"}>
                                             <TableHeaderCell
                                             // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                                             // onClick={() => changeSort(COLUMNS.DATE)}

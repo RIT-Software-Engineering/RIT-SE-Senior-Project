@@ -91,7 +91,7 @@ export default function DatabaseTableEditor(props) {
 
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        switch(field.type) {
+        switch (field.type) {
             case "input":
                 fieldComponents.push(
                     <Form.Field key={field.name}>
@@ -136,7 +136,7 @@ export default function DatabaseTableEditor(props) {
             case "dropdown":
                 const options = Object.keys(semesterMap).map((semester_id, idx) => {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
-                });    
+                });
                 fieldComponents.push(
                     <Form.Field key={field.name}>
                         <label>{field.label}</label>
@@ -158,14 +158,21 @@ export default function DatabaseTableEditor(props) {
     }
 
     return (
-        <Form
-            onSubmit={(e) => {
-                handleSubmit(e);
-            }}
-        >
-            {fieldComponents}
-            <Button type="submit">Submit</Button>
+        <>
+            <Modal
+                trigger={<Button icon="edit" />}
+                header={props.header}
+                content={{ content: <Form>{fieldComponents}</Form> }}
+                actions={[
+                    {
+                        key: "submit",
+                        content: "Submit",
+                        onClick: (event) => handleSubmit(event),
+                        positive: true,
+                    },
+                ]}
+            />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
-        </Form>
+        </>
     );
 }

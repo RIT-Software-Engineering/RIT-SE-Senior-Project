@@ -1,38 +1,23 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Button, Modal } from "semantic-ui-react";
+import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "semantic-ui-react";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterTable(props) {
     const renderSemester = () => {
         return props.semesters.map((semester, i) => {
             return (
-                <TableRow>
+                <TableRow key={i}>
                     <TableCell>{semester.name}</TableCell>
                     <TableCell>{semester.dept}</TableCell>
                     <TableCell>{semester.start_date}</TableCell>
                     <TableCell>{semester.end_date}</TableCell>
 
                     <TableCell>
-                        <Modal
-                            trigger={<Button icon="edit" />}
+                        <SemesterPanel
+                            semester={semester}
+                            semesterData={props.semesterData}
                             header={`Currently Editing "${semester.name}"`}
-                            content={{
-                                content: (
-                                    <SemesterPanel
-                                        semester={semester}
-                                        semesterData={props.semesterData}
-                                        key={"editSemester-" + i}
-                                    />
-                                ),
-                            }}
-                            actions={[
-                                {
-                                    key: "submit",
-                                    content: "Submit",
-                                    // onClick: (event, target) => submitProject(event, target),
-                                    positive: true,
-                                },
-                            ]}
+                            key={"editSemester-" + i}
                         />
                     </TableCell>
                 </TableRow>

@@ -49,6 +49,7 @@ export default function SemesterPanel(props) {
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
+            header={props.header}
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}

@@ -7,14 +7,13 @@ import {
     TableRow,
     Accordion,
 } from "semantic-ui-react";
-import StudentEditPanel from "./StudentEditPanel";
 
 export default function StudentTeamTable(props) {
 
     const table = (
         <Table sortable>
             <TableHeader>
-                <TableRow>
+                <TableRow key="studentTeamTableHeaders">
                     <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}

@@ -63,25 +63,25 @@ export default function StudentsTab() {
                 if (!semesterMap[student.name]) {
                     semesterMap[student.name] = {};
                 }
-
+                
                 if (student.project) {
                     if (!semesterMap[student.name][student.project]) {
                         semesterMap[student.name][student.project] = [];
                     }
-                    semesterMap[student.name][student.project].push(<StudentRow student={student} />);
+                    semesterMap[student.name][student.project].push(<StudentRow student={student} semesterData={semesters}/>);
                 } else {
                     // if a student hasn't been assigned a project yet
                     if (!semesterMap[student.name][unassignedStudentsStr]) {
                         semesterMap[student.name][unassignedStudentsStr] = [];
                     }
-                    semesterMap[student.name][unassignedStudentsStr].push(<StudentRow student={student} />);
+                    semesterMap[student.name][unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters}/>);
                 }
             } else {
                 //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} />);
+                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters}/>);
             }
         }
         return semesterMap;

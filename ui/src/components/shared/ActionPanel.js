@@ -80,6 +80,7 @@ export default function ActionPanel(props) {
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
+            header={props.header}
         />
     );
 }
