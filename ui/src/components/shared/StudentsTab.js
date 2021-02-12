@@ -109,7 +109,7 @@ export default function StudentsTab() {
                         projectPanels.push(
                             <StudentTeamTable
                                 key={key}
-                                title={"Unassigned Students"}
+                                title={"Semester-unassigned Students"}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
@@ -122,7 +122,11 @@ export default function StudentsTab() {
                     } else {
                         let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
                         projectPanels.push(
-                            <StudentTeamTable key={key} title={projectMap[projectId]} content={studentPanels} />
+                            <StudentTeamTable
+                                key={key}
+                                title={"Team-unassigned Students"}
+                                content={studentPanels}
+                            />
                         );
                     }
                 }
@@ -144,5 +148,5 @@ export default function StudentsTab() {
         }
     }
 
-    return <div>{semesterPanels}</div>;
+    return <div>{semesterPanels.reverse()}</div>;
 }

@@ -8,6 +8,7 @@ import {
 import StudentEditPanel from "./StudentEditPanel";
 
 export default function StudentRow(props) {
+    console.log(props.student);
     return (
         <TableRow>
             <TableCell>{props.student.fname}</TableCell>

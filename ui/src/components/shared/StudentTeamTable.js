@@ -2,12 +2,9 @@ import React from "react";
 import {
     Table,
     TableBody,
-    TableCell,
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Button,
-    Modal,
     Accordion,
 } from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
@@ -28,7 +25,7 @@ export default function StudentTeamTable(props) {
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                       Second Name
+                       Last Name
                     </TableHeaderCell>
 
                     <TableHeaderCell
@@ -53,7 +50,7 @@ export default function StudentTeamTable(props) {
                     // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.EDIT)}
                     >
-                        Edit
+                        Action
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
