@@ -3,7 +3,7 @@ CREATE TABLE actions (
     semester        INTEGER NOT NULL, 
     action_title    TEXT,   -- The title of the action
     action_target   TEXT,   -- individual, coach, team, admin
-    is_null         INTEGER, -- 1 for true, used for calendar events, no-op events, etc
+    date_deleted    TEXT,   --  (Old comment from when this field was called date_deleted) 1 for true, used for calendar events, no-op events, etc
     short_desc      TEXT,
     start_date      TEXT,
     due_date        TEXT,
