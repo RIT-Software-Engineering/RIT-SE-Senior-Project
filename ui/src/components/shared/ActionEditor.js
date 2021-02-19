@@ -27,7 +27,6 @@ export default function ActionEditor() {
     }, []);
 
     let semesterPanels = [];
-
     if (actions) {
         let semesterMap = {};
         for (let i = 0; i < actions.length; i++) {

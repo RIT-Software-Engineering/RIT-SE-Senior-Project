@@ -9,6 +9,7 @@ import {
     Accordion, 
 } from "semantic-ui-react";
 import ActionPanel from "./ActionPanel";
+import { formatDateTime } from "../util/utils";
 
 export default function ActionTable(props) {
     const renderActions = () => {
@@ -17,8 +18,8 @@ export default function ActionTable(props) {
                 <TableRow key={i}>
                     <TableCell>{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
-                    <TableCell>{action.start_date}</TableCell>
-                    <TableCell>{action.due_date}</TableCell>
+                    <TableCell>{formatDateTime(action.start_date)}</TableCell>
+                    <TableCell>{formatDateTime(action.due_date)}</TableCell>
                     <TableCell>
                         <ActionPanel
                             actionData={action}
@@ -32,6 +33,13 @@ export default function ActionTable(props) {
         });
     };
 
+    let title;
+    if (props.actions[0].name === null){
+        title = "Unassigned";
+    } else {
+        title = props.actions[0].name
+    }
+    console.log(title);
     return (
         <>
             <Accordion
@@ -40,7 +48,7 @@ export default function ActionTable(props) {
                 panels={[
                     {
                         key: "actionEditor",
-                        title: props.actions[0].name,
+                        title: title,
                         content: {
                             content: (
                                 <Table sortable>

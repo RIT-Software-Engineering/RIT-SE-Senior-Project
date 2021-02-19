@@ -568,7 +568,7 @@ db_router.get("/getActions", (req, res) => {
     let getActionsQuery = `
         SELECT *
         FROM actions
-        JOIN semester_group
+        LEFT JOIN semester_group
         ON actions.semester = semester_group.semester_id
         ORDER BY action_id desc
     `;

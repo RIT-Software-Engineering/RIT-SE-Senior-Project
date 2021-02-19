@@ -96,7 +96,6 @@ export default function StudentsTab() {
         for (let i = 0; i < projects.length; i++) {
             projectMap[projects[i]["project_id"]] = projects[i]["team_name"];
         }
-
         for (const [semesterName, projects] of Object.entries(semesterMap)) {
             if (semesterName) {
                 let projectPanels = [];
@@ -109,7 +108,7 @@ export default function StudentsTab() {
                         projectPanels.push(
                             <StudentTeamTable
                                 key={key}
-                                title={"Semester-unassigned Students"}
+                                title={`Semester-unassigned Students (${studentPanels.length})`}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
@@ -117,20 +116,22 @@ export default function StudentsTab() {
                     } else if (projectId !== unassignedStudentsStr) {
                         let key = "StudentsTab-project-selector-" + projectMap[projectId];
                         projectPanels.push(
-                            <StudentTeamTable key={key} title={projectMap[projectId]} content={studentPanels} />
+                            <StudentTeamTable key={key} 
+                            title={`${projectMap[projectId]} (${studentPanels.length})`} 
+                            content={studentPanels} />
                         );
                     } else {
                         let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
                         projectPanels.push(
                             <StudentTeamTable
                                 key={key}
-                                title={"Team-unassigned Students"}
+                                title={`Team-unassigned Students (${studentPanels.length})`}
                                 content={studentPanels}
                             />
                         );
                     }
                 }
-
+                
                 semesterPanels.push(
                     <Accordion
                         fluid
@@ -138,7 +139,7 @@ export default function StudentsTab() {
                         panels={[
                             {
                                 key: "StudentsTab-semester-selector-" + semesterName,
-                                title: semesterName,
+                                title: `${semesterName} (${projectPanels.length})`,
                                 content: { content: projectPanels },
                             },
                         ]}
