@@ -1,5 +1,5 @@
-import "./App.css";
-import { Route, Switch } from "react-router-dom";
+import React, { useState } from "react";
+import { Route, Switch, useHistory } from "react-router-dom";
 import HomePage from "./components/pages/HomePage";
 import SponsorPage from "./components/pages/SponsorPage";
 import ProposalPage from "./components/pages/ProposalPage";
@@ -8,18 +8,42 @@ import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/Header";
 import Footer from "./components/shared/Footer";
 import { Container } from "semantic-ui-react";
+import PrivateRoute from "./components/shared/PrivateRoute";
+import SignInPage from "./components/pages/SignInPage";
+import "./App.css";
 
 function App() {
+
+    const [signedIn, setSignedIn] = useState({ authenticated: false });
+    const history = useHistory();
+
+    console.log("app", signedIn);
+    
     return (
         <>
             <Header />
+            {signedIn?.authenticated && (
+                <>
+                    <button onClick={() => setSignedIn({})}>Sign Out</button>
+                    <button
+                        onClick={() => {
+                            history.push("/dashboard?role=admin");
+                        }}
+                    >
+                        Dashboard
+                    </button>
+                </>
+            )}
             <div id="page">
                 <Container>
                     <Switch>
                         <Route path="/" component={HomePage} exact />
+                        <Route path="/sign-in">
+                            <SignInPage setSignedIn={setSignedIn} />
+                        </Route>
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
-                        <Route path="/dashboard" component={DashboardPage} />
+                        <PrivateRoute signedIn={signedIn} path="/dashboard" component={DashboardPage} />
                         <Route component={ErrorPage} />
                     </Switch>
                 </Container>

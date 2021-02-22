@@ -37,11 +37,15 @@ app.use(
 // Setup CORS policies
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES
 // Basic setup found here: https://www.positronx.io/express-cors-tutorial/
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
+app.use(function (req, res, next) {
+    // res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    // Required for SSO authentication
+    res.header("Access-Control-Allow-Credentials", "true");
+
+    next();
+});
 app.use(
     cors({
         origin: "http://localhost:3000",
@@ -50,10 +54,5 @@ app.use(
 
 // Attach route handlers
 app.use("/", routing);
-
-// Expose js and css as public resources
-app.use(express.static("./www/script"));
-app.use(express.static("./www/style"));
-app.use(express.static("./www/doc"));
 
 app.listen(port);

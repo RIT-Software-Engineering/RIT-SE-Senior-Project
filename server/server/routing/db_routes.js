@@ -7,7 +7,7 @@ const path = require("path");
 
 const DB_CONFIG = require("../database/db_config");
 const DBHandler = require("../database/db");
-const CONFIG = require("../config");
+const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 
 // Globals
@@ -526,6 +526,12 @@ db_router.get("/getPoster", (req, res) => {
 });
 
 db_router.get("/getActiveTimelines", (req, res) => {
+
+    if (!req.isAuthenticated()) {
+        res.sendStatus(401);
+        return;
+    }
+
     calculateActiveTimelines().then(
         (timelines) => {
             res.send(timelines);

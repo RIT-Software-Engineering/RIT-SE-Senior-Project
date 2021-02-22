@@ -5,31 +5,37 @@
 "use strict";
 
 // Imports
+
+require("../config/passport");
+const session = require("express-session");
+const passport = require("passport");
 const router = require("express").Router();
-const path = require("path");
-const CONFIG = require("../config");
+const CONFIG = require("../config/config");
 const db_router = require("./db_routes");
-
-//#region Page routes
-router.get("/", (req, res) => {
-    res.sendFile(path.join(CONFIG.www_path, "/html/index.html"));
-});
-
-router.get("/admin", CONFIG.authAdmin, (req, res) => {
-    res.sendFile(path.join(CONFIG.www_path, "/html/admin.html"));
-});
-
-router.get("/sponsor", (req, res) => {
-    res.sendFile(path.join(CONFIG.www_path, "/html/sponsor.html"));
-});
-
-router.get("/proposalForm", (req, res) => {
-    res.sendFile(path.join(CONFIG.www_path, "/html/proposalForm.html"));
-});
 
 //#endregion
 
 // Database routes
 router.use("/db", db_router);
+/** Parse the body of the request / Passport */
+router.use(session(CONFIG.session));
+router.use(passport.initialize());
+router.use(passport.session());
+
+// SAML Routes
+router.get(
+    "/login",
+    passport.authenticate("saml", CONFIG.saml.options, (req, res, next) => {
+        console.log(req);
+        res.redirect("http://localhost:3000/dashboard");
+    })
+);
+
+router.post(
+    "/login/callback",
+    passport.authenticate("saml", CONFIG.saml.options, (req, res, next) => {
+        res.redirect("http://localhost:3000/dashboard");
+    })
+);
 
 module.exports = router;

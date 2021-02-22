@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "../../css/header.css";
+import { config } from "../util/constants";
 
 function Header() {
     const history = useHistory();
@@ -24,6 +25,14 @@ function Header() {
                         }}
                     >
                         Sponsor a Project
+                    </button>
+                    <button
+                        className="ui button"
+                        onClick={() => {
+                            window.location.replace(config.url.API_LOGIN);
+                        }}
+                    >
+                        Sign In
                     </button>
                 </div>
             );

@@ -46,4 +46,18 @@ module.exports = {
     ],
     www_path: path.join(__dirname + "/../www/"),
     authAdmin,
+    saml: {
+        cert: "./server/config/saml.pem", // when you build, reference properly
+        entryPoint: "shibboleth entryPoint",
+        issuer: "http://localhost:3001",
+        options: {
+            failureRedirect: "/login",
+            failureFlash: true,
+        },
+    },
+    session: {
+        resave: false,
+        secret: "KevinIsSoCOol",
+        saveUninitialized: true,
+    },
 };

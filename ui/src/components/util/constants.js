@@ -7,6 +7,8 @@ export const config = {
         BASE_URL: BASE_URL,
         BASE_API_URL: BASE_API_URL,
 
+        API_LOGIN: `${BASE_API_URL}/login`,
+
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,

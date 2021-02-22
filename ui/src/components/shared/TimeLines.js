@@ -8,8 +8,17 @@ export default function TimeLines() {
     const [activeSemesters, setActiveSemesters] = useState({});
 
     useEffect(() => {
-        fetch(config.url.API_GET_ACTIVE_TIMELINES)
-            .then((response) => response.json())
+        fetch(config.url.API_GET_ACTIVE_TIMELINES, { credentials: "include" })
+            .then((response) => {
+
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 401) {
+                    window.location.href = `${config.url.BASE_API_URL}/login`;
+                } else {
+                    throw response;
+                }
+            })
             .then((timelinesData) => {
                 setTimelines(timelinesData);
             })
