@@ -134,7 +134,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", CONFIG.authAdmin, async (req, res) => {
+db_router.get("/getProjects", async (req, res) => {
     let query;
     switch (req.query.type) {
         case "proposal":
@@ -162,7 +162,7 @@ db_router.get("/getProjects", CONFIG.authAdmin, async (req, res) => {
 
 db_router.post(
     "/editProject",
-    CONFIG.authAdmin,
+
     [
         // TODO: Should the max length be set to something smaller than 5000?
         body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
@@ -285,7 +285,7 @@ db_router.post(
  */
 db_router.patch(
     "/updateProposalStatus",
-    CONFIG.authAdmin,
+
     [
         // v-- I'm not entirely sure this does anything
         body("*").trim().escape().isJSON().isAlphanumeric(),
@@ -306,7 +306,7 @@ db_router.patch(
 /**
  * Responds with a list of links to pdf versions of proposal forms
  */
-db_router.get("/getProposalPdfNames", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalPdfNames", (req, res) => {
     fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
         if (err) {
             res.status(500).send(err);
@@ -321,14 +321,14 @@ db_router.get("/getProposalPdfNames", CONFIG.authAdmin, (req, res) => {
     });
 });
 
-db_router.get("/getProposalPdf", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalPdf", (req, res) => {
     if (req.query.name) {
         let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
         res.sendFile(path.join(__dirname, "../proposal_docs/" + name));
     } else res.send("File not found");
 });
 
-db_router.get("/getProposalAttachmentNames", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalAttachmentNames", (req, res) => {
     if (req.query.proposalTitle) {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues, get the name with no extension
         proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf("."));
@@ -351,7 +351,7 @@ db_router.get("/getProposalAttachmentNames", CONFIG.authAdmin, (req, res) => {
     }
 });
 
-db_router.get("/getProposalAttachment", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalAttachment", (req, res) => {
     if (req.query.proposalTitle && req.query.name) {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
         let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
@@ -526,6 +526,8 @@ db_router.get("/getPoster", (req, res) => {
 });
 
 db_router.get("/getActiveTimelines", (req, res) => {
+
+    console.log(req.sessionID);
 
     if (!req.isAuthenticated()) {
         res.sendStatus(401);
