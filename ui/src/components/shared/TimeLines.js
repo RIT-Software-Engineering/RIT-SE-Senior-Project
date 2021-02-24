@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
+import { secureFetch } from "../util/securefetch";
 import TimelineElement from "./TimelineElement";
 
 export default function TimeLines() {
@@ -8,17 +9,7 @@ export default function TimeLines() {
     const [activeSemesters, setActiveSemesters] = useState({});
 
     useEffect(() => {
-        fetch(config.url.API_GET_ACTIVE_TIMELINES, { credentials: "include" })
-            .then((response) => {
-
-                if (response.ok) {
-                    return response.json();
-                } else if (response.status === 401) {
-                    window.location.href = `${config.url.BASE_API_URL}/login`;
-                } else {
-                    throw response;
-                }
-            })
+        secureFetch(config.url.API_GET_ACTIVE_TIMELINES)
             .then((timelinesData) => {
                 setTimelines(timelinesData);
             })
