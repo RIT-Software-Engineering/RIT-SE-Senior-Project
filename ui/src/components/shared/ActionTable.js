@@ -35,11 +35,11 @@ export default function ActionTable(props) {
 
     let title;
     if (props.actions[0].name === null){
-        title = "Unassigned";
+        title = "No semester";
     } else {
         title = props.actions[0].name
     }
-    console.log(title);
+
     return (
         <>
             <Accordion

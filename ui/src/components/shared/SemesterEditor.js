@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
 import SemesterTable from "./SemesterTable";
 
@@ -19,8 +19,12 @@ export default function SemesterEditor(props) {
 
     let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters}/>;
 
+    const onAdd = () => {
+        //todo 
+        alert("Empty Semester Modal");
+    }
     return (
-        <div>
+        <div className="accordion-button-group">
             <Accordion
                 fluid
                 styled
@@ -32,6 +36,16 @@ export default function SemesterEditor(props) {
                     },
                 ]}
             />
+            <div className="accordion-buttons-container">
+                <Button
+                    icon
+                    onClick={() => {
+                        onAdd();
+                    }}
+                >
+                    <Icon name="plus" />
+                </Button>
+            </div>
         </div>
     );
 }

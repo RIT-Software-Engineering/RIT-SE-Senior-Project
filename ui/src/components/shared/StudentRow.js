@@ -7,7 +7,7 @@ export default function StudentRow(props) {
         <TableRow key={props.student.system_id}>
             <TableCell>{props.student.fname}</TableCell>
             <TableCell>{props.student.lname}</TableCell>
-            <TableCell>{props.student.email}</TableCell>
+            <TableCell><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
             <TableCell>{props.student.semester_group}</TableCell>
             <TableCell>{props.student.project}</TableCell>
             <TableCell>

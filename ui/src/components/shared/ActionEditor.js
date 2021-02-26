@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
+// import ActionModal from "./ActionModal";
 import ActionTable from "./ActionTable";
 
 export default function ActionEditor() {
@@ -41,8 +42,14 @@ export default function ActionEditor() {
         }
     }
 
+    const onAdd = () => {
+        // return <ActionModal />;
+        //todo
+        alert("Blank Action Modal");
+    };
+
     return (
-        <div>
+        <div className="accordion-button-group">
             <Accordion
                 fluid
                 styled
@@ -54,6 +61,16 @@ export default function ActionEditor() {
                     },
                 ]}
             />
+            <div className="accordion-buttons-container">
+                <Button
+                    icon
+                    onClick={() => {
+                        onAdd();
+                    }}
+                >
+                    <Icon name="plus" />
+                </Button>
+            </div>
         </div>
     );
 }

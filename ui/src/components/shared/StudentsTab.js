@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import StudentRow from "./StudentRow";
@@ -63,25 +63,29 @@ export default function StudentsTab() {
                 if (!semesterMap[student.name]) {
                     semesterMap[student.name] = {};
                 }
-                
+
                 if (student.project) {
                     if (!semesterMap[student.name][student.project]) {
                         semesterMap[student.name][student.project] = [];
                     }
-                    semesterMap[student.name][student.project].push(<StudentRow student={student} semesterData={semesters}/>);
+                    semesterMap[student.name][student.project].push(
+                        <StudentRow student={student} semesterData={semesters} />
+                    );
                 } else {
                     // if a student hasn't been assigned a project yet
                     if (!semesterMap[student.name][unassignedStudentsStr]) {
                         semesterMap[student.name][unassignedStudentsStr] = [];
                     }
-                    semesterMap[student.name][unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters}/>);
+                    semesterMap[student.name][unassignedStudentsStr].push(
+                        <StudentRow student={student} semesterData={semesters} />
+                    );
                 }
             } else {
                 //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters}/>);
+                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} />);
             }
         }
         return semesterMap;
@@ -116,9 +120,11 @@ export default function StudentsTab() {
                     } else if (projectId !== unassignedStudentsStr) {
                         let key = "StudentsTab-project-selector-" + projectMap[projectId];
                         projectPanels.push(
-                            <StudentTeamTable key={key} 
-                            title={`${projectMap[projectId]} (${studentPanels.length})`} 
-                            content={studentPanels} />
+                            <StudentTeamTable
+                                key={key}
+                                title={`${projectMap[projectId]} (${studentPanels.length})`}
+                                content={studentPanels}
+                            />
                         );
                     } else {
                         let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
@@ -131,7 +137,7 @@ export default function StudentsTab() {
                         );
                     }
                 }
-                
+
                 semesterPanels.push(
                     <Accordion
                         fluid
@@ -149,5 +155,23 @@ export default function StudentsTab() {
         }
     }
 
-    return <div>{semesterPanels.reverse()}</div>;
+    const onAdd = () => {
+        // return <ActionModal />;
+        //todo
+        alert("Blank Students Modal"); 
+    };
+
+    return (
+        <div>
+            <Button
+                icon
+                onClick={() => {
+                    onAdd();
+                }}
+            >
+                <Icon name="plus" />
+            </Button>
+            {semesterPanels.reverse()}
+        </div>
+    );
 }
