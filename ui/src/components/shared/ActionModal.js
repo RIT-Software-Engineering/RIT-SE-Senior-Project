@@ -43,6 +43,45 @@ export default function ActionModal(props) {
         props.isOpenCallback(false);
     };
 
+    function onActionSubmit(id) {
+        let form = document.forms.item(0);
+        if (form !== null && form !== undefined) {
+            const formData = {};
+            formData["action_template"] = props.action_id;
+            formData["system_id"] = "We should figure out how to get the system id";
+            formData["project"] = "some project id whoop whoop";
+            // Yeahhh, I don't like it either...
+            const formDataKeys = Object.keys(document.forms[0].elements);
+            formData["form_data"] = {};
+            for (let x = formDataKeys.length / 2; x < formDataKeys.length; x++) {
+                formData["form_data"][formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]].value;
+            }
+
+            formData["form_data"] = JSON.stringify(formData["form_data"]);
+
+            fetch(config.url.API_POST_SUBMIT_ACTION, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            })
+                .then((response) => {
+                    if (response.status === 200) {
+                        setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+                    } else {
+                        setSubmissionModalOpen(MODAL_STATUS.FAIL);
+                    }
+                })
+                .catch((error) => {
+                    // TODO: Redirect to failed page or handle errors
+                    console.error(error);
+                });
+        }
+    }
+
+    function onActionCancel() {}
+
     return (
         <Modal
             onClose={() => {
@@ -86,29 +125,4 @@ export default function ActionModal(props) {
             </Modal.Actions>
         </Modal>
     );
-
-    function onActionSubmit(id) {
-        let form = document.forms.item(0);
-        if (form === null) {
-        } else {
-            const formData = new FormData(document.querySelector("form"));
-            fetch(config.url.API_POST_SUBMIT_ACTION, {
-                method: "post",
-                body: formData,
-            })
-                .then((response) => {
-                    if (response.status === 200) {
-                        setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-                    } else {
-                        setSubmissionModalOpen(MODAL_STATUS.FAIL);
-                    }
-                })
-                .catch((error) => {
-                    // TODO: Redirect to failed page or handle errors
-                    console.error(error);
-                });
-        }
-    }
-
-    function onActionCancel() {}
 }

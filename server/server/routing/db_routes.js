@@ -541,6 +541,7 @@ db_router.get("/getTeamTimeline", (req, res) => {});
 
 db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
     let result = validationResult(req);
+    console.log("Validation Result we're not using", result);
     console.log(req.body);
     console.log(req.files);
     let body = req.body;
@@ -554,14 +555,18 @@ db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
             )
         VALUES (?,?,?,?,?)
     `;
+
+    console.log("body.form_data", body.form_data);
+
     let params = [body.action_template, body.system_id, body.project, body.form_data, req.files];
-    // db.query(insertAction, params).then(() => {
-    //
-    // }).catch((err) => {
-    //     res.sendStatus(500)
-    // })
-    // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
-    return res.status(200).send();
+    db.query(insertAction, params)
+        .then(() => {
+            return res.sendStatus(200);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.sendStatus(500);
+        });
 });
 
 db_router.get("/getActions", (req, res) => {
@@ -581,6 +586,26 @@ db_router.get("/getActions", (req, res) => {
         });
 });
 
+db_router.get("/getActionLogs", (req, res) => {
+    if (req.query.system_id === "admin") {
+        let getActionLogQuery = `SELECT logs.creation_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files, 
+                                act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
+            FROM action_log logs
+            JOIN actions act
+            ON logs.action_template = act.action_id`;
+        db.query(getActionLogQuery)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send(err);
+            });
+    } else {
+        res.status(401).send("Invalid user -- handling users not supported yet...");
+    }
+});
+
 db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
     let body = req.body;
 
@@ -589,7 +614,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         SET semester = ?,
             action_title = ?,
             action_target = ?,
-            is_null = ?,
+            date_deleted = ?,
             short_desc = ?,
             start_date = ?,
             due_date = ?,
@@ -601,7 +626,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         body.semester,
         body.action_title,
         body.action_target,
-        body.is_null,
+        body.date_deleted,
         body.short_desc,
         body.start_date,
         body.due_date,
@@ -670,7 +695,7 @@ function calculateActiveTimelines() {
                             "{" ||
                                 """action_title"""  || ":" || """" || action_title  || """" || "," ||
                                 """action_id"""     || ":" || """" || action_id      || """" || "," ||
-                                """is_null"""       || ":" || """" || is_null       || """" || "," ||
+                                """date_deleted"""       || ":" || """" || date_deleted       || """" || "," ||
                                 """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
                                 """start_date"""    || ":" || """" || start_date    || """" || "," ||
                                 """due_date"""      || ":" || """" || due_date      || """" || "," ||
@@ -682,7 +707,7 @@ function calculateActiveTimelines() {
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, action_id, start_date, due_date, semester, action_target, is_null, short_desc, page_html,
+                            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, page_html,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)

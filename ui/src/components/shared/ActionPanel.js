@@ -8,7 +8,7 @@ export default function ActionPanel(props) {
         action_title: props.actionData.action_title || "",
         semester: props.actionData.semester || "",
         action_target: props.actionData.action_target || "",
-        is_null: props.actionData.is_null || "",
+        date_deleted: props.actionData.date_deleted || "",
         short_desc: props.actionData.short_desc || "",
         start_date: props.actionData.start_date || "",
         due_date: props.actionData.due_date || "",
@@ -45,7 +45,7 @@ export default function ActionPanel(props) {
             type: "input",
             label: "Is Null",
             placeHolder: "Is Null",
-            name: "is_null",
+            name: "date_deleted",
         },
         {
             type: "input",
