@@ -59,7 +59,9 @@ export default function TeamFiles() {
                                 </div>
                             );
                         })}
-                        {action.files?.toString()}
+                        {action.files?.split(",").map((file) => {
+                            return <><a >{file}</a><br/></>;
+                        })}
                     </div>
                 }
             />
