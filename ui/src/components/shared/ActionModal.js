@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import { config } from "../util/constants";
 
@@ -7,6 +7,7 @@ const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+    const filesRef = useRef();
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -46,25 +47,28 @@ export default function ActionModal(props) {
     function onActionSubmit(id) {
         let form = document.forms.item(0);
         if (form !== null && form !== undefined) {
-            const formData = {};
-            formData["action_template"] = props.action_id;
-            formData["system_id"] = "We should figure out how to get the system id";
-            formData["project"] = "some project id whoop whoop";
-            // Yeahhh, I don't like it either...
+
+            let body = new FormData();
+
+            body.append("action_template", props.action_id);
+            body.append("project", "some project id whoop whoop");
+
+            let formData = {};
             const formDataKeys = Object.keys(document.forms[0].elements);
-            formData["form_data"] = {};
             for (let x = formDataKeys.length / 2; x < formDataKeys.length; x++) {
-                formData["form_data"][formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]].value;
+                formData[formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]].value;
             }
 
-            formData["form_data"] = JSON.stringify(formData["form_data"]);
+            body.append("form_data", JSON.stringify(formData));
+
+            const formFiles = filesRef.current.files;
+            for (let i = 0; i < formFiles?.length || 0; i++) {
+                body.append("attachments", formFiles[i]);
+            }
 
             fetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
+                body: body,
             })
                 .then((response) => {
                     if (response.status === 200) {
@@ -78,6 +82,10 @@ export default function ActionModal(props) {
                     console.error(error);
                 });
         }
+    }
+
+    function fileUpload(fileTypes) {
+        return fileTypes && <input ref={filesRef} type="file" accept={fileTypes} multiple />;
     }
 
     function onActionCancel() {}
@@ -100,6 +108,7 @@ export default function ActionModal(props) {
                 <Modal.Description>
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
                 </Modal.Description>
+                {fileUpload(props.file_types)}
                 <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
             </Modal.Content>
             <Modal.Actions>
