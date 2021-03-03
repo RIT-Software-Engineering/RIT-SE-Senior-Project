@@ -7,7 +7,8 @@ actions (
     action_target, 
     start_date, 
     due_date, 
-    page_html
+    page_html,
+    file_types
     )
 
 VALUES
@@ -28,7 +29,8 @@ VALUES
             <input name=\"email\" type=\"text\"/>
             
         </form>
-        '
+        ',
+        '.png,.pdf,.jpg'
     ),
     (
         3, 
@@ -47,9 +49,8 @@ VALUES
             <input name=\"email\" type=\"text\"/>
             
         </form>
-        '
-
-    
+        ',
+        ''
     ),
     (
         3, "Team Name Submission", "0", 
@@ -66,7 +67,8 @@ VALUES
             <input name=\"email\" type=\"text\"/>
             
         </form>
-        '
+        ',
+        '.png,.pdf,.jpg'
     ),
     (
         4,
@@ -85,7 +87,8 @@ VALUES
             <input name=\"email\" type=\"text\"/>
             
         </form>
-        '
+        ',
+        ''
     ),
     (
         4, 
@@ -100,7 +103,8 @@ VALUES
             <label for=\"report\">Report File</label>
             <input name=\"report\" type=\"file\"/>
         </form>
-        '
+        ',
+        '.png,.pdf,.jpg'
     ),
     (
         4, "Team Name Submission", "0", "Come up <u>with</u> team name", 
@@ -116,6 +120,7 @@ VALUES
             <input name=\"email\" type=\"text\"/>
             
         </form>
-        '
+        ',
+        ''
     )
     ;

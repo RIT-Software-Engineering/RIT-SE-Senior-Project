@@ -28,7 +28,7 @@ module.exports = class DBHandler {
     openReadWrite() {
         this.seniorProjectsDB = new SQLITE3.Database(
             PATH.join(__dirname, CONFIG.dbFileName),
-            SQLITE3.OPEN_READWRITE,
+            SQLITE3.OPEN_READWRITE | SQLITE3.OPEN_CREATE,
             (err) => {
                 if (err) {
                     console.error(err.message);
