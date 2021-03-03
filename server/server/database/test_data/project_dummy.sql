@@ -38,4 +38,4 @@ INSERT INTO projects (status, title, organization, primary_contact, contact_emai
     "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", NULL,
     2, NULL, NULL, NULL, NULL, NULL, NULL
     )
-    ;
+;

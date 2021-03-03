@@ -11,4 +11,4 @@ VALUES
     ("samvse", "Samuel", "Malachowsky", "samvse@rit.edu", "admin", NULL, NULL),
     ("llkiee", "Larry", "Kiser", "llkiee@rit.edu", "coach", NULL, NULL),
     ("dxkvse", "Scott", "Hawker", "dxkvse@rit.edu", "coach", NULL, NULL)
-    ;
+;
