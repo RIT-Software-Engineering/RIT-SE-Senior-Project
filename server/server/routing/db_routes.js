@@ -574,6 +574,7 @@ db_router.get("/getTeamTimeline", (req, res) => {});
 db_router.post("/submitAction", [body("*").trim().escape()], async (req, res) => {
     let result = validationResult(req);
 
+    // TODO: This should come from req when users are implemented
     req.user = {
         system_id: "dxb2269",
     }
