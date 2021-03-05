@@ -8,7 +8,7 @@ export default function ActionPanel(props) {
         action_title: props.actionData.action_title || "",
         semester: props.actionData.semester || "",
         action_target: props.actionData.action_target || "",
-        is_null: props.actionData.is_null || "",
+        date_deleted: props.actionData.date_deleted || "",
         short_desc: props.actionData.short_desc || "",
         start_date: props.actionData.start_date || "",
         due_date: props.actionData.due_date || "",
@@ -43,12 +43,6 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Is Null",
-            placeHolder: "Is Null",
-            name: "is_null",
-        },
-        {
-            type: "input",
             label: "Short Desc",
             placeHolder: "Short Desc",
             name: "short_desc",
@@ -70,6 +64,18 @@ export default function ActionPanel(props) {
             label: "Page Html",
             placeHolder: "Page Html",
             name: "page_html",
+        },
+        {
+            type: "input",
+            label: "Upload Files",
+            placeHolder: "CSV format please - No filetypes = no files uploaded",
+            name: "file_types",
+        },
+        {
+            type: "checkbox",
+            label: "Deleted",
+            placeHolder: "Deleted",
+            name: "date_deleted",
         },
     ];
 

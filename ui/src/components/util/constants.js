@@ -20,6 +20,7 @@ export const config = {
         API_GET_ACTIVE_SEMESTERS: `${BASE_API_URL}/db/getActiveSemesters`,
         API_GET_ACTIVE_PROJECTS: `${BASE_API_URL}/db/getActiveProjects`,
         API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
+        API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
 
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,

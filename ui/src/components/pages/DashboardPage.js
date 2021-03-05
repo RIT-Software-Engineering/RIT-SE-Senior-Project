@@ -8,6 +8,7 @@ import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
 import ProposalTable from "../shared/ProposalTable";
 import ProjectEditor from "../shared/ProjectEditor";
+import ActionsTab from "../shared/ActionsTab";
 import "./../../css/dashboard.css";
 
 export default function DashboardPage() {
@@ -48,7 +49,14 @@ export default function DashboardPage() {
                 ),
             },
             { menuItem: "Coaches", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            { menuItem: "Team Files", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+            {
+                menuItem: "Actions",
+                render: () => (
+                    <Tab.Pane>
+                        <ActionsTab />
+                    </Tab.Pane>
+                ),
+            },
             {
                 menuItem: "Admin",
                 render: () => (
@@ -88,7 +96,14 @@ export default function DashboardPage() {
                 ),
             },
             { menuItem: "Coaches", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            { menuItem: "Team Files", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+            {
+                menuItem: "Actions",
+                render: () => (
+                    <Tab.Pane>
+                        <ActionsTab />
+                    </Tab.Pane>
+                ),
+            },
         ];
     } else if (role === "student") {
         panes = [
@@ -100,7 +115,14 @@ export default function DashboardPage() {
                     </Tab.Pane>
                 ),
             },
-            { menuItem: "Team Files", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+            {
+                menuItem: "Actions",
+                render: () => (
+                    <Tab.Pane>
+                        <ActionsTab />
+                    </Tab.Pane>
+                ),
+            },
         ];
     } else if (role === "noRole") {
         panes = [

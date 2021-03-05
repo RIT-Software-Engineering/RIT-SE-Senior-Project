@@ -79,8 +79,12 @@ export default function DatabaseTableEditor(props) {
             });
     };
 
-    const handleChange = (e, { name, value }) => {
-        console.log("form field name and value: ", name, value);
+    const handleChange = (e, { name, value, checked }) => {
+
+        if(checked) {
+            value = checked;
+        }
+
         setFormData({
             ...formData,
             [name]: value,
@@ -137,9 +141,11 @@ export default function DatabaseTableEditor(props) {
                 const options = Object.keys(semesterMap).map((semester_id, idx) => {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
                 });
-                fieldComponents.push(
+
+            fieldComponents.push(
                     <Form.Field key={field.name}>
                         <label>{field.label}</label>
+
                         <Dropdown
                             selection
                             options={options}
@@ -152,8 +158,22 @@ export default function DatabaseTableEditor(props) {
                     </Form.Field>
                 );
                 break;
+
+            case "checkbox":
+                fieldComponents.push(
+                    <Form.Field key={field["name"]}>
+                        <Form.Checkbox
+                            label={field["label"]}
+                            checked={!!formData[field["name"]]}
+                            name={field["name"]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                )
+                break;
+
             default:
-                return;
+                break;
         }
     }
 

@@ -1,5 +1,6 @@
 node_modules/
 *.log
 */proposal_docs
+*/project_docs
 */sponsor_proposal_files
 *.db
