@@ -3,8 +3,6 @@ import { Accordion } from 'semantic-ui-react';
 
 export default function SemesterCoaches({coaches}) {
 
-    console.log("WINNER WINNER CHICKEN DINNER", coaches);
-
     return (
         <>
             {coaches && <Accordion 

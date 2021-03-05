@@ -251,22 +251,18 @@ db_router.post(
         body("website").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-        // TODO: REMOVE coach1 and coach2
-        body("coach1").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-        body("coach2").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("semester").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     ],
     (req, res) => {
         let body = req.body;
 
-        // TODO: Remove coach1 and coach2 from query and instead insert them into project_coaches table instead
         const sql = `UPDATE ${DB_CONFIG.tableNames.senior_projects} 
         SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
         background_info=?, project_description=?, project_scope=?, project_challenges=?, 
         sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
         proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?, 
-        team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, coach1=?, coach2=?, semester=?
+        team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
         WHERE project_id = ?`;
 
         const params = [
@@ -296,8 +292,6 @@ db_router.post(
             body.website,
             body.synopsis,
             body.sponsor,
-            body.coach1,
-            body.coach2,
             body.semester,
             body.project_id,
         ];
@@ -318,9 +312,8 @@ db_router.post(
  */
 db_router.patch(
     "/updateProposalStatus",
-    CONFIG.authAdmin,
     [
-        // v-- I'm not entirely sure this does anything
+        CONFIG.authAdmin,
         body("*").trim().escape().isJSON().isAlphanumeric(),
     ],
     (req, res) => {
@@ -840,7 +833,6 @@ function calculateActiveTimelines() {
                         LEFT JOIN users ON project_coaches.coach_id = users.system_id
                         WHERE projects.project_id = project_coaches.project_id
                     ) coach
-                    
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
@@ -854,7 +846,7 @@ function calculateActiveTimelines() {
 
         db.query(getTeams)
             .then((values) => {
-                for (let timeline in values) {
+                for (let timeline in values || []) {
                     values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
                     values[timeline].actions = values[timeline].actions.sort(function (a, b) {
                         return Date.parse(a.start_date) - Date.parse(b.start_date);
