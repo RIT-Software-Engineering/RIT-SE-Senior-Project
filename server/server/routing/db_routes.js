@@ -10,6 +10,13 @@ const DBHandler = require("../database/db");
 const CONFIG = require("../config");
 const { nanoid } = require("nanoid");
 
+const ACTION_TARGETS = {
+    ADMIN: 'admin',
+    COACH: 'coach',
+    TEAM: 'team',
+    INDIVIDUAL: 'individual',
+};
+
 // Globals
 let db = new DBHandler();
 
@@ -428,6 +435,12 @@ db_router.post(
             let filenamesCSV = "";
             // Attachment Handling
             if (req.files && req.files.attachments) {
+
+                // If there is only one attachment, then it does not come as a list
+                if(req.files.attachments.length === undefined) {
+                    req.files.attachments = [req.files.attachments];
+                }
+
                 if (req.files.attachments.length > 5) {
                     // Don't allow more than 5 files
                     return res.status(400).send("Maximum of 5 files allowed");
@@ -539,12 +552,71 @@ db_router.get("/getActiveTimelines", (req, res) => {
 
 db_router.get("/getTeamTimeline", (req, res) => {});
 
-db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
+db_router.post("/submitAction", [body("*").trim().escape()], async (req, res) => {
     let result = validationResult(req);
-    console.log("Validation Result we're not using", result);
-    console.log(req.body);
-    console.log(req.files);
+
+    // TODO: This should come from req when users are implemented
+    req.user = {
+        system_id: "dxb2269",
+    }
+
+    if (result.errors.length !== 0) {
+        return res.status(400).send("Input is invalid");
+    }
+
     let body = req.body;
+
+    const query = `SELECT * FROM actions WHERE action_id = ?;`
+    const [action] = await db.query(query, [body.action_template]);
+
+    // prepend date to proposal title
+    let date = new Date();
+    let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;
+    const submission = `${timeString}_${nanoid()}`;
+
+    // TODO: When authentication is added, system_id should come from the req.
+    let baseURL = `./server/project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`;
+
+    // Attachment Handling
+    let filenamesCSV = "";
+    if (req.files && req.files.attachments) {
+
+        // If there is only one attachment, then it does not come as a list
+        if(req.files.attachments.length === undefined) {
+            req.files.attachments = [req.files.attachments];
+        }
+
+        if (req.files.attachments.length > 5) {
+            // Don't allow more than 5 files
+            return res.status(400).send("Maximum of 5 files allowed");
+        }
+
+        fs.mkdirSync(baseURL, { recursive: true });
+
+        for (let x = 0; x < req.files.attachments.length; x++) {
+            if (req.files.attachments[x].size > 15 * 1024 * 1024) {
+                // 15mb limit exceeded
+                return res.status(400).send("File too large");
+            }
+            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name))) {
+                // send an error if the file is not an accepted type
+                return res.status(400).send("Filetype not accepted");
+            }
+
+            // Append the file name to the CSV string, begin with a comma if x is not 0
+            filenamesCSV += x === 0 ? `${submission}/${req.files.attachments[x].name}` : `, ${submission}/${req.files.attachments[x].name}`;
+
+            req.files.attachments[x].mv(
+                `${baseURL}/${req.files.attachments[x].name}`,
+                function (err) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                }
+            );
+        }
+    }
+
     let insertAction = `
         INSERT INTO action_log(
             action_template,
@@ -556,16 +628,14 @@ db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
         VALUES (?,?,?,?,?)
     `;
 
-    console.log("body.form_data", body.form_data);
-
-    let params = [body.action_template, body.system_id, body.project, body.form_data, req.files];
+    // TODO: system_id should be taken from req once authentication is done
+    let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
     db.query(insertAction, params)
         .then(() => {
             return res.sendStatus(200);
         })
         .catch((err) => {
-            console.log(err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         });
 });
 
@@ -618,7 +688,8 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
             short_desc = ?,
             start_date = ?,
             due_date = ?,
-            page_html = ?
+            page_html = ?,
+            file_types = ?
         WHERE action_id = ?
     `;
 
@@ -631,6 +702,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         body.start_date,
         body.due_date,
         body.page_html,
+        body.file_types,
         body.action_id,
     ];
 
@@ -685,6 +757,7 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
 
 function calculateActiveTimelines() {
     return new Promise((resolve, reject) => {
+        // WARN: If any field in an action is null, group_concat will remove that entire action...
         let getTeams = `
             SELECT  projects.team_name, 
                     semester_group.name AS "semester_name", 
@@ -694,8 +767,8 @@ function calculateActiveTimelines() {
                         SELECT  "[" || group_concat(
                             "{" ||
                                 """action_title"""  || ":" || """" || action_title  || """" || "," ||
-                                """action_id"""     || ":" || """" || action_id      || """" || "," ||
-                                """date_deleted"""       || ":" || """" || date_deleted       || """" || "," ||
+                                """action_id"""     || ":" || """" || action_id     || """" || "," ||
+                                """date_deleted"""  || ":" || """" || date_deleted  || """" || "," ||
                                 """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
                                 """start_date"""    || ":" || """" || start_date    || """" || "," ||
                                 """due_date"""      || ":" || """" || due_date      || """" || "," ||
@@ -703,21 +776,22 @@ function calculateActiveTimelines() {
                                 """state"""         || ":" || """" || state         || """" || "," ||
                                 """submitter"""     || ":" || """" || submitter     || """" || "," ||
                                 """page_html"""     || ":" || """" || page_html     || """" || "," ||
+                                """file_types"""    || ":" || """" || file_types    || """" || "," ||
                                 """count"""         || ":" || """" || count         || """" ||
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, page_html,
+                            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
                                     ELSE system_id
                                 END AS 'submitter',
                                 CASE
-                                    WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS 4 THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.ADMIN}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.COACH}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.TEAM}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.INDIVIDUAL}' AND COUNT(distinct system_id) IS 4 THEN 'green'
                                     WHEN  start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
                                     WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
                                     ELSE 'grey'

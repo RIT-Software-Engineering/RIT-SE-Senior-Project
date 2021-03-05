@@ -43,12 +43,6 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Is Null",
-            placeHolder: "Is Null",
-            name: "date_deleted",
-        },
-        {
-            type: "input",
             label: "Short Desc",
             placeHolder: "Short Desc",
             name: "short_desc",
@@ -70,6 +64,18 @@ export default function ActionPanel(props) {
             label: "Page Html",
             placeHolder: "Page Html",
             name: "page_html",
+        },
+        {
+            type: "input",
+            label: "Upload Files",
+            placeHolder: "CSV format please - No filetypes = no files uploaded",
+            name: "file_types",
+        },
+        {
+            type: "checkbox",
+            label: "Deleted",
+            placeHolder: "Deleted",
+            name: "date_deleted",
         },
     ];
 
