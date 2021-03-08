@@ -9,6 +9,7 @@ import StudentsTab from "../shared/StudentsTab";
 import ProposalTable from "../shared/ProposalTable";
 import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
+import CoachesTab from "../shared/CoachesTab";
 import "./../../css/dashboard.css";
 
 export default function DashboardPage() {
@@ -48,7 +49,7 @@ export default function DashboardPage() {
                     </Tab.Pane>
                 ),
             },
-            { menuItem: "Coaches", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
             {
                 menuItem: "Actions",
                 render: () => (
@@ -95,7 +96,7 @@ export default function DashboardPage() {
                     </Tab.Pane>
                 ),
             },
-            { menuItem: "Coaches", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
+            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
             {
                 menuItem: "Actions",
                 render: () => (

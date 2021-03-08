@@ -10,5 +10,6 @@ VALUES
     ("pxk1234", "Nick", "Kytcuaktaselt", "pxk1234@rit.edu", "student", 4, 4),
     ("samvse", "Samuel", "Malachowsky", "samvse@rit.edu", "admin", NULL, NULL),
     ("llkiee", "Larry", "Kiser", "llkiee@rit.edu", "coach", NULL, NULL),
-    ("dxkvse", "Scott", "Hawker", "dxkvse@rit.edu", "coach", NULL, NULL)
-    ;
+    ("dxkvse", "Scott", "Hawker", "dxkvse@rit.edu", "coach", NULL, NULL),
+    ("coachA", "SomeCoach", "NoProject", "coachA@rit.edu", "coach", NULL, NULL)
+;

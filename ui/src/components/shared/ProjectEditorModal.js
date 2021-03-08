@@ -191,18 +191,6 @@ export default function ProjectEditor(props) {
                     onChange={projectOnChange}
                 />
                 <Input
-                    label="coach1"
-                    className={className("coach1")}
-                    value={value("coach1")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="coach2"
-                    className={className("coach2")}
-                    value={value("coach2")}
-                    onChange={projectOnChange}
-                />
-                <Input
                     label="semester"
                     className={className("semester")}
                     value={value("semester")}

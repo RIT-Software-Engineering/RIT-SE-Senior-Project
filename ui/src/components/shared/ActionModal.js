@@ -85,7 +85,7 @@ export default function ActionModal(props) {
     }
 
     function fileUpload(fileTypes) {
-        return fileTypes && <input ref={filesRef} type="file" accept={fileTypes} multiple />;
+        return fileTypes && <><input ref={filesRef} type="file" accept={fileTypes} multiple />Accepted: {fileTypes.split(",").join(", ")}</>;
     }
 
     function onActionCancel() {}

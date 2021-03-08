@@ -6,4 +6,4 @@ VALUES
     ("Joe", "Smith", "Apple Inc", "Software Dev", "joe.smith@company.com", "+1 555 555 6666"),
     ("Phil", "Martin", "McDonalds", "Marketing", "phil.martin@company.com", "+1 555 777 7777"),
     ("Damian", "K", "Lenel S2", NULL, "xxx1234@lenel.com", "+1 333 333 3333")
-    ;
+;

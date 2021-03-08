@@ -11,7 +11,8 @@
  *
  * UNCOMMENT THIS TO RESET DATABASE
  */
-// require("./db_setup");
+// const redeployDatabase = require("./db_setup");
+// redeployDatabase();
 
 // Imports
 const express = require("express");
