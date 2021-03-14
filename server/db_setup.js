@@ -79,22 +79,15 @@ function populateDummyData() {
     });
 }
 
-function redeployDatabase() {
-    dropAllTables()
-        .then(() => {
-            createAllTables()
-                .then(() => {
-                    populateDummyData().catch((err) => {
-                        console.log(err);
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+async function redeployDatabase() {
+    try {
+        await dropAllTables()
+        await createAllTables()
+        await populateDummyData()
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-redeployDatabase();
+module.exports =  redeployDatabase;
+
