@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { config } from "../util/constants";
 import { formatDateTime } from "../util/utils";
+import _ from "lodash";
 import {
+    Accordion,
     Button,
     Divider,
     Icon,
@@ -14,17 +16,37 @@ import {
     TableRow,
 } from "semantic-ui-react";
 
-// TODO: TO BE RENAMED
-export default function TeamFiles() {
-    const [actionLogs, setActionLogs] = useState([]);
+export default function Actions() {
+    const [semesterActions, setSemesterActions] = useState({});
+    const [semesters, setSemestersData] = useState([]);
 
     useEffect(() => {
         // TODO: Do pagination
+        fetch(config.url.API_GET_ACTIVE_SEMESTERS)
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+            })
+            .catch((error) => {
+                alert("Failed to get semestersData data" + error);
+            });
+
+
         fetch(config.url.API_GET_ACTION_LOGS + "?system_id=admin")
             .then((response) => response.json())
             .then((action_logs) => {
-                console.log(action_logs);
-                setActionLogs(action_logs);
+                const newSemesterActions = {}
+                action_logs.forEach(action => {
+                    if(newSemesterActions[action.semester] === undefined) {
+                        newSemesterActions[action.semester] = {};
+                    }
+                    if(newSemesterActions[action.semester][action.project] === undefined) {
+                        newSemesterActions[action.semester][action.project] = [action];
+                    } else {
+                        newSemesterActions[action.semester][action.project].push(action);
+                    }
+                });
+                setSemesterActions(newSemesterActions);
             })
             .catch((error) => {
                 alert("Failed to get team files data " + error);
@@ -33,7 +55,6 @@ export default function TeamFiles() {
 
     const viewSubmissionModal = (action) => {
         const formData = {};
-        // const formData = JSON.parse(action.form_data);
         return (
             <Modal
                 trigger={
@@ -52,7 +73,6 @@ export default function TeamFiles() {
                         <Divider />
                         <h3>Submission</h3>
                         {Object.keys(formData)?.map((key) => {
-                            console.log("key?", key, formData[key]);
                             return (
                                 <div>
                                     <h5>{key}:</h5> <p>{formData[key]}</p>
@@ -68,8 +88,9 @@ export default function TeamFiles() {
         );
     };
 
-    return (
-        <>
+    const generateTeamActionsTable = (projects) => {
+        return projects.map(project => {
+            return <React.Fragment key={project.project_id}><h3>{project.project_id}</h3>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -81,7 +102,7 @@ export default function TeamFiles() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {actionLogs.map((action, idx) => {
+                    {project.actions.map((action, idx) => {
                         return (
                             <TableRow key={idx}>
                                 <TableCell>{action.action_title}</TableCell>
@@ -93,7 +114,44 @@ export default function TeamFiles() {
                         );
                     })}
                 </TableBody>
-            </Table>
+            </Table></React.Fragment>
+        })
+    }
+
+    let groupedSemesters = [];
+
+    if(!!semesters && !!semesterActions) {
+        const sortedSemesters = _.sortBy(semesters, ["end_date"]).reverse();
+        sortedSemesters.forEach((semesterData, idx) => {
+            if(Object.keys(semesterActions).includes(semesterData.semester_id.toString())) {
+                let projects = [];
+                Object.keys(semesterActions[semesterData.semester_id]).forEach(project_id => {
+                    projects.push({project_id: project_id, actions: _.sortBy(semesterActions[semesterData.semester_id][project_id], ["creation_datetime"])})
+                })
+                groupedSemesters.push({semesterData: semesterData, projects: projects});
+            }
+        })
+    }
+
+    const today = new Date();
+
+    return (
+        <>
+            {groupedSemesters.length === 1? generateTeamActionsTable(groupedSemesters[0].projects) : groupedSemesters.map((semester) => {
+                const semEnd = new Date(semester.semesterData.end_date);
+                const activeIndex = semEnd >= today ? 0 : -1;
+                return <Accordion
+                    fluid
+                    styled
+                    defaultActiveIndex={activeIndex}
+                    key={semester.semesterData.semester_id}
+                    panels={[{
+                        key: semester.semesterData.semester_id,
+                        title: semester.semesterData.name,
+                        content: {content: generateTeamActionsTable(semester.projects)}
+                    },]}
+                />
+            })}
         </>
     );
 }
