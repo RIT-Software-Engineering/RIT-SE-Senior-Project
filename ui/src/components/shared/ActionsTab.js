@@ -133,13 +133,11 @@ export default function Actions() {
         })
     }
 
-    const today = new Date();
-
     return (
         <>
             {groupedSemesters.length === 1? generateTeamActionsTable(groupedSemesters[0].projects) : groupedSemesters.map((semester) => {
-                const semEnd = new Date(semester.semesterData.end_date);
-                const activeIndex = semEnd >= today ? 0 : -1;
+                // If semester end date is in the future, open accordion by default
+                const activeIndex = new Date(semester.semesterData.end_date) >= new Date() ? 0 : -1;
                 return <Accordion
                     fluid
                     styled
