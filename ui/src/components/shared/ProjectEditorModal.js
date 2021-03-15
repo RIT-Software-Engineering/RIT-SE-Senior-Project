@@ -16,7 +16,6 @@ export default function ProjectEditor(props) {
     const [editedProject, setEditedProject] = useState({});
 
     const projectOnChange = (event, target) => {
-        console.log(target);
         setEditedProject({ ...editedProject, [target.label]: target.value });
     };
 

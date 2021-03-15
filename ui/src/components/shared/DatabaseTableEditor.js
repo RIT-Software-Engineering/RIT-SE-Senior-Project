@@ -95,28 +95,42 @@ export default function DatabaseTableEditor(props) {
 
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        switch (field["type"]) {        
+        switch (field.type) {
             case "input":
                 fieldComponents.push(
-                    <Form.Field key={field["name"]}>
+                    <Form.Field key={field.name}>
                         <Form.Input
-                            label={field["label"]}
-                            placeholder={field["placeholder"]}
-                            name={field["name"]}
-                            value={formData[field["name"]]}
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
                             onChange={handleChange}
                         />
                     </Form.Field>
                 );
                 break;
-            case"textArea":
+            case "date":
                 fieldComponents.push(
-                    <Form.Field key={field["name"]}>
+                    <Form.Field key={field.name}>
+                        <Form.Input
+                            label={field.label}
+                            type="date"
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "textArea":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
                         <Form.TextArea
-                            placeholder={field["placeholder"]}
-                            label={field["label"]}
-                            name={field["name"]}
-                            value={formData[field["name"]]}
+                            placeholder={field.placeholder}
+                            label={field.label}
+                            name={field.name}
+                            value={formData[field.name]}
                             style={{ minHeight: 200 }}
                             onChange={handleChange}
                         />
@@ -128,21 +142,23 @@ export default function DatabaseTableEditor(props) {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
                 });
 
-                fieldComponents.push(
-                    <Form.Field key={field["name"]}>
-                        <label>{field["label"]}</label>
+            fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <label>{field.label}</label>
+
                         <Dropdown
                             selection
                             options={options}
                             loading={props.semesterData.loading}
                             disabled={props.semesterData.loading}
-                            value={formData[field["name"]].toString()}
-                            name={field["name"]}
+                            value={formData[field.name].toString()}
+                            name={field.name}
                             onChange={handleChange}
                         />
                     </Form.Field>
                 );
                 break;
+
             case "checkbox":
                 fieldComponents.push(
                     <Form.Field key={field["name"]}>
@@ -162,14 +178,21 @@ export default function DatabaseTableEditor(props) {
     }
 
     return (
-        <Form
-            onSubmit={(e) => {
-                handleSubmit(e);
-            }}
-        >
-            {fieldComponents}
-            <Button type="submit">Submit</Button>
+        <>
+            <Modal
+                trigger={<Button icon="edit" />}
+                header={props.header}
+                content={{ content: <Form>{fieldComponents}</Form> }}
+                actions={[
+                    {
+                        key: "submit",
+                        content: "Submit",
+                        onClick: (event) => handleSubmit(event),
+                        positive: true,
+                    },
+                ]}
+            />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
-        </Form>
+        </>
     );
 }

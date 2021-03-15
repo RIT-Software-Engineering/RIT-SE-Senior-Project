@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
-import StudentEditPanel from "./StudentEditPanel";
+import StudentTeamTable from "./StudentTeamTable";
+import StudentRow from "./StudentRow";
 
 export default function StudentsTab() {
     const [students, setStudentsData] = useState([]);
@@ -15,7 +16,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
-                console.log("studentsData", studentsData);
             })
             .catch((error) => {
                 alert("Failed to get students data" + error);
@@ -24,7 +24,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                console.log("semestersData", semestersData);
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
@@ -33,7 +32,6 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
-                console.log("projectsData", projectsData);
             })
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
@@ -71,77 +69,23 @@ export default function StudentsTab() {
                         semesterMap[student.name][student.project] = [];
                     }
                     semesterMap[student.name][student.project].push(
-                        <Accordion
-                            fluid
-                            styled
-                            panels={[
-                                {
-                                    key: "Student-selector-" + student.fname + " " + student.lname,
-                                    title: student.fname + " " + student.lname,
-                                    content: {
-                                        content: (
-                                            <StudentEditPanel
-                                                studentData={student}
-                                                semesterData={semesters}
-                                                editProject={true}
-                                            />
-                                        ),
-                                    },
-                                },
-                            ]}
-                        />
+                        <StudentRow student={student} semesterData={semesters} />
                     );
                 } else {
+                    // if a student hasn't been assigned a project yet
                     if (!semesterMap[student.name][unassignedStudentsStr]) {
                         semesterMap[student.name][unassignedStudentsStr] = [];
                     }
                     semesterMap[student.name][unassignedStudentsStr].push(
-                        <Accordion
-                            fluid
-                            styled
-                            panels={[
-                                {
-                                    key: "Student-selector-" + student.fname + " " + student.lname,
-                                    title: student.fname + " " + student.lname,
-                                    content: {
-                                        content: (
-                                            <StudentEditPanel
-                                                studentData={student}
-                                                semesterData={semesters}
-                                                editProject={true}
-                                            />
-                                        ),
-                                    },
-                                },
-                            ]}
-                        />
+                        <StudentRow student={student} semesterData={semesters} />
                     );
                 }
             } else {
+                //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(
-                    <Accordion
-                        fluid
-                        styled
-                        panels={[
-                            {
-                                key: "Student-selector-" + student.fname + " " + student.lname,
-                                title: student.fname + " " + student.lname,
-                                content: {
-                                    content: (
-                                        <StudentEditPanel
-                                            studentData={student}
-                                            semesterData={semesters}
-                                            editProject={false}
-                                        />
-                                    ),
-                                },
-                            },
-                        ]}
-                    />
-                );
+                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} />);
             }
         }
         return semesterMap;
@@ -156,7 +100,6 @@ export default function StudentsTab() {
         for (let i = 0; i < projects.length; i++) {
             projectMap[projects[i]["project_id"]] = projects[i]["team_name"];
         }
-
         for (const [semesterName, projects] of Object.entries(semesterMap)) {
             if (semesterName) {
                 let projectPanels = [];
@@ -165,33 +108,31 @@ export default function StudentsTab() {
 
                 for (const [projectId, studentPanels] of Object.entries(val)) {
                     if (semesterName === unassignedStudentsStr) {
-                        projectPanels.push(studentPanels);
-                    } else if (projectId !== unassignedStudentsStr) {
+                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
                         projectPanels.push(
-                            <Accordion
-                                fluid
-                                styled
-                                panels={[
-                                    {
-                                        key: "StudentsTab-project-selector-" + projectMap[projectId],
-                                        title: projectMap[projectId],
-                                        content: { content: studentPanels },
-                                    },
-                                ]}
+                            <StudentTeamTable
+                                key={key}
+                                title={`Semester-unassigned Students (${studentPanels.length})`}
+                                content={studentPanels}
+                                unassignedSemester={true}
+                            />
+                        );
+                    } else if (projectId !== unassignedStudentsStr) {
+                        let key = "StudentsTab-project-selector-" + projectMap[projectId];
+                        projectPanels.push(
+                            <StudentTeamTable
+                                key={key}
+                                title={`${projectMap[projectId]} (${studentPanels.length})`}
+                                content={studentPanels}
                             />
                         );
                     } else {
+                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
                         projectPanels.push(
-                            <Accordion
-                                fluid
-                                styled
-                                panels={[
-                                    {
-                                        key: "StudentsTab-project-selector-" + unassignedStudentsStr,
-                                        title: unassignedStudentsStr,
-                                        content: { content: studentPanels },
-                                    },
-                                ]}
+                            <StudentTeamTable
+                                key={key}
+                                title={`Team-unassigned Students (${studentPanels.length})`}
+                                content={studentPanels}
                             />
                         );
                     }
@@ -204,7 +145,7 @@ export default function StudentsTab() {
                         panels={[
                             {
                                 key: "StudentsTab-semester-selector-" + semesterName,
-                                title: semesterName,
+                                title: `${semesterName} (${projectPanels.length})`,
                                 content: { content: projectPanels },
                             },
                         ]}
@@ -214,5 +155,23 @@ export default function StudentsTab() {
         }
     }
 
-    return <div>{semesterPanels}</div>;
+    const onAdd = () => {
+        // return <ActionModal />;
+        //todo
+        alert("Blank Students Modal"); 
+    };
+
+    return (
+        <div>
+            <Button
+                icon
+                onClick={() => {
+                    onAdd();
+                }}
+            >
+                <Icon name="plus" />
+            </Button>
+            {semesterPanels.reverse()}
+        </div>
+    );
 }
