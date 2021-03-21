@@ -24,7 +24,7 @@ export default function ProjectEditor() {
 
     useEffect(() => {
         // TODO: Do pagination
-        fetch(config.url.API_GET_PROJECTS + "?type=project")
+        fetch(config.url.API_GET_PROJECTS + "&type=project")
             .then((response) => response.json())
             .then((proposals) => {
                 const groupedProposalData = {};
