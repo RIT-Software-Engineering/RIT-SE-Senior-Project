@@ -10,6 +10,7 @@ import ProposalTable from "../shared/ProposalTable";
 import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
+import AdminView from "../shared/AdminView";
 import "./../../css/dashboard.css";
 
 export default function DashboardPage() {
@@ -62,6 +63,7 @@ export default function DashboardPage() {
                 menuItem: "Admin",
                 render: () => (
                     <Tab.Pane>
+                        <AdminView />
                         <SemesterEditor />
                         <ActionEditor />
                         <ProjectEditor />

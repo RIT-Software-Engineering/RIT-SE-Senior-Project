@@ -8,7 +8,7 @@ export default function TimeLines() {
     const [activeSemesters, setActiveSemesters] = useState({});
 
     useEffect(() => {
-        fetch(config.url.API_GET_ACTIVE_TIMELINES)
+        fetch(config.url.API_GET_ACTIVE_TIMELINES, {credentials: "include"})
             .then((response) => response.json())
             .then((timelinesData) => {
                 setTimelines(timelinesData);

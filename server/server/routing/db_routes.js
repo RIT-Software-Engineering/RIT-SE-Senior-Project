@@ -560,6 +560,7 @@ db_router.get("/getPoster", (req, res) => {
 
 db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
     console.log("req.user", req.user);
+    console.log(req.cookies);
     calculateActiveTimelines(req.user).then(
         (timelines) => {
             res.send(timelines);
