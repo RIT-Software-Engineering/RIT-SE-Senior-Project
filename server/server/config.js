@@ -44,6 +44,5 @@ module.exports = {
         ".rtf",
         ".csv",
     ],
-    www_path: path.join(__dirname + "/../www/"),
     authAdmin,
 };
