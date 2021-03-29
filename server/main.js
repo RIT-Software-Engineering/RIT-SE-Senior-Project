@@ -22,6 +22,7 @@ const bodyParser = require("body-parser");
 const fileupload = require("express-fileupload");
 const routing = require("./server/routing/index");
 const cookieParser = require("cookie-parser");
+const { mockUser } = require("./server/routing/user_auth");
 // Constants
 const port = 3001;
 
@@ -50,6 +51,7 @@ app.use(
         preserveExtension: true,
     })
 );
+app.use(mockUser);
 
 // Attach route handlers
 app.use("/", routing);

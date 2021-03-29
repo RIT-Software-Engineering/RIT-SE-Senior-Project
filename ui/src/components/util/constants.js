@@ -15,15 +15,15 @@ export const config = {
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
 
         // GET - Auth needed
-        API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects?user=admin`,
-        API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters?user=admin`,
-        API_GET_ACTIONS: `${BASE_API_URL}/db/getActions?user=admin`,
+        API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
+        API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
+        API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_PROPOSAL_PDF: `${BASE_API_URL}/db/getProposalPdf`,
         API_GET_PROPOSAL_ATTACHMENT: `${BASE_API_URL}/db/getProposalAttachment`,
         API_GET_STUDENT_INFO: `${BASE_API_URL}/db/selectAllStudentInfo`,
         API_GET_ACTIVE_SEMESTERS: `${BASE_API_URL}/db/getActiveSemesters`,
         API_GET_ACTIVE_PROJECTS: `${BASE_API_URL}/db/getActiveProjects`,
-        API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines?user=coach`,
+        API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
         API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
         API_GET_ALL_COACH_INFO: `${BASE_API_URL}/db/selectAllCoachInfo`,
 

@@ -1,5 +1,4 @@
 
-
 export const SecureFetch = async (URL, Options) => {
-  return fetch(URL, {...Options})
+  return fetch(URL, { ...Options, credentials: "include" });
 }

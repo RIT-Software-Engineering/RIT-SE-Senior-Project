@@ -1,19 +1,8 @@
 
 const isSignedIn = (req, res, next) => {
-    if( req.query.user === undefined || req.query.user === null ) {
+    if (req.user === undefined || req.user === null) {
         res.sendStatus(401);
         return;
-    }
-
-    const userMap = {
-        student: "dxb2269",
-        admin: "samvse",
-        coach: "llkiee",
-    }
-
-    req.user = {
-        system_id: userMap[req.query.user],
-        type: req.query.user,
     }
 
     next();
@@ -21,20 +10,36 @@ const isSignedIn = (req, res, next) => {
 
 const isAdmin = (req, res, next) => {
 
-    if(req.query.user !== "admin") {
+    if (!testIsAdmin(req)) {
         res.sendStatus(401);
         return;
-    }
-
-    req.user = {
-        system_id: "samvse",
-        type: req.query.user,
     }
 
     next();
 }
 
+const mockUser = (req, res, next) => {
+
+    // TODO: DELETE THIS ONCE ACTUAL USERS EXIST ~~~~~~~~~~~~~~~~~~~~~
+    req.user = { system_id: req.cookies.user, type: req.cookies.type }
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    if (req.cookies.mockUser && testIsAdmin(req)) {
+        req.user = {
+            system_id: req.cookies.mockUser,
+            type: req.cookies.mockType
+        }
+    }
+
+    next();
+}
+
+const testIsAdmin = (req) => {
+    return req.user.type === "admin";
+}
+
 module.exports = {
     isSignedIn,
     isAdmin,
+    mockUser,
 }
