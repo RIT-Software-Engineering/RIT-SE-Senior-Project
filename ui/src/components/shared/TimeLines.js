@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
 import TimelineElement from "./TimelineElement";
+import { useLocation } from "react-router";
+import ProposalTable from "../shared/ProposalTable";
 
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({});
 
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+    }
+
+    let query = useQuery();
+    let role = query.get("role") || "noRole";
+    
     useEffect(() => {
         fetch(config.url.API_GET_ACTIVE_TIMELINES)
             .then((response) => response.json())
@@ -62,6 +71,9 @@ export default function TimeLines() {
             return <Accordion fluid styled panels={semester} key={idx} onTitleClick={handleTitleClick} />;
         });
     };
-
+    if(role === "student"){
+        
+        return <ProposalTable />
+    }
     return <>{generateTimeLines()}</>;
 }
