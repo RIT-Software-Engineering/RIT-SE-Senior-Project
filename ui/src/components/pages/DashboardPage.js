@@ -10,6 +10,7 @@ import ProposalTable from "../shared/ProposalTable";
 import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
+import AdminView from "../shared/AdminView";
 import "./../../css/dashboard.css";
 
 export default function DashboardPage() {
@@ -17,8 +18,23 @@ export default function DashboardPage() {
         return new URLSearchParams(useLocation().search);
     }
 
+    // TODO: Stop dealing with cookies in React
+    function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i].trim();
+            if ((c.indexOf(name)) == 0) {
+                return c.substr(name.length);
+            }
+        }
+        return null;
+    }
+
     let query = useQuery();
     let role = query.get("role") || "noRole";
+    console.log(getCookie("mockType"), getCookie("type"));
+    role = getCookie("mockType") || getCookie("type");
 
     let panes = [];
 
@@ -62,6 +78,7 @@ export default function DashboardPage() {
                 menuItem: "Admin",
                 render: () => (
                     <Tab.Pane>
+                        <AdminView />
                         <SemesterEditor />
                         <ActionEditor />
                         <ProjectEditor />

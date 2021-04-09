@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import Proposals from "./Proposals";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 
 export default function ProjectEditor() {
     const [proposalData, setProposalData] = useState({});
@@ -24,7 +25,7 @@ export default function ProjectEditor() {
 
     useEffect(() => {
         // TODO: Do pagination
-        fetch(config.url.API_GET_PROJECTS + "&type=project")
+        SecureFetch(config.url.API_GET_PROJECTS + "?type=project")
             .then((response) => response.json())
             .then((proposals) => {
                 const groupedProposalData = {};
@@ -42,7 +43,7 @@ export default function ProjectEditor() {
             });
 
         // TODO: This fetch is done in multiple places and is inefficient - Figure out a better method of dealing with getting semester names. Maybe put it in redux?
-        fetch(config.url.API_GET_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 const formattedSemesterData = {};

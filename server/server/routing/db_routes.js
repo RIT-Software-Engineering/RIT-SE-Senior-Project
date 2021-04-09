@@ -457,7 +457,7 @@ db_router.post(
             if (req.files && req.files.attachments) {
 
                 // If there is only one attachment, then it does not come as a list
-                if(req.files.attachments.length === undefined) {
+                if (req.files.attachments.length === undefined) {
                     req.files.attachments = [req.files.attachments];
                 }
 
@@ -559,19 +559,18 @@ db_router.get("/getPoster", (req, res) => {
 });
 
 db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
-    console.log("req.user", req.user);
     calculateActiveTimelines(req.user).then(
         (timelines) => {
             res.send(timelines);
-        },
+        }
+    ).catch(
         (err) => {
             console.log(err);
             res.status(500).send();
-        }
-    );
+        });
 });
 
-db_router.get("/getTeamTimeline", (req, res) => {});
+db_router.get("/getTeamTimeline", (req, res) => { });
 
 db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()], async (req, res) => {
     let result = validationResult(req);
@@ -598,7 +597,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()]
     if (req.files && req.files.attachments) {
 
         // If there is only one attachment, then it does not come as a list
-        if(req.files.attachments.length === undefined) {
+        if (req.files.attachments.length === undefined) {
             req.files.attachments = [req.files.attachments];
         }
 
@@ -773,7 +772,7 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
 
 function calculateActiveTimelines(user) {
 
-    let projectFilter ;
+    let projectFilter;
     switch (user.type) {
         case "admin":
             projectFilter = "";
@@ -784,7 +783,6 @@ function calculateActiveTimelines(user) {
         case "coach":
             projectFilter = `AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
             break;
-    
         default:
             throw new Error("Unhandled user role");
             break;
