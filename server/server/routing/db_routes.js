@@ -1,4 +1,5 @@
 // Imports
+const UserAuth = require("./user_auth");
 const db_router = require("express").Router();
 const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
@@ -46,7 +47,7 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
         });
 });
 
-db_router.post("/editUser", (req, res) => {
+db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
     let body = req.body;
 
     let updateQuery = `
@@ -165,7 +166,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", CONFIG.authAdmin, async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isAdmin], async (req, res) => {
     let query;
     switch (req.query.type) {
         case "proposal":
@@ -193,8 +194,8 @@ db_router.get("/getProjects", CONFIG.authAdmin, async (req, res) => {
 
 db_router.post(
     "/editProject",
-    CONFIG.authAdmin,
     [
+        UserAuth.isAdmin,
         // TODO: Should the max length be set to something smaller than 5000?
         body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
         body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -557,8 +558,9 @@ db_router.get("/getPoster", (req, res) => {
     res.sendFile(path.join(__dirname, "../posters/" + screenedFileName));
 });
 
-db_router.get("/getActiveTimelines", (req, res) => {
-    calculateActiveTimelines().then(
+db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
+    console.log("req.user", req.user);
+    calculateActiveTimelines(req.user).then(
         (timelines) => {
             res.send(timelines);
         },
@@ -571,13 +573,8 @@ db_router.get("/getActiveTimelines", (req, res) => {
 
 db_router.get("/getTeamTimeline", (req, res) => {});
 
-db_router.post("/submitAction", [body("*").trim().escape()], async (req, res) => {
+db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()], async (req, res) => {
     let result = validationResult(req);
-
-    // TODO: This should come from req when users are implemented
-    req.user = {
-        system_id: "dxb2269",
-    }
 
     if (result.errors.length !== 0) {
         return res.status(400).send("Input is invalid");
@@ -658,7 +655,7 @@ db_router.post("/submitAction", [body("*").trim().escape()], async (req, res) =>
         });
 });
 
-db_router.get("/getActions", (req, res) => {
+db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
     let getActionsQuery = `
         SELECT *
         FROM actions
@@ -734,7 +731,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         });
 });
 
-db_router.get("/getSemesters", (req, res) => {
+db_router.get("/getSemesters", [UserAuth.isAdmin], (req, res) => {
     let getSemestersQuery = `
         SELECT *
         FROM semester_group
@@ -774,7 +771,25 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
         });
 });
 
-function calculateActiveTimelines() {
+function calculateActiveTimelines(user) {
+
+    let projectFilter ;
+    switch (user.type) {
+        case "admin":
+            projectFilter = "";
+            break;
+        case "student":
+            projectFilter = `AND projects.project_id IN (SELECT project FROM users WHERE users.system_id = "${user.system_id}")`;
+            break;
+        case "coach":
+            projectFilter = `AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
+            break;
+    
+        default:
+            throw new Error("Unhandled user role");
+            break;
+    }
+
     return new Promise((resolve, reject) => {
         // WARN: If any field in an action is null, group_concat will remove that entire action...
         let getTeams = `
@@ -837,7 +852,7 @@ function calculateActiveTimelines() {
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-            WHERE projects.status = "in progress"
+                WHERE projects.status = "in progress" ${projectFilter}
             ORDER BY projects.semester DESC
         `;
         let today = new Date(); // Fat workaround, sqlite is broken doo doo
