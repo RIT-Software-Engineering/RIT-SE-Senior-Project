@@ -45,7 +45,7 @@ app.use(
 // });
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: process.env.NODE_ENV === "production" ? "http://seniorproject.se.rit.edu" : "http://localhost:3000",
     })
 );
 
