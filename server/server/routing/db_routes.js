@@ -46,6 +46,66 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
         });
 });
 
+// gets users, either active or inactive
+db_router.get("/getUsers", (req,res) => {
+    let query;
+    if(req.query.active = 0) {
+        query = `SELECT *
+            FROM users
+            WHERE
+                active IS 0`
+    }
+    else {
+        query = ` SELECT *
+            FROM users
+            WHERE NOT
+                active IS 0`
+    }
+    db.query(query).then((users) => res.send(users));
+});
+
+db.router.post("/createUser", [
+    body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("fname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("type").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("semester_group").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("project").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("active").trim().escape().isLength({ max: 1 }),
+    ], 
+    async (req, res) => {
+        let result = validationResult(req);
+
+        if (result.errors.length == 0) {
+            let body = req.body;
+
+            const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
+                (system_id, fname, lname, email, type, semester_group, project, active) 
+                VALUES (?,?,?,?,?,?,?,?)`;
+
+            const params = [
+                body.system_id,
+                body.fname,
+                body.lname,
+                body.type,
+                body.semester_group,
+                body.project,
+                body.active,
+            ];
+            db.query(sql, params)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
+        }
+    }
+);
+
+
 db_router.post("/editUser", (req, res) => {
     let body = req.body;
 
@@ -57,6 +117,7 @@ db_router.post("/editUser", (req, res) => {
             type = ?,
             semester_group = ?,
             project = ?
+            actuve = ?
         WHERE system_id = ?
     `;
 
