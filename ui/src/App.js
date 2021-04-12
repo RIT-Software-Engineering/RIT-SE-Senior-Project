@@ -13,7 +13,9 @@ import { Container } from "semantic-ui-react";
 function App() {
     return (
         <>
-            <Header />
+            <UserContextProvider>
+                <Header />
+            </UserContextProvider>
             <div id="page">
                 <Container>
                     <Switch>

@@ -22,8 +22,18 @@ export default function TempSignInModalContent() {
             <button onClick={() => {
                 document.cookie = `user=${userName.current.value}`
                 document.cookie = `type=${role.current.value}`
-                history.push("/dashboard")
+                // Simulate redirect from Shibboleth
+                history.push("/dashboard");
+                window.location.reload();
             }}>Sign In</button>
+            <button onClick={() => {
+                // Delete all cookies
+                let cookies = document.cookie.split(";");
+                cookies.forEach(cookie => document.cookie = cookie + ";max-age=0")
+                // Simulate redirect from Shibboleth
+                history.push("/");
+                window.location.reload();
+            }}>Sign Out</button>
         </div>
     )
 }
