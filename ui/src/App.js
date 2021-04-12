@@ -7,6 +7,7 @@ import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/Header";
 import Footer from "./components/shared/Footer";
+import { UserContextProvider } from "./components/util/UserContext";
 import { Container } from "semantic-ui-react";
 
 function App() {
@@ -19,7 +20,9 @@ function App() {
                         <Route path="/" component={HomePage} exact />
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
-                        <Route path="/dashboard" component={DashboardPage} />
+                        <UserContextProvider>
+                            <Route path="/dashboard" component={DashboardPage} />
+                        </UserContextProvider>
                         <Route component={ErrorPage} />
                     </Switch>
                 </Container>

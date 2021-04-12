@@ -1,6 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { Button, Modal } from "semantic-ui-react";
 import "../../css/header.css";
+import TempSignInModalContent from "./TempSignInModalContent";
+
 
 function Header() {
     const history = useHistory();
@@ -25,6 +28,14 @@ function Header() {
                     >
                         Sponsor a Project
                     </button>
+                    <Modal
+                        trigger={<Button>Sign In</Button>}
+                        header="Sign in!"
+                        content={{
+                            content: <TempSignInModalContent />
+                        }}
+                        actions={["Nevermind..."]}
+                    />
                 </div>
             );
     };

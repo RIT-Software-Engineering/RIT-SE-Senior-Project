@@ -22,6 +22,11 @@ const ACTION_TARGETS = {
 let db = new DBHandler();
 
 // Routes
+
+db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
+    res.send(req.user);
+});
+
 db_router.get("/selectAllSponsorInfo", (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         console.log(value);
