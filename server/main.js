@@ -11,8 +11,8 @@
  *
  * UNCOMMENT THIS TO RESET DATABASE
  */
-// const redeployDatabase = require("./db_setup");
-// redeployDatabase();
+//const redeployDatabase = require("./db_setup");
+//redeployDatabase();
 
 // Imports
 const express = require("express");
@@ -21,19 +21,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const fileupload = require("express-fileupload");
 const routing = require("./server/routing/index");
-
+const cookieParser = require("cookie-parser");
+const { mockUser } = require("./server/routing/user_auth");
 // Constants
 const port = 3001;
-
-// Set up body parsing and file upload configurations
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(
-    fileupload({
-        safeFileNames: true,
-        preserveExtension: true,
-    })
-);
 
 // Setup CORS policies
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES
@@ -45,9 +36,22 @@ app.use(
 // });
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: process.env.NODE_ENV === "production" ? "http://seniorproject.se.rit.edu" : "http://localhost:3000",
+        credentials: true,
     })
 );
+
+// Set up body parsing and file upload configurations
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
+app.use(
+    fileupload({
+        safeFileNames: true,
+        preserveExtension: true,
+    })
+);
+app.use(mockUser);
 
 // Attach route handlers
 app.use("/", routing);

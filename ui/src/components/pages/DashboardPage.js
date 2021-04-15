@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Tab } from "semantic-ui-react";
-import { useLocation } from "react-router";
 import Proposals from "../shared/Proposals";
 import TimeLines from "../shared/TimeLines";
 import SemesterEditor from "../shared/SemesterEditor";
@@ -10,19 +9,31 @@ import ProposalTable from "../shared/ProposalTable";
 import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
+import AdminView from "../shared/AdminView";
+import { UserContext } from "../util/UserContext";
 import "./../../css/dashboard.css";
+import { SecureFetch } from "../util/secureFetch";
+import { config } from "../util/constants";
 
 export default function DashboardPage() {
-    function useQuery() {
-        return new URLSearchParams(useLocation().search);
-    }
 
-    let query = useQuery();
-    let role = query.get("role") || "noRole";
+    const { user, setUser } = useContext(UserContext);
+
+    // When dashboard loads, check who is currently signed in
+    useEffect(() => {
+        SecureFetch(config.url.API_WHO_AM_I)
+            .then((response) => response.json())
+            .then(responseUser => {
+                setUser({
+                    user: responseUser.system_id,
+                    role: responseUser.type
+                });
+            })
+    }, [])
 
     let panes = [];
 
-    if (role === "admin") {
+    if (user.role === "admin") {
         panes = [
             {
                 menuItem: "Dashboard",
@@ -62,6 +73,7 @@ export default function DashboardPage() {
                 menuItem: "Admin",
                 render: () => (
                     <Tab.Pane>
+                        <AdminView />
                         <SemesterEditor />
                         <ActionEditor />
                         <ProjectEditor />
@@ -69,7 +81,7 @@ export default function DashboardPage() {
                 ),
             },
         ];
-    } else if (role === "coach") {
+    } else if (user.role === "coach") {
         panes = [
             {
                 menuItem: "Dashboard",
@@ -106,7 +118,7 @@ export default function DashboardPage() {
                 ),
             },
         ];
-    } else if (role === "student") {
+    } else if (user.role === "student") {
         panes = [
             {
                 menuItem: "Dashboard",
@@ -125,18 +137,17 @@ export default function DashboardPage() {
                 ),
             },
         ];
-    } else if (role === "noRole") {
+    } else {
         panes = [
             {
-                menuItem: "Uh Oh!",
+                menuItem: "Loading...",
                 render: () => (
                     <Tab.Pane>
-                        <p>You don't seem to have a role selected!</p>
+                        <p>Loading...</p>
                     </Tab.Pane>
                 ),
             },
         ];
-    } else {
     }
 
     return <Tab panes={panes} className="admin-menu" />;
