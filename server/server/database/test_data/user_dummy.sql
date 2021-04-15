@@ -9,7 +9,7 @@ VALUES
     ("tuv123", "Steve", "Jobs", "tuv123@rit.edu", "student", 4, 4),
     ("wxy123", "Barack", "Obama", "wxy123@rit.edu", "student", 4, 4),
     ("adminA", "Sam", "sung", "adminA@rit.edu", "admin", NULL, NULL),
-    ("coachA", "Larry", "Kiser", "coachA@rit.edu", "coach", NULL, NULL),
-    ("coachB", "Scott", "Hawker", "coachB@rit.edu", "coach", NULL, NULL),
+    ("coachA", "SomeCoach", "AAA", "coachA@rit.edu", "coach", NULL, NULL),
+    ("coachB", "SomeCoach", "BBB", "coachB@rit.edu", "coach", NULL, NULL),
     ("coachC", "SomeCoach", "NoProject", "coachC@rit.edu", "coach", NULL, NULL)
 ;
