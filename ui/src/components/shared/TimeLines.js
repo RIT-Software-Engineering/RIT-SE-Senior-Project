@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
-import { secureFetch } from "../util/securefetch";
+import { SecureFetch } from "../util/secureFetch";
 import TimelineElement from "./TimelineElement";
 
 export default function TimeLines() {
@@ -9,7 +9,8 @@ export default function TimeLines() {
     const [activeSemesters, setActiveSemesters] = useState({});
 
     useEffect(() => {
-        secureFetch(config.url.API_GET_ACTIVE_TIMELINES)
+        SecureFetch(config.url.API_GET_ACTIVE_TIMELINES)
+            .then((response) => response.json())
             .then((timelinesData) => {
                 setTimelines(timelinesData);
             })

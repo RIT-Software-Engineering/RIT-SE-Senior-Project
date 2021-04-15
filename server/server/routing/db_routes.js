@@ -1,4 +1,5 @@
 // Imports
+const UserAuth = require("./user_auth");
 const db_router = require("express").Router();
 const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
@@ -10,10 +11,22 @@ const DBHandler = require("../database/db");
 const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 
+const ACTION_TARGETS = {
+    ADMIN: 'admin',
+    COACH: 'coach',
+    TEAM: 'team',
+    INDIVIDUAL: 'individual',
+};
+
 // Globals
 let db = new DBHandler();
 
 // Routes
+
+db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
+    res.send(req.user);
+});
+
 db_router.get("/selectAllSponsorInfo", (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         console.log(value);
@@ -39,7 +52,7 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
         });
 });
 
-db_router.post("/editUser", (req, res) => {
+db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
     let body = req.body;
 
     let updateQuery = `
@@ -95,13 +108,37 @@ db_router.get("/getActiveProjects", (req, res) => {
 });
 
 db_router.get("/selectAllCoachInfo", (req, res) => {
-    res.status(404).send("Sorry, route not yet available");
-    /*
-    db.selectAll(DB_CONFIG.tableNames.coach_info).then(function(value) {
-        console.log(value);
-        res.send(value);
-    });
-    */
+
+    const getCoachInfoQuery = `
+        SELECT users.system_id,
+        users.fname,
+        users.lname,
+        users.email,
+        users.semester_group,
+        (
+            SELECT "[" || group_concat(
+                "{" ||
+                    """title"""         || ":" || """" || projects.title         || """" || "," ||
+                    """semester_id"""   || ":" || """" || projects.semester      || """" || "," ||
+                    """project_id"""    || ":" || """" || projects.project_id    || """" ||
+                "}"
+            ) || "]"
+            FROM project_coaches
+            LEFT JOIN projects ON projects.project_id = project_coaches.project_id
+            WHERE project_coaches.coach_id = users.system_id
+        ) projects
+        FROM users
+        WHERE users.type = "${ACTION_TARGETS.COACH}"
+    `;
+
+    db.query(getCoachInfoQuery)
+        .then((coaches) => {
+            res.send(coaches)
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send(error);
+        });
 });
 
 db_router.get("/selectExemplary", (req, res) => {
@@ -134,7 +171,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isAdmin], async (req, res) => {
     let query;
     switch (req.query.type) {
         case "proposal":
@@ -162,8 +199,8 @@ db_router.get("/getProjects", async (req, res) => {
 
 db_router.post(
     "/editProject",
-
     [
+        UserAuth.isAdmin,
         // TODO: Should the max length be set to something smaller than 5000?
         body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
         body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -220,8 +257,6 @@ db_router.post(
         body("website").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-        body("coach1").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-        body("coach2").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("semester").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
     ],
@@ -233,7 +268,7 @@ db_router.post(
         background_info=?, project_description=?, project_scope=?, project_challenges=?, 
         sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
         proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?, 
-        team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, coach1=?, coach2=?, semester=?
+        team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
         WHERE project_id = ?`;
 
         const params = [
@@ -263,8 +298,6 @@ db_router.post(
             body.website,
             body.synopsis,
             body.sponsor,
-            body.coach1,
-            body.coach2,
             body.semester,
             body.project_id,
         ];
@@ -285,9 +318,8 @@ db_router.post(
  */
 db_router.patch(
     "/updateProposalStatus",
-
     [
-        // v-- I'm not entirely sure this does anything
+        CONFIG.authAdmin,
         body("*").trim().escape().isJSON().isAlphanumeric(),
     ],
     (req, res) => {
@@ -428,6 +460,12 @@ db_router.post(
             let filenamesCSV = "";
             // Attachment Handling
             if (req.files && req.files.attachments) {
+
+                // If there is only one attachment, then it does not come as a list
+                if (req.files.attachments.length === undefined) {
+                    req.files.attachments = [req.files.attachments];
+                }
+
                 if (req.files.attachments.length > 5) {
                     // Don't allow more than 5 files
                     return res.status(400).send("Maximum of 5 files allowed");
@@ -525,7 +563,7 @@ db_router.get("/getPoster", (req, res) => {
     res.sendFile(path.join(__dirname, "../posters/" + screenedFileName));
 });
 
-db_router.get("/getActiveTimelines", (req, res) => {
+db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
 
     console.log(req.sessionID);
 
@@ -534,24 +572,79 @@ db_router.get("/getActiveTimelines", (req, res) => {
         return;
     }
 
-    calculateActiveTimelines().then(
+    calculateActiveTimelines(req.user).then(
         (timelines) => {
             res.send(timelines);
-        },
+        }
+    ).catch(
         (err) => {
             console.log(err);
             res.status(500).send();
-        }
-    );
+        });
 });
 
-db_router.get("/getTeamTimeline", (req, res) => {});
+db_router.get("/getTeamTimeline", (req, res) => { });
 
-db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
+db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()], async (req, res) => {
     let result = validationResult(req);
-    console.log(req.body);
-    console.log(req.files);
+
+    if (result.errors.length !== 0) {
+        return res.status(400).send("Input is invalid");
+    }
+
     let body = req.body;
+
+    const query = `SELECT * FROM actions WHERE action_id = ?;`
+    const [action] = await db.query(query, [body.action_template]);
+
+    // prepend date to proposal title
+    let date = new Date();
+    let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;
+    const submission = `${timeString}_${nanoid()}`;
+
+    // TODO: When authentication is added, system_id should come from the req.
+    let baseURL = `./server/project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`;
+
+    // Attachment Handling
+    let filenamesCSV = "";
+    if (req.files && req.files.attachments) {
+
+        // If there is only one attachment, then it does not come as a list
+        if (req.files.attachments.length === undefined) {
+            req.files.attachments = [req.files.attachments];
+        }
+
+        if (req.files.attachments.length > 5) {
+            // Don't allow more than 5 files
+            return res.status(400).send("Maximum of 5 files allowed");
+        }
+
+        fs.mkdirSync(baseURL, { recursive: true });
+
+        for (let x = 0; x < req.files.attachments.length; x++) {
+            if (req.files.attachments[x].size > 15 * 1024 * 1024) {
+                // 15mb limit exceeded
+                return res.status(400).send("File too large");
+            }
+            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name))) {
+                // send an error if the file is not an accepted type
+                return res.status(400).send("Filetype not accepted");
+            }
+
+            // Append the file name to the CSV string, begin with a comma if x is not 0
+            filenamesCSV += x === 0 ? `${submission}/${req.files.attachments[x].name}` : `, ${submission}/${req.files.attachments[x].name}`;
+
+            req.files.attachments[x].mv(
+                `${baseURL}/${req.files.attachments[x].name}`,
+                function (err) {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                }
+            );
+        }
+    }
+
     let insertAction = `
         INSERT INTO action_log(
             action_template,
@@ -562,21 +655,23 @@ db_router.post("/submitAction", [body("*").trim().escape()], (req, res) => {
             )
         VALUES (?,?,?,?,?)
     `;
-    let params = [body.action_template, body.system_id, body.project, body.form_data, req.files];
-    // db.query(insertAction, params).then(() => {
-    //
-    // }).catch((err) => {
-    //     res.sendStatus(500)
-    // })
-    // res.sendFile(path.join(CONFIG.www_path, '/html/actionSubmission.html'))
-    return res.status(200).send();
+
+    // TODO: system_id should be taken from req once authentication is done
+    let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
+    db.query(insertAction, params)
+        .then(() => {
+            return res.sendStatus(200);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
 });
 
-db_router.get("/getActions", (req, res) => {
+db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
     let getActionsQuery = `
         SELECT *
         FROM actions
-        JOIN semester_group
+        LEFT JOIN semester_group
         ON actions.semester = semester_group.semester_id
         ORDER BY action_id desc
     `;
@@ -589,6 +684,26 @@ db_router.get("/getActions", (req, res) => {
         });
 });
 
+db_router.get("/getActionLogs", (req, res) => {
+    if (req.query.system_id === "admin") {
+        let getActionLogQuery = `SELECT logs.creation_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files, 
+                                act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
+            FROM action_log logs
+            JOIN actions act
+            ON logs.action_template = act.action_id`;
+        db.query(getActionLogQuery)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send(err);
+            });
+    } else {
+        res.status(401).send("Invalid user -- handling users not supported yet...");
+    }
+});
+
 db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
     let body = req.body;
 
@@ -597,11 +712,12 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         SET semester = ?,
             action_title = ?,
             action_target = ?,
-            is_null = ?,
+            date_deleted = ?,
             short_desc = ?,
             start_date = ?,
             due_date = ?,
-            page_html = ?
+            page_html = ?,
+            file_types = ?
         WHERE action_id = ?
     `;
 
@@ -609,11 +725,12 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         body.semester,
         body.action_title,
         body.action_target,
-        body.is_null,
+        body.date_deleted,
         body.short_desc,
         body.start_date,
         body.due_date,
         body.page_html,
+        body.file_types,
         body.action_id,
     ];
 
@@ -626,7 +743,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         });
 });
 
-db_router.get("/getSemesters", (req, res) => {
+db_router.get("/getSemesters", [UserAuth.isAdmin], (req, res) => {
     let getSemestersQuery = `
         SELECT *
         FROM semester_group
@@ -666,8 +783,26 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
         });
 });
 
-function calculateActiveTimelines() {
+function calculateActiveTimelines(user) {
+
+    let projectFilter;
+    switch (user.type) {
+        case "admin":
+            projectFilter = "";
+            break;
+        case "student":
+            projectFilter = `AND projects.project_id IN (SELECT project FROM users WHERE users.system_id = "${user.system_id}")`;
+            break;
+        case "coach":
+            projectFilter = `AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
+            break;
+        default:
+            throw new Error("Unhandled user role");
+            break;
+    }
+
     return new Promise((resolve, reject) => {
+        // WARN: If any field in an action is null, group_concat will remove that entire action...
         let getTeams = `
             SELECT  projects.team_name, 
                     semester_group.name AS "semester_name", 
@@ -677,8 +812,8 @@ function calculateActiveTimelines() {
                         SELECT  "[" || group_concat(
                             "{" ||
                                 """action_title"""  || ":" || """" || action_title  || """" || "," ||
-                                """action_id"""     || ":" || """" || action_id      || """" || "," ||
-                                """is_null"""       || ":" || """" || is_null       || """" || "," ||
+                                """action_id"""     || ":" || """" || action_id     || """" || "," ||
+                                """date_deleted"""  || ":" || """" || date_deleted  || """" || "," ||
                                 """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
                                 """start_date"""    || ":" || """" || start_date    || """" || "," ||
                                 """due_date"""      || ":" || """" || due_date      || """" || "," ||
@@ -686,21 +821,22 @@ function calculateActiveTimelines() {
                                 """state"""         || ":" || """" || state         || """" || "," ||
                                 """submitter"""     || ":" || """" || submitter     || """" || "," ||
                                 """page_html"""     || ":" || """" || page_html     || """" || "," ||
+                                """file_types"""    || ":" || """" || file_types    || """" || "," ||
                                 """count"""         || ":" || """" || count         || """" ||
                             "}"
                         ) || "]"
                         FROM (
-                            SELECT action_title, action_id, start_date, due_date, semester, action_target, is_null, short_desc, page_html,
+                            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
                                 CASE
                                     WHEN system_id IS NULL THEN 'null'
                                     WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
                                     ELSE system_id
                                 END AS 'submitter',
                                 CASE
-                                    WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS 4 THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.ADMIN}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.COACH}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.TEAM}' AND system_id IS NOT NULL THEN 'green'
+                                    WHEN action_target IS '${ACTION_TARGETS.INDIVIDUAL}' AND COUNT(distinct system_id) IS 4 THEN 'green'
                                     WHEN  start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
                                     WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
                                     ELSE 'grey'
@@ -720,14 +856,14 @@ function calculateActiveTimelines() {
                     ) team_members,
                     (
                         SELECT group_concat(fname || ' ' || lname || ' (' || email || ')')
-                        FROM users
-                        WHERE projects.coach1 = users.system_id OR projects.coach2 = users.system_id
+                        FROM project_coaches
+                        LEFT JOIN users ON project_coaches.coach_id = users.system_id
+                        WHERE projects.project_id = project_coaches.project_id
                     ) coach
-                    
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-            WHERE projects.status = "in progress"
+                WHERE projects.status = "in progress" ${projectFilter}
             ORDER BY projects.semester DESC
         `;
         let today = new Date(); // Fat workaround, sqlite is broken doo doo
@@ -737,7 +873,7 @@ function calculateActiveTimelines() {
 
         db.query(getTeams)
             .then((values) => {
-                for (let timeline in values) {
+                for (let timeline in values || []) {
                     values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
                     values[timeline].actions = values[timeline].actions.sort(function (a, b) {
                         return Date.parse(a.start_date) - Date.parse(b.start_date);

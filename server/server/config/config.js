@@ -5,7 +5,7 @@ const auth = require("basic-auth");
 const path = require("path");
 
 let authAdmin = function (req, res, next) {
-    // TODO REMOVE THIS CODE ONCE PROPER AUTHORIZATION IS ADDED -- JUST FOR TESTING
+    // TODO REMOVE THIS CODE ONCE PROPER AUTHORIZATION IS ADDED -- JUST FOR TESTING + DON"T FORGET TO UNINSTALL AUTH PACKAGES
     res.removeHeader("Authorization");
     next();
     return;
@@ -44,7 +44,6 @@ module.exports = {
         ".rtf",
         ".csv",
     ],
-    www_path: path.join(__dirname + "/../www/"),
     authAdmin,
     saml: {
         cert: "./server/config/saml.pem", // when you build, reference properly

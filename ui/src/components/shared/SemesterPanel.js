@@ -32,13 +32,13 @@ export default function SemesterPanel(props) {
             name: "dept",
         },
         {
-            type: "input",
+            type: "date",
             label: "Start Date",
             placeHolder: "Start Date",
             name: "start_date",
         },
         {
-            type: "input",
+            type: "date",
             label: "End Date",
             placeHolder: "End Date",
             name: "end_date",
@@ -49,6 +49,7 @@ export default function SemesterPanel(props) {
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
+            header={props.header}
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}

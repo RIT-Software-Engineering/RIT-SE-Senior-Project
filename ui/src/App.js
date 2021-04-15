@@ -7,6 +7,7 @@ import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/Header";
 import Footer from "./components/shared/Footer";
+import { UserContextProvider } from "./components/util/UserContext";
 import { Container } from "semantic-ui-react";
 import PrivateRoute from "./components/shared/PrivateRoute";
 import SignInPage from "./components/pages/SignInPage";
@@ -21,7 +22,9 @@ function App() {
     
     return (
         <>
-            <Header />
+            <UserContextProvider>
+                <Header />
+            </UserContextProvider>
             {signedIn?.authenticated && (
                 <>
                     <button onClick={() => setSignedIn({})}>Sign Out</button>
@@ -43,6 +46,10 @@ function App() {
                         </Route>
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
+                        {/* TODO: remove one of these /dashboard routes */}
+                        <UserContextProvider>
+                            <Route path="/dashboard" component={DashboardPage} />
+                        </UserContextProvider>
                         <PrivateRoute signedIn={signedIn} path="/dashboard" component={DashboardPage} />
                         <Route component={ErrorPage} />
                     </Switch>

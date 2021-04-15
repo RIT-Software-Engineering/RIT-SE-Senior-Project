@@ -79,8 +79,12 @@ export default function DatabaseTableEditor(props) {
             });
     };
 
-    const handleChange = (e, { name, value }) => {
-        console.log("form field name and value: ", name, value);
+    const handleChange = (e, { name, value, checked }) => {
+
+        if(checked) {
+            value = checked;
+        }
+
         setFormData({
             ...formData,
             [name]: value,
@@ -91,64 +95,104 @@ export default function DatabaseTableEditor(props) {
 
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        if (field["type"] === "input") {
-            fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <Form.Input
-                        label={field["label"]}
-                        placeholder={field["placeholder"]}
-                        name={field["name"]}
-                        value={formData[field["name"]]}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
-        } else if (field["type"] === "textArea") {
-            fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <Form.TextArea
-                        placeholder={field["placeholder"]}
-                        label={field["label"]}
-                        name={field["name"]}
-                        value={formData[field["name"]]}
-                        style={{ minHeight: 200 }}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
-        } else if (field["type"] === "dropdown") {
-            const options = Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            });
+        switch (field.type) {
+            case "input":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.Input
+                            label={field.label}
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "date":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.Input
+                            label={field.label}
+                            type="date"
+                            placeholder={field.placeholder}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "textArea":
+                fieldComponents.push(
+                    <Form.Field key={field.name}>
+                        <Form.TextArea
+                            placeholder={field.placeholder}
+                            label={field.label}
+                            name={field.name}
+                            value={formData[field.name]}
+                            style={{ minHeight: 200 }}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+            case "dropdown":
+                const options = Object.keys(semesterMap).map((semester_id, idx) => {
+                    return { key: idx, text: semesterMap[semester_id], value: semester_id };
+                });
 
-            fieldComponents.push();
-
             fieldComponents.push(
-                <Form.Field key={field["name"]}>
-                    <label>{field["label"]}</label>
-                    <Dropdown
-                        selection
-                        options={options}
-                        loading={props.semesterData.loading}
-                        disabled={props.semesterData.loading}
-                        value={formData[field["name"]].toString()}
-                        name={field["name"]}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            );
+                    <Form.Field key={field.name}>
+                        <label>{field.label}</label>
+
+                        <Dropdown
+                            selection
+                            options={options}
+                            loading={props.semesterData.loading}
+                            disabled={props.semesterData.loading}
+                            value={formData[field.name].toString()}
+                            name={field.name}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+
+            case "checkbox":
+                fieldComponents.push(
+                    <Form.Field key={field["name"]}>
+                        <Form.Checkbox
+                            label={field["label"]}
+                            checked={!!formData[field["name"]]}
+                            name={field["name"]}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                )
+                break;
+
+            default:
+                break;
         }
     }
 
     return (
-        <Form
-            onSubmit={(e) => {
-                handleSubmit(e);
-            }}
-        >
-            {fieldComponents}
-            <Button type="submit">Submit</Button>
+        <>
+            <Modal
+                trigger={<Button icon="edit" />}
+                header={props.header}
+                content={{ content: <Form>{fieldComponents}</Form> }}
+                actions={[
+                    {
+                        key: "submit",
+                        content: "Submit",
+                        onClick: (event) => handleSubmit(event),
+                        positive: true,
+                    },
+                ]}
+            />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
-        </Form>
+        </>
     );
 }

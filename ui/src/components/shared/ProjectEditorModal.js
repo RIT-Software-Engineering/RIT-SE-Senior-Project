@@ -16,7 +16,6 @@ export default function ProjectEditor(props) {
     const [editedProject, setEditedProject] = useState({});
 
     const projectOnChange = (event, target) => {
-        console.log(target);
         setEditedProject({ ...editedProject, [target.label]: target.value });
     };
 
@@ -188,18 +187,6 @@ export default function ProjectEditor(props) {
                     label="sponsor"
                     className={className("sponsor")}
                     value={value("sponsor")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="coach1"
-                    className={className("coach1")}
-                    value={value("coach1")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="coach2"
-                    className={className("coach2")}
-                    value={value("coach2")}
                     onChange={projectOnChange}
                 />
                 <Input

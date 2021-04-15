@@ -1,41 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
-import SemesterPanel from "./SemesterPanel";
+import { SecureFetch } from "../util/secureFetch";
+import SemesterTable from "./SemesterTable";
 
 export default function SemesterEditor(props) {
     const [semesters, setSemestersData] = useState([]);
-
+    
     useEffect(() => {
-        fetch(config.url.API_GET_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                // console.log('semestersData', semestersData);
             })
             .catch((error) => {
                 alert("Failed to get semesters data" + error);
             });
     }, []);
 
-    let semesterPanels = [];
+    let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters}/>;
 
-    if (semesters) {
-        for (let i = 0; i < semesters.length; i++) {
-            let semester = semesters[i];
-            semesterPanels.push({
-                key: semester.semester_id,
-                title: semester.name,
-                content: {
-                    content: <SemesterPanel semester={semester} semesterData={semesters} key={"editSemester-" + i} />,
-                },
-            });
-        }
+    const onAdd = () => {
+        //todo 
+        alert("Empty Semester Modal");
     }
-    let semestersToEdit = <Accordion fluid styled panels={semesterPanels} key={"semestersToEdit"} />;
-
     return (
-        <div>
+        <div className="accordion-button-group">
             <Accordion
                 fluid
                 styled
@@ -47,6 +37,16 @@ export default function SemesterEditor(props) {
                     },
                 ]}
             />
+            <div className="accordion-buttons-container">
+                <Button
+                    icon
+                    onClick={() => {
+                        onAdd();
+                    }}
+                >
+                    <Icon name="plus" />
+                </Button>
+            </div>
         </div>
     );
 }

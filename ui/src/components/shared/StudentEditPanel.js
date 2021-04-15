@@ -3,7 +3,6 @@ import { config } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function StudentEditPanel(props) {
-    let editProject = props.editProject;
 
     let initialState = {
         system_id: props.studentData.system_id || "",
@@ -12,7 +11,7 @@ export default function StudentEditPanel(props) {
         email: props.studentData.email || "",
         type: props.studentData.type || "",
         semester_group: props.studentData.semester_group || "",
-        project: props.studentData.project || "",
+        project_id: props.studentData.project || "",
     };
 
     let submissionModalMessages = {
@@ -47,16 +46,13 @@ export default function StudentEditPanel(props) {
             placeHolder: "Semester Group",
             name: "semester_group",
         },
-    ];
-
-    if (editProject) {
-        formFieldArray.push({
+        {
             type: "input",
-            label: "Project Id",
-            placeHolder: "Project Id",
-            name: "project",
-        });
-    }
+            label: "Project ID",
+            placeHolder: "Project ID",
+            name: "project_id",
+        },
+    ];
 
     return (
         <DatabaseTableEditor
@@ -65,6 +61,7 @@ export default function StudentEditPanel(props) {
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
+            header={props.header}
         />
     );
 }
