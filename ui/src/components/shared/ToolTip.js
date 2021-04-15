@@ -9,7 +9,7 @@ function ToolTip(props) {
         setCloseOnDocClick(!isOpen);
     };
 
-    return (
+    return false/*(
         <Popup
             header={props.action.action_title}
             content={
@@ -25,7 +25,7 @@ function ToolTip(props) {
             trigger={props.trigger}
             on="click"
         />
-    );
+    )*/;
 }
 
 export default ToolTip;

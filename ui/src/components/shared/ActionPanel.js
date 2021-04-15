@@ -73,7 +73,7 @@ export default function ActionPanel(props) {
         },
         {
             type: "checkbox",
-            label: "Deleted",
+            label: "Archived",
             placeHolder: "Deleted",
             name: "date_deleted",
         },

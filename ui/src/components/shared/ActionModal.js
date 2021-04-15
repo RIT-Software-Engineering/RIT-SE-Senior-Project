@@ -3,7 +3,9 @@ import { Button, Modal } from "semantic-ui-react";
 import { config } from "../util/constants";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
-
+/** 
+*This file is only used in ToolTips, it should be removed completely
+*/
 export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);

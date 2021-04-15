@@ -46,25 +46,19 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
         });
 });
 
-// gets users, either active or inactive
+// gets all users
 db_router.get("/getUsers", (req,res) => {
     let query;
-    if(req.query.active = 0) {
         query = `SELECT *
             FROM users
-            WHERE
-                active IS 0`
-    }
-    else {
-        query = ` SELECT *
-            FROM users
-            WHERE NOT
-                active IS 0`
-    }
+            LEFT JOIN semester_group
+            ON users.semester_group = semester_group.semester_id
+            `;
+
     db.query(query).then((users) => res.send(users));
 });
 
-db.router.post("/createUser", [
+db_router.post("/createUser", [
     body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("fname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),

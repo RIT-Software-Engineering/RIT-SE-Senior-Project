@@ -11,6 +11,8 @@ import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
 import "./../../css/dashboard.css";
+import UserEditor from "../shared/UserEditor";
+import UsersTab from "../shared/UsersTab";
 
 export default function DashboardPage() {
     function useQuery() {
@@ -51,6 +53,14 @@ export default function DashboardPage() {
             },
             { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
             {
+                menuItem: "Users",
+                render: () => (
+                    <Tab.Pane>
+                        <UsersTab />
+                    </Tab.Pane>
+                )
+            },
+            {
                 menuItem: "Actions",
                 render: () => (
                     <Tab.Pane>
@@ -65,6 +75,7 @@ export default function DashboardPage() {
                         <SemesterEditor />
                         <ActionEditor />
                         <ProjectEditor />
+                        <UserEditor />
                     </Tab.Pane>
                 ),
             },
