@@ -12,7 +12,7 @@ npm install
 cd ../ui
 npm install
 echo "Building react app"
-npm run-script build
+sudo npm run-script build
 cd ..
 echo "Stopping nginx"
 sudo systemctl stop nginx
