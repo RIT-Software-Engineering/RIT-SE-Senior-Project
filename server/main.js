@@ -36,7 +36,8 @@ const port = 3001;
 // });
 app.use(
     cors({
-        origin: process.env.NODE_ENV === "production" ? "http://seniorproject.se.rit.edu" : "http://localhost:3000",
+        // TODO/FIXME: process.env.NODE_ENV is not set ever
+        origin: process.env.NODE_ENV === "production" ? "https://seniorproject.se.rit.edu" : "http://localhost:3000",
         credentials: true,
     })
 );

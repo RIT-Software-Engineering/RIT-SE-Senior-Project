@@ -3,7 +3,9 @@
 echo "Updating code..."
 git pull
 echo "Moving nginx config to ~/../../etc/nginx/conf.d/"
-sudo cp ~/RIT-SE-Senior-Project/nginx/senior-project.conf ~/../../etc/nginx/conf.d/
+sudo cp ~/../website/RIT-SE-Senior-Project/nginx/senior-project.conf ~/../../etc/nginx/conf.d/
+echo "Moving tls_params config to ~/../../etc/nginx/conf.d/"
+sudo cp ~/../website/RIT-SE-Senior-Project/nginx/tls_params ~/../../etc/nginx/
 echo "Installing dependencies"
 cd ./server
 npm install
