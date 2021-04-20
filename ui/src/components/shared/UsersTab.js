@@ -10,7 +10,7 @@ import StudentRow from "./StudentRow";
  * and this tab should do it all
  * 
  */
-export default function StudentsTab() {
+export default function UsersTab() {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
@@ -220,14 +220,6 @@ export default function StudentsTab() {
 
     return (
         <div>
-            <Button
-                icon
-                onClick={() => {
-                    onAdd();
-                }}
-            >
-                <Icon name="plus" />
-            </Button>
             {semesterPanels.reverse()}
         </div>
     );

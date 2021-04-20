@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
 import UserTable from "./UserTable";
+import UsersTab from "./UsersTab";
+import UserPanel from "./UserPanel";
 
+/**
+ * This is the shell for the Users accordion
+ * Adds a plus button for user creation
+ * @param {*} props 
+ * @returns 
+ */
 export default function UserEditor(props) {
     const [users, setUserData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
@@ -27,7 +35,8 @@ export default function UserEditor(props) {
     }, []);
 
     let semesterPanels = [];
-    if (users) {
+    semesterPanels.push(<UsersTab/>)
+    /*if (users) {
         let semesterMap = {};
         for (let i = 0; i < users.length; i++) {
             let userData = users[i];
@@ -39,13 +48,14 @@ export default function UserEditor(props) {
         for (const [, value] of Object.entries(semesterMap)) {
             semesterPanels.push(<UserTable users={value} semesterData={semesters} />);
         }
-    }
+    }*/
 
     const onAdd = () => {
         //todo 
         alert("Empty User Modal");
     }
 
+    //the empty user panel should trigger user creation
     return (
         <div className="accordion-button-group">
             <Accordion
@@ -60,14 +70,7 @@ export default function UserEditor(props) {
                 ]}
             />
             <div className="accordion-buttons-container">
-                <Button
-                    icon
-                    onClick={() => {
-                        onAdd();
-                    }}
-                >
-                    <Icon name="plus" />
-                </Button>
+                <UserPanel semesterData={semesters}/>
             </div>
         </div>
     );

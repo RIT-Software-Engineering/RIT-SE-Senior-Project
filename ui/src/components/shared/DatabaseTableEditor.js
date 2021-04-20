@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Modal } from "semantic-ui-react";
+import { config } from "../util/constants";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -81,7 +82,7 @@ export default function DatabaseTableEditor(props) {
 
     const handleChange = (e, { name, value, checked }) => {
 
-        if(checked) {
+        if (checked) {
             value = checked;
         }
 
@@ -142,7 +143,7 @@ export default function DatabaseTableEditor(props) {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
                 });
 
-            fieldComponents.push(
+                fieldComponents.push(
                     <Form.Field key={field.name}>
                         <label>{field.label}</label>
 
@@ -177,10 +178,19 @@ export default function DatabaseTableEditor(props) {
         }
     }
 
+    function checkIfEmpty() {
+        if (props.submitRoute == config.url.API_POST_CREATE_USER) {
+            return <Button icon="plus" />;
+        }
+        else {
+            return <Button icon="edit" />;
+        }
+    }
+
     return (
         <>
             <Modal
-                trigger={<Button icon="edit" />}
+                trigger={checkIfEmpty}
                 header={props.header}
                 content={{ content: <Form>{fieldComponents}</Form> }}
                 actions={[

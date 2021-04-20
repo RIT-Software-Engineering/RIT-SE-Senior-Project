@@ -2,7 +2,7 @@ import React from "react";
 import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, Button, Icon } from "semantic-ui-react";
 import UserPanel from "./UserPanel";
 
-
+//This and all references should be removed, I think I stopped using it
 export default function UserTable(props) {
     const renderUser = () => {
         return props.users.map((user, i) => {

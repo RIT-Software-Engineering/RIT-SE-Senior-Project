@@ -53,14 +53,6 @@ export default function DashboardPage() {
             },
             { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
             {
-                menuItem: "Users",
-                render: () => (
-                    <Tab.Pane>
-                        <UsersTab />
-                    </Tab.Pane>
-                )
-            },
-            {
                 menuItem: "Actions",
                 render: () => (
                     <Tab.Pane>
