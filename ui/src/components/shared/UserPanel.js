@@ -3,21 +3,18 @@ import DatabaseTableEditor from "./DatabaseTableEditor";
 import { config } from "../util/constants";
 
 export default function UserPanel(props) {
+
     let initialState = {
-        user_id: "",
-    }
-    if (typeof(props.userData) != 'undefined') {
-            initialState = {
-            system_id: props.userData.system_id | "",
-            fname: props.userData.fname | "",
-            lname: props.userData.lname | "",
-            email: props.userData.email | "",
-            type: props.userData.type | "",
-            semester_group: props.userData.semester_group | "",
-            project: props.userData.project | "",
-            active: props.userData.active | "",
-        };
-    }
+        system_id: props.userData?.system_id || "",
+        fname: props.userData?.fname || "",
+        lname: props.userData?.lname || "",
+        email: props.userData?.email || "",
+        type: props.userData?.type || "",
+        semester_group: props.userData?.semester_group || "",
+        project: props.userData?.project || "",
+        active: props.userData?.active || "",
+    };
+
 
     let submissionModalMessages = {
         SUCCESS: "The user has been updated.",
@@ -26,10 +23,22 @@ export default function UserPanel(props) {
 
     let submitRoute = config.url.API_POST_EDIT_USER;
 
-    if (initialState.user_id == "") {
+    if (initialState.system_id == "") {
         submitRoute = config.url.API_POST_CREATE_USER;
     }
 
+    let semesterMap = {}; //create a map of semesters
+    for (let i = 0; i < props.semesterData.length; i++) {
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
+
+    let semesterOptions = {}//options to be mapped for semesters
+    semesterOptions = Object.keys(semesterMap).map((semester_id, idx) => {
+        return { key: idx, text: semesterMap[semester_id], value: semester_id };
+    });
+
+    let typeOptions = ["student", "coach", "admin"];
 
     let formFieldArray = [
         {
@@ -61,12 +70,14 @@ export default function UserPanel(props) {
             label: "Type",
             placeHolder: "Type",
             name: "type",
+            options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
         },
         {
             type: "dropdown",
             label: "Semester",
             placeHolder: "Semester",
             name: "semester_group",
+            //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
         },
         {
             type: "dropdown",

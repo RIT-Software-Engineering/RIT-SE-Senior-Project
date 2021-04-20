@@ -70,7 +70,7 @@ export default function UserEditor(props) {
                 ]}
             />
             <div className="accordion-buttons-container">
-                <UserPanel semesterData={semesters}/>
+                <UserPanel userData={{}} semesterData={semesters}/>
             </div>
         </div>
     );

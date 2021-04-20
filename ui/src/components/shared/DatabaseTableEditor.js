@@ -11,6 +11,7 @@ export default function DatabaseTableEditor(props) {
     let submissionModalMessages = props.submissionModalMessages;
     let submitRoute = props.submitRoute;
     let formFieldArray = props.formFieldArray;
+    let options = props?.options || null;
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [formData, setFormData] = useState(initialState);
@@ -93,7 +94,8 @@ export default function DatabaseTableEditor(props) {
     };
 
     let fieldComponents = [];
-
+    console.log(formData);
+    console.log(formFieldArray);
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
         switch (field.type) {
@@ -139,9 +141,12 @@ export default function DatabaseTableEditor(props) {
                 );
                 break;
             case "dropdown":
-                const options = Object.keys(semesterMap).map((semester_id, idx) => {
+                let options = Object.keys(semesterMap).map((semester_id, idx) => {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
                 });
+                if(field.options) {
+                    options = props.options
+                }
 
                 fieldComponents.push(
                     <Form.Field key={field.name}>
@@ -190,7 +195,7 @@ export default function DatabaseTableEditor(props) {
     return (
         <>
             <Modal
-                trigger={checkIfEmpty}
+                trigger={checkIfEmpty()}
                 header={props.header}
                 content={{ content: <Form>{fieldComponents}</Form> }}
                 actions={[
