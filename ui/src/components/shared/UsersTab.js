@@ -77,7 +77,7 @@ export default function UsersTab() {
 
         for(let i = 0; i < users.length; i++) {
             let user = userData[i];
-            if(user.type === "coach" && user.active == true) {
+            if(user.type === "coach") {
                 if (!semesterMap[coaches]) {
                     semesterMap[coaches] = [];
                 }
@@ -97,7 +97,7 @@ export default function UsersTab() {
 
         for(let i = 0; i < users.length; i++) {
             let user = userData[i];
-            if(user.type === "admin" && user.active == true) {
+            if(user.type === "admin") {
                 if (!semesterMap[admins]) {
                     semesterMap[admins] = [];
                 }
