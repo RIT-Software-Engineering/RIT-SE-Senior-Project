@@ -62,7 +62,7 @@ export default function DatabaseTableEditor(props) {
             body.append(key, formData[key]);
         });
 
-        console.log("formData: ", formData);
+        //console.log("formData: ", formData);
 
         fetch(submitRoute, {
             method: "post",
@@ -77,6 +77,7 @@ export default function DatabaseTableEditor(props) {
             })
             .catch((error) => {
                 // TODO: handle errors
+                alert("Error with submission, check logs");
                 console.error(error);
             });
     };
@@ -94,8 +95,6 @@ export default function DatabaseTableEditor(props) {
     };
 
     let fieldComponents = [];
-    console.log(formData);
-    console.log(formFieldArray);
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
         switch (field.type) {

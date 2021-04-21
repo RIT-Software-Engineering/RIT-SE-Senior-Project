@@ -111,18 +111,19 @@ db_router.post("/editUser", (req, res) => {
             type = ?,
             semester_group = ?,
             project = ?
-            actuve = ?
+            active = ?
         WHERE system_id = ?
     `;
 
-    let params = [body.fname, body.lname, body.email, body.type, body.semester_group, body.project, body.system_id];
+    let params = [body.fname, body.lname, body.email, body.type, body.semester_group, body.project, body.system_id, body.active];
 
-    // db.query(updateQuery, params).then(() => {
-    //     return res.status(200).send();
-    // }).catch((err) => {
-    //     res.sendStatus(500)
-    // })
-    return res.status(200).send();
+    db.query(updateQuery, params)
+        .then(() => {
+            return res.status(200).send();
+        })
+        .catch((err) => {
+            return res.status(500).send(err);
+        });
 });
 
 db_router.get("/getActiveSemesters", (req, res) => {

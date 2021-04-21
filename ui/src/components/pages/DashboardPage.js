@@ -12,7 +12,6 @@ import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
 import "./../../css/dashboard.css";
 import UserEditor from "../shared/UserEditor";
-import UsersTab from "../shared/UsersTab";
 
 export default function DashboardPage() {
     function useQuery() {

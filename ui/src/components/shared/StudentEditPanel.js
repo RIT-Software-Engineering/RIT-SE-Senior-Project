@@ -12,6 +12,7 @@ export default function StudentEditPanel(props) {
         type: props.studentData.type || "",
         semester_group: props.studentData.semester_group || "",
         project_id: props.studentData.project || "",
+        active: props.studentData.active || "",
     };
 
     let submissionModalMessages = {
@@ -22,6 +23,12 @@ export default function StudentEditPanel(props) {
     let submitRoute = config.url.API_POST_EDIT_USER;
 
     let formFieldArray = [
+        {
+            type: "input",
+            label: "User ID",
+            placeHolder: "User ID",
+            name: "system_id",
+        },
         {
             type: "input",
             label: "First Name",
@@ -36,21 +43,35 @@ export default function StudentEditPanel(props) {
         },
         {
             type: "input",
-            label: "Email Address",
-            placeHolder: "Email Address",
+            label: "Email",
+            placeHolder: "Email",
             name: "email",
         },
         {
             type: "input",
-            label: "Semester Group",
-            placeHolder: "Semester Group",
+            label: "Type (student, coach, admin)",
+            placeHolder: "Type",
+            name: "type",
+            //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
+        },
+        {
+            type: "dropdown",
+            label: "Semester",
+            placeHolder: "Semester",
             name: "semester_group",
+            //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
         },
         {
             type: "input",
-            label: "Project ID",
-            placeHolder: "Project ID",
-            name: "project_id",
+            label: "Project",
+            placeHolder: "Project",
+            name: "project",
+        },
+        {
+            type: "checkbox",
+            label: "Active",
+            placeHolder: "Active",
+            name: "active",
         },
     ];
 

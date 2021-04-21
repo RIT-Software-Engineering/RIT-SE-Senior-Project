@@ -57,7 +57,7 @@ export default function UserPanel(props) {
             type: "input",
             label: "Last Name",
             placeHolder: "Last Name",
-            name: "lanme",
+            name: "lname",
         },
         {
             type: "input",
@@ -66,11 +66,11 @@ export default function UserPanel(props) {
             name: "email",
         },
         {
-            type: "dropdown",
-            label: "Type",
+            type: "input",
+            label: "Type (student, coach, admin)",
             placeHolder: "Type",
             name: "type",
-            options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
+            //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
         },
         {
             type: "dropdown",
@@ -80,7 +80,7 @@ export default function UserPanel(props) {
             //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
         },
         {
-            type: "dropdown",
+            type: "input",
             label: "Project",
             placeHolder: "Project",
             name: "project",

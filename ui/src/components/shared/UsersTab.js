@@ -19,6 +19,7 @@ export default function UsersTab() {
     const unassignedStudentsStr = "Unassigned students";
     const coaches = "Coaches";
     const admins = "Admins";
+    const inactive = "Inactive Users";
 
     useEffect(() => {
         fetch(config.url.API_GET_STUDENT_INFO)
@@ -76,7 +77,7 @@ export default function UsersTab() {
 
         for(let i = 0; i < users.length; i++) {
             let user = userData[i];
-            if(user.type === "coach") {
+            if(user.type === "coach" && user.active == true) {
                 if (!semesterMap[coaches]) {
                     semesterMap[coaches] = [];
                 }
@@ -86,7 +87,17 @@ export default function UsersTab() {
 
         for(let i = 0; i < users.length; i++) {
             let user = userData[i];
-            if(user.type === "admin") {
+            if(user.active == false) {
+                if (!semesterMap[inactive]) {
+                    semesterMap[inactive] = [];
+                }
+                semesterMap[inactive].push(<StudentRow student = {user} semesterData = {semesters} />);
+            }
+        }
+
+        for(let i = 0; i < users.length; i++) {
+            let user = userData[i];
+            if(user.type === "admin" && user.active == true) {
                 if (!semesterMap[admins]) {
                     semesterMap[admins] = [];
                 }
@@ -156,6 +167,16 @@ export default function UsersTab() {
                         );
                     } else if (semesterName === "Coaches") {
                         let key = "StudentsTab-project-selector-" + coaches;
+                        projectPanels.push(
+                            <StudentTeamTable
+                                key={key}
+                                title={`Semester-Coaches (${studentPanels.length})`}
+                                content={studentPanels}
+                                unassignedSemester={true}
+                            />
+                        );
+                    } else if (semesterName === "Inactive Users") {
+                        let key = "StudentsTab-project-selector-" + inactive;
                         projectPanels.push(
                             <StudentTeamTable
                                 key={key}
