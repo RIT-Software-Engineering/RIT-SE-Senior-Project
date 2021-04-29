@@ -6,7 +6,7 @@ CREATE TABLE users (
     type        TEXT,
     semester_group  INTEGER,
     project         INTEGER,
-    active          BOOL,
+    active          TEXT,
     FOREIGN KEY (semester_group) REFERENCES semester_group(semester_id),
     FOREIGN KEY (project) REFERENCEs project(project_id)
 );

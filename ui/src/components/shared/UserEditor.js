@@ -8,6 +8,9 @@ import UserPanel from "./UserPanel";
 /**
  * This is the shell for the Users accordion
  * Adds a plus button for user creation
+ * 
+ * This currently "works". You can add a user but all fields must be filled out.
+ * The workaround for this is editing, a lot of work needs to be done on both fronts though
  * @param {*} props 
  * @returns 
  */
@@ -36,19 +39,6 @@ export default function UserEditor(props) {
 
     let semesterPanels = [];
     semesterPanels.push(<UsersTab/>)
-    /*if (users) {
-        let semesterMap = {};
-        for (let i = 0; i < users.length; i++) {
-            let userData = users[i];
-            if (!semesterMap[userData.user_id]) {
-                semesterMap[userData.user_id] = [];
-            }
-            semesterMap[userData.user_id].push(userData);
-        }
-        for (const [, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(<UserTable users={value} semesterData={semesters} />);
-        }
-    }*/
 
     const onAdd = () => {
         //todo 

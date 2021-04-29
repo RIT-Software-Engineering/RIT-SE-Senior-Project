@@ -66,13 +66,15 @@ export default function UserPanel(props) {
             name: "email",
         },
         {
+            //TODO: send json of the options and make this a dropdown
             type: "input",
-            label: "Type (student, coach, admin)",
+            label: "User Type (student, coach, admin)",
             placeHolder: "Type",
             name: "type",
             //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
         },
         {
+            //TODO: send json of the options and make this a dropdown that isn't hardcoded in DatabaseTableEditor
             type: "dropdown",
             label: "Semester",
             placeHolder: "Semester",
@@ -80,6 +82,7 @@ export default function UserPanel(props) {
             //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
         },
         {
+            //TODO: send json of the options and make this a dropdown
             type: "input",
             label: "Project",
             placeHolder: "Project",

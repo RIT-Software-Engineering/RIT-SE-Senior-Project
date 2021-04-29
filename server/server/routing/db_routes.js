@@ -66,7 +66,7 @@ db_router.post("/createUser", [
     body("type").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("semester_group").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("project").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-    body("active").trim().escape().isLength({ max: 1 }),
+    body("active").trim().escape().isLength({ max: 50 }),
     ], 
     async (req, res) => {
         let result = validationResult(req);
@@ -82,6 +82,7 @@ db_router.post("/createUser", [
                 body.system_id,
                 body.fname,
                 body.lname,
+                body.email,
                 body.type,
                 body.semester_group,
                 body.project,
@@ -110,18 +111,28 @@ db_router.post("/editUser", (req, res) => {
             email = ?,
             type = ?,
             semester_group = ?,
-            project = ?
+            project = ?,
             active = ?
         WHERE system_id = ?
     `;
 
-    let params = [body.fname, body.lname, body.email, body.type, body.semester_group, body.project, body.system_id, body.active];
+    let params = [
+        body.fname, 
+        body.lname, 
+        body.email, 
+        body.type, 
+        body.semester_group, 
+        body.project, 
+        body.active,
+        body.system_id,
+    ];
 
     db.query(updateQuery, params)
         .then(() => {
             return res.status(200).send();
         })
         .catch((err) => {
+            console.log(err);
             return res.status(500).send(err);
         });
 });

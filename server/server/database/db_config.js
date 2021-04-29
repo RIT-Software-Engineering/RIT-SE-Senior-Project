@@ -13,6 +13,7 @@ module.exports = {
         archive: "archive",
         semester: "semester_group",
         actions: "actions",
+        users: "users",
     },
     senior_project_proposal_keys: [
         "title",

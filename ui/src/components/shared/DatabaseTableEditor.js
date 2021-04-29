@@ -78,6 +78,7 @@ export default function DatabaseTableEditor(props) {
             .catch((error) => {
                 // TODO: handle errors
                 alert("Error with submission, check logs");
+                console.log(error);
                 console.error(error);
             });
     };
@@ -139,7 +140,7 @@ export default function DatabaseTableEditor(props) {
                     </Form.Field>
                 );
                 break;
-            case "dropdown":
+            case "dropdown"://this needs to be fixed to be completely free of hard coding. Mapping semesters needs to happen as a parameter
                 let options = Object.keys(semesterMap).map((semester_id, idx) => {
                     return { key: idx, text: semesterMap[semester_id], value: semester_id };
                 });

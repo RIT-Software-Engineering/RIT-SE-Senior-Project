@@ -4,10 +4,20 @@ import { config } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import StudentRow from "./StudentRow";
 /**
- * I think this is better than an accordion on the admin tab 
- * it reuses the Students/Coaches style which works
- * I think both the Students and Coaches tabs should be removed 
- * and this tab should do it all
+ * This needs some edits, it makes the accorions for users in the admin tab
+ * It should be altered to be generic to eventually replace the code behind 
+ * the Student and Coaches tabs, all that could be done through here with 
+ * params. 
+ * 
+ * This is pretty janky right now, need to remove dependency on StudentRow
+ * 
+ * This was ripped from StudentTab and edited fast to get it working. It still
+ * needs to be refactored slightly to make it easier to read and use elsewhere
+ * 
+ * Still not aesthetically pleasing, rows for admins and coaches have individual 
+ * headers
+ * 
+ * There needs to be an "inactive users" accordion
  * 
  */
 export default function UsersTab() {
