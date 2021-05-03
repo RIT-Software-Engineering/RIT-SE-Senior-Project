@@ -1,6 +1,6 @@
 const BASE_API_URL =
-    process.env.NODE_ENV === "development" ? "http://localhost:3001" : "http://seniorproject.se.rit.edu";
-const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://seniorproject.se.rit.edu";
+    process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:3001` : `https://seniorproject.se.rit.edu`;    // Production URLs should always be HTTPS
+const BASE_URL = process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:3000` : `https://seniorproject.se.rit.edu`;   // Production URLs should always be HTTPS
 
 export const config = {
     url: {

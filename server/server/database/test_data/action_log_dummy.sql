@@ -6,11 +6,11 @@ INSERT INTO action_log(
     files
 )
 VALUES 
-    (3, "dxb2269", 3, "{""team_name"": ""The Null Pointers""}", null),
-    (4, "txa2269", 4, "{""name"": ""Tom""}", null),
-    (6, "txa2269", 4, "{""team_name"": ""Drop Table Admin""}", null),
-    (1, "dxb2269", 3, "{""name"": ""Dude""}", null),
+    (3, "def123", 3, "{""team_name"": ""The Null Pointers""}", null),
+    (4, "nop123", 4, "{""name"": ""Tom""}", null),
+    (6, "nop123", 4, "{""team_name"": ""Drop Table Admin""}", null),
+    (1, "def123", 3, "{""name"": ""Dude""}", null),
     (1, "abc123", 3, "{""name"": ""John""}", null),
-    (1, "cba123", 3, "{""name"": ""Jack""}", null),
-    (1, "xyz123", 3, "{""name"": ""Gal""}", null)
+    (1, "hij123", 3, "{""name"": ""Jack""}", null),
+    (1, "klm123", 3, "{""name"": ""Gal""}", null)
 ;

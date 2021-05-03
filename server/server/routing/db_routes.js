@@ -171,7 +171,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", [UserAuth.isAdmin], async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isSignedIn], async (req, res) => {
     let query;
     switch (req.query.type) {
         case "proposal":
