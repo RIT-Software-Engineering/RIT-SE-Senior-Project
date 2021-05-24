@@ -38,8 +38,6 @@ export default function UserPanel(props) {
         return { key: idx, text: semesterMap[semester_id], value: semester_id };
     });
 
-    let typeOptions = ["student", "coach", "admin"];
-
     let formFieldArray = [
         {
             type: "input",
@@ -79,7 +77,10 @@ export default function UserPanel(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester_group",
-            //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData?.loading,
         },
         {
             //TODO: send json of the options and make this a dropdown

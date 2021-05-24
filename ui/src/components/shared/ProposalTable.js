@@ -3,7 +3,7 @@ import Proposals from "./Proposals";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 
-export default function ProposalTable() {
+export default function ProposalTable(props) {
     const [proposalData, setProposalData] = useState([]);
 
     useEffect(() => {
@@ -18,5 +18,5 @@ export default function ProposalTable() {
             });
     }, []);
 
-    return <Proposals proposalData={proposalData} />;
+    return <Proposals proposalData={proposalData} semesterData={props.semesterData} />;
 }

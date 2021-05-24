@@ -231,7 +231,7 @@ export default function Proposals(props) {
                         })}
                     </TableCell>
                     <TableCell>
-                        <ProjectEditorModal project={proposal} />
+                        <ProjectEditorModal project={proposal} semesterData={props.semesterData} />
                     </TableCell>
                 </TableRow>
             );

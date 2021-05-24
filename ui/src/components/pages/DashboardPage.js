@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
 import Proposals from "../shared/Proposals";
 import TimeLines from "../shared/TimeLines";
@@ -19,6 +19,7 @@ import { config } from "../util/constants";
 export default function DashboardPage() {
 
     const { user, setUser } = useContext(UserContext);
+    const [semesterData, setSemestersData] = useState([]);
 
     // When dashboard loads, check who is currently signed in
     useEffect(() => {
@@ -30,6 +31,14 @@ export default function DashboardPage() {
                     role: responseUser.type
                 });
             })
+        SecureFetch(config.url.API_GET_SEMESTERS)
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+            })
+            .catch((error) => {
+                alert("Failed to get semestersData data" + error);
+            });
     }, [])
 
     let panes = [];
@@ -48,7 +57,7 @@ export default function DashboardPage() {
                 menuItem: "Proposals",
                 render: () => (
                     <Tab.Pane>
-                        <ProposalTable />
+                        <ProposalTable semesterData={semesterData} />
                     </Tab.Pane>
                 ),
             },
@@ -76,8 +85,8 @@ export default function DashboardPage() {
                     <Tab.Pane>
                         <AdminView />
                         <SemesterEditor />
-                        <ActionEditor />
-                        <ProjectEditor />
+                        <ActionEditor semesterData={semesterData} />
+                        <ProjectEditor semesterData={semesterData} />
                         <UserEditor />
                     </Tab.Pane>
                 ),
@@ -97,7 +106,7 @@ export default function DashboardPage() {
                 menuItem: "Proposals",
                 render: () => (
                     <Tab.Pane>
-                        <Proposals />
+                        <Proposals semesterData={semesterData} />
                     </Tab.Pane>
                 ),
             },
