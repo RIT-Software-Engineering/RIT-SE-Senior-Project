@@ -716,7 +716,6 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()]
         VALUES (?,?,?,?,?)
     `;
 
-    // TODO: system_id should be taken from req once authentication is done
     let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
     db.query(insertAction, params)
         .then(() => {

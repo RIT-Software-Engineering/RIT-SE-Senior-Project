@@ -167,59 +167,59 @@ export default function UsersTab() {
 
                 for (const [projectId, studentPanels] of Object.entries(val)) {
                     if (semesterName === unassignedStudentsStr) {
-                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
+                        let key = `StudentsTab-project-selector-${unassignedStudentsStr}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`Semester-unassigned Students (${studentPanels.length})`}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
                         );
                     } else if (semesterName === "Coaches") {
-                        let key = "StudentsTab-project-selector-" + coaches;
+                        let key = `StudentsTab-project-selector-${coaches}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`Semester-Coaches (${studentPanels.length})`}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
                         );
                     } else if (semesterName === "Inactive Users") {
-                        let key = "StudentsTab-project-selector-" + inactive;
+                        let key = `StudentsTab-project-selector-${inactive}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`Semester-Coaches (${studentPanels.length})`}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
                         );
                     } else if (semesterName === "Admins") {
-                        let key = "StudentsTab-project-selector-" + admins;
+                        let key = `StudentsTab-project-selector-${admins}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`Semester-Coaches (${studentPanels.length})`}
                                 content={studentPanels}
                                 unassignedSemester={true}
                             />
                         );
                     } else if (projectId !== unassignedStudentsStr) {
-                        let key = "StudentsTab-project-selector-" + projectMap[projectId];
+                        let key = `StudentsTab-project-selector-${projectMap[projectId]}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`${projectMap[projectId]} (${studentPanels.length})`}
                                 content={studentPanels}
                             />
                         );
                     } else {
-                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
+                        let key = `StudentsTab-project-selector-${unassignedStudentsStr}-${projectId}`;
                         projectPanels.push(
                             <StudentTeamTable
-                                key={key}
+                                childKey={key}
                                 title={`Team-unassigned Students (${studentPanels.length})`}
                                 content={studentPanels}
                             />
