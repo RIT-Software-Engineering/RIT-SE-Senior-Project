@@ -20,6 +20,13 @@ export default function ActionPanel(props) {
         FAIL: "We were unable to receive your update to the action.",
     };
 
+    let semesterMap = {};
+
+    for (let i = 0; i < props.semesterData.length; i++) {
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
+
     let submitRoute = config.url.API_POST_EDIT_ACTION;
 
     let formFieldArray = [
@@ -34,6 +41,10 @@ export default function ActionPanel(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester",
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData.loading
         },
         {
             type: "input",

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Dropdown, Modal, Input } from "semantic-ui-react";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -216,7 +217,7 @@ export default function ProjectEditor(props) {
     };
 
     const submitProject = (event, target) => {
-        fetch(config.url.API_POST_EDIT_PROJECT, {
+        SecureFetch(config.url.API_POST_EDIT_PROJECT, {
             method: "post",
             body: JSON.stringify(Object.assign({}, props.project, editedProject)),
             headers: {

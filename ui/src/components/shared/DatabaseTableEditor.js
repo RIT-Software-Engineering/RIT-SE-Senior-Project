@@ -3,6 +3,7 @@ import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Modal } from "semantic-ui-react";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -11,17 +12,9 @@ export default function DatabaseTableEditor(props) {
     let submissionModalMessages = props.submissionModalMessages;
     let submitRoute = props.submitRoute;
     let formFieldArray = props.formFieldArray;
-    let options = props?.options || null;
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [formData, setFormData] = useState(initialState);
-
-    let semesterMap = {};
-
-    for (let i = 0; i < props.semesterData.length; i++) {
-        const semester = props.semesterData[i];
-        semesterMap[semester.semester_id] = semester.name;
-    }
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -62,7 +55,7 @@ export default function DatabaseTableEditor(props) {
             body.append(key, formData[key]);
         });
 
-        fetch(submitRoute, {
+        SecureFetch(submitRoute, {
             method: "post",
             body: body,
         })
@@ -76,7 +69,6 @@ export default function DatabaseTableEditor(props) {
             .catch((error) => {
                 // TODO: handle errors
                 alert("Error with submission, check logs");
-                console.log(error);
                 console.error(error);
             });
     };
@@ -106,6 +98,7 @@ export default function DatabaseTableEditor(props) {
                             name={field.name}
                             value={formData[field.name]}
                             onChange={handleChange}
+                            disabled={field.disabled}
                         />
                     </Form.Field>
                 );
@@ -120,6 +113,7 @@ export default function DatabaseTableEditor(props) {
                             name={field.name}
                             value={formData[field.name]}
                             onChange={handleChange}
+                            disabled={field.disabled}
                         />
                     </Form.Field>
                 );
@@ -134,30 +128,25 @@ export default function DatabaseTableEditor(props) {
                             value={formData[field.name]}
                             style={{ minHeight: 200 }}
                             onChange={handleChange}
+                            disabled={field.disabled}
                         />
                     </Form.Field>
                 );
                 break;
-            case "dropdown"://this needs to be fixed to be completely free of hard coding. Mapping semesters needs to happen as a parameter
-                let options = Object.keys(semesterMap).map((semester_id, idx) => {
-                    return { key: idx, text: semesterMap[semester_id], value: semester_id };
-                });
-                if(field.options) {
-                    options = props.options
-                }
+            case "dropdown":
 
                 fieldComponents.push(
                     <Form.Field key={field.name}>
                         <label>{field.label}</label>
-
                         <Dropdown
                             selection
-                            options={options}
-                            loading={props.semesterData.loading}
-                            disabled={props.semesterData.loading}
+                            options={field.options}
+                            loading={field.loading}
+                            disabled={field.loading}
                             value={formData[field.name].toString()}
                             name={field.name}
                             onChange={handleChange}
+                            disabled={field.disabled}
                         />
                     </Form.Field>
                 );
@@ -171,6 +160,7 @@ export default function DatabaseTableEditor(props) {
                             checked={!!formData[field["name"]]}
                             name={field["name"]}
                             onChange={handleChange}
+                            disabled={field.disabled}
                         />
                     </Form.Field>
                 )
@@ -182,7 +172,7 @@ export default function DatabaseTableEditor(props) {
     }
 
     function checkIfEmpty() {
-        if (props.submitRoute == config.url.API_POST_CREATE_USER) {
+        if (props.submitRoute === config.url.API_POST_CREATE_USER) {
             return <Button icon="plus" />;
         }
         else {

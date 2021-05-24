@@ -41,3 +41,9 @@ export const config = {
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
     },
 };
+
+export const USERTYPES = {
+    COACH: "coach",
+    STUDENT: "student",
+    ADMIN: "admin",
+}

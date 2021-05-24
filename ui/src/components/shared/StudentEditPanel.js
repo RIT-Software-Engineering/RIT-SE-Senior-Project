@@ -1,5 +1,5 @@
 import React from "react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function StudentEditPanel(props) {
@@ -20,6 +20,13 @@ export default function StudentEditPanel(props) {
         FAIL: "We were unable to receive your update to the student's info.",
     };
 
+    let semesterMap = {};
+
+    for (let i = 0; i < props.semesterData.length; i++) {
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
+
     let submitRoute = config.url.API_POST_EDIT_USER;
 
     let formFieldArray = [
@@ -28,6 +35,7 @@ export default function StudentEditPanel(props) {
             label: "User ID",
             placeHolder: "User ID",
             name: "system_id",
+            disabled: true
         },
         {
             type: "input",
@@ -48,18 +56,22 @@ export default function StudentEditPanel(props) {
             name: "email",
         },
         {
-            type: "input",
+            type: "dropdown",
             label: "Type (student, coach, admin)",
             placeHolder: "Type",
             name: "type",
             //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
+            options: Object.values(USERTYPES).map((type, idx) => { return { key: idx, text: type, value: type } })
         },
         {
             type: "dropdown",
             label: "Semester",
             placeHolder: "Semester",
             name: "semester_group",
-            //options: semesterOptions, //this is done the same as in the DatabaseTableEditor, but does not work 
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData.loading
         },
         {
             type: "input",

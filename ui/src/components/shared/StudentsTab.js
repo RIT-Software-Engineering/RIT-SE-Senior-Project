@@ -3,6 +3,7 @@ import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import StudentRow from "./StudentRow";
+import { SecureFetch } from "../util/secureFetch";
 
 export default function StudentsTab() {
     const [students, setStudentsData] = useState([]);
@@ -12,7 +13,7 @@ export default function StudentsTab() {
     const unassignedStudentsStr = "Unassigned students";
 
     useEffect(() => {
-        fetch(config.url.API_GET_STUDENT_INFO)
+        SecureFetch(config.url.API_GET_STUDENT_INFO)
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
@@ -20,7 +21,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
-        fetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
@@ -28,7 +29,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
-        fetch(config.url.API_GET_ACTIVE_PROJECTS)
+        SecureFetch(config.url.API_GET_ACTIVE_PROJECTS)
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);

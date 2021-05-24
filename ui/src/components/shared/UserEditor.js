@@ -60,7 +60,7 @@ export default function UserEditor(props) {
                 ]}
             />
             <div className="accordion-buttons-container">
-                <UserPanel userData={{}} semesterData={semesters}/>
+                <UserPanel userData={{}} semesterData={semesters} header={`Create user`} />
             </div>
         </div>
     );

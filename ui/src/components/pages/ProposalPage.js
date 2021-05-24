@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
 import { config } from "../util/constants";
 import "../../css/proposal.css";
+import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -64,7 +65,7 @@ function ProposalPage() {
             body.append("attachments", formFiles[i]);
         }
 
-        fetch(config.url.API_POST_SUBMIT_PROJECT, {
+        SecureFetch(config.url.API_POST_SUBMIT_PROJECT, {
             method: "post",
             body: body,
         })

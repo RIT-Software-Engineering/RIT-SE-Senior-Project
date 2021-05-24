@@ -175,7 +175,7 @@ db_router.get("/getActiveProjects", (req, res) => {
         });
 });
 
-db_router.get("/selectAllCoachInfo", (req, res) => {
+db_router.get("/selectAllCoachInfo", [UserAuth.isAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
         SELECT users.system_id,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 import SemesterCoaches from "./SemesterCoaches";
 
 export default function CoachesTab() {
@@ -9,7 +10,7 @@ export default function CoachesTab() {
     const [coachInfo, setCoachInfoData] = useState([]);
 
     useEffect(() => {
-        fetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
         .then((response) => response.json())
         .then((semestersData) => {
             setSemestersData(semestersData);
@@ -20,7 +21,7 @@ export default function CoachesTab() {
     }, [])
 
     useEffect(() => {
-        fetch(config.url.API_GET_ALL_COACH_INFO)
+        SecureFetch(config.url.API_GET_ALL_COACH_INFO)
         .then((response) => response.json())
         .then((coachInfo) => {
             coachInfo.map(coach => {
