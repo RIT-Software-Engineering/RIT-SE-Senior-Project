@@ -25,21 +25,23 @@ passport.deserializeUser((expressUser, done) => {
     done(null, expressUser);
 });
 
-passport.use(
-    new Strategy(
-        {
-            issuer: config.saml.issuer,
-            protocol: "http://",
-            path: "/login/callback",
-            entryPoint: config.saml.entryPoint,
-            cert: fs.readFileSync(config.saml.cert, "utf-8"),
-        },
-        (expressUser, done) => {
-            console.log("expressUser", expressUser);
-            if (!savedUsers.includes(expressUser)) {
-                savedUsers.push(expressUser);
-            }
-            done(null, expressUser);
+const samlStrategy = new Strategy(
+    {
+        issuer: config.saml.issuer,
+        protocol: "https://",
+        path: config.saml.callback,
+        entryPoint: config.saml.entryPoint,
+        logoutUrl: config.saml.logoutPoint,
+        cert: fs.readFileSync(config.saml.cert, "utf-8"),
+        // privateCert: fs.readFileSync(config.saml.cert, "utf-8"),
+    },
+    (expressUser, done) => {
+        console.log("expressUser", expressUser);
+        if (!savedUsers.includes(expressUser)) {
+            savedUsers.push(expressUser);
         }
-    )
-);
+        done(null, expressUser);
+    }
+)
+
+passport.use(samlStrategy);

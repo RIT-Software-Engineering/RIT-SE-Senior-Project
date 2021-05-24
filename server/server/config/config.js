@@ -46,11 +46,13 @@ module.exports = {
     ],
     authAdmin,
     saml: {
-        cert: "./server/config/saml.pem", // when you build, reference properly
-        entryPoint: "shibboleth entryPoint",
-        issuer: "http://localhost:3001",
+        cert: "./server/config/seniorproject-cert.pem", // when you build, reference properly
+        entryPoint: "https://shibboleth.main.ad.rit.edu/idp/profile/SAML2/Redirect/SSO",
+        logoutPoint: "https://shibboleth.main.ad.rit.edu/logout.html",
+        issuer: "https://seniorproject.se.rit.edu/saml",
+        callback: "/saml/acs/consume",
         options: {
-            failureRedirect: "/login",
+            failureRedirect: "/",
             failureFlash: true,
         },
     },
