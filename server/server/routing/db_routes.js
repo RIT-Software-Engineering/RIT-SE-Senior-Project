@@ -34,7 +34,7 @@ db_router.get("/selectAllSponsorInfo", (req, res) => {
     });
 });
 
-db_router.get("/selectAllStudentInfo", (req, res) => {
+db_router.get("/selectAllStudentInfo", [UserAuth.isAdmin], (req, res) => {
     let getStudentsQuery = `
         SELECT *
         FROM users
@@ -53,7 +53,7 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
 });
 
 // gets all users
-db_router.get("/getUsers", (req,res) => {
+db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
     let query;
         query = `SELECT *
             FROM users
@@ -65,6 +65,7 @@ db_router.get("/getUsers", (req,res) => {
 });
 
 db_router.post("/createUser", [
+    UserAuth.isAdmin,
     body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("fname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
@@ -107,7 +108,7 @@ db_router.post("/createUser", [
 );
 
 
-db_router.post("/editUser", (req, res) => {
+db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
     let body = req.body;
 
     let updateQuery = `
@@ -802,7 +803,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         });
 });
 
-db_router.get("/getSemesters", [UserAuth.isAdmin], (req, res) => {
+db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
     let getSemestersQuery = `
         SELECT *
         FROM semester_group

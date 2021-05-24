@@ -62,8 +62,6 @@ export default function DatabaseTableEditor(props) {
             body.append(key, formData[key]);
         });
 
-        //console.log("formData: ", formData);
-
         fetch(submitRoute, {
             method: "post",
             body: body,

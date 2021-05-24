@@ -23,7 +23,7 @@ export default function UserPanel(props) {
 
     let submitRoute = config.url.API_POST_EDIT_USER;
 
-    if (initialState.system_id == "") {
+    if (initialState.system_id === "") {
         submitRoute = config.url.API_POST_CREATE_USER;
     }
 

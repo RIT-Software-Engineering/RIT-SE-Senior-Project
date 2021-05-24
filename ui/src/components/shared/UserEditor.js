@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
-import UserTable from "./UserTable";
 import UsersTab from "./UsersTab";
 import UserPanel from "./UserPanel";
+import { SecureFetch } from "../util/secureFetch";
 
 /**
  * This is the shell for the Users accordion
@@ -19,7 +19,7 @@ export default function UserEditor(props) {
     const [semesters, setSemestersData] = useState([]);
 
     useEffect(() => {
-        fetch(config.url.API_GET_USERS)
+        SecureFetch(config.url.API_GET_USERS)
             .then((response) => response.json())
             .then((userData) => {
                 setUserData(userData);
@@ -27,7 +27,7 @@ export default function UserEditor(props) {
             .catch((error) => {
                 alert("Failed to get user data" + error);
             });
-        fetch(config.url.API_GET_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);

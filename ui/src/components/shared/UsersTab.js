@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import StudentRow from "./StudentRow";
+import { SecureFetch } from "../util/secureFetch";
 /**
  * This needs some edits, it makes the accorions for users in the admin tab
  * It should be altered to be generic to eventually replace the code behind 
@@ -32,7 +33,7 @@ export default function UsersTab() {
     const inactive = "Inactive Users";
 
     useEffect(() => {
-        fetch(config.url.API_GET_STUDENT_INFO)
+        SecureFetch(config.url.API_GET_STUDENT_INFO)
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
@@ -40,7 +41,7 @@ export default function UsersTab() {
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
-        fetch(config.url.API_GET_USERS)
+        SecureFetch(config.url.API_GET_USERS)
             .then((response) => response.json())
             .then((userData) => {
                 setUserData(userData);
@@ -48,7 +49,7 @@ export default function UsersTab() {
             .catch((error) => {
                 alert("Failed to get user data" + error);
             });
-        fetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
@@ -56,7 +57,7 @@ export default function UsersTab() {
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
-        fetch(config.url.API_GET_ACTIVE_PROJECTS)
+        SecureFetch(config.url.API_GET_ACTIVE_PROJECTS)
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
@@ -97,7 +98,7 @@ export default function UsersTab() {
 
         for(let i = 0; i < users.length; i++) {
             let user = userData[i];
-            if(user.active == false) {
+            if (user.active === false) {
                 if (!semesterMap[inactive]) {
                     semesterMap[inactive] = [];
                 }
