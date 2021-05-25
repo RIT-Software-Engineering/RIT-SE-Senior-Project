@@ -74,7 +74,7 @@ export default function DatabaseTableEditor(props) {
 
     const handleChange = (e, { name, value, checked }) => {
 
-        if (checked) {
+        if (checked !== undefined) {
             value = checked;
         }
 

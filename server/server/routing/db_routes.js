@@ -784,7 +784,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         body.semester,
         body.action_title,
         body.action_target,
-        body.date_deleted,
+        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
         body.short_desc,
         body.start_date,
         body.due_date,
@@ -815,7 +815,7 @@ db_router.post("/createAction", body("page_html").unescape(), (req, res) => {
         body.semester,
         body.action_title,
         body.action_target,
-        body.date_deleted,
+        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
         body.short_desc,
         body.start_date,
         body.due_date,
@@ -934,6 +934,7 @@ function calculateActiveTimelines(user) {
                             FROM actions
                             LEFT JOIN action_log
                                 ON action_log.action_template = actions.action_id
+                                WHERE actions.date_deleted = ''
                             GROUP BY actions.action_id
                         )
                         WHERE semester = projects.semester
@@ -963,10 +964,12 @@ function calculateActiveTimelines(user) {
         db.query(getTeams)
             .then((values) => {
                 for (let timeline in values || []) {
-                    values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
-                    values[timeline].actions = values[timeline].actions.sort(function (a, b) {
-                        return Date.parse(a.start_date) - Date.parse(b.start_date);
-                    });
+                    if (!!values[timeline].actions) {
+                        values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
+                        values[timeline].actions = values[timeline].actions.sort(function (a, b) {
+                            return Date.parse(a.start_date) - Date.parse(b.start_date);
+                        });
+                    }
                 }
                 resolve(values);
             })

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Accordion, Button, Icon } from "semantic-ui-react";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-// import ActionModal from "./ActionModal";
+import ActionPanel from "./ActionPanel";
 import ActionTable from "./ActionTable";
 
 export default function ActionEditor(props) {
@@ -34,12 +34,6 @@ export default function ActionEditor(props) {
         }
     }
 
-    const onAdd = () => {
-        // return <ActionModal />;
-        //todo
-        alert("Blank Action Modal");
-    };
-
     return (
         <div className="accordion-button-group">
             <Accordion
@@ -54,14 +48,12 @@ export default function ActionEditor(props) {
                 ]}
             />
             <div className="accordion-buttons-container">
-                <Button
-                    icon
-                    onClick={() => {
-                        onAdd();
-                    }}
-                >
-                    <Icon name="plus" />
-                </Button>
+                <ActionPanel
+                    semesterData={props.semesterData}
+                    header={"Create Action"}
+                    create={true}
+                    key={"createAction"}
+                />
             </div>
         </div>
     );

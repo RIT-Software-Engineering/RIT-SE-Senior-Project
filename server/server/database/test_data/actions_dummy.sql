@@ -15,7 +15,7 @@ VALUES
     (
         3,
         "Individual Test Form 1",
-        "0",
+        "",
         "This is the first test form for individuals",
         "individual",
         "2019-8-27",
@@ -35,7 +35,7 @@ VALUES
     (
         3, 
         "Report Submission", 
-        "0", 
+        "", 
         "Turn in your <b>interim</b> report",
         "team", 
         "2019-9-13",
@@ -53,7 +53,7 @@ VALUES
         ''
     ),
     (
-        3, "Team Name Submission", "0", 
+        3, "Team Name Submission", "", 
         "Come up <u>with</u> team name", 
         "team",
         "2019-10-13",
@@ -73,7 +73,7 @@ VALUES
     (
         4,
         "Individual Test Form 1",
-        "0",
+        "",
         "This is the first test form for individuals",
         "individual",
         "2020-8-7",
@@ -93,7 +93,7 @@ VALUES
     (
         4, 
         "Report Submission", 
-        "0", 
+        "", 
         "Turn in your <b>interim</b> report",
         "team", 
         "2020-1-13",
@@ -107,7 +107,7 @@ VALUES
         '.png,.pdf,.jpg'
     ),
     (
-        4, "Team Name Submission", "0", "Come up <u>with</u> team name", 
+        4, "Team Name Submission", "", "Come up <u>with</u> team name", 
         "team",
         "2020-1-13",
         "2020-1-30",

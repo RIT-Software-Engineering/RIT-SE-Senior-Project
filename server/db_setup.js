@@ -84,6 +84,7 @@ async function redeployDatabase() {
         await dropAllTables()
         await createAllTables()
         await populateDummyData()
+        console.log("Done redeploying database");
     } catch (error) {
         console.error(error);
     }
