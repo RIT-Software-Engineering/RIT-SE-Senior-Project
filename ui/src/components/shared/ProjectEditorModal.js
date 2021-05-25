@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Button, Dropdown, Modal, Input } from "semantic-ui-react";
+import React from "react";
 import { config } from "../util/constants";
-import { SecureFetch } from "../util/secureFetch";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {

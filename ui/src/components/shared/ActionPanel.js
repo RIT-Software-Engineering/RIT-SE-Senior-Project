@@ -15,10 +15,14 @@ export default function ActionPanel(props) {
         page_html: props.actionData.page_html || "",
     };
 
-    let submissionModalMessages = {
+    let submissionModalMessages = props.create ? {
         SUCCESS: "The action has been updated.",
         FAIL: "We were unable to receive your update to the action.",
-    };
+    } : {
+        SUCCESS: "The action has been created.",
+        FAIL: "We were unable to receive your action creation.",
+    }
+        ;
 
     let semesterMap = {};
 
@@ -27,7 +31,7 @@ export default function ActionPanel(props) {
         semesterMap[semester.semester_id] = semester.name;
     }
 
-    let submitRoute = config.url.API_POST_EDIT_ACTION;
+    let submitRoute = props.create ? config.url.API_POST_CREATE_ACTION : config.url.API_POST_EDIT_ACTION;
 
     let formFieldArray = [
         {
@@ -98,6 +102,7 @@ export default function ActionPanel(props) {
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
             header={props.header}
+            create={!!props.create}
         />
     );
 }

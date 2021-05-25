@@ -21,12 +21,21 @@ export default function ActionTable(props) {
                     <TableCell>{formatDateTime(action.start_date)}</TableCell>
                     <TableCell>{formatDateTime(action.due_date)}</TableCell>
                     <TableCell>
-                        <ActionPanel
-                            actionData={action}
-                            semesterData={props.semesterData}
-                            header={`Currently Editing "${action.action_title}"`}
-                            key={"editAction-" + i}
-                        />
+                        <div className="accordion-buttons-container" style={{ position: 'initial' }}>
+                            <ActionPanel
+                                actionData={action}
+                                semesterData={props.semesterData}
+                                header={`Currently Editing "${action.action_title}"`}
+                                key={"editAction-" + i}
+                            />
+                            <ActionPanel
+                                actionData={action}
+                                semesterData={props.semesterData}
+                                header={`Currently Editing "${action.action_title}"`}
+                                create={true}
+                                key={"copyAction-" + i}
+                            />
+                        </div>
                     </TableCell>
                 </TableRow>
             );

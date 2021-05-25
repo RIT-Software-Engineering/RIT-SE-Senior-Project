@@ -802,6 +802,36 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         });
 });
 
+
+db_router.post("/createAction", body("page_html").unescape(), (req, res) => {
+    let body = req.body;
+
+    let updateQuery = `
+        INSERT into actions
+        (semester, action_title, action_target, date_deleted, short_desc, start_date, due_date, page_html, file_types)
+        values (?,?,?,?,?,?,?,?,?)`;
+
+    let params = [
+        body.semester,
+        body.action_title,
+        body.action_target,
+        body.date_deleted,
+        body.short_desc,
+        body.start_date,
+        body.due_date,
+        body.page_html,
+        body.file_types
+    ];
+
+    db.query(updateQuery, params)
+        .then(() => {
+            return res.status(200).send();
+        })
+        .catch((err) => {
+            return res.status(500).send(err);
+        });
+});
+
 db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
     let getSemestersQuery = `
         SELECT *

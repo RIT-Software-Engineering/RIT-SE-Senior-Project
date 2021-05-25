@@ -33,11 +33,6 @@ export default function UserPanel(props) {
         semesterMap[semester.semester_id] = semester.name;
     }
 
-    let semesterOptions = {}//options to be mapped for semesters
-    semesterOptions = Object.keys(semesterMap).map((semester_id, idx) => {
-        return { key: idx, text: semesterMap[semester_id], value: semester_id };
-    });
-
     let formFieldArray = [
         {
             type: "input",
@@ -106,6 +101,7 @@ export default function UserPanel(props) {
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
             header={props.header}
+            create={initialState.system_id === ""}
         />
     );
 }

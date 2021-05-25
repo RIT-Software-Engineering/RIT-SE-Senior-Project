@@ -33,6 +33,7 @@ export const config = {
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject?user=admin`,
         API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction?user=student`,
         API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
+        API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
         API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,

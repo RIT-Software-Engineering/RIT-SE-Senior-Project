@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Modal } from "semantic-ui-react";
-import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -142,11 +141,10 @@ export default function DatabaseTableEditor(props) {
                             selection
                             options={field.options}
                             loading={field.loading}
-                            disabled={field.loading}
+                            disabled={field.loading || field.disabled}
                             value={formData[field.name].toString()}
                             name={field.name}
                             onChange={handleChange}
-                            disabled={field.disabled}
                         />
                     </Form.Field>
                 );
@@ -172,7 +170,7 @@ export default function DatabaseTableEditor(props) {
     }
 
     function checkIfEmpty() {
-        if (props.submitRoute === config.url.API_POST_CREATE_USER) {
+        if (props.create) {
             return <Button icon="plus" />;
         }
         else {
