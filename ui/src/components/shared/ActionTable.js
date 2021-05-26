@@ -8,12 +8,16 @@ import {
     TableRow, 
     Accordion, 
 } from "semantic-ui-react";
+import _ from "lodash";
 import ActionPanel from "./ActionPanel";
 import { formatDateTime } from "../util/utils";
 
 export default function ActionTable(props) {
     const renderActions = () => {
-        return props.actions.map((action, i) => {
+        console.log(props.actions);
+        let actions = _.sortBy(props.actions, ["due_date", "start_date"])
+
+        return actions.map((action, i) => {
             return (
                 <TableRow key={i}>
                     <TableCell>{action.action_title}</TableCell>
