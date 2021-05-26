@@ -18,8 +18,8 @@ VALUES
         "",
         "This is the first test form for individuals",
         "individual",
-        "2019-8-27",
-        "2019-9-7",
+        "2019-08-27",
+        "2019-09-07",
         '<h1>Take the individual test form</h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"name\">Name</label>
@@ -38,8 +38,8 @@ VALUES
         "", 
         "Turn in your <b>interim</b> report",
         "team", 
-        "2019-9-13",
-        "2019-9-30",
+        "2019-09-13",
+        "2019-09-30",
         '<h1>Take the individual test form</h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"name\">Name</label>
@@ -76,8 +76,8 @@ VALUES
         "",
         "This is the first test form for individuals",
         "individual",
-        "2020-8-7",
-        "2020-8-10",
+        "2020-08-07",
+        "2020-08-10",
         '<h1>Take the individual test form</h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"name\">Name</label>
@@ -96,8 +96,8 @@ VALUES
         "", 
         "Turn in your <b>interim</b> report",
         "team", 
-        "2020-1-13",
-        "2020-1-30",
+        "2020-01-13",
+        "2020-01-30",
         '<h1> Submit your interim report </h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"report\">Report File</label>
@@ -109,8 +109,8 @@ VALUES
     (
         4, "Team Name Submission", "", "Come up <u>with</u> team name", 
         "team",
-        "2020-1-13",
-        "2020-1-30",
+        "2020-01-13",
+        "2020-01-30",
         '<h1>Take the individual test form</h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"name\">Name</label>

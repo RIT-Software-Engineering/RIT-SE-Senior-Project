@@ -24,10 +24,10 @@ export default function ActionEditor(props) {
         let semesterMap = {};
         for (let i = 0; i < actions.length; i++) {
             let actionData = actions[i];
-            if (!semesterMap[actionData.name]) {
-                semesterMap[actionData.name] = [];
+            if (!semesterMap[actionData.semester]) {
+                semesterMap[actionData.semester] = [];
             }
-            semesterMap[actionData.name].push(actionData);
+            semesterMap[actionData.semester].push(actionData);
         }
         for (const [, value] of Object.entries(semesterMap)) {
             semesterPanels.push(<ActionTable actions={value} semesterData={props.semesterData} />);

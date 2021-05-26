@@ -81,6 +81,7 @@ function populateDummyData() {
 
 async function redeployDatabase() {
     try {
+        console.log("Starting database redeploy");
         await dropAllTables()
         await createAllTables()
         await populateDummyData()

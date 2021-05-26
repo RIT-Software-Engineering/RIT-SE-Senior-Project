@@ -1,6 +1,6 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
-import { config } from "../util/constants";
+import { config, DROPDOWN_ITEMS } from "../util/constants";
 
 export default function ActionPanel(props) {
     let initialState = {
@@ -53,10 +53,11 @@ export default function ActionPanel(props) {
             loading: props.semesterData.loading
         },
         {
-            type: "input",
+            type: "dropdown",
             label: "Action Target",
             placeHolder: "Action Target",
             name: "action_target",
+            options: DROPDOWN_ITEMS.actionTarget,
         },
         {
             type: "input",
@@ -84,7 +85,7 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Upload Files",
+            label: "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
             placeHolder: "CSV format please - No filetypes = no files uploaded",
             name: "file_types",
         },

@@ -48,3 +48,28 @@ export const USERTYPES = {
     STUDENT: "student",
     ADMIN: "admin",
 }
+
+export const DROPDOWN_ITEMS = {
+    actionTarget: [
+        {
+            key: "individual",
+            text: "Individual",
+            value: "individual",
+        },
+        {
+            key: "team",
+            text: "Team",
+            value: "team",
+        },
+        {
+            key: "coach",
+            text: "Coach",
+            value: "coach",
+        },
+        {
+            key: "admin",
+            text: "Admin",
+            value: "admin",
+        }
+    ]
+}

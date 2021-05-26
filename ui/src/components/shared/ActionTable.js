@@ -46,7 +46,8 @@ export default function ActionTable(props) {
     if (props.actions[0].name === null){
         title = "No semester";
     } else {
-        title = props.actions[0].name
+        // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
+        title = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name
     }
 
     return (

@@ -730,8 +730,6 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
     let getActionsQuery = `
         SELECT *
         FROM actions
-        LEFT JOIN semester_group
-        ON actions.semester = semester_group.semester_id
         ORDER BY action_id desc
     `;
     db.query(getActionsQuery)
