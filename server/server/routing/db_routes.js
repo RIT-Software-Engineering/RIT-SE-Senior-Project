@@ -34,7 +34,7 @@ db_router.get("/selectAllSponsorInfo", (req, res) => {
     });
 });
 
-db_router.get("/selectAllStudentInfo", (req, res) => {
+db_router.get("/selectAllStudentInfo", [UserAuth.isAdmin], (req, res) => {
     let getStudentsQuery = `
         SELECT *
         FROM users
@@ -52,6 +52,96 @@ db_router.get("/selectAllStudentInfo", (req, res) => {
         });
 });
 
+// gets all users
+db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
+    let query;
+        query = `SELECT *
+            FROM users
+            LEFT JOIN semester_group
+            ON users.semester_group = semester_group.semester_id
+            `;
+
+    db.query(query).then((users) => res.send(users));
+});
+
+db_router.post("/createUser", [
+    UserAuth.isAdmin,
+    body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("fname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("type").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("semester_group").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("project").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("active").trim().escape().isLength({ max: 50 }),
+    ], 
+    async (req, res) => {
+        let result = validationResult(req);
+
+        if (result.errors.length == 0) {
+            let body = req.body;
+
+            const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
+                (system_id, fname, lname, email, type, semester_group, project, active) 
+                VALUES (?,?,?,?,?,?,?,?)`;
+
+            const params = [
+                body.system_id,
+                body.fname,
+                body.lname,
+                body.email,
+                body.type,
+                body.semester_group,
+                body.project,
+                body.active,
+            ];
+            db.query(sql, params)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
+        }
+    }
+);
+
+db_router.post("/batchCreateUser", [
+    UserAuth.isAdmin,
+    // TODO: Add more validation
+],
+    async (req, res) => {
+        let result = validationResult(req);
+
+        if (result.errors.length == 0) {
+            let users = JSON.parse(req.body.users);
+
+            const insertStatements = users.map(user =>
+                `INSERT INTO ${DB_CONFIG.tableNames.users}
+                    (system_id, fname, lname, email, type, semester_group, project, active)
+                    VALUES('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${user.active}')`
+            )
+
+            const sql = `BEGIN TRANSACTION;
+                ${insertStatements.join(";")};
+            COMMIT;`
+
+            console.log(`~~~${sql}~~~`);
+
+            db.query(sql)
+                .then((values) => {
+                    return res.status(200).send();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return res.status(500).send(err);
+                });
+        }
+    }
+);
+
+
 db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
     let body = req.body;
 
@@ -62,18 +152,30 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
             email = ?,
             type = ?,
             semester_group = ?,
-            project = ?
+            project = ?,
+            active = ?
         WHERE system_id = ?
     `;
 
-    let params = [body.fname, body.lname, body.email, body.type, body.semester_group, body.project, body.system_id];
+    let params = [
+        body.fname, 
+        body.lname, 
+        body.email, 
+        body.type, 
+        body.semester_group, 
+        body.project, 
+        body.active,
+        body.system_id,
+    ];
 
-    // db.query(updateQuery, params).then(() => {
-    //     return res.status(200).send();
-    // }).catch((err) => {
-    //     res.sendStatus(500)
-    // })
-    return res.status(200).send();
+    db.query(updateQuery, params)
+        .then(() => {
+            return res.status(200).send();
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).send(err);
+        });
 });
 
 db_router.get("/getActiveSemesters", (req, res) => {
@@ -107,7 +209,7 @@ db_router.get("/getActiveProjects", (req, res) => {
         });
 });
 
-db_router.get("/selectAllCoachInfo", (req, res) => {
+db_router.get("/selectAllCoachInfo", [UserAuth.isAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
         SELECT users.system_id,
@@ -648,7 +750,6 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()]
         VALUES (?,?,?,?,?)
     `;
 
-    // TODO: system_id should be taken from req once authentication is done
     let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
     db.query(insertAction, params)
         .then(() => {
@@ -663,8 +764,6 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
     let getActionsQuery = `
         SELECT *
         FROM actions
-        LEFT JOIN semester_group
-        ON actions.semester = semester_group.semester_id
         ORDER BY action_id desc
     `;
     db.query(getActionsQuery)
@@ -717,7 +816,7 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         body.semester,
         body.action_title,
         body.action_target,
-        body.date_deleted,
+        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
         body.short_desc,
         body.start_date,
         body.due_date,
@@ -735,7 +834,37 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         });
 });
 
-db_router.get("/getSemesters", [UserAuth.isAdmin], (req, res) => {
+
+db_router.post("/createAction", body("page_html").unescape(), (req, res) => {
+    let body = req.body;
+
+    let updateQuery = `
+        INSERT into actions
+        (semester, action_title, action_target, date_deleted, short_desc, start_date, due_date, page_html, file_types)
+        values (?,?,?,?,?,?,?,?,?)`;
+
+    let params = [
+        body.semester,
+        body.action_title,
+        body.action_target,
+        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
+        body.short_desc,
+        body.start_date,
+        body.due_date,
+        body.page_html,
+        body.file_types
+    ];
+
+    db.query(updateQuery, params)
+        .then(() => {
+            return res.status(200).send();
+        })
+        .catch((err) => {
+            return res.status(500).send(err);
+        });
+});
+
+db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
     let getSemestersQuery = `
         SELECT *
         FROM semester_group
@@ -837,6 +966,7 @@ function calculateActiveTimelines(user) {
                             FROM actions
                             LEFT JOIN action_log
                                 ON action_log.action_template = actions.action_id
+                                WHERE actions.date_deleted = ''
                             GROUP BY actions.action_id
                         )
                         WHERE semester = projects.semester
@@ -866,10 +996,12 @@ function calculateActiveTimelines(user) {
         db.query(getTeams)
             .then((values) => {
                 for (let timeline in values || []) {
-                    values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
-                    values[timeline].actions = values[timeline].actions.sort(function (a, b) {
-                        return Date.parse(a.start_date) - Date.parse(b.start_date);
-                    });
+                    if (!!values[timeline].actions) {
+                        values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
+                        values[timeline].actions = values[timeline].actions.sort(function (a, b) {
+                            return Date.parse(a.start_date) - Date.parse(b.start_date);
+                        });
+                    }
                 }
                 resolve(values);
             })

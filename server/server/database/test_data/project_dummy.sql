@@ -6,36 +6,36 @@ INSERT INTO projects (status, title, organization, primary_contact, contact_emai
     VALUES
 
     (
-    "submitted", "Once upon a project", "Storytime", "Narratorman", "narratorman@storytime.com", "333 333 3333", NULL, 
-    "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
-    "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", NULL,
+    'submitted', 'Once upon a project', 'Storytime', 'Narratorman', 'narratorman@storytime.com', '333 333 3333', NULL, 
+    'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+    'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
     NULL, NULL, NULL, NULL, NULL, NULL
     ),
 
-    ("needs revision", "I need revision", "REvision inc", "Revisor", "revisor@ revision.com", "454 454 4545", NULL, 
-    "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
-    "key, word, stuff", "a list of deliverables", "proprietary info here", "on", "Alternate time stuff", "on", "full-rights", NULL,
+    ('needs revision', 'I need revision', 'REvision inc', 'Revisor', 'revisor@ revision.com', '454 454 4545', NULL, 
+    'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+    'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', 'Alternate time stuff', 'on', 'full-rights', NULL,
     NULL, NULL, NULL, NULL, NULL, 2
     ),
     
     (
-        "in progress", "In Progress Project", "Progress LLC", "Progressor", "progressor@progress.com", "555 555 5454", NULL, 
-        "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
-        "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", "The Null Pointers",
+        'in progress', 'In Progress Project', 'Progress LLC', 'Progressor', 'progressor@progress.com', '555 555 5454', NULL, 
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'The Null Pointers',
         1, NULL, NULL, NULL, NULL, 3
     ),
 
     (
-        "in progress", "Lenel onGuard Datawarehouse", "Lenel S2", "Damian", "xxx1234@lenel.com", "333 333 3333", NULL, 
-        "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
-        "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", "Drop Table Admin",
+        'in progress', 'Lenel onGuard Datawarehouse', 'Lenel S2', 'Damian', 'xxx1234@lenel.com', '333 333 3333', NULL, 
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'Drop Table Admin',
         6, NULL, NULL, NULL, NULL, 4
     ),
 
     (
-    "completed", "Completed project", "Completion Solutions", "Completer person", "completer@completion.com", "565 565 5656", NULL,
-    "Some background info", "A projct description", "A narrow scope", "Some challenges", "some constraints", NULL,
-    "key, word, stuff", "a list of deliverables", "proprietary info here", "on", NULL, "on", "full-rights", NULL,
+    'completed', 'Completed project', 'Completion Solutions', 'Completer person', 'completer@completion.com', '565 565 5656', NULL,
+    'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+    'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
     2, NULL, NULL, NULL, NULL, NULL
     )
 ;

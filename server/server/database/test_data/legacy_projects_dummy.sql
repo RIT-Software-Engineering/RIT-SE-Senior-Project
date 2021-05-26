@@ -1,28 +1,28 @@
 INSERT INTO archive (priority, title, team_name, members, sponsor, coach, poster_thumb, synopsis) 
 VALUES 
-    (0, "Business Action Tracking", "BAT Team", "Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy", "Lockheed Martin - Enterprise Business Services", "Sam Malachowsky", "BAT-Thumb.jpg",
-    "Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, user-friendly task management tool to be used across teams in a corporate setting. The system can be 
+    (0, 'Business Action Tracking', 'BAT Team', 'Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy', 'Lockheed Martin - Enterprise Business Services', 'Sam Malachowsky', 'BAT-Thumb.jpg',
+    'Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, user-friendly task management tool to be used across teams in a corporate setting. The system can be 
     used to create, update, and monitor actions to their completion. Actions can be hierarchical, associated with a project, and/or interdepartmental. An action is assigned to an actor and contains basic fields, including name, description, due date, and status. 
     Additional notes or custom fields can be included.Seamless integration with existing workflows and tools (e.g. Outlook, iPhone, and possibly others) is a core part of the tool. Users can enter and update actions without leaving their existing workflows. The tool will add value without impeding on existing business processes. 
     Because of this, the system is designed to be intuitively usable with little instruction or training.
     To encourage adoption and use, users may manage and update tasks with the tool from a number of devices, including laptops, desktops, and iPhones. All supported devices must have access to useful functionality, and 
     feature intuitive interfaces to ensure that users can easily manage tasks.The system also includes a management interface, allowing administrators to view overall statistics and concerns in a dashboard view. This is especially useful when estimating time to 
-    completion for similar tasks, seeing where teams are falling behind, and for managing risks. To encourage user engagement, the system will reward users for completing actions."
+    completion for similar tasks, seeing where teams are falling behind, and for managing risks. To encourage user engagement, the system will reward users for completing actions.'
     ),
 
-    (0, "RaceChipper 2.0", "The Chipper Racers", "Caitlin Li, Colton Dennis, Matthew Crawford, Sam Shiffman", "Trillium Health", "Bruce Herring", "ChipperRacers-Thumb.jpg",
-    "RaceChipper is a web and mobile project sponsored by Trillium Health that aims to provide a way to track race participants, while offering viewers and racers a platform 
+    (0, 'RaceChipper 2.0', 'The Chipper Racers', 'Caitlin Li, Colton Dennis, Matthew Crawford, Sam Shiffman', 'Trillium Health', 'Bruce Herring', 'ChipperRacers-Thumb.jpg',
+    'RaceChipper is a web and mobile project sponsored by Trillium Health that aims to provide a way to track race participants, while offering viewers and racers a platform 
     to enjoy the race through social media. This is done through an inexpensive Bluetooth device given to each race participant that acts as a tracking beacon, which is tracked
     by event admins equipped with iOS devices along the route.This project is an existing project that continues off the work of a previous senior SE team, so many of the 
     baseline features have already been implemented. Existing features include participant check in/out logs, location estimation, a chat room for staff, and a comprehensive 
     overview showing participant location and status. While the application does these basic things, polishing up existing functionality will be a high priority.
     <br> Additional work on this project will focus on fixing bugs, adding missing features, enhancing the UI, supporting both iPhone and iPad as well as different user types, 
     moving current web features to the mobile app, adding social media functionality, and monetization through ads. To ensure we’re creating an application that will satisfy 
-    Trillium Health’s needs, we will have weekly meetings with our liaison, AJ Blythe, to discuss their needs and possible solutions."
+    Trillium Health’s needs, we will have weekly meetings with our liaison, AJ Blythe, to discuss their needs and possible solutions.'
     ),
 
-    (0, "Wegmans Organic Farm", "Team Woof", "Luke Harrold, Colton Venditto, Courtney McGorrill, Derick Yung", "Wegmans Food Markets", "Kenn Martinez", "WOOF-Thumb.jpg",
-    "Wegmans Organic Farm and Orchard in Canandaigua is a functioning and productive farm where best practices and methods in modern farming are put to the test. Day to day 
+    (0, 'Wegmans Organic Farm', 'Team Woof', 'Luke Harrold, Colton Venditto, Courtney McGorrill, Derick Yung', 'Wegmans Food Markets', 'Kenn Martinez', 'WOOF-Thumb.jpg',
+    'Wegmans Organic Farm and Orchard in Canandaigua is a functioning and productive farm where best practices and methods in modern farming are put to the test. Day to day 
     activities on the farm are managed largely through excel spreadsheets and paper-trails. The team will create farm management software. The goal is to streamline data-entry 
     and create an easily accessible history of previously completed plantings and harvests. With existing historical data and mathematical formulas, the software will be able 
     to provide users with yield projections for various plots of land and crops. The software will capture data from the entire lifecycle of crop-plantings on the farm. 
@@ -31,6 +31,6 @@ VALUES
     readability. Additional features may include seed and material calculations when planning a new crop-planting, the ability to record notes and documentation about
     planting practices, a task list generated by current planting plans and labor standards, tracking labor hours on the farm, and any others the sponsor may think of. 
     Key non-functional requirements for this project include data management and traceability, accessibility due to varying levels of literacy with technology among users, 
-    and a streamlined user experience to provide maximum efficiency when using the software."
+    and a streamlined user experience to provide maximum efficiency when using the software.'
     )
 ;

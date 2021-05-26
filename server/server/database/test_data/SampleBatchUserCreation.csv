@@ -1,0 +1,4 @@
+﻿system_id,fname,lname,email,type,semester_group,project,active
+a,a,a,a@g.c,student,3,3,true
+b,b,b,b@g.c,student,3,3,true
+c,c,c,c@g.c,student,3,3,true

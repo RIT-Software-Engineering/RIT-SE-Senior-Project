@@ -1,5 +1,5 @@
 import React from "react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function StudentEditPanel(props) {
@@ -12,6 +12,7 @@ export default function StudentEditPanel(props) {
         type: props.studentData.type || "",
         semester_group: props.studentData.semester_group || "",
         project_id: props.studentData.project || "",
+        active: props.studentData.active || "",
     };
 
     let submissionModalMessages = {
@@ -19,9 +20,23 @@ export default function StudentEditPanel(props) {
         FAIL: "We were unable to receive your update to the student's info.",
     };
 
+    let semesterMap = {};
+
+    for (let i = 0; i < props.semesterData.length; i++) {
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
+
     let submitRoute = config.url.API_POST_EDIT_USER;
 
     let formFieldArray = [
+        {
+            type: "input",
+            label: "User ID",
+            placeHolder: "User ID",
+            name: "system_id",
+            disabled: true
+        },
         {
             type: "input",
             label: "First Name",
@@ -36,21 +51,39 @@ export default function StudentEditPanel(props) {
         },
         {
             type: "input",
-            label: "Email Address",
-            placeHolder: "Email Address",
+            label: "Email",
+            placeHolder: "Email",
             name: "email",
         },
         {
-            type: "input",
-            label: "Semester Group",
-            placeHolder: "Semester Group",
+            type: "dropdown",
+            label: "Type (student, coach, admin)",
+            placeHolder: "Type",
+            name: "type",
+            //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
+            options: Object.values(USERTYPES).map((type, idx) => { return { key: idx, text: type, value: type } })
+        },
+        {
+            type: "dropdown",
+            label: "Semester",
+            placeHolder: "Semester",
             name: "semester_group",
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData.loading
         },
         {
             type: "input",
-            label: "Project ID",
-            placeHolder: "Project ID",
-            name: "project_id",
+            label: "Project",
+            placeHolder: "Project",
+            name: "project",
+        },
+        {
+            type: "checkbox",
+            label: "Active",
+            placeHolder: "Active",
+            name: "active",
         },
     ];
 

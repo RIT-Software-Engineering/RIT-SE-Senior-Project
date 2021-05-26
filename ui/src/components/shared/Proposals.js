@@ -17,6 +17,7 @@ import _ from "lodash";
 import { config } from "../util/constants";
 import { formatDateTime } from "../util/utils";
 import "../../css/dashboard-proposal.css";
+import { SecureFetch } from "../util/secureFetch";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -103,7 +104,7 @@ export default function Proposals(props) {
                         const updatedProposals = [...proposalData.proposals];
                         updatedProposals[idx].loading = true;
                         setProposalData({ ...proposalData, proposals: updatedProposals });
-                        fetch(config.url.API_PATCH_EDIT_PROPOSAL_STATUS, {
+                        SecureFetch(config.url.API_PATCH_EDIT_PROPOSAL_STATUS, {
                             method: "PATCH",
                             headers: {
                                 "Content-Type": "application/json",
@@ -230,7 +231,7 @@ export default function Proposals(props) {
                         })}
                     </TableCell>
                     <TableCell>
-                        <ProjectEditorModal project={proposal} />
+                        <ProjectEditorModal project={proposal} semesterData={props.semesterData} />
                     </TableCell>
                 </TableRow>
             );

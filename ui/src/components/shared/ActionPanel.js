@@ -1,26 +1,38 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
-import { config } from "../util/constants";
+import { config, DROPDOWN_ITEMS } from "../util/constants";
 
 export default function ActionPanel(props) {
     let initialState = {
-        action_id: props.actionData.action_id || "",
-        action_title: props.actionData.action_title || "",
-        semester: props.actionData.semester || "",
-        action_target: props.actionData.action_target || "",
-        date_deleted: props.actionData.date_deleted || "",
-        short_desc: props.actionData.short_desc || "",
-        start_date: props.actionData.start_date || "",
-        due_date: props.actionData.due_date || "",
-        page_html: props.actionData.page_html || "",
+        action_id: props.actionData?.action_id || "",
+        action_title: props.actionData?.action_title || "",
+        semester: props.actionData?.semester || "",
+        action_target: props.actionData?.action_target || "",
+        date_deleted: props.actionData?.date_deleted || false,
+        short_desc: props.actionData?.short_desc || "",
+        start_date: props.actionData?.start_date || "",
+        due_date: props.actionData?.due_date || "",
+        page_html: props.actionData?.page_html || "",
+        file_types: props.actionData?.file_types || "",
     };
 
-    let submissionModalMessages = {
+    let submissionModalMessages = props.create ? {
         SUCCESS: "The action has been updated.",
         FAIL: "We were unable to receive your update to the action.",
-    };
+    } : {
+        SUCCESS: "The action has been created.",
+        FAIL: "We were unable to receive your action creation.",
+    }
+        ;
 
-    let submitRoute = config.url.API_POST_EDIT_ACTION;
+    let semesterMap = {};
+
+    for (let i = 0; i < props.semesterData.length; i++) {
+        const semester = props.semesterData[i];
+        semesterMap[semester.semester_id] = semester.name;
+    }
+
+    let submitRoute = props.create ? config.url.API_POST_CREATE_ACTION : config.url.API_POST_EDIT_ACTION;
 
     let formFieldArray = [
         {
@@ -34,12 +46,17 @@ export default function ActionPanel(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester",
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData.loading
         },
         {
-            type: "input",
+            type: "dropdown",
             label: "Action Target",
             placeHolder: "Action Target",
             name: "action_target",
+            options: DROPDOWN_ITEMS.actionTarget,
         },
         {
             type: "input",
@@ -67,13 +84,13 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Upload Files",
+            label: "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
             placeHolder: "CSV format please - No filetypes = no files uploaded",
             name: "file_types",
         },
         {
             type: "checkbox",
-            label: "Deleted",
+            label: "Archived",
             placeHolder: "Deleted",
             name: "date_deleted",
         },
@@ -87,6 +104,7 @@ export default function ActionPanel(props) {
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
             header={props.header}
+            create={!!props.create}
         />
     );
 }

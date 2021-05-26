@@ -1,9 +1,12 @@
 import React, { useState, useRef } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
-
+/** 
+*This file is only used in ToolTips, it should be removed completely
+*/
 export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
@@ -61,12 +64,12 @@ export default function ActionModal(props) {
 
             body.append("form_data", JSON.stringify(formData));
 
-            const formFiles = filesRef.current.files;
+            const formFiles = filesRef.current?.files || [];
             for (let i = 0; i < formFiles?.length || 0; i++) {
                 body.append("attachments", formFiles[i]);
             }
 
-            fetch(config.url.API_POST_SUBMIT_ACTION, {
+            SecureFetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",
                 body: body,
             })

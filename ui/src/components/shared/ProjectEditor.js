@@ -4,9 +4,14 @@ import Proposals from "./Proposals";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 
-export default function ProjectEditor() {
+export default function ProjectEditor(props) {
     const [proposalData, setProposalData] = useState({});
-    const [semesters, setSemestersData] = useState([]);
+    let semesters = {}
+
+    if (!!props.semesterData) {
+        semesters = {};
+        props.semesterData.forEach((semester) => (semesters[semester.semester_id] = semester));
+    }
 
     const content = () => {
         return Object.keys(proposalData)
@@ -18,6 +23,7 @@ export default function ProjectEditor() {
                         key={semester_id}
                         proposalData={proposalData[semester_id]}
                         semester={semesters[semester_id] || null}
+                        semesterData={props.semesterData}
                     />
                 );
             });
@@ -40,18 +46,6 @@ export default function ProjectEditor() {
             })
             .catch((error) => {
                 alert("Failed to get proposal data " + error);
-            });
-
-        // TODO: This fetch is done in multiple places and is inefficient - Figure out a better method of dealing with getting semester names. Maybe put it in redux?
-        SecureFetch(config.url.API_GET_SEMESTERS)
-            .then((response) => response.json())
-            .then((semestersData) => {
-                const formattedSemesterData = {};
-                semestersData.forEach((semester) => (formattedSemesterData[semester.semester_id] = semester));
-                setSemestersData(formattedSemesterData);
-            })
-            .catch((error) => {
-                alert("Failed to get semestersData data" + error);
             });
     }, []);
 

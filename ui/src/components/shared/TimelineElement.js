@@ -5,7 +5,7 @@ export default function TimelineElement(props) {
     let totalWeight = 0;
     let actionsComponents = [];
 
-    props.actions.forEach((action) => {
+    props.actions?.forEach((action) => {
         if (action.state === "yellow" || action.state === "red") {
             totalWeight += 3;
         } else {
@@ -13,9 +13,9 @@ export default function TimelineElement(props) {
         }
     });
 
-    let baseSize = (100 - props.actions.length - 1) / totalWeight;
+    let baseSize = (100 - props.actions?.length - 1) / totalWeight;
 
-    props.actions.forEach((action, index) => {
+    props.actions?.forEach((action, index) => {
         let width = baseSize;
         let rectInnerHtml = <div></div>;
         if (action.state === "yellow" || action.state === "red") {

@@ -24,7 +24,7 @@ export default function StudentTeamTable(props) {
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                       Last Name
+                        Last Name
                     </TableHeaderCell>
 
                     <TableHeaderCell
@@ -67,7 +67,7 @@ export default function StudentTeamTable(props) {
             styled
             panels={[
                 {
-                    key: props.key,
+                    key: props.childKey,
                     title: props.title,
                     content: {
                         content: (table)

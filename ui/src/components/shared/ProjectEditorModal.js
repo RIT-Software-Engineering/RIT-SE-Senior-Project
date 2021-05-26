@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button, Dropdown, Modal, Input } from "semantic-ui-react";
+import React from "react";
 import { config } from "../util/constants";
+import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {
     SUBMITTED: "submitted",
@@ -12,243 +12,259 @@ const PROJECT_STATUSES = {
     ARCHIVED: "archive",
 };
 
-export default function ProjectEditor(props) {
-    const [editedProject, setEditedProject] = useState({});
+export default function ProjectEditorModal(props) {
 
-    const projectOnChange = (event, target) => {
-        setEditedProject({ ...editedProject, [target.label]: target.value });
-    };
+    let semesterMap = {};
 
-    const className = (fieldName) => {
-        return editedProject[fieldName] && editedProject[fieldName] !== props.project[fieldName] ? "edited-input" : "";
-    };
-
-    const value = (fieldName) => {
-        if (editedProject[fieldName] !== undefined) {
-            return editedProject[fieldName];
+    if (!!props.semesterData) {
+        for (let i = 0; i < props.semesterData.length; i++) {
+            const semester = props.semesterData[i];
+            semesterMap[semester.semester_id] = semester.name;
         }
-        return props.project[fieldName] || "";
+    }
+
+    let initialState = {
+        display_name: props.project.display_name || "",
+        title: props.project.title || "",
+        organization: props.project.organization || "",
+        primary_contact: props.project.primary_contact || "",
+        contact_email: props.project.contact_email || "",
+        contact_phone: props.project.contact_phone || "",
+        attachments: props.project.attachments || "",
+        background_info: props.project.background_info || "",
+        project_description: props.project.project_description || "",
+        project_scope: props.project.project_scope || "",
+        project_challenges: props.project.project_challenges || "",
+        constraints_assumptions: props.project.constraints_assumptions || "",
+        sponsor_provided_resources: props.project.sponsor_provided_resources || "",
+        project_search_keywords: props.project.project_search_keywords || "",
+        sponsor_deliverables: props.project.sponsor_deliverables || "",
+        proprietary_info: props.project.proprietary_info || "",
+        sponsor_avail_checked: props.project.sponsor_avail_checked || "",
+        sponsor_alternate_time: props.project.sponsor_alternate_time || "",
+        project_agreements_checked: props.project.project_agreements_checked || "",
+        assignment_of_rights: props.project.assignment_of_rights || "",
+        team_name: props.project.team_name || "",
+        poster: props.project.poster || "",
+        video: props.project.video || "",
+        website: props.project.website || "",
+        synopsis: props.project.synopsis || "",
+        sponsor: props.project.sponsor || "",
+        semester: props.project.semester || "",
+        date: props.project.date || "",
+        status: props.project.status || "",
+    }
+
+    let submissionModalMessages = {
+        SUCCESS: "The project has been updated.",
+        FAIL: "We were unable to receive your update to the project.",
     };
 
-    const generateModalContent = () => {
-        const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
-            return {
-                key: idx,
-                text: PROJECT_STATUSES[status],
-                value: PROJECT_STATUSES[status],
-            };
-        });
+    const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
+        return {
+            key: idx,
+            text: PROJECT_STATUSES[status],
+            value: PROJECT_STATUSES[status],
+        };
+    });
 
-        return (
-            <div className="project-editor-input-container">
-                <Input
-                    label="display_name"
-                    className={className("display_name")}
-                    value={value("display_name")}
-                    onChange={projectOnChange}
-                />
-                <Input label="title" className={className("title")} value={value("title")} onChange={projectOnChange} />
-                <Input
-                    label="organization"
-                    className={className("organization")}
-                    value={value("organization")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="primary_contact"
-                    className={className("primary_contact")}
-                    value={value("primary_contact")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="contact_email"
-                    className={className("contact_email")}
-                    value={value("contact_email")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="contact_phone"
-                    className={className("contact_phone")}
-                    value={value("contact_phone")}
-                    onChange={projectOnChange}
-                />
-                {/* TODO: How should attachments work? */}
-                <Input
-                    disabled
-                    label="attachments"
-                    className={className("attachments")}
-                    value={value("attachments")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="background_info"
-                    className={className("background_info")}
-                    value={value("background_info")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="project_description"
-                    className={className("project_description")}
-                    value={value("project_description")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="project_scope"
-                    className={className("project_scope")}
-                    value={value("project_scope")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="project_challenges"
-                    className={className("project_challenges")}
-                    value={value("project_challenges")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="constraints_assumptions"
-                    className={className("constraints_assumptions")}
-                    value={value("constraints_assumptions")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="sponsor_provided_resources"
-                    className={className("sponsor_provided_resources")}
-                    value={value("sponsor_provided_resources")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="project_search_keywords"
-                    className={className("project_search_keywords")}
-                    value={value("project_search_keywords")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="sponsor_deliverables"
-                    className={className("sponsor_deliverables")}
-                    value={value("sponsor_deliverables")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="proprietary_info"
-                    className={className("proprietary_info")}
-                    value={value("proprietary_info")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="sponsor_avail_checked"
-                    className={className("sponsor_avail_checked")}
-                    value={value("sponsor_avail_checked")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="sponsor_alternate_time"
-                    className={className("sponsor_alternate_time")}
-                    value={value("sponsor_alternate_time")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="project_agreements_checked"
-                    className={className("project_agreements_checked")}
-                    value={value("project_agreements_checked")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="assignment_of_rights"
-                    className={className("assignment_of_rights")}
-                    value={value("assignment_of_rights")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="team_name"
-                    className={className("team_name")}
-                    value={value("team_name")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="poster"
-                    className={className("poster")}
-                    value={value("poster")}
-                    onChange={projectOnChange}
-                />
-                <Input label="video" className={className("video")} value={value("video")} onChange={projectOnChange} />
-                <Input
-                    label="website"
-                    className={className("website")}
-                    value={value("website")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="synopsis"
-                    className={className("synopsis")}
-                    value={value("synopsis")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="sponsor"
-                    className={className("sponsor")}
-                    value={value("sponsor")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    label="semester"
-                    className={className("semester")}
-                    value={value("semester")}
-                    onChange={projectOnChange}
-                />
-                <Input
-                    disabled
-                    label="date"
-                    className={className("date")}
-                    value={value("date")}
-                    onChange={projectOnChange}
-                />
+    let formFieldArray = [{
+        type: "input",
+        label: "display_name",
+        placeHolder: "display_name",
+        name: "display_name",
+    },
+    {
+        type: "input",
+        label: "title",
+        placeHolder: "title",
+        name: "title",
+    },
+    {
+        type: "input",
+        label: "organization",
+        placeHolder: "organization",
+        name: "organization",
+    },
+    {
+        type: "input",
+        label: "primary_contact",
+        placeHolder: "primary_contact",
+        name: "primary_contact",
+    },
+    {
+        type: "input",
+        label: "contact_email",
+        placeHolder: "contact_email",
+        name: "contact_email",
+    },
+    {
+        type: "input",
+        label: "contact_phone",
+        placeHolder: "contact_phone",
+        name: "contact_phone",
+    },
+    {
+        type: "input",
+        disabled: true,
+        name: "attachments",
+        placeHolder: "attachments",
+        label: "attachments",
+    },
+    {
+        type: "input",
+        label: "background_info",
+        placeHolder: "background_info",
+        name: "background_info",
+    },
+    {
+        type: "input",
+        label: "project_description",
+        placeHolder: "project_description",
+        name: "project_description",
+    },
+    {
+        type: "input",
+        label: "project_scope",
+        placeHolder: "project_scope",
+        name: "project_scope",
+    },
+    {
+        type: "input",
+        label: "project_challenges",
+        placeHolder: "project_challenges",
+        name: "project_challenges",
+    },
+    {
+        type: "input",
+        label: "constraints_assumptions",
+        placeHolder: "constraints_assumptions",
+        name: "constraints_assumptions",
+    },
+    {
+        type: "input",
+        label: "sponsor_provided_resources",
+        placeHolder: "sponsor_provided_resources",
+        name: "sponsor_provided_resources",
+    },
+    {
+        type: "input",
+        label: "project_search_keywords",
+        placeHolder: "project_search_keywords",
+        name: "project_search_keywords",
+    },
+    {
+        type: "input",
+        label: "sponsor_deliverables",
+        placeHolder: "sponsor_deliverables",
+        name: "sponsor_deliverables",
+    },
+    {
+        type: "input",
+        label: "proprietary_info",
+        placeHolder: "proprietary_info",
+        name: "proprietary_info",
+    },
+    {
+        type: "input",
+        label: "sponsor_avail_checked",
+        placeHolder: "sponsor_avail_checked",
+        name: "sponsor_avail_checked",
+    },
+    {
+        type: "input",
+        label: "sponsor_alternate_time",
+        placeHolder: "sponsor_alternate_time",
+        name: "sponsor_alternate_time",
+    },
+    {
+        type: "input",
+        label: "project_agreements_checked",
+        placeHolder: "project_agreements_checked",
+        name: "project_agreements_checked",
+    },
+    {
+        type: "input",
+        label: "assignment_of_rights",
+        placeHolder: "assignment_of_rights",
+        name: "assignment_of_rights",
+    },
+    {
+        type: "input",
+        label: "team_name",
+        placeHolder: "team_name",
+        name: "team_name",
+    },
+    {
+        type: "input",
+        label: "poster",
+        placeHolder: "poster",
+        name: "poster",
+    },
+    {
+        type: "input",
+        label: "video",
+        placeHolder: "video",
+        name: "video",
+    },
+    {
+        type: "input",
+        label: "website",
+        placeHolder: "website",
+        name: "website",
+    },
+    {
+        type: "input",
+        label: "synopsis",
+        placeHolder: "synopsis",
+        name: "synopsis",
+    },
+    {
+        type: "input",
+        label: "sponsor",
+        placeHolder: "sponsor",
+        name: "sponsor",
+    },
+    {
+        type: "dropdown",
+        label: "Semester",
+        placeHolder: "Semester",
+        name: "semester",
+        options: Object.keys(semesterMap).map((semester_id, idx) => {
+            return { key: idx, text: semesterMap[semester_id], value: semester_id };
+        }),
+        loading: props.semesterData?.loading
+    },
+    {
+        type: "input",
+        label: "date",
+        name: "date",
+        placeHolder: "date",
+        disabled: true,
+    },
+    {
+        type: "dropdown",
+        label: "status",
+        options: options,
+        name: "status",
+    }
+    ]
 
-                <Dropdown
-                    label="status"
-                    className={className("status")}
-                    selection
-                    options={options}
-                    value={value("status")}
-                    onChange={projectOnChange}
-                />
-            </div>
-        );
-    };
-
-    const submitProject = (event, target) => {
-        fetch(config.url.API_POST_EDIT_PROJECT, {
-            method: "post",
-            body: JSON.stringify(Object.assign({}, props.project, editedProject)),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then((response) => {
-                if (response.ok) {
-                    alert("Success!");
-                } else {
-                    alert("Error...");
-                }
-            })
-            .catch((error) => {
-                // TODO: Redirect to failed page or handle errors
-                console.error(error);
-            });
-    };
+    let fetchOptions = {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }
 
     return (
-        <Modal
-            trigger={<Button icon="edit" />}
-            header={`Currently Editing "${editedProject.title || props.project.title}"`}
-            content={{ content: generateModalContent() }}
-            actions={[
-                {
-                    key: "submit",
-                    content: "Submit",
-                    onClick: (event, target) => submitProject(event, target),
-                    positive: true,
-                },
-            ]}
+        <DatabaseTableEditor
+            initialState={initialState}
+            submissionModalMessages={submissionModalMessages}
+            submitRoute={config.url.API_POST_EDIT_PROJECT}
+            formFieldArray={formFieldArray}
+            semesterData={props.semesterData}
+            header={`Edting project: ${props.project.display_name || props.project.title}`}
+            fetchOptions={fetchOptions}
         />
     );
 }

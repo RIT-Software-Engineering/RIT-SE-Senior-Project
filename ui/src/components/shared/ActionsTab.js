@@ -13,6 +13,7 @@ import {
     TableHeaderCell,
     TableRow,
 } from "semantic-ui-react";
+import { SecureFetch } from "../util/secureFetch";
 
 // TODO: TO BE RENAMED
 export default function TeamFiles() {
@@ -20,7 +21,7 @@ export default function TeamFiles() {
 
     useEffect(() => {
         // TODO: Do pagination
-        fetch(config.url.API_GET_ACTION_LOGS + "?system_id=admin")
+        SecureFetch(config.url.API_GET_ACTION_LOGS + "?system_id=admin")
             .then((response) => response.json())
             .then((action_logs) => {
                 console.log(action_logs);
