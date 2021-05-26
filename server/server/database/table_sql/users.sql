@@ -8,5 +8,5 @@ CREATE TABLE users (
     project         INTEGER,
     active          TEXT,
     FOREIGN KEY (semester_group) REFERENCES semester_group(semester_id),
-    FOREIGN KEY (project) REFERENCEs project(project_id)
+    FOREIGN KEY (project) REFERENCES projects(project_id)
 );
