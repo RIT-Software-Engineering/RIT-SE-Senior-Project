@@ -1,6 +1,6 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
-import { config } from "../util/constants";
+import { config, DROPDOWN_ITEMS } from "../util/constants";
 
 export default function UserPanel(props) {
 
@@ -59,15 +59,13 @@ export default function UserPanel(props) {
             name: "email",
         },
         {
-            //TODO: send json of the options and make this a dropdown
-            type: "input",
-            label: "User Type (student, coach, admin)",
+            type: "dropdown",
+            label: "User Type",
             placeHolder: "Type",
             name: "type",
-            //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
+            options: DROPDOWN_ITEMS.userTypes
         },
         {
-            //TODO: send json of the options and make this a dropdown that isn't hardcoded in DatabaseTableEditor
             type: "dropdown",
             label: "Semester",
             placeHolder: "Semester",

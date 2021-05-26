@@ -8,13 +8,12 @@ export default function ActionPanel(props) {
         action_title: props.actionData?.action_title || "",
         semester: props.actionData?.semester || "",
         action_target: props.actionData?.action_target || "",
-        date_deleted: props.actionData?.date_deleted || "",
+        date_deleted: props.actionData?.date_deleted || false,
         short_desc: props.actionData?.short_desc || "",
         start_date: props.actionData?.start_date || "",
         due_date: props.actionData?.due_date || "",
         page_html: props.actionData?.page_html || "",
         file_types: props.actionData?.file_types || "",
-        date_deleted: props.actionData?.date_deleted || false,
     };
 
     let submissionModalMessages = props.create ? {

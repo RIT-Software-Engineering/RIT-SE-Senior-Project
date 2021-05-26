@@ -37,6 +37,7 @@ export const config = {
         API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
+        API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
@@ -71,5 +72,23 @@ export const DROPDOWN_ITEMS = {
             text: "Admin",
             value: "admin",
         }
+    ],
+
+    userTypes: [
+        {
+            key: "student",
+            value: "student",
+            text: "Student",
+        },
+        {
+            key: "coach",
+            value: "coach",
+            text: "Coach",
+        },
+        {
+            key: "admin",
+            value: "admin",
+            text: "Admin",
+        },
     ]
 }

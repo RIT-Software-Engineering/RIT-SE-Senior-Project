@@ -14,7 +14,6 @@ import { formatDateTime } from "../util/utils";
 
 export default function ActionTable(props) {
     const renderActions = () => {
-        console.log(props.actions);
         let actions = _.sortBy(props.actions, ["due_date", "start_date"])
 
         return actions.map((action, i) => {

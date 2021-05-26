@@ -107,6 +107,40 @@ db_router.post("/createUser", [
     }
 );
 
+db_router.post("/batchCreateUser", [
+    UserAuth.isAdmin,
+    // TODO: Add more validation
+],
+    async (req, res) => {
+        let result = validationResult(req);
+
+        if (result.errors.length == 0) {
+            let users = JSON.parse(req.body.users);
+
+            const insertStatements = users.map(user =>
+                `INSERT INTO ${DB_CONFIG.tableNames.users}
+                    (system_id, fname, lname, email, type, semester_group, project, active)
+                    VALUES('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${user.active}')`
+            )
+
+            const sql = `BEGIN TRANSACTION;
+                ${insertStatements.join(";")};
+            COMMIT;`
+
+            console.log(`~~~${sql}~~~`);
+
+            db.query(sql)
+                .then((values) => {
+                    return res.status(200).send();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return res.status(500).send(err);
+                });
+        }
+    }
+);
+
 
 db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
     let body = req.body;

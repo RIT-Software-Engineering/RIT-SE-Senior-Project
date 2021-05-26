@@ -4,6 +4,7 @@ import { config } from "../util/constants";
 import UsersTab from "./UsersTab";
 import UserPanel from "./UserPanel";
 import { SecureFetch } from "../util/secureFetch";
+import BatchUserPanel from "./BatchUserPanel";
 
 /**
  * This is the shell for the Users accordion
@@ -61,6 +62,7 @@ export default function UserEditor(props) {
             />
             <div className="accordion-buttons-container">
                 <UserPanel userData={{}} semesterData={semesters} header={`Create user`} />
+                <BatchUserPanel />
             </div>
         </div>
     );
