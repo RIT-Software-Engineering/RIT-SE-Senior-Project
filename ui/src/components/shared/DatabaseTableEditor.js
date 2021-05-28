@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Modal } from "semantic-ui-react";
+import { Dropdown, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -72,10 +72,16 @@ export default function DatabaseTableEditor(props) {
             });
     };
 
-    const handleChange = (e, { name, value, checked }) => {
+    const handleChange = (e, { name, value, checked, isActiveField }) => {
 
         if (checked !== undefined) {
-            value = checked;
+            if (isActiveField) {
+                // The active field either stores and empty string or a datetime.
+                // The datetime is set by the server if the active field is set to 'false'.
+                value = checked ? "" : false;
+            } else {
+                value = checked;
+            }
         }
 
         setFormData({
@@ -164,7 +170,23 @@ export default function DatabaseTableEditor(props) {
                 )
                 break;
 
+            case "activeCheckbox":
+                fieldComponents.push(
+                    <Form.Field key={field["name"]}>
+                        {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
+                        <Form.Checkbox
+                            label={field["label"]}
+                            checked={formData[field["name"]] === ""}
+                            name={field["name"]}
+                            onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
+                            disabled={field.disabled}
+                        />
+                    </Form.Field>
+                )
+                break;
+
             default:
+                console.warn(`Found unknown field type: "${field.type}"`)
                 break;
         }
     }

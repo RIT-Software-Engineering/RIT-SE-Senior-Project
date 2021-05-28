@@ -5,11 +5,13 @@ const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const moment = require("moment");
 
 const DB_CONFIG = require("../database/db_config");
 const DBHandler = require("../database/db");
 const CONFIG = require("../config");
 const { nanoid } = require("nanoid");
+const CONSTANTS = require("../consts");
 
 const ACTION_TARGETS = {
     ADMIN: 'admin',
@@ -54,8 +56,7 @@ db_router.get("/selectAllStudentInfo", [UserAuth.isAdmin], (req, res) => {
 
 // gets all users
 db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
-    let query;
-        query = `SELECT *
+    let query = `SELECT *
             FROM users
             LEFT JOIN semester_group
             ON users.semester_group = semester_group.semester_id
@@ -74,7 +75,7 @@ db_router.post("/createUser", [
     body("semester_group").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("project").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("active").trim().escape().isLength({ max: 50 }),
-    ], 
+],
     async (req, res) => {
         let result = validationResult(req);
 
@@ -85,6 +86,8 @@ db_router.post("/createUser", [
                 (system_id, fname, lname, email, type, semester_group, project, active) 
                 VALUES (?,?,?,?,?,?,?,?)`;
 
+            const active = body.active === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+
             const params = [
                 body.system_id,
                 body.fname,
@@ -93,16 +96,16 @@ db_router.post("/createUser", [
                 body.type,
                 body.semester_group,
                 body.project,
-                body.active,
+                active,
             ];
             db.query(sql, params)
-            .then(() => {
-                return res.status(200).send();
-            })
-            .catch((err) => {
-                console.log(err);
-                return res.status(500).send(err);
-            });
+                .then(() => {
+                    return res.status(200).send();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return res.status(500).send(err);
+                });
         }
     }
 );
@@ -117,10 +120,10 @@ db_router.post("/batchCreateUser", [
         if (result.errors.length == 0) {
             let users = JSON.parse(req.body.users);
 
-            const insertStatements = users.map(user =>
-                `INSERT INTO ${DB_CONFIG.tableNames.users}
-                    (system_id, fname, lname, email, type, semester_group, project, active)
-                    VALUES('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${user.active}')`
+            const insertStatements = users.map(user => {
+                const active = user.active === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+                return `INSERT INTO ${DB_CONFIG.tableNames.users} (system_id, fname, lname, email, type, semester_group, project, active) VALUES('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${active}')`
+            }
             )
 
             const sql = `BEGIN TRANSACTION;
@@ -157,14 +160,16 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         WHERE system_id = ?
     `;
 
+    const active = body.active === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+
     let params = [
-        body.fname, 
-        body.lname, 
-        body.email, 
-        body.type, 
-        body.semester_group, 
-        body.project, 
-        body.active,
+        body.fname,
+        body.lname,
+        body.email,
+        body.type,
+        body.semester_group,
+        body.project,
+        active,
         body.system_id,
     ];
 
@@ -638,9 +643,9 @@ db_router.post(
 
                     for (let key of DB_CONFIG.senior_project_proposal_keys) {
                         doc.fill("blue").fontSize(16).text(key.replace("/_/g", " ")),
-                            {
-                                underline: true,
-                            };
+                        {
+                            underline: true,
+                        };
                         doc.fontSize(12).fill("black").text(body[key]); // Text value from proposal
                         doc.moveDown();
                         doc.save();
@@ -812,11 +817,13 @@ db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
         WHERE action_id = ?
     `;
 
+    const date_deleted = body.date_deleted === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+
     let params = [
         body.semester,
         body.action_title,
         body.action_target,
-        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
+        date_deleted,
         body.short_desc,
         body.start_date,
         body.due_date,
@@ -843,11 +850,13 @@ db_router.post("/createAction", body("page_html").unescape(), (req, res) => {
         (semester, action_title, action_target, date_deleted, short_desc, start_date, due_date, page_html, file_types)
         values (?,?,?,?,?,?,?,?,?)`;
 
+    const date_deleted = body.date_deleted === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+
     let params = [
         body.semester,
         body.action_title,
         body.action_target,
-        body.date_deleted ? body.date_deleted : "", // If date deleted is false, then set it to an empty string
+        date_deleted,
         body.short_desc,
         body.start_date,
         body.due_date,

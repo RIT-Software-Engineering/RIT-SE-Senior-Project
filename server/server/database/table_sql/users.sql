@@ -6,7 +6,7 @@ CREATE TABLE users (
     type        TEXT,
     semester_group  INTEGER,
     project         INTEGER,
-    active          TEXT,
+    active          TEXT,   -- Empty string if active, Datetime of when deactivated if unactive
     FOREIGN KEY (semester_group) REFERENCES semester_group(semester_id),
     FOREIGN KEY (project) REFERENCES projects(project_id)
 );

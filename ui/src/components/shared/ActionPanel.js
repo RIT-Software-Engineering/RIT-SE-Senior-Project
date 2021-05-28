@@ -8,7 +8,7 @@ export default function ActionPanel(props) {
         action_title: props.actionData?.action_title || "",
         semester: props.actionData?.semester || "",
         action_target: props.actionData?.action_target || "",
-        date_deleted: props.actionData?.date_deleted || false,
+        date_deleted: props.actionData?.date_deleted || "",
         short_desc: props.actionData?.short_desc || "",
         start_date: props.actionData?.start_date || "",
         due_date: props.actionData?.due_date || "",
@@ -89,9 +89,9 @@ export default function ActionPanel(props) {
             name: "file_types",
         },
         {
-            type: "checkbox",
-            label: "Archived",
-            placeHolder: "Deleted",
+            type: "activeCheckbox",
+            label: "Active",
+            placeHolder: "Active",
             name: "date_deleted",
         },
     ];

@@ -80,7 +80,7 @@ export default function StudentEditPanel(props) {
             name: "project",
         },
         {
-            type: "checkbox",
+            type: "activeCheckbox",
             label: "Active",
             placeHolder: "Active",
             name: "active",
