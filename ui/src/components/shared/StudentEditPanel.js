@@ -60,7 +60,6 @@ export default function StudentEditPanel(props) {
             label: "Type (student, coach, admin)",
             placeHolder: "Type",
             name: "type",
-            //options: typeOptions.map((str, index) => { return { value: str, key: index + 1};})//this needs to be different, it is not loading properly
             options: Object.values(USERTYPES).map((type, idx) => { return { key: idx, text: type, value: type } })
         },
         {
