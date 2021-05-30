@@ -72,8 +72,8 @@ db_router.post("/createUser", [
     body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("type").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-    body("semester_group").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-    body("project").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("semester_group").trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("project").trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("active").trim().escape().isLength({ max: 50 }),
 ],
     async (req, res) => {
@@ -106,6 +106,8 @@ db_router.post("/createUser", [
                     console.log(err);
                     return res.status(500).send(err);
                 });
+        } else {
+            res.status(400).send(result);
         }
     }
 );
@@ -140,6 +142,8 @@ db_router.post("/batchCreateUser", [
                     console.log(err);
                     return res.status(500).send(err);
                 });
+        } else {
+            res.status(400).send(result);
         }
     }
 );
