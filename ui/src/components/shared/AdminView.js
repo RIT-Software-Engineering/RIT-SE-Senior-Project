@@ -35,7 +35,6 @@ export default function AdminView(props) {
   }
 
   if (props.user?.isMock || props.user?.role === "admin") {
-    console.log("users", users);
     return (
       <div>
         <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
