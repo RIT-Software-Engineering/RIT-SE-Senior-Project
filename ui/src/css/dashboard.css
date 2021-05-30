@@ -24,3 +24,8 @@
     height: 70px;
     display: flex;
 }
+
+.tabular.menu {    
+    overflow-y: hidden;
+    overflow-x: auto;
+}
