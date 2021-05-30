@@ -72,8 +72,8 @@ db_router.post("/createUser", [
     body("lname").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     body("type").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-    body("semester_group").trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-    body("project").trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("semester_group").isLength({ max: 50 }),
+    body("project").isLength({ max: 50 }),
     body("active").trim().escape().isLength({ max: 50 }),
 ],
     async (req, res) => {

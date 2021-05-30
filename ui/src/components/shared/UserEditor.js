@@ -16,18 +16,9 @@ import BatchUserPanel from "./BatchUserPanel";
  * @returns 
  */
 export default function UserEditor(props) {
-    const [users, setUserData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
 
     useEffect(() => {
-        SecureFetch(config.url.API_GET_USERS)
-            .then((response) => response.json())
-            .then((userData) => {
-                setUserData(userData);
-            })
-            .catch((error) => {
-                alert("Failed to get user data" + error);
-            });
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
@@ -40,11 +31,6 @@ export default function UserEditor(props) {
 
     let semesterPanels = [];
     semesterPanels.push(<UsersTab/>)
-
-    const onAdd = () => {
-        //todo 
-        alert("Empty User Modal");
-    }
 
     //the empty user panel should trigger user creation
     return (

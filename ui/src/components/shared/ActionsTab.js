@@ -61,7 +61,7 @@ export default function TeamFiles() {
                             );
                         })}
                         {action.files?.split(",").map((file) => {
-                            return <><a >{file}</a><br/></>;
+                            return <><a href={`${config.url.BASE_URL}/#`} >{file}</a><br /></>;
                         })}
                     </div>
                 }
