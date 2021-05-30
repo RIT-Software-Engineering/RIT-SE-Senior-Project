@@ -28,6 +28,7 @@ export const config = {
         API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
         API_GET_ALL_COACH_INFO: `${BASE_API_URL}/db/selectAllCoachInfo`,
         API_GET_USERS: `${BASE_API_URL}/db/getUsers`,
+        API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject?user=admin`,

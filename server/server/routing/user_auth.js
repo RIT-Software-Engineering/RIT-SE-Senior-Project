@@ -27,7 +27,8 @@ const mockUser = (req, res, next) => {
     if (req.cookies.mockUser && testIsAdmin(req)) {
         req.user = {
             system_id: req.cookies.mockUser,
-            type: req.cookies.mockType
+            type: req.cookies.mockType,
+            isMock: true,
         }
     }
 

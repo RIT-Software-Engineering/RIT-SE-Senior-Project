@@ -65,6 +65,14 @@ db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
     db.query(query).then((users) => res.send(users));
 });
 
+// gets all users
+db_router.get("/getActiveUsers", [UserAuth.isAdmin], (req, res) => {
+    let query = `SELECT system_id, fname, lname, type
+        FROM users
+        WHERE active = ''`;
+    db.query(query).then((users) => res.send(users));
+});
+
 db_router.post("/createUser", [
     UserAuth.isAdmin,
     body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),

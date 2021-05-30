@@ -28,7 +28,8 @@ export default function DashboardPage() {
             .then(responseUser => {
                 setUser({
                     user: responseUser.system_id,
-                    role: responseUser.type
+                    role: responseUser.type,
+                    isMock: responseUser.isMock,
                 });
             })
         SecureFetch(config.url.API_GET_SEMESTERS)
@@ -83,7 +84,6 @@ export default function DashboardPage() {
                 menuItem: "Admin",
                 render: () => (
                     <Tab.Pane>
-                        <AdminView />
                         <SemesterEditor />
                         <ActionEditor semesterData={semesterData} />
                         <ProjectEditor semesterData={semesterData} />
@@ -161,5 +161,8 @@ export default function DashboardPage() {
         ];
     }
 
-    return <Tab panes={panes} className="admin-menu" />;
+    return <>
+        <AdminView user={user} />
+        <Tab panes={panes} className="admin-menu" />
+    </>;
 }
