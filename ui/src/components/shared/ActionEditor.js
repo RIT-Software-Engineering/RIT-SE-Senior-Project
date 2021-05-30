@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import ActionPanel from "./ActionPanel";

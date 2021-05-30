@@ -244,12 +244,6 @@ export default function UsersTab() {
         }
     }
 
-    const onAdd = () => {
-        // return <ActionModal />;
-        //todo
-        alert("Blank Students Modal");
-    };
-
     return (
         <div>
             {semesterPanels.reverse()}

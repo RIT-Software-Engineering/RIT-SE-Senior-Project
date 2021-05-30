@@ -83,7 +83,7 @@ export default function UserPanel(props) {
             name: "project",
         },
         {
-            type: "checkbox",
+            type: "activeCheckbox",
             label: "Active",
             placeHolder: "Active",
             name: "active",
