@@ -737,7 +737,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()]
                 // 15mb limit exceeded
                 return res.status(400).send("File too large");
             }
-            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name))) {
+            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name).toLocaleLowerCase())) {
                 // send an error if the file is not an accepted type
                 return res.status(400).send("Filetype not accepted");
             }
