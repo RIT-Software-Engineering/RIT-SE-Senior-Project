@@ -36,6 +36,7 @@ export const config = {
         API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
         API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
         API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
+        API_POST_CREATE_SEMESTER: `${BASE_API_URL}/db/createSemester`,
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,

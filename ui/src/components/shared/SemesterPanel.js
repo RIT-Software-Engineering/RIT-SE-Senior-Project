@@ -4,11 +4,11 @@ import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function SemesterPanel(props) {
     let initialState = {
-        semester_id: props.semester.semester_id || "",
-        name: props.semester.name || "",
-        dept: props.semester.dept || "",
-        start_date: props.semester.start_date || "",
-        end_date: props.semester.end_date || "",
+        semester_id: props.semester?.semester_id || "",
+        name: props.semester?.name || "",
+        dept: props.semester?.dept || "",
+        start_date: props.semester?.start_date || "",
+        end_date: props.semester?.end_date || "",
     };
 
     let submissionModalMessages = {
@@ -16,7 +16,7 @@ export default function SemesterPanel(props) {
         FAIL: "We were unable to receive your update to the semester.",
     };
 
-    let submitRoute = config.url.API_POST_EDIT_SEMESTER;
+    let submitRoute = initialState.semester_id === "" ? config.url.API_POST_CREATE_SEMESTER : config.url.API_POST_EDIT_SEMESTER;
 
     let formFieldArray = [
         {
@@ -52,7 +52,7 @@ export default function SemesterPanel(props) {
             header={props.header}
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
-            semesterData={props.semesterData}
+            create={initialState.semester_id === ""}
         />
     );
 }

@@ -914,9 +914,31 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
 
     let params = [body.name, body.dept, body.start_date, body.end_date, body.semester_id];
 
-    console.log("query and params", updateQuery, params);
-
     db.query(updateQuery, params)
+        .then(() => {
+            return res.status(200).send();
+        })
+        .catch((err) => {
+            return res.status(500).send(err);
+        });
+});
+
+
+
+db_router.post("/createSemester", [
+    body("*").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+], (req, res) => {
+    let body = req.body;
+
+    let sql = `
+        INSERT INTO semester_group
+        (name, dept, start_date, end_date)
+        VALUES (?,?,?,?);
+    `;
+
+    let params = [body.name, body.dept, body.start_date, body.end_date];
+
+    db.query(sql, params)
         .then(() => {
             return res.status(200).send();
         })
