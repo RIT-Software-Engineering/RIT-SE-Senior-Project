@@ -1,33 +1,71 @@
-import React, { useRef } from 'react'
-import { Button, Input, Label, Ref } from "semantic-ui-react";
+import React, { useState, useEffect } from 'react'
+import { Button, Dropdown, Label } from "semantic-ui-react";
+import { config } from '../util/constants';
+import { SecureFetch } from '../util/secureFetch';
 
-export default function AdminView() {
-  let usernameRef = useRef();
-  let roleRef = useRef();
+export default function AdminView(props) {
+
+  const [selectedUser, setSelectedUser] = useState();
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    SecureFetch(config.url.API_GET_ACTIVE_USERS)
+      .then((response) => response.json())
+      .then(users => {
+        setUsers(users.map(user => {
+          return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: { system_id: user.system_id, type: user.type }, key: user.system_id }
+        }))
+      })
+    return () => {
+    }
+  }, [])
+
   const changeView = () => {// changes view for admin to another user
+
+    if (!selectedUser?.system_id) {
+      alert("Can't change view - No user selected");
+      return;
+    }
+
     //cookie stuff
-    document.cookie = `mockUser=${usernameRef.current.children[0].value}`;
-    document.cookie = `mockType=${roleRef.current.children[0].value}`;
+    document.cookie = `mockUser=${selectedUser.system_id}`;
+    document.cookie = `mockType=${selectedUser.type}`;
     //refresh as new user
-    window.location.reload()
+    window.location.reload();
   }
-  return (
-    <div>
-      <Label pointing='right'>To view this page as a different user</Label>
-      <Ref innerRef={usernameRef}>
-        <Input placeholder='Enter username to view' />
-      </Ref>
-      <Ref innerRef={roleRef}>
-        <Input placeholder='Enter role of user to mock' />
-      </Ref>
-      <Button
-        content="Change View"
+
+  const renderButton = () => {
+    if (props.user?.isMock) {
+      return <Button
+        secondary
+        content="Sign out of mock user"
         onClick={() => {
-          changeView();
+          document.cookie = `mockUser=;max-age=0`;
+          document.cookie = `mockType=;max-age=0`;
+          window.location.reload();
         }}
-        primary
       />
-    </div>
-  )
+    }
+    return <Button
+      primary
+      content="Change View"
+      onClick={() => {
+        changeView();
+      }}
+    />
+  }
+
+  if (props.user?.isMock || props.user?.role === "admin") {
+    return (
+      <>
+        <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
+        <Label pointing='right'>To view this page as a different user</Label>
+        <Dropdown button options={users} onChange={(e, target) => setSelectedUser(target.value)} />
+        {renderButton()}
+      </>
+    )
+  }
+
+  return <></>
+
 }
-//fix this nightmare later

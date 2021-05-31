@@ -65,6 +65,14 @@ db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
     db.query(query).then((users) => res.send(users));
 });
 
+// gets all users
+db_router.get("/getActiveUsers", [UserAuth.isAdmin], (req, res) => {
+    let query = `SELECT system_id, fname, lname, type
+        FROM users
+        WHERE active = ''`;
+    db.query(query).then((users) => res.send(users));
+});
+
 db_router.post("/createUser", [
     UserAuth.isAdmin,
     body("system_id").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
@@ -729,7 +737,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()]
                 // 15mb limit exceeded
                 return res.status(400).send("File too large");
             }
-            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name))) {
+            if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name).toLocaleLowerCase())) {
                 // send an error if the file is not an accepted type
                 return res.status(400).send("Filetype not accepted");
             }
