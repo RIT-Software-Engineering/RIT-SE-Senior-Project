@@ -134,7 +134,7 @@ db_router.post("/batchCreateUser", [
         let users = JSON.parse(req.body.users);
 
         const insertStatements = users.map(user => {
-            const active = user.active === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+            const active = user.active.toLocaleLowerCase() === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
             return `('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${active}')`
         });
 
