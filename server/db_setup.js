@@ -48,10 +48,10 @@ function createAllTables() {
                 return;
             }
 
-            for (name of files) {
-                fs.readFile(path.join(table_sql_path, name), "utf8", (err, sql) => {
+            for (file of files) {
+                fs.readFile(path.join(table_sql_path, file), "utf8", (err, sql) => {
                     db.query(sql).catch((err) => {
-                        reject(`${name} : ${err}`);
+                        reject(`${file} : ${err}`);
                     });
                 });
             }
@@ -67,10 +67,10 @@ function populateDummyData() {
                 reject(err);
             }
 
-            for (name of files) {
-                fs.readFile(path.join(dummy_data_path, name), "utf8", (err, sql) => {
+            for (file of files) {
+                fs.readFile(path.join(dummy_data_path, file), "utf8", (err, sql) => {
                     db.query(sql).catch((err) => {
-                        reject(`${name} : ${err}`);
+                        reject(`${file} : ${err}`);
                     });
                     setTimeout(resolve, 2000);
                 });
