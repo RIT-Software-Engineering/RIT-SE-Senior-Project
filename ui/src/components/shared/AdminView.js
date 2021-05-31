@@ -34,28 +34,35 @@ export default function AdminView(props) {
     window.location.reload();
   }
 
+  const renderButton = () => {
+    if (props.user?.isMock) {
+      return <Button
+        secondary
+        content="Sign out of mock user"
+        onClick={() => {
+          document.cookie = `mockUser=;max-age=0`;
+          document.cookie = `mockType=;max-age=0`;
+          window.location.reload();
+        }}
+      />
+    }
+    return <Button
+      primary
+      content="Change View"
+      onClick={() => {
+        changeView();
+      }}
+    />
+  }
+
   if (props.user?.isMock || props.user?.role === "admin") {
     return (
-      <div>
+      <>
         <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
         <Label pointing='right'>To view this page as a different user</Label>
         <Dropdown button options={users} onChange={(e, target) => setSelectedUser(target.value)} />
-        {props.user?.isMock ? <Button
-          secondary
-          content="Sign out of mock user"
-          onClick={() => {
-            document.cookie = `mockUser=;max-age=0`;
-            document.cookie = `mockType=;max-age=0`;
-            window.location.reload();
-          }}
-        /> : <Button
-          primary
-          content="Change View"
-          onClick={() => {
-            changeView();
-          }}
-        />}
-      </div>
+        {renderButton()}
+      </>
     )
   }
 
