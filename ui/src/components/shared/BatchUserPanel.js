@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
-import { Button, Form, Modal, Table } from 'semantic-ui-react'
+import React, { useState, useRef } from 'react'
+import { Button, Divider, Form, Icon, Modal, Table } from 'semantic-ui-react'
 import CSV from 'comma-separated-values'
 import { SecureFetch } from '../util/secureFetch'
 import { config } from "../util/constants";
 
+const UPLOAD_BUTTON_TEXT = "Upload";
+
 export default function BatchUserPanel() {
 
     const [users, setUsers] = useState([])
+    const [modalOpen, setModalOpen] = useState(false)
+    const fileInput = useRef()
 
     const onFileUpload = (event) => {
         const fileReader = new FileReader();
@@ -19,18 +23,42 @@ export default function BatchUserPanel() {
 
     const uploadBatchUsers = (e) => {
 
+        if (users.length === 0) {
+            return;
+        }
+
         let body = new FormData();
         body.append("users", JSON.stringify(users));
 
         SecureFetch(config.url.API_POST_BATCH_CREAT_USER, {
             method: "post",
             body: body,
+        }).then(response => {
+            if (response.ok) {
+                alert("Users successfully created!")
+                setModalOpen(false);
+                return null;
+            }
+            return response.json();
+        }).then(response => {
+            if (response) {
+                alert("Failed to create users: " + JSON.stringify(response))
+            }
+        }).catch(err => {
+            alert("An unknown error has ocurred in the UI: " + err)
         })
+    }
+
+    const clearData = () => {
+        setUsers([]);
+        fileInput.current.value = "";
     }
 
     const generateUsers = () => {
         if (users.length) {
             return <>
+                <h5>Users to create:</h5>
+                <Button icon labelPosition="left" onClick={clearData}><Icon name='trash' />Clear Users</Button>
                 <Table celled>
                     <Table.Header>
                         <Table.Row>
@@ -52,14 +80,18 @@ export default function BatchUserPanel() {
                         })}
                     </Table.Body>
                 </Table>
-                <Button onClick={uploadBatchUsers}>Upload</Button>
             </>
         }
         return <>No users uploaded yet</>
     }
 
     let modalContent = <Form>
-        <input type="file" onChange={onFileUpload} />
+        <h5>Template User CSV:</h5>
+        <Button target="_BLANK" href={`${config.url.WWW}/UserCreationTemplate.csv`}>Download Template</Button>
+        <Button target="_BLANK" href={`${config.url.WWW}/UserCreationExample.csv`}>Download Example</Button>
+        <Divider />
+        <h5>Upload files:</h5>
+        <input ref={fileInput} type="file" accept=".csv" onChange={onFileUpload} />
         {generateUsers()}
     </Form>
 
@@ -67,7 +99,13 @@ export default function BatchUserPanel() {
         <Modal
             trigger={<Button icon="upload" />}
             header="Upload users (Untested for large number of users)"
-            content={{ content: modalContent }}
+            content={{ content: modalContent, scrolling: true }}
+            open={modalOpen}
+            closeOnEscape={true}
+            closeOnDimmerClick={true}
+            onOpen={() => setModalOpen(true)}
+            onClose={(event, t) => { if (event.target?.innerText !== UPLOAD_BUTTON_TEXT) setModalOpen(false) }} // Don't close modal if close was triggered by pressing the upload button
+            actions={[{ key: "Done", content: "Done" }, { key: UPLOAD_BUTTON_TEXT, content: UPLOAD_BUTTON_TEXT, onClick: uploadBatchUsers, positive: true }]}
         />
     )
 }

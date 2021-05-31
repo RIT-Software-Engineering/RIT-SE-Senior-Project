@@ -6,6 +6,7 @@ export const config = {
     url: {
         BASE_URL: BASE_URL,
         BASE_API_URL: BASE_API_URL,
+        WWW: `${BASE_URL}/WWW`,
 
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
