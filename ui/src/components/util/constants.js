@@ -18,6 +18,7 @@ export const config = {
 
         // GET - Auth needed
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
+        API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_PROPOSAL_PDF: `${BASE_API_URL}/db/getProposalPdf`,
@@ -95,3 +96,14 @@ export const DROPDOWN_ITEMS = {
         },
     ]
 }
+
+export const PROJECT_STATUSES = {
+    SUBMITTED: "submitted",
+    NEEDS_REVISION: "needs revision",
+    REJECTED: "rejected",
+    FUTURE_PROJECT: "future project",
+    CANDIDATE: "candidate",
+    IN_PROGRESS: "in progress",
+    COMPLETE: "completed",
+    ARCHIVED: "archive",
+};

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import Proposals from "../shared/Proposals";
 import TimeLines from "../shared/TimeLines";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
@@ -81,7 +80,7 @@ export default function DashboardPage() {
         case "student":
             panes.push(
                 {
-                    menuItem: "Proposals",
+                    menuItem: "Projects",
                     render: () => (
                         <Tab.Pane>
                             <ProposalTable semesterData={semesterData} />

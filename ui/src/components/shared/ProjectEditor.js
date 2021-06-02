@@ -24,6 +24,7 @@ export default function ProjectEditor(props) {
                         proposalData={proposalData[semester_id]}
                         semester={semesters[semester_id] || null}
                         semesterData={props.semesterData}
+                        viewOnly={props.viewOnly}
                     />
                 );
             });
@@ -31,7 +32,7 @@ export default function ProjectEditor(props) {
 
     useEffect(() => {
         // TODO: Do pagination
-        SecureFetch(config.url.API_GET_PROJECTS + "?type=project")
+        SecureFetch(config.url.API_GET_PROJECTS)
             .then((response) => response.json())
             .then((proposals) => {
                 const groupedProposalData = {};
@@ -57,25 +58,16 @@ export default function ProjectEditor(props) {
                 panels={[
                     {
                         key: "projectEditor",
-                        title: "Project Editor",
+                        title: props.viewOnly ? "Project Viewer" : "Project Editor",
                         content: { content: content() },
                     },
                 ]}
             />
-            <div className="accordion-buttons-container">
-                <Button
-                    icon
-                    onClick={() => {
-                        alert("Edit");
-                    }}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <Icon name="edit" />
-                </Button>
-                <Button
-                    icon
-                    onClick={() => {
+            {!props.viewOnly &&
+                <div className="accordion-buttons-container">
+                    <Button
+                        icon
+                        onClick={() => {
                         alert("Email");
                     }}
                     target="_blank"
@@ -87,6 +79,7 @@ export default function ProjectEditor(props) {
                     <Icon name="plus" />
                 </Button>
             </div>
+            }
         </div>
     );
 }

@@ -106,10 +106,10 @@ export default function ProjectEditorModal(props) {
     },
     {
         type: "input",
-        disabled: true,
         name: "attachments",
         placeHolder: "attachments",
         label: "attachments",
+        disabled: true,
     },
     {
         type: "input",
@@ -233,7 +233,7 @@ export default function ProjectEditorModal(props) {
         options: Object.keys(semesterMap).map((semester_id, idx) => {
             return { key: idx, text: semesterMap[semester_id], value: semester_id };
         }),
-        loading: props.semesterData?.loading
+        loading: props.semesterData?.loading,
     },
     {
         type: "input",
@@ -260,11 +260,13 @@ export default function ProjectEditorModal(props) {
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
-            submitRoute={config.url.API_POST_EDIT_PROJECT}
+            submitRoute={props.viewOnly ? "" : config.url.API_POST_EDIT_PROJECT}
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
-            header={`Edting project: ${props.project.display_name || props.project.title}`}
+            header={`${props.viewOnly ? "Viewing" : "Editing"} project: ${props.project.display_name || props.project.title}`}
             fetchOptions={fetchOptions}
+            button={props.viewOnly ? "eye" : "edit"}
+            viewOnly={props.viewOnly}
         />
     );
 }

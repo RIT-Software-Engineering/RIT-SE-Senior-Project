@@ -12,6 +12,7 @@ const DBHandler = require("../database/db");
 const CONFIG = require("../config");
 const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
+const { ROLES } = require("../consts");
 
 const ACTION_TARGETS = {
     ADMIN: 'admin',
@@ -29,14 +30,14 @@ db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
     res.send(req.user);
 });
 
-db_router.get("/selectAllSponsorInfo", (req, res) => {
+db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         console.log(value);
         res.send(value);
     });
 });
 
-db_router.get("/selectAllStudentInfo", [UserAuth.isAdmin], (req, res) => {
+db_router.get("/selectAllStudentInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
     let getStudentsQuery = `
         SELECT *
         FROM users
@@ -220,7 +221,7 @@ db_router.get("/getActiveProjects", (req, res) => {
         });
 });
 
-db_router.get("/selectAllCoachInfo", [UserAuth.isAdmin], (req, res) => {
+db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
         SELECT users.system_id,
@@ -285,29 +286,48 @@ db_router.get("/selectExemplary", (req, res) => {
  * TODO: Add pagination
  */
 db_router.get("/getProjects", [UserAuth.isSignedIn], async (req, res) => {
+
+    if (req.user.type === ROLES.ADMIN || req.user.type === ROLES.COACH) {
+        const query = "SELECT * from projects";
+        db.query(query)
+            .then((projects) => res.send(projects))
+            .catch(err => res.status(500).send(err));
+        return;
+    }
+    const query = "SELECT * from projects WHERE projects.status = 'candidate';"
+    db.query(query)
+        .then((projects) => res.send(projects))
+        .catch(err => res.status(500).send(err));
+});
+
+
+db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
     let query;
-    switch (req.query.type) {
-        case "proposal":
-            query = `SELECT * 
-                FROM projects 
-                WHERE 
-                    semester IS NULL 
-                    OR (semester NOT NULL 
-                    AND status IN ("submitted", "needs revision", "future project", "candidate"))
-            `;
+    switch (req.user.type) {
+        case ROLES.COACH:
+            query = `SELECT projects.*
+            FROM projects
+            INNER JOIN project_coaches
+            ON (projects.project_id = project_coaches.project_id AND project_coaches.coach_id = ?);`
             break;
-        case "project":
-            query = `
-                SELECT * 
-                FROM projects 
-                WHERE status NOT IN ("submitted", "needs revision", "future project", "candidate")
-            `;
+        case ROLES.STUDENT:
+            query = `SELECT users.system_id, projects.*
+            FROM users
+            INNER JOIN projects
+            ON users.system_id = ? AND projects.project_id = users.project;`
+
             break;
+        case ROLES.ADMIN:
+            res.send([])
+            return;
         default:
-            res.status(500).send("Invalid type");
+            res.status(500).send("Invalid user type...something must be very very broken...");
             return;
     }
-    db.query(query).then((proposals) => res.send(proposals));
+
+    db.query(query, [req.user.system_id])
+        .then((proposals) => res.send(proposals))
+        .catch(err => res.status(500).send(err));
 });
 
 db_router.post(
@@ -787,7 +807,7 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
 });
 
 db_router.get("/getActionLogs", (req, res) => {
-    if (req.query.system_id === "admin") {
+    if (req.query.system_id === ROLES.ADMIN) {
         let getActionLogQuery = `SELECT logs.creation_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files, 
                                 act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
             FROM action_log logs
@@ -953,13 +973,13 @@ function calculateActiveTimelines(user) {
 
     let projectFilter;
     switch (user.type) {
-        case "admin":
+        case ROLES.ADMIN:
             projectFilter = "";
             break;
-        case "student":
+        case ROLES.STUDENT:
             projectFilter = `AND projects.project_id IN (SELECT project FROM users WHERE users.system_id = "${user.system_id}")`;
             break;
-        case "coach":
+        case ROLES.COACH:
             projectFilter = `AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
             break;
         default:

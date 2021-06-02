@@ -105,6 +105,7 @@ export default function ActionPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             create={!!props.create}
+            button={!!props.create ? "plus" : "edit"}
         />
     );
 }

@@ -94,6 +94,7 @@ export default function StudentEditPanel(props) {
             formFieldArray={formFieldArray}
             semesterData={props.semesterData}
             header={props.header}
+            button="edit"
         />
     );
 }

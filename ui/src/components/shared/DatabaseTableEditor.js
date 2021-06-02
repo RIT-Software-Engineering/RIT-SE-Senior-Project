@@ -74,6 +74,10 @@ export default function DatabaseTableEditor(props) {
 
     const handleChange = (e, { name, value, checked, isActiveField }) => {
 
+        if (props.viewOnly) {
+            return;
+        }
+
         if (checked !== undefined) {
             if (isActiveField) {
                 // The active field either stores and empty string or a datetime.
@@ -141,7 +145,7 @@ export default function DatabaseTableEditor(props) {
             case "dropdown":
 
                 fieldComponents.push(
-                    <Form.Field key={field.name}>
+                    <Form.Field key={field.name} disabled={field.loading || field.disabled}>
                         <label>{field.label}</label>
                         <Dropdown
                             selection
@@ -191,29 +195,32 @@ export default function DatabaseTableEditor(props) {
         }
     }
 
-    function checkIfEmpty() {
-        if (props.create) {
-            return <Button icon="plus" />;
+    const modalActions = () => {
+        if (props.viewOnly) {
+            return [
+                {
+                    key: "Done",
+                    content: "Done",
+                },
+            ]
         }
-        else {
-            return <Button icon="edit" />;
-        }
+        return [
+            {
+                key: "submit",
+                content: "Submit",
+                onClick: (event) => handleSubmit(event),
+                positive: true,
+            },
+        ]
     }
 
     return (
         <>
             <Modal
-                trigger={checkIfEmpty()}
+                trigger={<Button icon={props.button} />}
                 header={props.header}
                 content={{ content: <Form>{fieldComponents}</Form> }}
-                actions={[
-                    {
-                        key: "submit",
-                        content: "Submit",
-                        onClick: (event) => handleSubmit(event),
-                        positive: true,
-                    },
-                ]}
+                actions={modalActions()}
             />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
         </>
