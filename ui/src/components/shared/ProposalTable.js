@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import Proposals from "./Proposals";
-import { config, USERTYPES } from "../util/constants";
+import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import ProjectEditor from "./ProjectEditor";
-import { UserContext } from "../util/UserContext";
 
 export default function ProposalTable(props) {
 
     const [myProposalData, setMyProposalData] = useState([]);
-    const { user } = useContext(UserContext);
 
     useEffect(() => {
         // TODO: Do pagination
@@ -23,18 +21,10 @@ export default function ProposalTable(props) {
     }, []);
 
     return <>
-        {
-            user.role !== USERTYPES.ADMIN && <>
-                <h3>My Projects:</h3>
-                <Proposals viewOnly proposalData={myProposalData} semesterData={props.semesterData} />
-                <br />
-            </>
-        }
-        {
-            <>
-                <h3>All Projects</h3>
-                <ProjectEditor semesterData={props.semesterData} viewOnly />
-            </>
-        }
+        <h3>My Projects:</h3>
+        <Proposals viewOnly proposalData={myProposalData} semesterData={props.semesterData} />
+        <br />
+        <h3>All Projects</h3>
+        <ProjectEditor semesterData={props.semesterData} viewOnly />
     </>;
 }

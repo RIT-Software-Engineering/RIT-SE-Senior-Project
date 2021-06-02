@@ -303,29 +303,32 @@ db_router.get("/getProjects", [UserAuth.isSignedIn], async (req, res) => {
 
 db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
     let query;
+    let params;
     switch (req.user.type) {
         case ROLES.COACH:
             query = `SELECT projects.*
             FROM projects
             INNER JOIN project_coaches
             ON (projects.project_id = project_coaches.project_id AND project_coaches.coach_id = ?);`
+            params = [req.user.system_id];
             break;
         case ROLES.STUDENT:
             query = `SELECT users.system_id, projects.*
             FROM users
             INNER JOIN projects
             ON users.system_id = ? AND projects.project_id = users.project;`
-
+            params = [req.user.system_id];
             break;
         case ROLES.ADMIN:
-            res.send([])
-            return;
+            query = "SELECT * FROM projects WHERE projects.status NOT IN ('in progress', 'completed', 'rejected', 'archive');"
+            params = [];
+            break;
         default:
             res.status(500).send("Invalid user type...something must be very very broken...");
             return;
     }
 
-    db.query(query, [req.user.system_id])
+    db.query(query)
         .then((proposals) => res.send(proposals))
         .catch(err => res.status(500).send(err));
 });
