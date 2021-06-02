@@ -12,15 +12,11 @@ import {
 import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../util/constants";
-import { formatDateTime } from "../util/utils";
 import "../../css/dashboard-proposal.css";
 
 const COLUMNS = {
-    DATE: "date",
     STATUS: "status",
     TITLE: "title",
-    ATTACHMENTS: "attachments",
-    EDIT: "edit",
 };
 
 const ASCENDING = "ascending";
@@ -95,9 +91,6 @@ export default function Proposals(props) {
 
             return (
                 <TableRow className={rowColor} key={idx}>
-                    <TableCell>{formatDateTime(proposal.submission_datetime)}</TableCell>
-                    {/* TODO: This is dumb -- Consider adding submission date to projects table */}
-                    <TableCell>{proposal.status}</TableCell>
                     <TableCell>
                         <a
                             href={`${config.url.API_GET_PROPOSAL_PDF}?name=${proposal.title}.pdf`}
@@ -107,22 +100,7 @@ export default function Proposals(props) {
                             {proposal.display_name || proposal.title}
                         </a>
                     </TableCell>
-                    <TableCell className="attachments">
-                        {proposal.attachments?.split(", ").map((attachment, attachmentIdx) => {
-                            return (
-                                <React.Fragment key={attachmentIdx}>
-                                    <a
-                                        href={`${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${proposal.title}&name=${attachment}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        {attachment}
-                                    </a>
-                                    <br />
-                                </React.Fragment>
-                            );
-                        })}
-                    </TableCell>
+                    <TableCell>{proposal.status}</TableCell>
                     <TableCell>
                         <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} />
                     </TableCell>
@@ -145,10 +123,10 @@ export default function Proposals(props) {
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell
-                            sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
-                            onClick={() => changeSort(COLUMNS.DATE)}
+                            sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.TITLE)}
                         >
-                            Date
+                            Name (pdf)
                         </TableHeaderCell>
                         <TableHeaderCell
                             sorted={proposalData.column === COLUMNS.STATUS ? proposalData.direction : null}
@@ -156,23 +134,8 @@ export default function Proposals(props) {
                         >
                             Status
                         </TableHeaderCell>
-                        <TableHeaderCell
-                            sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
-                            onClick={() => changeSort(COLUMNS.TITLE)}
-                        >
-                            Name (pdf)
-                        </TableHeaderCell>
-                        <TableHeaderCell
-                            sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
-                            onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
-                        >
-                            Attachments
-                        </TableHeaderCell>
-                        <TableHeaderCell
-                            sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
-                            onClick={() => changeSort(COLUMNS.EDIT)}
-                        >
-                            Edit
+                        <TableHeaderCell>
+                            {props.viewOnly ? "View" : "Edit"}
                         </TableHeaderCell>
                     </TableRow>
                 </TableHeader>
