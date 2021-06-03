@@ -102,122 +102,124 @@ export default function DatabaseTableEditor(props) {
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        switch (field.type) {
-            case "input":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.Input
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.name}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "date":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.Input
-                            label={field.label}
-                            type="date"
-                            placeholder={field.placeholder}
-                            name={field.name}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "textArea":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.TextArea
-                            placeholder={field.placeholder}
-                            label={field.label}
-                            name={field.name}
-                            value={formData[field.name]}
-                            style={{ minHeight: 200 }}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "dropdown":
+        if (!field.hidden) {
+            switch (field.type) {
+                case "input":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Input
+                                label={field.label}
+                                placeholder={field.placeholder}
+                                name={field.name}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "date":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Input
+                                label={field.label}
+                                type="date"
+                                placeholder={field.placeholder}
+                                name={field.name}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "textArea":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.TextArea
+                                placeholder={field.placeholder}
+                                label={field.label}
+                                name={field.name}
+                                value={formData[field.name]}
+                                style={{ minHeight: 200 }}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "dropdown":
 
-                fieldComponents.push(
-                    <Form.Field key={field.name} disabled={field.loading || field.disabled}>
-                        <label>{field.label}</label>
-                        <Dropdown
-                            selection
-                            options={field.options}
-                            loading={field.loading}
-                            disabled={field.loading || field.disabled}
-                            value={formData[field.name]?.toString()}
-                            name={field.name}
-                            onChange={handleChange}
-                        />
-                    </Form.Field>
-                );
-                break;
+                    fieldComponents.push(
+                        <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                            <label>{field.label}</label>
+                            <Dropdown
+                                selection
+                                options={field.options}
+                                loading={field.loading}
+                                disabled={field.loading || field.disabled}
+                                value={formData[field.name]?.toString()}
+                                name={field.name}
+                                onChange={handleChange}
+                            />
+                        </Form.Field>
+                    );
+                    break;
 
-            case "checkbox":
-                fieldComponents.push(
-                    <Form.Field key={field["name"]}>
-                        <Form.Checkbox
-                            label={field["label"]}
-                            checked={!!formData[field["name"]]}
-                            name={field["name"]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                )
-                break;
+                case "checkbox":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            <Form.Checkbox
+                                label={field["label"]}
+                                checked={!!formData[field["name"]]}
+                                name={field["name"]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    )
+                    break;
 
-            case "multiSelectDropdown":
-                fieldComponents.push(
-                    <Form.Field key={field.name} disabled={field.loading || field.disabled}>
-                        <label>{field.label}</label>
-                        <Dropdown
-                            multiple
-                            search
-                            selection
-                            placeholder={field.name}
-                            options={field.options}
-                            loading={field.loading}
-                            disabled={field.loading || field.disabled}
-                            value={formData[field.name]}
-                            name={field.name}
-                            onChange={handleChange}
-                        />
-                    </Form.Field>
-                );
-                break;
+                case "multiSelectDropdown":
+                    fieldComponents.push(
+                        <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                            <label>{field.label}</label>
+                            <Dropdown
+                                multiple
+                                search
+                                selection
+                                placeholder={field.name}
+                                options={field.options}
+                                loading={field.loading}
+                                disabled={field.loading || field.disabled}
+                                value={formData[field.name]}
+                                name={field.name}
+                                onChange={handleChange}
+                            />
+                        </Form.Field>
+                    );
+                    break;
 
 
-            case "activeCheckbox":
-                fieldComponents.push(
-                    <Form.Field key={field["name"]}>
-                        {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
-                        <Form.Checkbox
-                            label={field["label"]}
-                            checked={formData[field["name"]] === ""}
-                            name={field["name"]}
-                            onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                )
-                break;
+                case "activeCheckbox":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
+                            <Form.Checkbox
+                                label={field["label"]}
+                                checked={formData[field["name"]] === ""}
+                                name={field["name"]}
+                                onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    )
+                    break;
 
-            default:
-                console.warn(`Found unknown field type: "${field.type}"`)
-                break;
+                default:
+                    console.warn(`Found unknown field type: "${field.type}"`)
+                    break;
+            }
         }
     }
 

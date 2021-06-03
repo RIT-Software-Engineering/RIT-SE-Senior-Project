@@ -17,6 +17,7 @@ export default function ProjectEditorModal(props) {
 
     const [projectMembers, setProjectMembers] = useState([])
     const [initialState, setInitialState] = useState({
+        project_id: props.project.project_id || "",
         display_name: props.project.display_name || "",
         title: props.project.title || "",
         organization: props.project.organization || "",
@@ -56,7 +57,7 @@ export default function ProjectEditorModal(props) {
                     ...initialState,
                     projectMembers: members.map(member => member.system_id),
                 });
-                setProjectMembers(members.map(member => { return { key: member.system_id, text: member.system_id, value: member.system_id } }));
+                setProjectMembers(members.map(member => { return { key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id } }));
             })
     }, [])
 
@@ -83,6 +84,14 @@ export default function ProjectEditorModal(props) {
     });
 
     let formFieldArray = [
+        {
+            type: "input",
+            label: "project_id",
+            placeHolder: "project_id",
+            name: "project_id",
+            disabled: true,
+            hidden: props.viewOnly,
+        },
         {
             type: "input",
             label: "display_name",
