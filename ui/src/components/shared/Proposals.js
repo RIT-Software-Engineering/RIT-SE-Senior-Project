@@ -15,6 +15,7 @@ import { config, PROJECT_STATUSES } from "../util/constants";
 import "../../css/dashboard-proposal.css";
 
 const COLUMNS = {
+    SEMESTER: "semester",
     STATUS: "status",
     TITLE: "title",
 };
@@ -24,6 +25,11 @@ const DESCENDING = "descending";
 
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
+
+    let semesterMap = { undefined: "No semester", null: "No semester" };
+    props.semesterData?.forEach(semester => {
+        semesterMap[semester.semester_id] = semester.name;
+    });
 
     useEffect(() => {
         const newProposalData = {
@@ -91,6 +97,7 @@ export default function Proposals(props) {
 
             return (
                 <TableRow className={rowColor} key={idx}>
+                    <TableCell>{semesterMap[proposal.semester]}</TableCell>
                     <TableCell>
                         <a
                             href={`${config.url.API_GET_PROPOSAL_PDF}?name=${proposal.title}.pdf`}
@@ -122,6 +129,12 @@ export default function Proposals(props) {
             <Table sortable>
                 <TableHeader>
                     <TableRow>
+                        <TableHeaderCell
+                            sorted={proposalData.column === COLUMNS.SEMESTER ? proposalData.direction : null}
+                            onClick={() => changeSort(COLUMNS.SEMESTER)}
+                        >
+                            Semester
+                        </TableHeaderCell>
                         <TableHeaderCell
                             sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
                             onClick={() => changeSort(COLUMNS.TITLE)}
