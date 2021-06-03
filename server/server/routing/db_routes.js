@@ -328,7 +328,7 @@ db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
             return;
     }
 
-    db.query(query)
+    db.query(query, params)
         .then((proposals) => res.send(proposals))
         .catch(err => res.status(500).send(err));
 });
