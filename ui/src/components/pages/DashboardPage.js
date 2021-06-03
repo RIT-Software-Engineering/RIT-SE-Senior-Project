@@ -65,16 +65,16 @@ export default function DashboardPage() {
         case "coach":
             panes.push(
                 {
+                    menuItem: "Coaches",
+                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
+                },
+                {
                     menuItem: "Students",
                     render: () => (
                         <Tab.Pane>
                             <StudentsTab />
                         </Tab.Pane>
                     ),
-                },
-                {
-                    menuItem: "Coaches",
-                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
                 },
             );
         case "student":
