@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Label, Modal } from "semantic-ui-react";
@@ -13,7 +13,12 @@ export default function DatabaseTableEditor(props) {
     let formFieldArray = props.formFieldArray;
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+
     const [formData, setFormData] = useState(initialState);
+    // Update initial state if provided initial state is changed
+    useEffect(() => {
+        setFormData(initialState)
+    }, [initialState])
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -152,7 +157,7 @@ export default function DatabaseTableEditor(props) {
                             options={field.options}
                             loading={field.loading}
                             disabled={field.loading || field.disabled}
-                            value={formData[field.name].toString()}
+                            value={formData[field.name]?.toString()}
                             name={field.name}
                             onChange={handleChange}
                         />
@@ -173,6 +178,27 @@ export default function DatabaseTableEditor(props) {
                     </Form.Field>
                 )
                 break;
+
+            case "multiSelectDropdown":
+                fieldComponents.push(
+                    <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                        <label>{field.label}</label>
+                        <Dropdown
+                            multiple
+                            search
+                            selection
+                            placeholder={field.name}
+                            options={field.options}
+                            loading={field.loading}
+                            disabled={field.loading || field.disabled}
+                            value={formData[field.name]}
+                            name={field.name}
+                            onChange={handleChange}
+                        />
+                    </Form.Field>
+                );
+                break;
+
 
             case "activeCheckbox":
                 fieldComponents.push(

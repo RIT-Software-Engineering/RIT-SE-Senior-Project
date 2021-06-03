@@ -66,6 +66,19 @@ db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
     db.query(query).then((users) => res.send(users));
 });
 
+
+db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {
+
+    let query = `SELECT users.*, project_coaches.project_id FROM users
+	    LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
+        WHERE users.project = ? OR project_coaches.project_id = ?`;
+
+    params = [req.query.project_id, req.query.project_id]
+
+    db.query(query, params).then((users) => res.send(users));
+});
+
+
 // gets all users
 db_router.get("/getActiveUsers", [UserAuth.isAdmin], (req, res) => {
     let query = `SELECT system_id, fname, lname, type

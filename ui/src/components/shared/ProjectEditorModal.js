@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {
@@ -14,16 +15,8 @@ const PROJECT_STATUSES = {
 
 export default function ProjectEditorModal(props) {
 
-    let semesterMap = {};
-
-    if (!!props.semesterData) {
-        for (let i = 0; i < props.semesterData.length; i++) {
-            const semester = props.semesterData[i];
-            semesterMap[semester.semester_id] = semester.name;
-        }
-    }
-
-    let initialState = {
+    const [projectMembers, setProjectMembers] = useState([])
+    const [initialState, setInitialState] = useState({
         display_name: props.project.display_name || "",
         title: props.project.title || "",
         organization: props.project.organization || "",
@@ -53,6 +46,27 @@ export default function ProjectEditorModal(props) {
         semester: props.project.semester || "",
         date: props.project.date || "",
         status: props.project.status || "",
+    })
+
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
+            .then(response => response.json())
+            .then(members => {
+                setInitialState({
+                    ...initialState,
+                    projectMembers: members.map(member => member.system_id),
+                });
+                setProjectMembers(members.map(member => { return { key: member.system_id, text: member.system_id, value: member.system_id } }));
+            })
+    }, [])
+
+    let semesterMap = {};
+
+    if (!!props.semesterData) {
+        for (let i = 0; i < props.semesterData.length; i++) {
+            const semester = props.semesterData[i];
+            semesterMap[semester.semester_id] = semester.name;
+        }
     }
 
     let submissionModalMessages = {
@@ -68,186 +82,194 @@ export default function ProjectEditorModal(props) {
         };
     });
 
-    let formFieldArray = [{
-        type: "input",
-        label: "display_name",
-        placeHolder: "display_name",
-        name: "display_name",
-    },
-    {
-        type: "input",
-        label: "title",
-        placeHolder: "title",
-        name: "title",
-    },
-    {
-        type: "input",
-        label: "organization",
-        placeHolder: "organization",
-        name: "organization",
-    },
-    {
-        type: "input",
-        label: "primary_contact",
-        placeHolder: "primary_contact",
-        name: "primary_contact",
-    },
-    {
-        type: "input",
-        label: "contact_email",
-        placeHolder: "contact_email",
-        name: "contact_email",
-    },
-    {
-        type: "input",
-        label: "contact_phone",
-        placeHolder: "contact_phone",
-        name: "contact_phone",
-    },
-    {
-        type: "input",
-        name: "attachments",
-        placeHolder: "attachments",
-        label: "attachments",
-        disabled: true,
-    },
-    {
-        type: "input",
-        label: "background_info",
-        placeHolder: "background_info",
-        name: "background_info",
-    },
-    {
-        type: "input",
-        label: "project_description",
-        placeHolder: "project_description",
-        name: "project_description",
-    },
-    {
-        type: "input",
-        label: "project_scope",
-        placeHolder: "project_scope",
-        name: "project_scope",
-    },
-    {
-        type: "input",
-        label: "project_challenges",
-        placeHolder: "project_challenges",
-        name: "project_challenges",
-    },
-    {
-        type: "input",
-        label: "constraints_assumptions",
-        placeHolder: "constraints_assumptions",
-        name: "constraints_assumptions",
-    },
-    {
-        type: "input",
-        label: "sponsor_provided_resources",
-        placeHolder: "sponsor_provided_resources",
-        name: "sponsor_provided_resources",
-    },
-    {
-        type: "input",
-        label: "project_search_keywords",
-        placeHolder: "project_search_keywords",
-        name: "project_search_keywords",
-    },
-    {
-        type: "input",
-        label: "sponsor_deliverables",
-        placeHolder: "sponsor_deliverables",
-        name: "sponsor_deliverables",
-    },
-    {
-        type: "input",
-        label: "proprietary_info",
-        placeHolder: "proprietary_info",
-        name: "proprietary_info",
-    },
-    {
-        type: "input",
-        label: "sponsor_avail_checked",
-        placeHolder: "sponsor_avail_checked",
-        name: "sponsor_avail_checked",
-    },
-    {
-        type: "input",
-        label: "sponsor_alternate_time",
-        placeHolder: "sponsor_alternate_time",
-        name: "sponsor_alternate_time",
-    },
-    {
-        type: "input",
-        label: "project_agreements_checked",
-        placeHolder: "project_agreements_checked",
-        name: "project_agreements_checked",
-    },
-    {
-        type: "input",
-        label: "assignment_of_rights",
-        placeHolder: "assignment_of_rights",
-        name: "assignment_of_rights",
-    },
-    {
-        type: "input",
-        label: "team_name",
-        placeHolder: "team_name",
-        name: "team_name",
-    },
-    {
-        type: "input",
-        label: "poster",
-        placeHolder: "poster",
-        name: "poster",
-    },
-    {
-        type: "input",
-        label: "video",
-        placeHolder: "video",
-        name: "video",
-    },
-    {
-        type: "input",
-        label: "website",
-        placeHolder: "website",
-        name: "website",
-    },
-    {
-        type: "input",
-        label: "synopsis",
-        placeHolder: "synopsis",
-        name: "synopsis",
-    },
-    {
-        type: "input",
-        label: "sponsor",
-        placeHolder: "sponsor",
-        name: "sponsor",
-    },
-    {
-        type: "dropdown",
-        label: "Semester",
-        placeHolder: "Semester",
-        name: "semester",
-        options: Object.keys(semesterMap).map((semester_id, idx) => {
-            return { key: idx, text: semesterMap[semester_id], value: semester_id };
-        }),
-        loading: props.semesterData?.loading,
-    },
-    {
-        type: "input",
-        label: "date",
-        name: "date",
-        placeHolder: "date",
-        disabled: true,
-    },
-    {
-        type: "dropdown",
-        label: "status",
-        options: options,
-        name: "status",
-    }
+    let formFieldArray = [
+        {
+            type: "input",
+            label: "display_name",
+            placeHolder: "display_name",
+            name: "display_name",
+        },
+        {
+            type: "input",
+            label: "title",
+            placeHolder: "title",
+            name: "title",
+        },
+        {
+            type: "multiSelectDropdown",
+            label: "Project Members",
+            options: projectMembers,
+            name: "projectMembers",
+            disabled: true,
+        },
+        {
+            type: "input",
+            label: "organization",
+            placeHolder: "organization",
+            name: "organization",
+        },
+        {
+            type: "input",
+            label: "primary_contact",
+            placeHolder: "primary_contact",
+            name: "primary_contact",
+        },
+        {
+            type: "input",
+            label: "contact_email",
+            placeHolder: "contact_email",
+            name: "contact_email",
+        },
+        {
+            type: "input",
+            label: "contact_phone",
+            placeHolder: "contact_phone",
+            name: "contact_phone",
+        },
+        {
+            type: "input",
+            name: "attachments",
+            placeHolder: "attachments",
+            label: "attachments",
+            disabled: true,
+        },
+        {
+            type: "input",
+            label: "background_info",
+            placeHolder: "background_info",
+            name: "background_info",
+        },
+        {
+            type: "input",
+            label: "project_description",
+            placeHolder: "project_description",
+            name: "project_description",
+        },
+        {
+            type: "input",
+            label: "project_scope",
+            placeHolder: "project_scope",
+            name: "project_scope",
+        },
+        {
+            type: "input",
+            label: "project_challenges",
+            placeHolder: "project_challenges",
+            name: "project_challenges",
+        },
+        {
+            type: "input",
+            label: "constraints_assumptions",
+            placeHolder: "constraints_assumptions",
+            name: "constraints_assumptions",
+        },
+        {
+            type: "input",
+            label: "sponsor_provided_resources",
+            placeHolder: "sponsor_provided_resources",
+            name: "sponsor_provided_resources",
+        },
+        {
+            type: "input",
+            label: "project_search_keywords",
+            placeHolder: "project_search_keywords",
+            name: "project_search_keywords",
+        },
+        {
+            type: "input",
+            label: "sponsor_deliverables",
+            placeHolder: "sponsor_deliverables",
+            name: "sponsor_deliverables",
+        },
+        {
+            type: "input",
+            label: "proprietary_info",
+            placeHolder: "proprietary_info",
+            name: "proprietary_info",
+        },
+        {
+            type: "input",
+            label: "sponsor_avail_checked",
+            placeHolder: "sponsor_avail_checked",
+            name: "sponsor_avail_checked",
+        },
+        {
+            type: "input",
+            label: "sponsor_alternate_time",
+            placeHolder: "sponsor_alternate_time",
+            name: "sponsor_alternate_time",
+        },
+        {
+            type: "input",
+            label: "project_agreements_checked",
+            placeHolder: "project_agreements_checked",
+            name: "project_agreements_checked",
+        },
+        {
+            type: "input",
+            label: "assignment_of_rights",
+            placeHolder: "assignment_of_rights",
+            name: "assignment_of_rights",
+        },
+        {
+            type: "input",
+            label: "team_name",
+            placeHolder: "team_name",
+            name: "team_name",
+        },
+        {
+            type: "input",
+            label: "poster",
+            placeHolder: "poster",
+            name: "poster",
+        },
+        {
+            type: "input",
+            label: "video",
+            placeHolder: "video",
+            name: "video",
+        },
+        {
+            type: "input",
+            label: "website",
+            placeHolder: "website",
+            name: "website",
+        },
+        {
+            type: "input",
+            label: "synopsis",
+            placeHolder: "synopsis",
+            name: "synopsis",
+        },
+        {
+            type: "input",
+            label: "sponsor",
+            placeHolder: "sponsor",
+            name: "sponsor",
+        },
+        {
+            type: "dropdown",
+            label: "Semester",
+            placeHolder: "Semester",
+            name: "semester",
+            options: Object.keys(semesterMap).map((semester_id, idx) => {
+                return { key: idx, text: semesterMap[semester_id], value: semester_id };
+            }),
+            loading: props.semesterData?.loading,
+        },
+        {
+            type: "input",
+            label: "date",
+            name: "date",
+            placeHolder: "date",
+            disabled: true,
+        },
+        {
+            type: "dropdown",
+            label: "status",
+            options: options,
+            name: "status",
+        },
     ]
 
     let fetchOptions = {
