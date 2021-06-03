@@ -1,3 +1,4 @@
+const { ROLES } = require("../consts");
 
 const isSignedIn = (req, res, next) => {
     if (req.user === undefined || req.user === null) {
@@ -10,12 +11,22 @@ const isSignedIn = (req, res, next) => {
 
 const isAdmin = (req, res, next) => {
 
-    if (!testIsAdmin(req)) {
-        res.sendStatus(401);
+    if (testIsAdmin(req)) {
+        next();
         return;
     }
 
-    next();
+    res.sendStatus(401);
+}
+
+const isCoachOrAdmin = (req, res, next) => {
+
+    if (testIsAdmin(req) || testIsCoach(req)) {
+        next();
+        return true;
+    }
+
+    res.sendStatus(401);
 }
 
 const mockUser = (req, res, next) => {
@@ -36,11 +47,16 @@ const mockUser = (req, res, next) => {
 }
 
 const testIsAdmin = (req) => {
-    return req.user.type === "admin";
+    return req.user.type === ROLES.ADMIN;
+}
+
+const testIsCoach = (req) => {
+    return req.user.type === ROLES.COACH;
 }
 
 module.exports = {
     isSignedIn,
     isAdmin,
+    isCoachOrAdmin,
     mockUser,
 }

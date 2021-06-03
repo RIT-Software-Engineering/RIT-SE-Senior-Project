@@ -100,6 +100,7 @@ export default function UserPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             create={initialState.system_id === ""}
+            button="plus"
         />
     );
 }

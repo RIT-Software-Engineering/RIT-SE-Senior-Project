@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Label, Modal } from "semantic-ui-react";
@@ -13,7 +13,12 @@ export default function DatabaseTableEditor(props) {
     let formFieldArray = props.formFieldArray;
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+
     const [formData, setFormData] = useState(initialState);
+    // Update initial state if provided initial state is changed
+    useEffect(() => {
+        setFormData(initialState)
+    }, [initialState])
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -74,6 +79,10 @@ export default function DatabaseTableEditor(props) {
 
     const handleChange = (e, { name, value, checked, isActiveField }) => {
 
+        if (props.viewOnly) {
+            return;
+        }
+
         if (checked !== undefined) {
             if (isActiveField) {
                 // The active field either stores and empty string or a datetime.
@@ -93,127 +102,153 @@ export default function DatabaseTableEditor(props) {
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        switch (field.type) {
-            case "input":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.Input
-                            label={field.label}
-                            placeholder={field.placeholder}
-                            name={field.name}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "date":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.Input
-                            label={field.label}
-                            type="date"
-                            placeholder={field.placeholder}
-                            name={field.name}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "textArea":
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <Form.TextArea
-                            placeholder={field.placeholder}
-                            label={field.label}
-                            name={field.name}
-                            value={formData[field.name]}
-                            style={{ minHeight: 200 }}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                );
-                break;
-            case "dropdown":
+        if (!field.hidden) {
+            switch (field.type) {
+                case "input":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Input
+                                label={field.label}
+                                placeholder={field.placeholder}
+                                name={field.name}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "date":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Input
+                                label={field.label}
+                                type="date"
+                                placeholder={field.placeholder}
+                                name={field.name}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "textArea":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.TextArea
+                                placeholder={field.placeholder}
+                                label={field.label}
+                                name={field.name}
+                                value={formData[field.name]}
+                                style={{ minHeight: 200 }}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "dropdown":
 
-                fieldComponents.push(
-                    <Form.Field key={field.name}>
-                        <label>{field.label}</label>
-                        <Dropdown
-                            selection
-                            options={field.options}
-                            loading={field.loading}
-                            disabled={field.loading || field.disabled}
-                            value={formData[field.name].toString()}
-                            name={field.name}
-                            onChange={handleChange}
-                        />
-                    </Form.Field>
-                );
-                break;
+                    fieldComponents.push(
+                        <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                            <label>{field.label}</label>
+                            <Dropdown
+                                selection
+                                options={field.options}
+                                loading={field.loading}
+                                disabled={field.loading || field.disabled}
+                                value={formData[field.name]?.toString()}
+                                name={field.name}
+                                onChange={handleChange}
+                            />
+                        </Form.Field>
+                    );
+                    break;
 
-            case "checkbox":
-                fieldComponents.push(
-                    <Form.Field key={field["name"]}>
-                        <Form.Checkbox
-                            label={field["label"]}
-                            checked={!!formData[field["name"]]}
-                            name={field["name"]}
-                            onChange={handleChange}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                )
-                break;
+                case "checkbox":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            <Form.Checkbox
+                                label={field["label"]}
+                                checked={!!formData[field["name"]]}
+                                name={field["name"]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    )
+                    break;
 
-            case "activeCheckbox":
-                fieldComponents.push(
-                    <Form.Field key={field["name"]}>
-                        {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
-                        <Form.Checkbox
-                            label={field["label"]}
-                            checked={formData[field["name"]] === ""}
-                            name={field["name"]}
-                            onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
-                            disabled={field.disabled}
-                        />
-                    </Form.Field>
-                )
-                break;
+                case "multiSelectDropdown":
+                    fieldComponents.push(
+                        <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                            <label>{field.label}</label>
+                            <Dropdown
+                                multiple
+                                search
+                                selection
+                                placeholder={field.name}
+                                options={field.options}
+                                loading={field.loading}
+                                disabled={field.loading || field.disabled}
+                                value={formData[field.name]}
+                                name={field.name}
+                                onChange={handleChange}
+                            />
+                        </Form.Field>
+                    );
+                    break;
 
-            default:
-                console.warn(`Found unknown field type: "${field.type}"`)
-                break;
+
+                case "activeCheckbox":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
+                            <Form.Checkbox
+                                label={field["label"]}
+                                checked={formData[field["name"]] === ""}
+                                name={field["name"]}
+                                onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    )
+                    break;
+
+                default:
+                    console.warn(`Found unknown field type: "${field.type}"`)
+                    break;
+            }
         }
     }
 
-    function checkIfEmpty() {
-        if (props.create) {
-            return <Button icon="plus" />;
+    const modalActions = () => {
+        if (props.viewOnly) {
+            return [
+                {
+                    key: "Done",
+                    content: "Done",
+                },
+            ]
         }
-        else {
-            return <Button icon="edit" />;
-        }
+        return [
+            {
+                key: "submit",
+                content: "Submit",
+                onClick: (event) => handleSubmit(event),
+                positive: true,
+            },
+        ]
     }
 
     return (
         <>
             <Modal
-                trigger={checkIfEmpty()}
+                trigger={<Button icon={props.button} />}
                 header={props.header}
                 content={{ content: <Form>{fieldComponents}</Form> }}
-                actions={[
-                    {
-                        key: "submit",
-                        content: "Submit",
-                        onClick: (event) => handleSubmit(event),
-                        positive: true,
-                    },
-                ]}
+                actions={modalActions()}
             />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
         </>

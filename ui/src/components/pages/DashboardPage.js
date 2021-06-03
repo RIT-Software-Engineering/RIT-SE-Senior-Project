@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import Proposals from "../shared/Proposals";
 import TimeLines from "../shared/TimeLines";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
@@ -44,122 +43,80 @@ export default function DashboardPage() {
 
     let panes = [];
 
-    if (user.role === "admin") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Proposals",
-                render: () => (
-                    <Tab.Pane>
-                        <ProposalTable semesterData={semesterData} />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Sponsor Info", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            {
-                menuItem: "Students",
-                render: () => (
-                    <Tab.Pane>
-                        <StudentsTab />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Admin",
-                render: () => (
-                    <Tab.Pane>
-                        <SemesterEditor />
-                        <ActionEditor semesterData={semesterData} />
-                        <ProjectEditor semesterData={semesterData} />
-                        <UserEditor />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else if (user.role === "coach") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Proposals",
-                render: () => (
-                    <Tab.Pane>
-                        <Proposals semesterData={semesterData} />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Sponsor Info", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            {
-                menuItem: "Students",
-                render: () => (
-                    <Tab.Pane>
-                        <StudentsTab />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else if (user.role === "student") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else {
-        panes = [
-            {
+    switch (user.role) {
+        case "admin":
+            panes.push(
+                {
+                    menuItem: "Admin",
+                    render: () => (
+                        <Tab.Pane>
+                            <SemesterEditor />
+                            <ActionEditor semesterData={semesterData} />
+                            <ProjectEditor semesterData={semesterData} />
+                            <UserEditor />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Sponsor Info",
+                    render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+                },
+            );
+        case "coach":
+            panes.push(
+                {
+                    menuItem: "Coaches",
+                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
+                },
+                {
+                    menuItem: "Students",
+                    render: () => (
+                        <Tab.Pane>
+                            <StudentsTab />
+                        </Tab.Pane>
+                    ),
+                },
+            );
+        case "student":
+            panes.push(
+                {
+                    menuItem: "Projects",
+                    render: () => (
+                        <Tab.Pane>
+                            <ProposalTable semesterData={semesterData} />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Actions",
+                    render: () => (
+                        <Tab.Pane>
+                            <ActionsTab />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Dashboard",
+                    render: () => (
+                        <Tab.Pane>
+                            <TimeLines />
+                        </Tab.Pane>
+                    ),
+                },
+            );
+            break;
+        default:
+            panes.push({
                 menuItem: "Loading...",
                 render: () => (
                     <Tab.Pane>
                         <p>Loading...</p>
                     </Tab.Pane>
                 ),
-            },
-        ];
+            })
     }
+
+    panes.reverse();
 
     return <>
         <AdminView user={user} />
