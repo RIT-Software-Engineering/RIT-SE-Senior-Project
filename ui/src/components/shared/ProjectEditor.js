@@ -6,6 +6,7 @@ import { SecureFetch } from "../util/secureFetch";
 
 export default function ProjectEditor(props) {
     const [proposalData, setProposalData] = useState({});
+    const [activeCoaches, setActiveCoaches] = useState([])
     let semesters = {}
 
     if (!!props.semesterData) {
@@ -25,6 +26,7 @@ export default function ProjectEditor(props) {
                         semester={semesters[semester_id] || null}
                         semesterData={props.semesterData}
                         viewOnly={props.viewOnly}
+                        activeCoaches={activeCoaches}
                     />
                 );
             });
@@ -48,6 +50,12 @@ export default function ProjectEditor(props) {
             .catch((error) => {
                 alert("Failed to get proposal data " + error);
             });
+
+        SecureFetch(config.url.API_GET_ACTIVE_COACHES)
+            .then(response => response.json())
+            .then(coaches => {
+                setActiveCoaches(coaches)
+            })
     }, []);
 
     return (

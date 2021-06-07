@@ -30,12 +30,13 @@ export const config = {
         API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
         API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
         API_GET_ALL_COACH_INFO: `${BASE_API_URL}/db/selectAllCoachInfo`,
+        API_GET_ACTIVE_COACHES: `${BASE_API_URL}/db/getActiveCoaches`,
         API_GET_USERS: `${BASE_API_URL}/db/getUsers`,
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
 
         // POST - Auth needed
-        API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject?user=admin`,
-        API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction?user=student`,
+        API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
+        API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,
         API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
         API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
         API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,

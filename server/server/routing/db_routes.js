@@ -234,6 +234,19 @@ db_router.get("/getActiveProjects", (req, res) => {
         });
 });
 
+db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
+    const sql = `SELECT * FROM users WHERE type = '${ROLES.COACH}' AND active = ''`;
+
+    db.query(sql)
+        .then((coaches) => {
+            res.send(coaches);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send(error);
+        });
+});
+
 db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
@@ -408,11 +421,12 @@ db_router.post(
         body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("semester").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("projectCoaches").trim().escape().isLength({ max: 5000 }),
     ],
-    (req, res) => {
+    async (req, res) => {
         let body = req.body;
 
-        const sql = `UPDATE ${DB_CONFIG.tableNames.senior_projects} 
+        const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
         SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
         background_info=?, project_description=?, project_scope=?, project_challenges=?, 
         sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
@@ -420,7 +434,7 @@ db_router.post(
         team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
         WHERE project_id = ?`;
 
-        const params = [
+        const updateProjectParams = [
             body.status,
             body.title,
             body.display_name,
@@ -451,14 +465,23 @@ db_router.post(
             body.project_id,
         ];
 
-        db.query(sql, params)
-            .then(() => {
-                return res.status(200).send();
-            })
-            .catch((err) => {
-                console.log(err);
-                return res.status(500).send(err);
-            });
+        const insertValues = body.projectCoaches.split(",").map(coachId => ` ('${body.project_id}', '${coachId}')`);
+        const deleteValues = body.projectCoaches.split(",").map(coachId => `'${coachId}'`);
+        const updateCoachesSql = `INSERT OR IGNORE INTO '${DB_CONFIG.tableNames.project_coaches}' ('project_id', 'coach_id') VALUES ${insertValues};`
+        const deleteCoachesSQL = `DELETE FROM '${DB_CONFIG.tableNames.project_coaches}'
+                                    WHERE project_coaches.project_id = ${body.project_id}
+                                    AND project_coaches.coach_id NOT IN (${deleteValues});`
+
+        Promise.all([
+            db.query(updateProjectSql, updateProjectParams),
+            db.query(updateCoachesSql),
+            db.query(deleteCoachesSQL),
+        ]).then((values) => {
+            return res.sendStatus(200);
+        }).catch((err) => {
+            console.log(err);
+            return res.status(500).send(err);
+        });
     }
 );
 
