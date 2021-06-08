@@ -15,6 +15,15 @@ const PROJECT_STATUSES = {
 
 export default function ProjectEditorModal(props) {
 
+    const formattedAttachments = () => {
+        return props.project?.attachments?.split(", ").map(attachment => {
+            return {
+                title: attachment,
+                link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${props.project.title}&name=${attachment}`,
+            }
+        })
+    }
+
     const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
     const [initialState, setInitialState] = useState({
         project_id: props.project.project_id || "",
@@ -24,7 +33,7 @@ export default function ProjectEditorModal(props) {
         primary_contact: props.project.primary_contact || "",
         contact_email: props.project.contact_email || "",
         contact_phone: props.project.contact_phone || "",
-        attachments: props.project.attachments || "",
+        attachments: formattedAttachments() || [],
         background_info: props.project.background_info || "",
         project_description: props.project.project_description || "",
         project_scope: props.project.project_scope || "",
@@ -163,7 +172,7 @@ export default function ProjectEditorModal(props) {
             name: "contact_phone",
         },
         {
-            type: "input",
+            type: "files",
             name: "attachments",
             placeHolder: "attachments",
             label: "attachments",

@@ -570,6 +570,7 @@ db_router.post(
     [
         // TODO: Should the max length be set to something smaller than 5000?
         body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("title").matches(/^[A-Za-z0-9\s]+$/).withMessage("Must be alphanumeric"),
         body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
         body("primary_contact").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
         body("contact_email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -643,7 +644,7 @@ db_router.post(
 
             if (req.files.attachments.length > 5) {
                 // Don't allow more than 5 files
-                return res.status(400).send("Maximum of 5 files allowed");
+                return res.status(400).send({ errors: [{ param: "files", msg: "Maximum of 5 files allowed" }] });
             }
 
             fs.mkdirSync(`./server/sponsor_proposal_files/${title}`, { recursive: true });
@@ -651,11 +652,11 @@ db_router.post(
             for (let x = 0; x < req.files.attachments.length; x++) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024) {
                     // 15mb limit exceeded
-                    return res.status(400).send("File too large");
+                    return res.status(400).send({ errors: [{ param: "files", msg: "File too large" }] });
                 }
                 if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x].name))) {
                     // send an error if the file is not an accepted type
-                    return res.status(400).send("Filetype not accepted");
+                    return res.status(400).send({ errors: [{ param: "files", msg: "Filetype not accepted" }] });
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0

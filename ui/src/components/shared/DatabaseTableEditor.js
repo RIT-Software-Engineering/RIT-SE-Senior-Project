@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Label, Modal } from "semantic-ui-react";
+import { Dropdown, Icon, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -169,6 +169,7 @@ export default function DatabaseTableEditor(props) {
                 case "checkbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
+                            <label>{field.label}</label>
                             <Form.Checkbox
                                 label={field["label"]}
                                 checked={!!formData[field["name"]]}
@@ -176,6 +177,17 @@ export default function DatabaseTableEditor(props) {
                                 onChange={handleChange}
                                 disabled={field.disabled}
                             />
+                        </Form.Field>
+                    )
+                    break;
+
+                case "files":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            <h1>{field.label}</h1>
+                            {formData[field["name"]]?.map(file => {
+                                return <><a target="_blank" href={file.link}>{file.title}</a><br /></>
+                            })}
                         </Form.Field>
                     )
                     break;
