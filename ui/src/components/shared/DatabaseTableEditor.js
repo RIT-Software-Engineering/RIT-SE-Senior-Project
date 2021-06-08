@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Icon, Label, Modal } from "semantic-ui-react";
+import { Dropdown, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -184,10 +184,10 @@ export default function DatabaseTableEditor(props) {
                 case "files":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
-                            <h1>{field.label}</h1>
-                            {formData[field["name"]]?.map(file => {
+                            <label>{field.label}</label>
+                            {formData[field["name"]].length > 0 ? formData[field["name"]].map(file => {
                                 return <><a target="_blank" href={file.link}>{file.title}</a><br /></>
-                            })}
+                            }) : <p>No Attachments</p>}
                         </Form.Field>
                     )
                     break;

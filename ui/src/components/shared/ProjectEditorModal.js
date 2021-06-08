@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
+import { createSemesterDropdownOptions } from "../util/utils";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {
@@ -297,9 +298,7 @@ export default function ProjectEditorModal(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester",
-            options: Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            }),
+            options: createSemesterDropdownOptions(props.semesterData),
             loading: props.semesterData?.loading,
         },
         {
