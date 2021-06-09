@@ -12,7 +12,7 @@ export default function ProjectViewerModal(props) {
         SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
             .then(response => response.json())
             .then(members => {
-                let projectGroupedValues = projectMembers;
+                let projectGroupedValues = { students: [], coaches: [] };
                 members.forEach(member => {
                     switch (member.type) {
                         case USERTYPES.STUDENT:
@@ -28,7 +28,7 @@ export default function ProjectViewerModal(props) {
                 });
                 setProjectMembers(projectGroupedValues);
             })
-    }, [])
+    }, [props.project?.project_id])
 
     const generateModalContent = () => {
         return <>
