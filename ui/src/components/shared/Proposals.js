@@ -13,6 +13,7 @@ import ProjectEditorModal from "./ProjectEditorModal";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../util/constants";
 import "../../css/dashboard-proposal.css";
+import ProjectViewerModal from "./ProjectViewerModal";
 
 const COLUMNS = {
     SEMESTER: "semester",
@@ -109,7 +110,10 @@ export default function Proposals(props) {
                     </TableCell>
                     <TableCell>{proposal.status}</TableCell>
                     <TableCell>
-                        <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} />
+                        {props.viewOnly ?
+                            <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
+                            : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} />
+                        }
                     </TableCell>
                 </TableRow>
             );

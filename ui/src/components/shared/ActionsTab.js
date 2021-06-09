@@ -24,7 +24,6 @@ export default function TeamFiles() {
         SecureFetch(config.url.API_GET_ACTION_LOGS + "?system_id=admin")
             .then((response) => response.json())
             .then((action_logs) => {
-                console.log(action_logs);
                 setActionLogs(action_logs);
             })
             .catch((error) => {

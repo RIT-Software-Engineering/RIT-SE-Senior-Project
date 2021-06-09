@@ -14,16 +14,23 @@ const PROJECT_STATUSES = {
     ARCHIVED: "archive",
 };
 
-export default function ProjectEditorModal(props) {
+export const formattedAttachments = (project) => {
+    return project?.attachments?.split(", ").map(attachment => {
+        return {
+            title: attachment,
+            link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${project.title}&name=${attachment}`,
+        }
+    })
+}
 
-    const formattedAttachments = () => {
-        return props.project?.attachments?.split(", ").map(attachment => {
-            return {
-                title: attachment,
-                link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${props.project.title}&name=${attachment}`,
-            }
-        })
-    }
+/**
+ * Note: Now that ProjectViewModal exists, there isn't much of a need for the viewOnly prop,
+ * but I'll leave it in for now.
+ * 
+ * @param {*} props 
+ * @returns 
+ */
+export default function ProjectEditorModal(props) {
 
     const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
     const [initialState, setInitialState] = useState({
@@ -34,7 +41,7 @@ export default function ProjectEditorModal(props) {
         primary_contact: props.project.primary_contact || "",
         contact_email: props.project.contact_email || "",
         contact_phone: props.project.contact_phone || "",
-        attachments: formattedAttachments() || [],
+        attachments: formattedAttachments(props.project) || [],
         background_info: props.project.background_info || "",
         project_description: props.project.project_description || "",
         project_scope: props.project.project_scope || "",
@@ -92,15 +99,6 @@ export default function ProjectEditorModal(props) {
                 setProjectMembers(projectMemberOptions);
             })
     }, [props.project, props.viewOnly])
-
-    let semesterMap = {};
-
-    if (!!props.semesterData) {
-        for (let i = 0; i < props.semesterData.length; i++) {
-            const semester = props.semesterData[i];
-            semesterMap[semester.semester_id] = semester.name;
-        }
-    }
 
     let submissionModalMessages = {
         SUCCESS: "The project has been updated.",
