@@ -149,10 +149,10 @@ db_router.post("/batchCreateUser", [
 
         const insertStatements = users.map(user => {
             const active = user.active.toLocaleLowerCase() === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
-            return `('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},${user.project},'${active}')`
+            return `('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},'${active}')`
         });
 
-        const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} (system_id, fname, lname, email, type, semester_group, project, active) VALUES ${insertStatements.join(",")}`;
+        const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(",")}`;
 
         db.query(sql)
             .then((values) => {

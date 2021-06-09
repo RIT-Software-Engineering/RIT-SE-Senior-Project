@@ -68,7 +68,6 @@ export default function BatchUserPanel() {
                             <Table.HeaderCell>email</Table.HeaderCell>
                             <Table.HeaderCell>type</Table.HeaderCell>
                             <Table.HeaderCell>semester_group</Table.HeaderCell>
-                            <Table.HeaderCell>project</Table.HeaderCell>
                             <Table.HeaderCell>active</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

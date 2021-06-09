@@ -1,4 +1,4 @@
-﻿system_id,fname,lname,email,type,semester_group,project,active
-someId1,firstname,lastname,someId1@rit.edu,student,3,3,true
-someId2,firstname,lastname,someId2@rit.edu,admin,null,null,true
-someId3,firstname,lastname,someId3@rit.edu,coach,null,null,true
+﻿system_id,fname,lname,email,type,semester_group,active
+someId1,firstname,lastname,someId1@rit.edu,student,3,true
+someId2,firstname,lastname,someId2@rit.edu,admin,null,true
+someId3,firstname,lastname,someId3@rit.edu,coach,null,true

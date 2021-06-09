@@ -11,7 +11,6 @@ export default function UserPanel(props) {
         email: props.userData?.email || "",
         type: props.userData?.type || "",
         semester_group: props.userData?.semester_group || "",
-        project: props.userData?.project || "",
         active: props.userData?.active || "",
     };
 
@@ -74,13 +73,6 @@ export default function UserPanel(props) {
                 return { key: idx, text: semesterMap[semester_id], value: semester_id };
             }),
             loading: props.semesterData?.loading,
-        },
-        {
-            //TODO: send json of the options and make this a dropdown
-            type: "input",
-            label: "Project",
-            placeHolder: "Project",
-            name: "project",
         },
         {
             type: "activeCheckbox",
