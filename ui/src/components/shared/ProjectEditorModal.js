@@ -82,14 +82,16 @@ export default function ProjectEditorModal(props) {
                             break;
                     }
                 });
-                setInitialState({
-                    ...initialState,
-                    projectStudents: projectGroupedValues.students,
-                    projectCoaches: projectGroupedValues.coaches,
+                setInitialState((prevInitialState) => {
+                    return {
+                        ...prevInitialState,
+                        projectStudents: projectGroupedValues.students,
+                        projectCoaches: projectGroupedValues.coaches,
+                    }
                 });
                 setProjectMembers(projectMemberOptions);
             })
-    }, [])
+    }, [props.project, props.viewOnly])
 
     let semesterMap = {};
 

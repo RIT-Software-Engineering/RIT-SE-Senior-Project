@@ -186,7 +186,7 @@ export default function DatabaseTableEditor(props) {
                         <Form.Field key={field["name"]}>
                             <label>{field.label}</label>
                             {formData[field["name"]].length > 0 ? formData[field["name"]].map(file => {
-                                return <><a target="_blank" href={file.link}>{file.title}</a><br /></>
+                                return <><a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br /></>
                             }) : <p>No Attachments</p>}
                         </Form.Field>
                     )

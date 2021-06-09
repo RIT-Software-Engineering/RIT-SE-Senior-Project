@@ -62,6 +62,8 @@ export default function DashboardPage() {
                     render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
                 },
             );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
         case "coach":
             panes.push(
                 {
@@ -77,6 +79,8 @@ export default function DashboardPage() {
                     ),
                 },
             );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
         case "student":
             panes.push(
                 {

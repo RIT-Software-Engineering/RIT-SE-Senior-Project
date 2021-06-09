@@ -19,7 +19,7 @@ export const formatDate = (date) => {
  */
 export const createSemesterDropdownOptions = (semesterData, semestersOnly = false) => {
     const options = semestersOnly ? [] : [{ key: "noSemester", text: "No Semester", value: "" }];
-    const semesters = _.sortBy(semesterData, ["end_date", "start_date"])
+    const semesters = _.sortBy(semesterData, ["end_date", "start_date"]).reverse();
     semesters.forEach(semester => {
         options.push({ key: semester.semester_id, text: semester.name, value: semester.semester_id?.toString() })
     });
