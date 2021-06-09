@@ -63,6 +63,7 @@ export default function CoachesTab() {
                 return <Accordion
                     fluid
                     styled
+                    key={semester.semester_id}
                     panels={[
                         {
                             key: semester.semester_id,

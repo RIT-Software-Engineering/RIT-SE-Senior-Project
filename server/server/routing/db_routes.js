@@ -234,6 +234,19 @@ db_router.get("/getActiveProjects", (req, res) => {
         });
 });
 
+db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
+    const sql = `SELECT * FROM users WHERE type = '${ROLES.COACH}' AND active = ''`;
+
+    db.query(sql)
+        .then((coaches) => {
+            res.send(coaches);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send(error);
+        });
+});
+
 db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
@@ -408,11 +421,12 @@ db_router.post(
         body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         body("semester").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        body("projectCoaches").trim().escape().isLength({ max: 5000 }),
     ],
-    (req, res) => {
+    async (req, res) => {
         let body = req.body;
 
-        const sql = `UPDATE ${DB_CONFIG.tableNames.senior_projects} 
+        const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
         SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
         background_info=?, project_description=?, project_scope=?, project_challenges=?, 
         sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
@@ -420,7 +434,7 @@ db_router.post(
         team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
         WHERE project_id = ?`;
 
-        const params = [
+        const updateProjectParams = [
             body.status,
             body.title,
             body.display_name,
@@ -451,14 +465,23 @@ db_router.post(
             body.project_id,
         ];
 
-        db.query(sql, params)
-            .then(() => {
-                return res.status(200).send();
-            })
-            .catch((err) => {
-                console.log(err);
-                return res.status(500).send(err);
-            });
+        const insertValues = body.projectCoaches.split(",").map(coachId => ` ('${body.project_id}', '${coachId}')`);
+        const deleteValues = body.projectCoaches.split(",").map(coachId => `'${coachId}'`);
+        const updateCoachesSql = `INSERT OR IGNORE INTO '${DB_CONFIG.tableNames.project_coaches}' ('project_id', 'coach_id') VALUES ${insertValues};`
+        const deleteCoachesSQL = `DELETE FROM '${DB_CONFIG.tableNames.project_coaches}'
+                                    WHERE project_coaches.project_id = ${body.project_id}
+                                    AND project_coaches.coach_id NOT IN (${deleteValues});`
+
+        Promise.all([
+            db.query(updateProjectSql, updateProjectParams),
+            db.query(updateCoachesSql),
+            db.query(deleteCoachesSQL),
+        ]).then((values) => {
+            return res.sendStatus(200);
+        }).catch((err) => {
+            console.log(err);
+            return res.status(500).send(err);
+        });
     }
 );
 
@@ -547,6 +570,7 @@ db_router.post(
     [
         // TODO: Should the max length be set to something smaller than 5000?
         body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("title").matches(/^[A-Za-z0-9\s]+$/).withMessage("Must be alphanumeric"),
         body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
         body("primary_contact").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
         body("contact_email").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -620,7 +644,7 @@ db_router.post(
 
             if (req.files.attachments.length > 5) {
                 // Don't allow more than 5 files
-                return res.status(400).send("Maximum of 5 files allowed");
+                return res.status(400).send({ errors: [{ param: "files", msg: "Maximum of 5 files allowed" }] });
             }
 
             fs.mkdirSync(`./server/sponsor_proposal_files/${title}`, { recursive: true });
@@ -628,11 +652,11 @@ db_router.post(
             for (let x = 0; x < req.files.attachments.length; x++) {
                 if (req.files.attachments[x].size > 15 * 1024 * 1024) {
                     // 15mb limit exceeded
-                    return res.status(400).send("File too large");
+                    return res.status(400).send({ errors: [{ param: "files", msg: "File too large" }] });
                 }
                 if (!CONFIG.accepted_file_types.includes(path.extname(req.files.attachments[x].name))) {
                     // send an error if the file is not an accepted type
-                    return res.status(400).send("Filetype not accepted");
+                    return res.status(400).send({ errors: [{ param: "files", msg: "Filetype not accepted" }] });
                 }
 
                 // Append the file name to the CSV string, begin with a comma if x is not 0

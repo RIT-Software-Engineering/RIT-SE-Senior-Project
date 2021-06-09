@@ -169,6 +169,7 @@ export default function DatabaseTableEditor(props) {
                 case "checkbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
+                            <label>{field.label}</label>
                             <Form.Checkbox
                                 label={field["label"]}
                                 checked={!!formData[field["name"]]}
@@ -176,6 +177,17 @@ export default function DatabaseTableEditor(props) {
                                 onChange={handleChange}
                                 disabled={field.disabled}
                             />
+                        </Form.Field>
+                    )
+                    break;
+
+                case "files":
+                    fieldComponents.push(
+                        <Form.Field key={field["name"]}>
+                            <label>{field.label}</label>
+                            {formData[field["name"]].length > 0 ? formData[field["name"]].map(file => {
+                                return <><a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br /></>
+                            }) : <p>No Attachments</p>}
                         </Form.Field>
                     )
                     break;

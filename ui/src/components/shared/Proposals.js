@@ -109,7 +109,7 @@ export default function Proposals(props) {
                     </TableCell>
                     <TableCell>{proposal.status}</TableCell>
                     <TableCell>
-                        <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} />
+                        <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} />
                     </TableCell>
                 </TableRow>
             );

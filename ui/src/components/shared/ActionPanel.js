@@ -1,6 +1,7 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 import { config, DROPDOWN_ITEMS } from "../util/constants";
+import { createSemesterDropdownOptions } from "../util/utils";
 
 export default function ActionPanel(props) {
     let initialState = {
@@ -46,9 +47,7 @@ export default function ActionPanel(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester",
-            options: Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            }),
+            options: createSemesterDropdownOptions(props.semesterData),
             loading: props.semesterData.loading
         },
         {

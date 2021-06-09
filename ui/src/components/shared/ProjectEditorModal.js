@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
+import { createSemesterDropdownOptions } from "../util/utils";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {
@@ -15,7 +16,16 @@ const PROJECT_STATUSES = {
 
 export default function ProjectEditorModal(props) {
 
-    const [projectMembers, setProjectMembers] = useState([])
+    const formattedAttachments = () => {
+        return props.project?.attachments?.split(", ").map(attachment => {
+            return {
+                title: attachment,
+                link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${props.project.title}&name=${attachment}`,
+            }
+        })
+    }
+
+    const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
     const [initialState, setInitialState] = useState({
         project_id: props.project.project_id || "",
         display_name: props.project.display_name || "",
@@ -24,7 +34,7 @@ export default function ProjectEditorModal(props) {
         primary_contact: props.project.primary_contact || "",
         contact_email: props.project.contact_email || "",
         contact_phone: props.project.contact_phone || "",
-        attachments: props.project.attachments || "",
+        attachments: formattedAttachments() || [],
         background_info: props.project.background_info || "",
         project_description: props.project.project_description || "",
         project_scope: props.project.project_scope || "",
@@ -53,13 +63,35 @@ export default function ProjectEditorModal(props) {
         SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
             .then(response => response.json())
             .then(members => {
-                setInitialState({
-                    ...initialState,
-                    projectMembers: members.map(member => member.system_id),
+                let projectMemberOptions = { students: [], coaches: [] }
+                let projectGroupedValues = { students: [], coaches: [] }
+                members.forEach(member => {
+                    switch (member.type) {
+                        case USERTYPES.STUDENT:
+                            projectMemberOptions.students.push({ key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id });
+                            projectGroupedValues.students.push(member.system_id);
+                            break;
+                        case USERTYPES.COACH:
+                            if (props.viewOnly) {
+                                projectMemberOptions.coaches.push({ key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id });
+                            }
+                            projectGroupedValues.coaches.push(member.system_id);
+                            break;
+                        default:
+                            console.error(`Project editor error - invalid project member type "${member.type}" for member: `, member);
+                            break;
+                    }
                 });
-                setProjectMembers(members.map(member => { return { key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id } }));
+                setInitialState((prevInitialState) => {
+                    return {
+                        ...prevInitialState,
+                        projectStudents: projectGroupedValues.students,
+                        projectCoaches: projectGroupedValues.coaches,
+                    }
+                });
+                setProjectMembers(projectMemberOptions);
             })
-    }, [])
+    }, [props.project, props.viewOnly])
 
     let semesterMap = {};
 
@@ -106,10 +138,17 @@ export default function ProjectEditorModal(props) {
         },
         {
             type: "multiSelectDropdown",
-            label: "Project Members",
-            options: projectMembers,
-            name: "projectMembers",
+            label: "Students",
+            options: projectMembers.students,
+            name: "projectStudents",
             disabled: true,
+        },
+        {
+            type: "multiSelectDropdown",
+            label: "Coaches",
+            options: props.viewOnly ? projectMembers.coaches : props.activeCoaches?.map(coach => { return { key: coach.system_id, text: `${coach.lname}, ${coach.fname}`, value: coach.system_id } }),
+            name: "projectCoaches",
+            disabled: props.viewOnly
         },
         {
             type: "input",
@@ -136,7 +175,7 @@ export default function ProjectEditorModal(props) {
             name: "contact_phone",
         },
         {
-            type: "input",
+            type: "files",
             name: "attachments",
             placeHolder: "attachments",
             label: "attachments",
@@ -261,9 +300,7 @@ export default function ProjectEditorModal(props) {
             label: "Semester",
             placeHolder: "Semester",
             name: "semester",
-            options: Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            }),
+            options: createSemesterDropdownOptions(props.semesterData),
             loading: props.semesterData?.loading,
         },
         {
