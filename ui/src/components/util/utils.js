@@ -18,10 +18,10 @@ export const formatDate = (date) => {
  * @param {*} semestersOnly if semestersOnly is true, then omit the "no semester" option
  */
 export const createSemesterDropdownOptions = (semesterData, semestersOnly = false) => {
-    const options = semestersOnly ? [] : [{ key: "noSemester", text: "No Semester", value: "" }];
+    const options = semestersOnly ? [] : [{ key: "noSemester", text: "No Semester", value: null }];
     const semesters = _.sortBy(semesterData, ["end_date", "start_date"]).reverse();
     semesters.forEach(semester => {
-        options.push({ key: semester.semester_id, text: semester.name, value: semester.semester_id?.toString() })
+        options.push({ key: semester.semester_id, text: semester.name, value: semester.semester_id })
     });
     return options;
 }

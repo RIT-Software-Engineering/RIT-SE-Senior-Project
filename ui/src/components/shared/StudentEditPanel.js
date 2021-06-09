@@ -1,8 +1,35 @@
 import React from "react";
+import _ from "lodash";
 import { config, USERTYPES } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function StudentEditPanel(props) {
+
+    let idx = 0;
+    let semesterProjectDropdownMap = [{ semester: null, project: null }];
+    let semesterProjectDropdownOptions = [{ key: "No Project/Semester", text: "No Project/Semester", value: idx++ }]
+
+    // Have to do this mapping because you can't set the value of a dropdown to an object.
+    let visited = {}
+    props.projectsData?.forEach((semesterProject) => {
+        if (!visited[semesterProject.semester_id]) {
+            visited[semesterProject.semester_id] = true;
+            semesterProjectDropdownMap.push({
+                semester: semesterProject.semester_id
+            })
+            semesterProjectDropdownOptions.push({
+                key: `${semesterProject.semester_id}`,
+                text: `${semesterProject.name}`,
+                value: idx++,
+            })
+        }
+        semesterProjectDropdownMap.push({ semester: semesterProject.semester_id, project: semesterProject.project_id })
+        semesterProjectDropdownOptions.push({
+            key: `${semesterProject.semester_id}-${semesterProject.project_id}`,
+            text: `${semesterProject.name}-${semesterProject.display_name || semesterProject.title}`,
+            value: idx++,
+        })
+    });
 
     let initialState = {
         system_id: props.studentData.system_id || "",
@@ -10,9 +37,8 @@ export default function StudentEditPanel(props) {
         lname: props.studentData.lname || "",
         email: props.studentData.email || "",
         type: props.studentData.type || "",
-        semester_group: props.studentData.semester_group || "",
-        project_id: props.studentData.project || "",
         active: props.studentData.active || "",
+        semesterProject: _.findIndex(semesterProjectDropdownMap, { 'semester': props.studentData.semester_group, 'project': props.studentData.project }),
     };
 
     let submissionModalMessages = {
@@ -64,19 +90,10 @@ export default function StudentEditPanel(props) {
         },
         {
             type: "dropdown",
-            label: "Semester",
-            placeHolder: "Semester",
-            name: "semester_group",
-            options: Object.keys(semesterMap).map((semester_id, idx) => {
-                return { key: idx, text: semesterMap[semester_id], value: semester_id };
-            }),
-            loading: props.semesterData.loading
-        },
-        {
-            type: "input",
-            label: "Project",
-            placeHolder: "Project",
-            name: "project",
+            label: "Semester/Project",
+            placeHolder: "Semester/Project",
+            name: "semesterProject",
+            options: semesterProjectDropdownOptions,
         },
         {
             type: "activeCheckbox",
@@ -95,6 +112,11 @@ export default function StudentEditPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             button="edit"
+            preSubmit={(data) => {
+                data.semester_group = semesterProjectDropdownMap[data.semesterProject].semester;
+                data.project = semesterProjectDropdownMap[data.semesterProject].project;
+                return data;
+            }}
         />
     );
 }

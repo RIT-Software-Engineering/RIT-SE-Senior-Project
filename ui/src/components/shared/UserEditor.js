@@ -29,9 +29,6 @@ export default function UserEditor(props) {
             });
     }, []);
 
-    let semesterPanels = [];
-    semesterPanels.push(<UsersTab/>)
-
     //the empty user panel should trigger user creation
     return (
         <div className="accordion-button-group">
@@ -42,7 +39,7 @@ export default function UserEditor(props) {
                     {
                         key: "userEditor",
                         title: "Users",
-                        content: { content: semesterPanels },
+                        content: { content: <UsersTab /> },
                     },
                 ]}
             />

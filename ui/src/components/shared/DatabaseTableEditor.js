@@ -53,10 +53,13 @@ export default function DatabaseTableEditor(props) {
     };
 
     const handleSubmit = async function (e) {
+
+        const dataToSubmit = props.preSubmit && props.preSubmit(formData) || formData;
+
         let body = new FormData();
 
-        Object.keys(formData).forEach((key) => {
-            body.append(key, formData[key]);
+        Object.keys(dataToSubmit).forEach((key) => {
+            body.append(key, dataToSubmit[key]);
         });
 
         SecureFetch(submitRoute, {
@@ -158,7 +161,7 @@ export default function DatabaseTableEditor(props) {
                                 options={field.options}
                                 loading={field.loading}
                                 disabled={field.loading || field.disabled}
-                                value={formData[field.name]?.toString()}
+                                value={formData[field.name]}
                                 name={field.name}
                                 onChange={handleChange}
                             />

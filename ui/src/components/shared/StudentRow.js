@@ -16,6 +16,7 @@ export default function StudentRow(props) {
                     semesterData={props.semesterData}
                     header={`Currently Editing "${props.student.system_id}"`}
                     key={"editStudent-" + props.student.system_id}
+                    projectsData={props.projectsData}
                 />
             </TableCell>
         </TableRow>

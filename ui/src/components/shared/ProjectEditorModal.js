@@ -61,7 +61,7 @@ export default function ProjectEditorModal(props) {
         website: props.project.website || "",
         synopsis: props.project.synopsis || "",
         sponsor: props.project.sponsor || "",
-        semester: props.project.semester || "",
+        semester: props.project.semester || null,
         date: props.project.date || "",
         status: props.project.status || "",
     })

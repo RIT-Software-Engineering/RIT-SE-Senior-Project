@@ -187,11 +187,16 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         body.lname,
         body.email,
         body.type,
-        body.semester_group,
-        body.project,
+        JSON.parse(body.semester_group),
+        JSON.parse(body.project),
         active,
         body.system_id,
     ];
+
+    console.log(
+        JSON.parse(body.semester_group),
+        JSON.parse(body.project),
+    );
 
     db.query(updateQuery, params)
         .then(() => {
@@ -424,6 +429,7 @@ db_router.post(
         body("projectCoaches").trim().escape().isLength({ max: 5000 }),
     ],
     async (req, res) => {
+
         let body = req.body;
 
         const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
@@ -461,7 +467,7 @@ db_router.post(
             body.website,
             body.synopsis,
             body.sponsor,
-            body.semester,
+            JSON.parse(body.semester),
             body.project_id,
         ];
 

@@ -128,7 +128,7 @@ export default function UsersTab() {
                         semesterMap[student.name][student.project] = [];
                     }
                     semesterMap[student.name][student.project].push(
-                        <StudentRow student={student} semesterData={semesters} />
+                        <StudentRow student={student} semesterData={semesters} projectsData={projects} />
                     );
                 } else {
                     // if a student hasn't been assigned a project yet
@@ -136,7 +136,7 @@ export default function UsersTab() {
                         semesterMap[student.name][unassignedStudentsStr] = [];
                     }
                     semesterMap[student.name][unassignedStudentsStr].push(
-                        <StudentRow student={student} semesterData={semesters} />
+                        <StudentRow student={student} semesterData={semesters} projectsData={projects} />
                     );
                 }
             } else {
@@ -144,7 +144,7 @@ export default function UsersTab() {
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} />);
+                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} projectsData={projects} />);
             }
         }
         return semesterMap;
