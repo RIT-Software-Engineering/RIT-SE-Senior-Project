@@ -538,7 +538,7 @@ db_router.get("/getProposalPdf", CONFIG.authAdmin, (req, res) => {
     } else res.send("File not found");
 });
 
-db_router.get("/getProposalAttachmentNames", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalAttachmentNames", UserAuth.isSignedIn, (req, res) => {
     if (req.query.proposalTitle) {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues, get the name with no extension
         proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf("."));

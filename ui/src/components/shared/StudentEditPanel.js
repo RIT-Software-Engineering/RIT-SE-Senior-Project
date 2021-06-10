@@ -11,25 +11,26 @@ export default function StudentEditPanel(props) {
 
     // Have to do this mapping because you can't set the value of a dropdown to an object.
     let visited = {}
-    props.projectsData?.forEach((semesterProject) => {
-        if (!visited[semesterProject.semester_id]) {
-            visited[semesterProject.semester_id] = true;
-            semesterProjectDropdownMap.push({
-                semester: semesterProject.semester_id
-            })
+    _.sortBy(props.projectsData, ["end_date", "start_date"]).reverse()
+        ?.forEach((semesterProject) => {
+            if (!visited[semesterProject.semester_id]) {
+                visited[semesterProject.semester_id] = true;
+                semesterProjectDropdownMap.push({
+                    semester: semesterProject.semester_id
+                })
+                semesterProjectDropdownOptions.push({
+                    key: `${semesterProject.semester_id}`,
+                    text: `${semesterProject.name} - No Semester`,
+                    value: idx++,
+                })
+            }
+            semesterProjectDropdownMap.push({ semester: semesterProject.semester_id, project: semesterProject.project_id })
             semesterProjectDropdownOptions.push({
-                key: `${semesterProject.semester_id}`,
-                text: `${semesterProject.name}`,
+                key: `${semesterProject.semester_id} - ${semesterProject.project_id}`,
+                text: `${semesterProject.name} - ${semesterProject.display_name || semesterProject.title}`,
                 value: idx++,
             })
-        }
-        semesterProjectDropdownMap.push({ semester: semesterProject.semester_id, project: semesterProject.project_id })
-        semesterProjectDropdownOptions.push({
-            key: `${semesterProject.semester_id}-${semesterProject.project_id}`,
-            text: `${semesterProject.name}-${semesterProject.display_name || semesterProject.title}`,
-            value: idx++,
-        })
-    });
+        });
 
     let initialState = {
         system_id: props.studentData.system_id || "",

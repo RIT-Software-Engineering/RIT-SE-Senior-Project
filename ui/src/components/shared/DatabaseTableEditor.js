@@ -54,7 +54,7 @@ export default function DatabaseTableEditor(props) {
 
     const handleSubmit = async function (e) {
 
-        const dataToSubmit = props.preSubmit && props.preSubmit(formData) || formData;
+        const dataToSubmit = !!props.preSubmit ? props.preSubmit(formData) : formData;
 
         let body = new FormData();
 
