@@ -8,7 +8,7 @@ export default function SemesterTable(props) {
         return props.semesters.map((semester, i) => {
             return (
                 <TableRow key={i}>
-                    <TableCell>{semester.name}</TableCell>
+                    <TableCell>{`${semester.name} (${semester.semester_id})`}</TableCell>
                     <TableCell>{semester.dept}</TableCell>
                     <TableCell>{formatDate(semester.start_date)}</TableCell>
                     <TableCell>{formatDate(semester.end_date)}</TableCell>
@@ -17,7 +17,7 @@ export default function SemesterTable(props) {
                         <SemesterPanel
                             semester={semester}
                             semesterData={props.semesterData}
-                            header={`Currently Editing "${semester.name}"`}
+                            header={`Currently Editing "${semester.name} (${semester.semester_id})"`}
                             key={"editSemester-" + i}
                         />
                     </TableCell>
@@ -35,7 +35,7 @@ export default function SemesterTable(props) {
                         // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.DATE)}
                         >
-                            Semester Name
+                            Semester Name (Semester ID)
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
