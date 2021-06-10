@@ -7,6 +7,7 @@ import {
     TableRow,
     Accordion,
 } from "semantic-ui-react";
+import StudentRow from "./StudentRow";
 
 export default function StudentTeamTable(props) {
 
@@ -34,18 +35,6 @@ export default function StudentTeamTable(props) {
                         Email
                     </TableHeaderCell>
                     <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.TITLE)}
-                    >
-                        Semester Group
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
-                    >
-                        Project ID
-                    </TableHeaderCell>
-                    <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.EDIT)}
                     >
@@ -53,11 +42,16 @@ export default function StudentTeamTable(props) {
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
-            <TableBody>{props.content}</TableBody>
+            <TableBody>
+                {props.students?.map(student =>
+                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} />
+                )}
+
+            </TableBody>
         </Table>
     )
 
-    if (props.unassignedSemester){
+    if (props.unassignedSemester) {
         return table;
     }
 

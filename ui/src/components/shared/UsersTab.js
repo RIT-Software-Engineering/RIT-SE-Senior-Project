@@ -1,29 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
+import _ from "lodash";
 import StudentTeamTable from "./StudentTeamTable";
-import StudentRow from "./StudentRow";
 import { SecureFetch } from "../util/secureFetch";
-/**
- * This needs some edits, it makes the accorions for users in the admin tab
- * It should be altered to be generic to eventually replace the code behind 
- * the Student and Coaches tabs, all that could be done through here with 
- * params. 
- * 
- * This is pretty janky right now, need to remove dependency on StudentRow
- * 
- * This was ripped from StudentTab and edited fast to get it working. It still
- * needs to be refactored slightly to make it easier to read and use elsewhere
- * 
- * Still not aesthetically pleasing, rows for admins and coaches have individual 
- * headers
- * 
- * There needs to be an "inactive users" accordion
- * 
- */
+
 export default function UsersTab() {
     const [students, setStudentsData] = useState([]);
-    const [semesters, setSemestersData] = useState([]);
+    const [semesters, setSemestersData] = useState();
     const [projects, setProjectsData] = useState([]);
     const [users, setUserData] = useState([]);
 
@@ -31,6 +15,11 @@ export default function UsersTab() {
     const coaches = "Coaches";
     const admins = "Admins";
     const inactive = "Inactive Users";
+
+    let groupings;
+    let semesterMap = {};
+    let projectMap = {};
+    let semesterAccordions = [];
 
     useEffect(() => {
         SecureFetch(config.url.API_GET_STUDENT_INFO)
@@ -67,186 +56,160 @@ export default function UsersTab() {
             });
     }, []);
 
-    let semesterPanels = [];
+    function groupUsers(studentData, userData, projectMap) {
+        let semesterMap = { semesters: [] }
 
-    function fillInSemesterMap(semesterMap, studentData, semesterData, projectData, userData) {
-        for (let i = 0; i < semesterData.length; i++) {
-            let semester = semesterData[i];
-            if (!semesterMap[semester.name]) {
-                semesterMap[semester.name] = {};
-            }
-        }
-        for (let i = 0; i < projectData.length; i++) {
-            let project = projectData[i];
-            if (!semesterMap[project.name]) {
-                semesterMap[project.name] = {};
-            }
-            if (!semesterMap[project.name][project.project_id]) {
-                semesterMap[project.name][project.project_id] = [];
-            }
-        }
+        userData.forEach(user => {
+            if (user.active === "") {
+                switch (user.type) {
+                    case USERTYPES.COACH:
+                        if (!semesterMap[coaches]) {
+                            semesterMap[coaches] = [];
+                        }
+                        semesterMap[coaches].push(user);
+                        break;
+                    case USERTYPES.ADMIN:
+                        if (!semesterMap[admins]) {
+                            semesterMap[admins] = [];
+                        }
+                        semesterMap[admins].push(user);
+                        break;
 
-        for(let i = 0; i < users.length; i++) {
-            let user = userData[i];
-            if(user.type === "coach") {
-                if (!semesterMap[coaches]) {
-                    semesterMap[coaches] = [];
+                    default:
+                        break;
                 }
-                semesterMap[coaches].push(<StudentRow student = {user} semesterData = {semesters} />);
-            }
-        }
-
-        for(let i = 0; i < users.length; i++) {
-            let user = userData[i];
-            if (user.active === false) {
+            } else {
                 if (!semesterMap[inactive]) {
                     semesterMap[inactive] = [];
                 }
-                semesterMap[inactive].push(<StudentRow student = {user} semesterData = {semesters} />);
+                semesterMap[inactive].push(user);
             }
-        }
-
-        for(let i = 0; i < users.length; i++) {
-            let user = userData[i];
-            if(user.type === "admin") {
-                if (!semesterMap[admins]) {
-                    semesterMap[admins] = [];
-                }
-                semesterMap[admins].push(<StudentRow student = {user} semesterData = {semesters} />);
-            }
-        }
+        });
 
         for (let i = 0; i < studentData.length; i++) {
             let student = studentData[i];
             if (student.semester_group) {
-                if (!semesterMap[student.name]) {
-                    semesterMap[student.name] = {};
+                if (!semesterMap["semesters"][student.semester_id]) {
+                    semesterMap["semesters"][student.semester_id] = { projects: {} };
                 }
 
                 if (student.project) {
-                    if (!semesterMap[student.name][student.project]) {
-                        semesterMap[student.name][student.project] = [];
+                    if (!semesterMap["semesters"][student.semester_id]["projects"][student.project]) {
+                        semesterMap["semesters"][student.semester_id]["projects"][student.project] = {
+                            name: projectMap[student.project].display_name || projectMap[student.project].title,
+                            project_id: projectMap[student.project].project_id,
+                            students: []
+                        };
                     }
-                    semesterMap[student.name][student.project].push(
-                        <StudentRow student={student} semesterData={semesters} projectsData={projects} />
-                    );
+                    semesterMap["semesters"][student.semester_id]["projects"][student.project]["students"].push(student);
                 } else {
                     // if a student hasn't been assigned a project yet
-                    if (!semesterMap[student.name][unassignedStudentsStr]) {
-                        semesterMap[student.name][unassignedStudentsStr] = [];
+                    if (!semesterMap["semesters"][student.semester_id][unassignedStudentsStr]) {
+                        semesterMap["semesters"][student.semester_id][unassignedStudentsStr] = [];
                     }
-                    semesterMap[student.name][unassignedStudentsStr].push(
-                        <StudentRow student={student} semesterData={semesters} projectsData={projects} />
-                    );
+                    semesterMap["semesters"][student.semester_id][unassignedStudentsStr].push(student);
                 }
             } else {
                 //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
-                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} projectsData={projects} />);
+                semesterMap[unassignedStudentsStr].push(student);
             }
         }
         return semesterMap;
     }
 
-    if (students && semesters && projects) {
-        let semesterMap = {};
-        let projectMap = new Map();
+    function createSemesterAccordion(grouping) {
+        let panels = [];
 
-        semesterMap = fillInSemesterMap(semesterMap, students, semesters, projects, users);
-
-        for (let i = 0; i < projects.length; i++) {
-            projectMap[projects[i]["project_id"]] = projects[i]["team_name"];
+        if (grouping[unassignedStudentsStr]) {
+            panels.push(<StudentTeamTable
+                title={`Unassigned Students (${grouping[unassignedStudentsStr].length})`}
+                projectsData={projects}
+                semesterData={semesters}
+                students={grouping[unassignedStudentsStr]}
+            />)
         }
-        for (const [semesterName, projects] of Object.entries(semesterMap)) {
-            if (semesterName) {
-                let projectPanels = [];
 
-                let val = projects || {};
+        if (grouping["projects"]) {
+            let sortedProjects = _.sortBy(grouping["projects"], ["name"]);
 
-                for (const [projectId, studentPanels] of Object.entries(val)) {
-                    if (semesterName === unassignedStudentsStr) {
-                        let key = `StudentsTab-project-selector-${unassignedStudentsStr}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`Semester-unassigned Students (${studentPanels.length})`}
-                                content={studentPanels}
-                                unassignedSemester={true}
-                            />
-                        );
-                    } else if (semesterName === "Coaches") {
-                        let key = `StudentsTab-project-selector-${coaches}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`Semester-Coaches (${studentPanels.length})`}
-                                content={studentPanels}
-                                unassignedSemester={true}
-                            />
-                        );
-                    } else if (semesterName === "Inactive Users") {
-                        let key = `StudentsTab-project-selector-${inactive}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`Semester-Coaches (${studentPanels.length})`}
-                                content={studentPanels}
-                                unassignedSemester={true}
-                            />
-                        );
-                    } else if (semesterName === "Admins") {
-                        let key = `StudentsTab-project-selector-${admins}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`Semester-Coaches (${studentPanels.length})`}
-                                content={studentPanels}
-                                unassignedSemester={true}
-                            />
-                        );
-                    } else if (projectId !== unassignedStudentsStr) {
-                        let key = `StudentsTab-project-selector-${projectMap[projectId]}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`${projectMap[projectId]} (${studentPanels.length})`}
-                                content={studentPanels}
-                            />
-                        );
-                    } else {
-                        let key = `StudentsTab-project-selector-${unassignedStudentsStr}-${projectId}`;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                childKey={key}
-                                title={`Team-unassigned Students (${studentPanels.length})`}
-                                content={studentPanels}
-                            />
-                        );
-                    }
-                }
-
-                semesterPanels.push(
-                    <Accordion
-                        fluid
-                        styled
-                        panels={[
-                            {
-                                key: "StudentsTab-semester-selector-" + semesterName,
-                                title: `${semesterName} (${projectPanels.length})`,
-                                content: { content: projectPanels },
-                            },
-                        ]}
-                    />
-                );
-            }
+            panels.push(sortedProjects.map(project => {
+                return <StudentTeamTable
+                    title={`${project["name"]} (${project["students"].length})`}
+                    projectsData={projects}
+                    semesterData={semesters}
+                    students={project["students"]}
+                />
+            }));
         }
+        return panels
     }
 
+    if (!students || !semesters || !Object.keys(projects).length) {
+        return <>loading...</>
+    }
+
+    semesters.forEach(semester => {
+        semesterMap[semester.semester_id] = semester;
+    })
+    projects.forEach(project => {
+        projectMap[project.project_id] = project;
+    })
+
+    groupings = groupUsers(students, users, projectMap);
+
+    semesterAccordions = Object.keys(groupings["semesters"]).map(semesterId => {
+        return {
+            endDate: semesterMap[semesterId]?.end_date,
+            startDate: semesterMap[semesterId]?.start_date,
+            accordion: <Accordion
+                key={semesterId}
+                fluid
+                styled
+                panels={[
+                    {
+                        key: "StudentsTab-semester-selector-" + semesterId,
+                        title: `${semesterMap[semesterId]["name"]} (${Object.keys(groupings["semesters"][semesterId])?.length})`,
+                        content: { content: createSemesterAccordion(groupings["semesters"][semesterId]) },
+                    },
+                ]}
+            />,
+        }
+    })
+
+    semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
+
     return (
-        <div>
-            {semesterPanels.reverse()}
-        </div>
+        <>
+            <StudentTeamTable
+                title="Unassigned Students"
+                projectsData={projects}
+                semesterData={semesters}
+                students={groupings[unassignedStudentsStr]}
+            />
+            <StudentTeamTable
+                title="Admins"
+                projectsData={projects}
+                semesterData={semesters}
+                students={groupings[admins]}
+            />
+            <StudentTeamTable
+                title="Coaches"
+                projectsData={projects}
+                semesterData={semesters}
+                students={groupings[coaches]}
+            />
+            {semesterAccordions?.map(semesterAccordion => {
+                return semesterAccordion.accordion
+            })}
+            <StudentTeamTable
+                title="Inactive Students"
+                projectsData={projects}
+                semesterData={semesters}
+                students={groupings[inactive]}
+            />
+        </>
     );
 }
