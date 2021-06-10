@@ -16,7 +16,7 @@ export default function BatchUserPanel() {
         const fileReader = new FileReader();
         fileReader.readAsText(event.target.files[0]);
         fileReader.onload = ((output) => {
-            const csv = new CSV(output.target.result, { header: true })
+            const csv = new CSV(output.target.result, { header: true, cast: ["string", "string", "string", "string", "string", "string", "string"] });
             setUsers(csv.parse());
         })
     }

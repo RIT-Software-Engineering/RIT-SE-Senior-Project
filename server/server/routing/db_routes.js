@@ -149,7 +149,7 @@ db_router.post("/batchCreateUser", [
 
         const insertStatements = users.map(user => {
             const active = user.active.toLocaleLowerCase() === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
-            return `('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group},'${active}')`
+            return `('${user.system_id}','${user.fname}','${user.lname}','${user.email}','${user.type}',${user.semester_group === "" ? null : `'${user.semester_group}'`},'${active}')`
         });
 
         const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(",")}`;
@@ -538,7 +538,7 @@ db_router.get("/getProposalPdf", CONFIG.authAdmin, (req, res) => {
     } else res.send("File not found");
 });
 
-db_router.get("/getProposalAttachmentNames", CONFIG.authAdmin, (req, res) => {
+db_router.get("/getProposalAttachmentNames", UserAuth.isSignedIn, (req, res) => {
     if (req.query.proposalTitle) {
         let proposalTitle = req.query.proposalTitle.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues, get the name with no extension
         proposalTitle = proposalTitle.substr(0, proposalTitle.lastIndexOf("."));
