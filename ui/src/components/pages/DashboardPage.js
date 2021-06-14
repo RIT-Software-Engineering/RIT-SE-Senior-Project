@@ -58,7 +58,7 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Sponsor Info",
+                    menuItem: "Sponsors",
                     render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
                 },
             );
