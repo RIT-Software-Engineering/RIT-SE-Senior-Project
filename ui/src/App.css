@@ -21,6 +21,7 @@
 
 .accordion-button-group {
     display: flex;
+    flex-direction: column;
 }
 
 .accordion-button-group .accordion-buttons-container {

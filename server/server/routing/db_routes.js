@@ -316,15 +316,15 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", [UserAuth.isSignedIn], async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res) => {
+    const query = "SELECT * from projects";
+    db.query(query)
+        .then((projects) => res.send(projects))
+        .catch(err => res.status(500).send(err));
+});
 
-    if (req.user.type === ROLES.ADMIN || req.user.type === ROLES.COACH) {
-        const query = "SELECT * from projects";
-        db.query(query)
-            .then((projects) => res.send(projects))
-            .catch(err => res.status(500).send(err));
-        return;
-    }
+
+db_router.get("/getCandidateProjects", [UserAuth.isSignedIn], async (req, res) => {
     const query = "SELECT * from projects WHERE projects.status = 'candidate';"
     db.query(query)
         .then((projects) => res.send(projects))
@@ -475,7 +475,7 @@ db_router.post(
         const deleteValues = body.projectCoaches.split(",").map(coachId => `'${coachId}'`);
         const updateCoachesSql = `INSERT OR IGNORE INTO '${DB_CONFIG.tableNames.project_coaches}' ('project_id', 'coach_id') VALUES ${insertValues};`
         const deleteCoachesSQL = `DELETE FROM '${DB_CONFIG.tableNames.project_coaches}'
-                                    WHERE project_coaches.project_id = ${body.project_id}
+                                    WHERE project_coaches.project_id = '${body.project_id}'
                                     AND project_coaches.coach_id NOT IN (${deleteValues});`
 
         Promise.all([

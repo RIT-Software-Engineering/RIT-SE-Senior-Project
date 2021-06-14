@@ -161,9 +161,7 @@ export default function Proposals(props) {
         );
     };
 
-    return (
-        <>
-            <Accordion panels={[{ key: 0, title: semesterName(), content: { content: table() } }]} />
-        </>
-    );
+    return (props.noAccordion ?
+        table() :
+        <Accordion fluid styled panels={[{ key: 0, title: semesterName(), content: { content: table() } }]} />);
 }
