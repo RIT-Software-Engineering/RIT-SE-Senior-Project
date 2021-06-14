@@ -60,17 +60,19 @@ export default function ProjectEditor(props) {
 
     return (
         <div className="accordion-button-group">
-            <Accordion
-                fluid
-                styled
-                panels={[
-                    {
-                        key: "projectEditor",
-                        title: props.viewOnly ? "Project Viewer" : "Project Editor",
-                        content: { content: content() },
-                    },
-                ]}
-            />
+            {props.noAccordion ? content() :
+                <Accordion
+                    fluid
+                    styled
+                    panels={[
+                        {
+                            key: "projectEditor",
+                            title: props.viewOnly ? "Project Viewer" : "Project Editor",
+                            content: { content: content() },
+                        },
+                    ]}
+                />
+            }
             {!props.viewOnly &&
                 <div className="accordion-buttons-container">
                     <Button

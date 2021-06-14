@@ -4,7 +4,7 @@ import TimeLines from "../shared/TimeLines";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
-import ProposalTable from "../shared/ProposalTable";
+import ProjectsTab from "../shared/ProjectsTab";
 import ProjectEditor from "../shared/ProjectEditor";
 import ActionsTab from "../shared/ActionsTab";
 import CoachesTab from "../shared/CoachesTab";
@@ -87,7 +87,7 @@ export default function DashboardPage() {
                     menuItem: "Projects",
                     render: () => (
                         <Tab.Pane>
-                            <ProposalTable semesterData={semesterData} />
+                            <ProjectsTab semesterData={semesterData} />
                         </Tab.Pane>
                     ),
                 },

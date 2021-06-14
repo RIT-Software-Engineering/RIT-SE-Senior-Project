@@ -19,6 +19,7 @@ export const config = {
         // GET - Auth needed
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
+        API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
