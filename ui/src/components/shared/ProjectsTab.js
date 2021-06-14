@@ -29,7 +29,7 @@ export default function ProjectsTab(props) {
             .catch((error) => {
                 alert("Failed to get proposal data " + error);
             });
-    }, []);
+    }, [userContext]);
 
     return <>
         {candidateProjects.length > 0 ? <>
