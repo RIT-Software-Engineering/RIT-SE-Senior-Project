@@ -59,6 +59,7 @@ export default function StudentTeamTable(props) {
         <Accordion
             fluid
             styled
+            key={"Student-TeamTable-Accordion"}
             panels={[
                 {
                     key: props.childKey,
