@@ -1,13 +1,19 @@
 import moment from "moment";
 import _ from "lodash";
 
+const formatDateTimeString = (dateTime) => {
+    // Note: Non-chromium browsers (i.e Firefox, Safari) can't parse dates in the format YYYY-MM-DD,
+    // they need dates in the format YYYY/MM/DD.
+    return `${dateTime.replaceAll("-", "/")} GMT`
+}
+
 export const formatDateTime = (datetime) => {
-    let date = new Date(datetime + " UTC");
+    let date = new Date(formatDateTimeString(datetime));
     return `${moment(date).format('L')} ${moment(date).format("LT")}`
 };
 
 export const formatDate = (date) => {
-    let dateObj = new Date(date + " UTC");
+    let dateObj = new Date(formatDateTimeString(date));
     return `${moment(dateObj).format('L')}`
 };
 
