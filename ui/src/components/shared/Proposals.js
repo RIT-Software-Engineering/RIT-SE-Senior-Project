@@ -101,7 +101,7 @@ export default function Proposals(props) {
                     <TableCell>{semesterMap[proposal.semester]}</TableCell>
                     <TableCell>
                         <a
-                            href={`${config.url.API_GET_PROPOSAL_PDF}?name=${proposal.title}.pdf`}
+                            href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
                             target="_blank"
                             rel="noreferrer"
                         >

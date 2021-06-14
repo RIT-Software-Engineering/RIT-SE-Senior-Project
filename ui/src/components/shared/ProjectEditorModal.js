@@ -18,7 +18,7 @@ export const formattedAttachments = (project) => {
     return project?.attachments?.split(", ").map(attachment => {
         return {
             title: attachment,
-            link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?proposalTitle=${project.title}&name=${attachment}`,
+            link: `${config.url.API_GET_PROPOSAL_ATTACHMENT}?project_id=${project.project_id}&name=${attachment}`,
         }
     })
 }
