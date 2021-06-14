@@ -29,8 +29,8 @@ export default function ActionEditor(props) {
             }
             semesterMap[actionData.semester].push(actionData);
         }
-        for (const [, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(<ActionTable actions={value} semesterData={props.semesterData} />);
+        for (const [key, value] of Object.entries(semesterMap)) {
+            semesterPanels.push(<ActionTable key={key} actions={value} semesterData={props.semesterData} />);
         }
     }
 

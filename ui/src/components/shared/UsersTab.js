@@ -125,6 +125,8 @@ export default function UsersTab() {
 
         if (grouping[unassignedStudentsStr]) {
             panels.push(<StudentTeamTable
+                key={unassignedStudentsStr}
+                childKey={unassignedStudentsStr}
                 title={`Unassigned Students (${grouping[unassignedStudentsStr].length})`}
                 projectsData={projects}
                 semesterData={semesters}
@@ -137,6 +139,8 @@ export default function UsersTab() {
 
             panels.push(sortedProjects.map(project => {
                 return <StudentTeamTable
+                    key={`project-${project.project_id}`}
+                    childKey={`project-${project.project_id}`}
                     title={`${project["name"]} (${project["students"].length})`}
                     projectsData={projects}
                     semesterData={semesters}
@@ -185,18 +189,24 @@ export default function UsersTab() {
         <>
             <StudentTeamTable
                 title="Unassigned Students"
+                key="Unassigned Students Key"
+                childKey="Unassigned Students Key"
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[unassignedStudentsStr]}
             />
             <StudentTeamTable
                 title="Admins"
+                key="Admins"
+                childKey="Admins"
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[admins]}
             />
             <StudentTeamTable
                 title="Coaches"
+                key="Coaches"
+                childKey="Coaches"
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[coaches]}
@@ -206,6 +216,8 @@ export default function UsersTab() {
             })}
             <StudentTeamTable
                 title="Inactive Students"
+                key="Inactive Students"
+                childKey="Inactive Students"
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[inactive]}

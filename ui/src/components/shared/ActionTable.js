@@ -10,7 +10,7 @@ import {
 } from "semantic-ui-react";
 import _ from "lodash";
 import ActionPanel from "./ActionPanel";
-import { formatDateTime } from "../util/utils";
+import { formatDate } from "../util/utils";
 
 export default function ActionTable(props) {
     const renderActions = () => {
@@ -21,8 +21,8 @@ export default function ActionTable(props) {
                 <TableRow key={i}>
                     <TableCell>{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
-                    <TableCell>{formatDateTime(action.start_date)}</TableCell>
-                    <TableCell>{formatDateTime(action.due_date)}</TableCell>
+                    <TableCell>{formatDate(action.start_date)}</TableCell>
+                    <TableCell>{formatDate(action.due_date)}</TableCell>
                     <TableCell>
                         <div className="accordion-buttons-container" style={{ position: 'initial' }}>
                             <ActionPanel

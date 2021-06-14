@@ -8,7 +8,7 @@ export default function SemesterTable(props) {
         return props.semesters.map((semester, i) => {
             return (
                 <TableRow key={i}>
-                    <TableCell>{`${semester.name} (${semester.semester_id})`}</TableCell>
+                    <TableCell>{`${semester.name} (ID: ${semester.semester_id})`}</TableCell>
                     <TableCell>{semester.dept}</TableCell>
                     <TableCell>{formatDate(semester.start_date)}</TableCell>
                     <TableCell>{formatDate(semester.end_date)}</TableCell>
