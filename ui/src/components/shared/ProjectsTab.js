@@ -11,9 +11,6 @@ export default function ProjectsTab(props) {
     const [candidateProjects, setCandidateProjects] = useState([]);
     const userContext = useContext(UserContext);
 
-    console.log("myProposalData", myProposalData);
-    console.log("candidateProjects", candidateProjects);
-
     useEffect(() => {
         // TODO: Do pagination
         SecureFetch(config.url.API_GET_MY_PROJECTS)
