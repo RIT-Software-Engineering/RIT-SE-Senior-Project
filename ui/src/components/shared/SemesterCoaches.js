@@ -52,7 +52,5 @@ export default function SemesterCoaches({ coaches }) {
         </div>
     }
 
-    console.log("coaches", coaches);
-
     return (coaches && coaches.map(coach => content(coach)))
 }

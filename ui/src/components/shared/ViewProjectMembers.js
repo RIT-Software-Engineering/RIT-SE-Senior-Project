@@ -36,7 +36,7 @@ export default function ViewProjectMembers(props) {
                 setProjectCoaches(coaches);
             })
             .catch(err => {
-                console.log("Failed to fetch project coaches", err);
+                console.error("Failed to fetch project coaches", err);
             })
     }
 
