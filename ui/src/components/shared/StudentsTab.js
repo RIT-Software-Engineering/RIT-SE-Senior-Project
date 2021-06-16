@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
-import StudentRow from "./StudentRow";
+import _ from "lodash";
 import { SecureFetch } from "../util/secureFetch";
 
 export default function StudentsTab() {
@@ -21,7 +21,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
-        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
@@ -41,138 +41,108 @@ export default function StudentsTab() {
 
     let semesterPanels = [];
 
-    function fillInSemesterMap(semesterMap, studentData, semesterData, projectData) {
-        for (let i = 0; i < semesterData.length; i++) {
-            let semester = semesterData[i];
-            if (!semesterMap[semester.name]) {
-                semesterMap[semester.name] = {};
-            }
-        }
-        for (let i = 0; i < projectData.length; i++) {
-            let project = projectData[i];
-            if (!semesterMap[project.name]) {
-                semesterMap[project.name] = {};
-            }
-            if (!semesterMap[project.name][project.project_id]) {
-                semesterMap[project.name][project.project_id] = [];
-            }
-        }
+    function generateMappedData(studentData, semesterData, projectData) {
 
-        for (let i = 0; i < studentData.length; i++) {
-            let student = studentData[i];
-            if (student.semester_group) {
-                if (!semesterMap[student.name]) {
-                    semesterMap[student.name] = {};
+        let projectMap = {};
+        projectData.forEach(project => {
+            projectMap[project.project_id] = project;
+        });
+
+        let semesterMap = {}
+        semesterData.forEach(semester => {
+            semesterMap[semester.semester_id] = semester;
+        });
+
+        let mappedData = { [unassignedStudentsStr]: { students: [], name: unassignedStudentsStr, projects: {} } }
+
+        studentData.forEach(student => {
+            if (student.semester_id) {
+                if (!mappedData[student.semester_id]) {
+                    mappedData[student.semester_id] = {
+                        projects: { "noProject": { students: [], name: "No Project" } },
+                        name: semesterMap[student.semester_id]?.name,
+                        start_date: semesterMap[student.semester_id]?.start_date,
+                        end_date: semesterMap[student.semester_id]?.end_date,
+                        semester_id: semesterMap[student.semester_id]?.semester_id,
+                    };
                 }
-
                 if (student.project) {
-                    if (!semesterMap[student.name][student.project]) {
-                        semesterMap[student.name][student.project] = [];
+                    if (!mappedData[student.semester_id]["projects"][student.project]) {
+                        mappedData[student.semester_id]["projects"][student.project] = {
+                            students: [],
+                            name: projectMap[student.project]?.display_name || projectMap[student.project]?.title,
+                        };
                     }
-                    semesterMap[student.name][student.project].push(
-                        <StudentRow student={student} semesterData={semesters} />
-                    );
+                    mappedData[student.semester_id]["projects"][student.project]['students'].push(student);
                 } else {
-                    // if a student hasn't been assigned a project yet
-                    if (!semesterMap[student.name][unassignedStudentsStr]) {
-                        semesterMap[student.name][unassignedStudentsStr] = [];
-                    }
-                    semesterMap[student.name][unassignedStudentsStr].push(
-                        <StudentRow student={student} semesterData={semesters} />
-                    );
+                    mappedData[student.semester_id]["projects"]["noProject"]["students"].push(student);
                 }
             } else {
-                //if a student doesn't have an assigned semester group yet
-                if (!semesterMap[unassignedStudentsStr]) {
-                    semesterMap[unassignedStudentsStr] = [];
-                }
-                semesterMap[unassignedStudentsStr].push(<StudentRow student={student} semesterData={semesters} />);
+                mappedData[unassignedStudentsStr]["students"].push(student);
             }
-        }
-        return semesterMap;
+        });
+
+        return mappedData;
     }
 
-    if (students && semesters && projects) {
-        let semesterMap = {};
-        let projectMap = new Map();
+    if (students.length > 0 && semesters.length > 0 && projects.length > 0) {
 
-        semesterMap = fillInSemesterMap(semesterMap, students, semesters, projects);
+        let semesterMap = generateMappedData(students, semesters, projects);
 
-        for (let i = 0; i < projects.length; i++) {
-            projectMap[projects[i]["project_id"]] = projects[i]["team_name"];
-        }
-        for (const [semesterName, projects] of Object.entries(semesterMap)) {
-            if (semesterName) {
-                let projectPanels = [];
+        semesterMap = _.sortBy(semesterMap, ["end_date", "start_date", "name"]);
 
-                let val = projects || {};
-
-                for (const [projectId, studentPanels] of Object.entries(val)) {
-                    if (semesterName === unassignedStudentsStr) {
-                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                key={key}
-                                title={`Semester-unassigned Students (${studentPanels.length})`}
-                                content={studentPanels}
-                                unassignedSemester={true}
-                            />
-                        );
-                    } else if (projectId !== unassignedStudentsStr) {
-                        let key = "StudentsTab-project-selector-" + projectMap[projectId];
-                        projectPanels.push(
-                            <StudentTeamTable
-                                key={key}
-                                title={`${projectMap[projectId]} (${studentPanels.length})`}
-                                content={studentPanels}
-                            />
-                        );
-                    } else {
-                        let key = "StudentsTab-project-selector-" + unassignedStudentsStr;
-                        projectPanels.push(
-                            <StudentTeamTable
-                                key={key}
-                                title={`Team-unassigned Students (${studentPanels.length})`}
-                                content={studentPanels}
-                            />
-                        );
-                    }
-                }
-
+        semesterMap.forEach(semester => {
+            if (semester.name === unassignedStudentsStr) {
                 semesterPanels.push(
                     <Accordion
+                        key={unassignedStudentsStr}
                         fluid
                         styled
-                        panels={[
-                            {
-                                key: "StudentsTab-semester-selector-" + semesterName,
-                                title: `${semesterName} (${projectPanels.length})`,
-                                content: { content: projectPanels },
-                            },
-                        ]}
+                        panels={[{
+                            key: unassignedStudentsStr,
+                            title: `${semester.name} (${semester.students?.length})`,
+                            content: {
+                                content:
+                                    <StudentTeamTable
+                                        key={unassignedStudentsStr}
+                                        title={unassignedStudentsStr}
+                                        students={semester.students}
+                                        semesterData={semesters}
+                                        noAccordion
+                                        viewOnly
+                                    />
+                            }
+                        }]}
                     />
-                );
+                )
+            } else {
+                semesterPanels.push(
+                    <Accordion
+                        key={semester.semester_id}
+                        fluid
+                        styled
+                        panels={[{
+                            key: semester.semester_id,
+                            title: `${semester.name} (${Object.keys(semester.projects)?.length})`,
+                            content: {
+                                content:
+                                    Object.keys(semester.projects).map(projectKey => {
+                                        return semester.projects[projectKey].students.length > 0 &&
+                                            <StudentTeamTable
+                                                key={projectKey}
+                                                title={semester.projects[projectKey].name}
+                                                students={semester.projects[projectKey].students}
+                                                semesterData={semesters}
+                                                viewOnly
+                                            />
+                                    })
+                            }
+                        }]}
+                    />
+                )
             }
-        }
+        })
     }
 
-    const onAdd = () => {
-        // return <ActionModal />;
-        //todo
-        alert("Blank Students Modal"); 
-    };
-
-    return (
-        <div>
-            <Button
-                icon
-                onClick={() => {
-                    onAdd();
-                }}
-            >
-                <Icon name="plus" />
-            </Button>
-            {semesterPanels.reverse()}
-        </div>
-    );
+    return semesterPanels.reverse();
 }

@@ -34,24 +34,24 @@ export default function StudentTeamTable(props) {
                     >
                         Email
                     </TableHeaderCell>
-                    <TableHeaderCell
+                    {!props.viewOnly && <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.EDIT)}
                     >
                         Action
-                    </TableHeaderCell>
+                    </TableHeaderCell>}
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {props.students?.map(student =>
-                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} />
+                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} />
                 )}
 
             </TableBody>
         </Table>
     )
 
-    if (props.unassignedSemester) {
+    if (props.noAccordion) {
         return table;
     }
 

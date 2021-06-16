@@ -38,7 +38,7 @@ export default function UsersTab() {
             .catch((error) => {
                 alert("Failed to get user data" + error);
             });
-        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);

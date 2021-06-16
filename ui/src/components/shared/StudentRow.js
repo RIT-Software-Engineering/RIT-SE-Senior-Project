@@ -8,7 +8,7 @@ export default function StudentRow(props) {
             <TableCell>{props.student.fname}</TableCell>
             <TableCell>{props.student.lname}</TableCell>
             <TableCell><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
-            <TableCell>
+            {!props.viewOnly && <TableCell>
                 <StudentEditPanel
                     studentData={props.student}
                     semesterData={props.semesterData}
@@ -16,7 +16,7 @@ export default function StudentRow(props) {
                     key={"editStudent-" + props.student.system_id}
                     projectsData={props.projectsData}
                 />
-            </TableCell>
+            </TableCell>}
         </TableRow>
     );
 }

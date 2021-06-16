@@ -70,7 +70,7 @@ db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
 db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {
 
     let query = `SELECT users.*, project_coaches.project_id FROM users
-	    LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
+        LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
         WHERE users.project = ? OR project_coaches.project_id = ?`;
 
     params = [req.query.project_id, req.query.project_id]
@@ -205,20 +205,6 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         .catch((err) => {
             console.log(err);
             return res.status(500).send(err);
-        });
-});
-
-db_router.get("/getActiveSemesters", (req, res) => {
-    let getSemestersQuery = `
-        SELECT *
-        FROM semester_group
-    `;
-    db.query(getSemestersQuery)
-        .then((values) => {
-            res.send(values);
-        })
-        .catch((err) => {
-            res.status(500).send(err);
         });
 });
 
@@ -979,7 +965,7 @@ db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
     let getSemestersQuery = `
         SELECT *
         FROM semester_group
-        ORDER BY semester_id desc
+        ORDER BY end_date, start_date, name
     `;
     db.query(getSemestersQuery)
         .then((values) => {
