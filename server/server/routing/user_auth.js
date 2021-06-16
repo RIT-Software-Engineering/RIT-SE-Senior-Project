@@ -1,7 +1,7 @@
 const { ROLES } = require("../consts");
 
 const isSignedIn = (req, res, next) => {
-    if (req.user === undefined || req.user === null) {
+    if (req.user.system_id === undefined || req.user.system_id === null) {
         res.sendStatus(401);
         return;
     }
