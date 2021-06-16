@@ -18,7 +18,7 @@ export default function ProjectsTab(props) {
             .then((proposals) => {
                 setMyProposalData(proposals);
                 // Only load candidate projects if student and don't have a project
-                if (proposals.length === 0 && userContext.user?.role === USERTYPES.STUDENT) {
+                if ((proposals.length === 0 && userContext.user?.role === USERTYPES.STUDENT) || userContext.user?.role === USERTYPES.COACH) {
                     SecureFetch(config.url.API_GET_CANDIDATE_PROJECTS)
                         .then((response) => response.json())
                         .then(projects => {
@@ -32,15 +32,14 @@ export default function ProjectsTab(props) {
     }, [userContext]);
 
     return <>
-        {candidateProjects.length > 0 ? <>
-            <h3>Candidate Projects:</h3>
+        {(candidateProjects.length > 0 || userContext.user?.role === USERTYPES.COACH) && <>
+            <h3>Candidate Projects</h3>
             <Proposals noAccordion viewOnly proposalData={candidateProjects} semesterData={props.semesterData} />
             <br />
-        </> : <>
-            <h3>My Projects:</h3>
-                <Proposals noAccordion viewOnly proposalData={myProposalData} semesterData={props.semesterData} />
-            <br />
         </>}
+        <h3>My Projects</h3>
+        <Proposals noAccordion viewOnly proposalData={myProposalData} semesterData={props.semesterData} />
+        <br />
         {userContext.user?.role !== USERTYPES.STUDENT && <>
             <h3>All Projects</h3>
             <ProjectEditor noAccordion semesterData={props.semesterData} />
