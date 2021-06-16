@@ -54,7 +54,7 @@ export default function ViewProjectMembers(props) {
             return <p>No coaches</p>
         }
 
-        return <Table>
+        return <Table celled>
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell>Coach</TableHeaderCell>
@@ -69,7 +69,7 @@ export default function ViewProjectMembers(props) {
                     </TableRow>
                 })}
             </TableBody>
-        </Table >
+        </Table>
     }
 
     return (
