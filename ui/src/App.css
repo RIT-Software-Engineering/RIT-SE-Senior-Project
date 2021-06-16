@@ -30,6 +30,23 @@
     margin: 2px 1em !important;
 }
 
+/* For nested accordion with depth of 1 */
+.accordion-button-group .accordion-button-group .accordion-buttons-container {
+    position: absolute;
+    right: 1em;
+    margin: 2px 2em !important;
+}
+
+/* 
+ * For nested accordion with depth of 2 
+ * (please for the love of all that is holy, do not have accordions nested more than 2 deep) 
+ */
+.accordion-button-group .accordion-button-group .accordion-button-group .accordion-buttons-container {
+    position: absolute;
+    right: 1em;
+    margin: 2px 3em !important;
+}
+
 .accordion-buttons-container > * {
     margin: 0 0 0 0 !important;
     border-radius: 0 !important;

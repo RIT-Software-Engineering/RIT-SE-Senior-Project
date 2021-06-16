@@ -222,7 +222,7 @@ db_router.get("/getActiveSemesters", (req, res) => {
         });
 });
 
-db_router.get("/getActiveProjects", (req, res) => {
+db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
     let getProjectsQuery = `
         SELECT *
         FROM projects
@@ -252,6 +252,36 @@ db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
         });
 });
 
+db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+    const getProjectCoaches = `SELECT users.* FROM users 
+        LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
+        WHERE project_coaches.project_id = ?`;
+
+    db.query(getProjectCoaches, [req.query.project_id])
+        .then((coaches) => {
+            res.send(coaches)
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send(error);
+        });
+})
+
+db_router.get("/getProjectStudents", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+    const getProjectStudents = "SELECT * FROM users WHERE users.project = ?";
+
+    db.query(getProjectStudents, [req.query.project_id])
+        .then((students) => {
+            res.send(students)
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send(error);
+        });
+})
+
 db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     const getCoachInfoQuery = `
@@ -263,9 +293,11 @@ db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
         (
             SELECT "[" || group_concat(
                 "{" ||
-                    """title"""         || ":" || """" || projects.title         || """" || "," ||
-                    """semester_id"""   || ":" || """" || projects.semester      || """" || "," ||
-                    """project_id"""    || ":" || """" || projects.project_id    || """" ||
+                    """title"""         || ":" || """" || COALESCE(projects.display_name, projects.title) || """" || "," ||
+                    """semester_id"""   || ":" || """" || projects.semester                               || """" || "," ||
+                    """project_id"""    || ":" || """" || projects.project_id                             || """" || "," ||
+                    """organization"""  || ":" || """" || projects.organization                           || """" || "," ||
+                    """status"""        || ":" || """" || projects.status                                 || """" ||
                 "}"
             ) || "]"
             FROM project_coaches
@@ -443,7 +475,7 @@ db_router.post(
         const updateProjectParams = [
             body.status,
             body.title,
-            body.display_name,
+            body.display_name ? body.display_name : null,   // Empty strings should be turned to null
             body.organization,
             body.primary_contact,
             body.contact_email,

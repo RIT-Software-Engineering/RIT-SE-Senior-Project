@@ -69,7 +69,7 @@ export default function CoachesTab() {
         <div >
             {semesters.map(semester => {
                 return mappedCoachData[semester.semester_id] &&
-                    <div className="accordion-button-group">
+                    <div key={semester.semester_id} className="accordion-button-group">
                         <Accordion
                             fluid
                             styled
