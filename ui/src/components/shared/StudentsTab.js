@@ -130,7 +130,7 @@ export default function StudentsTab() {
                                         return semester.projects[projectKey].students.length > 0 &&
                                             <StudentTeamTable
                                                 key={projectKey}
-                                                title={semester.projects[projectKey].name}
+                                                title={`${semester.projects[projectKey].name} (${semester.projects[projectKey]?.students?.length})`}
                                                 students={semester.projects[projectKey].students}
                                                 semesterData={semesters}
                                                 viewOnly
