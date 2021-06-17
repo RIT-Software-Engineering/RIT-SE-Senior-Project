@@ -356,7 +356,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", [UserAuth.isAdmin], async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res) => {
     const query = "SELECT * from projects";
     db.query(query)
         .then((projects) => res.send(projects))
