@@ -6,6 +6,7 @@ import {
     TableHeaderCell,
     TableRow,
     Accordion,
+    Icon,
 } from "semantic-ui-react";
 import StudentRow from "./StudentRow";
 
@@ -56,19 +57,31 @@ export default function StudentTeamTable(props) {
     }
 
     return (
-        <Accordion
-            fluid
-            styled
-            key={"Student-TeamTable-Accordion"}
-            panels={[
-                {
-                    key: props.childKey,
-                    title: props.title,
-                    content: {
-                        content: (table)
+        <div className="accordion-button-group">
+            <Accordion
+                fluid
+                styled
+                key={"Student-TeamTable-Accordion"}
+                panels={[
+                    {
+                        key: props.childKey,
+                        title: props.title,
+                        content: {
+                            content: (table)
+                        },
                     },
-                },
-            ]}
-        />
+                ]}
+            />
+            <div className="accordion-buttons-container">
+                <a
+                    href={`mailTo:${props.students?.map(student => student.email).join(",")}`}
+                    className="ui icon button"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    <Icon name="mail" />
+                </a>
+            </div>
+        </div>
     );
 }
