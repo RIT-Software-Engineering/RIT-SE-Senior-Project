@@ -33,7 +33,7 @@ export const config = {
         API_GET_PROJECT_COACHES: `${BASE_API_URL}/db/getProjectCoaches`,
         API_GET_PROJECT_STUDENTS: `${BASE_API_URL}/db/getProjectStudents`,
         API_GET_ACTIVE_COACHES: `${BASE_API_URL}/db/getActiveCoaches`,
-        API_GET_USERS: `${BASE_API_URL}/db/getUsers`,
+        API_GET_MY_STUDENTS: `${BASE_API_URL}/db/getMyStudents`,
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
 
         // POST - Auth needed

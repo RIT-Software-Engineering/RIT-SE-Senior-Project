@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Accordion } from "semantic-ui-react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import _ from "lodash";
 import { SecureFetch } from "../util/secureFetch";
+import { UserContext } from "../util/UserContext";
 
 export default function StudentsTab() {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
+    const userContext = useContext(UserContext);
 
     const unassignedStudentsStr = "Unassigned students";
 
     useEffect(() => {
-        SecureFetch(config.url.API_GET_STUDENT_INFO)
+        SecureFetch(config.url.API_GET_MY_STUDENTS)
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
@@ -29,7 +31,8 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
-        SecureFetch(config.url.API_GET_ACTIVE_PROJECTS)
+        const getProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_MY_PROJECTS;
+        SecureFetch(getProjects)
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
@@ -56,26 +59,26 @@ export default function StudentsTab() {
         let mappedData = { [unassignedStudentsStr]: { students: [], name: unassignedStudentsStr, projects: {} } }
 
         studentData.forEach(student => {
-            if (student.semester_id) {
-                if (!mappedData[student.semester_id]) {
-                    mappedData[student.semester_id] = {
+            if (student.semester_group) {
+                if (!mappedData[student.semester_group]) {
+                    mappedData[student.semester_group] = {
                         projects: { "noProject": { students: [], name: "No Project" } },
-                        name: semesterMap[student.semester_id]?.name,
-                        start_date: semesterMap[student.semester_id]?.start_date,
-                        end_date: semesterMap[student.semester_id]?.end_date,
-                        semester_id: semesterMap[student.semester_id]?.semester_id,
+                        name: semesterMap[student.semester_group]?.name,
+                        start_date: semesterMap[student.semester_group]?.start_date,
+                        end_date: semesterMap[student.semester_group]?.end_date,
+                        semester_id: semesterMap[student.semester_group]?.semester_group,
                     };
                 }
                 if (student.project) {
-                    if (!mappedData[student.semester_id]["projects"][student.project]) {
-                        mappedData[student.semester_id]["projects"][student.project] = {
+                    if (!mappedData[student.semester_group]["projects"][student.project]) {
+                        mappedData[student.semester_group]["projects"][student.project] = {
                             students: [],
                             name: projectMap[student.project]?.display_name || projectMap[student.project]?.title,
                         };
                     }
-                    mappedData[student.semester_id]["projects"][student.project]['students'].push(student);
+                    mappedData[student.semester_group]["projects"][student.project]['students'].push(student);
                 } else {
-                    mappedData[student.semester_id]["projects"]["noProject"]["students"].push(student);
+                    mappedData[student.semester_group]["projects"]["noProject"]["students"].push(student);
                 }
             } else {
                 mappedData[unassignedStudentsStr]["students"].push(student);

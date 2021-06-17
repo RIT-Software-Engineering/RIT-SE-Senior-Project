@@ -55,15 +55,37 @@ db_router.get("/selectAllStudentInfo", [UserAuth.isCoachOrAdmin], (req, res) => 
         });
 });
 
-// gets all users
-db_router.get("/getUsers", [UserAuth.isAdmin], (req, res) => {
-    let query = `SELECT *
-            FROM users
-            LEFT JOIN semester_group
-            ON users.semester_group = semester_group.semester_id
-            `;
 
-    db.query(query).then((users) => res.send(users));
+db_router.get("/getMyStudents", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+    let query = "";
+    let params = [];
+    switch (req.user.type) {
+        case ROLES.COACH:
+            query = `SELECT users.* FROM users
+                WHERE users.project IN (
+                    SELECT project_coaches.project_id FROM project_coaches
+                    WHERE project_coaches.coach_id = ?
+                )`;
+            params = [req.user.system_id];
+            break;
+        case ROLES.ADMIN:
+            query = `SELECT * FROM users
+                LEFT JOIN semester_group
+                ON users.semester_group = semester_group.semester_id
+                WHERE users.type = 'student'`;
+            break;
+
+        default:
+            break;
+    }
+
+    db.query(query, params)
+        .then((users) => res.send(users))
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
 });
 
 
@@ -334,7 +356,7 @@ db_router.get("/selectExemplary", (req, res) => {
  *
  * TODO: Add pagination
  */
-db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res) => {
+db_router.get("/getProjects", [UserAuth.isAdmin], async (req, res) => {
     const query = "SELECT * from projects";
     db.query(query)
         .then((projects) => res.send(projects))
