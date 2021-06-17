@@ -28,11 +28,11 @@ function dropAllTables() {
                 let delString = "";
                 for (let obj of values) {
                     delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`;
-                    db.query(delString).catch((err) => {
+                    Promise.resolve(db.query(delString).catch((err) => {
                         reject(`${obj["name"]} : ${err}`);
-                    });
+                    }));
                 }
-                setTimeout(resolve, 2000); // wait for the last SQL statement to execute before moving on
+                resolve();
             })
             .catch((err) => {
                 reject(err);
@@ -50,12 +50,12 @@ function createAllTables() {
 
             for (file of files) {
                 fs.readFile(path.join(table_sql_path, file), "utf8", (err, sql) => {
-                    db.query(sql).catch((err) => {
+                    Promise.resolve(db.query(sql).catch((err) => {
                         reject(`${file} : ${err}`);
-                    });
+                    }));
                 });
             }
-            setTimeout(resolve, 2000); // wait for the last SQL statement to execute
+            resolve();
         });
     });
 }
@@ -69,12 +69,12 @@ function populateDummyData() {
 
             for (file of files) {
                 fs.readFile(path.join(dummy_data_path, file), "utf8", (err, sql) => {
-                    db.query(sql).catch((err) => {
+                    Promise.resolve(db.query(sql).catch((err) => {
                         reject(`${file} : ${err}`);
-                    });
-                    setTimeout(resolve, 2000);
+                    }));
                 });
             }
+            resolve();
         });
     });
 }
@@ -91,5 +91,4 @@ async function redeployDatabase() {
     }
 }
 
-module.exports =  redeployDatabase;
-
+module.exports = redeployDatabase;

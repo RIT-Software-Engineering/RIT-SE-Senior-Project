@@ -11,7 +11,7 @@ export default function CoachesTab() {
     const [coachInfo, setCoachInfoData] = useState([]);
 
     useEffect(() => {
-        SecureFetch(config.url.API_GET_ACTIVE_SEMESTERS)
+        SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 const sortedSemesterData = _.sortBy(semestersData, ["end_date", "start_date", "name"]).reverse();
