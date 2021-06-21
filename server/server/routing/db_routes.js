@@ -795,7 +795,7 @@ db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
 
 db_router.get("/getTeamTimeline", (req, res) => { });
 
-db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim().escape()], async (req, res) => {
+db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (req, res) => {
     let result = validationResult(req);
 
     if (result.errors.length !== 0) {
@@ -891,8 +891,8 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
 });
 
 db_router.get("/getActionLogs", (req, res) => {
-    if (req.query.system_id === ROLES.ADMIN) {
-        let getActionLogQuery = `SELECT logs.creation_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files, 
+    if (req.user.type === ROLES.ADMIN) {
+        let getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
                                 act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
             FROM action_log logs
             JOIN actions act

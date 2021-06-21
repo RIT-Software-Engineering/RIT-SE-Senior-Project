@@ -43,12 +43,12 @@ export default function TeamFiles() {
                 }
                 header={"Submission"}
                 actions={[{ content: "Done", key: 0 }]}
-                content={
-                    <div>
+                content={{
+                    content: <div>
                         <h5>Action:</h5> <p>{action.action_title}</p>
                         <h5>Submission Type:</h5> <p>{action.action_target}</p>
                         <h5>Submitted By:</h5> <p>{action.system_id}</p>
-                        <h5>Submitted At:</h5> <p>{formatDateTime(action.creation_datetime)}</p>
+                        <h5>Submitted At:</h5> <p>{formatDateTime(action.submission_datetime)}</p>
                         <Divider />
                         <h3>Submission</h3>
                         {Object.keys(formData)?.map((key) => {
@@ -63,7 +63,7 @@ export default function TeamFiles() {
                             return <><a href={`${config.url.BASE_URL}/#`} >{file}</a><br /></>;
                         })}
                     </div>
-                }
+                }}
             />
         );
     };
@@ -87,7 +87,7 @@ export default function TeamFiles() {
                                 <TableCell>{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>
                                 <TableCell>{action.system_id}</TableCell>
-                                <TableCell>{formatDateTime(action.creation_datetime)}</TableCell>
+                                <TableCell>{formatDateTime(action.submission_datetime)}</TableCell>
                                 <TableCell>{viewSubmissionModal(action)}</TableCell>
                             </TableRow>
                         );

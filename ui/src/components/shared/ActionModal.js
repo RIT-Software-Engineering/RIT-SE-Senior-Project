@@ -120,7 +120,7 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={<Button>Show Modal</Button>}
+            trigger={<Button fluid >Submit Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
