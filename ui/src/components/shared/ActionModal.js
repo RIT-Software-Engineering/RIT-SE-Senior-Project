@@ -10,6 +10,7 @@ const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+    const [errors, setErrors] = useState([])
     const filesRef = useRef();
 
     const generateModalFields = () => {
@@ -35,6 +36,7 @@ export default function ActionModal(props) {
     const closeSubmissionModal = () => {
         switch (submissionModalOpen) {
             case MODAL_STATUS.SUCCESS:
+                setErrors([]);
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             case MODAL_STATUS.FAIL:
@@ -58,8 +60,17 @@ export default function ActionModal(props) {
 
             let formData = {};
             const formDataKeys = Object.keys(document.forms[0].elements);
+            let errors = [];
             for (let x = formDataKeys.length / 2; x < formDataKeys.length; x++) {
+                if (document.forms[0].elements[formDataKeys[0]].required && !document.forms[0].elements[formDataKeys[x]].value) {
+                    errors.push(`'${document.forms[0].elements[formDataKeys[x]].name}' can not be empty`);
+                }
                 formData[formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]].value;
+            }
+
+            if (errors.length > 0) {
+                setErrors(errors);
+                return;
             }
 
             body.append("form_data", JSON.stringify(formData));
@@ -88,10 +99,15 @@ export default function ActionModal(props) {
     }
 
     function fileUpload(fileTypes) {
-        return fileTypes && <><input ref={filesRef} type="file" accept={fileTypes} multiple />Accepted: {fileTypes.split(",").join(", ")}</>;
+        return fileTypes && <>
+            <h2>File Submission</h2>
+            <input ref={filesRef} type="file" accept={fileTypes} multiple />
+            <br />
+            Accepted: { fileTypes.split(",").join(", ")}
+        </>;
     }
 
-    function onActionCancel() {}
+    function onActionCancel() { }
 
     return (
         <Modal
@@ -110,8 +126,14 @@ export default function ActionModal(props) {
             <Modal.Content>
                 <Modal.Description>
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
+                    {errors.length > 0 && <>
+                        <h4>Uh ohh...</h4>
+                        <ul>
+                            {errors.map(err => <li>{err}</li>)}
+                        </ul>
+                    </>}
+                    {fileUpload(props.file_types)}
                 </Modal.Description>
-                {fileUpload(props.file_types)}
                 <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
             </Modal.Content>
             <Modal.Actions>
