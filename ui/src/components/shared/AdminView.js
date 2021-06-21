@@ -60,7 +60,7 @@ export default function AdminView(props) {
       <>
         <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
         <Label pointing='right'>To view this page as a different user</Label>
-        <Dropdown button value={selectedUser} options={users} onChange={(e, target) => setSelectedUser(target.value)} />
+        <Dropdown search button value={selectedUser} options={users} onChange={(e, target) => setSelectedUser(target.value)} />
         {renderButton()}
       </>
     )

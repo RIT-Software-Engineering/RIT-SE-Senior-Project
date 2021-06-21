@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Accordion } from "semantic-ui-react";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import TimelineElement from "./TimelineElement";
+import { UserContext } from "../util/UserContext";
+import Timeline from "./Timeline";
 
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({});
+    const userContext = useContext(UserContext);
 
     useEffect(() => {
         SecureFetch(config.url.API_GET_ACTIVE_TIMELINES)
@@ -54,15 +56,18 @@ export default function TimeLines() {
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
                         content: semesterData?.map((timelineElementData) => (
-                            <TimelineElement key={"timeline-"} {...timelineElementData} />
+                            <Timeline key={"timeline-"} elementData={timelineElementData} />
                         )),
                     },
                     semester_id: semesterData[0]?.semester_id,
                 },
             ];
+            if (userContext.user?.role === USERTYPES.STUDENT) {
+                return semester[0].content?.content;
+            }
             return <Accordion fluid styled panels={semester} key={idx} onTitleClick={handleTitleClick} />;
         });
     };
 
-    return <>{generateTimeLines()}</>;
+    return generateTimeLines();
 }

@@ -40,7 +40,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
             });
-    }, []);
+    }, [userContext.user?.role]);
 
     let semesterPanels = [];
 

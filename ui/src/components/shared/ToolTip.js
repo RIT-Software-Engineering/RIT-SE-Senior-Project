@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Popup } from "semantic-ui-react";
+import { formatDate } from "../util/utils";
 import ActionModal from "./ActionModal";
 
 function ToolTip(props) {
@@ -15,8 +16,8 @@ function ToolTip(props) {
             content={
                 <div className="content">
                     <p dangerouslySetInnerHTML={{ __html: props.action.short_desc }} />
-                    <p>Starts: {props.action.start_date}</p>
-                    <p>Due: {props.action.due_date}</p>
+                    <p>Starts: {formatDate(props.action.start_date)}</p>
+                    <p>Due: {formatDate(props.action.due_date)}</p>
                     <ActionModal key={props.action.action_id} {...props.action} isOpenCallback={isOpenCallback} />
                 </div>
             }

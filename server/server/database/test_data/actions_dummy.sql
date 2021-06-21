@@ -101,7 +101,6 @@ VALUES
         '<h1> Submit your interim report </h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"report\">Report File</label>
-            <input name=\"report\" type=\"file\"/>
         </form>
         ',
         '.png,.pdf,.jpg'

@@ -3,6 +3,11 @@
     color: #666666;
 }
 
+.proposal-row-red {
+    background: #fff6f6;
+    color: #9f3a38;
+}
+
 .proposal-row-yellow {
     background: #fffaf3;
     color: #573a08;

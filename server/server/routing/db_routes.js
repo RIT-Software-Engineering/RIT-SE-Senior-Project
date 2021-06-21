@@ -1074,7 +1074,8 @@ function calculateActiveTimelines(user) {
     return new Promise((resolve, reject) => {
         // WARN: If any field in an action is null, group_concat will remove that entire action...
         let getTeams = `
-            SELECT  projects.team_name, 
+            SELECT  projects.display_name,
+                    projects.title,
                     semester_group.name AS "semester_name", 
                     semester_group.semester_id AS "semester_id",
                     semester_group.end_date AS "end_date",
