@@ -891,23 +891,48 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
 });
 
 db_router.get("/getActionLogs", (req, res) => {
-    if (req.user.type === ROLES.ADMIN) {
-        let getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                                act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-            FROM action_log logs
-            JOIN actions act
-            ON logs.action_template = act.action_id`;
-        db.query(getActionLogQuery)
-            .then((values) => {
-                res.send(values);
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send(err);
-            });
-    } else {
-        res.status(401).send("Invalid user -- handling users not supported yet...");
+    let getActionLogQuery = "";
+    let params = [];
+    switch (req.user.type) {
+        case ROLES.STUDENT:
+            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
+                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
+                FROM action_log logs
+                JOIN actions act
+                    ON logs.action_template = act.action_id
+                WHERE logs.system_id = ? OR (act.action_target = 'team' AND logs.project IN (SELECT project FROM users WHERE users.system_id = ?))`;
+            params = [req.user.system_id, req.user.system_id];
+            break;
+        case ROLES.COACH:
+            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
+                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
+                FROM action_log logs
+                JOIN actions act
+                    ON logs.action_template = act.action_id
+                WHERE logs.project IN (SELECT project_id FROM project_coaches WHERE project_coaches.coach_id = ?)`;
+            params = [req.user.system_id];
+            break;
+        case ROLES.ADMIN:
+            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
+                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
+                FROM action_log logs
+                JOIN actions act
+                ON logs.action_template = act.action_id`;
+            break;
+
+        default:
+            res.status(401).send("Unknown role");
+            return;
     }
+
+    db.query(getActionLogQuery, params)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(err);
+        });
 });
 
 db_router.post("/editAction", body("page_html").unescape(), (req, res) => {

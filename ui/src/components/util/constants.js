@@ -29,7 +29,6 @@ export const config = {
         API_GET_ACTIVE_PROJECTS: `${BASE_API_URL}/db/getActiveProjects`,
         API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
         API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
-        API_GET_ACTION_SUBMISSION: `${BASE_API_URL}/db/getActionSubmission`,
         API_GET_ALL_COACH_INFO: `${BASE_API_URL}/db/selectAllCoachInfo`,
         API_GET_PROJECT_COACHES: `${BASE_API_URL}/db/getProjectCoaches`,
         API_GET_PROJECT_STUDENTS: `${BASE_API_URL}/db/getProjectStudents`,
