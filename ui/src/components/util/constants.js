@@ -58,6 +58,13 @@ export const USERTYPES = {
     ADMIN: "admin",
 }
 
+export const ACTION_TARGETS = {
+    individual: 'individual',
+    team: 'team',
+    coach: 'coach',
+    admin: 'admin',
+}
+
 export const DROPDOWN_ITEMS = {
     actionTarget: [
         {

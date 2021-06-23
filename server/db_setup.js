@@ -32,7 +32,9 @@ function dropAllTables() {
                         reject(`${obj["name"]} : ${err}`);
                     }));
                 }
-                resolve();
+                setTimeout(() => {
+                    resolve();
+                }, 1000);
             })
             .catch((err) => {
                 reject(err);
@@ -55,7 +57,9 @@ function createAllTables() {
                     }));
                 });
             }
-            resolve();
+            setTimeout(() => {
+                resolve();
+            }, 1000);
         });
     });
 }
@@ -74,7 +78,9 @@ function populateDummyData() {
                     }));
                 });
             }
-            resolve();
+            setTimeout(() => {
+                resolve();
+            }, 3000);
         });
     });
 }

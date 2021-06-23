@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Button, Modal } from "semantic-ui-react";
+import { Form, Input } from 'semantic-ui-react';
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 
@@ -10,6 +11,7 @@ const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 export default function ActionModal(props) {
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+    const [errors, setErrors] = useState([])
     const filesRef = useRef();
 
     const generateModalFields = () => {
@@ -35,6 +37,7 @@ export default function ActionModal(props) {
     const closeSubmissionModal = () => {
         switch (submissionModalOpen) {
             case MODAL_STATUS.SUCCESS:
+                setErrors([]);
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             case MODAL_STATUS.FAIL:
@@ -47,7 +50,7 @@ export default function ActionModal(props) {
         props.isOpenCallback(false);
     };
 
-    function onActionSubmit(id) {
+    function onActionSubmit(id, file_types) {
         let form = document.forms.item(0);
         if (form !== null && form !== undefined) {
 
@@ -58,13 +61,27 @@ export default function ActionModal(props) {
 
             let formData = {};
             const formDataKeys = Object.keys(document.forms[0].elements);
+            let errors = [];
             for (let x = formDataKeys.length / 2; x < formDataKeys.length; x++) {
+                if (document.forms[0].elements[formDataKeys[x]].required && !document.forms[0].elements[formDataKeys[x]].value) {
+                    errors.push(`'${document.forms[0].elements[formDataKeys[x]].name}' can not be empty`);
+                }
                 formData[formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]].value;
+            }
+
+            const formFiles = filesRef.current?.inputRef?.current?.files || [];
+
+            if (file_types && formFiles.length === 0) {
+                errors.push("You must upload files");
+            }
+
+            if (errors.length > 0) {
+                setErrors(errors);
+                return;
             }
 
             body.append("form_data", JSON.stringify(formData));
 
-            const formFiles = filesRef.current?.files || [];
             for (let i = 0; i < formFiles?.length || 0; i++) {
                 body.append("attachments", formFiles[i]);
             }
@@ -88,10 +105,17 @@ export default function ActionModal(props) {
     }
 
     function fileUpload(fileTypes) {
-        return fileTypes && <><input ref={filesRef} type="file" accept={fileTypes} multiple />Accepted: {fileTypes.split(",").join(", ")}</>;
+        return fileTypes && <Form>
+            <Form.Field required>
+                <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})</label>
+                <Input fluid required ref={filesRef} type="file" accept={fileTypes} multiple />
+            </Form.Field>
+        </Form>;
     }
 
-    function onActionCancel() {}
+    function onActionCancel() {
+        setErrors([]);
+    }
 
     return (
         <Modal
@@ -104,14 +128,22 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={<Button>Show Modal</Button>}
+            trigger={props.trigger || <Button fluid >Submit Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
                 <Modal.Description>
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
+                    <br />
+                    {fileUpload(props.file_types)}
+                    {errors.length > 0 && <div className="submission-errors">
+                        <br />
+                        <h4>Uh ohh...</h4>
+                        <ul>
+                            {errors.map(err => <li key={err}>{err}</li>)}
+                        </ul>
+                    </div>}
                 </Modal.Description>
-                {fileUpload(props.file_types)}
                 <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
             </Modal.Content>
             <Modal.Actions>
@@ -130,7 +162,7 @@ export default function ActionModal(props) {
                     labelPosition="right"
                     icon="checkmark"
                     onClick={() => {
-                        onActionSubmit(props.id);
+                        onActionSubmit(props.id, props.file_types);
                     }}
                     positive
                 />

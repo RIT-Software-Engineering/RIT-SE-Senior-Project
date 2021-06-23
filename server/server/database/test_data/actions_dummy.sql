@@ -60,11 +60,15 @@ VALUES
         '2019-10-30',
         '<h1>Take the individual test form</h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
-            <label for=\"name\">Name</label>
-            <input name=\"name\" type=\"text\"/>
+            <div class=\"required field\">
+                <label for=\"name\">Name</label>
+                <input required name=\"name\" type=\"text\"/>
+            </div>
 
-            <label for=\"email\">Email</label>
-            <input name=\"email\" type=\"text\"/>
+            <div class=\"required field\">
+                <label for=\"email\">Email</label>
+                <input required name=\"email\" type=\"text\"/>
+            </div>
             
         </form>
         ',
@@ -83,8 +87,10 @@ VALUES
             <label for=\"name\">Name</label>
             <input name=\"name\" type=\"text\"/>
 
-            <label for=\"email\">Email</label>
-            <input name=\"email\" type=\"text\"/>
+            <div class=\"required field\">
+                <label for=\"email\">Email</label>
+                <input required name=\"email\" type=\"text\"/>
+            </div>
             
         </form>
         ',
@@ -101,7 +107,6 @@ VALUES
         '<h1> Submit your interim report </h1>
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <label for=\"report\">Report File</label>
-            <input name=\"report\" type=\"file\"/>
         </form>
         ',
         '.png,.pdf,.jpg'
