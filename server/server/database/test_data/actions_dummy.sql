@@ -62,12 +62,12 @@ VALUES
         <form class=\"ui form\" action=\"/db/submitAction\" method=\"POST\" enctype=\"multipart/form-data\">
             <div class=\"required field\">
                 <label for=\"name\">Name</label>
-                <input name=\"name\" type=\"text\"/>
+                <input required name=\"name\" type=\"text\"/>
             </div>
 
             <div class=\"required field\">
                 <label for=\"email\">Email</label>
-                <input name=\"email\" type=\"text\"/>
+                <input required name=\"email\" type=\"text\"/>
             </div>
             
         </form>
@@ -89,7 +89,7 @@ VALUES
 
             <div class=\"required field\">
                 <label for=\"email\">Email</label>
-                <input name=\"email\" type=\"text\"/>
+                <input required name=\"email\" type=\"text\"/>
             </div>
             
         </form>

@@ -45,3 +45,7 @@
     overflow-y: hidden;
     overflow-x: auto;
 }
+
+.submission-errors {
+    color: red;
+}
