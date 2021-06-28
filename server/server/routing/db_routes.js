@@ -32,7 +32,6 @@ db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
 
 db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
-        console.log(value);
         res.send(value);
     });
 });
@@ -150,7 +149,7 @@ db_router.post("/createUser", [
                 return res.status(200).send();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 return res.status(500).send(err);
             });
     }
@@ -215,17 +214,12 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         body.system_id,
     ];
 
-    console.log(
-        JSON.parse(body.semester_group),
-        JSON.parse(body.project),
-    );
-
     db.query(updateQuery, params)
         .then(() => {
             return res.status(200).send();
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return res.status(500).send(err);
         });
 });
@@ -525,7 +519,7 @@ db_router.post(
         ]).then((values) => {
             return res.sendStatus(200);
         }).catch((err) => {
-            console.log(err);
+            console.error(err);
             return res.status(500).send(err);
         });
     }
@@ -589,7 +583,6 @@ db_router.get("/getProposalAttachmentNames", UserAuth.isSignedIn, (req, res) => 
                 res.status(500).send(err);
                 return;
             }
-            console.log(files);
             let fileLinks = [];
             files.forEach(function (file) {
                 fileLinks.push(file.toString());
@@ -711,7 +704,7 @@ db_router.post(
                     `./server/sponsor_proposal_files/${projectId}/${req.files.attachments[x].name}`,
                     function (err) {
                         if (err) {
-                            console.log(err);
+                            console.error(err);
                             return res.status(500).send(err);
                         }
                     }
@@ -769,7 +762,7 @@ db_router.post(
                 return res.status(200).send();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 return res.status(500).send(err);
             });
     }
@@ -788,7 +781,7 @@ db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
         }
     ).catch(
         (err) => {
-            console.log(err);
+            console.error(err);
             res.status(500).send();
         });
 });
@@ -847,6 +840,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
                 `${baseURL}/${req.files.attachments[x].name}`,
                 function (err) {
                     if (err) {
+                        console.error(err);
                         return res.status(500).send(err);
                     }
                 }
@@ -861,16 +855,22 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
             project,
             form_data,
             files
+            ${req.user.mock && ",mock_id" || ""}
             )
-        VALUES (?,?,?,?,?)
+        VALUES (?,?,?,?,?${req.user.mock && ",?" || ""})
     `;
 
     let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
+    if (req.user.mock) {
+        params.push(req.user.mock.system_id);
+    }
+
     db.query(insertAction, params)
         .then(() => {
             return res.sendStatus(200);
         })
         .catch((err) => {
+            console.error(err);
             res.status(500).send(err);
         });
 });
@@ -893,44 +893,54 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
 db_router.get("/getActionLogs", (req, res) => {
     let getActionLogQuery = "";
     let params = [];
+
     switch (req.user.type) {
         case ROLES.STUDENT:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                    ON logs.action_template = act.action_id
-                WHERE logs.system_id = ? OR (act.action_target = 'team' AND logs.project IN (SELECT project FROM users WHERE users.system_id = ?))`;
-            params = [req.user.system_id, req.user.system_id];
+            // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
+            getActionLogQuery = `SELECT action_log.* FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                AND (action_log.system_id = ? OR (actions.action_target='${ACTION_TARGETS.TEAM}' AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)))`;
+            params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
             break;
         case ROLES.COACH:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                    ON logs.action_template = act.action_id
-                WHERE logs.project IN (SELECT project_id FROM project_coaches WHERE project_coaches.coach_id = ?)`;
-            params = [req.user.system_id];
-            break;
         case ROLES.ADMIN:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                ON logs.action_template = act.action_id`;
+            getActionLogQuery = `SELECT action_log.* FROM action_log
+                WHERE action_log.action_template = ? AND action_log.project = ?`;
+            params = [req.query.action_id, req.query.project_id];
             break;
 
         default:
             res.status(401).send("Unknown role");
             return;
     }
+    db.query(getActionLogQuery, params)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+});
+
+// Get your teammates submissions (Does not send submission, just submission metadata i.e. submission time, who submitted, etc)
+db_router.get("/getTeammateActionLogs", (req, res) => {
+    let getActionLogQuery = "";
+    let params = [];
+
+    // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
+    getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project FROM action_log
+        WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?) AND action_log.system_id != ?
+        AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+    params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
 
     db.query(getActionLogQuery, params)
         .then((values) => {
             res.send(values);
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             res.status(500).send(err);
         });
 });
@@ -1101,6 +1111,7 @@ function calculateActiveTimelines(user) {
         let getTeams = `
             SELECT  projects.display_name,
                     projects.title,
+                    projects.project_id,
                     semester_group.name AS "semester_name", 
                     semester_group.semester_id AS "semester_id",
                     semester_group.end_date AS "end_date",

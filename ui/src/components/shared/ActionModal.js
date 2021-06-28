@@ -57,7 +57,8 @@ export default function ActionModal(props) {
             let body = new FormData();
 
             body.append("action_template", props.action_id);
-            body.append("project", "some project id whoop whoop");
+            // Note: A user could spoof this and submit actions for other projects...although idk what they could gain from doing that.
+            body.append("project", props.projectId);
 
             let formData = {};
             const formDataKeys = Object.keys(document.forms[0].elements);

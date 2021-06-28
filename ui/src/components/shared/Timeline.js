@@ -35,7 +35,7 @@ export default function Timeline(props) {
             </div>
 
             actionsComponents.push(
-                <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} />
+                <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.elementData?.project_id} />
             )
         })
 

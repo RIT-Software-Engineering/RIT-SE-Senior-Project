@@ -39,7 +39,7 @@ const mockUser = (req, res, next) => {
         req.user = {
             system_id: req.cookies.mockUser,
             type: req.cookies.mockType,
-            isMock: true,
+            mock: req.user,
         }
     }
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Popup } from "semantic-ui-react";
-import { ACTION_TARGETS } from "../util/constants";
+import { ACTION_TARGETS, config } from "../util/constants";
+import { SecureFetch } from "../util/secureFetch";
 import { formatDate, formatDateTime } from "../util/utils";
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
@@ -15,6 +16,9 @@ const submissionTypeMap = {
 function ToolTip(props) {
     const [closeOnDocClick, setCloseOnDocClick] = useState(true);
 
+    const [submissions, setSubmissions] = useState(null)
+    const [teammateActions, setTeammateActions] = useState(null)
+
     let isOpenCallback = function (isOpen) {
         setCloseOnDocClick(!isOpen);
     };
@@ -28,18 +32,27 @@ function ToolTip(props) {
                     <p>Starts: {formatDate(props.action.start_date)}</p>
                     <p>Due: {formatDate(props.action.due_date)}</p>
                     <p>Submission Type: {submissionTypeMap[props.action.target]}</p>
-                    {props.action?.submissions?.length > 0 && props.action?.submissions.map(submission => {
+                    {submissions?.map(submission => {
                         return <SubmissionViewerModal
                             key={submission.system_id + submission.submission_datetime}
                             action={submission}
-                            trigger={<div><a href="#">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</a><br /></div>}
+                            trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
+                        />
+                    })}
+                    {teammateActions?.map(submission => {
+                        return <SubmissionViewerModal
+                            key={submission.system_id + submission.submission_datetime}
+                            action={submission}
+                            noSubmission
+                            trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                         />
                     })}
                     <ActionModal
                         key={props.action.action_id}
                         {...props.action}
                         isOpenCallback={isOpenCallback}
-                        trigger={props.action?.submissions?.length > 0 ? <Button fluid >Resubmit Action</Button> : <Button fluid >Submit Action</Button>}
+                        projectId={props.projectId}
+                        trigger={submissions?.length > 0 ? <Button fluid >Resubmit Action</Button> : <Button fluid >Submit Action</Button>}
                     />
                 </div>
             }
@@ -47,6 +60,24 @@ function ToolTip(props) {
             style={{ zIndex: 100 }}
             trigger={props.trigger}
             on="click"
+            onOpen={() => {
+                SecureFetch(`${config.url.API_GET_ACTION_LOGS}?project_id=${props.projectId}&action_id=${props.action.action_id}`)
+                    .then(response => response.json())
+                    .then(actionLogs => {
+                        setSubmissions(actionLogs);
+                    })
+                    .catch(err => {
+                        console.error("FAILED TO GET SUBMISSIONS: ", err)
+                    })
+                SecureFetch(`${config.url.API_GET_TEAMMATE_ACTION_LOGS}?project_id=${props.projectId}&action_id=${props.action.action_id}`)
+                    .then(response => response.json())
+                    .then(actionLogs => {
+                        setTeammateActions(actionLogs);
+                    })
+                    .catch(err => {
+                        console.error("FAILED TO GET TEAMMATE SUBMISSIONS: ", err)
+                    })
+            }}
         />
     );
 }

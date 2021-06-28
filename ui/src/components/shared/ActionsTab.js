@@ -13,7 +13,7 @@ import { SecureFetch } from "../util/secureFetch";
 import SubmissionViewerModal from "./SubmissionViewerModal";
 
 // TODO: TO BE RENAMED
-export default function TeamFiles() {
+export default function ActionsTab() {
     const [actionLogs, setActionLogs] = useState([]);
 
     useEffect(() => {
@@ -43,11 +43,15 @@ export default function TeamFiles() {
                 </TableHeader>
                 <TableBody>
                     {actionLogs.map((action, idx) => {
+                        let submittedBy = action.system_id;
+                        if (action.mock_id) {
+                            submittedBy = `${action.mock_id} as ${action.system_id}`;
+                        }
                         return (
                             <TableRow key={idx}>
                                 <TableCell>{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>
-                                <TableCell>{action.system_id}</TableCell>
+                                <TableCell>{submittedBy}</TableCell>
                                 <TableCell>{formatDateTime(action.submission_datetime)}</TableCell>
                                 <TableCell><SubmissionViewerModal action={action} /></TableCell>
                             </TableRow>

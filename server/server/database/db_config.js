@@ -13,6 +13,7 @@ module.exports = {
         archive: "archive",
         semester: "semester_group",
         actions: "actions",
+        action_logs: "action_log",
         users: "users",
         project_coaches: "project_coaches",
     },
