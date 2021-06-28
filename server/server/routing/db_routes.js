@@ -800,6 +800,22 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
     const query = `SELECT * FROM actions WHERE action_id = ?;`
     const [action] = await db.query(query, [body.action_template]);
 
+    switch (action.action_target) {
+        case ACTION_TARGETS.ADMIN:
+            if (req.user.type !== ROLES.ADMIN) {
+                return res.status(401).send("Only admins can submit admin actions.");
+            }
+            break;
+        case ACTION_TARGETS.COACH:
+            if (req.user.type !== ROLES.COACH && req.user.type !== ROLES.ADMIN) {
+                return res.status(401).send("Only admins and coaches can submit coach actions.");
+            }
+            break;
+        // CASE INDIVIDUAL: Anyone can submit student/individual actions
+        default:
+            return res.status(500).send("Invalid action target.");
+    }
+
     let date = new Date();
     let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;
     const submission = `${timeString}_${nanoid()}`;
