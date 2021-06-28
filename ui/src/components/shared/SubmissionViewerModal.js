@@ -1,5 +1,5 @@
 import React from 'react'
-import { config } from "../util/constants";
+import { ACTION_TARGETS, config } from "../util/constants";
 import { Button, Divider, Icon, Modal } from 'semantic-ui-react';
 import { formatDateTime } from '../util/utils';
 
@@ -8,6 +8,20 @@ export default function SubmissionViewerModal(props) {
     if (props.action?.form_data !== undefined) {
         formData = JSON.parse(props.action?.form_data?.toString());
     }
+
+    const noSubmissionText = (target) => {
+        switch (target) {
+            case ACTION_TARGETS.individual:
+                return "Individual Submissions are Not Viewable by Team Members";
+            case ACTION_TARGETS.coach:
+                return "Coach Submissions are Not Viewable by Team Members";
+            case ACTION_TARGETS.admin:
+                return "Admin Submissions are Not Viewable by Team Members";
+            default:
+                return "You can not view this submission"
+        }
+    }
+
     return (
         <Modal
             trigger={
@@ -37,7 +51,7 @@ export default function SubmissionViewerModal(props) {
                             return <div key={file}><a href={`${config.url.BASE_URL}/#`} >{file}</a><br /></div>;
                         })}
                     </>}
-                    {props.noSubmission && <p>Individual Submissions are Not Viewable by Team Members</p>}
+                    {props.noSubmission && <p>{noSubmissionText(props.target)}</p>}
                 </div>
             }}
         />

@@ -924,7 +924,7 @@ db_router.get("/getActionLogs", (req, res) => {
         });
 });
 
-// Get your teammates submissions (Does not send submission, just submission metadata i.e. submission time, who submitted, etc)
+// Get your teammate's, coaches', and admins' submissions (Does not send submission, just submission metadata i.e. submission time, who submitted, etc)
 db_router.get("/getTeammateActionLogs", (req, res) => {
     let getActionLogQuery = "";
     let params = [];
@@ -932,7 +932,7 @@ db_router.get("/getTeammateActionLogs", (req, res) => {
     // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
     getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project FROM action_log
         WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?) AND action_log.system_id != ?
-        AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+        AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ? OR users.type = '${ROLES.COACH}' OR users.type = '${ROLES.ADMIN}')`;
     params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
 
     db.query(getActionLogQuery, params)

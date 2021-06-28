@@ -36,6 +36,7 @@ function ToolTip(props) {
                         return <SubmissionViewerModal
                             key={submission.system_id + submission.submission_datetime}
                             action={submission}
+                            target={props.action?.target}
                             trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                         />
                     })}
@@ -43,6 +44,7 @@ function ToolTip(props) {
                         return <SubmissionViewerModal
                             key={submission.system_id + submission.submission_datetime}
                             action={submission}
+                            target={props.action?.target}
                             noSubmission
                             trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                         />
