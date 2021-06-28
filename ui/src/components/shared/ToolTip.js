@@ -49,13 +49,22 @@ function ToolTip(props) {
                             trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                         />
                     })}
-                    <ActionModal
-                        key={props.action.action_id}
-                        {...props.action}
-                        isOpenCallback={isOpenCallback}
-                        projectId={props.projectId}
-                        trigger={submissions?.length > 0 ? <Button fluid >Resubmit Action</Button> : <Button fluid >Submit Action</Button>}
-                    />
+                    {/* 
+                      * Not sure if it makes more sense to check action.state or action.start_date.
+                      * However, action.state is based off of server time whereas if we parse action.start_date, 
+                      * we need to deal with parsing with time zones and all of that.
+                      */}
+                    {props.action.state === "grey" ?
+                        <p className="ui fluid button">This Action Can be Submitted On or After {formatDate(props.action?.start_date)}</p>
+                        :
+                        <ActionModal
+                            key={props.action.action_id}
+                            {...props.action}
+                            isOpenCallback={isOpenCallback}
+                            projectId={props.projectId}
+                            trigger={submissions?.length > 0 ? <Button fluid >Resubmit Action</Button> : <Button fluid >Submit Action</Button>}
+                        />
+                    }
                 </div>
             }
             closeOnDocumentClick={closeOnDocClick}

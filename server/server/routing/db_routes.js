@@ -800,6 +800,11 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
     const query = `SELECT * FROM actions WHERE action_id = ?;`
     const [action] = await db.query(query, [body.action_template]);
 
+    const startDate = new Date(action.start_date);
+    if (startDate > Date.now()) {
+        return res.status(400).send("Can not submit action before start date.");
+    }
+
     switch (action.action_target) {
         case ACTION_TARGETS.ADMIN:
             if (req.user.type !== ROLES.ADMIN) {
