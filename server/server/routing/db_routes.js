@@ -1133,26 +1133,25 @@ function calculateActiveTimelines(user) {
             SELECT  projects.display_name,
                     projects.title,
                     projects.project_id,
-                    semester_group.name AS "semester_name", 
-                    semester_group.semester_id AS "semester_id",
-                    semester_group.end_date AS "end_date",
+                    semester_group.name AS 'semester_name',
+                    semester_group.semester_id AS 'semester_id',
+                    semester_group.end_date AS 'end_date',
                     (
-                        SELECT  "[" || group_concat(
-                            "{" ||
-                                """action_title"""  || ":" || """" || action_title  || """" || "," ||
-                                """action_id"""     || ":" || """" || action_id     || """" || "," ||
-                                """date_deleted"""  || ":" || """" || date_deleted  || """" || "," ||
-                                """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
-                                """start_date"""    || ":" || """" || start_date    || """" || "," ||
-                                """due_date"""      || ":" || """" || due_date      || """" || "," ||
-                                """target"""        || ":" || """" || action_target || """" || "," ||
-                                """state"""         || ":" || """" || state         || """" || "," ||
-                                """submitter"""     || ":" || """" || submitter     || """" || "," ||
-                                """page_html"""     || ":" || """" || page_html     || """" || "," ||
-                                """file_types"""    || ":" || """" || file_types    || """" || "," ||
-                                """count"""         || ":" || """" || count         || """" ||
-                            "}"
-                        ) || "]"
+                        SELECT  '[' || group_concat(
+                            '{' ||
+                                '"action_title"'  || ':' || '"' || action_title  || '"' || ',' ||
+                                '"action_id"'     || ':' || '"' || action_id     || '"' || ',' ||
+                                '"date_deleted"'  || ':' || '"' || date_deleted  || '"' || ',' ||
+                                '"short_desc"'    || ':' || '"' || short_desc    || '"' || ',' ||
+                                '"start_date"'    || ':' || '"' || start_date    || '"' || ',' ||
+                                '"due_date"'      || ':' || '"' || due_date      || '"' || ',' ||
+                                '"target"'        || ':' || '"' || action_target || '"' || ',' ||
+                                '"state"'         || ':' || '"' || state         || '"' || ',' ||
+                                '"page_html"'     || ':' || '"' || page_html     || '"' || ',' ||
+                                '"file_types"'    || ':' || '"' || file_types    || '"' || ',' ||
+                                '"count"'         || ':' || '"' || count         || '"' ||
+                            '}'
+                        ) || ']'
                         FROM (
                             SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
                                 CASE
@@ -1192,13 +1191,9 @@ function calculateActiveTimelines(user) {
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-                WHERE projects.status = "in progress" ${projectFilter}
+                WHERE projects.status = 'in progress' ${projectFilter}
             ORDER BY projects.semester DESC
         `;
-        let today = new Date(); // Fat workaround, sqlite is broken doo doo
-        getTeams = getTeams
-            .split("date('now')")
-            .join(`'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`);
 
         db.query(getTeams)
             .then((values) => {
