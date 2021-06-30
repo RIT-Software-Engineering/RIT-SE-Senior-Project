@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ToolTip from "./ToolTip";
 import _ from "lodash";
+import { SecureFetch } from "../util/secureFetch";
+import { config } from "../util/constants";
 
 export default function Timeline(props) {
 
+    const [actions, setActions] = useState([])
+
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${props.elementData?.project_id}`)
+            .then(response => response.json())
+            .then(actions => setActions(actions))
+            .catch(error => console.error(error))
+    }, [])
+
     const renderActionComponents = (data) => {
-        const sortedActions = _.sortBy(data?.actions || [], ["due_date", "start_date", "action_title"]);
+        const sortedActions = _.sortBy(actions || [], ["due_date", "start_date", "action_title"]);
         let actionsComponents = [];
 
         sortedActions.forEach((action, idx) => {
@@ -22,8 +33,11 @@ export default function Timeline(props) {
                 case "green":
                     className += "proposal-row-green";
                     break;
-                default:
+                case "grey":
                     className += "proposal-row-gray";
+                    break;
+                default:
+                    className += `proposal-row-${action.state}`;
                     break;
             }
 
@@ -35,7 +49,7 @@ export default function Timeline(props) {
             </div>
 
             actionsComponents.push(
-                <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} />
+                <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.elementData?.project_id} />
             )
         })
 

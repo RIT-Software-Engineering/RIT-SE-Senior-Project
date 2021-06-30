@@ -66,3 +66,9 @@
     margin: 0 0 0 0 !important;
     border-radius: 0 0.28571429rem 0.28571429rem 0 !important;
 }
+
+.fake-a {
+    color: #1e70bf;
+    text-decoration: none;
+    cursor: pointer;
+}

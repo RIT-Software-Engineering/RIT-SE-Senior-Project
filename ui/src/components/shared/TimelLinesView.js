@@ -8,7 +8,6 @@ import Timeline from "./Timeline";
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({});
-    const [actionLogs, setActionLogs] = useState();
     const userContext = useContext(UserContext);
 
     useEffect(() => {
@@ -20,25 +19,7 @@ export default function TimeLines() {
             .catch((error) => {
                 alert("Failed to get timeline data" + error);
             });
-
-        // TODO: Do pagination
-        SecureFetch(config.url.API_GET_ACTION_LOGS)
-            .then((response) => response.json())
-            .then((action_logs) => {
-                setActionLogs(action_logs);
-            })
-            .catch((error) => {
-                alert("Failed to get team files data " + error);
-            });
     }, []);
-
-    const submissionMap = {};
-    actionLogs?.forEach(submission => {
-        if (!submissionMap[submission.action_id]) {
-            submissionMap[submission.action_id] = [];
-        }
-        submissionMap[submission.action_id].push(submission);
-    });
 
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
@@ -75,15 +56,6 @@ export default function TimeLines() {
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
                         content: semesterData?.map((timelineElementData) => {
-
-                            // Map submissions to action
-                            timelineElementData.actions.forEach((action, idx) => {
-                                timelineElementData.actions[idx] = {
-                                    ...action,
-                                    submissions: submissionMap[action.action_id]
-                                }
-                            })
-
                             return <Timeline key={"timeline-"} elementData={timelineElementData} />
                         }),
                     },

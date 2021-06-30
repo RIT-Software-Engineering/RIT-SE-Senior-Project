@@ -32,7 +32,6 @@ db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
 
 db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
-        console.log(value);
         res.send(value);
     });
 });
@@ -150,7 +149,7 @@ db_router.post("/createUser", [
                 return res.status(200).send();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 return res.status(500).send(err);
             });
     }
@@ -215,17 +214,12 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         body.system_id,
     ];
 
-    console.log(
-        JSON.parse(body.semester_group),
-        JSON.parse(body.project),
-    );
-
     db.query(updateQuery, params)
         .then(() => {
             return res.status(200).send();
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return res.status(500).send(err);
         });
 });
@@ -525,7 +519,7 @@ db_router.post(
         ]).then((values) => {
             return res.sendStatus(200);
         }).catch((err) => {
-            console.log(err);
+            console.error(err);
             return res.status(500).send(err);
         });
     }
@@ -589,7 +583,6 @@ db_router.get("/getProposalAttachmentNames", UserAuth.isSignedIn, (req, res) => 
                 res.status(500).send(err);
                 return;
             }
-            console.log(files);
             let fileLinks = [];
             files.forEach(function (file) {
                 fileLinks.push(file.toString());
@@ -711,7 +704,7 @@ db_router.post(
                     `./server/sponsor_proposal_files/${projectId}/${req.files.attachments[x].name}`,
                     function (err) {
                         if (err) {
-                            console.log(err);
+                            console.error(err);
                             return res.status(500).send(err);
                         }
                     }
@@ -769,7 +762,7 @@ db_router.post(
                 return res.status(200).send();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 return res.status(500).send(err);
             });
     }
@@ -788,7 +781,7 @@ db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
         }
     ).catch(
         (err) => {
-            console.log(err);
+            console.error(err);
             res.status(500).send();
         });
 });
@@ -806,6 +799,32 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
 
     const query = `SELECT * FROM actions WHERE action_id = ?;`
     const [action] = await db.query(query, [body.action_template]);
+
+    const startDate = new Date(action.start_date);
+    if (startDate > Date.now()) {
+        return res.status(400).send("Can not submit action before start date.");
+    }
+
+    switch (action.action_target) {
+        case ACTION_TARGETS.ADMIN:
+            if (req.user.type !== ROLES.ADMIN) {
+                return res.status(401).send("Only admins can submit admin actions.");
+            }
+            break;
+        case ACTION_TARGETS.COACH:
+            if (req.user.type !== ROLES.COACH && req.user.type !== ROLES.ADMIN) {
+                return res.status(401).send("Only admins and coaches can submit coach actions.");
+            }
+            break;
+        // CASE INDIVIDUAL: Anyone can submit student/individual actions
+        case ACTION_TARGETS.INDIVIDUAL:
+            if (req.user.type !== ROLES.STUDENT) {
+                return res.status(401).send("Only students can submit individual actions.");
+            }
+            break;
+        default:
+            return res.status(500).send("Invalid action target.");
+    }
 
     let date = new Date();
     let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;
@@ -847,6 +866,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
                 `${baseURL}/${req.files.attachments[x].name}`,
                 function (err) {
                     if (err) {
+                        console.error(err);
                         return res.status(500).send(err);
                     }
                 }
@@ -861,16 +881,22 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
             project,
             form_data,
             files
+            ${req.user.mock && ",mock_id" || ""}
             )
-        VALUES (?,?,?,?,?)
+        VALUES (?,?,?,?,?${req.user.mock && ",?" || ""})
     `;
 
     let params = [body.action_template, req.user.system_id, body.project, body.form_data, filenamesCSV];
+    if (req.user.mock) {
+        params.push(req.user.mock.system_id);
+    }
+
     db.query(insertAction, params)
         .then(() => {
             return res.sendStatus(200);
         })
         .catch((err) => {
+            console.error(err);
             res.status(500).send(err);
         });
 });
@@ -890,47 +916,93 @@ db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
         });
 });
 
+db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => {
+
+    // Students can't access other team's timelines but coaches and admins can access anyone's timelines
+    const accessCheck = await db.query("SELECT project, type FROM users WHERE users.system_id = ?", [req.user.system_id]);
+    if (accessCheck.filter((item) => item.project === req.query.project_id).length === 0 && req.user.type !== ROLES.ADMIN && req.user.type !== ROLES.COACH) {
+        return res.sendStatus(401);
+    }
+
+    let getTimelineActions = ` SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
+            CASE
+                WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
+                WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
+                WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
+                WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS (SELECT DISTINCT COUNT(*) FROM users WHERE users.project=?) THEN 'green'
+                WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
+                WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
+                WHEN date('now') > due_date AND action_target IS 'individual' AND COUNT(distinct system_id) IS NOT (SELECT DISTINCT COUNT(*) FROM users WHERE users.project=?) THEN 'red'
+                WHEN date('now') < start_date THEN 'grey'
+                ELSE 'UNHANDLED-CASE'
+            END AS 'state'
+        FROM actions
+        LEFT JOIN action_log
+            ON action_log.action_template = actions.action_id AND action_log.project = ?
+            WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
+        GROUP BY actions.action_id`;
+
+    db.query(getTimelineActions, [req.query.project_id, req.query.project_id, req.query.project_id, req.query.project_id])
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+});
+
 db_router.get("/getActionLogs", (req, res) => {
     let getActionLogQuery = "";
     let params = [];
+
     switch (req.user.type) {
         case ROLES.STUDENT:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                    ON logs.action_template = act.action_id
-                WHERE logs.system_id = ? OR (act.action_target = 'team' AND logs.project IN (SELECT project FROM users WHERE users.system_id = ?))`;
-            params = [req.user.system_id, req.user.system_id];
+            // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
+            getActionLogQuery = `SELECT action_log.* FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                AND (action_log.system_id = ? OR (actions.action_target='${ACTION_TARGETS.TEAM}' AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)))`;
+            params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
             break;
         case ROLES.COACH:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                    ON logs.action_template = act.action_id
-                WHERE logs.project IN (SELECT project_id FROM project_coaches WHERE project_coaches.coach_id = ?)`;
-            params = [req.user.system_id];
-            break;
         case ROLES.ADMIN:
-            getActionLogQuery = `SELECT logs.submission_datetime, logs.action_template, logs.system_id, logs.project, logs.form_data, logs.files,
-                    act.action_id, act.semester, act.action_title, act.action_target, act.short_desc, act.start_date, act.due_date
-                FROM action_log logs
-                JOIN actions act
-                ON logs.action_template = act.action_id`;
+            getActionLogQuery = `SELECT action_log.* FROM action_log
+                WHERE action_log.action_template = ? AND action_log.project = ?`;
+            params = [req.query.action_id, req.query.project_id];
             break;
 
         default:
             res.status(401).send("Unknown role");
             return;
     }
+    db.query(getActionLogQuery, params)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+});
+
+// Get your teammate's, coaches', and admins' submissions (Does not send submission, just submission metadata i.e. submission time, who submitted, etc)
+db_router.get("/getTeammateActionLogs", (req, res) => {
+    let getActionLogQuery = "";
+    let params = [];
+
+    // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
+    getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project FROM action_log
+        WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?) AND action_log.system_id != ?
+        AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ? OR users.type = '${ROLES.COACH}' OR users.type = '${ROLES.ADMIN}')`;
+    params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
 
     db.query(getActionLogQuery, params)
         .then((values) => {
             res.send(values);
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             res.status(500).send(err);
         });
 });
@@ -1093,7 +1165,6 @@ function calculateActiveTimelines(user) {
             break;
         default:
             throw new Error("Unhandled user role");
-            break;
     }
 
     return new Promise((resolve, reject) => {
@@ -1101,51 +1172,10 @@ function calculateActiveTimelines(user) {
         let getTeams = `
             SELECT  projects.display_name,
                     projects.title,
-                    semester_group.name AS "semester_name", 
-                    semester_group.semester_id AS "semester_id",
-                    semester_group.end_date AS "end_date",
-                    (
-                        SELECT  "[" || group_concat(
-                            "{" ||
-                                """action_title"""  || ":" || """" || action_title  || """" || "," ||
-                                """action_id"""     || ":" || """" || action_id     || """" || "," ||
-                                """date_deleted"""  || ":" || """" || date_deleted  || """" || "," ||
-                                """short_desc"""    || ":" || """" || short_desc    || """" || "," ||
-                                """start_date"""    || ":" || """" || start_date    || """" || "," ||
-                                """due_date"""      || ":" || """" || due_date      || """" || "," ||
-                                """target"""        || ":" || """" || action_target || """" || "," ||
-                                """state"""         || ":" || """" || state         || """" || "," ||
-                                """submitter"""     || ":" || """" || submitter     || """" || "," ||
-                                """page_html"""     || ":" || """" || page_html     || """" || "," ||
-                                """file_types"""    || ":" || """" || file_types    || """" || "," ||
-                                """count"""         || ":" || """" || count         || """" ||
-                            "}"
-                        ) || "]"
-                        FROM (
-                            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
-                                CASE
-                                    WHEN system_id IS NULL THEN 'null'
-                                    WHEN  COUNT(distinct system_id) > 1 THEN group_concat(system_id)
-                                    ELSE system_id
-                                END AS 'submitter',
-                                CASE
-                                    WHEN action_target IS '${ACTION_TARGETS.ADMIN}' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS '${ACTION_TARGETS.COACH}' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS '${ACTION_TARGETS.TEAM}' AND system_id IS NOT NULL THEN 'green'
-                                    WHEN action_target IS '${ACTION_TARGETS.INDIVIDUAL}' AND COUNT(distinct system_id) IS 4 THEN 'green'
-                                    WHEN  start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
-                                    WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
-                                    ELSE 'grey'
-                                END AS 'state',
-                                COUNT(distinct system_id) AS count
-                            FROM actions
-                            LEFT JOIN action_log
-                                ON action_log.action_template = actions.action_id
-                                WHERE actions.date_deleted = ''
-                            GROUP BY actions.action_id
-                        )
-                        WHERE semester = projects.semester
-                    ) actions,
+                    projects.project_id,
+                    semester_group.name AS 'semester_name',
+                    semester_group.semester_id AS 'semester_id',
+                    semester_group.end_date AS 'end_date',
                     (
                         SELECT group_concat(fname || ' ' || lname || ' (' || email || ')')
                         FROM users
@@ -1160,24 +1190,11 @@ function calculateActiveTimelines(user) {
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-                WHERE projects.status = "in progress" ${projectFilter}
+                WHERE projects.status = 'in progress' ${projectFilter}
             ORDER BY projects.semester DESC
         `;
-        let today = new Date(); // Fat workaround, sqlite is broken doo doo
-        getTeams = getTeams
-            .split("date('now')")
-            .join(`'${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}'`);
-
         db.query(getTeams)
             .then((values) => {
-                for (let timeline in values || []) {
-                    if (!!values[timeline].actions) {
-                        values[timeline].actions = JSON.parse(values[timeline].actions.replace(/\r?\n|\r|\s{2,}/g, ""));
-                        values[timeline].actions = values[timeline].actions.sort(function (a, b) {
-                            return Date.parse(a.start_date) - Date.parse(b.start_date);
-                        });
-                    }
-                }
                 resolve(values);
             })
             .catch((err) => {
