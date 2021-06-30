@@ -924,7 +924,7 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         return res.sendStatus(401);
     }
 
-    let getTimelineActions = ` SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
+    let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
             CASE
                 WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
                 WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
