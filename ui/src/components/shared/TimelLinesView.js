@@ -46,7 +46,6 @@ export default function TimeLines() {
                 // (in the middle of summer) the server is using EDT. This can result in a 1 hours offset if the server switches to EST.
                 // Although, this will only have any impact for 1-2 hours a year if a semester ends on or around daylight savings changes.
                 const endDate = new Date(`${semesterData[0].end_date} EDT`);
-                console.log(endDate, semesterData[0].end_date);
                 const today = new Date();
                 const active = endDate > today;
                 activeSemesters[semesterData[0]?.semester_name] = active;
