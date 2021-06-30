@@ -42,8 +42,11 @@ export default function TimeLines() {
         return Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
             if (activeSemesters[semesterData[0]?.semester_name] === undefined) {
-                const parts = semesterData[0].end_date.split("/");
-                const endDate = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                // Note: I'm not sure if the server uses EDT or EST or switches between them but at the time of writing this,
+                // (in the middle of summer) the server is using EDT. This can result in a 1 hours offset if the server switches to EST.
+                // Although, this will only have any impact for 1-2 hours a year if a semester ends on or around daylight savings changes.
+                const endDate = new Date(`${semesterData[0].end_date} EDT`);
+                console.log(endDate, semesterData[0].end_date);
                 const today = new Date();
                 const active = endDate > today;
                 activeSemesters[semesterData[0]?.semester_name] = active;
