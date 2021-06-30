@@ -23,6 +23,7 @@ export const config = {
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
+        API_GET_TIMELINE_ACTIONS: `${BASE_API_URL}/db/getTimelineActions`,
         API_GET_PROPOSAL_PDF: `${BASE_API_URL}/db/getProposalPdf`,
         API_GET_PROPOSAL_ATTACHMENT: `${BASE_API_URL}/db/getProposalAttachment`,
         API_GET_STUDENT_INFO: `${BASE_API_URL}/db/selectAllStudentInfo`,

@@ -13,6 +13,5 @@ VALUES
     (1, 'def123', null, '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "Dude"}', null),
     (1, 'def123', 'adminA', '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "Dude"}', null),
     (1, 'abc123', null, '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "John"}', null),
-    (1, 'hij123', null, '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "Jack"}', null),
-    (1, 'klm123', null, '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "Gal"}', null)
+    (1, 'hij123', null, '2021-5-14_da90mGtCgojqWElAItowB', '{"name": "Jack"}', null)
 ;

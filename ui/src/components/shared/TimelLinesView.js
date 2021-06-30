@@ -56,12 +56,6 @@ export default function TimeLines() {
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
                         content: semesterData?.map((timelineElementData) => {
-
-                            // Map submissions to action
-                            timelineElementData.actions.forEach((action, idx) => {
-                                timelineElementData.actions[idx] = action
-                            })
-
                             return <Timeline key={"timeline-"} elementData={timelineElementData} />
                         }),
                     },

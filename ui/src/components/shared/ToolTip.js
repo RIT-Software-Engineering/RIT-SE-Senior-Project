@@ -31,7 +31,7 @@ function ToolTip(props) {
                     <p dangerouslySetInnerHTML={{ __html: props.action.short_desc }} />
                     <p>Starts: {formatDate(props.action.start_date)}</p>
                     <p>Due: {formatDate(props.action.due_date)}</p>
-                    <p>Submission Type: {submissionTypeMap[props.action.target]}</p>
+                    <p>Submission Type: {submissionTypeMap[props.action.action_target]}</p>
                     {submissions?.map(submission => {
                         return <SubmissionViewerModal
                             key={submission.system_id + submission.submission_datetime}

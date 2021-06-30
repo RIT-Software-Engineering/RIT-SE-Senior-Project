@@ -75,12 +75,12 @@ export default function ProjectEditorModal(props) {
                 members.forEach(member => {
                     switch (member.type) {
                         case USERTYPES.STUDENT:
-                            projectMemberOptions.students.push({ key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id });
+                            projectMemberOptions.students.push({ key: member.system_id, text: `${member.lname}, ${member.fname} (${member.system_id})`, value: member.system_id });
                             projectGroupedValues.students.push(member.system_id);
                             break;
                         case USERTYPES.COACH:
                             if (props.viewOnly) {
-                                projectMemberOptions.coaches.push({ key: member.system_id, text: `${member.lname}, ${member.fname}`, value: member.system_id });
+                                projectMemberOptions.coaches.push({ key: member.system_id, text: `${member.lname}, ${member.fname} (${member.system_id})`, value: member.system_id });
                             }
                             projectGroupedValues.coaches.push(member.system_id);
                             break;

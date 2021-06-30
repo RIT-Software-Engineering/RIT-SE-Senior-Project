@@ -1,3 +1,13 @@
+.proposal-row-UNHANDLED-CASE {
+    background: blue;
+    color: red;
+}
+
+.proposal-row-UNHANDLED-CASE::before {
+    color: red;
+    content: "Something's not right...You're not supposed to see this.";
+}
+
 .proposal-row-gray {
     background: #dddddd;
     color: #666666;
