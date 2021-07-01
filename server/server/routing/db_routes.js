@@ -1158,10 +1158,10 @@ function calculateActiveTimelines(user) {
             projectFilter = "";
             break;
         case ROLES.STUDENT:
-            projectFilter = `AND projects.project_id IN (SELECT project FROM users WHERE users.system_id = "${user.system_id}")`;
+            projectFilter = `WHERE projects.status = 'in progress' AND projects.project_id IN (SELECT project FROM users WHERE users.system_id = "${user.system_id}")`;
             break;
         case ROLES.COACH:
-            projectFilter = `AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
+            projectFilter = `WHERE projects.status = 'in progress' AND projects.project_id IN (SELECT project_id FROM project_coaches WHERE coach_id = "${user.system_id}")`;
             break;
         default:
             throw new Error("Unhandled user role");
@@ -1191,7 +1191,7 @@ function calculateActiveTimelines(user) {
             FROM projects
             LEFT JOIN semester_group 
                 ON projects.semester = semester_group.semester_id
-                WHERE projects.status = 'in progress' ${projectFilter}
+                ${projectFilter}
             ORDER BY projects.semester DESC
         `;
         db.query(getTeams)

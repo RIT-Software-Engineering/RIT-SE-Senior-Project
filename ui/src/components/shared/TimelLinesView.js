@@ -6,6 +6,8 @@ import { UserContext } from "../util/UserContext";
 import Timeline from "./Timeline";
 import { isSemesterActive } from "../util/utils";
 
+const noSemesterStr = "No Semester";
+
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({});
@@ -24,7 +26,11 @@ export default function TimeLines() {
 
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
-        if (!semesters[timeline.semester_id]) {
+
+        if (timeline.semester_id === null || timeline.semester_id === undefined) {
+            timeline.semester_id = noSemesterStr;
+            timeline.semester_name = noSemesterStr;
+        } else if (!semesters[timeline.semester_id]) {
             semesters[timeline.semester_id] = [timeline];
         } else {
             semesters[timeline.semester_id].push(timeline);
@@ -53,7 +59,7 @@ export default function TimeLines() {
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
                         content: semesterData?.map((timelineElementData) => {
-                            return <Timeline key={"timeline-"} elementData={timelineElementData} />
+                            return <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
                         }),
                     },
                     semester_id: semesterData[0]?.semester_id,
