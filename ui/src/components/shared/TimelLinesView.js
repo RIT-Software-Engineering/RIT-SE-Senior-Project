@@ -4,7 +4,7 @@ import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { UserContext } from "../util/UserContext";
 import Timeline from "./Timeline";
-import { parseDate } from "../util/utils";
+import { isSemesterActive } from "../util/utils";
 
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
@@ -43,10 +43,7 @@ export default function TimeLines() {
         return Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
             if (activeSemesters[semesterData[0]?.semester_name] === undefined) {
-                const endDate = parseDate(semesterData[0].end_date)
-                const today = new Date();
-                const active = endDate > today;
-                activeSemesters[semesterData[0]?.semester_name] = active;
+                activeSemesters[semesterData[0]?.semester_name] = isSemesterActive(semesterData[0].start_date, semesterData[0].end_date);
             }
 
             const semester = [

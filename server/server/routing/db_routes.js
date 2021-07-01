@@ -1175,6 +1175,7 @@ function calculateActiveTimelines(user) {
                     projects.project_id,
                     semester_group.name AS 'semester_name',
                     semester_group.semester_id AS 'semester_id',
+                    semester_group.start_date AS 'start_date',
                     semester_group.end_date AS 'end_date',
                     (
                         SELECT group_concat(fname || ' ' || lname || ' (' || email || ')')

@@ -27,7 +27,7 @@ const DESCENDING = "descending";
 
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
-    const [active, setActive] = useState(isSemesterActive(props.semester?.end_date))
+    const [active, setActive] = useState(isSemesterActive(props.semester?.start_date, props.semester?.end_date))
 
     let semesterMap = { undefined: "No semester", null: "No semester" };
     props.semesterData?.forEach(semester => {

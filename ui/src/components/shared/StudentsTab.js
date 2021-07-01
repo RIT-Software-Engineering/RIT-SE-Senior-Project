@@ -72,7 +72,7 @@ export default function StudentsTab() {
                         end_date: semesterMap[student.semester_group]?.end_date,
                         semester_id: semesterMap[student.semester_group]?.semester_id,
                     };
-                    initialActive[semesterMap[student.semester_group]?.semester_id] = isSemesterActive(semesterMap[student.semester_group]?.end_date);
+                    initialActive[semesterMap[student.semester_group]?.semester_id] = isSemesterActive(semesterMap[student.semester_group]?.start_date, semesterMap[student.semester_group]?.end_date);
                 }
                 if (student.project) {
                     if (!mappedData[student.semester_group]["projects"][student.project]) {

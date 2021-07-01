@@ -20,7 +20,7 @@ export default function CoachesTab() {
                 setSemestersData(sortedSemesterData);
                 let initialActive = {};
                 sortedSemesterData.forEach(semester => {
-                    initialActive[semester.semester_id] = isSemesterActive(semester.end_date);
+                    initialActive[semester.semester_id] = isSemesterActive(semester.start_date, semester.end_date);
                 })
                 setActive(initialActive);
             })
