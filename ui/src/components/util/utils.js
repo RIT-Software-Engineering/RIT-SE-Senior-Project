@@ -35,3 +35,10 @@ export const createSemesterDropdownOptions = (semesterData, semestersOnly = fals
     });
     return options;
 }
+
+export const isSemesterActive = (end_date) => {
+    if (end_date === null || end_date === undefined) {
+        return true;
+    }
+    return new Date() < parseDate(end_date)
+}

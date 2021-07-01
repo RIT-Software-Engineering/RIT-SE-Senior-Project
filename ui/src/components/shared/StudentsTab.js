@@ -5,11 +5,13 @@ import StudentTeamTable from "./StudentTeamTable";
 import _ from "lodash";
 import { SecureFetch } from "../util/secureFetch";
 import { UserContext } from "../util/UserContext";
+import { isSemesterActive } from "../util/utils";
 
 export default function StudentsTab() {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
+    const [active, setActive] = useState({})
     const userContext = useContext(UserContext);
 
     const unassignedStudentsStr = "Unassigned students";
@@ -58,6 +60,8 @@ export default function StudentsTab() {
 
         let mappedData = { [unassignedStudentsStr]: { students: [], name: unassignedStudentsStr, projects: {} } }
 
+        const initialActive = {};
+
         studentData.forEach(student => {
             if (student.semester_group) {
                 if (!mappedData[student.semester_group]) {
@@ -68,6 +72,7 @@ export default function StudentsTab() {
                         end_date: semesterMap[student.semester_group]?.end_date,
                         semester_id: semesterMap[student.semester_group]?.semester_id,
                     };
+                    initialActive[semesterMap[student.semester_group]?.semester_id] = isSemesterActive(semesterMap[student.semester_group]?.end_date);
                 }
                 if (student.project) {
                     if (!mappedData[student.semester_group]["projects"][student.project]) {
@@ -85,6 +90,10 @@ export default function StudentsTab() {
             }
         });
 
+        // Check if active has already been set so that we don't run into issues with infinite re-renders
+        if (Object.keys(active).length === 0) {
+            setActive(initialActive)
+        }
         return mappedData;
     }
 
@@ -101,9 +110,13 @@ export default function StudentsTab() {
                         key={unassignedStudentsStr}
                         fluid
                         styled
+                        onTitleClick={() => {
+                            setActive({ ...active, [semester.semester_id]: !active[semester.semester_id] })
+                        }}
                         panels={[{
                             key: unassignedStudentsStr,
                             title: `${semester.name} (${semester.students?.length})`,
+                            active: active[semester.semester_id],
                             content: {
                                 content:
                                     <StudentTeamTable
@@ -125,9 +138,13 @@ export default function StudentsTab() {
                         key={semester.semester_id}
                         fluid
                         styled
+                        onTitleClick={() => {
+                            setActive({ ...active, [semester.semester_id]: !active[semester.semester_id] })
+                        }}
                         panels={[{
                             key: semester.semester_id,
                             title: `${semester.name} (${Object.keys(semester.projects)?.length})`,
+                            active: active[semester.semester_id],
                             content: {
                                 content:
                                     Object.keys(semester.projects).map(projectKey => {
