@@ -1,20 +1,24 @@
 import moment from "moment";
+import "moment-timezone";
 import _ from "lodash";
+import { SERVER_TIMEZONE } from "./constants";
 
-const formatDateTimeString = (dateTime) => {
-    // Note: Non-chromium browsers (i.e Firefox, Safari) can't parse dates in the format YYYY-MM-DD,
-    // they need dates in the format YYYY/MM/DD.
-    return `${dateTime.replaceAll("-", "/")} GMT`
+export const parseDate = (dateTime) => {
+    return parseMomentDate(dateTime).toDate();
 }
 
-export const formatDateTime = (datetime) => {
-    let date = new Date(formatDateTimeString(datetime));
-    return `${moment(date).format('L')} ${moment(date).format("LT")}`
+const parseMomentDate = (dateTime) => {
+    return moment(dateTime).tz(SERVER_TIMEZONE);
+}
+
+export const formatDateTime = (dateTime) => {
+    let date = parseMomentDate(dateTime);
+    return `${date.format('L')} ${date.format("LT")}`
 };
 
 export const formatDate = (date) => {
-    let dateObj = new Date(formatDateTimeString(date));
-    return `${moment(dateObj).format('L')}`
+    let dateObj = parseMomentDate(date);
+    return `${dateObj.format('L')}`;
 };
 
 /**

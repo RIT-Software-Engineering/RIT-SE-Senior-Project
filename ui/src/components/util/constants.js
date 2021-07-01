@@ -120,3 +120,5 @@ export const PROJECT_STATUSES = {
     COMPLETE: "completed",
     ARCHIVED: "archive",
 };
+
+export const SERVER_TIMEZONE = "America/New_York";

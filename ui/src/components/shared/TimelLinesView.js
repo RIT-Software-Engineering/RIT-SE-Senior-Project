@@ -4,6 +4,7 @@ import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { UserContext } from "../util/UserContext";
 import Timeline from "./Timeline";
+import { parseDate } from "../util/utils";
 
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
@@ -42,10 +43,7 @@ export default function TimeLines() {
         return Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
             if (activeSemesters[semesterData[0]?.semester_name] === undefined) {
-                // Note: I'm not sure if the server uses EDT or EST or switches between them but at the time of writing this,
-                // (in the middle of summer) the server is using EDT. This can result in a 1 hours offset if the server switches to EST.
-                // Although, this will only have any impact for 1-2 hours a year if a semester ends on or around daylight savings changes.
-                const endDate = new Date(`${semesterData[0].end_date} EDT`);
+                const endDate = parseDate(semesterData[0].end_date)
                 const today = new Date();
                 const active = endDate > today;
                 activeSemesters[semesterData[0]?.semester_name] = active;
