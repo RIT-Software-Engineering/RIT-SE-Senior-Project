@@ -34,7 +34,7 @@ function ToolTip(props) {
                     <p>Submission Type: {submissionTypeMap[props.action.action_target]}</p>
                     {submissions?.map(submission => {
                         return <SubmissionViewerModal
-                            key={submission.system_id + submission.submission_datetime}
+                            key={submission.action_log_id}
                             action={submission}
                             target={props.action?.target}
                             trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
@@ -42,7 +42,7 @@ function ToolTip(props) {
                     })}
                     {teammateActions?.map(submission => {
                         return <SubmissionViewerModal
-                            key={submission.system_id + submission.submission_datetime}
+                            key={submission.action_log_id}
                             action={submission}
                             target={props.action?.target}
                             noSubmission
