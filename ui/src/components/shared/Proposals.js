@@ -14,6 +14,7 @@ import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../util/constants";
 import "../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
+import { parseDate } from "../util/utils";
 
 const COLUMNS = {
     SEMESTER: "semester",
@@ -24,8 +25,16 @@ const COLUMNS = {
 const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
+const isActive = (end_date) => {
+    if (end_date === null || end_date === undefined) {
+        return true;
+    }
+    return new Date() < parseDate(end_date)
+}
+
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
+    const [active, setActive] = useState(isActive(props.semester?.end_date))
 
     let semesterMap = { undefined: "No semester", null: "No semester" };
     props.semesterData?.forEach(semester => {
@@ -163,5 +172,5 @@ export default function Proposals(props) {
 
     return (props.noAccordion ?
         table() :
-        <Accordion fluid styled panels={[{ key: 0, title: semesterName(), content: { content: table() } }]} />);
+        <Accordion fluid styled onTitleClick={() => { setActive(!active) }} panels={[{ key: 0, title: semesterName(), active: active, content: { content: table() } }]} />);
 }
