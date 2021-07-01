@@ -3,7 +3,6 @@ import { Accordion, Button, Icon } from "semantic-ui-react";
 import Proposals from "./Proposals";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import { parseDate } from "../util/utils";
 
 export default function ProjectEditor(props) {
     const [proposalData, setProposalData] = useState({});
