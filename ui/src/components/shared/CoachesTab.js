@@ -4,10 +4,12 @@ import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import SemesterCoaches from "./SemesterCoaches";
 import _ from "lodash";
+import { isSemesterActive } from "../util/utils";
 
 export default function CoachesTab() {
 
     const [semesters, setSemestersData] = useState([]);
+    const [active, setActive] = useState({})
     const [coachInfo, setCoachInfoData] = useState([]);
 
     useEffect(() => {
@@ -16,6 +18,11 @@ export default function CoachesTab() {
             .then((semestersData) => {
                 const sortedSemesterData = _.sortBy(semestersData, ["end_date", "start_date", "name"]).reverse();
                 setSemestersData(sortedSemesterData);
+                let initialActive = {};
+                sortedSemesterData.forEach(semester => {
+                    initialActive[semester.semester_id] = isSemesterActive(semester.end_date);
+                })
+                setActive(initialActive);
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
@@ -67,38 +74,11 @@ export default function CoachesTab() {
 
     return (
         <div >
-            {semesters.map(semester => {
-                return mappedCoachData[semester.semester_id] &&
-                    <div key={semester.semester_id} className="accordion-button-group">
-                        <Accordion
-                            fluid
-                            styled
-                            key={semester.semester_id}
-                            panels={[
-                                {
-                                    key: semester.semester_id,
-                                    title: semester.name,
-                                    content: { content: <SemesterCoaches coaches={mappedCoachData && mappedCoachData[semester.semester_id]} /> },
-                                },
-                            ]}
-                        />
-                        <div className="accordion-buttons-container">
-                            <a
-                                href={`mailTo:${mappedEmailData[semester.semester_id].join(",")}`}
-                                className="ui icon button"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <Icon name="mail" />
-                            </a>
-                        </div>
-                    </div>
-            })}
-
             <div className="accordion-button-group">
                 <Accordion
                     fluid
                     styled
+                    defaultActiveIndex={0}
                     panels={[
                         {
                             key: "Unassigned",
@@ -118,6 +98,37 @@ export default function CoachesTab() {
                     </a>
                 </div>
             </div>
+            {semesters.map(semester => {
+                return mappedCoachData[semester.semester_id] &&
+                    <div key={semester.semester_id} className="accordion-button-group">
+                        <Accordion
+                            fluid
+                            styled
+                            key={semester.semester_id}
+                            onTitleClick={() => {
+                                setActive({ ...active, [semester.semester_id]: !active[semester.semester_id] })
+                            }}
+                            panels={[
+                                {
+                                    key: semester.semester_id,
+                                    title: semester.name,
+                                    active: active[semester.semester_id],
+                                    content: { content: <SemesterCoaches coaches={mappedCoachData && mappedCoachData[semester.semester_id]} /> },
+                                },
+                            ]}
+                    />
+                    <div className="accordion-buttons-container">
+                        <a
+                            href={`mailTo:${mappedEmailData[semester.semester_id].join(",")}`}
+                            className="ui icon button"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <Icon name="mail" />
+                        </a>
+                    </div>
+                </div>
+            })}
         </div>
     )
 }
