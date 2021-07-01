@@ -6,10 +6,11 @@ import ViewProjectMembers from './ViewProjectMembers';
 export default function SemesterCoaches({ coaches }) {
 
     const content = (coach) => {
-        return <div className="accordion-button-group">
+        return <div className="accordion-button-group" key={`${coach.system_id}-button-group`}>
             <Accordion
                 fluid
                 styled
+                key={coach.system_id}
                 panels={[{
                     key: coach.system_id,
                     title: `${coach.fname} ${coach.lname}`,

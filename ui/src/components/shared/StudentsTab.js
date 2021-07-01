@@ -66,7 +66,7 @@ export default function StudentsTab() {
                         name: semesterMap[student.semester_group]?.name,
                         start_date: semesterMap[student.semester_group]?.start_date,
                         end_date: semesterMap[student.semester_group]?.end_date,
-                        semester_id: semesterMap[student.semester_group]?.semester_group,
+                        semester_id: semesterMap[student.semester_group]?.semester_id,
                     };
                 }
                 if (student.project) {
@@ -108,6 +108,7 @@ export default function StudentsTab() {
                                 content:
                                     <StudentTeamTable
                                         key={unassignedStudentsStr}
+                                        childKey={unassignedStudentsStr}
                                         title={unassignedStudentsStr}
                                         students={semester.students}
                                         semesterData={semesters}
@@ -133,6 +134,7 @@ export default function StudentsTab() {
                                         return semester.projects[projectKey].students.length > 0 &&
                                             <StudentTeamTable
                                                 key={projectKey}
+                                                childKey={projectKey}
                                                 title={`${semester.projects[projectKey].name} (${semester.projects[projectKey]?.students?.length})`}
                                                 students={semester.projects[projectKey].students}
                                                 semesterData={semesters}
