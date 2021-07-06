@@ -121,4 +121,11 @@ export const PROJECT_STATUSES = {
     ARCHIVED: "archive",
 };
 
+export const ACTION_STATES = {
+    YELLOW: "yellow",
+    RED: "red",
+    GREEN: "green",
+    GREY: "grey",
+}
+
 export const SERVER_TIMEZONE = "America/New_York";
