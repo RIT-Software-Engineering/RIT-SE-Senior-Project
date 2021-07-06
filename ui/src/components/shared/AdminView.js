@@ -12,24 +12,28 @@ export default function AdminView(props) {
     SecureFetch(config.url.API_GET_ACTIVE_USERS)
       .then((response) => response.json())
       .then(users => {
-        setUsers(users.map(user => {
-          return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: { system_id: user.system_id, type: user.type }, key: user.system_id }
-        }))
+        let userMap = {};
+        users.forEach(user => {
+          userMap[user.system_id] = user;
+        });
+        setUsers(userMap);
       })
-    return () => {
-    }
+      .catch(err => {
+        console.error("Failed to fetch users for AdminView...this is probably to be expected", err);
+        setUsers([]);
+      })
   }, [])
 
   const changeView = () => {// changes view for admin to another user
 
-    if (!selectedUser?.system_id) {
+    if (!users[selectedUser]?.system_id) {
       alert("Can't change view - No user selected");
       return;
     }
 
     //cookie stuff
-    document.cookie = `mockUser=${selectedUser.system_id}`;
-    document.cookie = `mockType=${selectedUser.type}`;
+    document.cookie = `mockUser=${users[selectedUser].system_id}`;
+    document.cookie = `mockType=${users[selectedUser].type}`;
     //refresh as new user
     window.location.reload();
   }
@@ -60,7 +64,12 @@ export default function AdminView(props) {
       <>
         <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
         <Label pointing='right'>To view this page as a different user</Label>
-        <Dropdown search button value={selectedUser} options={users} onChange={(e, target) => setSelectedUser(target.value)} />
+        <Dropdown
+          search
+          button
+          value={selectedUser}
+          options={Object.entries(users).map(([key, user]) => { return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: user.system_id, key: key } })}
+          onChange={(e, target) => setSelectedUser(target.value)} />
         {renderButton()}
       </>
     )

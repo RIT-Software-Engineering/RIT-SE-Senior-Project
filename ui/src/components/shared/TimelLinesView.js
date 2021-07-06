@@ -4,7 +4,9 @@ import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { UserContext } from "../util/UserContext";
 import Timeline from "./Timeline";
-import { parseDate } from "../util/utils";
+import { isSemesterActive } from "../util/utils";
+
+const noSemesterStr = "No Semester";
 
 export default function TimeLines() {
     const [timelines, setTimelines] = useState([]);
@@ -24,7 +26,11 @@ export default function TimeLines() {
 
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
-        if (!semesters[timeline.semester_id]) {
+
+        if (timeline.semester_id === null || timeline.semester_id === undefined) {
+            timeline.semester_id = noSemesterStr;
+            timeline.semester_name = noSemesterStr;
+        } else if (!semesters[timeline.semester_id]) {
             semesters[timeline.semester_id] = [timeline];
         } else {
             semesters[timeline.semester_id].push(timeline);
@@ -43,10 +49,7 @@ export default function TimeLines() {
         return Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
             if (activeSemesters[semesterData[0]?.semester_name] === undefined) {
-                const endDate = parseDate(semesterData[0].end_date)
-                const today = new Date();
-                const active = endDate > today;
-                activeSemesters[semesterData[0]?.semester_name] = active;
+                activeSemesters[semesterData[0]?.semester_name] = isSemesterActive(semesterData[0].start_date, semesterData[0].end_date);
             }
 
             const semester = [
@@ -56,7 +59,7 @@ export default function TimeLines() {
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
                         content: semesterData?.map((timelineElementData) => {
-                            return <Timeline key={"timeline-"} elementData={timelineElementData} />
+                            return <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
                         }),
                     },
                     semester_id: semesterData[0]?.semester_id,

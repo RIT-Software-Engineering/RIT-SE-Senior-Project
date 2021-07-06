@@ -13,7 +13,7 @@ export default function Timeline(props) {
             .then(response => response.json())
             .then(actions => setActions(actions))
             .catch(error => console.error(error))
-    }, [])
+    }, [props.elementData?.project_id])
 
     const renderActionComponents = (data) => {
         const sortedActions = _.sortBy(actions || [], ["due_date", "start_date", "action_title"]);
