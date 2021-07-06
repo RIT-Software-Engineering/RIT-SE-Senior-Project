@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
-import ToolTip from "./ToolTip";
-import _ from "lodash";
+import React, { useEffect, useState, useContext } from "react";
+import ActionElements from "./ActionElements";
+import UpcomingActions from "./UpcomingActions";
 import { SecureFetch } from "../util/secureFetch";
-import { config } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
+import { UserContext } from "../util/UserContext";
+
 
 export default function Timeline(props) {
 
-    const [actions, setActions] = useState([])
+    const [actions, setActions] = useState([]);
+    const userContext = useContext(UserContext);
 
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${props.elementData?.project_id}`)
@@ -15,51 +18,15 @@ export default function Timeline(props) {
             .catch(error => console.error(error))
     }, [props.elementData?.project_id])
 
-    const renderActionComponents = (data) => {
-        const sortedActions = _.sortBy(actions || [], ["due_date", "start_date", "action_title"]);
-        let actionsComponents = [];
-
-        sortedActions.forEach((action, idx) => {
-
-            let className = "action-bar ";
-
-            switch (action.state) {
-                case "yellow":
-                    className += "proposal-row-yellow";
-                    break;
-                case "red":
-                    className += "proposal-row-red";
-                    break;
-                case "green":
-                    className += "proposal-row-green";
-                    break;
-                case "grey":
-                    className += "proposal-row-gray";
-                    break;
-                default:
-                    className += `proposal-row-${action.state}`;
-                    break;
-            }
-
-            const trigger = <div
-                className={className}
-                key={idx}
-            >
-                {(action.state === "yellow" || action.state === "red") && <div className="action-bar-text">{action.action_title}</div>}
-            </div>
-
-            actionsComponents.push(
-                <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.elementData?.project_id} />
-            )
-        })
-
-        return actionsComponents;
-    }
-
     return (
         <div>
-            <h3>{props.elementData?.display_name || props.elementData?.title}</h3>
-            <div className="actions-container">{renderActionComponents(props.elementData || [])}</div>
+            <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+            {userContext.user?.role !== USERTYPES.ADMIN && <>
+                <h3>Relevant Actions</h3>
+                <UpcomingActions actions={actions} />
+            </>}
+            <h3>Timeline</h3>
+            <ActionElements actions={actions} />
         </div>
     );
 }
