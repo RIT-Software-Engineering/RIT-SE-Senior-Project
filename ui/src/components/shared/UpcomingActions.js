@@ -13,7 +13,13 @@ export default function UpcomingActions(props) {
     if (filteredActions.length < 3) {
         let allSortedActions = _.sortBy(props.actions, ["due_date", "start_date", "action_title"]);
         let count = filteredActions.length;
-        filteredActions = filteredActions.concat(allSortedActions?.filter(action => count < 3 && action.state === ACTION_STATES.GREY));
+        filteredActions = filteredActions.concat(allSortedActions?.filter(action => {
+            if (count < 3 && action.state === ACTION_STATES.GREY) {
+                count++;
+                return true;
+            }
+            return false;
+        }));
     }
 
     return (
