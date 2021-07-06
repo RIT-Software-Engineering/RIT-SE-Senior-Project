@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import ActionElements from "./ActionElements";
+import Announcements from "./Announcements";
 import UpcomingActions from "./UpcomingActions";
 import { SecureFetch } from "../util/secureFetch";
 import { ACTION_TARGETS, config, USERTYPES } from "../util/constants";
@@ -31,7 +32,7 @@ export default function Timeline(props) {
             <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
             {announcements.length > 0 && <>
                 <h3>Announcements</h3>
-                <ActionElements actions={announcements} />
+                <Announcements announcements={announcements} />
             </>}
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
