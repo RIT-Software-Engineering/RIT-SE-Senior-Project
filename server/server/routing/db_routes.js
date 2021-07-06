@@ -19,6 +19,8 @@ const ACTION_TARGETS = {
     COACH: 'coach',
     TEAM: 'team',
     INDIVIDUAL: 'individual',
+    COACH_ANNOUNCEMENT: 'coach_announcement',
+    STUDENT_ANNOUNCEMENT: 'student_announcement',
 };
 
 // Globals
@@ -822,6 +824,10 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
                 return res.status(401).send("Only students can submit individual actions.");
             }
             break;
+        case ACTION_TARGETS.COACH_ANNOUNCEMENT:
+        case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
+            return res.status(401).send("You can not submit an announcement");
+            break;
         default:
             return res.status(500).send("Invalid action target.");
     }
@@ -924,6 +930,11 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         return res.sendStatus(401);
     }
 
+    let filter = "";
+    if (req.user.type === ROLES.STUDENT) {
+        filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`
+    }
+
     let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
             CASE
                 WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
@@ -939,7 +950,7 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         FROM actions
         LEFT JOIN action_log
             ON action_log.action_template = actions.action_id AND action_log.project = ?
-            WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
+            WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?) ${filter}
         GROUP BY actions.action_id`;
 
     db.query(getTimelineActions, [req.query.project_id, req.query.project_id, req.query.project_id, req.query.project_id])

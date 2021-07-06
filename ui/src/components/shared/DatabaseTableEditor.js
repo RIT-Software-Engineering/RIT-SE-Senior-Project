@@ -96,10 +96,18 @@ export default function DatabaseTableEditor(props) {
             }
         }
 
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        const newFormData = props.preChange(formData, name, value, checked, isActiveField, e);
+
+        if (newFormData) {
+            console.log(newFormData);
+            setFormData(newFormData);
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+
     };
 
     let fieldComponents = [];

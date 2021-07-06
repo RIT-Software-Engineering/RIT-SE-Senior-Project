@@ -65,6 +65,8 @@ export const ACTION_TARGETS = {
     team: 'team',
     coach: 'coach',
     admin: 'admin',
+    student_announcement: 'student_announcement',
+    coach_announcement: 'coach_announcement',
 }
 
 export const DROPDOWN_ITEMS = {
@@ -88,7 +90,17 @@ export const DROPDOWN_ITEMS = {
             key: "admin",
             text: "Admin",
             value: "admin",
-        }
+        },
+        {
+            key: "student_announcement",
+            text: "Student Announcement",
+            value: "student_announcement",
+        },
+        {
+            key: "coach_announcement",
+            text: "Coach Announcement",
+            value: "coach_announcement",
+        },
     ],
 
     userTypes: [
