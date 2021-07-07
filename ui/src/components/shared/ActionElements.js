@@ -9,38 +9,38 @@ export default function ActionElements(props) {
 
     sortedActions.forEach((action, idx) => {
 
-        let className = "action-bar ";
+        let color = "";
 
         switch (action.state) {
             case ACTION_STATES.YELLOW:
-                className += "proposal-row-yellow";
+                color += "proposal-row-yellow";
                 break;
             case ACTION_STATES.RED:
-                className += "proposal-row-red";
+                color += "proposal-row-red";
                 break;
             case ACTION_STATES.GREEN:
-                className += "proposal-row-green";
+                color += "proposal-row-green";
                 break;
             case ACTION_STATES.GREY:
-                className += "proposal-row-gray";
+                color += "proposal-row-gray";
                 break;
             default:
-                className += `proposal-row-${action.state}`;
+                color += `proposal-row-${action.state}`;
                 break;
         }
 
         const trigger = <div
-            className={className}
+            className={`action-bar ${color}`}
             key={idx}
         >
             {(action.state === "yellow" || action.state === "red") && <div className="action-bar-text">{action.action_title}</div>}
         </div>
         actionsComponents.push(
-            <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.projectId} />
+            <ToolTip color={color} noPopup={props.noPopup} trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.projectId} />
         )
     })
 
-    return <div className="actions-container">
+    return <div className={props.noPopup ? "relevant-actions-container" : "actions-container"}>
         {actionsComponents}
     </div>
 }
