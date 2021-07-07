@@ -935,6 +935,8 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`
     }
 
+    const filterAnnouncementsByTime = `AND ((actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date < date('now') AND actions.due_date > date('now')) OR actions.action_target NOT IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}'))`
+
     let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
             CASE
                 WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
@@ -950,7 +952,8 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         FROM actions
         LEFT JOIN action_log
             ON action_log.action_template = actions.action_id AND action_log.project = ?
-            WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?) ${filter}
+            WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
+            ${filterAnnouncementsByTime} ${filter}
         GROUP BY actions.action_id`;
 
     db.query(getTimelineActions, [req.query.project_id, req.query.project_id, req.query.project_id, req.query.project_id])
