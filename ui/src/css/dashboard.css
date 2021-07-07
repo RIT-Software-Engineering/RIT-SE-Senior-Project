@@ -51,6 +51,14 @@
     grid-column: span 3 / auto;
     padding: 0.5em;
     border-radius: 0.25em;
+    display: flex;
+    flex-direction: column;
+}
+
+.no-popup-tooltip .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .tabular.menu {    
