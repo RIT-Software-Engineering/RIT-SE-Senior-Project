@@ -49,3 +49,17 @@
 .submission-errors {
     color: red;
 }
+
+.announcement-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em
+}
+
+.announcement {
+    width: 100%;
+    background-color: #FDD6A1;
+    border-radius: 0.5em;
+    padding: 0.5em;
+}

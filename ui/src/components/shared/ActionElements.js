@@ -35,9 +35,8 @@ export default function ActionElements(props) {
         >
             {(action.state === "yellow" || action.state === "red") && <div className="action-bar-text">{action.action_title}</div>}
         </div>
-
         actionsComponents.push(
-            <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.elementData?.project_id} />
+            <ToolTip trigger={trigger} key={`tooltip-${action.action_title}-${idx}`} action={action} projectId={props.projectId} />
         )
     })
 

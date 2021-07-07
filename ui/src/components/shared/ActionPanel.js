@@ -1,7 +1,11 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
-import { config, DROPDOWN_ITEMS } from "../util/constants";
+import { ACTION_TARGETS, config, DROPDOWN_ITEMS } from "../util/constants";
 import { createSemesterDropdownOptions } from "../util/utils";
+
+const short_desc = "short_desc";
+const file_types = "file_types";
+const action_target = "action_target";
 
 export default function ActionPanel(props) {
     let initialState = {
@@ -54,14 +58,14 @@ export default function ActionPanel(props) {
             type: "dropdown",
             label: "Action Target",
             placeHolder: "Action Target",
-            name: "action_target",
+            name: action_target,
             options: DROPDOWN_ITEMS.actionTarget,
         },
         {
             type: "input",
             label: "Short Desc",
             placeHolder: "Short Desc",
-            name: "short_desc",
+            name: short_desc,
         },
         {
             type: "date",
@@ -71,8 +75,8 @@ export default function ActionPanel(props) {
         },
         {
             type: "date",
-            label: "Due Date",
-            placeHolder: "Due Date",
+            label: "Due Date / Announcement End Date",
+            placeHolder: "Due Date / Announcement End Date",
             name: "due_date",
         },
         {
@@ -85,7 +89,7 @@ export default function ActionPanel(props) {
             type: "input",
             label: "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
             placeHolder: "CSV format please - No filetypes = no files uploaded",
-            name: "file_types",
+            name: file_types,
         },
         {
             type: "activeCheckbox",
@@ -94,6 +98,17 @@ export default function ActionPanel(props) {
             name: "date_deleted",
         },
     ];
+
+    const preChange = (formData, name, value) => {
+        if (name === action_target && [ACTION_TARGETS.coach_announcement, ACTION_TARGETS.student_announcement].includes(value)) {
+            formData[short_desc] = "";
+            formData[file_types] = "";
+            formData[name] = value;
+        }
+        else if ([ACTION_TARGETS.coach_announcement, ACTION_TARGETS.student_announcement].includes(formData[action_target]) && [short_desc, file_types].includes(name)) {
+            return formData;
+        }
+    }
 
     return (
         <DatabaseTableEditor
@@ -105,6 +120,7 @@ export default function ActionPanel(props) {
             header={props.header}
             create={!!props.create}
             button={!!props.create ? "plus" : "edit"}
+            preChange={preChange}
         />
     );
 }

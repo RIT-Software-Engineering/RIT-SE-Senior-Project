@@ -34,7 +34,7 @@ export default function ActionTable(props) {
                             <ActionPanel
                                 actionData={action}
                                 semesterData={props.semesterData}
-                                header={`Currently Editing "${action.action_title}"`}
+                                header={`Currently Copying "${action.action_title}"`}
                                 create={true}
                                 key={"copyAction-" + i}
                             />

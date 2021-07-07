@@ -19,6 +19,8 @@ const ACTION_TARGETS = {
     COACH: 'coach',
     TEAM: 'team',
     INDIVIDUAL: 'individual',
+    COACH_ANNOUNCEMENT: 'coach_announcement',
+    STUDENT_ANNOUNCEMENT: 'student_announcement',
 };
 
 // Globals
@@ -816,11 +818,17 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
                 return res.status(401).send("Only admins and coaches can submit coach actions.");
             }
             break;
-        // CASE INDIVIDUAL: Anyone can submit student/individual actions
         case ACTION_TARGETS.INDIVIDUAL:
             if (req.user.type !== ROLES.STUDENT) {
                 return res.status(401).send("Only students can submit individual actions.");
             }
+            break;
+        case ACTION_TARGETS.COACH_ANNOUNCEMENT:
+        case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
+            return res.status(401).send("You can not submit an announcement");
+            break;
+        case ACTION_TARGETS.TEAM:
+            // Anyone can submit team actions
             break;
         default:
             return res.status(500).send("Invalid action target.");
@@ -940,6 +948,7 @@ db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => 
         LEFT JOIN action_log
             ON action_log.action_template = actions.action_id AND action_log.project = ?
             WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
+            AND actions.action_target NOT IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}')
         GROUP BY actions.action_id`;
 
     db.query(getTimelineActions, [req.query.project_id, req.query.project_id, req.query.project_id, req.query.project_id])
@@ -1094,6 +1103,36 @@ db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
             res.status(500).send(err);
         });
 });
+
+db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
+
+    let filter = "";
+    let semesterCheck = "";
+    let params = [req.query.semester];
+    if (req.user.type === ROLES.STUDENT) {
+        filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`
+        // Note: Since we only do this check for students, coaches can technically hack the request to see announcements for other semesters.
+        // Unfortunately, coaches don't inherently have a semester like students do
+        // and 1am Kevin can't think of another way of ensuring that a coach isn't lying to us about their semester ...but idk what they would gain form doing that sooo ima just leave it for now
+        semesterCheck = `AND ? IN (SELECT users.semester_group from users WHERE users.system_id = '${req.user.system_id}')`
+        params = [req.query.semester, req.query.semester];
+    }
+
+    let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, page_html
+        FROM actions
+        WHERE actions.date_deleted = '' AND actions.semester = ? ${semesterCheck}
+            AND (actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date < date('now') AND actions.due_date > date('now'))
+            ${filter}`;
+
+    db.query(getTimelineActions, params)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+})
 
 db_router.post("/editSemester", [body("*").trim()], (req, res) => {
     let body = req.body;

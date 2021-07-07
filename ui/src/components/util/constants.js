@@ -23,6 +23,7 @@ export const config = {
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
+        API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,
         API_GET_TIMELINE_ACTIONS: `${BASE_API_URL}/db/getTimelineActions`,
         API_GET_PROPOSAL_PDF: `${BASE_API_URL}/db/getProposalPdf`,
         API_GET_PROPOSAL_ATTACHMENT: `${BASE_API_URL}/db/getProposalAttachment`,
@@ -65,6 +66,8 @@ export const ACTION_TARGETS = {
     team: 'team',
     coach: 'coach',
     admin: 'admin',
+    student_announcement: 'student_announcement',
+    coach_announcement: 'coach_announcement',
 }
 
 export const DROPDOWN_ITEMS = {
@@ -88,7 +91,17 @@ export const DROPDOWN_ITEMS = {
             key: "admin",
             text: "Admin",
             value: "admin",
-        }
+        },
+        {
+            key: "student_announcement",
+            text: "Student Announcement",
+            value: "student_announcement",
+        },
+        {
+            key: "coach_announcement",
+            text: "Coach Announcement",
+            value: "coach_announcement",
+        },
     ],
 
     userTypes: [

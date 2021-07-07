@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import TimeLines from "../shared/TimelLinesView";
+import TimeLinesView from "../shared/TimeLinesView";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
@@ -103,7 +103,7 @@ export default function DashboardPage() {
                     menuItem: "Dashboard",
                     render: () => (
                         <Tab.Pane>
-                            <TimeLines />
+                            <TimeLinesView />
                         </Tab.Pane>
                     ),
                 },

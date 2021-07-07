@@ -28,7 +28,7 @@ function ToolTip(props) {
             header={props.action.action_title}
             content={
                 <div className="content">
-                    <p dangerouslySetInnerHTML={{ __html: props.action.short_desc }} />
+                    <div dangerouslySetInnerHTML={{ __html: props.action.short_desc }} />
                     <p>Starts: {formatDate(props.action.start_date)}</p>
                     <p>Due: {formatDate(props.action.due_date)}</p>
                     <p>Submission Type: {submissionTypeMap[props.action.action_target]}</p>
