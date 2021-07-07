@@ -968,10 +968,13 @@ db_router.get("/getActionLogs", (req, res) => {
     switch (req.user.type) {
         case ROLES.STUDENT:
             // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-            getActionLogQuery = `SELECT action_log.* FROM action_log
-                JOIN actions ON actions.action_id = action_log.action_template
-                WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
-                AND (action_log.system_id = ? OR (actions.action_target='${ACTION_TARGETS.TEAM}' AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)))`;
+            getActionLogQuery = `SELECT action_log.*,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+                FROM action_log
+                    JOIN actions ON actions.action_id = action_log.action_template
+                    WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                    AND (action_log.system_id = ? OR (actions.action_target='${ACTION_TARGETS.TEAM}' AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)))`;
             params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
             break;
         case ROLES.COACH:
@@ -1001,7 +1004,10 @@ db_router.get("/getTeammateActionLogs", (req, res) => {
     let params = [];
 
     // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-    getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project FROM action_log
+    getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project ,
+        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+    FROM action_log
         WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?) AND action_log.system_id != ?
         AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ? OR users.type = '${ROLES.COACH}' OR users.type = '${ROLES.ADMIN}')`;
     params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];

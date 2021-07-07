@@ -23,6 +23,6 @@ export default function UpcomingActions(props) {
     }
 
     return (
-        <ActionElements actions={filteredActions} projectId={props.projectId} />
+        <ActionElements noPopup actions={filteredActions} projectId={props.projectId} />
     )
 }
