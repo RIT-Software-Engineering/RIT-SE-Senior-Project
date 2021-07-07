@@ -20,13 +20,13 @@ export default function StudentTeamTable(props) {
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                        First Name
+                        ID
                     </TableHeaderCell>
                     <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                        Last Name
+                        Name
                     </TableHeaderCell>
 
                     <TableHeaderCell

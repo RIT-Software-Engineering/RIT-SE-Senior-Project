@@ -5,8 +5,8 @@ import StudentEditPanel from "./StudentEditPanel";
 export default function StudentRow(props) {
     return (
         <TableRow key={props.student.system_id}>
-            <TableCell>{props.student.fname}</TableCell>
-            <TableCell>{props.student.lname}</TableCell>
+            <TableCell>{props.student.system_id}</TableCell>
+            <TableCell>{props.student.fname} {props.student.lname}</TableCell>
             <TableCell><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
             {!props.viewOnly && <TableCell>
                 <StudentEditPanel
