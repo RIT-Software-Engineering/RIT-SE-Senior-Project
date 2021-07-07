@@ -3,7 +3,7 @@ import { Accordion } from "semantic-ui-react";
 import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { UserContext } from "../util/UserContext";
-import Timeline from "./Timeline";
+import Semester from "./Semester";
 import { isSemesterActive } from "../util/utils";
 
 const noSemesterStr = "No Semester";
@@ -58,9 +58,7 @@ export default function TimeLines() {
                     title: semesterData[0]?.semester_name,
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
-                        content: semesterData?.map((timelineElementData) => {
-                            return <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
-                        }),
+                        content: <Semester projects={semesterData} />,
                     },
                     semester_id: semesterData[0]?.semester_id,
                 },

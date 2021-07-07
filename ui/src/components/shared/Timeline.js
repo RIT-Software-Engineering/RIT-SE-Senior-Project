@@ -18,11 +18,7 @@ export default function Timeline(props) {
         SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${props.elementData?.project_id}`)
             .then(response => response.json())
             .then(actions => {
-                const [announcements, filteredActions] = _.partition(actions, (action) => {
-                    return [ACTION_TARGETS.student_announcement, ACTION_TARGETS.coach_announcement].includes(action.action_target);
-                })
-                setAnnouncements(announcements);
-                setActions(filteredActions);
+                setActions(actions);
             })
             .catch(error => console.error(error))
     }, [props.elementData?.project_id])
@@ -30,10 +26,6 @@ export default function Timeline(props) {
     return (
         <div>
             <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
-            {announcements.length > 0 && <>
-                <h3>Announcements</h3>
-                <Announcements announcements={announcements} />
-            </>}
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
                 <UpcomingActions actions={actions} />
