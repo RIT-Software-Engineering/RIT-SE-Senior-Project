@@ -14,7 +14,7 @@ export default function Semester(props) {
             .then(announcements => {
                 setAnnouncements(announcements);
             })
-    }, [])
+    }, [props.projects])
 
     return <>
         {announcements.length > 0 && <>

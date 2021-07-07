@@ -818,7 +818,6 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
                 return res.status(401).send("Only admins and coaches can submit coach actions.");
             }
             break;
-        // CASE INDIVIDUAL: Anyone can submit student/individual actions
         case ACTION_TARGETS.INDIVIDUAL:
             if (req.user.type !== ROLES.STUDENT) {
                 return res.status(401).send("Only students can submit individual actions.");
@@ -827,6 +826,9 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
         case ACTION_TARGETS.COACH_ANNOUNCEMENT:
         case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
             return res.status(401).send("You can not submit an announcement");
+            break;
+        case ACTION_TARGETS.TEAM:
+            // Anyone can submit team actions
             break;
         default:
             return res.status(500).send("Invalid action target.");

@@ -1,17 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import ActionElements from "./ActionElements";
-import Announcements from "./Announcements";
 import UpcomingActions from "./UpcomingActions";
 import { SecureFetch } from "../util/secureFetch";
-import { ACTION_TARGETS, config, USERTYPES } from "../util/constants";
+import { config, USERTYPES } from "../util/constants";
 import { UserContext } from "../util/UserContext";
-import _ from "lodash";
-
 
 export default function Timeline(props) {
 
     const [actions, setActions] = useState([]);
-    const [announcements, setAnnouncements] = useState([]);
     const userContext = useContext(UserContext);
 
     useEffect(() => {
@@ -28,10 +24,10 @@ export default function Timeline(props) {
             <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
-                <UpcomingActions actions={actions} />
+                <UpcomingActions projectId={props.elementData.project_id} actions={actions} />
             </>}
             <h3>Timeline</h3>
-            <ActionElements actions={actions} />
+            <ActionElements projectId={props.elementData.project_id} actions={actions} />
         </div>
     );
 }

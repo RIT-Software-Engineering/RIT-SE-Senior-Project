@@ -23,6 +23,6 @@ export default function UpcomingActions(props) {
     }
 
     return (
-        <ActionElements actions={filteredActions} />
+        <ActionElements actions={filteredActions} project_id={props.projectId} />
     )
 }

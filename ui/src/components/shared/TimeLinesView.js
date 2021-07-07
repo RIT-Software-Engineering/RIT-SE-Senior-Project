@@ -8,7 +8,7 @@ import { isSemesterActive } from "../util/utils";
 
 const noSemesterStr = "No Semester";
 
-export default function TimeLines() {
+export default function TimeLinesView() {
     const [timelines, setTimelines] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({});
     const userContext = useContext(UserContext);
