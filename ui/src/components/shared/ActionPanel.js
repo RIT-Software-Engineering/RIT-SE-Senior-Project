@@ -63,7 +63,7 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Short Desc",
+            label: "Short Desc (Not used for announcements)",
             placeHolder: "Short Desc",
             name: short_desc,
         },
@@ -87,7 +87,7 @@ export default function ActionPanel(props) {
         },
         {
             type: "input",
-            label: "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
+            label: "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt) (Not used for announcements)",
             placeHolder: "CSV format please - No filetypes = no files uploaded",
             name: file_types,
         },

@@ -83,3 +83,17 @@
     border-radius: 0.5em;
     padding: 0.5em;
 }
+
+.announcement .announcement-header {
+    display: flex;
+    margin-bottom: 0.5em;
+}
+
+.announcement .announcement-header :first-child {
+    flex-grow: 1;
+    padding-right: 0.25em;
+}
+
+.announcement .announcement-header * {
+    margin: 0;
+}

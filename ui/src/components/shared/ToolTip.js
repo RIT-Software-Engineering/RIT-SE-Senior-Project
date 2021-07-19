@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Icon, Popup } from "semantic-ui-react";
+import { Icon, Popup } from "semantic-ui-react";
 import { ACTION_TARGETS, config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { formatDate, formatDateTime } from "../util/utils";
@@ -82,17 +82,12 @@ function ToolTip(props) {
               * However, action.state is based off of server time whereas if we parse action.start_date, 
               * we need to deal with parsing with time zones and all of that.
               */}
-            {props.action.state === "grey" ?
-                <p className="ui fluid button">This Action Can be Submitted On or After {formatDate(props.action?.start_date)}</p>
-                :
-                <ActionModal
-                    key={props.action.action_id}
-                    {...props.action}
-                    isOpenCallback={isOpenCallback}
-                    projectId={props.projectId}
-                    trigger={submissions?.length > 0 ? <Button fluid >Resubmit Action</Button> : <Button fluid >Submit Action</Button>}
-                />
-            }
+            <ActionModal
+                key={props.action.action_id}
+                {...props.action}
+                isOpenCallback={isOpenCallback}
+                projectId={props.projectId}
+            />
         </div>
     }
 

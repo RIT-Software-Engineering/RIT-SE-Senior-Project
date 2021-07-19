@@ -19,7 +19,7 @@ export default function Semester(props) {
     return <>
         {announcements.length > 0 && <>
             <h2>Announcements</h2>
-            <Announcements announcements={announcements} />
+            <Announcements announcements={announcements} semesterName={props.semesterName} />
             <br />
         </>}
         {props.projects?.map((timelineElementData) => {

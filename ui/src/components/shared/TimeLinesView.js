@@ -58,7 +58,7 @@ export default function TimeLinesView() {
                     title: semesterData[0]?.semester_name,
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
-                        content: <Semester key="semester" projects={semesterData} />,
+                        content: <Semester key="semester" projects={semesterData} semesterName={semesterData[0]?.semester_name} />,
                     },
                     semester_id: semesterData[0]?.semester_id,
                 },

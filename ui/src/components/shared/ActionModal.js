@@ -129,7 +129,7 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={props.trigger || <Button fluid >Submit Action</Button>}
+            trigger={props.trigger || <Button fluid >View Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
@@ -158,15 +158,17 @@ export default function ActionModal(props) {
                 >
                     Cancel
                 </Button>
-                <Button
-                    content="Submit"
-                    labelPosition="right"
-                    icon="checkmark"
-                    onClick={() => {
-                        onActionSubmit(props.id, props.file_types);
-                    }}
-                    positive
-                />
+                {props?.state !== "grey" &&
+                    <Button
+                        content="Submit"
+                        labelPosition="right"
+                        icon="checkmark"
+                        onClick={() => {
+                            onActionSubmit(props.id, props.file_types);
+                        }}
+                        positive
+                    />
+                }
             </Modal.Actions>
         </Modal>
     );
