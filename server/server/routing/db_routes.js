@@ -57,6 +57,24 @@ db_router.get("/selectAllStudentInfo", [UserAuth.isCoachOrAdmin], (req, res) => 
 });
 
 
+db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res) => {
+    let getUsersQuery = `
+        SELECT *
+        FROM users
+        LEFT JOIN semester_group
+        ON users.semester_group = semester_group.semester_id
+        WHERE type != 'student'
+    `;
+    db.query(getUsersQuery)
+        .then((values) => {
+            res.send(values);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
+});
+
+
 db_router.get("/getMyStudents", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     let query = "";
