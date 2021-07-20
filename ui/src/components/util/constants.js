@@ -28,6 +28,7 @@ export const config = {
         API_GET_PROPOSAL_PDF: `${BASE_API_URL}/db/getProposalPdf`,
         API_GET_PROPOSAL_ATTACHMENT: `${BASE_API_URL}/db/getProposalAttachment`,
         API_GET_STUDENT_INFO: `${BASE_API_URL}/db/selectAllStudentInfo`,
+        API_GET_NON_STUDENT_INFO: `${BASE_API_URL}/db/selectAllNonStudentInfo`,
         API_GET_ACTIVE_PROJECTS: `${BASE_API_URL}/db/getActiveProjects`,
         API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
         API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,

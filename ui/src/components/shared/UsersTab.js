@@ -5,6 +5,14 @@ import _ from "lodash";
 import StudentTeamTable from "./StudentTeamTable";
 import { SecureFetch } from "../util/secureFetch";
 
+
+/**
+ * FIXME: This whole component should be redesigned to only
+ * get users when opening an accordion. Loading all of the users
+ * at the beginning will slow down over time especially as we add
+ * nearly 200 users per semester. Overall, the design of this component
+ * could be less complex.
+ */
 export default function UsersTab() {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState();
@@ -30,13 +38,13 @@ export default function UsersTab() {
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
-        SecureFetch(config.url.API_GET_USERS)
+        SecureFetch(config.url.API_GET_NON_STUDENT_INFO)
             .then((response) => response.json())
             .then((userData) => {
                 setUserData(userData);
             })
             .catch((error) => {
-                alert("Failed to get user data" + error);
+                alert("Failed to get non student data" + error);
             });
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
