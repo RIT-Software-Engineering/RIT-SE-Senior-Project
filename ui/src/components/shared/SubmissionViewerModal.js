@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ACTION_TARGETS, config } from "../util/constants";
 import { Button, Divider, Icon, Modal } from 'semantic-ui-react';
 import { formatDateTime } from '../util/utils';
+import { SecureFetch } from '../util/secureFetch';
 
 export default function SubmissionViewerModal(props) {
-    let formData = {};
-    if (props.action?.form_data !== undefined) {
-        formData = JSON.parse(props.action?.form_data?.toString());
+
+    const [submission, setSubmission] = useState({})
+
+    const loadSubmission = () => {
+        SecureFetch(`${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`)
+            .then((response) => response.json())
+            .then((submission) => {
+                if (submission.length > 0) {
+                    setSubmission(JSON.parse(submission[0].form_data.toString()))
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get action log data " + error);
+            });
     }
 
     const noSubmissionText = (target) => {
@@ -25,9 +37,11 @@ export default function SubmissionViewerModal(props) {
     return (
         <Modal
             trigger={
-                props.trigger || <Button icon>
-                    <Icon name="eye" />
-                </Button>
+                <div onClick={loadSubmission}>
+                    {props.trigger || <Button icon>
+                        <Icon name="eye" />
+                    </Button>}
+                </div>
             }
             header={"Submission"}
             actions={[{ content: "Done", key: 0 }]}
@@ -40,10 +54,10 @@ export default function SubmissionViewerModal(props) {
                     <Divider />
                     <h3>Submission</h3>
                     {!props.noSubmission && <>
-                        {Object.keys(formData)?.map((key) => {
+                        {Object.keys(submission)?.map((key) => {
                             return (
                                 <div key={key}>
-                                    <h5>{key}:</h5> <p>{formData[key]}</p>
+                                    <h5>{key}:</h5> <p>{submission[key]}</p>
                                 </div>
                             );
                         })}
@@ -51,7 +65,7 @@ export default function SubmissionViewerModal(props) {
                             return <div key={file}><a href={`${config.url.BASE_URL}/#`} >{file}</a><br /></div>;
                         })}
                     </>}
-                    {props.noSubmission && <p>{noSubmissionText(props.target)}</p>}
+                    {(props.noSubmission || Object.keys(submission).length === 0) && <p>{noSubmissionText(props.target)}</p>}
                 </div>
             }}
         />
