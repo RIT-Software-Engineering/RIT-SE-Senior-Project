@@ -3,6 +3,7 @@ import { Button, Modal } from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
+import { formatDateTime, parseDate } from "../util/utils";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 /** 
@@ -158,7 +159,9 @@ export default function ActionModal(props) {
                 >
                     Cancel
                 </Button>
-                {props?.state !== "grey" &&
+                {props?.state === "grey" ?
+                    ` This action can be submitted on ${formatDateTime(props.start_date)}"`
+                    :
                     <Button
                         content="Submit"
                         labelPosition="right"

@@ -24,10 +24,20 @@ export default function Timeline(props) {
             <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
-                <UpcomingActions projectId={props.elementData.project_id} actions={actions} />
+                <UpcomingActions
+                    projectName={props.elementData.display_name || props.elementData.title}
+                    projectId={props.elementData.project_id}
+                    semesterName={props.elementData.semester_name}
+                    actions={actions}
+                />
             </>}
             <h3>Timeline</h3>
-            <ActionElements projectId={props.elementData.project_id} actions={actions} />
+            <ActionElements
+                projectName={props.elementData.display_name || props.elementData.title}
+                projectId={props.elementData.project_id}
+                semesterName={props.elementData.semester_name}
+                actions={actions}
+            />
         </div>
     );
 }

@@ -57,6 +57,8 @@ function ToolTip(props) {
                     action={submission}
                     title={props.action?.action_title}
                     target={props.action?.action_target}
+                    semesterName={props.semesterName}
+                    projectName={props.projectName}
                     trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                 />
             })}

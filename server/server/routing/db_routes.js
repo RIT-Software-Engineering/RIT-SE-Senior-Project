@@ -1016,12 +1016,14 @@ db_router.get("/getAllActionLogs", async (req, res) => {
             const project_id = (await db.query(`SELECT project FROM users WHERE users.system_id = '${req.user.system_id}'`))[0].project;
 
             // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
-                                    actions.action_target, actions.action_title,
+            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                                    actions.action_target, actions.action_title, actions.semester,
+                                    projects.display_name, projects.title,
                                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
                                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                                 FROM action_log
                                     JOIN actions ON actions.action_id = action_log.action_template
+                                    JOIN projects ON projects.project_id = action_log.project
                                     WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
                                     AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)
                                     AND action_log.oid NOT IN (SELECT oid FROM action_log
@@ -1036,8 +1038,8 @@ db_router.get("/getAllActionLogs", async (req, res) => {
             break;
         case ROLES.COACH:
             getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
-                actions.action_target, actions.action_title,
-                projects.display_name, projects.title 
+                actions.action_target, actions.action_title, actions.semester,
+                projects.display_name, projects.title
                 FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     JOIN projects ON projects.project_id = action_log.project
@@ -1051,7 +1053,7 @@ db_router.get("/getAllActionLogs", async (req, res) => {
             break;
         case ROLES.ADMIN:
             getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
-            actions.action_target, actions.action_title,
+            actions.action_target, actions.action_title, actions.semester,
             projects.display_name, projects.title 
             FROM action_log
                 JOIN actions ON actions.action_id = action_log.action_template
