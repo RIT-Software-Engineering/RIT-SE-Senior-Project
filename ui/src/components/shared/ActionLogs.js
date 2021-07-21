@@ -30,6 +30,7 @@ export default function ActionLogs(props) {
         SecureFetch(`${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`)
             .then((response) => response.json())
             .then((action_logs) => {
+                setActionLogs(action_logs.actionLogs);
                 setActionLogCount(action_logs.actionLogCount);
             })
             .catch((error) => {

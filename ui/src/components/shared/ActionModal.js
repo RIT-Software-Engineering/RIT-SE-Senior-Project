@@ -3,7 +3,7 @@ import { Button, Modal } from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import { formatDateTime, parseDate } from "../util/utils";
+import { formatDateTime } from "../util/utils";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 /** 
