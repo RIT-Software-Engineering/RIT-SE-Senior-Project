@@ -356,7 +356,6 @@ db_router.get("/selectExemplary", (req, res) => {
 
     Promise.all([rowCountPromise, projectsPromise])
         .then(([[rowCount], projects]) => {
-            // FIXME: The rowCount variable isn't pretty -- Maybe consider changing how db.query works to better accommodate those kinds of request?
             res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
         })
         .catch((error) => {
@@ -986,18 +985,22 @@ db_router.get("/getActionLogs", (req, res) => {
     switch (req.user.type) {
         case ROLES.STUDENT:
             // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-            getActionLogQuery = `SELECT action_log.*,
+            // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
+            //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
+            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                 FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
-                    WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
-                    AND (action_log.system_id = ? OR (actions.action_target='${ACTION_TARGETS.TEAM}' AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)))`;
-            params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
+                    WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)`;
+            params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id];
             break;
         case ROLES.COACH:
         case ROLES.ADMIN:
-            getActionLogQuery = `SELECT action_log.* FROM action_log
+            getActionLogQuery = `SELECT action_log.*,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) AS name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) AS mock_name
+                FROM action_log
                 WHERE action_log.action_template = ? AND action_log.project = ?`;
             params = [req.query.action_id, req.query.project_id];
             break;
@@ -1016,23 +1019,120 @@ db_router.get("/getActionLogs", (req, res) => {
         });
 });
 
-// Get your teammate's, coaches', and admins' submissions (Does not send submission, just submission metadata i.e. submission time, who submitted, etc)
-db_router.get("/getTeammateActionLogs", (req, res) => {
+
+db_router.get("/getAllActionLogs", async (req, res) => {
+
+    const { resultLimit, offset } = req.query;
+
     let getActionLogQuery = "";
+    let queryParams = [];
+    let getActionLogCount = "";
+    let countParams = [];
+
+    switch (req.user.type) {
+        case ROLES.STUDENT:
+            const project_id = (await db.query(`SELECT project FROM users WHERE users.system_id = '${req.user.system_id}'`))[0].project;
+
+            // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
+            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                                    actions.action_target, actions.action_title, actions.semester,
+                                    projects.display_name, projects.title,
+                                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+                                FROM action_log
+                                    JOIN actions ON actions.action_id = action_log.action_template
+                                    JOIN projects ON projects.project_id = action_log.project
+                                    WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                                    AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)
+                                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                                        ORDER BY submission_datetime DESC LIMIT ?)
+                                    ORDER BY submission_datetime DESC LIMIT ?`;
+            queryParams = [project_id, project_id, req.user.system_id, project_id, offset || 0, resultLimit || 0];
+            getActionLogCount = `SELECT COUNT(*) FROM action_log
+                                JOIN actions ON actions.action_id = action_log.action_template
+                                WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                                AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+            countParams = [project_id, project_id, req.user.system_id, project_id];
+            break;
+        case ROLES.COACH:
+            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                actions.action_target, actions.action_title, actions.semester,
+                projects.display_name, projects.title
+                FROM action_log
+                    JOIN actions ON actions.action_id = action_log.action_template
+                    JOIN projects ON projects.project_id = action_log.project
+                    WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
+                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                        ORDER BY submission_datetime DESC LIMIT ?)
+                    ORDER BY submission_datetime DESC LIMIT ?`;
+            queryParams = [req.user.system_id, offset || 0, resultLimit || 0];
+            getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+            countParams = [req.user.system_id];
+            break;
+        case ROLES.ADMIN:
+            getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+            actions.action_target, actions.action_title, actions.semester,
+            projects.display_name, projects.title 
+            FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                JOIN projects ON projects.project_id = action_log.project
+                AND action_log.oid NOT IN (SELECT oid FROM action_log
+                    ORDER BY submission_datetime DESC LIMIT ?)
+                ORDER BY submission_datetime DESC LIMIT ?`;
+            queryParams = [offset || 0, resultLimit || 0];
+            getActionLogCount = `SELECT COUNT(*) FROM action_log`;
+            break;
+        default:
+            res.status(401).send("Unknown role");
+            return;
+    }
+
+    const actionLogsPromise = db.query(getActionLogQuery, queryParams);
+    const actionLogsCountPromise = db.query(getActionLogCount, countParams);
+    Promise.all([actionLogsCountPromise, actionLogsPromise])
+        .then(([[actionLogCount], projects]) => {
+            res.send({ actionLogCount: actionLogCount[Object.keys(actionLogCount)[0]], actionLogs: projects });
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
+
+db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
+
+    let getSubmissionQuery = "";
     let params = [];
 
-    // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-    getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project ,
-        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
-    FROM action_log
-        WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?) AND action_log.system_id != ?
-        AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ? OR users.type = '${ROLES.COACH}' OR users.type = '${ROLES.ADMIN}')`;
-    params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id, req.user.system_id, req.query.project_id];
+    switch (req.user.type) {
+        case ROLES.STUDENT:
+            getSubmissionQuery = `SELECT action_log.form_data
+                FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
+            params = [req.query.log_id, req.user.system_id];
+            break;
+        case ROLES.COACH:
+            getSubmissionQuery = `SELECT action_log.form_data
+                FROM action_log
+                JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
+            params = [req.query.log_id, req.user.system_id];
+            break;
+        case ROLES.ADMIN:
+            getSubmissionQuery = `SELECT action_log.form_data
+                FROM action_log
+                WHERE action_log.action_log_id = ?`;
+            params = [req.query.log_id];
+            break;
+        default:
+            res.status(401).send("Unknown role");
+            return;
+    }
 
-    db.query(getActionLogQuery, params)
-        .then((values) => {
-            res.send(values);
+    db.query(getSubmissionQuery, params)
+        .then((submissions) => {
+            res.send(submissions);
         })
         .catch((err) => {
             console.error(err);

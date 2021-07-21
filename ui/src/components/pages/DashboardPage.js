@@ -6,7 +6,7 @@ import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
 import ProjectsTab from "../shared/ProjectsTab";
 import ProjectEditor from "../shared/ProjectEditor";
-import ActionsTab from "../shared/ActionsTab";
+import ActionLogs from "../shared/ActionLogs";
 import CoachesTab from "../shared/CoachesTab";
 import AdminView from "../shared/AdminView";
 import { UserContext } from "../util/UserContext";
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                     menuItem: "Actions",
                     render: () => (
                         <Tab.Pane>
-                            <ActionsTab />
+                            <ActionLogs semesterData={semesterData} />
                         </Tab.Pane>
                     ),
                 },

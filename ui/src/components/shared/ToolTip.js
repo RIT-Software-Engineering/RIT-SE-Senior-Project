@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon, Popup } from "semantic-ui-react";
 import { ACTION_TARGETS, config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
@@ -17,17 +17,15 @@ function ToolTip(props) {
     const [closeOnDocClick, setCloseOnDocClick] = useState(true);
 
     const [submissions, setSubmissions] = useState(null)
-    const [teammateActions, setTeammateActions] = useState(null)
     const [loadingSubmissions, setLoadingSubmissions] = useState(false)
-    const [loadingTeammateSubmissions, setLoadingTeammateSubmissions] = useState(false)
 
     let isOpenCallback = function (isOpen) {
         setCloseOnDocClick(!isOpen);
     };
 
-    const loadSubmission = () => {
+    const loadSubmission = (projectId, actionId) => {
         setLoadingSubmissions(true)
-        SecureFetch(`${config.url.API_GET_ACTION_LOGS}?project_id=${props.projectId}&action_id=${props.action.action_id}`)
+        SecureFetch(`${config.url.API_GET_ACTION_LOGS}?project_id=${projectId}&action_id=${actionId}`)
             .then(response => response.json())
             .then(actionLogs => {
                 setSubmissions(actionLogs);
@@ -36,17 +34,13 @@ function ToolTip(props) {
             .catch(err => {
                 console.error("FAILED TO GET SUBMISSIONS: ", err)
             })
-        setLoadingTeammateSubmissions(true)
-        SecureFetch(`${config.url.API_GET_TEAMMATE_ACTION_LOGS}?project_id=${props.projectId}&action_id=${props.action.action_id}`)
-            .then(response => response.json())
-            .then(actionLogs => {
-                setTeammateActions(actionLogs);
-                setLoadingTeammateSubmissions(false)
-            })
-            .catch(err => {
-                console.error("FAILED TO GET TEAMMATE SUBMISSIONS: ", err)
-            })
     }
+
+    useEffect(() => {
+        if (props.autoLoadSubmissions) {
+            loadSubmission()
+        }
+    }, [props.autoLoadSubmissions])
 
     const content = () => {
         return <div className="content">
@@ -54,25 +48,17 @@ function ToolTip(props) {
             <p>Starts: {formatDate(props.action.start_date)}</p>
             <p>Due: {formatDate(props.action.due_date)}</p>
             <p>Submission Type: {submissionTypeMap[props.action.action_target]}</p>
-            {submissions === null && teammateActions === null && !loadingSubmissions && !loadingTeammateSubmissions && <p className="fake-a" onClick={loadSubmission}>Load submissions</p>}
-            {(loadingSubmissions || loadingTeammateSubmissions) && <Icon name="spinner" size="large" />}
-            {submissions?.length === 0 && teammateActions?.length === 0 && <p><b>No submissions</b></p>}
+            {submissions === null && !loadingSubmissions && <p className="fake-a" onClick={() => loadSubmission(props.projectId, props.action.action_id)}>Load submissions</p>}
+            {loadingSubmissions && <Icon name="spinner" size="large" />}
+            {submissions?.length === 0 && <p><b>No submissions</b></p>}
             {submissions?.map(submission => {
                 return <SubmissionViewerModal
                     key={submission.action_log_id}
                     action={submission}
                     title={props.action?.action_title}
                     target={props.action?.action_target}
-                    trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
-                />
-            })}
-            {teammateActions?.map(submission => {
-                return <SubmissionViewerModal
-                    key={submission.action_log_id}
-                    action={submission}
-                    title={props.action.action_title}
-                    target={props.action?.action_target}
-                    noSubmission
+                    semesterName={props.semesterName}
+                    projectName={props.projectName}
                     trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                 />
             })}
@@ -106,7 +92,7 @@ function ToolTip(props) {
             style={{ zIndex: 100 }}
             trigger={props.trigger}
             on="click"
-            onOpen={loadSubmission}
+            onOpen={() => loadSubmission(props.projectId, props.action.action_id)}
         />
     );
 }
