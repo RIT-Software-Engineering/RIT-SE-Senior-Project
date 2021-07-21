@@ -43,21 +43,18 @@ export default function SubmissionViewerModal(props) {
                     </Button>}
                 </div>
             }
-            header={"Submission"}
+            header={`Submission for ${props.title} (${props.target[0]?.toUpperCase()}${props.target?.substring(1)} Action)`}
             actions={[{ content: "Done", key: 0 }]}
             content={{
                 content: <div>
-                    <h5>Action:</h5> <p>{props.title}</p>
-                    <h5>Submission Type:</h5> <p>{props.target}</p>
-                    <h5>Submitted By:</h5> <p>{props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}<b>{`${props.action.name} (${props.action.system_id})`}</b></p>
-                    <h5>Submitted At:</h5> <p>{formatDateTime(props.action.submission_datetime)}</p>
+                    <p><b>Submitted:</b> {props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}{`${props.action.name} (${props.action.system_id})`} at {formatDateTime(props.action.submission_datetime)}</p>
                     <Divider />
                     <h3>Submission</h3>
                     {!props.noSubmission && <>
                         {Object.keys(submission)?.map((key) => {
                             return (
                                 <div key={key}>
-                                    <h5>{key}:</h5> <p>{submission[key]}</p>
+                                    <p><b>{key}:</b> {submission[key]}</p>
                                 </div>
                             );
                         })}
