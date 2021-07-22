@@ -1284,7 +1284,10 @@ db_router.post("/editSemester", [body("*").trim()], (req, res) => {
 
 
 db_router.post("/createSemester", [
-    body("*").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("dept").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("start_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    body("end_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
 ], (req, res) => {
 
     let result = validationResult(req);
