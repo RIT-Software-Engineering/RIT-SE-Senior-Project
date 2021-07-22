@@ -134,7 +134,7 @@ export default function DatabaseTableEditor(props) {
                             <Form.Input
                                 label={field.label}
                                 type="date"
-                                placeholder={field.placeholder}
+                                placeholder={field.placeholder || "yyyy-mm-dd"}
                                 name={field.name}
                                 value={formData[field.name]}
                                 onChange={handleChange}

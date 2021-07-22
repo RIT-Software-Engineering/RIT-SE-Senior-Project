@@ -16,11 +16,12 @@ export default function StudentEditPanel(props) {
             if (!visited[semesterProject.semester_id]) {
                 visited[semesterProject.semester_id] = true;
                 semesterProjectDropdownMap.push({
-                    semester: semesterProject.semester_id
+                    semester: semesterProject.semester_id,
+                    project: "",
                 })
                 semesterProjectDropdownOptions.push({
                     key: `${semesterProject.semester_id}`,
-                    text: `${semesterProject.name} - No Semester`,
+                    text: `${semesterProject.name} - No Project`,
                     value: idx++,
                 })
             }

@@ -228,8 +228,8 @@ db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         body.lname,
         body.email,
         body.type,
-        JSON.parse(body.semester_group),
-        JSON.parse(body.project),
+        body.semester_group || null,
+        body.project || null,
         active,
         body.system_id,
     ];
