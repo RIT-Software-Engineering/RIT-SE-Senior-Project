@@ -38,17 +38,17 @@ function ToolTip(props) {
 
     useEffect(() => {
         if (props.autoLoadSubmissions) {
-            loadSubmission()
+            loadSubmission(props.projectId, props.action?.action_id);
         }
     }, [props.autoLoadSubmissions])
 
     const content = () => {
         return <div className="content">
-            <div dangerouslySetInnerHTML={{ __html: props.action.short_desc }} />
-            <p>Starts: {formatDate(props.action.start_date)}</p>
-            <p>Due: {formatDate(props.action.due_date)}</p>
-            <p>Submission Type: {submissionTypeMap[props.action.action_target]}</p>
-            {submissions === null && !loadingSubmissions && <p className="fake-a" onClick={() => loadSubmission(props.projectId, props.action.action_id)}>Load submissions</p>}
+            <p>{props.action?.short_desc}</p>
+            <p>Starts: {formatDate(props.action?.start_date)}</p>
+            <p>Due: {formatDate(props.action?.due_date)}</p>
+            <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
+            {submissions === null && !loadingSubmissions && <p className="fake-a" onClick={() => loadSubmission(props.projectId, props.action?.action_id)}>Load submissions</p>}
             {loadingSubmissions && <Icon name="spinner" size="large" />}
             {submissions?.length === 0 && <p><b>No submissions</b></p>}
             {submissions?.map(submission => {
@@ -59,7 +59,7 @@ function ToolTip(props) {
                     target={props.action?.action_target}
                     semesterName={props.semesterName}
                     projectName={props.projectName}
-                    trigger={<div><div className="fake-a">View <i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
+                    trigger={<div><div className="fake-a"><i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                 />
             })}
             <div className="spacer" />
@@ -69,7 +69,7 @@ function ToolTip(props) {
               * we need to deal with parsing with time zones and all of that.
               */}
             <ActionModal
-                key={props.action.action_id}
+                key={props.action?.action_id}
                 {...props.action}
                 isOpenCallback={isOpenCallback}
                 projectId={props.projectId}
@@ -79,20 +79,20 @@ function ToolTip(props) {
 
     if (props.noPopup) {
         return <div className={`no-popup-tooltip ${props.color}`}>
-            <h4>{props.action.action_title}</h4>
+            <h4>{props.action?.action_title}</h4>
             {content()}
         </div>
     }
 
     return (
         <Popup
-            header={props.action.action_title}
+            header={props.action?.action_title}
             content={content()}
             closeOnDocumentClick={closeOnDocClick}
             style={{ zIndex: 100 }}
             trigger={props.trigger}
             on="click"
-            onOpen={() => loadSubmission(props.projectId, props.action.action_id)}
+            onOpen={() => loadSubmission(props.projectId, props.action?.action_id)}
         />
     );
 }

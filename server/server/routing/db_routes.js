@@ -885,7 +885,7 @@ db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (
             }
 
             // Append the file name to the CSV string, begin with a comma if x is not 0
-            filenamesCSV += x === 0 ? `${submission}/${req.files.attachments[x].name}` : `, ${submission}/${req.files.attachments[x].name}`;
+            filenamesCSV += x === 0 ? `${submission}/${req.files.attachments[x].name}` : `,${submission}/${req.files.attachments[x].name}`;
 
             req.files.attachments[x].mv(
                 `${baseURL}/${req.files.attachments[x].name}`,
@@ -1106,21 +1106,21 @@ db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
 
     switch (req.user.type) {
         case ROLES.STUDENT:
-            getSubmissionQuery = `SELECT action_log.form_data
+            getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                 FROM action_log
                 JOIN actions ON actions.action_id = action_log.action_template
                 WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
             params = [req.query.log_id, req.user.system_id];
             break;
         case ROLES.COACH:
-            getSubmissionQuery = `SELECT action_log.form_data
+            getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                 FROM action_log
                 JOIN project_coaches ON project_coaches.project_id = action_log.project 
                 WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
             params = [req.query.log_id, req.user.system_id];
             break;
         case ROLES.ADMIN:
-            getSubmissionQuery = `SELECT action_log.form_data
+            getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                 FROM action_log
                 WHERE action_log.action_log_id = ?`;
             params = [req.query.log_id];
@@ -1139,6 +1139,54 @@ db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
             res.status(500).send(err);
         });
 });
+
+
+db_router.get("/getSubmissionFile", [UserAuth.isSignedIn], async (req, res) => {
+
+    let getSubmissionQuery = "";
+    let params = [];
+
+    switch (req.user.type) {
+        case ROLES.STUDENT:
+            getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
+                FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
+            params = [req.query.log_id, req.user.system_id];
+            break;
+        case ROLES.COACH:
+            getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
+                FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
+            params = [req.query.log_id, req.user.system_id];
+            break;
+        case ROLES.ADMIN:
+            getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
+                FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                WHERE action_log.action_log_id = ?`;
+            params = [req.query.log_id];
+            break;
+        default:
+            res.status(401).send("Unknown role");
+            return;
+    }
+
+    const { files, project, action_target, system_id, action_id } = (await db.query(getSubmissionQuery, params))[0] || {};
+
+    let fileList = [];
+    if (files) {
+        fileList = files.split(",");
+    }
+
+    if (fileList.includes(req.query.file) && project && action_target && system_id && action_id) {
+        return res.sendFile(path.join(__dirname, `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`));
+    }
+    res.status(404).send("File not found or you are unauthorized to view file");
+});
+
 
 db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
     let body = req.body;

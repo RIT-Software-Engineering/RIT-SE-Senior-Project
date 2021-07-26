@@ -6,14 +6,20 @@ import { SecureFetch } from '../util/secureFetch';
 
 export default function SubmissionViewerModal(props) {
 
-    const [submission, setSubmission] = useState({})
+    const [submission, setSubmission] = useState({});
+    const [files, setFiles] = useState([]);
+    const [noSubmission, setNoSubmission] = useState(true)
 
     const loadSubmission = () => {
         SecureFetch(`${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`)
             .then((response) => response.json())
             .then((submission) => {
                 if (submission.length > 0) {
-                    setSubmission(JSON.parse(submission[0].form_data.toString()))
+                    const formData = JSON.parse(submission[0].form_data.toString());
+                    const fileData = submission[0].files?.split(",");
+                    setSubmission(formData);
+                    setFiles(fileData);
+                    setNoSubmission(formData.length === 0 && files.length === 0);
                 }
             })
             .catch((error) => {
@@ -43,7 +49,7 @@ export default function SubmissionViewerModal(props) {
                     </Button>}
                 </div>
             }
-            header={`Submission for ${props.title} (${props.target[0]?.toUpperCase()}${props.target?.substring(1)} Action)`}
+            header={`Submission for ${props.action.action_title} (${props.target[0]?.toUpperCase()}${props.target?.substring(1)} Action)`}
             actions={[{ content: "Done", key: 0 }]}
             content={{
                 content: <div>
@@ -51,6 +57,7 @@ export default function SubmissionViewerModal(props) {
                     <p><b>Submitted:</b> {props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}{`${props.action.name} (${props.action.system_id})`} at {formatDateTime(props.action.submission_datetime)}</p>
                     <Divider />
                     <h3>Submission</h3>
+                    {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
                     {!props.noSubmission && <>
                         {Object.keys(submission)?.map((key) => {
                             return (
@@ -59,11 +66,10 @@ export default function SubmissionViewerModal(props) {
                                 </div>
                             );
                         })}
-                        {props.action.files?.split(",").map((file) => {
-                            return <div key={file}><a href={`${config.url.BASE_URL}/#`} >{file}</a><br /></div>;
+                        {files?.map((file) => {
+                            return <div key={file}><a href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.action?.action_log_id}&project=${props.action?.project}`} download target="_blank">{file}</a><br /></div>;
                         })}
                     </>}
-                    {(props.noSubmission || Object.keys(submission).length === 0) && <p>{noSubmissionText(props.target)}</p>}
                 </div>
             }}
         />
