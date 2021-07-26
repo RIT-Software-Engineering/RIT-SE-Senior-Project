@@ -1043,11 +1043,10 @@ db_router.get("/getAllActionLogs", async (req, res) => {
                                     JOIN actions ON actions.action_id = action_log.action_template
                                     JOIN projects ON projects.project_id = action_log.project
                                     WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
-                                    AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)
                                     AND action_log.oid NOT IN (SELECT oid FROM action_log
                                         ORDER BY submission_datetime DESC LIMIT ?)
                                     ORDER BY submission_datetime DESC LIMIT ?`;
-            queryParams = [project_id, project_id, req.user.system_id, project_id, offset || 0, resultLimit || 0];
+            queryParams = [project_id, project_id, req.user.system_id, offset || 0, resultLimit || 0];
             getActionLogCount = `SELECT COUNT(*) FROM action_log
                                 JOIN actions ON actions.action_id = action_log.action_template
                                 WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
