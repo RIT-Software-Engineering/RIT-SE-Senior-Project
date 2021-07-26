@@ -67,7 +67,15 @@ export default function SubmissionViewerModal(props) {
                             );
                         })}
                         {files?.map((file) => {
-                            return <div key={file}><a href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.action?.action_log_id}&project=${props.action?.project}`} download target="_blank">{file}</a><br /></div>;
+                            return <div key={file}>
+                                <a
+                                    href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.action?.action_log_id}&project=${props.action?.project}`}
+                                    download
+                                    target="_blank">
+                                    {file.replace(/^[^\/]*\/(.*)$/, "$1")}
+                                </a>
+                                <br />
+                            </div>;
                         })}
                     </>}
                 </div>
