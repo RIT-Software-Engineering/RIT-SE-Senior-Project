@@ -1,7 +1,7 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 import { ACTION_TARGETS, config, DROPDOWN_ITEMS } from "../util/constants";
-import { createSemesterDropdownOptions } from "../util/utils";
+import { createSemesterDropdownOptions, SEMESTER_DROPDOWN_NULL_VALUE } from "../util/utils";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -52,6 +52,7 @@ export default function ActionPanel(props) {
             placeHolder: "Semester",
             name: "semester",
             options: createSemesterDropdownOptions(props.semesterData),
+            nullValue: SEMESTER_DROPDOWN_NULL_VALUE,
             loading: props.semesterData.loading
         },
         {
@@ -121,6 +122,12 @@ export default function ActionPanel(props) {
             create={!!props.create}
             button={!!props.create ? "plus" : "edit"}
             preChange={preChange}
+            preSubmit={(data) => {
+                if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+                    data.semester = "";
+                }
+                return data;
+            }}
         />
     );
 }

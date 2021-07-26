@@ -61,7 +61,7 @@ export default function ActionTable(props) {
                 panels={[
                     {
                         key: "actionEditor",
-                        title: title,
+                        title: title || "No Semester",
                         content: {
                             content: (
                                 <Table sortable>

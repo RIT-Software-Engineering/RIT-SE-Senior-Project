@@ -520,7 +520,7 @@ db_router.post(
             body.website,
             body.synopsis,
             body.sponsor,
-            JSON.parse(body.semester),
+            body.semester || null,
             body.project_id,
         ];
 
