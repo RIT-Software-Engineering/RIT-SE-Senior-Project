@@ -40,7 +40,7 @@ function ToolTip(props) {
         if (props.autoLoadSubmissions) {
             loadSubmission(props.projectId, props.action?.action_id);
         }
-    }, [props.autoLoadSubmissions])
+    }, [props.autoLoadSubmissions, props.projectId, props.action?.action_id])
 
     const content = () => {
         return <div className="content">

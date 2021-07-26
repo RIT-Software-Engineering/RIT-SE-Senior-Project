@@ -71,8 +71,10 @@ export default function SubmissionViewerModal(props) {
                                 <a
                                     href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.action?.action_log_id}&project=${props.action?.project}`}
                                     download
-                                    target="_blank">
-                                    {file.replace(/^[^\/]*\/(.*)$/, "$1")}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    {file.replace(/^[^/]*\/(.*)$/, "$1")}
                                 </a>
                                 <br />
                             </div>;
