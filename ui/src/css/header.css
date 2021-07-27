@@ -11,13 +11,25 @@
 }
 
 @media only screen and (max-width: 768px) {
-    #navButtons {
+    #nav-buttons {
         display: none;
     }
 }
 
 @media only screen and (max-device-width: 768px) {
-    #navButtons {
+    #nav-buttons {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    #hamburger-menu {
+        display: none;
+    }
+}
+
+@media only screen and (min-device-width: 769px) {
+    #hamburger-menu {
         display: none;
     }
 }
