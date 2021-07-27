@@ -25,10 +25,10 @@ export default function Semester(props) {
         </>}
         {props.projects?.map((timelineElementData, idx) => {
             if (idx !== 0) {
-                return <>
+                return <React.Fragment key={timelineElementData.project_id}>
                     <Divider />
-                    <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
-                </>
+                    <Timeline elementData={timelineElementData} />
+                </React.Fragment>
             }
             return <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
         })}
