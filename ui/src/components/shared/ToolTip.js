@@ -62,7 +62,7 @@ function ToolTip(props) {
                     trigger={<div><div className="fake-a"><i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
                 />
             })}
-            <div className="spacer" />
+            <br />
             {/* 
               * Not sure if it makes more sense to check action.state or action.start_date.
               * However, action.state is based off of server time whereas if we parse action.start_date, 

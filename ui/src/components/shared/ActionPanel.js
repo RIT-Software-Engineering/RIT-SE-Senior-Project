@@ -22,11 +22,11 @@ export default function ActionPanel(props) {
     };
 
     let submissionModalMessages = props.create ? {
-        SUCCESS: "The action has been updated.",
-        FAIL: "We were unable to receive your update to the action.",
-    } : {
         SUCCESS: "The action has been created.",
-        FAIL: "We were unable to receive your action creation.",
+        FAIL: "We were unable to create your action.",
+    } : {
+        SUCCESS: "The action has been Edited.",
+        FAIL: "We were unable to receive your edits.",
     }
         ;
 

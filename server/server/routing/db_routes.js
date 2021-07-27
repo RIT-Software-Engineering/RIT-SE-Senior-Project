@@ -1002,6 +1002,7 @@ db_router.get("/getActionLogs", (req, res) => {
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) AS name,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) AS mock_name
                 FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
                 WHERE action_log.action_template = ? AND action_log.project = ?`;
             params = [req.query.action_id, req.query.project_id];
             break;

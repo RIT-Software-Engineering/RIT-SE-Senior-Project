@@ -102,20 +102,24 @@ export default function Proposals(props) {
                 <TableRow className={rowColor} key={idx}>
                     <TableCell>{semesterMap[proposal.semester]}</TableCell>
                     <TableCell>
-                        <a
-                            href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {proposal.display_name || proposal.title}
-                        </a>
+                        {proposal.display_name || proposal.title}
                     </TableCell>
                     <TableCell>{proposal.status}</TableCell>
                     <TableCell>
+                        <div className="accordion-buttons-container">
                         {props.viewOnly ?
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
                             : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} />
                         }
+                            <a
+                                href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                                className="ui icon button"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <Icon name="download" />
+                            </a>
+                        </div>
                     </TableCell>
                 </TableRow>
             );
@@ -154,7 +158,7 @@ export default function Proposals(props) {
                             Status
                         </TableHeaderCell>
                         <TableHeaderCell>
-                            {props.viewOnly ? "View" : "Edit"}
+                            {props.viewOnly ? "View/Download Original" : "Edit/Download Original"}
                         </TableHeaderCell>
                     </TableRow>
                 </TableHeader>

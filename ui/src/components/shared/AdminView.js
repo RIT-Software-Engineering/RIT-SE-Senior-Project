@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button, Dropdown, Label } from "semantic-ui-react";
 import { config } from '../util/constants';
 import { SecureFetch } from '../util/secureFetch';
+import _ from 'lodash';
 
 export default function AdminView(props) {
 
@@ -68,7 +69,7 @@ export default function AdminView(props) {
           search
           button
           value={selectedUser}
-          options={Object.entries(users).map(([key, user]) => { return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: user.system_id, key: key } })}
+          options={_.sortBy(Object.values(users), ["fname", "lname"]).map((user) => { return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: user.system_id, key: user.system_id } })}
           onChange={(e, target) => setSelectedUser(target.value)} />
         {renderButton()}
       </>
