@@ -100,7 +100,7 @@ function ProposalPage() {
                     header: "Success",
                     content:
                         "Your proposal has been received. We will review it and get back to you if our students decide to move forward with it",
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {

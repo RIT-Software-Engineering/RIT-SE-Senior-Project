@@ -3,7 +3,7 @@ import { Button, Icon, Modal, Table, TableBody, TableCell, TableHeader, TableHea
 import { config, USERTYPES } from '../util/constants';
 import { SecureFetch } from '../util/secureFetch';
 
-const CLOSE_BUTTON_TEXT = "Done";
+const CLOSE_BUTTON_TEXT = "Close";
 
 export default function ViewProjectMembers(props) {
 
@@ -72,7 +72,7 @@ export default function ViewProjectMembers(props) {
             content={{
                 content: content()
             }}
-            actions={[{ key: "Done", content: CLOSE_BUTTON_TEXT }]}
+            actions={[{ key: "Close", content: CLOSE_BUTTON_TEXT }]}
         />
     )
 }

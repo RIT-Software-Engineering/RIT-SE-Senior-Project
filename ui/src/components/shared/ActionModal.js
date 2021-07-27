@@ -21,7 +21,7 @@ export default function ActionModal(props) {
                 return {
                     header: "Success",
                     content: "Your submission has been received.",
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {

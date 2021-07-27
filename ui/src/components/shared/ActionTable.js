@@ -36,6 +36,7 @@ export default function ActionTable(props) {
                                 semesterData={props.semesterData}
                                 header={`Currently Copying "${action.action_title}"`}
                                 create={true}
+                                buttonIcon={"clone outline"}
                                 key={"copyAction-" + i}
                             />
                         </div>

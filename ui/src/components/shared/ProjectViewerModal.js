@@ -78,7 +78,7 @@ export default function ProjectViewerModal(props) {
             trigger={<Button icon="eye" />}
             header={`Viewing "${props.project.display_name || props.project.title}"`}
             content={{ content: generateModalContent() }}
-            actions={[{ key: "Done", content: "Done" }]}
+            actions={[{ key: "Close", content: "Close" }]}
         />
     )
 }

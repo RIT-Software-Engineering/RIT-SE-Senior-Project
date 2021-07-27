@@ -50,7 +50,7 @@ export default function SubmissionViewerModal(props) {
                 </div>
             }
             header={`Submission for ${props.action.action_title} (${props.target[0]?.toUpperCase()}${props.target?.substring(1)} Action)`}
-            actions={[{ content: "Done", key: 0 }]}
+            actions={[{ content: "Close", key: 0 }]}
             content={{
                 content: <div>
                     <p><b>Semester/Project:</b> {props.semesterName} - {props.projectName}</p>
