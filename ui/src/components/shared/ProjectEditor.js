@@ -73,23 +73,6 @@ export default function ProjectEditor(props) {
                     ]}
                 />
             }
-            {!props.viewOnly &&
-                <div className="accordion-buttons-container">
-                    <Button
-                        icon
-                        onClick={() => {
-                        alert("Email");
-                    }}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <Icon name="mail" />
-                </Button>
-                <Button icon href={config.url.PROPOSAL_FORM} target="_blank" rel="noreferrer">
-                    <Icon name="plus" />
-                </Button>
-            </div>
-            }
         </div>
     );
 }

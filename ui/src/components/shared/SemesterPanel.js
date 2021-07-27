@@ -53,7 +53,7 @@ export default function SemesterPanel(props) {
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             create={initialState.semester_id === ""}
-            button="plus"
+            button={initialState.semester_id === "" ? "plus" : "edit"}
         />
     );
 }
