@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import Proposals from "./Proposals";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
