@@ -3,6 +3,7 @@ import { config } from '../util/constants';
 import { SecureFetch } from '../util/secureFetch';
 import Timeline from "./Timeline";
 import Announcements from "./Announcements";
+import { Divider } from "semantic-ui-react";
 
 export default function Semester(props) {
 
@@ -22,7 +23,13 @@ export default function Semester(props) {
             <Announcements announcements={announcements} semesterName={props.semesterName} />
             <br />
         </>}
-        {props.projects?.map((timelineElementData) => {
+        {props.projects?.map((timelineElementData, idx) => {
+            if (idx !== 0) {
+                return <>
+                    <Divider />
+                    <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
+                </>
+            }
             return <Timeline key={timelineElementData.project_id} elementData={timelineElementData} />
         })}
     </>

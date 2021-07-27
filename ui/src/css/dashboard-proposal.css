@@ -15,17 +15,17 @@
 
 .proposal-row-red {
     background: #fff6f6;
-    color: #9f3a38;
+    color: black;
 }
 
 .proposal-row-yellow {
     background: #fffaf3;
-    color: #573a08;
+    color: black;
 }
 
 .proposal-row-green {
     background: #fcfff5;
-    color: #2c662d;
+    color: black;
 }
 
 .proposal-status-action {

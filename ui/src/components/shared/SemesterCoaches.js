@@ -3,7 +3,7 @@ import { Accordion, Table, TableHeader, TableHeaderCell, TableBody, TableRow, Ta
 import { USERTYPES } from '../util/constants';
 import ViewProjectMembers from './ViewProjectMembers';
 
-export default function SemesterCoaches({ coaches }) {
+export default function SemesterCoaches({ coaches, semesterId }) {
 
     const content = (coach) => {
         return <div className="accordion-button-group" key={`${coach.system_id}-button-group`}>
@@ -26,7 +26,7 @@ export default function SemesterCoaches({ coaches }) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {coach.projects?.map(project => {
+                                {coach.projects?.filter((project) => project.semester_id === semesterId.toString())?.map(project => {
                                     return <TableRow key={project.project_id}>
                                         <TableCell>{project.title}</TableCell>
                                         <TableCell>{project.organization}</TableCell>

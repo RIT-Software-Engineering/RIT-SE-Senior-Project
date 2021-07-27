@@ -58,8 +58,10 @@ export default function CoachesTab() {
                             mappedCoaches[project.semester_id] = [];
                             mappedEmails[project.semester_id] = [];
                         }
-                        mappedCoaches[project.semester_id].push(coach);
-                        mappedEmails[project.semester_id].push(coach.email);
+                        if (!mappedCoaches[project.semester_id].includes(coach)) {
+                            mappedCoaches[project.semester_id].push(coach);
+                            mappedEmails[project.semester_id].push(coach.email);
+                        }
                     });
                 } else {
                     mappedCoaches['Unassigned'].push(coach)
@@ -113,7 +115,7 @@ export default function CoachesTab() {
                                     key: semester.semester_id,
                                     title: semester.name,
                                     active: active[semester.semester_id],
-                                    content: { content: <SemesterCoaches coaches={mappedCoachData && mappedCoachData[semester.semester_id]} /> },
+                                    content: { content: <SemesterCoaches coaches={mappedCoachData && mappedCoachData[semester.semester_id]} semesterId={semester.semester_id} /> },
                                 },
                             ]}
                     />

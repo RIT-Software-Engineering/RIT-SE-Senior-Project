@@ -3,35 +3,40 @@ import _ from "lodash";
 import { config, USERTYPES } from "../util/constants";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
+const NULL_VALUE = 0;
+
 export default function StudentEditPanel(props) {
 
-    let idx = 0;
-    let semesterProjectDropdownMap = [{ semester: null, project: null }];
+    let idx = NULL_VALUE;
+    let semesterProjectDropdownMap = [{ semester: "", project: "" }];
     let semesterProjectDropdownOptions = [{ key: "No Project/Semester", text: "No Project/Semester", value: idx++ }]
 
+    // Combining basically two different datatypes??? and it's okay??? Javascript really be wildin'
+    // This really only works because the projects data is joined with the semesterData by config.url.API_GET_ACTIVE_PROJECTS
+    const semesterProjects = props.semesterData?.concat(props.projectsData);
+    const semesterProjectsSorted = _.sortBy(semesterProjects, ["end_date", "start_date", "display_name", "title"]);
+
     // Have to do this mapping because you can't set the value of a dropdown to an object.
-    let visited = {}
-    _.sortBy(props.projectsData, ["end_date", "start_date"]).reverse()
-        ?.forEach((semesterProject) => {
-            if (!visited[semesterProject.semester_id]) {
-                visited[semesterProject.semester_id] = true;
-                semesterProjectDropdownMap.push({
-                    semester: semesterProject.semester_id,
-                    project: "",
-                })
-                semesterProjectDropdownOptions.push({
-                    key: `${semesterProject.semester_id}`,
-                    text: `${semesterProject.name} - No Project`,
-                    value: idx++,
-                })
-            }
+    semesterProjectsSorted.forEach(semesterProject => {
+        if (semesterProject.project_id === undefined) {
+            semesterProjectDropdownMap.push({
+                semester: semesterProject.semester_id,
+                project: "",
+            })
+            semesterProjectDropdownOptions.push({
+                key: `${semesterProject.semester_id}`,
+                text: `${semesterProject.name} - No Project`,
+                value: idx++,
+            })
+        } else {
             semesterProjectDropdownMap.push({ semester: semesterProject.semester_id, project: semesterProject.project_id })
             semesterProjectDropdownOptions.push({
                 key: `${semesterProject.semester_id} - ${semesterProject.project_id}`,
                 text: `${semesterProject.name} - ${semesterProject.display_name || semesterProject.title}`,
                 value: idx++,
             })
-        });
+        }
+    })
 
     let initialState = {
         system_id: props.studentData.system_id || "",
@@ -40,7 +45,7 @@ export default function StudentEditPanel(props) {
         email: props.studentData.email || "",
         type: props.studentData.type || "",
         active: props.studentData.active || "",
-        semesterProject: _.findIndex(semesterProjectDropdownMap, { 'semester': props.studentData.semester_group, 'project': props.studentData.project }),
+        semesterProject: _.findIndex(semesterProjectDropdownMap, { 'semester': props.studentData.semester_group || "", 'project': props.studentData.project || "" }),
     };
 
     let submissionModalMessages = {
@@ -96,6 +101,7 @@ export default function StudentEditPanel(props) {
             placeHolder: "Semester/Project",
             name: "semesterProject",
             options: semesterProjectDropdownOptions,
+            nullValue: NULL_VALUE,
         },
         {
             type: "activeCheckbox",

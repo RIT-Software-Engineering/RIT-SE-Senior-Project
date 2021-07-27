@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import { createSemesterDropdownOptions } from "../util/utils";
+import { createSemesterDropdownOptions, SEMESTER_DROPDOWN_NULL_VALUE } from "../util/utils";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 
 const PROJECT_STATUSES = {
@@ -61,7 +61,7 @@ export default function ProjectEditorModal(props) {
         website: props.project.website || "",
         synopsis: props.project.synopsis || "",
         sponsor: props.project.sponsor || "",
-        semester: props.project.semester || null,
+        semester: props.project.semester || "",
         date: props.project.date || "",
         status: props.project.status || "",
     })
@@ -299,6 +299,7 @@ export default function ProjectEditorModal(props) {
             placeHolder: "Semester",
             name: "semester",
             options: createSemesterDropdownOptions(props.semesterData),
+            nullValue: SEMESTER_DROPDOWN_NULL_VALUE,
             loading: props.semesterData?.loading,
         },
         {

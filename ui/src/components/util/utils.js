@@ -22,13 +22,21 @@ export const formatDate = (date) => {
 };
 
 /**
- * Generate dropdown options from semesterData.
+ * Use this in conjunction with createSemesterDropdownOptions.
+ *
+ * This is needed because Semantic UI dropdowns can't have a value of just null.
+ */
+export const SEMESTER_DROPDOWN_NULL_VALUE = "null";
+
+/**
+ * Generate dropdown options from semesterData. Use this in conjunction with SEMESTER_DROPDOWN_NULL_VALUE.
  * 
  * @param {*} semesterData 
  * @param {*} semestersOnly if semestersOnly is true, then omit the "no semester" option
  */
 export const createSemesterDropdownOptions = (semesterData, semestersOnly = false) => {
-    const options = semestersOnly ? [] : [{ key: "noSemester", text: "No Semester", value: null }];
+    // Can't use a value of just null because Semantic UI dropdowns don't match it with the selected value.
+    const options = semestersOnly ? [] : [{ key: "noSemester", text: "No Semester", value: SEMESTER_DROPDOWN_NULL_VALUE }];
     const semesters = _.sortBy(semesterData, ["end_date", "start_date"]).reverse();
     semesters.forEach(semester => {
         options.push({ key: semester.semester_id, text: semester.name, value: semester.semester_id })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import Proposals from "./Proposals";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
@@ -72,23 +72,6 @@ export default function ProjectEditor(props) {
                         },
                     ]}
                 />
-            }
-            {!props.viewOnly &&
-                <div className="accordion-buttons-container">
-                    <Button
-                        icon
-                        onClick={() => {
-                        alert("Email");
-                    }}
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <Icon name="mail" />
-                </Button>
-                <Button icon href={config.url.PROPOSAL_FORM} target="_blank" rel="noreferrer">
-                    <Icon name="plus" />
-                </Button>
-            </div>
             }
         </div>
     );

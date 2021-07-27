@@ -159,7 +159,6 @@ export default function DatabaseTableEditor(props) {
                     );
                     break;
                 case "dropdown":
-
                     fieldComponents.push(
                         <Form.Field key={field.name} disabled={field.loading || field.disabled}>
                             <label>{field.label}</label>
@@ -168,14 +167,13 @@ export default function DatabaseTableEditor(props) {
                                 options={field.options}
                                 loading={field.loading}
                                 disabled={field.loading || field.disabled}
-                                value={formData[field.name]}
+                                value={formData[field.name] || field.nullValue}
                                 name={field.name}
                                 onChange={handleChange}
                             />
                         </Form.Field>
                     );
                     break;
-
                 case "checkbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
@@ -190,7 +188,6 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     )
                     break;
-
                 case "files":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
@@ -201,7 +198,6 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     )
                     break;
-
                 case "multiSelectDropdown":
                     fieldComponents.push(
                         <Form.Field key={field.name} disabled={field.loading || field.disabled}>
@@ -221,8 +217,6 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     );
                     break;
-
-
                 case "activeCheckbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
@@ -237,7 +231,6 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     )
                     break;
-
                 default:
                     console.warn(`Found unknown field type: "${field.type}"`)
                     break;
