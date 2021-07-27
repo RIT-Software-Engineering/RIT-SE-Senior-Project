@@ -106,7 +106,7 @@ function ProposalPage() {
                 return {
                     header: "There was an issue...",
                     content:
-                        "We were unable to submit your proposal. You can try again later or contact our support team that we don't have...",
+                        "We were unable to submit your proposal.",
                     actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
                 };
             default:
