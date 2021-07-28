@@ -63,7 +63,7 @@ export default function AdminView(props) {
   if (props.user?.isMock || props.user?.role === "admin") {
     return (
       <>
-        <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: "{props.user?.user}" who is a "{props.user.role}"</h4>
+        <h4 style={props.user?.isMock && { backgroundColor: 'red' }}>Currently signed in as: {props.user?.fname} {props.user?.lname} ({props.user?.user}) who is a "{props.user.role}"</h4>
         <Label pointing='right'>To view this page as a different user</Label>
         <Dropdown
           search

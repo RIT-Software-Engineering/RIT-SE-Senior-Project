@@ -8,7 +8,6 @@ const path = require("path");
 const moment = require("moment");
 
 const DB_CONFIG = require("../database/db_config");
-const DBHandler = require("../database/db");
 const CONFIG = require("../config");
 const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
@@ -23,14 +22,9 @@ const ACTION_TARGETS = {
     STUDENT_ANNOUNCEMENT: 'student_announcement',
 };
 
-// Globals
-let db = new DBHandler();
-
 // Routes
 
-db_router.get("/whoami", [UserAuth.isSignedIn], (req, res) => {
-    res.send(req.user);
-});
+module.exports = (db) => {
 
 db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
     db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
@@ -1422,5 +1416,5 @@ function calculateActiveTimelines(user) {
             });
     });
 }
-
-module.exports = db_router;
+    return db_router;
+};

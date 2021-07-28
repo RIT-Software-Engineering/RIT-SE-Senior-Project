@@ -28,6 +28,8 @@ export default function DashboardPage() {
                 setUser({
                     user: responseUser.system_id,
                     role: responseUser.type,
+                    fname: responseUser.fname,
+                    lname: responseUser.lname,
                     isMock: responseUser.mock,
                 });
             })
