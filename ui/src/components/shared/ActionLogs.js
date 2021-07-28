@@ -56,9 +56,9 @@ export default function ActionLogs(props) {
                 </TableHeader>
                 <TableBody>
                     {actionLogs?.map((action, idx) => {
-                        let submittedBy = action.system_id;
+                        let submittedBy = `${action.name} (${action.system_id})`;
                         if (action.mock_id) {
-                            submittedBy = `${action.mock_id} as ${action.system_id}`;
+                            submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`
                         }
                         return (
                             <TableRow key={idx}>

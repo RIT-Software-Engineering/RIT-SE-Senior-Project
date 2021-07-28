@@ -42,8 +42,8 @@ function ToolTip(props) {
         }
     }, [props.autoLoadSubmissions, props.projectId, props.action?.action_id])
 
-    const content = () => {
-        return <div className="content">
+    const metadata = (longSubmissionTitle) => {
+        return <>
             <p>{props.action?.short_desc}</p>
             <p>Starts: {formatDate(props.action?.start_date)}</p>
             <p>Due: {formatDate(props.action?.due_date)}</p>
@@ -59,9 +59,19 @@ function ToolTip(props) {
                     target={props.action?.action_target}
                     semesterName={props.semesterName}
                     projectName={props.projectName}
-                    trigger={<div><div className="fake-a"><i>{formatDateTime(submission.submission_datetime)}</i> Submission</div></div>}
+                    trigger={<div className="fake-a">
+                        {longSubmissionTitle ?
+                            <>{submission.mock_id && `${submission.mock_name} (${submission.mock_id}) as `}{`${submission.name} (${submission.system_id})`} {formatDateTime(submission.submission_datetime)} </>
+                            : <><i>{formatDateTime(submission.submission_datetime)}</i> Submission</>}
+                    </div>}
                 />
             })}
+        </>
+    }
+
+    const content = () => {
+        return <div className="content">
+            {metadata()}
             <br />
             {/* 
               * Not sure if it makes more sense to check action.state or action.start_date.
@@ -73,6 +83,7 @@ function ToolTip(props) {
                 {...props.action}
                 isOpenCallback={isOpenCallback}
                 projectId={props.projectId}
+                preActionContent={metadata(true)}
             />
         </div>
     }

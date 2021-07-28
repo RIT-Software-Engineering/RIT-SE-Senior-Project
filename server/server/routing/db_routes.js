@@ -1030,7 +1030,7 @@ module.exports = (db) => {
                 const project_id = (await db.query(`SELECT project FROM users WHERE users.system_id = '${req.user.system_id}'`))[0].project;
 
                 // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
-                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                         actions.action_target, actions.action_title, actions.semester,
                         projects.display_name, projects.title,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
@@ -1050,7 +1050,7 @@ module.exports = (db) => {
                 countParams = [project_id, project_id, req.user.system_id, project_id];
                 break;
             case ROLES.COACH:
-                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                     actions.action_target, actions.action_title, actions.semester,
                     projects.display_name, projects.title,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
@@ -1067,7 +1067,7 @@ module.exports = (db) => {
                 countParams = [req.user.system_id];
                 break;
             case ROLES.ADMIN:
-                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.project,
+                getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                 actions.action_target, actions.action_title, actions.semester,
                 projects.display_name, projects.title,
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
