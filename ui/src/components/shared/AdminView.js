@@ -15,7 +15,9 @@ export default function AdminView(props) {
       .then(users => {
         let userMap = {};
         users.forEach(user => {
-          userMap[user.system_id] = user;
+          if (user.system_id !== props?.user.user) {
+            userMap[user.system_id] = user;
+          }
         });
         setUsers(userMap);
       })
@@ -23,7 +25,7 @@ export default function AdminView(props) {
         console.error("Failed to fetch users for AdminView...this is probably to be expected", err);
         setUsers([]);
       })
-  }, [])
+  }, [props?.user.user])
 
   const changeView = () => {// changes view for admin to another user
 
