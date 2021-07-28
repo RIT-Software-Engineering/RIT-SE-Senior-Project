@@ -135,6 +135,8 @@ export default function ActionModal(props) {
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
                 <Modal.Description>
+                    {props.preActionContent}
+                    <br />
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
                     <br />
                     {fileUpload(props.file_types)}
