@@ -30,7 +30,7 @@ export default function DashboardPage() {
                     role: responseUser.type,
                     fname: responseUser.fname,
                     lname: responseUser.lname,
-                    isMock: responseUser.mock,
+                    isMock: Object.keys(responseUser.mock).length !== 0,
                 });
             })
         SecureFetch(config.url.API_GET_SEMESTERS)
