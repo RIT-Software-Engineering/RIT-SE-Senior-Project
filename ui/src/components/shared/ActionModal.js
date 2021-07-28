@@ -1,15 +1,17 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { formatDateTime } from "../util/utils";
+import { UserContext } from "../util/UserContext";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 /** 
 *This file is only used in ToolTips, it should be removed completely
 */
 export default function ActionModal(props) {
+    const { user } = useContext(UserContext);
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [errors, setErrors] = useState([])
@@ -165,7 +167,7 @@ export default function ActionModal(props) {
                     ` This action can be submitted on ${formatDateTime(props.start_date)}"`
                     :
                     <Button
-                        content="Submit"
+                        content={user.isMock ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}` : "Submit"}
                         labelPosition="right"
                         icon="checkmark"
                         onClick={() => {

@@ -31,6 +31,7 @@ export default function DashboardPage() {
                     fname: responseUser.fname,
                     lname: responseUser.lname,
                     isMock: Object.keys(responseUser.mock).length !== 0,
+                    mockUser: responseUser.mock,
                 });
             })
         SecureFetch(config.url.API_GET_SEMESTERS)
