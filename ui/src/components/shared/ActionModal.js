@@ -21,13 +21,13 @@ export default function ActionModal(props) {
                 return {
                     header: "Success",
                     content: "Your submission has been received.",
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content:
-                        "We were unable to receive your submission. You can try again later or contact our support team that we don't have...",
+                        "We were unable to receive your submission.",
                     actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
                 };
             default:

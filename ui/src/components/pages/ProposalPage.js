@@ -100,13 +100,13 @@ function ProposalPage() {
                     header: "Success",
                     content:
                         "Your proposal has been received. We will review it and get back to you if our students decide to move forward with it",
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content:
-                        "We were unable to submit your proposal. You can try again later or contact our support team that we don't have...",
+                        "We were unable to submit your proposal.",
                     actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
                 };
             default:

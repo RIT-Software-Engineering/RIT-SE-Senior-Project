@@ -104,7 +104,7 @@ export default function BatchUserPanel() {
             closeOnDimmerClick={true}
             onOpen={() => setModalOpen(true)}
             onClose={(event, t) => { if (event.target?.innerText !== UPLOAD_BUTTON_TEXT) setModalOpen(false) }} // Don't close modal if close was triggered by pressing the upload button
-            actions={[{ key: "Done", content: "Done" }, { key: UPLOAD_BUTTON_TEXT, content: UPLOAD_BUTTON_TEXT, onClick: uploadBatchUsers, positive: true }]}
+            actions={[{ key: "Close", content: "Close" }, { key: UPLOAD_BUTTON_TEXT, content: UPLOAD_BUTTON_TEXT, onClick: uploadBatchUsers, positive: true }]}
         />
     )
 }

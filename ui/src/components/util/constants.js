@@ -14,9 +14,9 @@ export const config = {
         API_GET_EXEMPLARY_PROJECTS: `${BASE_API_URL}/db/selectExemplary`,
         API_GET_POSTER: `${BASE_API_URL}/db/getPoster`,
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
-        API_WHO_AM_I: `${BASE_API_URL}/db/whoami`,
 
         // GET - Auth needed
+        API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,

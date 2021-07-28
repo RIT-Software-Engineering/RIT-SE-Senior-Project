@@ -28,6 +28,8 @@ export default function DashboardPage() {
                 setUser({
                     user: responseUser.system_id,
                     role: responseUser.type,
+                    fname: responseUser.fname,
+                    lname: responseUser.lname,
                     isMock: responseUser.mock,
                 });
             })
@@ -59,7 +61,7 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: "Sponsors",
-                    render: () => <Tab.Pane>Tab 1 Content</Tab.Pane>
+                    render: () => <Tab.Pane>Under construction...</Tab.Pane>
                 },
             );
         // Break intentionally left out to take advantage of switch flow

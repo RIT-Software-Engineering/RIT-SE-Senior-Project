@@ -13,13 +13,13 @@ export default function ProjectViewerModal(props) {
             .then(response => response.json())
             .then(members => {
                 let projectGroupedValues = { students: [], coaches: [] };
-                members.forEach(member => {
+                members.forEach((member, idx) => {
                     switch (member.type) {
                         case USERTYPES.STUDENT:
-                            projectGroupedValues.students.push(`${member.fname} ${member.lname}, `);
+                            projectGroupedValues.students.push(`${member.fname} ${member.lname}`);
                             break;
                         case USERTYPES.COACH:
-                            projectGroupedValues.coaches.push(`${member.fname} ${member.lname}, `);
+                            projectGroupedValues.coaches.push(`${member.fname} ${member.lname}`);
                             break;
                         default:
                             console.error(`Project editor error - invalid project member type "${member.type}" for member: `, member);
@@ -33,8 +33,8 @@ export default function ProjectViewerModal(props) {
     const generateModalContent = () => {
         return <>
             <h3>Team members</h3>
-            <b>Students:</b> {projectMembers.students} <br />
-            <b>Coaches:</b> {projectMembers.coaches} <br />
+            <b>Students:</b> {projectMembers.students?.join(",")} <br />
+            <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
 
             <h3>Sponsor Info</h3>
             <b>Sponsor:</b> {props.project.sponsor} <br />
@@ -78,7 +78,7 @@ export default function ProjectViewerModal(props) {
             trigger={<Button icon="eye" />}
             header={`Viewing "${props.project.display_name || props.project.title}"`}
             content={{ content: generateModalContent() }}
-            actions={[{ key: "Done", content: "Done" }]}
+            actions={[{ key: "Close", content: "Close" }]}
         />
     )
 }

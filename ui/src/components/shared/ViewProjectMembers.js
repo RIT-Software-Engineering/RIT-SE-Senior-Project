@@ -3,12 +3,11 @@ import { Button, Icon, Modal, Table, TableBody, TableCell, TableHeader, TableHea
 import { config, USERTYPES } from '../util/constants';
 import { SecureFetch } from '../util/secureFetch';
 
-const CLOSE_BUTTON_TEXT = "Done";
+const CLOSE_BUTTON_TEXT = "Close";
 
 export default function ViewProjectMembers(props) {
 
     const [projectCoaches, setProjectCoaches] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false)
 
     const fetchProjectCoaches = () => {
         if (!projectCoaches || projectCoaches.length === 0) {
@@ -38,12 +37,6 @@ export default function ViewProjectMembers(props) {
             .catch(err => {
                 console.error("Failed to fetch project coaches", err);
             })
-    }
-
-    const onClose = (event, t) => {
-        if (event.target?.innerText === CLOSE_BUTTON_TEXT) {
-            setModalOpen(false);
-        }
     }
 
     const content = () => {
@@ -79,10 +72,7 @@ export default function ViewProjectMembers(props) {
             content={{
                 content: content()
             }}
-            open={modalOpen}
-            onClose={onClose}
-            onOpen={() => setModalOpen(true)}
-            actions={[{ key: "Refresh", content: "Refresh", onClick: refresh }, { key: "Done", content: CLOSE_BUTTON_TEXT, positive: true }]}
+            actions={[{ key: "Close", content: CLOSE_BUTTON_TEXT }]}
         />
     )
 }

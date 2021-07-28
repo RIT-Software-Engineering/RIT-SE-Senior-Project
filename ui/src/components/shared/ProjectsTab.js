@@ -42,7 +42,7 @@ export default function ProjectsTab(props) {
         <br />
         {userContext.user?.role !== USERTYPES.STUDENT && <>
             <h3>All Projects</h3>
-            <ProjectEditor noAccordion semesterData={props.semesterData} />
+            <ProjectEditor noAccordion semesterData={props.semesterData} viewOnly />
         </>}
     </>;
 }

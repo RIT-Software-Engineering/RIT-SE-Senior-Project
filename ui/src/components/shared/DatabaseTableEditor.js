@@ -26,7 +26,7 @@ export default function DatabaseTableEditor(props) {
                 return {
                     header: "Success",
                     content: submissionModalMessages["SUCCESS"],
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
@@ -193,7 +193,9 @@ export default function DatabaseTableEditor(props) {
                         <Form.Field key={field["name"]}>
                             <label>{field.label}</label>
                             {formData[field["name"]].length > 0 ? formData[field["name"]].map(file => {
-                                return <><a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br /></>
+                                return <React.Fragment key={file.link}>
+                                    <a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br />
+                                </React.Fragment>
                             }) : <p>No Attachments</p>}
                         </Form.Field>
                     )
@@ -242,8 +244,8 @@ export default function DatabaseTableEditor(props) {
         if (props.viewOnly) {
             return [
                 {
-                    key: "Done",
-                    content: "Done",
+                    key: "Close",
+                    content: "Close",
                 },
             ]
         }

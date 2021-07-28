@@ -22,11 +22,11 @@ export default function ActionPanel(props) {
     };
 
     let submissionModalMessages = props.create ? {
-        SUCCESS: "The action has been updated.",
-        FAIL: "We were unable to receive your update to the action.",
-    } : {
         SUCCESS: "The action has been created.",
-        FAIL: "We were unable to receive your action creation.",
+        FAIL: "We were unable to create your action.",
+    } : {
+        SUCCESS: "The action has been Edited.",
+        FAIL: "We were unable to receive your edits.",
     }
         ;
 
@@ -120,7 +120,7 @@ export default function ActionPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             create={!!props.create}
-            button={!!props.create ? "plus" : "edit"}
+            button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
             preChange={preChange}
             preSubmit={(data) => {
                 if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
