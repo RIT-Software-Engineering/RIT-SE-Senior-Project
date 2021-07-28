@@ -120,6 +120,17 @@ export default function StudentEditPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             button="edit"
+            preChange={(formData, name, value) => {
+                if (name === "type" && [USERTYPES.ADMIN, USERTYPES.COACH].includes(value)) {
+                    formData["semesterProject"] = NULL_VALUE;
+                } else if (name === "semesterProject" && [USERTYPES.ADMIN, USERTYPES.COACH].includes(formData["type"])) {
+                    return formData;
+                }
+                return {
+                    ...formData,
+                    [name]: value,
+                }
+            }}
             preSubmit={(data) => {
                 data.semester_group = semesterProjectDropdownMap[data.semesterProject].semester;
                 data.project = semesterProjectDropdownMap[data.semesterProject].project;
