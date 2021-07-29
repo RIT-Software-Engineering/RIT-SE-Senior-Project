@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
-import { config } from "../util/constants";
+import { ACTION_TARGETS, config, USERTYPES } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import { formatDateTime } from "../util/utils";
 import { UserContext } from "../util/UserContext";
@@ -121,6 +121,30 @@ export default function ActionModal(props) {
         setErrors([]);
     }
 
+    const submitButton = props?.state === "grey" ? ` This action can be submitted on ${formatDateTime(props.start_date)}`
+        : <Button
+            content={user.isMock ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}` : "Submit"}
+            labelPosition="right"
+            icon="checkmark"
+            onClick={() => {
+                onActionSubmit(props.id, props.file_types);
+            }}
+            positive
+        />
+
+    const renderSubmitButton = () => {
+        switch (props.action_target) {
+            case ACTION_TARGETS.admin:
+                return user.role === USERTYPES.ADMIN ? submitButton : " Admin Actions are Available Only to Admins";
+            case ACTION_TARGETS.coach:
+                return user.role === USERTYPES.COACH ? submitButton : " Coach Actions are Available Only to Coaches";
+            case ACTION_TARGETS.individual:
+                return user.role === USERTYPES.STUDENT ? submitButton : " Individual Actions are Available Only to Students";
+            default:
+                return submitButton;
+        }
+    }
+
     return (
         <Modal
             onClose={() => {
@@ -162,19 +186,7 @@ export default function ActionModal(props) {
                 >
                     Cancel
                 </Button>
-                {props?.state === "grey" ?
-                    ` This action can be submitted on ${formatDateTime(props.start_date)}`
-                    :
-                    <Button
-                        content={user.isMock ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}` : "Submit"}
-                        labelPosition="right"
-                        icon="checkmark"
-                        onClick={() => {
-                            onActionSubmit(props.id, props.file_types);
-                        }}
-                        positive
-                    />
-                }
+                {renderSubmitButton()}
             </Modal.Actions>
         </Modal>
     );
