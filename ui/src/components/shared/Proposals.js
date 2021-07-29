@@ -149,7 +149,7 @@ export default function Proposals(props) {
                             sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
                             onClick={() => changeSort(COLUMNS.TITLE)}
                         >
-                            Name (pdf)
+                            Name
                         </TableHeaderCell>
                         <TableHeaderCell
                             sorted={proposalData.column === COLUMNS.STATUS ? proposalData.direction : null}
@@ -158,7 +158,7 @@ export default function Proposals(props) {
                             Status
                         </TableHeaderCell>
                         <TableHeaderCell>
-                            {props.viewOnly ? "View/Download Original" : "Edit/Download Original"}
+                            {props.viewOnly ? "Current/Original" : "Edit/Original"}
                         </TableHeaderCell>
                     </TableRow>
                 </TableHeader>

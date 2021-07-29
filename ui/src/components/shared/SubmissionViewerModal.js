@@ -70,7 +70,6 @@ export default function SubmissionViewerModal(props) {
                             return <div key={file}>
                                 <a
                                     href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.action?.action_log_id}&project=${props.action?.project}`}
-                                    download
                                     target="_blank"
                                     rel="noreferrer"
                                 >

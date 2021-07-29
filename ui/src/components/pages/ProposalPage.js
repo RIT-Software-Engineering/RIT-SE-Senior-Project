@@ -107,7 +107,7 @@ function ProposalPage() {
                     header: "There was an issue...",
                     content:
                         "We were unable to submit your proposal.",
-                    actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
+                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;

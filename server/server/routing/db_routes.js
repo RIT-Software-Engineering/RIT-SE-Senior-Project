@@ -698,7 +698,9 @@ module.exports = (db) => {
                     return res.status(400).send({ errors: [{ param: "files", msg: "Maximum of 5 files allowed" }] });
                 }
 
-                fs.mkdirSync(`./server/sponsor_proposal_files/${projectId}`, { recursive: true });
+                const baseURL = path.join(__dirname, `../sponsor_proposal_files/${projectId}`);
+
+                fs.mkdirSync(baseURL, { recursive: true });
 
                 for (let x = 0; x < req.files.attachments.length; x++) {
                     if (req.files.attachments[x].size > 15 * 1024 * 1024) {
@@ -714,7 +716,7 @@ module.exports = (db) => {
                     filenamesCSV += x === 0 ? `${req.files.attachments[x].name}` : `, ${req.files.attachments[x].name}`;
 
                     req.files.attachments[x].mv(
-                        `./server/sponsor_proposal_files/${projectId}/${req.files.attachments[x].name}`,
+                        `${baseURL}/${req.files.attachments[x].name}`,
                         function (err) {
                             if (err) {
                                 console.error(err);
@@ -757,12 +759,14 @@ module.exports = (db) => {
             db.query(sql, params)
                 .then(() => {
                     let doc = new PDFDoc();
-                    doc.pipe(fs.createWriteStream(path.join(__dirname, `../proposal_docs/${projectId}.pdf`)));
+                    const baseURL = path.join(__dirname, `../proposal_docs/`);
+                    fs.mkdirSync(baseURL, { recursive: true });
+                    doc.pipe(fs.createWriteStream(`${baseURL}/${projectId}.pdf`));
 
                     doc.font("Times-Roman");
 
-                    for (let key of DB_CONFIG.senior_project_proposal_keys) {
-                        doc.fill("blue").fontSize(16).text(key.replace("/_/g", " ")),
+                    for (let key of Object.keys(DB_CONFIG.senior_project_proposal_keys)) {
+                        doc.fill("blue").fontSize(16).text(DB_CONFIG.senior_project_proposal_keys[key]),
                         {
                             underline: true,
                         };
@@ -770,6 +774,14 @@ module.exports = (db) => {
                         doc.moveDown();
                         doc.save();
                     }
+
+                    doc.fill("blue").fontSize(16).text("Attachments"),
+                    {
+                        underline: true,
+                    };
+                    doc.fontSize(12).fill("black").text(filenamesCSV);
+                    doc.moveDown();
+                    doc.save();
 
                     doc.end();
                     return res.status(200).send();
@@ -849,8 +861,7 @@ module.exports = (db) => {
         let timeString = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()}`;
         const submission = `${timeString}_${nanoid()}`;
 
-        // TODO: When authentication is added, system_id should come from the req.
-        let baseURL = `./server/project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`;
+        let baseURL = path.join(__dirname, `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`);
 
         // Attachment Handling
         let filenamesCSV = "";

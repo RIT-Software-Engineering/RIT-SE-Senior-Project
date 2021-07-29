@@ -3,19 +3,39 @@
   "name": "Senior Project - RIT Software Engineering",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "https://www.rit.edu/sites/all/themes/uwbase/rit_bootstrap_2019/favicon/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "android-chrome-384x384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "apple-touch-icon.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "180x180"
+    },
+    {
+      "src": "favicon-48x48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
     }
   ],
   "start_url": ".",

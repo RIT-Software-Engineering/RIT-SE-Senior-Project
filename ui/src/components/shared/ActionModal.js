@@ -30,7 +30,7 @@ export default function ActionModal(props) {
                     header: "There was an issue...",
                     content:
                         "We were unable to receive your submission.",
-                    actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
+                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;
@@ -144,7 +144,7 @@ export default function ActionModal(props) {
                     {fileUpload(props.file_types)}
                     {errors.length > 0 && <div className="submission-errors">
                         <br />
-                        <h4>Uh ohh...</h4>
+                        <h4>Errors:</h4>
                         <ul>
                             {errors.map(err => <li key={err}>{err}</li>)}
                         </ul>
@@ -154,7 +154,6 @@ export default function ActionModal(props) {
             </Modal.Content>
             <Modal.Actions>
                 <Button
-                    color="black"
                     onClick={() => {
                         onActionCancel();
                         setOpen(false);
@@ -164,7 +163,7 @@ export default function ActionModal(props) {
                     Cancel
                 </Button>
                 {props?.state === "grey" ?
-                    ` This action can be submitted on ${formatDateTime(props.start_date)}"`
+                    ` This action can be submitted on ${formatDateTime(props.start_date)}`
                     :
                     <Button
                         content={user.isMock ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}` : "Submit"}

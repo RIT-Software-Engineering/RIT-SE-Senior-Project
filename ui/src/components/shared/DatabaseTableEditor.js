@@ -32,7 +32,7 @@ export default function DatabaseTableEditor(props) {
                 return {
                     header: "There was an issue...",
                     content: submissionModalMessages["SUCCESS"],
-                    actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
+                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;
