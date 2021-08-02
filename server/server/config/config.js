@@ -2,6 +2,8 @@
  * A place for global variables to be configured and made available
  */
 
+const path = require('path');
+
 module.exports = {
     accepted_file_types: [
         ".pdf",
@@ -18,7 +20,7 @@ module.exports = {
         ".csv",
     ],
     saml: {
-        cert: "./server/config/seniorproject-cert.pem", // when you build, reference properly
+        cert: path.join(__dirname, "/seniorproject-cert.pem"),
         entryPoint: "https://shibboleth.main.ad.rit.edu/idp/profile/SAML2/Redirect/SSO",
         logoutPoint: "https://shibboleth.main.ad.rit.edu/logout.html",
         issuer: "https://seniorproject.se.rit.edu/saml",
