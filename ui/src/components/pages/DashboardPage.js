@@ -1,23 +1,24 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import Proposals from "../shared/Proposals";
-import TimeLines from "../shared/TimeLines";
+import TimeLinesView from "../shared/TimeLinesView";
 import SemesterEditor from "../shared/SemesterEditor";
 import ActionEditor from "../shared/ActionEditor";
 import StudentsTab from "../shared/StudentsTab";
-import ProposalTable from "../shared/ProposalTable";
+import ProjectsTab from "../shared/ProjectsTab";
 import ProjectEditor from "../shared/ProjectEditor";
-import ActionsTab from "../shared/ActionsTab";
+import ActionLogs from "../shared/ActionLogs";
 import CoachesTab from "../shared/CoachesTab";
 import AdminView from "../shared/AdminView";
 import { UserContext } from "../util/UserContext";
 import "./../../css/dashboard.css";
+import UserEditor from "../shared/UserEditor";
 import { SecureFetch } from "../util/secureFetch";
 import { config } from "../util/constants";
 
 export default function DashboardPage() {
 
     const { user, setUser } = useContext(UserContext);
+    const [semesterData, setSemestersData] = useState([]);
 
     // When dashboard loads, check who is currently signed in
     useEffect(() => {
@@ -26,129 +27,106 @@ export default function DashboardPage() {
             .then(responseUser => {
                 setUser({
                     user: responseUser.system_id,
-                    role: responseUser.type
+                    role: responseUser.type,
+                    fname: responseUser.fname,
+                    lname: responseUser.lname,
+                    isMock: Object.keys(responseUser.mock).length !== 0,
+                    mockUser: responseUser.mock,
                 });
             })
+        SecureFetch(config.url.API_GET_SEMESTERS)
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+            })
+            .catch((error) => {
+                alert("Failed to get semestersData data" + error);
+            });
     }, [])
 
     let panes = [];
 
-    if (user.role === "admin") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Proposals",
-                render: () => (
-                    <Tab.Pane>
-                        <ProposalTable />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Sponsor Info", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            {
-                menuItem: "Students",
-                render: () => (
-                    <Tab.Pane>
-                        <StudentsTab />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Admin",
-                render: () => (
-                    <Tab.Pane>
-                        <AdminView />
-                        <SemesterEditor />
-                        <ActionEditor />
-                        <ProjectEditor />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else if (user.role === "coach") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Proposals",
-                render: () => (
-                    <Tab.Pane>
-                        <Proposals />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Sponsor Info", render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
-            {
-                menuItem: "Students",
-                render: () => (
-                    <Tab.Pane>
-                        <StudentsTab />
-                    </Tab.Pane>
-                ),
-            },
-            { menuItem: "Coaches", render: () => <Tab.Pane><CoachesTab/></Tab.Pane> },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else if (user.role === "student") {
-        panes = [
-            {
-                menuItem: "Dashboard",
-                render: () => (
-                    <Tab.Pane>
-                        <TimeLines />
-                    </Tab.Pane>
-                ),
-            },
-            {
-                menuItem: "Actions",
-                render: () => (
-                    <Tab.Pane>
-                        <ActionsTab />
-                    </Tab.Pane>
-                ),
-            },
-        ];
-    } else {
-        panes = [
-            {
+    switch (user.role) {
+        case "admin":
+            panes.push(
+                {
+                    menuItem: "Admin",
+                    render: () => (
+                        <Tab.Pane>
+                            <SemesterEditor />
+                            <ActionEditor semesterData={semesterData} />
+                            <ProjectEditor semesterData={semesterData} />
+                            <UserEditor />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Sponsors",
+                    render: () => <Tab.Pane>Under construction...</Tab.Pane>
+                },
+            );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
+        case "coach":
+            panes.push(
+                {
+                    menuItem: "Coaches",
+                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
+                },
+                {
+                    menuItem: "Students",
+                    render: () => (
+                        <Tab.Pane>
+                            <StudentsTab />
+                        </Tab.Pane>
+                    ),
+                },
+            );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
+        case "student":
+            panes.push(
+                {
+                    menuItem: "Projects",
+                    render: () => (
+                        <Tab.Pane>
+                            <ProjectsTab semesterData={semesterData} />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Actions",
+                    render: () => (
+                        <Tab.Pane>
+                            <ActionLogs semesterData={semesterData} />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: "Dashboard",
+                    render: () => (
+                        <Tab.Pane>
+                            <TimeLinesView />
+                        </Tab.Pane>
+                    ),
+                },
+            );
+            break;
+        default:
+            panes.push({
                 menuItem: "Loading...",
                 render: () => (
                     <Tab.Pane>
                         <p>Loading...</p>
                     </Tab.Pane>
                 ),
-            },
-        ];
+            })
     }
 
-    return <Tab panes={panes} className="admin-menu" />;
+    panes.reverse();
+
+    return <>
+        <AdminView user={user} />
+        <Tab panes={panes} className="admin-menu" />
+    </>;
 }

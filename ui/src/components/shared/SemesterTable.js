@@ -1,5 +1,6 @@
 import React from "react";
 import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "semantic-ui-react";
+import { formatDate } from "../util/utils";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterTable(props) {
@@ -7,16 +8,16 @@ export default function SemesterTable(props) {
         return props.semesters.map((semester, i) => {
             return (
                 <TableRow key={i}>
-                    <TableCell>{semester.name}</TableCell>
+                    <TableCell>{`${semester.name} (ID: ${semester.semester_id})`}</TableCell>
                     <TableCell>{semester.dept}</TableCell>
-                    <TableCell>{semester.start_date}</TableCell>
-                    <TableCell>{semester.end_date}</TableCell>
+                    <TableCell>{formatDate(semester.start_date)}</TableCell>
+                    <TableCell>{formatDate(semester.end_date)}</TableCell>
 
                     <TableCell>
                         <SemesterPanel
                             semester={semester}
                             semesterData={props.semesterData}
-                            header={`Currently Editing "${semester.name}"`}
+                            header={`Currently Editing "${semester.name} (${semester.semester_id})"`}
                             key={"editSemester-" + i}
                         />
                     </TableCell>
@@ -34,7 +35,7 @@ export default function SemesterTable(props) {
                         // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.DATE)}
                         >
-                            Semester Name
+                            Semester Name (Semester ID)
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}

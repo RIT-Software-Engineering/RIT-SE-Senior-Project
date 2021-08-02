@@ -6,7 +6,9 @@ import {
     TableHeaderCell,
     TableRow,
     Accordion,
+    Icon,
 } from "semantic-ui-react";
+import StudentRow from "./StudentRow";
 
 export default function StudentTeamTable(props) {
 
@@ -18,13 +20,13 @@ export default function StudentTeamTable(props) {
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                        First Name
+                        ID
                     </TableHeaderCell>
                     <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.DATE)}
                     >
-                       Last Name
+                        Name
                     </TableHeaderCell>
 
                     <TableHeaderCell
@@ -33,47 +35,53 @@ export default function StudentTeamTable(props) {
                     >
                         Email
                     </TableHeaderCell>
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.TITLE)}
-                    >
-                        Semester Group
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
-                    >
-                        Project ID
-                    </TableHeaderCell>
-                    <TableHeaderCell
+                    {!props.viewOnly && <TableHeaderCell
                     // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                     // onClick={() => changeSort(COLUMNS.EDIT)}
                     >
                         Action
-                    </TableHeaderCell>
+                    </TableHeaderCell>}
                 </TableRow>
             </TableHeader>
-            <TableBody>{props.content}</TableBody>
+            <TableBody>
+                {props.students?.map(student =>
+                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} />
+                )}
+
+            </TableBody>
         </Table>
     )
 
-    if (props.unassignedSemester){
+    if (props.noAccordion) {
         return table;
     }
 
     return (
-        <Accordion
-            fluid
-            styled
-            panels={[
-                {
-                    key: props.key,
-                    title: props.title,
-                    content: {
-                        content: (table)
+        <div className="accordion-button-group">
+            <Accordion
+                fluid
+                styled
+                key={"Student-TeamTable-Accordion"}
+                panels={[
+                    {
+                        key: props.childKey,
+                        title: props.title,
+                        content: {
+                            content: (table)
+                        },
                     },
-                },
-            ]}
-        />
+                ]}
+            />
+            <div className="accordion-buttons-container">
+                <a
+                    href={`mailTo:${props.students?.map(student => student.email).join(",")}`}
+                    className="ui icon button"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    <Icon name="mail" />
+                </a>
+            </div>
+        </div>
     );
 }

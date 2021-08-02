@@ -8,25 +8,38 @@ import {
     TableRow, 
     Accordion, 
 } from "semantic-ui-react";
+import _ from "lodash";
 import ActionPanel from "./ActionPanel";
-import { formatDateTime } from "../util/utils";
+import { formatDate } from "../util/utils";
 
 export default function ActionTable(props) {
     const renderActions = () => {
-        return props.actions.map((action, i) => {
+        let actions = _.sortBy(props.actions, ["due_date", "start_date"])
+
+        return actions.map((action, i) => {
             return (
                 <TableRow key={i}>
                     <TableCell>{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
-                    <TableCell>{formatDateTime(action.start_date)}</TableCell>
-                    <TableCell>{formatDateTime(action.due_date)}</TableCell>
+                    <TableCell>{formatDate(action.start_date)}</TableCell>
+                    <TableCell>{formatDate(action.due_date)}</TableCell>
                     <TableCell>
-                        <ActionPanel
-                            actionData={action}
-                            semesterData={props.semesterData}
-                            header={`Currently Editing "${action.action_title}"`}
-                            key={"editAction-" + i}
-                        />
+                        <div className="accordion-buttons-container" style={{ position: 'initial' }}>
+                            <ActionPanel
+                                actionData={action}
+                                semesterData={props.semesterData}
+                                header={`Currently Editing "${action.action_title}"`}
+                                key={"editAction-" + i}
+                            />
+                            <ActionPanel
+                                actionData={action}
+                                semesterData={props.semesterData}
+                                header={`Currently Copying "${action.action_title}"`}
+                                create={true}
+                                buttonIcon={"clone outline"}
+                                key={"copyAction-" + i}
+                            />
+                        </div>
                     </TableCell>
                 </TableRow>
             );
@@ -37,7 +50,8 @@ export default function ActionTable(props) {
     if (props.actions[0].name === null){
         title = "No semester";
     } else {
-        title = props.actions[0].name
+        // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
+        title = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name
     }
 
     return (
@@ -48,7 +62,7 @@ export default function ActionTable(props) {
                 panels={[
                     {
                         key: "actionEditor",
-                        title: title,
+                        title: title || "No Semester",
                         content: {
                             content: (
                                 <Table sortable>

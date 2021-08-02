@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, Button, Icon } from "semantic-ui-react";
+import { Accordion } from "semantic-ui-react";
 import { config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-// import ActionModal from "./ActionModal";
+import ActionPanel from "./ActionPanel";
 import ActionTable from "./ActionTable";
 
-export default function ActionEditor() {
+export default function ActionEditor(props) {
     const [actions, setActionsData] = useState([]);
-    const [semesters, setSemestersData] = useState([]);
 
     useEffect(() => {
         SecureFetch(config.url.API_GET_ACTIONS)
@@ -18,14 +17,6 @@ export default function ActionEditor() {
             .catch((error) => {
                 alert("Failed to get actionss data" + error);
             });
-        SecureFetch(config.url.API_GET_SEMESTERS)
-            .then((response) => response.json())
-            .then((semestersData) => {
-                setSemestersData(semestersData);
-            })
-            .catch((error) => {
-                alert("Failed to get semestersData data" + error);
-            });
     }, []);
 
     let semesterPanels = [];
@@ -33,21 +24,15 @@ export default function ActionEditor() {
         let semesterMap = {};
         for (let i = 0; i < actions.length; i++) {
             let actionData = actions[i];
-            if (!semesterMap[actionData.name]) {
-                semesterMap[actionData.name] = [];
+            if (!semesterMap[actionData.semester]) {
+                semesterMap[actionData.semester] = [];
             }
-            semesterMap[actionData.name].push(actionData);
+            semesterMap[actionData.semester].push(actionData);
         }
-        for (const [, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(<ActionTable actions={value} semesterData={semesters} />);
+        for (const [key, value] of Object.entries(semesterMap)) {
+            semesterPanels.push(<ActionTable key={key} actions={value} semesterData={props.semesterData} />);
         }
     }
-
-    const onAdd = () => {
-        // return <ActionModal />;
-        //todo
-        alert("Blank Action Modal");
-    };
 
     return (
         <div className="accordion-button-group">
@@ -57,20 +42,18 @@ export default function ActionEditor() {
                 panels={[
                     {
                         key: "actionEditor",
-                        title: "Action Editor",
+                        title: "Action and Announcement Editor",
                         content: { content: semesterPanels },
                     },
                 ]}
             />
             <div className="accordion-buttons-container">
-                <Button
-                    icon
-                    onClick={() => {
-                        onAdd();
-                    }}
-                >
-                    <Icon name="plus" />
-                </Button>
+                <ActionPanel
+                    semesterData={props.semesterData}
+                    header={"Create Action/Announcement"}
+                    create={true}
+                    key={"createAction"}
+                />
             </div>
         </div>
     );

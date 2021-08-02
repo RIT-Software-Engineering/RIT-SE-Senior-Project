@@ -28,11 +28,13 @@ function dropAllTables() {
                 let delString = "";
                 for (let obj of values) {
                     delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`;
-                    db.query(delString).catch((err) => {
+                    Promise.resolve(db.query(delString).catch((err) => {
                         reject(`${obj["name"]} : ${err}`);
-                    });
+                    }));
                 }
-                setTimeout(resolve, 2000); // wait for the last SQL statement to execute before moving on
+                setTimeout(() => {
+                    resolve();
+                }, 1000);
             })
             .catch((err) => {
                 reject(err);
@@ -48,14 +50,16 @@ function createAllTables() {
                 return;
             }
 
-            for (name of files) {
-                fs.readFile(path.join(table_sql_path, name), "utf8", (err, sql) => {
-                    db.query(sql).catch((err) => {
-                        reject(`${name} : ${err}`);
-                    });
+            for (file of files) {
+                fs.readFile(path.join(table_sql_path, file), "utf8", (err, sql) => {
+                    Promise.resolve(db.query(sql).catch((err) => {
+                        reject(`${file} : ${err}`);
+                    }));
                 });
             }
-            setTimeout(resolve, 2000); // wait for the last SQL statement to execute
+            setTimeout(() => {
+                resolve();
+            }, 1000);
         });
     });
 }
@@ -67,27 +71,30 @@ function populateDummyData() {
                 reject(err);
             }
 
-            for (name of files) {
-                fs.readFile(path.join(dummy_data_path, name), "utf8", (err, sql) => {
-                    db.query(sql).catch((err) => {
-                        reject(`${name} : ${err}`);
-                    });
-                    setTimeout(resolve, 2000);
+            for (file of files) {
+                fs.readFile(path.join(dummy_data_path, file), "utf8", (err, sql) => {
+                    Promise.resolve(db.query(sql).catch((err) => {
+                        reject(`${file} : ${err}`);
+                    }));
                 });
             }
+            setTimeout(() => {
+                resolve();
+            }, 3000);
         });
     });
 }
 
 async function redeployDatabase() {
     try {
+        console.log("Starting database redeploy");
         await dropAllTables()
         await createAllTables()
         await populateDummyData()
+        console.log("Done redeploying database");
     } catch (error) {
         console.error(error);
     }
 }
 
-module.exports =  redeployDatabase;
-
+module.exports = redeployDatabase;

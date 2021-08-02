@@ -7,11 +7,14 @@
 // Imports
 
 require("../config/passport");
+const CONFIG = require("../config/config");
 const session = require("express-session");
 const passport = require("passport");
 const router = require("express").Router();
-const CONFIG = require("../config/config");
-const db_router = require("./db_routes");
+const DBHandler = require("../database/db");
+let db = new DBHandler();
+const db_router = require("./db_routes")(db);
+const saml_router = require("./saml_routes")(db);
 
 //#endregion
 
@@ -37,5 +40,6 @@ router.post(
         res.redirect("http://localhost:3000/dashboard");
     })
 );
+router.use("/saml", saml_router);
 
 module.exports = router;

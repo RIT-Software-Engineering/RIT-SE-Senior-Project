@@ -21,12 +21,35 @@
 
 .accordion-button-group {
     display: flex;
+    flex-direction: column;
+}
+
+.accordion {
+    margin-top: 0px !important;
+    margin-bottom: 1em !important;
 }
 
 .accordion-button-group .accordion-buttons-container {
     position: absolute;
     right: 1em;
     margin: 2px 1em !important;
+}
+
+/* For nested accordion with depth of 1 */
+.accordion .accordion-button-group .accordion-buttons-container {
+    position: absolute;
+    right: 1em;
+    margin: 2px 2em !important;
+}
+
+/* 
+ * For nested accordion with depth of 2 
+ * (please for the love of all that is holy, do not have accordions nested more than 2 deep) 
+ */
+.accordion .accordion .accordion-button-group .accordion-buttons-container {
+    position: absolute;
+    right: 1em;
+    margin: 2px 3em !important;
 }
 
 .accordion-buttons-container > * {
@@ -42,4 +65,14 @@
 .accordion-buttons-container :last-child {
     margin: 0 0 0 0 !important;
     border-radius: 0 0.28571429rem 0.28571429rem 0 !important;
+}
+
+.fake-a {
+    color: #1e70bf;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.spacer {
+    flex-grow: 1;
 }

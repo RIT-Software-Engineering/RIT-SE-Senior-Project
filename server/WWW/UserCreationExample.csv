@@ -1,0 +1,4 @@
+﻿system_id,fname,lname,email,type,semester_group,active
+someId1,firstname,lastname,someId1@rit.edu,student,3,true
+someId2,firstname,lastname,someId2@rit.edu,admin,,true
+someId3,firstname,lastname,someId3@rit.edu,coach,,true

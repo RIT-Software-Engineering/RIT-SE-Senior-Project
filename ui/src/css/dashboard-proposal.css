@@ -1,16 +1,31 @@
+.proposal-row-UNHANDLED-CASE {
+    background: blue;
+    color: red;
+}
+
+.proposal-row-UNHANDLED-CASE::before {
+    color: red;
+    content: "Something's not right...You're not supposed to see this.";
+}
+
 .proposal-row-gray {
     background: #dddddd;
     color: #666666;
 }
 
+.proposal-row-red {
+    background: #fff6f6;
+    color: black;
+}
+
 .proposal-row-yellow {
     background: #fffaf3;
-    color: #573a08;
+    color: black;
 }
 
 .proposal-row-green {
     background: #fcfff5;
-    color: #2c662d;
+    color: black;
 }
 
 .proposal-status-action {

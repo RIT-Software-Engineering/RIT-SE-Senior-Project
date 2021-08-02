@@ -1,9 +1,9 @@
 CREATE TABLE projects (
-    project_id              INTEGER primary key autoincrement,
+    project_id              TEXT primary key,
     submission_datetime     DATETIME DEFAULT CURRENT_TIMESTAMP,
     status                  text,   -- Submitted, Needs Revision, Future Project, Candidate, In Progress, Completed, Archived (not related to archive table)
     display_name            text,
-    title                   text unique,
+    title                   text,
     organization            text,
     primary_contact         text,
     contact_email           text,

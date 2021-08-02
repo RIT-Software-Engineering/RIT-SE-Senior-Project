@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
 import { config } from "../util/constants";
 import "../../css/proposal.css";
+import { SecureFetch } from "../util/secureFetch";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -11,6 +12,7 @@ function ProposalPage() {
     const [formData, setActualFormData] = useState({ assignment_of_rights: "full_rights" });
     const [formFiles, setFormFiles] = useState(null);
     const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
+    const [errors, setErrors] = useState({})
 
     const setFormData = (event) => {
         const target = event.target;
@@ -64,7 +66,7 @@ function ProposalPage() {
             body.append("attachments", formFiles[i]);
         }
 
-        fetch(config.url.API_POST_SUBMIT_PROJECT, {
+        SecureFetch(config.url.API_POST_SUBMIT_PROJECT, {
             method: "post",
             body: body,
         })
@@ -73,6 +75,16 @@ function ProposalPage() {
                     setModalOpen(MODAL_STATUS.SUCCESS);
                 } else {
                     setModalOpen(MODAL_STATUS.FAIL);
+                    return response.json();
+                }
+            })
+            .then((error) => {
+                if (error?.errors) {
+                    let receivedErrors = {}
+                    error.errors?.forEach(error => {
+                        receivedErrors[error.param] = error.msg;
+                    });
+                    setErrors(receivedErrors);
                 }
             })
             .catch((error) => {
@@ -88,14 +100,14 @@ function ProposalPage() {
                     header: "Success",
                     content:
                         "Your proposal has been received. We will review it and get back to you if our students decide to move forward with it",
-                    actions: [{ header: "Success!", content: "Done", positive: true, key: 0 }],
+                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content:
-                        "We were unable to submit your proposal. You can try again later or contact our support team that we don't have...",
-                    actions: [{ header: "There was an issue", content: "Keep editing...", positive: true, key: 0 }],
+                        "We were unable to submit your proposal.",
+                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;
@@ -108,6 +120,7 @@ function ProposalPage() {
                 setActualFormData({});
                 setFormFiles(null);
                 setModalOpen(MODAL_STATUS.CLOSED);
+                setErrors({});
                 break;
             case MODAL_STATUS.FAIL:
                 setModalOpen(MODAL_STATUS.CLOSED);
@@ -138,6 +151,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.title && { content: errors.title, pointing: "below" }}
                 />
                 <Form.Input
                     required
@@ -147,6 +161,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.organization && { content: errors.organization, pointing: "below" }}
                 />
                 <Form.Input
                     required
@@ -156,6 +171,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.primary_contact && { content: errors.primary_contact, pointing: "below" }}
                 />
                 <div className="two fields">
                     <Form.Input
@@ -166,6 +182,7 @@ function ProposalPage() {
                         onChange={(e) => {
                             setFormData(e);
                         }}
+                        error={errors.contact_email && { content: errors.contact_email, pointing: "below" }}
                     />
                     <Form.Input
                         required
@@ -175,13 +192,14 @@ function ProposalPage() {
                         onChange={(e) => {
                             setFormData(e);
                         }}
+                        error={errors.contact_phone && { content: errors.contact_phone, pointing: "below" }}
                     />
                 </div>
 
                 <Form.Field>
                     <label>Add additional PDF or image resources:</label>
                     {/* TODO: this filed does not get reset when a proposal is submitted */}
-                    <input
+                    <Form.Input
                         name="attachments"
                         type="file"
                         accept=".pdf, .png, .jpg, .jpeg"
@@ -189,6 +207,7 @@ function ProposalPage() {
                         onChange={(e) => {
                             setFormData(e);
                         }}
+                        error={errors.files && { content: errors.files, pointing: "below" }}
                     />
                 </Form.Field>
 
@@ -200,6 +219,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.background_info && { content: errors.background_info, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     required
@@ -209,6 +229,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.project_description && { content: errors.project_description, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     required
@@ -218,6 +239,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.project_scope && { content: errors.project_scope, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     required
@@ -227,6 +249,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.project_challenges && { content: errors.project_challenges, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     required
@@ -236,6 +259,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.constraints_assumptions && { content: errors.constraints_assumptions, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     label="Sponsor-Provided Resources"
@@ -244,6 +268,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.sponsor_provided_resources && { content: errors.sponsor_provided_resources, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.Input
                     label="Project Search Keywords"
@@ -252,6 +277,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.project_search_keywords && { content: errors.project_search_keywords, pointing: "below" }}
                 />
                 <Form.TextArea
                     required
@@ -261,6 +287,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.sponsor_deliverables && { content: errors.sponsor_deliverables, pointing: "below" }}
                 ></Form.TextArea>
                 <Form.TextArea
                     label="Proprietary Information"
@@ -269,6 +296,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.proprietary_info && { content: errors.proprietary_info, pointing: "below" }}
                 ></Form.TextArea>
 
                 <Divider section />
@@ -291,6 +319,7 @@ function ProposalPage() {
                             onChange={(e) => {
                                 setFormData(e);
                             }}
+                            error={errors.sponsor_avail_checked && { content: errors.sponsor_avail_checked, pointing: "below" }}
                         />
                         <label>I agree</label>
                     </div>
@@ -302,6 +331,7 @@ function ProposalPage() {
                     onChange={(e) => {
                         setFormData(e);
                     }}
+                    error={errors.sponsor_alternate_time && { content: errors.sponsor_alternate_time, pointing: "below" }}
                 />
 
                 <Divider section />
@@ -335,6 +365,7 @@ function ProposalPage() {
                             onChange={(e) => {
                                 setFormData(e);
                             }}
+                            error={errors.project_agreements_checked && { content: errors.project_agreements_checked, pointing: "below" }}
                         />
                         <label>I agree</label>
                     </div>
@@ -356,6 +387,7 @@ function ProposalPage() {
                         onChange={(e, { value }) => {
                             setFormDataSemanticUI(value, "assignment_of_rights");
                         }}
+                        error={errors.assignment_of_rights && { content: errors.assignment_of_rights, pointing: "below" }}
                     />
                     <p>
                         If a team is assigned to this project, all students on the team will sign a standard Student
@@ -375,6 +407,7 @@ function ProposalPage() {
                         onChange={(e, { value }) => {
                             setFormDataSemanticUI(value, "assignment_of_rights");
                         }}
+                        error={errors.assignment_of_rights && { content: errors.assignment_of_rights, pointing: "below" }}
                     />
                     <p>
                         If a team is assigned to this project, all students on the team will sign a standard Student
@@ -397,6 +430,7 @@ function ProposalPage() {
                         onChange={(e, { value }) => {
                             setFormDataSemanticUI(value, "assignment_of_rights");
                         }}
+                        error={errors.assignment_of_rights && { content: errors.assignment_of_rights, pointing: "below" }}
                     />
                     <p>
                         If a team is assigned to this project, all students on the team will sign a standard Student
