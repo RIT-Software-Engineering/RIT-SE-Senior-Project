@@ -126,7 +126,7 @@ export default function DashboardPage() {
     panes.reverse();
 
     return <>
-        <AdminView user={user} />
+        <AdminView />
         <Tab panes={panes} className="admin-menu" />
     </>;
 }

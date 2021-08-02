@@ -1,31 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Button, Dropdown, Label } from "semantic-ui-react";
-import { config } from '../util/constants';
+import { config, USERTYPES } from '../util/constants';
 import { SecureFetch } from '../util/secureFetch';
+import { UserContext } from "../util/UserContext";
 import _ from 'lodash';
 
-export default function AdminView(props) {
+export default function AdminView() {
 
   const [selectedUser, setSelectedUser] = useState();
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    SecureFetch(config.url.API_GET_ACTIVE_USERS)
-      .then((response) => response.json())
-      .then(users => {
-        let userMap = {};
-        users.forEach(user => {
-          if (user.system_id !== props?.user.user) {
-            userMap[user.system_id] = user;
-          }
-        });
-        setUsers(userMap);
-      })
-      .catch(err => {
-        console.error("Failed to fetch users for AdminView...this is probably to be expected", err);
-        setUsers([]);
-      })
-  }, [props?.user.user])
+    if (user.role === USERTYPES.ADMIN) {
+      SecureFetch(config.url.API_GET_ACTIVE_USERS)
+        .then((response) => response.json())
+        .then(users => {
+          let userMap = {};
+          users.forEach(user => {
+            if (user.system_id !== user.user) {
+              userMap[user.system_id] = user;
+            }
+          });
+          setUsers(userMap);
+        })
+        .catch(err => {
+          console.error("Failed to fetch users for AdminView...this is probably to be expected", err);
+          setUsers([]);
+        })
+    }
+  }, [user])
 
   const changeView = () => {// changes view for admin to another user
 
@@ -42,7 +46,7 @@ export default function AdminView(props) {
   }
 
   const renderButton = () => {
-    if (props.user?.isMock) {
+    if (user?.isMock) {
       return <Button
         secondary
         content="Sign out of mock user"
@@ -62,10 +66,10 @@ export default function AdminView(props) {
     />
   }
 
-  if (props.user?.isMock || props.user?.role === "admin") {
+  if (user?.isMock || user?.role === "admin") {
     return (
       <>
-        <h4 style={props.user?.isMock ? { backgroundColor: 'red' } : {}}>Currently signed in as: {props.user?.fname} {props.user?.lname} ({props.user?.user}) who is a "{props.user.role}"</h4>
+        <h4 style={user?.isMock ? { backgroundColor: 'red' } : {}}>Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"</h4>
         <Label pointing='right'>To view this page as a different user</Label>
         <Dropdown
           search
