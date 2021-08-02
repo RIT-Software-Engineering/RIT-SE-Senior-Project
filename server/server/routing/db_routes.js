@@ -544,7 +544,7 @@ module.exports = (db) => {
     db_router.patch(
         "/updateProposalStatus",
         [
-            CONFIG.authAdmin,
+            UserAuth.isAdmin,
             body("*").trim().escape().isJSON().isAlphanumeric(),
         ],
         (req, res) => {
@@ -565,7 +565,7 @@ module.exports = (db) => {
      *
      * NOTE: This route is unused and untested.
      */
-    db_router.get("/getProposalPdfNames", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res) => {
         fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
             if (err) {
                 res.status(500).send(err);
@@ -581,7 +581,7 @@ module.exports = (db) => {
 
     });
 
-    db_router.get("/getProposalPdf", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalPdf", UserAuth.isSignedIn, (req, res) => {
         if (req.query.project_id) {
             let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
             res.sendFile(path.join(__dirname, `../proposal_docs/${projectId}.pdf`));
@@ -609,7 +609,7 @@ module.exports = (db) => {
         }
     });
 
-    db_router.get("/getProposalAttachment", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalAttachment", UserAuth.isSignedIn, (req, res) => {
         if (req.query.project_id && req.query.name) {
             let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
             let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues

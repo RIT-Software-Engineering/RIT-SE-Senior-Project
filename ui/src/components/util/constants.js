@@ -8,7 +8,7 @@ export const config = {
         BASE_API_URL: BASE_API_URL,
         WWW: `${BASE_URL}/WWW`,
 
-        API_LOGIN: `${BASE_API_URL}/login`,
+        API_LOGIN: `${BASE_API_URL}/saml/login`,
 
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
