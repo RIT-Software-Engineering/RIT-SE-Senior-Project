@@ -6,7 +6,7 @@ export const config = {
     url: {
         BASE_URL: BASE_URL,
         BASE_API_URL: BASE_API_URL,
-        WWW: `${BASE_URL}/WWW`,
+        WWW: `${BASE_URL}/www`,
 
         API_LOGIN: `${BASE_API_URL}/saml/login`,
 
