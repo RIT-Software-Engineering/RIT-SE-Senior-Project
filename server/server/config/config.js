@@ -25,6 +25,7 @@ module.exports = {
         logoutPoint: "https://shibboleth.main.ad.rit.edu/logout.html",
         issuer: "https://seniorproject.se.rit.edu/saml",
         callback: "/saml/acs/consume",
+        identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
         options: {
             failureRedirect: "/",
             failureFlash: true,

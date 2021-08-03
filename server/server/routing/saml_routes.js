@@ -57,7 +57,7 @@ module.exports = (db) => {
     );
 
     saml_router.post(
-        "/login/callback",
+        "/acs/consume",
         passport.authenticate("saml", CONFIG.saml.options, (req, res, next) => {
             res.redirect("http://localhost:3000/dashboard");
         })
