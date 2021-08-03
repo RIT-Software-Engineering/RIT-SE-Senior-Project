@@ -34,6 +34,7 @@ const samlStrategy = new Strategy(
         logoutUrl: config.saml.logoutPoint,
         cert: fs.readFileSync(config.saml.cert, "utf-8"),
         privateKey: fs.readFileSync(config.saml.privateKey, "utf-8"),
+        identifierFormat: config.saml.identifierFormat,
     },
     (expressUser, done) => {
         console.log("expressUser", expressUser);
