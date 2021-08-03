@@ -20,7 +20,8 @@ module.exports = {
         ".csv",
     ],
     saml: {
-        cert: path.join(__dirname, "/seniorproject-key.pem"),
+        cert: path.join(__dirname, "/seniorproject-cert.pem"),
+        privateKey: path.join(__dirname, "/seniorproject-key.pem"),
         entryPoint: "https://shibboleth.main.ad.rit.edu/idp/profile/SAML2/Redirect/SSO",
         logoutPoint: "https://shibboleth.main.ad.rit.edu/logout.html",
         issuer: "https://seniorproject.se.rit.edu/saml",
