@@ -18,9 +18,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const bodyParser = require("body-parser");
 const fileupload = require("express-fileupload");
-const routing = require("./server/routing/index")(app);
 const cookieParser = require("cookie-parser");
 const { mockUser } = require("./server/routing/user_auth");
 // Constants
@@ -34,6 +32,7 @@ app.use(function (req, res, next) {
     // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     // Required for SSO authentication
+    // TODO: This may no longer be needed because of our cors policy lower down "credentials: true".
     res.header("Access-Control-Allow-Credentials", "true");
 
     next();
@@ -46,8 +45,8 @@ app.use(
     })
 );
 
-// Set up body parsing and file upload configurations
-app.use(bodyParser.urlencoded({ extended: true }));
+ // Set up body parsing and file upload configurations
+app.use(express.urlencoded({ extended: true })); // replaces bodyParser.urlencoded since bodyParser is depreciated
 app.use(cookieParser());
 app.use(express.json());
 app.use(
@@ -58,6 +57,8 @@ app.use(
 );
 app.use(mockUser);
 
+// This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
+const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
 

@@ -6,7 +6,7 @@ const CONFIG = require("../config/config");
 const session = require("express-session");
 const passport = require("passport");
 
-module.exports = (app, db) => {
+module.exports = (db) => {
 
     /** Parse the body of the request / Passport */
     saml_router.use(session(CONFIG.session));
@@ -48,21 +48,14 @@ module.exports = (app, db) => {
         });
     });
 
-    // SAML Routes
-    app.get(
+    saml_router.get(
         "/login",
-        passport.authenticate("saml", CONFIG.saml.options),
-        (req, res, next) => {
-            return res.redirect('https://seniorproject.se.rit.edu/dashboard');
-        }
+        passport.authenticate("saml", CONFIG.saml.options)
     );
 
-    app.post(
+    saml_router.post(
         "/acs/consume",
-        passport.authenticate("saml", CONFIG.saml.options),
-        (req, res, next) => {
-            return res.redirect('https://seniorproject.se.rit.edu/dashboard');
-        }
+        passport.authenticate("saml", CONFIG.saml.options)
     );
 
     return saml_router;
