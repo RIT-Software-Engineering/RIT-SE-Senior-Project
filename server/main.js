@@ -20,7 +20,7 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 const fileupload = require("express-fileupload");
-const routing = require("./server/routing/index");
+const routing = require("./server/routing/index")(app);
 const cookieParser = require("cookie-parser");
 const { mockUser } = require("./server/routing/user_auth");
 // Constants
