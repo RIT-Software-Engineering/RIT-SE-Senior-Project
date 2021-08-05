@@ -33,13 +33,13 @@ function Footer() {
                     </div>
                     <div className="column">
                         <h4>
-                            <i className="ui mail icon"></i> contact@seniorproject.se.rit.edu
+                            <i className="ui mail icon"></i> seniorprojects@se.rit.edu
                         </h4>
                     </div>
                 </div>
                 <div className="centered row">
                     <h5>
-                        <i className="ui icon copyright"></i> 2020 All Rights Reserved
+                        <i className="ui icon copyright"></i> Rochester Institute of Technology, All Rights Reserved
                     </h5>
                 </div>
             </div>
