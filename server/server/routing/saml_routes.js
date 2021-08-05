@@ -60,5 +60,19 @@ module.exports = (app, db) => {
         passport.authenticate("saml", CONFIG.saml.options)
     );
 
+
+    /**
+     * According to this qualtrics survey that I had to fill out for ITS to setup Shibboleth,
+     * logout is not supported by RIT's IdP. So all we do is terminate the session on our side.
+     * 
+     * https://rit.az1.qualtrics.com/jfe/form/SV_8weWD4lmxe826YR
+     */
+    app.get(
+        "/saml/logout", (req, res) => {
+            req.logout();
+            res.redirect(CONFIG.saml.logOutRedirect);
+        }
+    )
+
     return saml_router;
 }

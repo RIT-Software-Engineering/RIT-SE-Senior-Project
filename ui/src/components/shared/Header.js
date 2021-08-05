@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
 import TempSignInModalContent from "./TempSignInModalContent";
 import "../../css/header.css";
 import { config } from "../util/constants";
+import { UserContext } from "../util/UserContext";
 
 
 function Header() {
     const history = useHistory();
     const [visible, setVisible] = useState(false);
+    const { user } = useContext(UserContext);
+
+    const signInOutButtonText = Object.keys(user).length === 0 ? "RIT Login" : `Sign out, ${user.fname}`;
 
     const renderNavButtons = () => {
         return (
@@ -41,13 +45,13 @@ function Header() {
                     <button
                         className="ui button"
                         onClick={() => {
-                            window.location.replace(config.url.API_LOGIN);
+                            window.location.href = config.url.API_LOGIN;
                         }}
                     >
-                        SAML Sign In
+                        {signInOutButtonText}
                     </button>
                     <Modal
-                        trigger={<Button>Sign in/Sign Out</Button>}
+                        trigger={<Button>Dev Sign in/Sign Out</Button>}
                         header="Sign in/Sign Out"
                         content={{
                             content: <TempSignInModalContent />
@@ -95,15 +99,15 @@ function Header() {
                         <button
                             className="ui button"
                             onClick={() => {
-                                window.location.replace(config.url.API_LOGIN);
+                                window.location.href = config.url.API_LOGIN;
                             }}
                         >
-                            SAML Sign In
+                            {signInOutButtonText}
                         </button>
                     </Menu.Item>
                     <Menu.Item as="a">
                         <Modal
-                            trigger={<div>Sign in/Sign Out</div>}
+                            trigger={<div>Dev Sign in/Sign Out</div>}
                             header="Sign in/Sign Out"
                             content={{
                                 content: <TempSignInModalContent />
