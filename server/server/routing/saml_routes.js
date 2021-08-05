@@ -4,12 +4,18 @@ const saml_router = require("express").Router();
 const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
 const session = require("express-session");
+const MemoryStore = require('memorystore')(session);
 const passport = require("passport");
 
 module.exports = (app, db) => {
 
     /** Parse the body of the request / Passport */
-    app.use(session(CONFIG.session));
+    app.use(session({
+        store: new MemoryStore({
+            checkPeriod: CONFIG.maxSessionLength,
+        }),
+        ...CONFIG.session,
+    }));
     app.use(passport.initialize());
     app.use(passport.session());
 

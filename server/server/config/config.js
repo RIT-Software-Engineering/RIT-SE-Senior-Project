@@ -4,6 +4,8 @@
 
 const path = require('path');
 
+const MAX_SESSION_LENGTH = 7200000;    // 2 hours
+
 module.exports = {
     accepted_file_types: [
         ".pdf",
@@ -34,9 +36,11 @@ module.exports = {
             failureFlash: true,
         },
     },
+    maxSessionLength: MAX_SESSION_LENGTH,
     session: {
         resave: false,
         secret: "KevinWasHere",
         saveUninitialized: true,
+        cookie: { maxAge: MAX_SESSION_LENGTH },
     },
 };
