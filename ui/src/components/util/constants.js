@@ -7,6 +7,7 @@ export const config = {
         BASE_URL: BASE_URL,
         BASE_API_URL: BASE_API_URL,
         WWW: `${BASE_URL}/www`,
+        LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
 
         API_LOGIN: `${BASE_API_URL}/saml/login`,
         API_LOGOUT: `${BASE_API_URL}/saml/logout`,

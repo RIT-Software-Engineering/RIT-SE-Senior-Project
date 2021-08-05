@@ -22,7 +22,17 @@ function Header() {
     const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
     const signInOut = () => {
         if (signedIn) {
-            SecureFetch(config.url.API_LOGOUT);
+            SecureFetch(config.url.API_LOGOUT)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = config.url.LOGOUT_SUCCESS;
+                    } else {
+                        alert("Unknown error: Logout failed");
+                    }
+                }).catch(err => {
+                    alert("An error occurred");
+                    console.error(err);
+                })
         } else {
             window.location.href = config.url.API_LOGIN;
         }

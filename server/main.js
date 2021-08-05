@@ -4,6 +4,8 @@
  */
 
 "use strict";
+// Leave importing dotenv as the topmost thing
+require('dotenv').config();
 
 /**
  *
@@ -20,6 +22,7 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
+const config = require('./server/config/config');
 // Constants
 const port = 3001;
 
@@ -39,7 +42,7 @@ app.use(function (req, res, next) {
 app.use(
     cors({
         // TODO/FIXME: process.env.NODE_ENV is not set ever
-        origin: process.env.NODE_ENV === "production" ? "https://seniorproject.se.rit.edu" : "http://localhost:3000",
+        origin: process.env.BASE_URL || "http://localhost:3000",
         credentials: true,
     })
 );

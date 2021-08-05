@@ -69,7 +69,7 @@ module.exports = (app, db) => {
     app.get(
         "/saml/logout", (req, res) => {
             req.logout();
-            res.redirect(CONFIG.saml.logOutRedirect);
+            res.sendStatus(200);
         }
     )
 

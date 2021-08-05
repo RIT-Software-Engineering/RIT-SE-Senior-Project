@@ -33,7 +33,6 @@ module.exports = {
             failureRedirect: "/",
             failureFlash: true,
         },
-        logOutRedirect: "https://shibboleth.main.ad.rit.edu/logout.html",
     },
     session: {
         resave: false,
