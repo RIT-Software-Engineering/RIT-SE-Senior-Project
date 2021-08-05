@@ -31,10 +31,6 @@ const isCoachOrAdmin = (req, res, next) => {
 
 const mockUser = (req, res, next) => {
 
-    // TODO: DELETE THIS ONCE ACTUAL USERS EXIST ~~~~~~~~~~~~~~~~~~~~~
-    req.user = { system_id: req.cookies.user, type: req.cookies.type }
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     if (req.cookies.mockUser && testIsAdmin(req)) {
         req.user = {
             system_id: req.cookies.mockUser,
@@ -47,11 +43,11 @@ const mockUser = (req, res, next) => {
 }
 
 const testIsAdmin = (req) => {
-    return req.user.type === ROLES.ADMIN;
+    return req.user && req.user.type === ROLES.ADMIN;
 }
 
 const testIsCoach = (req) => {
-    return req.user.type === ROLES.COACH;
+    return req.user && req.user.type === ROLES.COACH;
 }
 
 module.exports = {

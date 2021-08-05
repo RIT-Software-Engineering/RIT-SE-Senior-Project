@@ -20,7 +20,6 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-const { mockUser } = require("./server/routing/user_auth");
 // Constants
 const port = 3001;
 
@@ -55,7 +54,6 @@ app.use(
         preserveExtension: true,
     })
 );
-app.use(mockUser);
 
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
 const routing = require("./server/routing/index");

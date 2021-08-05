@@ -6,14 +6,16 @@ const CONFIG = require("../config/config");
 const session = require("express-session");
 const passport = require("passport");
 
-module.exports = (db) => {
+module.exports = (app, db) => {
 
     /** Parse the body of the request / Passport */
-    saml_router.use(session(CONFIG.session));
-    saml_router.use(passport.initialize());
-    saml_router.use(passport.session());
+    app.use(session(CONFIG.session));
+    app.use(passport.initialize());
+    app.use(passport.session());
 
-    saml_router.get("/whoami", [UserAuth.isSignedIn], async (req, res) => {
+    app.use(UserAuth.mockUser);
+
+    app.get("/saml/whoami", [UserAuth.isSignedIn], async (req, res) => {
         const userPromise = db.query(`SELECT * FROM ${DB_CONFIG.tableNames.users} WHERE users.system_id = ?`, [req.user.system_id]);
         let mockPromise;
         if (req.user.mock) {
@@ -48,13 +50,13 @@ module.exports = (db) => {
         });
     });
 
-    saml_router.get(
-        "/login",
+    app.get(
+        "/saml/login",
         passport.authenticate("saml", CONFIG.saml.options)
     );
 
-    saml_router.post(
-        "/acs/consume",
+    app.post(
+        "/saml/acs/consume",
         passport.authenticate("saml", CONFIG.saml.options)
     );
 

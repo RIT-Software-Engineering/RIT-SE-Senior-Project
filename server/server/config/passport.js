@@ -2,27 +2,27 @@ const fs = require("fs");
 const passport = require("passport");
 const { Strategy } = require("passport-saml");
 const DBHandler = require("../database/db");
+const { SAML_ATTRIBUTES } = require("../consts");
 const config = require("./config");
 
-// Globals
 let db = new DBHandler();
 
-const savedUsers = [];
+// const savedUsers = [];
 
-passport.serializeUser((expressUser, done) => {
-    console.log("Serializing user", expressUser);
-    done(null, expressUser);
+passport.serializeUser((user, done) => {
+    console.log("Serializing user", user);
+    return done(null, user);
 });
 
-passport.deserializeUser((expressUser, done) => {
+passport.deserializeUser((user, done) => {
     // TODO: See if this is best practice or if there is another way to do this.
-    db.query("SELECT * FROM users WHERE system_id = ?", [expressUser.id]).then((user) => {
-        if (expressUser.user) {
-            expressUser.user.role = user.type;
-        }
-    });
-    console.log("Deserializing user", expressUser);
-    done(null, expressUser);
+    // db.query("SELECT * FROM users WHERE system_id = ?", [expressUser.id]).then((user) => {
+    //     if (expressUser.user) {
+    //         expressUser.user.role = user.type;
+    //     }
+    // });
+
+    return done(null, user);
 });
 
 const samlStrategy = new Strategy(
@@ -38,11 +38,21 @@ const samlStrategy = new Strategy(
         identifierFormat: config.saml.identifierFormat,
     },
     (expressUser, done) => {
-        console.log("expressUser", expressUser);
-        if (!savedUsers.includes(expressUser)) {
-            savedUsers.push(expressUser);
-        }
-        return done(null, expressUser);
+        db.query("SELECT * FROM users WHERE system_id = ? AND active = ''", [expressUser[SAML_ATTRIBUTES.uid]]).then((users) => {
+            console.log("USER FOUND IN DATABASE", users);
+            // if (expressUser.user) {
+            //     expressUser.user.role = user.type;
+            // }
+            if (users.length === 1) {
+                return done(null, users[0]);
+            }
+            return done("User not added to system yet or has been deactivated.")
+        }).catch((err) => {
+            return done(err);
+        });
+        // if (!savedUsers.includes(expressUser)) {
+        //     savedUsers.push(expressUser);
+        // }
     }
 )
 
