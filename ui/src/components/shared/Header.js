@@ -1,18 +1,32 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
 import TempSignInModalContent from "./TempSignInModalContent";
 import "../../css/header.css";
 import { config } from "../util/constants";
 import { UserContext } from "../util/UserContext";
-
+import { SecureFetch } from "../util/secureFetch";
 
 function Header() {
     const history = useHistory();
     const [visible, setVisible] = useState(false);
     const { user } = useContext(UserContext);
+    const [signedIn, setSignedIn] = useState(false);
 
-    const signInOutButtonText = Object.keys(user).length === 0 ? "RIT Login" : `Sign out, ${user.fname}`;
+    useEffect(() => {
+        // A user is considered signed in if the user object has a value
+        // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
+        setSignedIn(Object.keys(user).length !== 0);
+    }, [user]);
+
+    const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
+    const signInOut = () => {
+        if (signedIn) {
+            SecureFetch(config.url.API_LOGOUT);
+        } else {
+            window.location.href = config.url.API_LOGIN;
+        }
+    }
 
     const renderNavButtons = () => {
         return (
@@ -44,11 +58,9 @@ function Header() {
                     </button>
                     <button
                         className="ui button"
-                        onClick={() => {
-                            window.location.href = config.url.API_LOGIN;
-                        }}
+                        onClick={signInOut}
                     >
-                        {signInOutButtonText}
+                        {signInOutBtnText}
                     </button>
                     <Modal
                         trigger={<Button>Dev Sign in/Sign Out</Button>}
@@ -98,11 +110,9 @@ function Header() {
                     <Menu.Item as="a">
                         <button
                             className="ui button"
-                            onClick={() => {
-                                window.location.href = config.url.API_LOGIN;
-                            }}
+                            onClick={signInOut}
                         >
-                            {signInOutButtonText}
+                            {signInOutBtnText}
                         </button>
                     </Menu.Item>
                     <Menu.Item as="a">
