@@ -961,10 +961,8 @@ module.exports = (db) => {
 
     db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => {
 
-        // Students can't access other team's timelines but coaches and admins can access anyone's timelines
-        const accessCheck = await db.query("SELECT project, type FROM users WHERE users.system_id = ?", [req.user.system_id]);
-        if (accessCheck.filter((item) => item.project === req.query.project_id).length === 0 && req.user.type !== ROLES.ADMIN && req.user.type !== ROLES.COACH) {
-            return res.sendStatus(401);
+        if (req.user.type === ROLES.STUDENT && req.query.project_id !== req.user.project) {
+            return res.status(401).send("Trying to access project that is not your own");
         }
 
         let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
@@ -1002,7 +1000,6 @@ module.exports = (db) => {
 
         switch (req.user.type) {
             case ROLES.STUDENT:
-                // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
                 // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
                 //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
@@ -1011,8 +1008,8 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                     FROM action_log
                         JOIN actions ON actions.action_id = action_log.action_template
-                        WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)`;
-                params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id];
+                        WHERE action_log.action_template = ? AND action_log.project = ?`;
+                params = [req.query.action_id, req.user.project];
                 break;
             case ROLES.COACH:
             case ROLES.ADMIN:
@@ -1051,9 +1048,6 @@ module.exports = (db) => {
 
         switch (req.user.type) {
             case ROLES.STUDENT:
-                const project_id = (await db.query(`SELECT project FROM users WHERE users.system_id = '${req.user.system_id}'`))[0].project;
-
-                // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                         actions.action_target, actions.action_title, actions.semester,
                         projects.display_name, projects.title,
@@ -1062,16 +1056,16 @@ module.exports = (db) => {
                     FROM action_log
                         JOIN actions ON actions.action_id = action_log.action_template
                         JOIN projects ON projects.project_id = action_log.project
-                        WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                        WHERE action_log.project = ?
                         AND action_log.oid NOT IN (SELECT oid FROM action_log
                             ORDER BY submission_datetime DESC LIMIT ?)
                         ORDER BY submission_datetime DESC LIMIT ?`;
-                queryParams = [project_id, project_id, req.user.system_id, offset || 0, resultLimit || 0];
+                queryParams = [req.user.project, offset || 0, resultLimit || 0];
                 getActionLogCount = `SELECT COUNT(*) FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
-                    WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                    WHERE action_log.project = ?
                     AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
-                countParams = [project_id, project_id, req.user.system_id, project_id];
+                countParams = [req.user.project, req.user.project];
                 break;
             case ROLES.COACH:
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
