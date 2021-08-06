@@ -47,11 +47,14 @@ module.exports = (app, db) => {
             type: user.type,
             fname: user.fname,
             lname: user.lname,
+            semester_group: user.semester_group,
+
             mock: {     // TODO: It might make sense to change how this works and how it interacts with user_auth.mockUser in the future once Shibboleth is working.
                 system_id: mockUser.system_id,
                 type: mockUser.type,
                 fname: mockUser.fname,
                 lname: mockUser.lname,
+                semester_group: mockUser.semester_group,
             },
         });
     });

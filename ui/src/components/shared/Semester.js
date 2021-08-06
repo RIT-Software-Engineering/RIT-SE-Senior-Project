@@ -23,7 +23,7 @@ export default function Semester(props) {
             <Announcements announcements={announcements} semesterName={props.semesterName} />
             <br />
         </>}
-        {props.projects?.map((timelineElementData, idx) => {
+        {!props.noProjects && props.projects?.map((timelineElementData, idx) => {
             if (idx !== 0) {
                 return <React.Fragment key={timelineElementData.project_id}>
                     <Divider />

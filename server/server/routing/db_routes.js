@@ -1296,24 +1296,25 @@ module.exports = (db) => {
     db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
 
         let filter = "";
-        let semesterCheck = "";
-        let params = [req.query.semester];
         if (req.user.type === ROLES.STUDENT) {
+
+            if (req.query.semester !== req.user.semester_group) {
+                return res.status(401).send("Students can not access announcements that are not for your project");
+            }
+
             filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`
             // Note: Since we only do this check for students, coaches can technically hack the request to see announcements for other semesters.
             // Unfortunately, coaches don't inherently have a semester like students do
             // and 1am Kevin can't think of another way of ensuring that a coach isn't lying to us about their semester ...but idk what they would gain form doing that sooo ima just leave it for now
-            semesterCheck = `AND ? IN (SELECT users.semester_group from users WHERE users.system_id = '${req.user.system_id}')`
-            params = [req.query.semester, req.query.semester];
         }
 
         let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, page_html
             FROM actions
-            WHERE actions.date_deleted = '' AND actions.semester = ? ${semesterCheck}
+            WHERE actions.date_deleted = '' AND actions.semester = ?
                 AND (actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date < date('now') AND actions.due_date > date('now'))
                 ${filter}`;
 
-        db.query(getTimelineActions, params)
+        db.query(getTimelineActions, [req.query.semester])
             .then((values) => {
                 res.send(values);
             })

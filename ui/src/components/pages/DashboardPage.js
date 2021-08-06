@@ -30,6 +30,7 @@ export default function DashboardPage() {
                     role: responseUser.type,
                     fname: responseUser.fname,
                     lname: responseUser.lname,
+                    semester_group: responseUser.semester_group,
                     isMock: Object.keys(responseUser.mock).length !== 0,
                     mockUser: responseUser.mock,
                 });
