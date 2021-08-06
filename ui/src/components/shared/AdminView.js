@@ -17,9 +17,9 @@ export default function AdminView() {
         .then((response) => response.json())
         .then(users => {
           let userMap = {};
-          users.forEach(user => {
-            if (user.system_id !== user.user) {
-              userMap[user.system_id] = user;
+          users.forEach(dbUser => {
+            if (dbUser.system_id !== user.user) {
+              userMap[dbUser.system_id] = dbUser;
             }
           });
           setUsers(userMap);
