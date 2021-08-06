@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
-import TempSignInModalContent from "./TempSignInModalContent";
+import DevSignInModalContent from "./DevSignInModalContent";
 import "../../css/header.css";
 import { config } from "../util/constants";
 import { UserContext } from "../util/UserContext";
@@ -76,7 +76,7 @@ function Header() {
                             trigger={<Button>Dev Sign in/Sign Out</Button>}
                             header="Sign in/Sign Out"
                             content={{
-                                content: <TempSignInModalContent />
+                                content: <DevSignInModalContent />
                             }}
                             actions={["Nevermind..."]}
                         />}
@@ -129,7 +129,7 @@ function Header() {
                                 trigger={<div>Dev Sign in/Sign Out</div>}
                                 header="Sign in/Sign Out"
                                 content={{
-                                    content: <TempSignInModalContent />
+                                    content: <DevSignInModalContent />
                                 }}
                                 actions={["Nevermind..."]}
                             />

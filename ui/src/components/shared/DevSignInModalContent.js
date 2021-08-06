@@ -6,7 +6,7 @@ import { SecureFetch } from '../util/secureFetch';
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
  */
-export default function TempSignInModalContent() {
+export default function DevSignInModalContent() {
     const history = useHistory();
     const [users, setUsers] = useState([]);
     const selectedUserIdx = useRef(null);
