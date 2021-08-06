@@ -117,7 +117,7 @@ function Header() {
                     >
                         Sponsor a Project
                     </Menu.Item>
-                    {process.env.NODE_ENV !== 'production' ?
+                    {process.env.NODE_ENV === 'production' ?
                         <Menu.Item
                             as="a"
                             onClick={signInOut}
