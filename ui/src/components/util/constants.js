@@ -59,6 +59,12 @@ export const config = {
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
+
+
+
+
+        // *** DEVELOPMENT ONLY ***
+        DEV_ONLY_API_GET_ALL_USERS: `${BASE_API_URL}/db/DevOnlyGetAllUsersForLogin`,
     },
 };
 

@@ -39,8 +39,14 @@ export default function AdminView() {
     }
 
     //cookie stuff
-    document.cookie = `mockUser=${users[selectedUser].system_id}`;
-    document.cookie = `mockType=${users[selectedUser].type}`;
+    document.cookie = `mock_system_id=${users[selectedUser].system_id}`;
+    document.cookie = `mock_fname=${users[selectedUser].fname}`;
+    document.cookie = `mock_lname=${users[selectedUser].lname}`;
+    document.cookie = `mock_email=${users[selectedUser].email}`;
+    document.cookie = `mock_type=${users[selectedUser].type}`;
+    document.cookie = `mock_semester_group=${users[selectedUser].semester_group}`;
+    document.cookie = `mock_project=${users[selectedUser].project}`;
+    document.cookie = `mock_active=${users[selectedUser].active}`;
     //refresh as new user
     window.location.reload();
   }
@@ -51,8 +57,14 @@ export default function AdminView() {
         secondary
         content="Sign out of mock user"
         onClick={() => {
-          document.cookie = `mockUser=;max-age=0`;
-          document.cookie = `mockType=;max-age=0`;
+          document.cookie = `mock_system_id=;max-age=0`;
+          document.cookie = `mock_fname=;max-age=0`;
+          document.cookie = `mock_lname=;max-age=0`;
+          document.cookie = `mock_email=;max-age=0`;
+          document.cookie = `mock_type=;max-age=0`;
+          document.cookie = `mock_semester_group=;max-age=0`;
+          document.cookie = `mock_project=;max-age=0`;
+          document.cookie = `mock_active=;max-age=0`;
           window.location.reload();
         }}
       />

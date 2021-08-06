@@ -41,7 +41,6 @@ app.use(function (req, res, next) {
 });
 app.use(
     cors({
-        // TODO/FIXME: process.env.NODE_ENV is not set ever
         origin: process.env.BASE_URL || "http://localhost:3000",
         credentials: true,
     })

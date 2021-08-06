@@ -1,31 +1,52 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
+import { config } from '../util/constants';
+import { SecureFetch } from '../util/secureFetch';
 
 /**
- * NOTE: THIS SHOULD BE DELETED AND NO LONGER USED ONCE ACTUAL
- * SIGNING IN WORKS VIA SHIBBOLETH
+ * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
  */
 export default function TempSignInModalContent() {
-    const userName = useRef(null);
-    const role = useRef(null)
     const history = useHistory();
+    const [users, setUsers] = useState([]);
+    const selectedUserIdx = useRef(null);
+
+    useEffect(() => {
+        if (process.env.NODE_ENV !== 'production') {
+            SecureFetch(config.url.DEV_ONLY_API_GET_ALL_USERS)
+                .then(response => response.json())
+                .then(users => {
+                    setUsers(users)
+                })
+        }
+    }, [])
+
     return (
         <div>
-            Username: <br /><input ref={userName} />
-            <br />
-            Role : <br /><select ref={role} >
-                <option value="admin">Admin</option>
-                <option value="coach">Coach</option>
-                <option value="student">Student</option>
+            <h1 style={{ color: "red" }}>FOR DEVELOPMENT PURPOSES ONLY</h1>
+            <p><b>Note:</b> If you see an alert when signing in, this is fine and can be ignored. It only happens in dev because we don't have RIT's login.</p>
+            Sign in as {' '}
+            <select ref={selectedUserIdx}>
+                {users.map((user, idx) => <option value={idx} key={idx}>{`${user.fname} ${user.lname} (${user.system_id})`}</option>)}
             </select>
             <br /><br /><br />
             <button onClick={() => {
-                document.cookie = `user=${userName.current.value}`
-                document.cookie = `type=${role.current.value}`
+                const user = users[selectedUserIdx.current.value];
+
+                document.cookie = `system_id=${user.system_id}`;
+                document.cookie = `fname=${user.fname}`;
+                document.cookie = `lname=${user.lname}`;
+                document.cookie = `email=${user.email}`;
+                document.cookie = `type=${user.type}`;
+                document.cookie = `semester_group=${user.semester_group}`;
+                document.cookie = `project=${user.project}`;
+                document.cookie = `active=${user.active}`;
+
                 // Simulate redirect from Shibboleth
                 history.push("/dashboard");
                 window.location.reload();
             }}>Sign In</button>
+            {' '}
             <button onClick={() => {
                 // Delete all cookies
                 let cookies = document.cookie.split(";");

@@ -23,8 +23,19 @@ const ACTION_TARGETS = {
 };
 
 // Routes
-
 module.exports = (db) => {
+
+    /**
+     * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
+     * 
+     * THIS IS USED BY THE DEVELOPMENT LOGIN AND SHOULD NOT BE USED FOR ANYTHING ELSE
+     */
+    if (process.env.NODE_ENV !== 'production') {
+        // gets all users
+        db_router.get("/DevOnlyGetAllUsersForLogin", (req, res) => {
+            db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then((users) => res.send(users));
+        });
+    }
 
     db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
         db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
@@ -114,9 +125,10 @@ module.exports = (db) => {
     });
 
 
-    // gets all users
+    // NOTE: This is currently used for getting user for AdminView to mock users, however, I feel that this network request will get quite large
+    // as we add about 100 users every semester.
     db_router.get("/getActiveUsers", [UserAuth.isAdmin], (req, res) => {
-        let query = `SELECT system_id, fname, lname, type
+        let query = `SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES}
             FROM users
             WHERE active = ''`;
         db.query(query).then((users) => res.send(users));

@@ -50,14 +50,14 @@ function Header() {
                     >
                         Home
                     </button>
-                    <button
+                    {signedIn && <button
                         className="ui button"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </button>
+                    </button>}
                     <button
                         className="ui button"
                         onClick={() => {
@@ -66,20 +66,20 @@ function Header() {
                     >
                         Sponsor a Project
                     </button>
-                    <button
+                    {process.env.NODE_ENV === 'production' ? <button
                         className="ui button"
                         onClick={signInOut}
                     >
                         {signInOutBtnText}
                     </button>
-                    <Modal
-                        trigger={<Button>Dev Sign in/Sign Out</Button>}
-                        header="Sign in/Sign Out"
-                        content={{
-                            content: <TempSignInModalContent />
-                        }}
-                        actions={["Nevermind..."]}
-                    />
+                        : <Modal
+                            trigger={<Button>Dev Sign in/Sign Out</Button>}
+                            header="Sign in/Sign Out"
+                            content={{
+                                content: <TempSignInModalContent />
+                            }}
+                            actions={["Nevermind..."]}
+                        />}
                 </div>
                 <div id="hamburger-menu">
                     <Button icon onClick={() => setVisible(true)}><Icon name="bars" /></Button>
@@ -101,14 +101,14 @@ function Header() {
                     >
                         Home
                     </Menu.Item>
-                    <Menu.Item
+                    {signedIn && <Menu.Item
                         as="a"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </Menu.Item>
+                    </Menu.Item>}
                     <Menu.Item
                         as="a"
                         onClick={() => {
@@ -117,24 +117,23 @@ function Header() {
                     >
                         Sponsor a Project
                     </Menu.Item>
-                    <Menu.Item as="a">
-                        <button
-                            className="ui button"
+                    {process.env.NODE_ENV !== 'production' ?
+                        <Menu.Item
+                            as="a"
                             onClick={signInOut}
                         >
                             {signInOutBtnText}
-                        </button>
                     </Menu.Item>
-                    <Menu.Item as="a">
-                        <Modal
-                            trigger={<div>Dev Sign in/Sign Out</div>}
-                            header="Sign in/Sign Out"
-                            content={{
-                                content: <TempSignInModalContent />
-                            }}
-                            actions={["Nevermind..."]}
-                        />
-                    </Menu.Item>
+                        : <Menu.Item as="a">
+                            <Modal
+                                trigger={<div>Dev Sign in/Sign Out</div>}
+                                header="Sign in/Sign Out"
+                                content={{
+                                    content: <TempSignInModalContent />
+                                }}
+                                actions={["Nevermind..."]}
+                            />
+                        </Menu.Item>}
                 </Sidebar>
             </>
         );

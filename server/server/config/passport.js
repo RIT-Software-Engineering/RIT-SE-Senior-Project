@@ -2,26 +2,19 @@ const fs = require("fs");
 const passport = require("passport");
 const { Strategy } = require("passport-saml");
 const DBHandler = require("../database/db");
-const { SAML_ATTRIBUTES } = require("../consts");
+const { SAML_ATTRIBUTES, SIGN_IN_SELECT_ATTRIBUTES } = require("../consts");
 const config = require("./config");
 
 let db = new DBHandler();
 
-// const savedUsers = [];
-
+// TODO: It seems that best practice is to not store the whole user when serializing the data but to instead store the user's id and then when deserializing the user, find the user by their id.
+// Ideally, you wouldn't want to find the id in the deserialize by doing a db request, since deserialize happens per each network request. So ideally, you'd want to do this in some O(1) lookup.
+// But hey, this seems to work for now so I'm going to leave it.
 passport.serializeUser((user, done) => {
-    console.log("Serializing user", user);
     return done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-    // TODO: See if this is best practice or if there is another way to do this.
-    // db.query("SELECT * FROM users WHERE system_id = ?", [expressUser.id]).then((user) => {
-    //     if (expressUser.user) {
-    //         expressUser.user.role = user.type;
-    //     }
-    // });
-
     return done(null, user);
 });
 
@@ -38,11 +31,7 @@ const samlStrategy = new Strategy(
         identifierFormat: config.saml.identifierFormat,
     },
     (expressUser, done) => {
-        db.query("SELECT * FROM users WHERE system_id = ? AND active = ''", [expressUser[SAML_ATTRIBUTES.uid]]).then((users) => {
-            console.log("USER FOUND IN DATABASE", users);
-            // if (expressUser.user) {
-            //     expressUser.user.role = user.type;
-            // }
+        db.query(`SELECT ${SIGN_IN_SELECT_ATTRIBUTES} FROM users WHERE system_id = ? AND active = ''`, [expressUser[SAML_ATTRIBUTES.uid]]).then((users) => {
             if (users.length === 1) {
                 return done(null, users[0]);
             }
@@ -50,9 +39,6 @@ const samlStrategy = new Strategy(
         }).catch((err) => {
             return done(err);
         });
-        // if (!savedUsers.includes(expressUser)) {
-        //     savedUsers.push(expressUser);
-        // }
     }
 )
 
