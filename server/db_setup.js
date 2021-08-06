@@ -88,6 +88,9 @@ function populateDummyData() {
 async function redeployDatabase() {
     try {
         console.log("Starting database redeploy");
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error("TRYING TO RESET DATABASE ON THE PRODUCTION SERVER, COMMENT OUT THIS CHECK TO RESET DATABASE ON PRODUCTION");
+        }
         await dropAllTables()
         await createAllTables()
         await populateDummyData()

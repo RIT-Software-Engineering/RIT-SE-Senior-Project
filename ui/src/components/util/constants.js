@@ -6,7 +6,11 @@ export const config = {
     url: {
         BASE_URL: BASE_URL,
         BASE_API_URL: BASE_API_URL,
-        WWW: `${BASE_URL}/WWW`,
+        WWW: `${BASE_URL}/www`,
+        LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
+
+        API_LOGIN: `${BASE_API_URL}/saml/login`,
+        API_LOGOUT: `${BASE_API_URL}/saml/logout`,
 
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
@@ -55,6 +59,12 @@ export const config = {
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
+
+
+
+
+        // *** DEVELOPMENT ONLY ***
+        DEV_ONLY_API_GET_ALL_USERS: `${BASE_API_URL}/db/DevOnlyGetAllUsersForLogin`,
     },
 };
 

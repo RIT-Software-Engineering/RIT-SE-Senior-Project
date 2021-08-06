@@ -8,7 +8,7 @@ const path = require("path");
 const moment = require("moment");
 
 const DB_CONFIG = require("../database/db_config");
-const CONFIG = require("../config");
+const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
 const { ROLES } = require("../consts");
@@ -23,8 +23,19 @@ const ACTION_TARGETS = {
 };
 
 // Routes
-
 module.exports = (db) => {
+
+    /**
+     * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
+     * 
+     * THIS IS USED BY THE DEVELOPMENT LOGIN AND SHOULD NOT BE USED FOR ANYTHING ELSE
+     */
+    if (process.env.NODE_ENV !== 'production') {
+        // gets all users
+        db_router.get("/DevOnlyGetAllUsersForLogin", (req, res) => {
+            db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then((users) => res.send(users));
+        });
+    }
 
     db_router.get("/selectAllSponsorInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
         db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
@@ -114,9 +125,10 @@ module.exports = (db) => {
     });
 
 
-    // gets all users
+    // NOTE: This is currently used for getting user for AdminView to mock users, however, I feel that this network request will get quite large
+    // as we add about 100 users every semester.
     db_router.get("/getActiveUsers", [UserAuth.isAdmin], (req, res) => {
-        let query = `SELECT system_id, fname, lname, type
+        let query = `SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES}
             FROM users
             WHERE active = ''`;
         db.query(query).then((users) => res.send(users));
@@ -544,7 +556,7 @@ module.exports = (db) => {
     db_router.patch(
         "/updateProposalStatus",
         [
-            CONFIG.authAdmin,
+            UserAuth.isAdmin,
             body("*").trim().escape().isJSON().isAlphanumeric(),
         ],
         (req, res) => {
@@ -565,7 +577,7 @@ module.exports = (db) => {
      *
      * NOTE: This route is unused and untested.
      */
-    db_router.get("/getProposalPdfNames", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res) => {
         fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
             if (err) {
                 res.status(500).send(err);
@@ -578,9 +590,10 @@ module.exports = (db) => {
 
             res.send(fileLinks);
         });
+
     });
 
-    db_router.get("/getProposalPdf", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalPdf", UserAuth.isSignedIn, (req, res) => {
         if (req.query.project_id) {
             let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
             res.sendFile(path.join(__dirname, `../proposal_docs/${projectId}.pdf`));
@@ -608,7 +621,7 @@ module.exports = (db) => {
         }
     });
 
-    db_router.get("/getProposalAttachment", CONFIG.authAdmin, (req, res) => {
+    db_router.get("/getProposalAttachment", UserAuth.isSignedIn, (req, res) => {
         if (req.query.project_id && req.query.name) {
             let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
             let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
@@ -948,10 +961,8 @@ module.exports = (db) => {
 
     db_router.get("/getTimelineActions", [UserAuth.isSignedIn], async (req, res) => {
 
-        // Students can't access other team's timelines but coaches and admins can access anyone's timelines
-        const accessCheck = await db.query("SELECT project, type FROM users WHERE users.system_id = ?", [req.user.system_id]);
-        if (accessCheck.filter((item) => item.project === req.query.project_id).length === 0 && req.user.type !== ROLES.ADMIN && req.user.type !== ROLES.COACH) {
-            return res.sendStatus(401);
+        if (req.user.type === ROLES.STUDENT && req.query.project_id !== req.user.project) {
+            return res.status(401).send("Trying to access project that is not your own");
         }
 
         let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
@@ -989,7 +1000,6 @@ module.exports = (db) => {
 
         switch (req.user.type) {
             case ROLES.STUDENT:
-                // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
                 // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
                 //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
@@ -998,8 +1008,8 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                     FROM action_log
                         JOIN actions ON actions.action_id = action_log.action_template
-                        WHERE action_log.action_template = ? AND action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)`;
-                params = [req.query.action_id, req.query.project_id, req.query.project_id, req.user.system_id];
+                        WHERE action_log.action_template = ? AND action_log.project = ?`;
+                params = [req.query.action_id, req.user.project];
                 break;
             case ROLES.COACH:
             case ROLES.ADMIN:
@@ -1038,9 +1048,6 @@ module.exports = (db) => {
 
         switch (req.user.type) {
             case ROLES.STUDENT:
-                const project_id = (await db.query(`SELECT project FROM users WHERE users.system_id = '${req.user.system_id}'`))[0].project;
-
-                // AND ? in (SELECT users.project FROM users WHERE users.system_id = ?) <-- This is done so that users can't just change the network request to see other team's submissions
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                         actions.action_target, actions.action_title, actions.semester,
                         projects.display_name, projects.title,
@@ -1049,16 +1056,16 @@ module.exports = (db) => {
                     FROM action_log
                         JOIN actions ON actions.action_id = action_log.action_template
                         JOIN projects ON projects.project_id = action_log.project
-                        WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                        WHERE action_log.project = ?
                         AND action_log.oid NOT IN (SELECT oid FROM action_log
                             ORDER BY submission_datetime DESC LIMIT ?)
                         ORDER BY submission_datetime DESC LIMIT ?`;
-                queryParams = [project_id, project_id, req.user.system_id, offset || 0, resultLimit || 0];
+                queryParams = [req.user.project, offset || 0, resultLimit || 0];
                 getActionLogCount = `SELECT COUNT(*) FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
-                    WHERE action_log.project = ? AND ? IN (SELECT users.project FROM users WHERE users.system_id = ?)
+                    WHERE action_log.project = ?
                     AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
-                countParams = [project_id, project_id, req.user.system_id, project_id];
+                countParams = [req.user.project, req.user.project];
                 break;
             case ROLES.COACH:
                 getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
@@ -1289,24 +1296,25 @@ module.exports = (db) => {
     db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
 
         let filter = "";
-        let semesterCheck = "";
-        let params = [req.query.semester];
         if (req.user.type === ROLES.STUDENT) {
+
+            if (req.query.semester !== req.user.semester_group) {
+                return res.status(401).send("Students can not access announcements that are not for your project");
+            }
+
             filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`
             // Note: Since we only do this check for students, coaches can technically hack the request to see announcements for other semesters.
             // Unfortunately, coaches don't inherently have a semester like students do
             // and 1am Kevin can't think of another way of ensuring that a coach isn't lying to us about their semester ...but idk what they would gain form doing that sooo ima just leave it for now
-            semesterCheck = `AND ? IN (SELECT users.semester_group from users WHERE users.system_id = '${req.user.system_id}')`
-            params = [req.query.semester, req.query.semester];
         }
 
         let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, page_html
             FROM actions
-            WHERE actions.date_deleted = '' AND actions.semester = ? ${semesterCheck}
+            WHERE actions.date_deleted = '' AND actions.semester = ?
                 AND (actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date < date('now') AND actions.due_date > date('now'))
                 ${filter}`;
 
-        db.query(getTimelineActions, params)
+        db.query(getTimelineActions, [req.query.semester])
             .then((values) => {
                 res.send(values);
             })

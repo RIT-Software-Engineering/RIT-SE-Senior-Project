@@ -4,6 +4,8 @@
  */
 
 "use strict";
+// Leave importing dotenv as the topmost thing
+require('dotenv').config();
 
 /**
  *
@@ -18,32 +20,34 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const bodyParser = require("body-parser");
 const fileupload = require("express-fileupload");
-const routing = require("./server/routing/index");
 const cookieParser = require("cookie-parser");
-const { mockUser } = require("./server/routing/user_auth");
+const config = require('./server/config/config');
 // Constants
 const port = 3001;
 
 // Setup CORS policies
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES
 // Basic setup found here: https://www.positronx.io/express-cors-tutorial/
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
+app.use(function (req, res, next) {
+    // res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    // Required for SSO authentication
+    // TODO: This may no longer be needed because of our cors policy lower down "credentials: true".
+    res.header("Access-Control-Allow-Credentials", "true");
+
+    next();
+});
 app.use(
     cors({
-        // TODO/FIXME: process.env.NODE_ENV is not set ever
-        origin: process.env.NODE_ENV === "production" ? "https://seniorproject.se.rit.edu" : "http://localhost:3000",
+        origin: process.env.BASE_URL || "http://localhost:3000",
         credentials: true,
     })
 );
 
-// Set up body parsing and file upload configurations
-app.use(bodyParser.urlencoded({ extended: true }));
+ // Set up body parsing and file upload configurations
+app.use(express.urlencoded({ extended: true })); // replaces bodyParser.urlencoded since bodyParser is depreciated
 app.use(cookieParser());
 app.use(express.json());
 app.use(
@@ -52,8 +56,9 @@ app.use(
         preserveExtension: true,
     })
 );
-app.use(mockUser);
 
+// This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
+const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
 

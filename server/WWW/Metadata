@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="https://seniorproject.se.rit.edu/saml" ID="https___seniorproject_se_rit_edu_saml">
+  <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:AssertionConsumerService index="1" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://seniorproject.se.rit.edu/saml/acs/consume"/>
+    <md:Extensions>
+      <init:RequestInitiator xmlns:init="urn:oasis:names:tc:SAML:profiles:SSO:request-init" Binding="urn:oasis:names:tc:SAML:profiles:SSO:request-init" Location="https://seniorproject.se.rit.edu/saml/login"/>
+    </md:Extensions> 
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://seniorproject.se.rit.edu/saml/sls/Redirect"/>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://seniorproject.se.rit.edu/saml/sls/POST"/>
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:KeyName>seniorproject.se.rit.edu</ds:KeyName>
+        <ds:X509Data>
+          <ds:X509Certificate>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
+            ng==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:KeyName>seniorproject.se.rit.edu</ds:KeyName>
+        <ds:X509Data>
+            <ds:X509Certificate>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
+              ng==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+  </md:SPSSODescriptor>
+</md:EntityDescriptor>
+

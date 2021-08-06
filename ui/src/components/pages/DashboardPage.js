@@ -30,6 +30,7 @@ export default function DashboardPage() {
                     role: responseUser.type,
                     fname: responseUser.fname,
                     lname: responseUser.lname,
+                    semester_group: responseUser.semester_group,
                     isMock: Object.keys(responseUser.mock).length !== 0,
                     mockUser: responseUser.mock,
                 });
@@ -126,7 +127,7 @@ export default function DashboardPage() {
     panes.reverse();
 
     return <>
-        <AdminView user={user} />
+        <AdminView />
         <Tab panes={panes} className="admin-menu" />
     </>;
 }

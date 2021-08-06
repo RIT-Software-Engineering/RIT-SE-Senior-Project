@@ -10,23 +10,31 @@ const noSemesterStr = "No Semester";
 
 export default function TimeLinesView() {
     const [timelines, setTimelines] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [activeSemesters, setActiveSemesters] = useState({});
-    const userContext = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         SecureFetch(config.url.API_GET_ACTIVE_TIMELINES)
             .then((response) => response.json())
             .then((timelinesData) => {
                 setTimelines(timelinesData);
+                setLoading(false);
             })
             .catch((error) => {
+                setLoading(false);
                 alert("Failed to get timeline data" + error);
             });
     }, []);
 
+    // If student has a semester but no projects, they can still see the semester's announcements
+    // FIXME: This is kind of hacky, and I recommend implementing a better solution in the future.
+    if (!loading && timelines.length === 0 && user?.role === USERTYPES.STUDENT && user?.semester_group) {
+        return <Semester noProjects key="announcements" projects={[{ semester_id: user.semester_group }]} />
+    }
+
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
-
         if (timeline.semester_id === null || timeline.semester_id === undefined) {
             timeline.semester_id = noSemesterStr;
             timeline.semester_name = noSemesterStr;
@@ -63,12 +71,16 @@ export default function TimeLinesView() {
                     semester_id: semesterData[0]?.semester_id,
                 },
             ];
-            if (userContext.user?.role === USERTYPES.STUDENT) {
+            if (user?.role === USERTYPES.STUDENT) {
                 return semester[0].content?.content;
             }
             return <Accordion fluid styled panels={semester} key={idx} onTitleClick={handleTitleClick} />;
         });
     };
+
+    if (loading) {
+        return "Loading...";
+    }
 
     return generateTimeLines();
 }

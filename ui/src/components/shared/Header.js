@@ -1,13 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
-import TempSignInModalContent from "./TempSignInModalContent";
+import DevSignInModalContent from "./DevSignInModalContent";
 import "../../css/header.css";
-
+import { config } from "../util/constants";
+import { UserContext } from "../util/UserContext";
+import { SecureFetch } from "../util/secureFetch";
 
 function Header() {
     const history = useHistory();
     const [visible, setVisible] = useState(false);
+    const { user } = useContext(UserContext);
+    const [signedIn, setSignedIn] = useState(false);
+
+    useEffect(() => {
+        // A user is considered signed in if the user object has a value
+        // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
+        setSignedIn(Object.keys(user).length !== 0);
+    }, [user]);
+
+    const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
+    const signInOut = () => {
+        if (signedIn) {
+            SecureFetch(config.url.API_LOGOUT)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = config.url.LOGOUT_SUCCESS;
+                    } else {
+                        alert("Unknown error: Logout failed");
+                    }
+                }).catch(err => {
+                    alert("An error occurred");
+                    console.error(err);
+                })
+        } else {
+            window.location.href = config.url.API_LOGIN;
+        }
+    }
 
     const renderNavButtons = () => {
         return (
@@ -21,14 +50,14 @@ function Header() {
                     >
                         Home
                     </button>
-                    <button
+                    {signedIn && <button
                         className="ui button"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </button>
+                    </button>}
                     <button
                         className="ui button"
                         onClick={() => {
@@ -37,14 +66,20 @@ function Header() {
                     >
                         Sponsor a Project
                     </button>
-                    <Modal
-                        trigger={<Button>Sign in/Sign Out</Button>}
-                        header="Sign in/Sign Out"
-                        content={{
-                            content: <TempSignInModalContent />
-                        }}
-                        actions={["Nevermind..."]}
-                    />
+                    {process.env.NODE_ENV === 'production' ? <button
+                        className="ui button"
+                        onClick={signInOut}
+                    >
+                        {signInOutBtnText}
+                    </button>
+                        : <Modal
+                            trigger={<Button>Dev Sign in/Sign Out</Button>}
+                            header="Sign in/Sign Out"
+                            content={{
+                                content: <DevSignInModalContent />
+                            }}
+                            actions={["Nevermind..."]}
+                        />}
                 </div>
                 <div id="hamburger-menu">
                     <Button icon onClick={() => setVisible(true)}><Icon name="bars" /></Button>
@@ -66,14 +101,14 @@ function Header() {
                     >
                         Home
                     </Menu.Item>
-                    <Menu.Item
+                    {signedIn && <Menu.Item
                         as="a"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </Menu.Item>
+                    </Menu.Item>}
                     <Menu.Item
                         as="a"
                         onClick={() => {
@@ -82,16 +117,23 @@ function Header() {
                     >
                         Sponsor a Project
                     </Menu.Item>
-                    <Menu.Item as="a">
-                        <Modal
-                            trigger={<div>Sign in/Sign Out</div>}
-                            header="Sign in/Sign Out"
-                            content={{
-                                content: <TempSignInModalContent />
-                            }}
-                            actions={["Nevermind..."]}
-                        />
+                    {process.env.NODE_ENV !== 'production' ?
+                        <Menu.Item
+                            as="a"
+                            onClick={signInOut}
+                        >
+                            {signInOutBtnText}
                     </Menu.Item>
+                        : <Menu.Item as="a">
+                            <Modal
+                                trigger={<div>Dev Sign in/Sign Out</div>}
+                                header="Sign in/Sign Out"
+                                content={{
+                                    content: <DevSignInModalContent />
+                                }}
+                                actions={["Nevermind..."]}
+                            />
+                        </Menu.Item>}
                 </Sidebar>
             </>
         );

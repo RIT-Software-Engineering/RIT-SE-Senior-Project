@@ -1,7 +1,7 @@
 const { ROLES } = require("../consts");
 
 const isSignedIn = (req, res, next) => {
-    if (req.user.system_id === undefined || req.user.system_id === null) {
+    if (!req.user || req.user.system_id === undefined || req.user.system_id === null) {
         res.sendStatus(401);
         return;
     }
@@ -29,16 +29,41 @@ const isCoachOrAdmin = (req, res, next) => {
     res.sendStatus(401);
 }
 
+if (process.env.NODE_ENV !== 'production') {
+    console.warn("NOT IN PRODUCTION MODE - USERS CAN SIGN IN BY CHANGING THEIR COOKIES")
+}
 const mockUser = (req, res, next) => {
 
-    // TODO: DELETE THIS ONCE ACTUAL USERS EXIST ~~~~~~~~~~~~~~~~~~~~~
-    req.user = { system_id: req.cookies.user, type: req.cookies.type }
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    if (req.cookies.mockUser && testIsAdmin(req)) {
+    if (process.env.NODE_ENV !== 'production') {
         req.user = {
-            system_id: req.cookies.mockUser,
-            type: req.cookies.mockType,
+            system_id: req.cookies.system_id,
+            fname: req.cookies.fname,
+            lname: req.cookies.lname,
+            email: req.cookies.email,
+            type: req.cookies.type,
+            // These need to be set to null not "null", unfortunately using JSON.parse tries to 
+            // parse projects id's as numbers since projects start with numbers and then errors out.
+            // So we need to do this workaround instead.
+            semester_group: req.cookies.semester_group === "null" ? null : req.cookies.semester_group,
+            project: req.cookies.project === "null" ? null : req.cookies.project,
+            active: req.cookies.active,
+        }
+    }
+
+    if (req.cookies.mock_system_id && testIsAdmin(req)) {
+        req.user = {
+            system_id: req.cookies.mock_system_id,
+            fname: req.cookies.mock_fname,
+            lname: req.cookies.mock_lname,
+            email: req.cookies.mock_email,
+            type: req.cookies.mock_type,
+            // These need to be set to null not "null", unfortunately using JSON.parse tries to 
+            // parse projects id's as numbers since projects start with numbers and then errors out.
+            // So we need to do this workaround instead.
+            semester_group: req.cookies.mock_semester_group === "null" ? null : req.cookies.mock_semester_group,
+            project: req.cookies.mock_project === "null" ? null : req.cookies.mock_project,
+            active: req.cookies.mock_active,
+
             mock: req.user,
         }
     }
@@ -47,11 +72,11 @@ const mockUser = (req, res, next) => {
 }
 
 const testIsAdmin = (req) => {
-    return req.user.type === ROLES.ADMIN;
+    return req.user && req.user.type === ROLES.ADMIN;
 }
 
 const testIsCoach = (req) => {
-    return req.user.type === ROLES.COACH;
+    return req.user && req.user.type === ROLES.COACH;
 }
 
 module.exports = {

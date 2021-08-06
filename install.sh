@@ -13,7 +13,6 @@ cd /home/website/RIT-SE-Senior-Project/ui
 sudo npm install
 echo "Building react app"
 sudo npm run-script build
-cd ..
 echo "Stopping nginx"
 sudo systemctl stop nginx
 echo "Starting nginx"
