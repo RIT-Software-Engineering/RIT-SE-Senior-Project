@@ -22,7 +22,6 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-const config = require('./server/config/config');
 // Constants
 const port = 3001;
 

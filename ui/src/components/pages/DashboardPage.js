@@ -14,6 +14,7 @@ import "./../../css/dashboard.css";
 import UserEditor from "../shared/UserEditor";
 import { SecureFetch } from "../util/secureFetch";
 import { config } from "../util/constants";
+import FileEditor from "../shared/FileEditor";
 
 export default function DashboardPage() {
 
@@ -58,6 +59,7 @@ export default function DashboardPage() {
                             <ActionEditor semesterData={semesterData} />
                             <ProjectEditor semesterData={semesterData} />
                             <UserEditor />
+                            <FileEditor />
                         </Tab.Pane>
                     ),
                 },
