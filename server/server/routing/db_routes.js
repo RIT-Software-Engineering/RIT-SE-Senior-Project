@@ -629,6 +629,10 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
+
+    /**
+     * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
+     */
     db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
 
         let filesUploaded = [];
@@ -642,7 +646,7 @@ module.exports = (db) => {
             }
 
             const formattedPath = `resource/${req.body.path}`;
-            const baseURL = path.join(__dirname, `../${formattedPath}`);
+            const baseURL = path.join(__dirname, `../../${formattedPath}`);
 
             fs.mkdirSync(baseURL, { recursive: true });
 
