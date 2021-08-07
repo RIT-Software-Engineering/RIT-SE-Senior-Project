@@ -629,7 +629,39 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
-    //#endregion
+    db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
+
+        let filesUploaded = [];
+
+        // Attachment Handling
+        if (req.files && req.files.files) {
+
+            // If there is only one attachment, then it does not come as a list
+            if (req.files.files.length === undefined) {
+                req.files.files = [req.files.files];
+            }
+
+            const formattedPath = `resource/${req.body.path}`;
+            const baseURL = path.join(__dirname, `../${formattedPath}`);
+
+            fs.mkdirSync(baseURL, { recursive: true });
+
+            for (let x = 0; x < req.files.files.length; x++) {
+                req.files.files[x].mv(
+                    `${baseURL}/${req.files.files[x].name}`,
+                    function (err) {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).send(err);
+                        }
+                    }
+                );
+                filesUploaded.push(`${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`);
+            }
+        }
+
+        res.send({ msg: "Success!", filesUploaded: filesUploaded });
+    });
 
     db_router.post(
         "/submitProposal",

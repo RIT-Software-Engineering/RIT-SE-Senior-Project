@@ -56,6 +56,7 @@ export const config = {
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,
+        API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
