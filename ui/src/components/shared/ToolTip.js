@@ -84,6 +84,7 @@ function ToolTip(props) {
                 isOpenCallback={isOpenCallback}
                 projectId={props.projectId}
                 preActionContent={metadata(true)}
+                reloadTimelineActions={props.reloadTimelineActions}
             />
         </div>
     }

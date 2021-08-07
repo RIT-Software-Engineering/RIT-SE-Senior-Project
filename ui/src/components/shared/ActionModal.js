@@ -100,6 +100,7 @@ export default function ActionModal(props) {
                     } else {
                         setSubmissionModalOpen(MODAL_STATUS.FAIL);
                     }
+                    props.reloadTimelineActions();
                 })
                 .catch((error) => {
                     // TODO: Redirect to failed page or handle errors

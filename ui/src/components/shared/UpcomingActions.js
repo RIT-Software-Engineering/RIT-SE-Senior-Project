@@ -30,6 +30,7 @@ export default function UpcomingActions(props) {
             projectId={props.projectId}
             projectName={props.projectName}
             semesterName={props.semesterName}
+            reloadTimelineActions={props.reloadTimelineActions}
         />
     )
 }

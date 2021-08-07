@@ -44,6 +44,7 @@ export default function ActionElements(props) {
                 semesterName={props.semesterName}
                 projectName={props.projectName}
                 key={`tooltip-${action.action_title}-${idx}`}
+                reloadTimelineActions={props.reloadTimelineActions}
             />
         )
     })

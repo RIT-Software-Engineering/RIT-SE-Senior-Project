@@ -10,13 +10,17 @@ export default function Timeline(props) {
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
 
-    useEffect(() => {
-        SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${props.elementData?.project_id}`)
+    const loadTimelineActions = (project_id) => {
+        SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`)
             .then(response => response.json())
             .then(actions => {
                 setActions(actions);
             })
             .catch(error => console.error(error))
+    }
+
+    useEffect(() => {
+        loadTimelineActions(props.elementData?.project_id);
     }, [props.elementData?.project_id])
 
     return (
@@ -29,6 +33,7 @@ export default function Timeline(props) {
                     projectId={props.elementData.project_id}
                     semesterName={props.elementData.semester_name}
                     actions={actions}
+                    reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
             <h3>Timeline</h3>
@@ -37,6 +42,7 @@ export default function Timeline(props) {
                 projectId={props.elementData.project_id}
                 semesterName={props.elementData.semester_name}
                 actions={actions}
+                reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
             />
         </div>
     );
