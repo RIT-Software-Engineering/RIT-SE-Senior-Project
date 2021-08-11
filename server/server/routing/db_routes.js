@@ -1334,7 +1334,8 @@ module.exports = (db) => {
         let filter = "";
         if (req.user.type === ROLES.STUDENT) {
 
-            if (req.query.semester !== req.user.semester_group) {
+            // req.query.semester comes in as a string and req.user.semester_group is a number so convert both to strings to compare them.
+            if (`${req.query.semester}` !== `${req.user.semester_group}`) {
                 return res.status(401).send("Students can not access announcements that are not for your project");
             }
 
