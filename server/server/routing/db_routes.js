@@ -670,6 +670,7 @@ module.exports = (db) => {
     db_router.post(
         "/submitProposal",
         [
+            UserAuth.isSignedIn,
             // TODO: Should the max length be set to something smaller than 5000?
             body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }).withMessage("Title must be under 50 characters"),
             body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -860,8 +861,6 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/getTeamTimeline", (req, res) => { });
-
     db_router.post("/submitAction", [UserAuth.isSignedIn, body("*").trim()], async (req, res) => {
         let result = validationResult(req);
 
@@ -1030,7 +1029,7 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/getActionLogs", (req, res) => {
+    db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res) => {
         let getActionLogQuery = "";
         let params = [];
 
@@ -1073,7 +1072,7 @@ module.exports = (db) => {
     });
 
 
-    db_router.get("/getAllActionLogs", async (req, res) => {
+    db_router.get("/getAllActionLogs", [UserAuth.isSignedIn], async (req, res) => {
 
         const { resultLimit, offset } = req.query;
 
@@ -1241,7 +1240,7 @@ module.exports = (db) => {
     });
 
 
-    db_router.post("/editAction", body("page_html").unescape(), (req, res) => {
+    db_router.post("/editAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
         let updateQuery = `
@@ -1283,7 +1282,7 @@ module.exports = (db) => {
     });
 
 
-    db_router.post("/createAction", body("page_html").unescape(), (req, res) => {
+    db_router.post("/createAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
         let updateQuery = `
@@ -1361,7 +1360,7 @@ module.exports = (db) => {
             });
     })
 
-    db_router.post("/editSemester", [body("*").trim()], (req, res) => {
+    db_router.post("/editSemester", [UserAuth.isAdmin, body("*").trim()], (req, res) => {
         let body = req.body;
 
         let updateQuery = `
@@ -1387,6 +1386,7 @@ module.exports = (db) => {
 
 
     db_router.post("/createSemester", [
+        UserAuth.isAdmin,
         body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
         body("dept").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
         body("start_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
