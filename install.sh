@@ -21,5 +21,7 @@ echo "Stopping pm2"
 # Kill pm2 instead of just stopping main.js beacuse .env changes may not 
 # be updated in pm2 without a full restart of pm2.
 sudo pm2 kill
+# Start pm2 daemon before starting main.js beacuse otherweise pm2 has a hissy fit and doesn't want to start main properly.
+sudo pm2 staus  # Random pm2 command just to start pm2 daemon
 echo "Starting pm2"
 sudo pm2 start /home/website/RIT-SE-Senior-Project/server/main.js
