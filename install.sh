@@ -18,6 +18,8 @@ sudo systemctl stop nginx
 echo "Starting nginx"
 sudo systemctl start nginx
 echo "Stopping pm2"
-sudo pm2 stop main
+# Kill pm2 instead of just stopping main.js beacuse .env changes may not 
+# be updated in pm2 without a full restart of pm2.
+sudo pm2 kill
 echo "Starting pm2"
 sudo pm2 start /home/website/RIT-SE-Senior-Project/server/main.js
