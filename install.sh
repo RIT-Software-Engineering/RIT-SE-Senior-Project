@@ -22,6 +22,7 @@ echo "Stopping pm2"
 # be updated in pm2 without a full restart of pm2.
 sudo pm2 kill
 # Start pm2 daemon before starting main.js beacuse otherweise pm2 has a hissy fit and doesn't want to start main properly.
-sudo pm2 status  # Random pm2 command just to start pm2 daemon
+# Random pm2 command just to start pm2 daemon
+sudo pm2 status
 echo "Starting pm2"
 sudo pm2 start /home/website/RIT-SE-Senior-Project/server/main.js
