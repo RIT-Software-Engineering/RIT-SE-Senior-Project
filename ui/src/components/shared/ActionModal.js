@@ -64,13 +64,14 @@ export default function ActionModal(props) {
             body.append("project", props.projectId);
 
             let formData = {};
-            const formDataKeys = Object.keys(document.forms[0].elements);
+            const formDataInputs = document.forms[0].elements;
+
             let errors = [];
-            for (let x = formDataKeys.length / 2; x < formDataKeys.length; x++) {
-                if (document.forms[0].elements[formDataKeys[x]]?.required && !document.forms[0].elements[formDataKeys[x]]?.value) {
-                    errors.push(`'${document.forms[0].elements[formDataKeys[x]].name}' can not be empty`);
+            for (let x = 0; x < formDataInputs.length; x++) {
+                if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
+                    errors.push(`'${formDataInputs[x].name}' can not be empty`);
                 }
-                formData[formDataKeys[x]] = document.forms[0].elements[formDataKeys[x]]?.value;
+                formData[formDataInputs[x].name] = formDataInputs[x]?.value;
             }
 
             const formFiles = filesRef.current?.inputRef?.current?.files || [];
