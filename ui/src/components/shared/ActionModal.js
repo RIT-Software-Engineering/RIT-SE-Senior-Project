@@ -71,7 +71,7 @@ export default function ActionModal(props) {
                 if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
                     errors.push(`'${formDataInputs[x].name}' can not be empty`);
                 }
-                formData[formDataInputs[x].name] = Object.values(formDataInputs[x]?.value).join("");
+                formData[formDataInputs[x].name] = formDataInputs[x]?.value;
             }
 
             const formFiles = filesRef.current?.inputRef?.current?.files || [];
