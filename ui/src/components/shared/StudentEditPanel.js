@@ -49,7 +49,7 @@ export default function StudentEditPanel(props) {
     };
 
     let submissionModalMessages = {
-        SUCCESS: "The student info has been updated.",
+        SUCCESS: "The user info has been updated.",
         FAIL: "We were unable to receive your update to the student's info.",
     };
 
