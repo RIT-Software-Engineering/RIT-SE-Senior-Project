@@ -8,6 +8,8 @@ const CLOSE_BUTTON_TEXT = "Close";
 export default function ViewProjectMembers(props) {
 
     const [projectCoaches, setProjectCoaches] = useState(null);
+    const [userType, setUserType] = useState(null);
+
 
     const fetchProjectCoaches = () => {
         if (!projectCoaches || projectCoaches.length === 0) {
@@ -19,10 +21,12 @@ export default function ViewProjectMembers(props) {
         let url;
         switch (props.type) {
             case USERTYPES.STUDENT:
-                url = config.url.API_GET_PROJECT_STUDENTS
+                url = config.url.API_GET_PROJECT_STUDENTS;
+                setUserType("Students");
                 break;
             case USERTYPES.COACH:
-                url = config.url.API_GET_PROJECT_COACHES
+                url = config.url.API_GET_PROJECT_COACHES;
+                setUserType("Coaches");
                 break;
 
             default:
@@ -68,7 +72,7 @@ export default function ViewProjectMembers(props) {
     return (
         <Modal
             trigger={<Button onClick={fetchProjectCoaches} icon={<Icon name="eye" />} />}
-            header={`Coaches for '${props.projectName}'`}
+            header={`${userType} for '${props.projectName}'`}
             content={{
                 content: content()
             }}
