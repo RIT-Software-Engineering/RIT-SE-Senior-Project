@@ -33,7 +33,7 @@ module.exports = class DBHandler {
                 if (err) {
                     console.error(err.message);
                 }
-                console.log("Opened Database ");
+                console.log("Opened Database " + new Date().toLocaleString('en-US', {timeZone: 'America/New_York'}));
             }
         );
     }

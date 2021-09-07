@@ -47,6 +47,7 @@ function ToolTip(props) {
             <p>{props.action?.short_desc}</p>
             <p>Starts: {formatDate(props.action?.start_date)}</p>
             <p>Due: {formatDate(props.action?.due_date)}</p>
+            <p>Project: {props.projectName}</p>
             <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
             {submissions === null && !loadingSubmissions && <p className="fake-a" onClick={() => loadSubmission(props.projectId, props.action?.action_id)}>Load submissions</p>}
             {loadingSubmissions && <Icon name="spinner" size="large" />}

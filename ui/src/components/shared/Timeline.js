@@ -36,7 +36,7 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
-            <h3>Timeline</h3>
+            <h3>Action Timeline</h3>
             <ActionElements
                 projectName={props.elementData.display_name || props.elementData.title}
                 projectId={props.elementData.project_id}
