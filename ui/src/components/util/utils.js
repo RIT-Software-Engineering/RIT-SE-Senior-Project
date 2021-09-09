@@ -1,5 +1,4 @@
-import moment from "moment";
-import "moment-timezone";
+import moment from "moment-timezone";
 import _ from "lodash";
 import { SERVER_TIMEZONE } from "./constants";
 
@@ -8,12 +7,13 @@ export const parseDate = (dateTime) => {
 }
 
 const parseMomentDate = (dateTime) => {
-    return moment(dateTime).tz(SERVER_TIMEZONE);
+    let newTime = moment(dateTime).utcOffset(0, true);
+    return newTime.tz(SERVER_TIMEZONE);
 }
 
 export const formatDateTime = (dateTime) => {
     let date = parseMomentDate(dateTime);
-    return `${date.format('L')} ${date.format("LT")}`
+    return `${date.format('L LT')}`
 };
 
 export const formatDate = (date) => {

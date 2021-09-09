@@ -54,7 +54,11 @@ export default function SubmissionViewerModal(props) {
             content={{
                 content: <div>
                     <p><b>Semester/Project:</b> {props.semesterName} - {props.projectName}</p>
-                    <p><b>Submitted:</b> {props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}{`${props.action.name} (${props.action.system_id})`} {formatDateTime(props.action.submission_datetime)}</p>
+                    <p><b>Submitted:</b>
+                        {props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}
+                        {`${props.action.name} (${props.action.system_id}) `}
+                        {formatDateTime(props.action.submission_datetime)}
+                    </p>
                     <Divider />
                     <h3>Submission</h3>
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
