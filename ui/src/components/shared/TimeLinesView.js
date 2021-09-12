@@ -35,7 +35,7 @@ export default function TimeLinesView() {
 
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
-        if (timeline.semester_id === null || timeline.semester_id === undefined) {
+        if (timeline.semester_id === null || timeline.semester_id === undefined || timeline.semester_id === noSemesterStr) {
             timeline.semester_id = noSemesterStr;
             timeline.semester_name = noSemesterStr;
         } else if (!semesters[timeline.semester_id]) {
