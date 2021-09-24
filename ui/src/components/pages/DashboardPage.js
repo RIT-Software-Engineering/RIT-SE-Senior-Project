@@ -42,7 +42,7 @@ export default function DashboardPage() {
                 setSemestersData(semestersData);
             })
             .catch((error) => {
-                alert("Failed to get semestersData data" + error);
+                console.error("Failed to get semestersData data" + error);
             });
     }, [])
 
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Actions",
+                    menuItem: "Action Submissions",
                     render: () => (
                         <Tab.Pane>
                             <ActionLogs semesterData={semesterData} />
