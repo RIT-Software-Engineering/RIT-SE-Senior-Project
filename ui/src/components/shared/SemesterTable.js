@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "semantic-ui-react";
-import { formatDate } from "../util/utils";
+import {formatDateNoOffset} from "../util/utils";
 import SemesterPanel from "./SemesterPanel";
 
 export default function SemesterTable(props) {
@@ -10,8 +10,8 @@ export default function SemesterTable(props) {
                 <TableRow key={i}>
                     <TableCell>{`${semester.name} (ID: ${semester.semester_id})`}</TableCell>
                     <TableCell>{semester.dept}</TableCell>
-                    <TableCell>{formatDate(semester.start_date)}</TableCell>
-                    <TableCell>{formatDate(semester.end_date)}</TableCell>
+                    <TableCell>{formatDateNoOffset(semester.start_date)}</TableCell>
+                    <TableCell>{formatDateNoOffset(semester.end_date)}</TableCell>
 
                     <TableCell>
                         <SemesterPanel

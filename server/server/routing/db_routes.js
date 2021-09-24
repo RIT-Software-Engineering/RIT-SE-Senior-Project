@@ -1344,11 +1344,15 @@ module.exports = (db) => {
             // and 1am Kevin can't think of another way of ensuring that a coach isn't lying to us about their semester ...but idk what they would gain form doing that sooo ima just leave it for now
         }
 
-        let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, page_html
+        //ToDo: make sure that the dates don't screw things up because of GMT i.e. it becomes tomorrow in GMT before it becomes tomorrow at the server's location
+        let getTimelineActions = `
+            SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, page_html
             FROM actions
             WHERE actions.date_deleted = '' AND actions.semester = ?
-                AND (actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date < date('now') AND actions.due_date > date('now'))
-                ${filter}`;
+                AND (actions.action_target IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}') AND actions.start_date <= date('now') AND actions.due_date >= date('now'))
+                ${filter}
+            ORDER BY actions.due_date ASC
+        `;
 
         db.query(getTimelineActions, [req.query.semester])
             .then((values) => {

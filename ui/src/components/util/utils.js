@@ -2,6 +2,10 @@ import moment from "moment-timezone";
 import _ from "lodash";
 import { SERVER_TIMEZONE } from "./constants";
 
+export const parseDateNoOffset = (dateTime) => {
+    return moment(dateTime);
+}
+
 export const parseDate = (dateTime) => {
     return parseMomentDate(dateTime).toDate();
 }
@@ -20,6 +24,10 @@ export const formatDate = (date) => {
     let dateObj = parseMomentDate(date);
     return `${dateObj.format('L')}`;
 };
+
+export const formatDateNoOffset = (date) => {
+    return `${parseDateNoOffset(date).format('L')}`;
+}
 
 /**
  * Use this in conjunction with createSemesterDropdownOptions.
