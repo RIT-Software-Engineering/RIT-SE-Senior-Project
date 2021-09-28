@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon, Popup } from "semantic-ui-react";
 import { ACTION_TARGETS, config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import {formatDate, formatDateNoOffset, formatDateTime} from "../util/utils";
+import {formatDateNoOffset, formatDateTime} from "../util/utils";
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
 

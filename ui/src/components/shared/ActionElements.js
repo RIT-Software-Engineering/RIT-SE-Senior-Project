@@ -33,7 +33,7 @@ export default function ActionElements(props) {
             className={`action-bar ${color}`}
             key={idx}
         >
-            {(action.state === "yellow" || action.state === "red") && <div className="action-bar-text">{action.action_title}</div>}
+            {<div className="action-bar-text">{action.action_title}</div>}
         </div>
         actionsComponents.push(
             <ToolTip
