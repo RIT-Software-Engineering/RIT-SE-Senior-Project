@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon, Popup } from "semantic-ui-react";
 import { ACTION_TARGETS, config } from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import { formatDate, formatDateTime } from "../util/utils";
+import {formatDateNoOffset, formatDateTime} from "../util/utils";
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
 
@@ -45,8 +45,8 @@ function ToolTip(props) {
     const metadata = (longSubmissionTitle) => {
         return <>
             <p>{props.action?.short_desc}</p>
-            <p>Starts: {formatDate(props.action?.start_date)}</p>
-            <p>Due: {formatDate(props.action?.due_date)}</p>
+            <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
+            <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
             <p>Project: {props.projectName}</p>
             <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
             {submissions === null && !loadingSubmissions && <p className="fake-a" onClick={() => loadSubmission(props.projectId, props.action?.action_id)}>Load submissions</p>}

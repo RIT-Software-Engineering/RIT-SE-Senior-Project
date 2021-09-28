@@ -12,32 +12,74 @@ import StudentRow from "./StudentRow";
 
 export default function StudentTeamTable(props) {
 
+    let tableHeaderCells = [];
+
+    if(!props.studentsTab){
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-team-table-id"}
+                // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                // onClick={() => changeSort(COLUMNS.DATE)}
+            >
+                ID
+            </TableHeaderCell>
+        )
+
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-team-table-name"}
+            // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+            // onClick={() => changeSort(COLUMNS.DATE)}
+            >
+                Name
+            </TableHeaderCell>
+        )
+
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-team-table-email"}
+                // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
+                // onClick={() => changeSort(COLUMNS.ACTION)}
+            >
+                Email
+            </TableHeaderCell>
+        )
+
+    }
+    else{
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-tab-table-name"}
+                // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                // onClick={() => changeSort(COLUMNS.DATE)}
+            >
+                Name
+            </TableHeaderCell>
+        )
+
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-tab-table-project"}
+                // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                // onClick={() => changeSort(COLUMNS.DATE)}
+            >
+                Project Name
+            </TableHeaderCell>
+        )
+
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-tab-table-email"}
+                // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                // onClick={() => changeSort(COLUMNS.DATE)}
+            >
+                Email
+            </TableHeaderCell>
+        )
+    }
+
     const table = (
         <Table sortable>
             <TableHeader>
                 <TableRow key="studentTeamTableHeaders">
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.DATE)}
-                    >
-                        ID
-                    </TableHeaderCell>
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.DATE)}
-                    >
-                        Name
-                    </TableHeaderCell>
-
-                    <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.ACTION)}
-                    >
-                        Email
-                    </TableHeaderCell>
+                    {tableHeaderCells}
                     {!props.viewOnly && <TableHeaderCell
-                    // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
-                    // onClick={() => changeSort(COLUMNS.EDIT)}
+                        // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
+                        // onClick={() => changeSort(COLUMNS.EDIT)}
                     >
                         Action
                     </TableHeaderCell>}
@@ -45,7 +87,7 @@ export default function StudentTeamTable(props) {
             </TableHeader>
             <TableBody>
                 {props.students?.map(student =>
-                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} />
+                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} studentsTab={props.studentsTab}/>
                 )}
 
             </TableBody>

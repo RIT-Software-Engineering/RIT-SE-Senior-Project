@@ -42,7 +42,7 @@ export default function DashboardPage() {
                 setSemestersData(semestersData);
             })
             .catch((error) => {
-                alert("Failed to get semestersData data" + error);
+                console.error("Failed to get semestersData data" + error);
             });
     }, [])
 
@@ -75,7 +75,12 @@ export default function DashboardPage() {
                 {
                     menuItem: "Coaches",
                     render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
-                },
+                }
+            );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
+        case "student":
+            panes.push(
                 {
                     menuItem: "Students",
                     render: () => (
@@ -84,11 +89,6 @@ export default function DashboardPage() {
                         </Tab.Pane>
                     ),
                 },
-            );
-        // Break intentionally left out to take advantage of switch flow
-        // eslint-disable-next-line
-        case "student":
-            panes.push(
                 {
                     menuItem: "Projects",
                     render: () => (
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Actions",
+                    menuItem: "Action Submissions",
                     render: () => (
                         <Tab.Pane>
                             <ActionLogs semesterData={semesterData} />

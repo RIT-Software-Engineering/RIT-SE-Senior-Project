@@ -16,16 +16,29 @@
 }
 
 .action-bar.proposal-row-yellow {
-    border: 1px #573a08 solid;
-    grid-column: span 2 / auto;
+    border: 2px #885601 solid;
+    color: black;
+    grid-column: span 3 / auto;
 }
 
 .action-bar.proposal-row-red {
-    border: 1px #9f3a38 solid;
+    border: 2px #fd2723 solid;
+    color: black;
+    grid-column: span 3 / auto;
+}
+
+.action-bar.proposal-row-green {
+    border: 2px #2c662d solid;
+    font-size: 0.85rem;
+    color: black;
     grid-column: span 2 / auto;
 }
-.action-bar.proposal-row-green {
-    border: 1px #2c662d solid;
+
+.action-bar.proposal-row-gray {
+    border: 2px #484848 solid;
+    font-size: 0.85rem;
+    color: #000000;
+    grid-column: span 2 / auto;
 }
 
 .action-bar-text {

@@ -35,7 +35,7 @@ export default function TimeLinesView() {
 
     let semesters = {};
     timelines?.forEach((timeline, idx) => {
-        if (timeline.semester_id === null || timeline.semester_id === undefined) {
+        if (timeline.semester_id === null || timeline.semester_id === undefined || timeline.semester_id === noSemesterStr) {
             timeline.semester_id = noSemesterStr;
             timeline.semester_name = noSemesterStr;
         } else if (!semesters[timeline.semester_id]) {
@@ -54,7 +54,7 @@ export default function TimeLinesView() {
     }
 
     const generateTimeLines = () => {
-        return Object.keys(semesters).map((semesterKey, idx) => {
+        let semesterArray = Object.keys(semesters).map((semesterKey, idx) => {
             const semesterData = semesters[semesterKey];
             if (activeSemesters[semesterData[0]?.semester_name] === undefined) {
                 activeSemesters[semesterData[0]?.semester_name] = isSemesterActive(semesterData[0].start_date, semesterData[0].end_date);
@@ -76,6 +76,8 @@ export default function TimeLinesView() {
             }
             return <Accordion fluid styled panels={semester} key={idx} onTitleClick={handleTitleClick} />;
         });
+        semesterArray = semesterArray.reverse();
+        return semesterArray;
     };
 
     if (loading) {
