@@ -11,8 +11,12 @@ import {
 import _ from "lodash";
 import ActionPanel from "./ActionPanel";
 import {formatDateNoOffset} from "../util/utils";
+import PreviewHtml from "./PreviewHtml";
 
 export default function ActionTable(props) {
+    // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
+    const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
+
     const renderActions = () => {
         let actions = _.sortBy(props.actions, ["due_date", "start_date"])
 
@@ -39,6 +43,12 @@ export default function ActionTable(props) {
                                 buttonIcon={"clone outline"}
                                 key={"copyAction-" + i}
                             />
+                            <PreviewHtml
+                                action={action}
+                                semesterName={semesterName}
+                                header={`Currently Viewing "${action.action_title}"`}
+                                key={"viewHtml-" + i}
+                            />
                         </div>
                     </TableCell>
                 </TableRow>
@@ -50,8 +60,7 @@ export default function ActionTable(props) {
     if (props.actions[0].name === null){
         title = "No semester";
     } else {
-        // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
-        title = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name
+        title = semesterName;
     }
 
     return (
