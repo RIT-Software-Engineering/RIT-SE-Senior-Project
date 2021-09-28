@@ -3,11 +3,45 @@ import { TableCell, TableRow } from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
 
 export default function StudentRow(props) {
+    let student_cells = []
+    if (!props.studentsTab){
+        student_cells.push(
+            <TableCell key={'student-id-'+props.student.system_id}>{props.student.system_id}</TableCell>
+        )
+        student_cells.push(
+            <TableCell key={'student-name-'+props.student.fname}>{props.student.fname} {props.student.lname}</TableCell>
+        )
+        student_cells.push(
+            <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
+        )
+    }
+    else{
+        student_cells.push(
+            <TableCell key={'student-name-'+props.student.fname}>{props.student.fname} {props.student.lname}</TableCell>
+        )
+        if(props.projectsData != null && props.projectsData[props.student.project] !== undefined){
+            student_cells.push(
+                <TableCell key={'student-project-'+props.student.project}>{props.projectsData[props.student.project || "noProject"].name}</TableCell>
+            )
+        }
+        else{
+            student_cells.push(
+                <TableCell key={'student-project-noProject'}>{"No Project"}</TableCell>
+            )
+        }
+
+        student_cells.push(
+            <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
+        )
+    }
+
     return (
         <TableRow key={props.student.system_id}>
-            <TableCell>{props.student.system_id}</TableCell>
-            <TableCell>{props.student.fname} {props.student.lname}</TableCell>
-            <TableCell><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
+
+            {
+                student_cells
+            }
+
             {!props.viewOnly && <TableCell>
                 <StudentEditPanel
                     studentData={props.student}

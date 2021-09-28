@@ -80,17 +80,36 @@ module.exports = (db) => {
     });
 
 
-    db_router.get("/getMyStudents", [UserAuth.isCoachOrAdmin], (req, res) => {
+    db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res) => {
 
         let query = "";
         let params = [];
         switch (req.user.type) {
+            case ROLES.STUDENT:
+                query = `
+                    SELECT users.* FROM users
+                        LEFT JOIN semester_group
+                            ON users.semester_group = semester_group.semester_id
+                        WHERE users.semester_group = (
+                            SELECT semester_group FROM users
+                            WHERE users.system_id = ?
+                        )
+                `;
+                params = [req.user.system_id];
+                break;
             case ROLES.COACH:
-                query = `SELECT users.* FROM users
-                    WHERE users.project IN (
+                query = `
+                    SELECT users.* FROM users
+                    LEFT JOIN semester_group
+                        ON users.semester_group = semester_group.semester_id
+                    WHERE users.semester_group in (
+                    SELECT projects.semester FROM projects
+                    WHERE projects.project_id in (
                         SELECT project_coaches.project_id FROM project_coaches
                         WHERE project_coaches.coach_id = ?
-                    )`;
+                    )
+                        )
+                `;
                 params = [req.user.system_id];
                 break;
             case ROLES.ADMIN:
@@ -403,7 +422,7 @@ module.exports = (db) => {
                 params = [req.user.system_id];
                 break;
             case ROLES.STUDENT:
-                query = `SELECT users.system_id, projects.*
+                query = `SELECT users.system_id, users.semester_group, projects.*
                 FROM users
                 INNER JOIN projects
                 ON users.system_id = ? AND projects.project_id = users.project;`
@@ -420,6 +439,43 @@ module.exports = (db) => {
 
         db.query(query, params)
             .then((proposals) => res.send(proposals))
+            .catch(err => res.status(500).send(err));
+    });
+
+    db_router.get("/getSemesterProjects", [UserAuth.isSignedIn], async (req, res) => {
+        let query;
+        let params;
+        switch (req.user.type) {
+            case ROLES.COACH:
+                query = `
+                SELECT projects.* 
+                FROM projects
+                WHERE projects.semester IN 
+                    (SELECT projects.semester
+                    FROM projects
+                    INNER JOIN project_coaches
+                    ON (projects.project_id = project_coaches.project_id AND project_coaches.coach_id = ?))
+                ;`
+                params = [req.user.system_id];
+                break;
+            case ROLES.STUDENT:
+                query = `SELECT users.system_id, projects.*
+                FROM users
+                INNER JOIN projects
+                ON users.system_id = ? AND projects.semester = users.semester_group;`
+                params = [req.user.system_id];
+                break;
+            case ROLES.ADMIN:
+                query = "SELECT * FROM projects WHERE projects.status NOT IN ('in progress', 'completed', 'rejected', 'archive');"
+                params = [];
+                break;
+            default:
+                res.status(500).send("Invalid user type...something must be very very broken...");
+                return;
+        }
+
+        db.query(query, params)
+            .then((projects) => res.send(projects))
             .catch(err => res.status(500).send(err));
     });
 

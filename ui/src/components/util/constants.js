@@ -23,6 +23,7 @@ export const config = {
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
+        API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
@@ -43,7 +44,7 @@ export const config = {
         API_GET_PROJECT_COACHES: `${BASE_API_URL}/db/getProjectCoaches`,
         API_GET_PROJECT_STUDENTS: `${BASE_API_URL}/db/getProjectStudents`,
         API_GET_ACTIVE_COACHES: `${BASE_API_URL}/db/getActiveCoaches`,
-        API_GET_MY_STUDENTS: `${BASE_API_URL}/db/getMyStudents`,
+        API_GET_SEMESTER_STUDENTS: `${BASE_API_URL}/db/getSemesterStudents`,
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
 
         // POST - Auth needed
