@@ -33,7 +33,7 @@ export default function ActionElements(props) {
             className={`action-bar ${color}`}
             key={idx}
         >
-            {<div className="action-bar-text">{action.action_title}</div>}
+            {<div className="action-bar-text" title={action.action_title}>{action.action_title}</div>}
         </div>
         actionsComponents.push(
             <ToolTip
