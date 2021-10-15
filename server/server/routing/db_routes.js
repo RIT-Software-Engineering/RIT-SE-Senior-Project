@@ -6,6 +6,30 @@ const PDFDoc = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
+const fileSizeParser = require('filesize-parser');
+
+function humanFileSize(bytes, si=false, dp=1) {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+    }
+
+    const units = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    let u = -1;
+    const r = 10**dp;
+
+    do {
+        bytes /= thresh;
+        ++u;
+    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+    return bytes.toFixed(dp) + ' ' + units[u];
+}
+
+const defaultFileSizeLimit = 15 * 1024 * 1024;
+
 
 const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
@@ -984,9 +1008,10 @@ module.exports = (db) => {
             fs.mkdirSync(baseURL, { recursive: true });
 
             for (let x = 0; x < req.files.attachments.length; x++) {
-                if (req.files.attachments[x].size > 15 * 1024 * 1024) {
+                if (req.files.attachments[x].size > (action.file_size || defaultFileSizeLimit)) {
                     // 15mb limit exceeded
-                    return res.status(400).send("File too large");
+                    const responseText = "File exceeded submission size limit of: " + humanFileSize(action.file_size || defaultFileSizeLimit, false, 0);
+                    return res.status(400).send(responseText);
                 }
                 if (!action.file_types.split(",").includes(path.extname(req.files.attachments[x].name).toLocaleLowerCase())) {
                     // send an error if the file is not an accepted type
@@ -1056,7 +1081,7 @@ module.exports = (db) => {
             return res.status(401).send("Trying to access project that is not your own");
         }
 
-        let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, page_html,
+        let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
                 CASE
                     WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
                     WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
@@ -1309,11 +1334,13 @@ module.exports = (db) => {
                 start_date = ?,
                 due_date = ?,
                 page_html = ?,
-                file_types = ?
+                file_types = ?,
+                file_size = ?
             WHERE action_id = ?
         `;
 
         const date_deleted = body.date_deleted === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+        const parsedFileSize = body.file_size ? fileSizeParser(body.file_size) : null;
 
         let params = [
             body.semester,
@@ -1325,6 +1352,7 @@ module.exports = (db) => {
             body.due_date,
             body.page_html,
             body.file_types,
+            parsedFileSize,
             body.action_id,
         ];
 
@@ -1343,10 +1371,11 @@ module.exports = (db) => {
 
         let updateQuery = `
             INSERT into actions
-            (semester, action_title, action_target, date_deleted, short_desc, start_date, due_date, page_html, file_types)
-            values (?,?,?,?,?,?,?,?,?)`;
+            (semester, action_title, action_target, date_deleted, short_desc, start_date, due_date, page_html, file_types, file_size)
+            values (?,?,?,?,?,?,?,?,?,?)`;
 
         const date_deleted = body.date_deleted === 'false' ? moment().format(CONSTANTS.datetime_format) : "";
+        const parsedFileSize = body.file_size ? fileSizeParser(body.file_size) : null;
 
         let params = [
             body.semester,
@@ -1357,7 +1386,8 @@ module.exports = (db) => {
             body.start_date,
             body.due_date,
             body.page_html,
-            body.file_types
+            body.file_types,
+            parsedFileSize
         ];
 
         db.query(updateQuery, params)

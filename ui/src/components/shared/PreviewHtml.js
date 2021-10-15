@@ -1,8 +1,8 @@
 import React from 'react'
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import {Form, Icon, Input, Modal} from "semantic-ui-react";
-import {formatDateNoOffset} from "../util/utils";
-import {ACTION_TARGETS} from "../util/constants";
+import {formatDateNoOffset, humanFileSize} from "../util/utils";
+import {ACTION_TARGETS, DEFAULT_UPLOAD_LIMIT} from "../util/constants";
 import Announcements from "./Announcements";
 export default function PreviewHtml(props){
 
@@ -29,7 +29,7 @@ export default function PreviewHtml(props){
                 <br/>
                 <div className="content" dangerouslySetInnerHTML={{__html: props.action.page_html}}/>
                 <br/>
-                {fileUpload(props.action.file_types)}
+                {fileUpload(props.action.file_types, props.action.file_size)}
             </div>
          )
     }
@@ -45,10 +45,12 @@ export default function PreviewHtml(props){
         </>
     }
 
-    function fileUpload(fileTypes) {
+    function fileUpload(fileTypes, fileSize) {
         return fileTypes && <Form>
             <Form.Field required>
-                <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})</label>
+                <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})
+                    (Max size of each file: {humanFileSize((fileSize || DEFAULT_UPLOAD_LIMIT), false, 0)})
+                </label>
                 <Input fluid required type="file" accept={fileTypes} multiple />
             </Form.Field>
         </Form>;

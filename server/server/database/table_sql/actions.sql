@@ -8,6 +8,7 @@ CREATE TABLE actions (
     start_date      TEXT,
     due_date        TEXT,
     page_html       TEXT,   -- HTML for the page of
-    file_types       TEXT,   -- Value of filetypes to accept - If blank, no filetypes required
+    file_types      TEXT,   -- Value of filetypes to accept - If blank, no filetypes required
+    file_size       TEXT,
     FOREIGN KEY (semester) REFERENCES semester_group(semester_id)
 );
