@@ -157,3 +157,5 @@ export const ACTION_STATES = {
 }
 
 export const SERVER_TIMEZONE = "America/New_York";
+
+export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024

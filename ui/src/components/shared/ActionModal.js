@@ -1,9 +1,9 @@
 import React, { useState, useRef, useContext } from "react";
 import { Button, Modal } from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
-import { ACTION_TARGETS, config, USERTYPES } from "../util/constants";
+import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
-import { formatDateTime } from "../util/utils";
+import {formatDateTime, humanFileSize} from "../util/utils";
 import { UserContext } from "../util/UserContext";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
@@ -14,6 +14,7 @@ export default function ActionModal(props) {
     const { user } = useContext(UserContext);
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
+    const [submissionModalResponse, setSubmissionModalResponse] = useState("We were unable to receive your submission.");
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
 
@@ -22,14 +23,14 @@ export default function ActionModal(props) {
             case MODAL_STATUS.SUCCESS:
                 return {
                     header: "Success",
-                    content: "Your submission has been received.",
+                    content: submissionModalResponse,
                     actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content:
-                        "We were unable to receive your submission.",
+                        submissionModalResponse,
                     actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
@@ -97,8 +98,12 @@ export default function ActionModal(props) {
             })
                 .then((response) => {
                     if (response.status === 200) {
+                        setSubmissionModalResponse("Your submission has been received.")
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
                     } else {
+                        response.text().then((data)=>{
+                            setSubmissionModalResponse(data || "We were unable to receive your submission.")
+                        })
                         setSubmissionModalOpen(MODAL_STATUS.FAIL);
                     }
                     props.reloadTimelineActions();
@@ -110,10 +115,12 @@ export default function ActionModal(props) {
         }
     }
 
-    function fileUpload(fileTypes) {
+    function fileUpload(fileTypes, fileSize) {
         return fileTypes && <Form>
             <Form.Field required>
-                <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})</label>
+                <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})
+                    (Max size of each file: {humanFileSize((fileSize || DEFAULT_UPLOAD_LIMIT), false, 0)})
+                </label>
                 <Input fluid required ref={filesRef} type="file" accept={fileTypes} multiple />
             </Form.Field>
         </Form>;
@@ -167,7 +174,7 @@ export default function ActionModal(props) {
                     <br />
                     <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
                     <br />
-                    {fileUpload(props.file_types)}
+                    {fileUpload(props.file_types, props.file_size)}
                     {errors.length > 0 && <div className="submission-errors">
                         <br />
                         <h4>Errors:</h4>

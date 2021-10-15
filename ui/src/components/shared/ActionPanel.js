@@ -1,11 +1,12 @@
 import React from "react";
 import DatabaseTableEditor from "./DatabaseTableEditor";
 import { ACTION_TARGETS, config, DROPDOWN_ITEMS } from "../util/constants";
-import { createSemesterDropdownOptions, SEMESTER_DROPDOWN_NULL_VALUE } from "../util/utils";
+import {createSemesterDropdownOptions, humanFileSize, SEMESTER_DROPDOWN_NULL_VALUE} from "../util/utils";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
+const file_size = "file_size";
 
 export default function ActionPanel(props) {
     let initialState = {
@@ -19,6 +20,7 @@ export default function ActionPanel(props) {
         due_date: props.actionData?.due_date || "",
         page_html: props.actionData?.page_html || "",
         file_types: props.actionData?.file_types || "",
+        file_size: props.actionData?.file_size ? humanFileSize(props.actionData?.file_size, false, 0) : "",
     };
 
     let submissionModalMessages = props.create ? {
@@ -93,11 +95,18 @@ export default function ActionPanel(props) {
             name: file_types,
         },
         {
+            type: "input",
+            label: "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB) (Not used for announcements)",
+            placeHolder: "File Upload Limit",
+            name: file_size,
+        },
+        {
             type: "activeCheckbox",
             label: "Active",
             placeHolder: "Active",
             name: "date_deleted",
         },
+
     ];
 
     const preChange = (formData, name, value) => {
