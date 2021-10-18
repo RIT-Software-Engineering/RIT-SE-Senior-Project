@@ -29,12 +29,17 @@ const isCoachOrAdmin = (req, res, next) => {
     res.sendStatus(401);
 }
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
     console.warn("NOT IN PRODUCTION MODE - USERS CAN SIGN IN BY CHANGING THEIR COOKIES")
 }
+
+else if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'){
+    console.warn("NO ENVIRONMENT VARIABLES SET - MAKES SURE USERS CAN'T SIGN IN BY CHANGING THEIR COOKIES")
+}
+
 const mockUser = (req, res, next) => {
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'development') {
         req.user = {
             system_id: req.cookies.system_id,
             fname: req.cookies.fname,
