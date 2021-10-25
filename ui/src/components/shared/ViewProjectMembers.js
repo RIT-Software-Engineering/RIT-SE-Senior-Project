@@ -7,12 +7,12 @@ const CLOSE_BUTTON_TEXT = "Close";
 
 export default function ViewProjectMembers(props) {
 
-    const [projectCoaches, setProjectCoaches] = useState(null);
+    const [projectUsers, setProjectUsers] = useState(null);
     const [userType, setUserType] = useState(null);
 
 
     const fetchProjectCoaches = () => {
-        if (!projectCoaches || projectCoaches.length === 0) {
+        if (!projectUsers || projectUsers.length === 0) {
             refresh();
         }
     }
@@ -36,7 +36,7 @@ export default function ViewProjectMembers(props) {
         SecureFetch(`${url}?project_id=${props.projectId}`)
             .then(response => response.json())
             .then(coaches => {
-                setProjectCoaches(coaches);
+                setProjectUsers(coaches);
             })
             .catch(err => {
                 console.error("Failed to fetch project coaches", err);
@@ -44,25 +44,25 @@ export default function ViewProjectMembers(props) {
     }
 
     const content = () => {
-        if (projectCoaches === null) {
+        if (projectUsers === null) {
             return <p>loading...</p>
         }
-        else if (projectCoaches.length === 0) {
-            return <p>No coaches</p>
+        else if (projectUsers.length === 0) {
+            return <p>No Users</p>
         }
 
         return <Table celled>
             <TableHeader>
                 <TableRow>
-                    <TableHeaderCell>Coach</TableHeaderCell>
+                    <TableHeaderCell>{userType === 'Coaches'?'Coach':'Student'}</TableHeaderCell>
                     <TableHeaderCell>Email</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {projectCoaches.map(coach => {
-                    return <TableRow TableRow key={coach.system_id} >
-                        <TableCell>{`${coach.fname} ${coach.lname}`}</TableCell>
-                        <TableCell><a href={`mailTo:${coach.email}`}>{coach.email}</a></TableCell>
+                {projectUsers.map(user => {
+                    return <TableRow TableRow key={user.system_id} >
+                        <TableCell>{`${user.fname} ${user.lname}`}</TableCell>
+                        <TableCell><a href={`mailTo:${user.email}`}>{user.email}</a></TableCell>
                     </TableRow>
                 })}
             </TableBody>
