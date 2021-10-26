@@ -42,9 +42,15 @@
 }
 
 .action-bar-text {
-    margin: auto;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    white-space: normal;
     text-align: center;
     vertical-align: middle;
+    width: 100%;
 }
 
 .actions-container {
