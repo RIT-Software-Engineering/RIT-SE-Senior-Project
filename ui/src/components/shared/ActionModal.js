@@ -68,11 +68,22 @@ export default function ActionModal(props) {
             const formDataInputs = document.forms[0].elements;
 
             let errors = [];
+            let radioErrorSet = new Set();
+
             for (let x = 0; x < formDataInputs.length; x++) {
-                if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
-                    errors.push(`'${formDataInputs[x].name}' can not be empty`);
+                if (formDataInputs[x].type === "radio") {
+                    if (formDataInputs[x]?.required && !formDataInputs[formDataInputs[x].name]?.value && !radioErrorSet.has(formDataInputs[x].name)) {
+                        errors.push(`radio option selection is required`);
+                        radioErrorSet.add(formDataInputs[x].name)
+                    }
+                    formData[formDataInputs[x].name] = formDataInputs[formDataInputs[x].name]?.value;
                 }
-                formData[formDataInputs[x].name] = formDataInputs[x]?.value;
+                else{
+                    if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
+                        errors.push(`'${formDataInputs[x].name}' can not be empty`);
+                    }
+                    formData[formDataInputs[x].name] = formDataInputs[x]?.value;
+                }
             }
 
             const formFiles = filesRef.current?.inputRef?.current?.files || [];

@@ -9,6 +9,6 @@ CREATE TABLE actions (
     due_date        TEXT,
     page_html       TEXT,   -- HTML for the page of
     file_types      TEXT,   -- Value of filetypes to accept - If blank, no filetypes required
-    file_size       TEXT,
+    file_size       INTEGER,
     FOREIGN KEY (semester) REFERENCES semester_group(semester_id)
 );

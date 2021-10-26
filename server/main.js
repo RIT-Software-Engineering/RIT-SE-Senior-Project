@@ -5,8 +5,7 @@
 
 "use strict";
 // Leave importing dotenv as the topmost thing
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 
 /**
  *
@@ -24,7 +23,7 @@ const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 // Constants
-const port = 3001;
+const port = process.env.PORT;
 
 // Setup CORS policies
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES

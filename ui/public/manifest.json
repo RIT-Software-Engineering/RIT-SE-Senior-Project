@@ -38,7 +38,6 @@
       "sizes": "16x16"
     }
   ],
-  "start_url": ".",
   "display": "standalone",
   "theme_color": "#f76902",
   "background_color": "#ffffff"
