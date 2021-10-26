@@ -24,6 +24,6 @@ echo "Stopping pm2"
 # Start pm2 daemon before starting main.js beacuse otherweise pm2 has a hissy fit and doesn't want to start main properly.
 # Random pm2 command just to start pm2 daemon
 # sudo pm2 status
-sudo pm2 stop prod
+pm2 stop prod
 echo "Starting pm2"
-sudo pm2 start /home/website/RIT-SE-Senior-Project/ecosystem.prod.config.js
+pm2 start /home/website/RIT-SE-Senior-Project/ecosystem.prod.config.js
