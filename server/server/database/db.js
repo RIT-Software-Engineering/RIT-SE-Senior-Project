@@ -5,6 +5,7 @@
 const PATH = require("path");
 const SQLITE3 = require("sqlite3").verbose();
 const CONFIG = require("./db_config");
+const Logger = require("../logger");
 
 /**
  * @class DBHandler takes a table name and creates an object to interact with the specified table.
@@ -30,10 +31,10 @@ module.exports = class DBHandler {
             PATH.join(__dirname, CONFIG.dbFileName),
             SQLITE3.OPEN_READWRITE | SQLITE3.OPEN_CREATE,
             (err) => {
+                Logger.log("Opened Database");
                 if (err) {
-                    console.error(err.message);
+                    Logger.error(err.message);
                 }
-                console.log("Opened Database " + new Date().toLocaleString('en-US', {timeZone: 'America/New_York'}));
             }
         );
     }
@@ -44,7 +45,7 @@ module.exports = class DBHandler {
     closeDB() {
         if (this.seniorProjectsDB) {
             this.seniorProjectsDB.close();
-            console.log("Closed database ");
+            Logger.log("Closed database");
         }
     }
 

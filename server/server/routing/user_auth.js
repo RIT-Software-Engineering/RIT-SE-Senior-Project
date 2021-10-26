@@ -1,4 +1,5 @@
 const { ROLES } = require("../consts");
+const Logger = require("../logger");
 
 const isSignedIn = (req, res, next) => {
     if (!req.user || req.user.system_id === undefined || req.user.system_id === null) {
@@ -30,7 +31,7 @@ const isCoachOrAdmin = (req, res, next) => {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-    console.warn("NOT IN PRODUCTION MODE - USERS CAN SIGN IN BY CHANGING THEIR COOKIES")
+    Logger.warn("NOT IN PRODUCTION MODE - USERS CAN SIGN IN BY CHANGING THEIR COOKIES")
 }
 const mockUser = (req, res, next) => {
 
