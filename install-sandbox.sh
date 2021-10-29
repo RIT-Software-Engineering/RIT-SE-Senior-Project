@@ -5,7 +5,7 @@ sudo git pull
 #echo "Moving nginx config to /etc/nginx/conf.d/"
 #sudo cp /home/website-test/RIT-SE-Senior-Project/nginx/senior-project.conf /etc/nginx/conf.d/
 #echo "Moving tls_params config to ~/../../etc/nginx/conf.d/"
-#sudo cp /home/website/RIT-SE-Senior-Project/nginx/tls_params /etc/nginx/
+#sudo cp /home/website-test/RIT-SE-Senior-Project/nginx/tls_params /etc/nginx/
 echo "Installing dependencies"
 cd /home/website-test/RIT-SE-Senior-Project/server
 sudo npm install
