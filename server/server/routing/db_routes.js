@@ -750,7 +750,6 @@ module.exports = (db) => {
     db_router.post(
         "/submitProposal",
         [
-            UserAuth.isSignedIn,
             // TODO: Should the max length be set to something smaller than 5000?
             body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }).withMessage("Title must be under 50 characters"),
             body("organization").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
