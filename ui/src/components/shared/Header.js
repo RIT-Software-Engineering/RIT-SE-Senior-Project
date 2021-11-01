@@ -66,7 +66,7 @@ function Header() {
                     >
                         Sponsor a Project
                     </button>
-                    {process.env.NODE_ENV === 'production' ? <button
+                    {process.env.REACT_APP_NODE_ENV === 'production' ? <button
                         className="ui button"
                         onClick={signInOut}
                     >
@@ -117,7 +117,7 @@ function Header() {
                     >
                         Sponsor a Project
                     </Menu.Item>
-                    {process.env.NODE_ENV === 'production' ?
+                    {process.env.REACT_APP_NODE_ENV === 'production' ?
                         <Menu.Item
                             as="a"
                             onClick={signInOut}
