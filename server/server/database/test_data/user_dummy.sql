@@ -31,6 +31,6 @@ VALUES
     ('tww123', 'Tori', 'Waterman', 'tww123@rit.edu', 'student', 5, NULL, ''),
     ('bmt123', 'Beth', 'Thorn', 'bmt123@rit.edu', 'student', 5, NULL, ''),
     ('vcl123', 'Vicki', 'Leigh', 'vcl123@rit.edu', 'student', 6, NULL, ''),
-    ('kjs123', 'Kelly', 'Simon', 'kjs123@rit.edu', 'student', 7, NULL, ''),
+    ('kjs123', 'Kelly', 'Simon', 'kjs123@rit.edu', 'student', 7, NULL, '')
 --     ('123', '', '', '123@rit.edu', 'student', NULL, NULL, ''),
 ;

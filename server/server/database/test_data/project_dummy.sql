@@ -66,7 +66,7 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
         NULL, NULL, NULL, NULL, NULL, NULL
-    ),
+    )
 
 
 --     (
