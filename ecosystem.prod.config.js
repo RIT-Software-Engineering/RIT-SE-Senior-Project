@@ -8,6 +8,8 @@ module.exports = {
                 BASE_URL: "https://seniorproject.se.rit.edu",
                 PORT: "3001"
             },
+            error_file : "/home/website/.pm2/logs/prod-error.log",
+            out_file : "/home/website/.pm2/logs/prod-error.log"
         },
     ]
 }
