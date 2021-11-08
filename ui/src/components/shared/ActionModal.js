@@ -6,7 +6,7 @@ import { SecureFetch } from "../util/secureFetch";
 import {formatDateTime, humanFileSize} from "../util/utils";
 import { UserContext } from "../util/UserContext";
 
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 /** 
 *This file is only used in ToolTips, it should be removed completely
 */
@@ -29,9 +29,14 @@ export default function ActionModal(props) {
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
-                    content:
-                        submissionModalResponse,
+                    content: submissionModalResponse,
                     actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
+                };
+            case MODAL_STATUS.SUBMITTING:
+                return {
+                    header: "Submitting...",
+                    content: submissionModalResponse,
+                    actions: [{ header: "Submitting the action", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;
@@ -103,11 +108,16 @@ export default function ActionModal(props) {
                 body.append("attachments", formFiles[i]);
             }
 
+            setSubmissionModalResponse("Submitting.");
+            setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
+            console.log("submitting");
+
             SecureFetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",
                 body: body,
             })
                 .then((response) => {
+                    console.log("submitted");
                     if (response.status === 200) {
                         setSubmissionModalResponse("Your submission has been received.")
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
