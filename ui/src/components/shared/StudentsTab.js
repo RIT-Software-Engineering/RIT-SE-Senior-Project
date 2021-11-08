@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Accordion } from "semantic-ui-react";
+import {Accordion, Icon} from "semantic-ui-react";
 import { config, USERTYPES } from "../util/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import _ from "lodash";
@@ -146,34 +146,45 @@ export default function StudentsTab() {
                 Object.keys(semester.projects).map(projectKey => {
                     if (semester.projects[projectKey].students.length > 0 && projectKey !== "noProject" && semester.projects[projectKey].name !== undefined && projectMap.hasOwnProperty(projectKey)){
                         let sortedStudents = _.sortBy(semester.projects[projectKey].students || [], ["fname", "lname", "email"])
-                        //ToDo: make team accordions expand when in an active semester
                         activeProjects.push(
-                            <Accordion
-                                key={projectKey}
-                                fluid
-                                styled
-                                onTitleClick={() => {
-                                    setActiveProjectIds({ ...activeProjectIds, [projectKey]: !activeProjectIds[projectKey] })
-                                }}
-                                panels={[{
-                                    key: projectKey,
-                                    title: `${semester.projects[projectKey].name} - ${semester.name} (${semester.projects[projectKey]?.students?.length})`,
-                                    active: activeProjectIds[projectKey],
-                                    content: {
-                                        content:
-                                            <StudentTeamTable
-                                                key={projectKey + "-team"}
-                                                childKey={projectKey + "-team-child"}
-                                                students={sortedStudents}
-                                                semesterData={semesters}
-                                                projectsData={semester.projects}
-                                                viewOnly
-                                                noAccordion={true}
-                                                studentsTab={true}
-                                            />
-                                    }
-                                }]}
-                            />
+                            <div className="accordion-button-group">
+                                <Accordion
+                                    key={projectKey}
+                                    fluid
+                                    styled
+                                    onTitleClick={() => {
+                                        setActiveProjectIds({ ...activeProjectIds, [projectKey]: !activeProjectIds[projectKey] })
+                                    }}
+                                    panels={[{
+                                        key: projectKey,
+                                        title: `${semester.projects[projectKey].name} - ${semester.name} (${semester.projects[projectKey]?.students?.length})`,
+                                        active: activeProjectIds[projectKey],
+                                        content: {
+                                            content:
+                                                <StudentTeamTable
+                                                    key={projectKey + "-team"}
+                                                    childKey={projectKey + "-team-child"}
+                                                    students={sortedStudents}
+                                                    semesterData={semesters}
+                                                    projectsData={semester.projects}
+                                                    viewOnly
+                                                    noAccordion={true}
+                                                    studentsTab={true}
+                                                />
+                                        }
+                                    }]}
+                                />
+                                <div className="accordion-buttons-container">
+                                    <a
+                                        href={`mailTo:${semester.projects[projectKey].students?.map(student => student.email).join(",")}`}
+                                        className="ui icon button"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <Icon name="mail" />
+                                    </a>
+                                </div>
+                            </div>
                         )
                     }
                     return true;
@@ -183,32 +194,44 @@ export default function StudentsTab() {
 
 
                 semesterPanels.push(
-                    <Accordion
-                        key={semester.semester_id}
-                        fluid
-                        styled
-                        onTitleClick={() => {
-                            setActiveSemesters({ ...activeSemesters, [semester.semester_id]: !activeSemesters[semester.semester_id] })
-                        }}
-                        panels={[{
-                            key: semester.semester_id,
-                            title: `${semester.name} (${studentsData?.length})`,
-                            active: activeSemesters[semester.semester_id],
-                            content: {
-                                content:
-                                    <StudentTeamTable
-                                        key={semester.semester_id}
-                                        childKey={semester.semester_id}
-                                        students={studentsData}
-                                        semesterData={semesters}
-                                        noAccordion={true}
-                                        viewOnly
-                                        studentsTab={true}
-                                        projectsData={semester.projects}
-                                    />
-                            }
-                        }]}
-                    />
+                    <div className="accordion-button-group">
+                        <Accordion
+                            key={semester.semester_id}
+                            fluid
+                            styled
+                            onTitleClick={() => {
+                                setActiveSemesters({ ...activeSemesters, [semester.semester_id]: !activeSemesters[semester.semester_id] })
+                            }}
+                            panels={[{
+                                key: semester.semester_id,
+                                title: `${semester.name} (${studentsData?.length})`,
+                                active: activeSemesters[semester.semester_id],
+                                content: {
+                                    content:
+                                        <StudentTeamTable
+                                            key={semester.semester_id}
+                                            childKey={semester.semester_id}
+                                            students={studentsData}
+                                            semesterData={semesters}
+                                            noAccordion={true}
+                                            viewOnly
+                                            studentsTab={true}
+                                            projectsData={semester.projects}
+                                        />
+                                }
+                            }]}
+                        />
+                        <div className="accordion-buttons-container">
+                            <a
+                                href={`mailTo:${studentsData?.map(student => student.email).join(",")}`}
+                                className="ui icon button"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <Icon name="mail" />
+                            </a>
+                        </div>
+                    </div>
                 )
             }
         })
