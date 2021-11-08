@@ -1,6 +1,5 @@
 import React, { useState, useRef, useContext } from "react";
-import {Button, Icon, Modal} from "semantic-ui-react";
-import { Form, Input } from 'semantic-ui-react';
+import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import {formatDateTime, humanFileSize} from "../util/utils";
@@ -112,7 +111,11 @@ export default function ActionModal(props) {
                 body.append("attachments", formFiles[i]);
             }
 
-            setSubmissionModalResponse(<Icon name="spinner" />);
+            setSubmissionModalResponse(
+                <div className={"content"}>
+                    <Loader className={"workaround"} indeterminate active inverted inline={'centered'}>Uploading Files</Loader>
+                </div>
+            );
             setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
 
             SecureFetch(config.url.API_POST_SUBMIT_ACTION, {
