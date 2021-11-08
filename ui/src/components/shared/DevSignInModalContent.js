@@ -12,7 +12,7 @@ export default function DevSignInModalContent() {
     const selectedUserIdx = useRef(null);
 
     useEffect(() => {
-        if (process.env.NODE_ENV !== 'production') {
+        if (process.env.REACT_APP_NODE_ENV === 'development') {
             SecureFetch(config.url.DEV_ONLY_API_GET_ALL_USERS)
                 .then(response => response.json())
                 .then(users => {

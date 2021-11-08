@@ -1,12 +1,11 @@
 import React, { useState, useRef, useContext } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import { Form, Input } from 'semantic-ui-react';
+import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
 import {formatDateTime, humanFileSize} from "../util/utils";
 import { UserContext } from "../util/UserContext";
 
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 /** 
 *This file is only used in ToolTips, it should be removed completely
 */
@@ -29,9 +28,14 @@ export default function ActionModal(props) {
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
-                    content:
-                        submissionModalResponse,
+                    content: submissionModalResponse,
                     actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
+                };
+            case MODAL_STATUS.SUBMITTING:
+                return {
+                    header: "Submitting...",
+                    content: submissionModalResponse,
+                    actions: [{ header: "Submitting the action", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
                 return;
@@ -45,6 +49,10 @@ export default function ActionModal(props) {
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             case MODAL_STATUS.FAIL:
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                break;
+            case MODAL_STATUS.SUBMITTING:
+                setErrors([]);
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             default:
@@ -102,6 +110,13 @@ export default function ActionModal(props) {
             for (let i = 0; i < formFiles?.length || 0; i++) {
                 body.append("attachments", formFiles[i]);
             }
+
+            setSubmissionModalResponse(
+                <div className={"content"}>
+                    <Loader className={"workaround"} indeterminate active inverted inline={'centered'}>Uploading Files</Loader>
+                </div>
+            );
+            setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
 
             SecureFetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",

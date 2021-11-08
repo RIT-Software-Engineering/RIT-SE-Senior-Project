@@ -38,5 +38,43 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
         2, NULL, NULL, NULL, NULL, NULL
+    ),
+
+    (
+        '2021-10-4_da80mGtCgojqWElAItowB','submitted', 'Project title 1', 'Project Company1', 'project manager 1', 'person@project1.com', '123 456 7890', NULL,
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL
+    ),
+
+    (
+        '2021-10-4_da70mGtCgojqWElAItowB','submitted', 'Project title 2', 'Project Company2', 'project manager 2', 'person@project2.com', '123 456 7891', NULL,
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL
+    ),
+
+    (
+        '2021-10-4_da60mGtCgojqWElAItowB','submitted', 'Project title 3', 'Project Company3', 'project manager 3', 'person@project3.com', '123 456 7892', NULL,
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL
+    ),
+
+    (
+        '2021-10-4_da50mGtCgojqWElAItowB','submitted', 'Project title 4', 'Project Company4', 'project manager 4', 'person@project4.com', '123 456 7893', NULL,
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL
     )
+
+
+--     (
+--         'projectid','submitted', 'title', 'organization', 'primary-contact', 'contact-email', 'contact-phone', NULL,
+--         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+--         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
+--         NULL, NULL, NULL, NULL, NULL, NULL
+--     ),
+
+
 ;

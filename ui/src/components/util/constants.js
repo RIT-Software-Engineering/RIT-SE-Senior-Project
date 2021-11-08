@@ -1,6 +1,7 @@
 const BASE_API_URL =
-    process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:3001` : `https://seniorproject.se.rit.edu`;    // Production URLs should always be HTTPS
-const BASE_URL = process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:3000` : `https://seniorproject.se.rit.edu`;   // Production URLs should always be HTTPS
+    process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}` : process.env.REACT_APP_BASE_URL;    // Production URLs should always be HTTPS
+const BASE_URL = process.env.NODE_ENV === "development" ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}` : process.env.REACT_APP_BASE_URL;   // Production URLs should always be HTTPS
+
 
 export const config = {
     url: {
@@ -58,6 +59,7 @@ export const config = {
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
+        API_POST_BACKUP_DATABASE: `${BASE_API_URL}/db/backupDatabase`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,

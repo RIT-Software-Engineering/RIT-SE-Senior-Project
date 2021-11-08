@@ -118,3 +118,15 @@
 .announcement .announcement-header * {
     margin: 0;
 }
+
+.ui.dimmer .ui.workaround.loader {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.ui.dimmer .ui.workaround.loader:before {
+    border-color: rgba(0,0,0,.1);
+}
+
+.ui.dimmer .ui.workaround.loader:after {
+    border-color: #767676 transparent transparent;
+}
