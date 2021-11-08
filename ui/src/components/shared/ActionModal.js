@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext } from "react";
-import { Button, Modal } from "semantic-ui-react";
+import {Button, Icon, Modal} from "semantic-ui-react";
 import { Form, Input } from 'semantic-ui-react';
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
@@ -50,6 +50,10 @@ export default function ActionModal(props) {
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             case MODAL_STATUS.FAIL:
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                break;
+            case MODAL_STATUS.SUBMITTING:
+                setErrors([]);
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 break;
             default:
@@ -108,16 +112,14 @@ export default function ActionModal(props) {
                 body.append("attachments", formFiles[i]);
             }
 
-            setSubmissionModalResponse("Submitting.");
+            setSubmissionModalResponse(<Icon name="spinner" />);
             setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
-            console.log("submitting");
 
             SecureFetch(config.url.API_POST_SUBMIT_ACTION, {
                 method: "post",
                 body: body,
             })
                 .then((response) => {
-                    console.log("submitted");
                     if (response.status === 200) {
                         setSubmissionModalResponse("Your submission has been received.")
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
