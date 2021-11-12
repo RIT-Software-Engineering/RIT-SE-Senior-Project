@@ -15,6 +15,7 @@ import UserEditor from "../shared/UserEditor";
 import { SecureFetch } from "../util/secureFetch";
 import { config } from "../util/constants";
 import FileEditor from "../shared/FileEditor";
+import SponsorsTab from "../shared/SponsorsTab";
 
 export default function DashboardPage() {
 
@@ -65,7 +66,11 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: "Sponsors",
-                    render: () => <Tab.Pane>Under construction...</Tab.Pane>
+                    render: () => (
+                        <Tab.Pane>
+                            <SponsorsTab />
+                        </Tab.Pane>
+                    )
                 },
             );
         // Break intentionally left out to take advantage of switch flow

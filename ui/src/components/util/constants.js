@@ -47,6 +47,7 @@ export const config = {
         API_GET_ACTIVE_COACHES: `${BASE_API_URL}/db/getActiveCoaches`,
         API_GET_SEMESTER_STUDENTS: `${BASE_API_URL}/db/getSemesterStudents`,
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
+        API_GET_ALL_SPONSORS: `${BASE_API_URL}/db/getAllSponsors`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,

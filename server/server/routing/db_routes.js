@@ -1230,6 +1230,57 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
+
+        const { resultLimit, offset } = req.query;
+
+        let getSponsorsQuery = "";
+        let queryParams = [];
+        let getSponsorsCount = "";
+
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                break;
+            case ROLES.COACH:
+                getSponsorsQuery = `SELECT *
+                    FROM sponsors
+                        WHERE sponsors.OID NOT IN (
+                            SELECT OID 
+                            FROM sponsors
+                            ORDER BY lname DESC LIMIT ?
+                            )
+                        ORDER BY lname DESC LIMIT ?`;
+                queryParams = [offset || 0, resultLimit || 0];
+                getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
+                break;
+            case ROLES.ADMIN:
+                getSponsorsQuery = `SELECT *
+                    FROM sponsors
+                        WHERE sponsors.OID NOT IN (
+                            SELECT OID 
+                            FROM sponsors
+                            ORDER BY lname DESC LIMIT ?
+                            )
+                        ORDER BY lname DESC LIMIT ?`;
+                queryParams = [offset || 0, resultLimit || 0];
+                getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
+                break;
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+
+        const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
+        const SponsorsCountPromise = db.query(getSponsorsCount);
+        Promise.all([SponsorsCountPromise, sponsorsPromise])
+            .then(([[sponsorsCount], sponsorsRows]) => {
+                res.send({ sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]], sponsors: sponsorsRows });
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
 
     db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
 
