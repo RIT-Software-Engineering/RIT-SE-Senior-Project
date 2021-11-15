@@ -29,12 +29,12 @@ export default function ActionElements(props) {
                 break;
         }
 
-        const trigger = <div
+        const trigger = <button
             className={`action-bar ${color}`}
             key={idx}
         >
             {<div className="action-bar-text" title={action.action_title}>{action.action_title}</div>}
-        </div>
+        </button>
         actionsComponents.push(
             <ToolTip
                 autoLoadSubmissions={props.autoLoadSubmissions}

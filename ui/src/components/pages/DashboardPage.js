@@ -53,7 +53,10 @@ export default function DashboardPage() {
         case "admin":
             panes.push(
                 {
-                    menuItem: "Admin",
+                    menuItem: {
+                        content:"Admin",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <SemesterEditor />
@@ -65,7 +68,10 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Sponsors",
+                    menuItem: {
+                        content:"Sponsors",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <SponsorsTab />
@@ -78,7 +84,10 @@ export default function DashboardPage() {
         case "coach":
             panes.push(
                 {
-                    menuItem: "Coaches",
+                    menuItem: {
+                        content:"Coaches",
+                        href: "#"
+                    },
                     render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
                 }
             );
@@ -87,7 +96,10 @@ export default function DashboardPage() {
         case "student":
             panes.push(
                 {
-                    menuItem: "Students",
+                    menuItem: {
+                        content:"Students",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <StudentsTab />
@@ -95,7 +107,10 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Projects",
+                    menuItem: {
+                        content:"Projects",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <ProjectsTab semesterData={semesterData} />
@@ -103,7 +118,10 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Action Submissions",
+                    menuItem: {
+                        content:"Action Submissions",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <ActionLogs semesterData={semesterData} />
@@ -111,7 +129,10 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Dashboard",
+                    menuItem: {
+                        content:"Dashboard",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <TimeLinesView />
@@ -122,7 +143,10 @@ export default function DashboardPage() {
             break;
         default:
             panes.push({
-                menuItem: "Loading...",
+                menuItem: {
+                    content:"Loading...",
+                    href: "#"
+                },
                 render: () => (
                     <Tab.Pane>
                         <p>Loading...</p>
