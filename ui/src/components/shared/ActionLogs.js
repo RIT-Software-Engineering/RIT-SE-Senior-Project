@@ -23,7 +23,7 @@ export default function ActionLogs(props) {
     props.semesterData.forEach(semester => semesterMap[semester.semester_id] = semester);
 
     const [actionLogs, setActionLogs] = useState([]);
-    const [actionLogCount, setActionLogCount] = useState(50);
+    const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
     const userContext = useContext(UserContext)
 
     const getPaginationData = (page) => {
