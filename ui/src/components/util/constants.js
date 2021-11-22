@@ -48,6 +48,7 @@ export const config = {
         API_GET_SEMESTER_STUDENTS: `${BASE_API_URL}/db/getSemesterStudents`,
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
         API_GET_ALL_SPONSORS: `${BASE_API_URL}/db/getAllSponsors`,
+        API_GET_SPONSOR_NOTES: `${BASE_API_URL}/db/getSponsorNotes`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
@@ -61,6 +62,7 @@ export const config = {
         API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
         API_POST_BACKUP_DATABASE: `${BASE_API_URL}/db/backupDatabase`,
+        API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,

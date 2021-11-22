@@ -1242,26 +1242,27 @@ module.exports = (db) => {
             case ROLES.STUDENT:
                 break;
             case ROLES.COACH:
-                getSponsorsQuery = `SELECT *
-                    FROM sponsors
-                        WHERE sponsors.OID NOT IN (
-                            SELECT OID 
-                            FROM sponsors
-                            ORDER BY lname DESC LIMIT ?
-                            )
-                        ORDER BY lname DESC LIMIT ?`;
-                queryParams = [offset || 0, resultLimit || 0];
-                getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
-                break;
             case ROLES.ADMIN:
-                getSponsorsQuery = `SELECT *
+                getSponsorsQuery = `
+                    SELECT *
                     FROM sponsors
-                        WHERE sponsors.OID NOT IN (
-                            SELECT OID 
-                            FROM sponsors
-                            ORDER BY lname DESC LIMIT ?
-                            )
-                        ORDER BY lname DESC LIMIT ?`;
+                    WHERE sponsors.OID NOT IN (
+                        SELECT OID 
+                        FROM sponsors
+                        ORDER BY 
+                            company ASC,
+                            division ASC,
+                            fname ASC,
+                            lname ASC
+                        LIMIT ?
+                        )
+                    ORDER BY
+                        sponsors.company ASC,
+                        sponsors.division ASC,
+                        sponsors.fname ASC,
+                        sponsors.lname ASC
+                    LIMIT ?
+                `;
                 queryParams = [offset || 0, resultLimit || 0];
                 getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
                 break;
@@ -1278,6 +1279,26 @@ module.exports = (db) => {
             })
             .catch((error) => {
                 res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
+        let getSponsorNotesQuery = `
+            SELECT * 
+            FROM sponsor_notes
+            WHERE sponsor = ?
+            ORDER BY creation_date DESC
+        `;
+
+        const queryParams = [req.query.sponsor_id]
+
+        db.query(getSponsorNotesQuery, queryParams)
+            .then((sponsorNotes) => {
+                res.send(sponsorNotes);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
             });
     });
 
@@ -1413,6 +1434,99 @@ module.exports = (db) => {
             .catch((err) => {
                 return res.status(500).send(err);
             });
+    });
+
+
+    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        let updateSponsorQuery = `
+            UPDATE sponsors
+            SET fname = ?,
+                lname = ?,
+                company = ?,
+                division = ?,
+                email = ?,
+                phone = ?,
+                association = ?,
+                type = ?
+            WHERE sponsor_id = ?
+        `;
+
+        let updateSponsorParams = [
+            body.fname,
+            body.lname,
+            body.company,
+            body.division,
+            body.email,
+            body.phone,
+            body.association,
+            body.type
+        ];
+
+        let updateSponsorQueryCode = 500;
+
+        db.query(updateSponsorQuery, updateSponsorParams)
+            .then(() => {
+                updateSponsorQueryCode = 200
+            })
+            .catch((err) => {
+                return res.status(500).send(err);
+            });
+
+        let updateSponsorNoteQuery = `
+            UPDATE sponsor_notes
+            SET 
+                update_date = CURRENT_TIMESTAMP
+            WHERE
+                sponsor_note_id = ?
+        `;
+
+        let updateSponsorNoteParams = [
+            body.sponsor_note_id
+        ];
+
+        db.query(updateSponsorNoteQuery, updateSponsorNoteParams)
+            .then(() => {
+                updateSponsorQueryCode = 200
+            })
+            .catch((err) => {
+                return res.status(500).send(err);
+            });
+
+        let createSponsorNoteQuery = `
+            INSERT INTO sponsor_notes
+            (
+                note_content,
+                sponsor,
+                author,
+                previous_note
+             )
+             VALUES (?,?,?,?)
+        `;
+
+        let createSponsorNoteParams = [
+            body.note_content,
+            body.sponsor,
+            body.author,
+            body.sponsor_note_id
+        ];
+
+        db.query(createSponsorNoteQuery, createSponsorNoteParams)
+            .then(() => {
+                updateSponsorQueryCode = 200
+            })
+            .catch((err) => {
+                return res.status(500).send(err);
+            });
+
+        if (updateSponsorQueryCode === 200){
+            return res.status(updateSponsorQueryCode).send(err);
+        }
+        else{
+            return res.status(updateSponsorQueryCode).send(err);
+        }
+
     });
 
 
