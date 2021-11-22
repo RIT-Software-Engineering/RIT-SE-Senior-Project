@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { formatDateTime } from "../util/utils";
 import {
     Pagination,
     Table,
@@ -14,6 +13,7 @@ import SubmissionViewerModal from "./SubmissionViewerModal";
 import { SecureFetch } from '../util/secureFetch';
 import { config, USERTYPES } from '../util/constants';
 import { UserContext } from "../util/UserContext";
+import SponsorEditor from "./SponsorEditor";
 
 const LOGS_PER_PAGE = 4;
 
@@ -73,7 +73,7 @@ export default function SponsorsTab(props) {
                                 <TableCell>{sponsor.type}</TableCell>
                                 <TableCell>{sponsor.status}</TableCell>
                                 <TableCell>
-                                    <Icon name="eye" />
+                                    <SponsorEditor sponsor={sponsor}/>
                                 </TableCell>
                             </TableRow>
                         );

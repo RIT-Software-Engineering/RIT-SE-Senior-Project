@@ -264,7 +264,14 @@ export default function DatabaseTableEditor(props) {
             <Modal
                 trigger={<Button icon={props.button} />}
                 header={props.header}
-                content={{ content: <Form>{fieldComponents}</Form> }}
+                content={{ content:
+                    <>
+                        <Form>
+                            {fieldComponents}
+                        </Form>
+                        {props.childComponents}
+                    </>
+                }}
                 actions={modalActions()}
             />
             <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
