@@ -1474,35 +1474,16 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
 
-        let updateSponsorNoteQuery = `
-            UPDATE sponsor_notes
-            SET 
-                update_date = CURRENT_TIMESTAMP
-            WHERE
-                sponsor_note_id = ?
-        `;
-
-        let updateSponsorNoteParams = [
-            body.sponsor_note_id
-        ];
-
-        db.query(updateSponsorNoteQuery, updateSponsorNoteParams)
-            .then(() => {
-                updateSponsorQueryCode = 200
-            })
-            .catch((err) => {
-                return res.status(500).send(err);
-            });
-
         let createSponsorNoteQuery = `
             INSERT INTO sponsor_notes
             (
+                creation_date,
                 note_content,
                 sponsor,
                 author,
                 previous_note
              )
-             VALUES (?,?,?,?)
+             VALUES (CURRENT_TIMESTAMP,?,?,?,?)
         `;
 
         let createSponsorNoteParams = [

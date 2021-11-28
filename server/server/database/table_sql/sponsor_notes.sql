@@ -1,7 +1,6 @@
 CREATE TABLE sponsor_notes (
     sponsor_note_id INTEGER PRIMARY KEY AUTOINCREMENT,
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    update_date DATETIME DEFAULT NULL,
     note_content TEXT,
     sponsor INTEGER,
     author TEXT,
