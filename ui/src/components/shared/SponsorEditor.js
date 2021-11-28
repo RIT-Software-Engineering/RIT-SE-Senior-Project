@@ -1,27 +1,8 @@
 import DatabaseTableEditor from "./DatabaseTableEditor";
 import {config} from "../util/constants";
-import {useEffect, useState} from "react";
-import {SecureFetch} from "../util/secureFetch";
+import SponsorNoteEditor from "./SponsorNoteEditor";
 
 export default function SponsorEditor(props){
-
-    const [sponsorNotes, setSponsorNotes] = useState([]);
-
-    const getSponsorNotesData = () => {
-        SecureFetch(`${config.url.API_GET_SPONSOR_NOTES}/?sponsor_id=${props.sponsor.sponsor_id}`)
-            .then((response) => response.json())
-            .then((sponsors) => {
-                setSponsorNotes(sponsors);
-                console.log("sponsor notes", sponsors)
-            })
-            .catch((error) => {
-                alert("Failed to get sponsor notes data " + error);
-            });
-    }
-
-    useEffect(() => {
-        getSponsorNotesData();
-    }, [])
 
     let initialState = {
         sponsor_id: props.sponsor.sponsor_id,
@@ -105,13 +86,6 @@ export default function SponsorEditor(props){
             placeHolder: "Type",
             name: "type",
             disabled: false
-        },
-        {
-            type: "textArea",
-            label: "Sponsor Notes",
-            placeHolder: "Sponsor Notes",
-            name: "note_content",
-            disabled: false
         }
     ]
 
@@ -123,7 +97,7 @@ export default function SponsorEditor(props){
             formFieldArray={formFieldArray}
             header={props.header}
             button="edit"
-            childComponents={<div></div>}
+            childComponents={<SponsorNoteEditor sponsor_id={props.sponsor.sponsor_id}/>}
         />
     );
 }
