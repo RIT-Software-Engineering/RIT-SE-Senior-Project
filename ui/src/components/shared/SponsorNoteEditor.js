@@ -43,6 +43,7 @@ export default function SponsorNoteEditor(props){
                 const notesMap = groupRelatedNotes(sponsorNotes)
                 for (const noteGroup of Object.keys(notesMap)){
                     if(notesMap[noteGroup].length>0){
+                        notesMap[noteGroup].reverse()
                         let rootNote = <SponsorNote note={notesMap[noteGroup][0]}/>
                         if(notesMap[noteGroup].length>1){
                             rootNote = <SponsorNote
