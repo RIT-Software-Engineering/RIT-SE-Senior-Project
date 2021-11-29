@@ -1501,13 +1501,6 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
 
-        if (updateSponsorQueryCode === 200){
-            return res.status(updateSponsorQueryCode).send(err);
-        }
-        else{
-            return res.status(updateSponsorQueryCode).send(err);
-        }
-
     });
 
 

@@ -13,7 +13,8 @@ export default function SponsorEditor(props){
         email: props.sponsor.email,
         phone: props.sponsor.phone,
         association: props.sponsor.association,
-        type: props.sponsor.type
+        type: props.sponsor.type,
+        changed_fields: {}
     };
 
     let submissionModalMessages = {

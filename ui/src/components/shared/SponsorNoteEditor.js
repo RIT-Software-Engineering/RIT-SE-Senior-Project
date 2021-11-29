@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {SecureFetch} from "../util/secureFetch";
 import {config} from "../util/constants";
 import SponsorNote from "./SponsorNote";
-import {Header, Segment} from "semantic-ui-react";
+import {Button, Header, Segment} from "semantic-ui-react";
 
 export default function SponsorNoteEditor(props){
     const [notesArray, setNotesArray] = useState([]);
@@ -42,12 +42,15 @@ export default function SponsorNoteEditor(props){
                 const notesMap = groupRelatedNotes(sponsorNotes)
                 for (const noteGroup of Object.keys(notesMap)){
                     if(notesMap[noteGroup].length>0){
-                        let noteAccordionContent = []
-                        console.log("notesMap", notesMap)
-                        for (const note of notesMap[noteGroup]){
-                            noteAccordionContent.push(<SponsorNote note={note}/>)
+                        let rootNote = <SponsorNote note={notesMap[noteGroup][0]}/>
+                        if(notesMap[noteGroup].length>1){
+                            rootNote = <SponsorNote
+                                note={notesMap[noteGroup][0]}
+                                isRoot={true}
+                                noteGroup={notesMap[noteGroup]}
+                            />
                         }
-                        initNotesArray.push(noteAccordionContent)
+                        initNotesArray.push(rootNote)
                     }
                 }
 
@@ -62,10 +65,11 @@ export default function SponsorNoteEditor(props){
 
     return(
         <Segment.Group>
-            <Segment>
-                <Header as='h4'>
+            <Segment clearing>
+                <Header as='h2' floated={'left'}>
                     Sponsor Notes
                 </Header>
+                <Button content='New Note' icon='add' labelPosition='right' floated='right'/>
             </Segment>
 
             <Segment.Group padded>

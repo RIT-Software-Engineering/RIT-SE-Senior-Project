@@ -31,7 +31,7 @@ export default function DatabaseTableEditor(props) {
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
-                    content: submissionModalMessages["SUCCESS"],
+                    content: submissionModalMessages["FAIL"],
                     actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
                 };
             default:
@@ -74,9 +74,7 @@ export default function DatabaseTableEditor(props) {
                 }
             })
             .catch((error) => {
-                // TODO: handle errors
-                alert("Error with submission, check logs");
-                console.error(error);
+                setSubmissionModalOpen(MODAL_STATUS.FAIL);
             });
     };
 
@@ -97,12 +95,19 @@ export default function DatabaseTableEditor(props) {
         }
 
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
+        console.log("formData", formData);
 
         if (newFormData) {
             setFormData(newFormData);
         } else {
+            console.log("column changed, name, value: ", name, value);
+            let changedMap = {
+                ...formData["changed_fields"],
+                [name]: [initialState[name], value]
+            }
             setFormData({
                 ...formData,
+                ["changed_fields"]: changedMap,
                 [name]: value,
             });
         }
