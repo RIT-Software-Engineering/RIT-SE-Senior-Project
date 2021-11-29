@@ -63,6 +63,7 @@ export const config = {
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
         API_POST_BACKUP_DATABASE: `${BASE_API_URL}/db/backupDatabase`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
+        API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,

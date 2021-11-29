@@ -1503,6 +1503,29 @@ module.exports = (db) => {
 
     });
 
+    db_router.post("/createSponsorNote", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        let insertQuery = `
+            INSERT into sponsor_notes
+            (note_content, sponsor, author, previous_note)
+            values (?,?,?,?)`;
+
+        let params = [
+            body.note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            null
+        ];
+
+        db.query(insertQuery, params)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                return res.status(500).send(err);
+            });
+    });
 
     db_router.post("/createAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;

@@ -72,6 +72,9 @@ export default function DatabaseTableEditor(props) {
                 } else {
                     setSubmissionModalOpen(MODAL_STATUS.FAIL);
                 }
+                if(props.callback){
+                   props.callback()
+                }
             })
             .catch((error) => {
                 setSubmissionModalOpen(MODAL_STATUS.FAIL);
@@ -263,11 +266,15 @@ export default function DatabaseTableEditor(props) {
             },
         ]
     }
+    let trigger = <Button icon={props.button} />;
+    if(props.trigger){
+        trigger = props.trigger
+    }
 
     return (
         <>
             <Modal
-                trigger={<Button icon={props.button} />}
+                trigger={trigger}
                 header={props.header}
                 content={{ content:
                     <>

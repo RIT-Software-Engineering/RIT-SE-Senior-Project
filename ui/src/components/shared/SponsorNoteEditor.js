@@ -3,6 +3,7 @@ import {SecureFetch} from "../util/secureFetch";
 import {config} from "../util/constants";
 import SponsorNote from "./SponsorNote";
 import {Button, Header, Segment} from "semantic-ui-react";
+import DatabaseTableEditor from "./DatabaseTableEditor";
 
 export default function SponsorNoteEditor(props){
     const [notesArray, setNotesArray] = useState([]);
@@ -63,13 +64,48 @@ export default function SponsorNoteEditor(props){
         getSponsorNotesData();
     }, [])
 
+    let initialState = {
+        sponsor_id: props.sponsor_id,
+    };
+
+    let submissionModalMessages = {
+        SUCCESS: "The sponsor note has been created.",
+        FAIL: "We were unable to create the sponsor note.",
+    };
+
+    let submitRoute = config.url.API_POST_CREATE_SPONSOR_NOTE;
+
+    let formFieldArray = [
+        {
+            type: "textArea",
+            label: "Sponsor Note Content",
+            placeHolder: "Sponsor Note Content",
+            name: "note_content",
+            disabled: false
+        }
+    ]
+
+    let newNoteTrigger = <Button content='New Note' icon='add' labelPosition='right' floated='right'/>
+
     return(
         <Segment.Group>
             <Segment clearing>
                 <Header as='h2' floated={'left'}>
                     Sponsor Notes
                 </Header>
-                <Button content='New Note' icon='add' labelPosition='right' floated='right'/>
+                <DatabaseTableEditor
+                    initialState={initialState}
+                    submissionModalMessages={submissionModalMessages}
+                    submitRoute={submitRoute}
+                    formFieldArray={formFieldArray}
+                    header={"New Sponsor Note"}
+                    trigger={newNoteTrigger}
+                    preSubmit={(data) => {
+                        data.sponsor_id = props.sponsor_id;
+                        return data;
+                    }}
+                    callback={getSponsorNotesData}
+                />
             </Segment>
 
             <Segment.Group padded>
