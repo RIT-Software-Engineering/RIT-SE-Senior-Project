@@ -6,3 +6,4 @@
 .read test_data/semester_dummy.sql
 .read test_data/sponsor_dummy.sql
 .read test_data/user_dummy.sql
+.read test_data/sponsor_notes_dummy.sql

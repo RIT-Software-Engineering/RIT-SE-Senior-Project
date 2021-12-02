@@ -6,3 +6,4 @@
 .read table_sql/semester_group.sql
 .read table_sql/sponsors.sql
 .read table_sql/users.sql
+.read table_sql/sponsor_notes.sql
