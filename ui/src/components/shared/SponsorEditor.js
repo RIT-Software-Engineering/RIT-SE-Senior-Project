@@ -1,6 +1,9 @@
 import DatabaseTableEditor from "./DatabaseTableEditor";
 import {config} from "../util/constants";
 import SponsorNoteEditor from "./SponsorNoteEditor";
+import {Modal} from "semantic-ui-react";
+import React from "react";
+import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 
 export default function SponsorEditor(props){
 
@@ -90,7 +93,9 @@ export default function SponsorEditor(props){
         }
     ]
 
-    return (
+    let noteEditor = (<SponsorNoteEditor sponsor_id={props.sponsor.sponsor_id}/>);
+
+    let editor = (
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
@@ -98,8 +103,34 @@ export default function SponsorEditor(props){
             formFieldArray={formFieldArray}
             header={props.header}
             button="edit"
-            childComponents={<SponsorNoteEditor sponsor_id={props.sponsor.sponsor_id}/>}
+            childComponents={noteEditor}
             callback={props.callback}
         />
     );
+
+    const modalActions = () => {
+        return [
+            {
+                key: "Close",
+                content: "Close",
+            },
+        ]
+    }
+
+    let trigger = <Button icon={"edit"} />;
+
+    if(props.summaryView){
+        editor = <Modal
+            trigger={trigger}
+            header={"Sponsor Summary View"}
+            content={{ content:
+                    <>
+                        {noteEditor}
+                    </>
+            }}
+            actions={modalActions()}
+        />
+    }
+
+    return editor;
 }

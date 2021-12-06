@@ -9,25 +9,22 @@ import {
     TableRow,
     Icon,
 } from "semantic-ui-react";
-import SubmissionViewerModal from "./SubmissionViewerModal";
 import { SecureFetch } from '../util/secureFetch';
-import { config, USERTYPES } from '../util/constants';
-import { UserContext } from "../util/UserContext";
+import { config } from '../util/constants';
 import SponsorEditor from "./SponsorEditor";
 
 const LOGS_PER_PAGE = 4;
 
 export default function SponsorsTab(props) {
 
-    // const semesterMap = {};
-    // props.semesterData.forEach(semester => semesterMap[semester.semester_id] = semester);
-
     const [sponsors, setSponsors] = useState([]);
     const [sponsorsCount, setSponsorsCount] = useState(LOGS_PER_PAGE);
-    const userContext = useContext(UserContext)
+    const [activePages, setActivePages] = React.useReducer();
+    let activePage = 0;
+    let summaryView = props?.notSummaryView ? "" : "summaryView";
 
-    const getPaginationData = (page) => {
-        SecureFetch(`${config.url.API_GET_ALL_SPONSORS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`)
+    const getPaginationData = () => {
+        SecureFetch(`${config.url.API_GET_ALL_SPONSORS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * activePage}`)
             .then((response) => response.json())
             .then((sponsors) => {
                 setSponsors(sponsors.sponsors);
@@ -39,7 +36,7 @@ export default function SponsorsTab(props) {
     }
 
     useEffect(() => {
-        getPaginationData(0);
+        getPaginationData();
     }, [])
     return (
         <>
@@ -73,7 +70,7 @@ export default function SponsorsTab(props) {
                                 <TableCell>{sponsor.type}</TableCell>
                                 <TableCell>{sponsor.status}</TableCell>
                                 <TableCell>
-                                    <SponsorEditor sponsor={sponsor}/>
+                                    <SponsorEditor summaryView={summaryView} sponsor={sponsor} callback={getPaginationData}/>
                                 </TableCell>
                             </TableRow>
                         );
@@ -91,7 +88,7 @@ export default function SponsorsTab(props) {
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
-                        getPaginationData(data.activePage - 1);
+                        activePage = data.activePage - 1;
                     }}
                 />
             </div>

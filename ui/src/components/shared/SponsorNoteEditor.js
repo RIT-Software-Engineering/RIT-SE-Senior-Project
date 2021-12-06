@@ -44,12 +44,13 @@ export default function SponsorNoteEditor(props){
                 for (const noteGroup of Object.keys(notesMap)){
                     if(notesMap[noteGroup].length>0){
                         notesMap[noteGroup].reverse()
-                        let rootNote = <SponsorNote note={notesMap[noteGroup][0]}/>
+                        let rootNote = <SponsorNote noEdit note={notesMap[noteGroup][0]}/>
                         if(notesMap[noteGroup].length>1){
                             rootNote = <SponsorNote
                                 note={notesMap[noteGroup][0]}
                                 isRoot={true}
                                 noteGroup={notesMap[noteGroup]}
+                                callback={getSponsorNotesData}
                             />
                         }
                         initNotesArray.push(rootNote)
@@ -88,25 +89,27 @@ export default function SponsorNoteEditor(props){
 
     let newNoteTrigger = <Button content='New Note' icon='add' labelPosition='right' floated='right'/>
 
+    let newNoteComponent = <DatabaseTableEditor
+        initialState={initialState}
+        submissionModalMessages={submissionModalMessages}
+        submitRoute={submitRoute}
+        formFieldArray={formFieldArray}
+        header={"New Sponsor Note"}
+        trigger={newNoteTrigger}
+        preSubmit={(data) => {
+            data.sponsor_id = props.sponsor_id;
+            return data;
+        }}
+        callback={getSponsorNotesData}
+    />
+
     return(
         <Segment.Group>
             <Segment clearing>
                 <Header as='h2' floated={'left'}>
                     Sponsor Notes
                 </Header>
-                <DatabaseTableEditor
-                    initialState={initialState}
-                    submissionModalMessages={submissionModalMessages}
-                    submitRoute={submitRoute}
-                    formFieldArray={formFieldArray}
-                    header={"New Sponsor Note"}
-                    trigger={newNoteTrigger}
-                    preSubmit={(data) => {
-                        data.sponsor_id = props.sponsor_id;
-                        return data;
-                    }}
-                    callback={getSponsorNotesData}
-                />
+                {newNoteComponent}
             </Segment>
 
             <Segment.Group padded>

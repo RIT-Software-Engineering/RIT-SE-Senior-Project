@@ -16,6 +16,7 @@ import { SecureFetch } from "../util/secureFetch";
 import { config } from "../util/constants";
 import FileEditor from "../shared/FileEditor";
 import SponsorsTab from "../shared/SponsorsTab";
+import SponsorEditorAccordion from "../shared/SponsorEditorAccordion";
 
 export default function DashboardPage() {
 
@@ -63,6 +64,7 @@ export default function DashboardPage() {
                             <ActionEditor semesterData={semesterData} />
                             <ProjectEditor semesterData={semesterData} />
                             <UserEditor />
+                            <SponsorEditorAccordion />
                             <FileEditor />
                         </Tab.Pane>
                     ),
