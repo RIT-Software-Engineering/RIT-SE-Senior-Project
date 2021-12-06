@@ -1437,7 +1437,31 @@ module.exports = (db) => {
     });
 
 
-    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+    db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        let searchQuery = `
+            SELECT *
+            FROM sponsors
+            LIMIT 3
+        `;
+
+        let params = [
+            // body?.search_query || ""
+        ];
+
+        db.query(searchQuery, params)
+            .then((values) => {
+                return res.status(200).send(values);
+            })
+            .catch((err) => {
+                console.log("err" , err)
+                return res.status(500).send(err);
+            });
+
+    });
+
+    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
         let body = req.body;
 
         let updateSponsorQuery = `

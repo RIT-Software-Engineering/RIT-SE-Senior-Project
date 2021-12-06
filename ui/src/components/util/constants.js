@@ -49,6 +49,7 @@ export const config = {
         API_GET_ACTIVE_USERS: `${BASE_API_URL}/db/getActiveUsers`,
         API_GET_ALL_SPONSORS: `${BASE_API_URL}/db/getAllSponsors`,
         API_GET_SPONSOR_NOTES: `${BASE_API_URL}/db/getSponsorNotes`,
+        API_GET_SEARCH_FOR_SPONSOR: `${BASE_API_URL}/db/searchForSponsor`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,

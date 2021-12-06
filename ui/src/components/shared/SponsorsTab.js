@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, {useState, useEffect} from 'react';
 //useReducer
 import {
@@ -8,18 +9,24 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Icon,
+    Icon, Search,
 } from "semantic-ui-react";
 import { SecureFetch } from '../util/secureFetch';
 import { config } from '../util/constants';
 import SponsorEditor from "./SponsorEditor";
 
 const LOGS_PER_PAGE = 4;
+const SEARCH_RESULTS_LIMIT = 5;
 
 export default function SponsorsTab(props) {
 
     const [sponsors, setSponsors] = useState([]);
     const [sponsorsCount, setSponsorsCount] = useState(LOGS_PER_PAGE);
+    const [searchBarValue, setSearchBarValue] = useState("");
+    const [isSearchLoading, setIsSearchLoading] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+
+
     let activePage = 0;
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
@@ -35,11 +42,47 @@ export default function SponsorsTab(props) {
             });
     }
 
+    // let handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+    function formatResults(results){
+        let formattedResults = []
+        for (const result of results){
+            formattedResults.push({
+                title: (result.fname + result.lname)
+            })
+        }
+        return formattedResults
+    }
+
+    let handleSearchChange = (e, { value }) => {
+        setIsSearchLoading(true);
+        setSearchBarValue(value);
+
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${SEARCH_RESULTS_LIMIT}`)
+            .then((response) => response.json())
+            .then((results) => {
+                setSearchResults(formatResults(results))
+                setIsSearchLoading(false);
+            })
+            .catch((error) => {
+                alert("An issue occurred while searching for sponsor content " + error);
+            });
+    }
+
     useEffect(() => {
         getPaginationData();
     }, [])
     return (
         <>
+            <Search
+                input={{ icon: 'search', iconPosition: 'left' }}
+                loading={isSearchLoading}
+                // onResultSelect={this.handleResultSelect}
+                onSearchChange={_.debounce(handleSearchChange, 500, {
+                    leading: true,
+                })}
+                results={searchResults}
+                value={searchBarValue}
+            />
             <Table>
                 <TableHeader>
                     <TableRow>
