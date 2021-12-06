@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect} from 'react';
+//useReducer
 import {
     Pagination,
     Table,
@@ -19,7 +20,6 @@ export default function SponsorsTab(props) {
 
     const [sponsors, setSponsors] = useState([]);
     const [sponsorsCount, setSponsorsCount] = useState(LOGS_PER_PAGE);
-    const [activePages, setActivePages] = React.useReducer();
     let activePage = 0;
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
@@ -89,6 +89,7 @@ export default function SponsorsTab(props) {
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         activePage = data.activePage - 1;
+                        getPaginationData()
                     }}
                 />
             </div>
