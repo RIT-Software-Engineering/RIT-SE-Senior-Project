@@ -119,14 +119,33 @@ export default function SponsorEditor(props){
 
     let trigger = <Button icon={"edit"} />;
 
+    let name = `${initialState.fname} ${initialState.lname}`;
+    let compAndDiv = `${initialState.company} `
+    if(initialState.division !== null){
+        compAndDiv += ("("+ initialState?.division + ")")
+    }
+
+    const generateSponsorSummary = () => {
+        return <div>
+            <h3>Sponsor Info</h3>
+            <b>Name:</b> {name} <br />
+            <b>Company and Division:</b> {compAndDiv} <br />
+            <b>Email:</b> {initialState.email} <br />
+            <b>Phone:</b> {initialState.phone} <br />
+            <b>Association:</b> {initialState.association} <br />
+            <b>Type:</b> {initialState.type} <br />
+        </div>
+    };
+
     if(props.summaryView){
         editor = <Modal
             trigger={trigger}
             header={"Sponsor Summary View"}
             content={{ content:
-                    <>
+                    <div>
+                        {generateSponsorSummary()}
                         {noteEditor}
-                    </>
+                    </div>
             }}
             actions={modalActions()}
         />
