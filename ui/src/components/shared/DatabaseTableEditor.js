@@ -58,6 +58,12 @@ export default function DatabaseTableEditor(props) {
 
         let body = new FormData();
 
+        if("changed_fields" in dataToSubmit){
+            if(typeof dataToSubmit["changed_fields"] === 'object'){
+                dataToSubmit["changed_fields"] = JSON.stringify(dataToSubmit["changed_fields"])
+            }
+        }
+
         Object.keys(dataToSubmit).forEach((key) => {
             body.append(key, dataToSubmit[key]);
         });
@@ -98,12 +104,10 @@ export default function DatabaseTableEditor(props) {
         }
 
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
-        console.log("formData", formData);
 
         if (newFormData) {
             setFormData(newFormData);
         } else {
-            console.log("column changed, name, value: ", name, value);
             let changedMap = {
                 ...formData["changed_fields"],
                 [name]: [initialState[name], value]
