@@ -1442,14 +1442,14 @@ module.exports = (db) => {
 
         let updateSponsorQuery = `
             UPDATE sponsors
-            SET fname = ?,
-                lname = ?,
-                company = ?,
-                division = ?,
-                email = ?,
-                phone = ?,
+            SET fname       = ?,
+                lname       = ?,
+                company     = ?,
+                division    = ?,
+                email       = ?,
+                phone       = ?,
                 association = ?,
-                type = ?
+                type        = ?
             WHERE sponsor_id = ?
         `;
 
@@ -1461,70 +1461,104 @@ module.exports = (db) => {
             body.email,
             body.phone,
             body.association,
-            body.type
+            body.type,
+            body.sponsor_id
         ];
 
         let updateSponsorQueryCode = 500;
 
-        db.query(updateSponsorQuery, updateSponsorParams)
+        let updateQueryPromise = db.query(updateSponsorQuery, updateSponsorParams)
             .then(() => {
-                updateSponsorQueryCode = 200
+                return [200, null];
             })
             .catch((err) => {
-                return res.status(500).send(err);
+                return [500, err];
             });
 
-        let createSponsorNoteQuery = `
-            INSERT INTO sponsor_notes
-            (
-                creation_date,
-                note_content,
-                sponsor,
-                author,
-                previous_note
-             )
-             VALUES (CURRENT_TIMESTAMP,?,?,?,?)
-        `;
+        let changedFieldsMessageFirstPart = [];
+        let changedFieldsMessageSecondPart = [];
+        let changedFieldsMessageThirdPart = [];
+
+        body.changed_fields = JSON.parse(body.changed_fields)
+
+        for (const field of Object.keys(body.changed_fields)) {
+            changedFieldsMessageFirstPart.push(field);
+            changedFieldsMessageSecondPart.push(body.changed_fields[field][0]);
+            changedFieldsMessageThirdPart.push(body.changed_fields[field][1]);
+        }
+
+        let note_content =
+            "Fields: " + changedFieldsMessageFirstPart.join(", ") +
+            " were changed from: " + changedFieldsMessageSecondPart.join(", ") +
+            " to: " + changedFieldsMessageThirdPart.join(", ");
 
         let createSponsorNoteParams = [
-            body.note_content,
-            body.sponsor,
-            body.author,
-            body.sponsor_note_id
-        ];
-
-        db.query(createSponsorNoteQuery, createSponsorNoteParams)
-            .then(() => {
-                updateSponsorQueryCode = 200
-            })
-            .catch((err) => {
-                return res.status(500).send(err);
-            });
-
-    });
-
-    db_router.post("/createSponsorNote", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
-        let body = req.body;
-
-        let insertQuery = `
-            INSERT into sponsor_notes
-            (note_content, sponsor, author, previous_note)
-            values (?,?,?,?)`;
-
-        let params = [
-            body.note_content,
+            note_content,
             body.sponsor_id,
             req.user.system_id,
             null
         ];
 
-        db.query(insertQuery, params)
+        let createSponsorNotePromise = createSponsorNote(createSponsorNoteParams)
+
+        Promise.all([updateQueryPromise, createSponsorNotePromise]).then(
+            ([[updateQueryStatusCode, updateSponsorError], [createNoteStatusCode, createNoteError]]) => {
+                if (updateSponsorError){
+                    res.status(updateQueryStatusCode).send(updateSponsorError)
+                }
+                else if (createNoteError){
+                    res.status(createNoteStatusCode).send(createNoteError)
+                }
+                else if (updateQueryStatusCode !== createNoteStatusCode){
+                    res.status(500).send("status code mismatch in editing sponsor, please contact an admin to investigate")
+                }
+                else {
+                    res.status(updateQueryStatusCode).send()
+                }
+            }
+        )
+    });
+
+    async function createSponsorNote(queryParams){
+        let insertQuery = `
+            INSERT into sponsor_notes
+                (note_content, sponsor, author, previous_note)
+            values (?, ?, ?, ?)`;
+
+        let status = 500
+        let error = null
+
+        await db.query(insertQuery, queryParams)
             .then(() => {
-                return res.status(200).send();
+                status = 200;
             })
             .catch((err) => {
-                return res.status(500).send(err);
+                status = 500;
+                error = err;
             });
+        return [status, error]
+    }
+
+    db_router.post("/createSponsorNote", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        params = [
+            body.note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            body.previous_note
+        ]
+
+        createSponsorNote(params).then(([status, error]) => {
+            console.log("endpoint", status);
+            if (error){
+                res.status(status).send(error)
+            }
+            else {
+                res.status(status).send()
+            }
+        });
+
     });
 
     db_router.post("/createAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {

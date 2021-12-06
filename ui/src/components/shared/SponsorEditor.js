@@ -99,6 +99,7 @@ export default function SponsorEditor(props){
             header={props.header}
             button="edit"
             childComponents={<SponsorNoteEditor sponsor_id={props.sponsor.sponsor_id}/>}
+            callback={props.callback}
         />
     );
 }
