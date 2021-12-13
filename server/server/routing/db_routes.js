@@ -1287,7 +1287,7 @@ module.exports = (db) => {
             SELECT * 
             FROM sponsor_notes
             WHERE sponsor = ?
-            ORDER BY creation_date DESC
+            ORDER BY creation_date
         `;
 
         const queryParams = [req.query.sponsor_id]
@@ -1461,7 +1461,7 @@ module.exports = (db) => {
 
     });
 
-    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
+    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
         let updateSponsorQuery = `
@@ -1489,7 +1489,6 @@ module.exports = (db) => {
             body.sponsor_id
         ];
 
-        let updateSponsorQueryCode = 500;
 
         let updateQueryPromise = db.query(updateSponsorQuery, updateSponsorParams)
             .then(() => {
