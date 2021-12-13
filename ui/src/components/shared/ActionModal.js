@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, {useState, useRef, useContext, createRef} from "react";
 import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";
@@ -191,7 +191,7 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={props.trigger || <Button fluid >View Action</Button>}
+            trigger={props.trigger || <Button ref={props.ref} fluid >View Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
