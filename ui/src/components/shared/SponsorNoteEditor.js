@@ -35,29 +35,39 @@ export default function SponsorNoteEditor(props){
         return noteMapWithPreviousNotes
     }
 
+    function groupByNewRoot(notesMap){
+        let newMap = {}
+        for (const noteGroup of Object.keys(notesMap)) {
+            if(notesMap[noteGroup].length>0) {
+                const reversedGroup = notesMap[noteGroup].reverse()
+                const newRoot = reversedGroup[0]
+                newMap[newRoot.sponsor_note_id] = reversedGroup
+            }
+        }
+        return newMap
+    }
+
     const getSponsorNotesData = () => {
         SecureFetch(`${config.url.API_GET_SPONSOR_NOTES}/?sponsor_id=${props.sponsor_id}`)
             .then((response) => response.json())
             .then((sponsorNotes) => {
                 let initNotesArray = [];
-                const notesMap = groupRelatedNotes(sponsorNotes)
+                let notesMap = groupRelatedNotes(sponsorNotes)
+                notesMap = groupByNewRoot(notesMap)
                 for (const noteGroup of Object.keys(notesMap)){
-                    if(notesMap[noteGroup].length>0){
-                        notesMap[noteGroup].reverse()
-                        let rootNote = <SponsorNote noEdit note={notesMap[noteGroup][0]}/>
-                        if(notesMap[noteGroup].length>1){
-                            rootNote = <SponsorNote
-                                note={notesMap[noteGroup][0]}
-                                isRoot={true}
-                                noteGroup={notesMap[noteGroup]}
-                                callback={getSponsorNotesData}
-                            />
-                        }
-                        initNotesArray.push(rootNote)
+                    let rootNote = <SponsorNote noEdit note={notesMap[noteGroup][0]}/>
+                    if(notesMap[noteGroup].length>1){
+                        rootNote = <SponsorNote
+                            note={notesMap[noteGroup][0]}
+                            isRoot={true}
+                            noteGroup={notesMap[noteGroup]}
+                            callback={getSponsorNotesData}
+                        />
                     }
+                    initNotesArray.push(rootNote)
                 }
 
-                setNotesArray(initNotesArray)
+                setNotesArray(initNotesArray.reverse())
             })
 
     }
