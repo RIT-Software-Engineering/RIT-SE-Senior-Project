@@ -8,10 +8,10 @@ export default function SponsorNote(props){
     let modalButton = <div></div>
     let noteGroup = []
 
-    if (props.isRoot){
+    if (props.isRoot && !props.revisionsView){
         modalButton = <Button compact>Most recent revision</Button>
         for (const note of Object.keys(props.noteGroup)){
-            noteGroup.push(<SponsorNote note={props.noteGroup[note]}/>)
+            noteGroup.push(<SponsorNote revisionsView note={props.noteGroup[note]}/>)
         }
     }
 
@@ -55,7 +55,8 @@ export default function SponsorNote(props){
     let noteEditTrigger = <Button icon='edit' floated='right'/>
 
     let editNoteComponent = (
-        <Segment basic float={'right'}>
+        <div className={"sponsor-note-actions"}>
+            {revisionsModal}
             <DatabaseTableEditor
                 initialState={initialState}
                 submissionModalMessages={submissionModalMessages}
@@ -70,16 +71,16 @@ export default function SponsorNote(props){
                 }}
                 callback={props.callback}
             />
-        </Segment>
+        </div>
     );
 
     let content = <Segment float={'left'} basic>
         {props.note.note_content}
         <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp; {props.note.creation_date} {props.note.author} {revisionsModal}
+        &nbsp;&nbsp;&nbsp;&nbsp; {props.note.creation_date} {props.note.author}
     </Segment>
 
-    if(props.noEdit){
+    if(props.noEdit || props.revisionsView){
         editNoteComponent = <></>
     }
 

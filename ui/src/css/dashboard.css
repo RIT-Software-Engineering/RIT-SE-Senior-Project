@@ -131,3 +131,9 @@
 .ui.dimmer .ui.workaround.loader:after {
     border-color: #767676 transparent transparent;
 }
+
+.sponsor-note-actions {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
