@@ -8,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const DBHandler = require("./server/database/db");
 let db = new DBHandler();
+const Logger = require("./server/logger")
 
 const table_sql_path = "./server/database/table_sql";
 const dummy_data_path = "./server/database/test_data";
