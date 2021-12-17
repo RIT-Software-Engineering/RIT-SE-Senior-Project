@@ -1527,6 +1527,75 @@ module.exports = (db) => {
 
     });
 
+    db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+
+        let body = req.body;
+
+        let createSponsorQuery = `
+            INSERT into sponsors(
+                fname,
+                lname,
+                company,
+                division,
+                email,
+                phone,
+                association,
+                type
+            )
+            values (?,?,?,?,?,?,?,?)
+        `;
+
+        let createSponsorParams = [
+            body.fname,
+            body.lname,
+            body.company,
+            body.division,
+            body.email,
+            body.phone,
+            body.association,
+            body.type,
+            body.sponsor_id
+        ];
+
+
+        let createSponsorQueryPromise = db.query(createSponsorQuery, createSponsorParams)
+            .then(() => {
+                return [200, null];
+            })
+            .catch((err) => {
+                return [500, err];
+            });
+
+        let note_content =
+            "Sponsor created by " + req.user.system_id;
+
+        let createSponsorNoteParams = [
+            note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            null
+        ];
+
+        let createSponsorNotePromise = createSponsorNote(createSponsorNoteParams)
+
+        Promise.all([createSponsorQueryPromise, createSponsorNotePromise]).then(
+            ([[createSponsorQueryStatusCode, createSponsorError], [createNoteStatusCode, createNoteError]]) => {
+                if (createSponsorError){
+                    res.status(createSponsorQueryStatusCode).send(createSponsorError)
+                }
+                else if (createNoteError){
+                    res.status(createNoteStatusCode).send(createNoteError)
+                }
+                else if (createSponsorQueryStatusCode !== createNoteStatusCode){
+                    res.status(500).send("status code mismatch in editing sponsor, please contact an admin to investigate")
+                }
+                else {
+                    res.status(createSponsorQueryStatusCode).send()
+                }
+            }
+        )
+    });
+
     db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
