@@ -16,7 +16,6 @@ import { config } from '../util/constants';
 import SponsorEditor from "./SponsorEditor";
 
 const LOGS_PER_PAGE = 4;
-const SEARCH_RESULTS_LIMIT = 5;
 
 export default function SponsorsTab(props) {
 
@@ -57,11 +56,14 @@ export default function SponsorsTab(props) {
         setIsSearchLoading(true);
         setSearchBarValue(value);
 
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${SEARCH_RESULTS_LIMIT}`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * activePage}&searchQuery=${value}`)
             .then((response) => response.json())
             .then((results) => {
-                setSearchResults(formatResults(results))
+                setSearchResults(formatResults(results.sponsors))
                 setIsSearchLoading(false);
+                setSponsorsCount(results.sponsorsCount);
+                activePage = 1
+                setSponsors(results.sponsors);
             })
             .catch((error) => {
                 alert("An issue occurred while searching for sponsor content " + error);
@@ -129,6 +131,7 @@ export default function SponsorsTab(props) {
                     lastItem={null}
                     prevItem={{ content: <Icon name="angle left" />, icon: true }}
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
+                    activePage={activePage}
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         activePage = data.activePage - 1;

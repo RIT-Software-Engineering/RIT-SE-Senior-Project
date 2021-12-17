@@ -1437,26 +1437,92 @@ module.exports = (db) => {
     });
 
 
-    db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
-        let body = req.body;
+    db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
+        const { resultLimit, offset, searchQuery } = req.query;
 
-        let searchQuery = `
-            SELECT *
-            FROM sponsors
-            LIMIT 3
-        `;
+        let getSponsorsQuery = "";
+        let queryParams = [];
+        let getSponsorsCount = "";
+        let sponsorCountParams = [];
 
-        let params = [
-            // body?.search_query || ""
-        ];
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                break;
+            case ROLES.COACH:
+            case ROLES.ADMIN:
+                getSponsorsQuery = `
+                    SELECT *
+                    FROM sponsors
+                    WHERE sponsors.OID NOT IN (
+                        SELECT OID 
+                        FROM sponsors
+                        WHERE 
+                              company LIKE ?
+                            OR division LIKE ?
+                            OR fname LIKE ?
+                        OR lname LIKE ?
+                        ORDER BY 
+                            company,
+                            division,
+                            fname,
+                            lname 
+                        LIMIT ?
+                        ) AND (
+                                sponsors.company LIKE ?
+                            OR sponsors.division LIKE ?
+                            OR sponsors.fname LIKE ?
+                            OR sponsors.lname LIKE ?
+                        )
+                    ORDER BY
+                        sponsors.company,
+                        sponsors.division,
+                        sponsors.fname,
+                        sponsors.lname 
+                    LIMIT ?
+                `;
+                getSponsorsCount = `SELECT COUNT(*) 
+                                    FROM sponsors
+                                    WHERE
+                                        company LIKE ?
+                                       OR division LIKE ?
+                                       OR fname LIKE ?
+                                       OR lname LIKE ?
+                                       `;
+                const searchQueryParam = searchQuery || '';
+                queryParams = [
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    offset || 0,
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    resultLimit || 0
+                ];
+                sponsorCountParams =  [
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%'
+                ];
 
-        db.query(searchQuery, params)
-            .then((values) => {
-                return res.status(200).send(values);
+
+                break;
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+
+        const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
+        const SponsorsCountPromise = db.query(getSponsorsCount, sponsorCountParams);
+        Promise.all([SponsorsCountPromise, sponsorsPromise])
+            .then(([[sponsorsCount], sponsorsRows]) => {
+                res.send({ sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]], sponsors: sponsorsRows });
             })
-            .catch((err) => {
-                console.log("err" , err)
-                return res.status(500).send(err);
+            .catch((error) => {
+                res.status(500).send(error);
             });
 
     });
