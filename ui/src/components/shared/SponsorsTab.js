@@ -82,7 +82,6 @@ export default function SponsorsTab(props) {
                 onSearchChange={_.debounce(handleSearchChange, 500, {
                     leading: true,
                 })}
-                results={searchResults}
                 value={searchBarValue}
             />
             <Table>
@@ -125,7 +124,6 @@ export default function SponsorsTab(props) {
 
             <div className="pagination-container">
                 <Pagination
-                    defaultActivePage={1}
                     ellipsisItem={null}
                     firstItem={null}
                     lastItem={null}

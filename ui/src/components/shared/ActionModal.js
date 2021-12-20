@@ -1,4 +1,4 @@
-import React, {useState, useRef, useContext, createRef} from "react";
+import React, {useState, useRef, useContext} from "react";
 import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../util/constants";
 import { SecureFetch } from "../util/secureFetch";

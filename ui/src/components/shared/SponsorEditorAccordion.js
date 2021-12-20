@@ -3,7 +3,7 @@ import SponsorsTab from "./SponsorsTab";
 import {Accordion} from "semantic-ui-react";
 import React from "react";
 
-export default function(props){
+export default function SponsorEditorAccordion(){
     return (
         <div className="accordion-button-group">
             <Accordion
