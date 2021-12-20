@@ -1246,24 +1246,15 @@ module.exports = (db) => {
                 getSponsorsQuery = `
                     SELECT *
                     FROM sponsors
-                    WHERE sponsors.OID NOT IN (
-                        SELECT OID 
-                        FROM sponsors
-                        ORDER BY 
-                            company ASC,
-                            division ASC,
-                            fname ASC,
-                            lname ASC
-                        LIMIT ?
-                        )
                     ORDER BY
                         sponsors.company ASC,
                         sponsors.division ASC,
                         sponsors.fname ASC,
                         sponsors.lname ASC
                     LIMIT ?
+                    OFFSET ?
                 `;
-                queryParams = [offset || 0, resultLimit || 0];
+                queryParams = [resultLimit || -1, offset || 0];
                 getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
                 break;
             default:
