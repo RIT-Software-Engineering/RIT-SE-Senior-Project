@@ -109,7 +109,7 @@ export default function Proposals(props) {
                         <div className="accordion-buttons-container">
                         {props.viewOnly ?
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
-                            : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} />
+                            : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
                         }
                             <a
                                 href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}

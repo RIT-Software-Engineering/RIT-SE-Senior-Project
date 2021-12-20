@@ -1273,6 +1273,15 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getProjectSponsor", [UserAuth.isSignedIn], (req, res) => {
+
+        let query = `SELECT * FROM sponsors
+            WHERE sponsor_id = (SELECT sponsor FROM projects WHERE project_id = ?)`;
+
+        params = [req.query.project_id]
+        db.query(query, params).then((users) => res.send(users));
+    });
+
     db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
         let getSponsorNotesQuery = `
             SELECT * 
@@ -1545,7 +1554,6 @@ module.exports = (db) => {
             body.phone,
             body.association,
             body.type,
-            body.sponsor_id
         ];
 
 

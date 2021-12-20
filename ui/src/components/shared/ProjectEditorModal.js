@@ -32,7 +32,7 @@ export const formattedAttachments = (project) => {
  */
 export default function ProjectEditorModal(props) {
 
-    const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
+    const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [], sponsor: "" })
     const [initialState, setInitialState] = useState({
         project_id: props.project.project_id || "",
         display_name: props.project.display_name || "",
@@ -98,7 +98,16 @@ export default function ProjectEditorModal(props) {
                 });
                 setProjectMembers(projectMemberOptions);
             })
-    }, [props.project, props.viewOnly])
+        SecureFetch(`${config.url.API_GET_PROJECT_SPONSOR}?project_id=${props.project?.project_id}`)
+            .then(response => response.json())
+            .then(sponsor => {
+                let noSponsMembers = projectMembers;
+                noSponsMembers.sponsor = sponsor;
+                setProjectMembers(noSponsMembers)
+            })
+
+
+            }, [props.project, props.viewOnly])
 
     let submissionModalMessages = {
         SUCCESS: "The project has been updated.",
@@ -288,10 +297,11 @@ export default function ProjectEditorModal(props) {
             name: "synopsis",
         },
         {
-            type: "input",
+            type: "searchDropdown",
             label: "sponsor",
-            placeHolder: "sponsor",
+            options: props.viewOnly ? projectMembers.sponsor : props.activeSponsors?.map(sponsor => { return { key: sponsor.sponsor_id, text: `${sponsor.lname}, ${sponsor.fname}`, value: sponsor.sponsor_id } }),
             name: "sponsor",
+            disabled: props.viewOnly
         },
         {
             type: "dropdown",
