@@ -231,6 +231,24 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     );
                     break;
+                case "searchDropdown":
+                    fieldComponents.push(
+                        <Form.Field key={field.name} disabled={field.loading || field.disabled}>
+                            <label>{field.label}</label>
+                            <Dropdown
+                                search
+                                selection
+                                placeholder={field.name}
+                                options={field.options}
+                                loading={field.loading}
+                                disabled={field.loading || field.disabled}
+                                value={formData[field.name]}
+                                name={field.name}
+                                onChange={handleChange}
+                            />
+                        </Form.Field>
+                    );
+                    break;
                 case "activeCheckbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
