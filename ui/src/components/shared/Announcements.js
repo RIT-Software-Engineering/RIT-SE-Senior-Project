@@ -11,7 +11,9 @@ export default function Announcements(props) {
                     <h4>{announcement.action_target === ACTION_TARGETS.coach_announcement && `Coach (${props.semesterName}):`} {announcement.action_title}</h4>
                     <h4 className="secondary" >Ends {formatDateNoOffset(announcement.due_date)}</h4>
                 </div>
-                <div dangerouslySetInnerHTML={{ __html: announcement.page_html }} />
+                <div className={"announcement-container-wrapper"}>
+                    <div dangerouslySetInnerHTML={{ __html: announcement.page_html }} />
+                </div>
             </div>
         })}
     </div>
