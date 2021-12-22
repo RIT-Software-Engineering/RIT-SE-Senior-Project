@@ -55,6 +55,7 @@ export default function DashboardPage() {
             panes.push(
                 {
                     menuItem: {
+                        key: "Admin-Tab",
                         content:"Admin",
                         href: "#"
                     },
@@ -71,6 +72,7 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: {
+                        key: "Sponsors-Tab",
                         content:"Sponsors",
                         href: "#"
                     },
@@ -87,6 +89,7 @@ export default function DashboardPage() {
             panes.push(
                 {
                     menuItem: {
+                        key: "Coaches-Tab",
                         content:"Coaches",
                         href: "#"
                     },
@@ -99,6 +102,7 @@ export default function DashboardPage() {
             panes.push(
                 {
                     menuItem: {
+                        key: "Students-Tab",
                         content:"Students",
                         href: "#"
                     },
@@ -110,6 +114,7 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: {
+                        key: "Projects-Tab",
                         content:"Projects",
                         href: "#"
                     },
@@ -121,6 +126,7 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: {
+                        key: "Action-Submissions-Tab",
                         content:"Action Submissions",
                         href: "#"
                     },
@@ -132,6 +138,7 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: {
+                        key: "Dashboard-Tab",
                         content:"Dashboard",
                         href: "#"
                     },
@@ -146,6 +153,7 @@ export default function DashboardPage() {
         default:
             panes.push({
                 menuItem: {
+                    key: "Loading-Placeholder-Tab",
                     content:"Loading...",
                     href: "#"
                 },

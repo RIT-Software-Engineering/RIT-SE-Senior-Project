@@ -6,7 +6,8 @@ import { SecureFetch } from "../util/secureFetch";
 
 export default function ProjectEditor(props) {
     const [proposalData, setProposalData] = useState({});
-    const [activeCoaches, setActiveCoaches] = useState([])
+    const [activeCoaches, setActiveCoaches] = useState([]);
+    const [activeSponsors, setActiveSponsors] = useState([]);
     let semesters = {}
 
     if (!!props.semesterData) {
@@ -27,6 +28,7 @@ export default function ProjectEditor(props) {
                         semesterData={props.semesterData}
                         viewOnly={props.viewOnly}
                         activeCoaches={activeCoaches}
+                        activeSponsors={activeSponsors}
                     />
                 );
             });
@@ -55,7 +57,13 @@ export default function ProjectEditor(props) {
             .then(response => response.json())
             .then(coaches => {
                 setActiveCoaches(coaches)
-            })
+            });
+
+        SecureFetch(config.url.API_GET_ALL_SPONSORS)
+            .then(response => response.json())
+            .then(sponsors => {
+                setActiveSponsors(sponsors.sponsors)
+            });
     }, []);
 
     return props.noAccordion ? content() :

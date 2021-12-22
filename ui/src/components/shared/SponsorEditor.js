@@ -8,15 +8,15 @@ import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 export default function SponsorEditor(props){
 
     let initialState = {
-        sponsor_id: props.sponsor.sponsor_id,
-        fname: props.sponsor.fname,
-        lname: props.sponsor.lname,
-        company: props.sponsor.company,
-        division: props.sponsor.division,
-        email: props.sponsor.email,
-        phone: props.sponsor.phone,
-        association: props.sponsor.association,
-        type: props.sponsor.type,
+        sponsor_id: props?.sponsor?.sponsor_id || "",
+        fname: props?.sponsor?.fname || "",
+        lname: props?.sponsor?.lname || "",
+        company: props?.sponsor?.company || "",
+        division: props?.sponsor?.division || "",
+        email: props?.sponsor?.email || "",
+        phone: props?.sponsor?.phone || "",
+        association: props?.sponsor?.association || "",
+        type: props?.sponsor?.type || "",
         changed_fields: {}
     };
 
@@ -33,7 +33,7 @@ export default function SponsorEditor(props){
             label: "Sponsor ID",
             placeHolder: "Sponsor ID",
             name: "sponsor_id",
-            disabled: false
+            disabled: !initialState.sponsor_id
         },
         {
             type: "input",
@@ -93,7 +93,19 @@ export default function SponsorEditor(props){
         }
     ]
 
-    let noteEditor = (<SponsorNoteEditor sponsor_id={props.sponsor.sponsor_id}/>);
+    let noteEditor = (<SponsorNoteEditor sponsor_id={props?.sponsor?.sponsor_id || ""}/>);
+
+    let trigger = <Button icon={"edit"} />;
+
+    if (initialState.sponsor_id === "") {
+        submitRoute = config.url.API_POST_CREATE_SPONSOR;
+        trigger = <Button icon={"plus"} />
+        noteEditor = <></>
+        submissionModalMessages = {
+            SUCCESS: "The sponsor has been created.",
+            FAIL: "We were unable to create the sponsor.",
+        }
+    }
 
     let editor = (
         <DatabaseTableEditor
@@ -102,7 +114,7 @@ export default function SponsorEditor(props){
             submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             header={props.header}
-            button="edit"
+            trigger={trigger}
             childComponents={noteEditor}
             callback={props.callback}
         />
@@ -117,7 +129,6 @@ export default function SponsorEditor(props){
         ]
     }
 
-    let trigger = <Button icon={"edit"} />;
 
     let name = `${initialState.fname} ${initialState.lname}`;
     let compAndDiv = `${initialState.company} `

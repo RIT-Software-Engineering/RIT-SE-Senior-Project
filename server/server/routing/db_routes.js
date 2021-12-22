@@ -1246,24 +1246,15 @@ module.exports = (db) => {
                 getSponsorsQuery = `
                     SELECT *
                     FROM sponsors
-                    WHERE sponsors.OID NOT IN (
-                        SELECT OID 
-                        FROM sponsors
-                        ORDER BY 
-                            company ASC,
-                            division ASC,
-                            fname ASC,
-                            lname ASC
-                        LIMIT ?
-                        )
                     ORDER BY
                         sponsors.company ASC,
                         sponsors.division ASC,
                         sponsors.fname ASC,
                         sponsors.lname ASC
                     LIMIT ?
+                    OFFSET ?
                 `;
-                queryParams = [offset || 0, resultLimit || 0];
+                queryParams = [resultLimit || -1, offset || 0];
                 getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
                 break;
             default:
@@ -1280,6 +1271,15 @@ module.exports = (db) => {
             .catch((error) => {
                 res.status(500).send(error);
             });
+    });
+
+    db_router.get("/getProjectSponsor", [UserAuth.isSignedIn], (req, res) => {
+
+        let query = `SELECT * FROM sponsors
+            WHERE sponsor_id = (SELECT sponsor FROM projects WHERE project_id = ?)`;
+
+        params = [req.query.project_id]
+        db.query(query, params).then((users) => res.send(users));
     });
 
     db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
@@ -1554,7 +1554,6 @@ module.exports = (db) => {
             body.phone,
             body.association,
             body.type,
-            body.sponsor_id
         ];
 
 
