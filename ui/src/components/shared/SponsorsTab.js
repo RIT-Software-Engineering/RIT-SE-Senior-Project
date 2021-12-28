@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Icon, Search,
+    Icon, Input,
 } from "semantic-ui-react";
 import { SecureFetch } from '../util/secureFetch';
 import { config } from '../util/constants';
@@ -75,14 +75,14 @@ export default function SponsorsTab(props) {
     }, [])
     return (
         <>
-            <Search
-                input={{ icon: 'search', iconPosition: 'left' }}
-                loading={isSearchLoading}
-                // onResultSelect={this.handleResultSelect}
-                onSearchChange={_.debounce(handleSearchChange, 500, {
+            <Input
+                icon='search'
+                iconPosition='left'
+                placeholder='Search...'
+                value={searchBarValue}
+                onChange={_.debounce(handleSearchChange, 500, {
                     leading: true,
                 })}
-                value={searchBarValue}
             />
             <Table>
                 <TableHeader>
