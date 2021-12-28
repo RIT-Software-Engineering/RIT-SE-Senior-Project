@@ -137,3 +137,9 @@
     align-items: center;
     padding: 10px;
 }
+
+.announcement-container-wrapper {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
