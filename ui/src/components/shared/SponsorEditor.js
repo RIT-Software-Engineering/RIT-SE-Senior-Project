@@ -149,6 +149,8 @@ export default function SponsorEditor(props){
     };
 
     if(props.summaryView){
+        trigger = <Button icon={"eye"} />;
+
         editor = <Modal
             trigger={trigger}
             header={"Sponsor Summary View"}

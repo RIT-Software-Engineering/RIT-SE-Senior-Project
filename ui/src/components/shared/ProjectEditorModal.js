@@ -299,7 +299,7 @@ export default function ProjectEditorModal(props) {
         {
             type: "searchDropdown",
             label: "sponsor",
-            options: props.viewOnly ? projectMembers.sponsor : props.activeSponsors?.map(sponsor => { return { key: sponsor.sponsor_id, text: `${sponsor.lname}, ${sponsor.fname}`, value: sponsor.sponsor_id } }),
+            options: props.viewOnly ? projectMembers.sponsor : props.activeSponsors?.map(sponsor => { return { key: sponsor.sponsor_id, text: `${sponsor.lname}, ${sponsor.fname} (${sponsor.company})`, value: sponsor.sponsor_id } }),
             name: "sponsor",
             disabled: props.viewOnly
         },
