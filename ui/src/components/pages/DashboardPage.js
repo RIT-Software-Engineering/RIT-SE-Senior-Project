@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import TimeLinesView from "../shared/TimeLinesView";
-import SemesterEditor from "../shared/SemesterEditor";
-import ActionEditor from "../shared/ActionEditor";
-import StudentsTab from "../shared/StudentsTab";
-import ProjectsTab from "../shared/ProjectsTab";
-import ProjectEditor from "../shared/ProjectEditor";
-import ActionLogs from "../shared/ActionLogs";
-import CoachesTab from "../shared/CoachesTab";
-import AdminView from "../shared/AdminView";
-import { UserContext } from "../util/UserContext";
+import TimeLinesView from "../Tabs/DashboardTab/TimelinesView/TimeLinesView";
+import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
+import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
+import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
+import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
+import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
+import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
+import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
+import AdminView from "../util/components/AdminView";
+import { UserContext } from "../util/functions/UserContext";
 import "./../../css/dashboard.css";
-import UserEditor from "../shared/UserEditor";
-import { SecureFetch } from "../util/secureFetch";
-import { config } from "../util/constants";
-import FileEditor from "../shared/FileEditor";
-import SponsorsTab from "../shared/SponsorsTab";
-import SponsorEditorAccordion from "../shared/SponsorEditorAccordion";
+import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
+import { SecureFetch } from "../util/functions/secureFetch";
+import { config } from "../util/functions/constants";
+import FileEditor from "../Tabs/AdminTab/FileEditor";
+import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
+import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 
 export default function DashboardPage() {
 
