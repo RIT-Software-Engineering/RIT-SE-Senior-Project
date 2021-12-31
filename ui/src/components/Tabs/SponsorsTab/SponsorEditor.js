@@ -1,11 +1,38 @@
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
-import {config} from "../../util/functions/constants";
+import {config, USERTYPES} from "../../util/functions/constants";
 import SponsorNoteEditor from "./SponsorNoteEditor";
 import {Modal} from "semantic-ui-react";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
+import Proposals from "../ProjectsTab/Proposals";
+import {SecureFetch} from "../../util/functions/secureFetch";
 
 export default function SponsorEditor(props){
+
+    const [sponsorProjectData, setSponsorProjectData] = useState([]);
+    const [semesterData, setSemestersData] = useState([]);
+
+
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_SPONSOR_PROJECTS}/?sponsor_id=${props?.sponsor?.sponsor_id || ""}`)
+            .then((response) => response.json())
+            .then((projects) => {
+                console.log(projects)
+                setSponsorProjectData(projects)
+            })
+            .catch((error) => {
+                alert("Failed to get sponsor projects data " + error);
+            });
+        SecureFetch(config.url.API_GET_SEMESTERS)
+            .then((response) => response.json())
+            .then((semestersData) => {
+                setSemestersData(semestersData);
+            })
+            .catch((error) => {
+                console.error("Failed to get semestersData data" + error);
+            });
+    }, []);
+
 
     let initialState = {
         sponsor_id: props?.sponsor?.sponsor_id || "",
@@ -115,7 +142,10 @@ export default function SponsorEditor(props){
             formFieldArray={formFieldArray}
             header={props.header}
             trigger={trigger}
-            childComponents={noteEditor}
+            childComponents={[
+                <Proposals noAccordion viewOnly proposalData={sponsorProjectData} semesterData={semesterData}/>,
+                noteEditor
+            ]}
             callback={props.callback}
         />
     );
@@ -157,6 +187,7 @@ export default function SponsorEditor(props){
             content={{ content:
                     <div>
                         {generateSponsorSummary()}
+                        {<Proposals noAccordion viewOnly proposalData={sponsorProjectData} semesterData={semesterData}/>}
                         {noteEditor}
                     </div>
             }}
