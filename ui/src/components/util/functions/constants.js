@@ -51,6 +51,7 @@ export const config = {
         API_GET_PROJECT_SPONSOR: `${BASE_API_URL}/db/getProjectSponsor`,
         API_GET_SPONSOR_NOTES: `${BASE_API_URL}/db/getSponsorNotes`,
         API_GET_SEARCH_FOR_SPONSOR: `${BASE_API_URL}/db/searchForSponsor`,
+        API_GET_SPONSOR_PROJECTS: `${BASE_API_URL}/db/getSponsorProjects`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
@@ -61,9 +62,8 @@ export const config = {
         API_POST_CREATE_SEMESTER: `${BASE_API_URL}/db/createSemester`,
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
-        API_POST_BATCH_CREAT_USER: `${BASE_API_URL}/db/batchCreateUser`,
+        API_POST_BATCH_CREATE_USER: `${BASE_API_URL}/db/batchCreateUser`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
-        API_POST_BACKUP_DATABASE: `${BASE_API_URL}/db/backupDatabase`,
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
         API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,

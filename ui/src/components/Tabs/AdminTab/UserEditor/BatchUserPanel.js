@@ -30,7 +30,7 @@ export default function BatchUserPanel() {
         let body = new FormData();
         body.append("users", JSON.stringify(users));
 
-        SecureFetch(config.url.API_POST_BATCH_CREAT_USER, {
+        SecureFetch(config.url.API_POST_BATCH_CREATE_USER, {
             method: "post",
             body: body,
         }).then(response => {

@@ -1282,6 +1282,18 @@ module.exports = (db) => {
         db.query(query, params).then((users) => res.send(users));
     });
 
+    db_router.get("/getSponsorProjects", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+        let query = `
+            SELECT *
+            FROM projects
+            WHERE sponsor = ?
+        `;
+
+        const params = [req.query.sponsor_id]
+        db.query(query, params).then((projects) => res.send(projects));
+    });
+
     db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
         let getSponsorNotesQuery = `
             SELECT * 
