@@ -19,6 +19,8 @@ function ToolTip(props) {
     const [submissions, setSubmissions] = useState(null)
     const [loadingSubmissions, setLoadingSubmissions] = useState(false)
 
+    // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
+    // clicking elements on the modal
     let isOpenCallback = function (isOpen) {
         setCloseOnDocClick(!isOpen);
     };
@@ -60,6 +62,7 @@ function ToolTip(props) {
                     target={props.action?.action_target}
                     semesterName={props.semesterName}
                     projectName={props.projectName}
+                    isOpenCallback={isOpenCallback}
                     trigger={<div className="fake-a">
                         {longSubmissionTitle ?
                             <>{submission.mock_id && `${submission.mock_name} (${submission.mock_id}) as `}{`${submission.name} (${submission.system_id})`} {formatDateTime(submission.submission_datetime)} </>

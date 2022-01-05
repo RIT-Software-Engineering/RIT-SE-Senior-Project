@@ -6,6 +6,7 @@ import { SecureFetch } from '../../../../util/functions/secureFetch';
 
 export default function SubmissionViewerModal(props) {
 
+    const [open, setOpen] = useState(false);
     const [submission, setSubmission] = useState({});
     const [files, setFiles] = useState([]);
     const [noSubmission, setNoSubmission] = useState(true)
@@ -42,6 +43,15 @@ export default function SubmissionViewerModal(props) {
 
     return (
         <Modal
+            onClose={() => {
+                setOpen(false);
+                props.isOpenCallback(false);
+            }}
+            onOpen={() => {
+                setOpen(true);
+                props.isOpenCallback(true);
+            }}
+            open={open}
             trigger={
                 <div onClick={loadSubmission}>
                     {props.trigger || <Button icon>
