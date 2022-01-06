@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {Accordion, Icon} from "semantic-ui-react";
+import { Accordion, Icon } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import _ from "lodash";
@@ -113,7 +113,7 @@ export default function StudentsTab() {
         return mappedData;
     }
 
-    function generateMappedProjects(projectData){
+    function generateMappedProjects(projectData) {
         let projectMap = {}
         projectData.forEach(project => {
             projectMap[project.project_id] = project;
@@ -144,7 +144,7 @@ export default function StudentsTab() {
                 studentsData = _.sortBy(studentsData || [], ["fname", "lname", "email"])
 
                 Object.keys(semester.projects).map(projectKey => {
-                    if (semester.projects[projectKey].students.length > 0 && projectKey !== "noProject" && semester.projects[projectKey].name !== undefined && projectMap.hasOwnProperty(projectKey)){
+                    if (semester.projects[projectKey].students.length > 0 && projectKey !== "noProject" && semester.projects[projectKey].name !== undefined && projectMap.hasOwnProperty(projectKey)) {
                         let sortedStudents = _.sortBy(semester.projects[projectKey].students || [], ["fname", "lname", "email"])
                         activeProjects.push(
                             <div className="accordion-button-group">
@@ -240,7 +240,7 @@ export default function StudentsTab() {
             <h3>All Students</h3>
         )
 
-        if(userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0){
+        if (userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0) {
             semesterPanels.push(
                 activeProjects,
                 <h3>My Teams</h3>
