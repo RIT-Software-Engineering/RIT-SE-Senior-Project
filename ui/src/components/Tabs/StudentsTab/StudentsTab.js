@@ -104,11 +104,11 @@ export default function StudentsTab() {
         });
 
         // Check if activeSemesters has already been set so that we don't run into issues with infinite re-renders
-        if (!_.isEqual(activeSemesters, initialActive)) {
-            setActiveSemesters(initialActive)
+        if (Object.keys(activeSemesters).length === 0 && !_.isEqual(activeSemesters, initialActive)) {
+            setActiveSemesters(initialActive);
         }
-        if (!_.isEqual(activeProjectIds, initialActiveProjects)) {
-            setActiveProjectIds(initialActiveProjects)
+        if (Object.keys(activeProjectIds).length === 0 && !_.isEqual(activeProjectIds, initialActiveProjects)) {
+            setActiveProjectIds(initialActiveProjects);
         }
         return mappedData;
     }
