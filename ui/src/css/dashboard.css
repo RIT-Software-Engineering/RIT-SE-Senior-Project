@@ -13,6 +13,7 @@
     padding: 6px;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .action-bar.proposal-row-yellow {
@@ -129,4 +130,16 @@
 
 .ui.dimmer .ui.workaround.loader:after {
     border-color: #767676 transparent transparent;
+}
+
+.sponsor-note-actions {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.announcement-container-wrapper {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
 }

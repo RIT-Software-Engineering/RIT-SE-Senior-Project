@@ -1,20 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Tab } from "semantic-ui-react";
-import TimeLinesView from "../shared/TimeLinesView";
-import SemesterEditor from "../shared/SemesterEditor";
-import ActionEditor from "../shared/ActionEditor";
-import StudentsTab from "../shared/StudentsTab";
-import ProjectsTab from "../shared/ProjectsTab";
-import ProjectEditor from "../shared/ProjectEditor";
-import ActionLogs from "../shared/ActionLogs";
-import CoachesTab from "../shared/CoachesTab";
-import AdminView from "../shared/AdminView";
-import { UserContext } from "../util/UserContext";
+import TimeLinesView from "../Tabs/DashboardTab/TimelinesView/TimeLinesView";
+import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
+import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
+import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
+import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
+import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
+import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
+import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
+import AdminView from "../util/components/AdminView";
+import { UserContext } from "../util/functions/UserContext";
 import "./../../css/dashboard.css";
-import UserEditor from "../shared/UserEditor";
-import { SecureFetch } from "../util/secureFetch";
-import { config } from "../util/constants";
-import FileEditor from "../shared/FileEditor";
+import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
+import { SecureFetch } from "../util/functions/secureFetch";
+import { config } from "../util/functions/constants";
+import FileEditor from "../Tabs/AdminTab/FileEditor";
+import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
+import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 
 export default function DashboardPage() {
 
@@ -52,20 +54,33 @@ export default function DashboardPage() {
         case "admin":
             panes.push(
                 {
-                    menuItem: "Admin",
+                    menuItem: {
+                        key: "Admin-Tab",
+                        content:"Admin",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <SemesterEditor />
                             <ActionEditor semesterData={semesterData} />
                             <ProjectEditor semesterData={semesterData} />
                             <UserEditor />
+                            <SponsorEditorAccordion />
                             <FileEditor />
                         </Tab.Pane>
                     ),
                 },
                 {
-                    menuItem: "Sponsors",
-                    render: () => <Tab.Pane>Under construction...</Tab.Pane>
+                    menuItem: {
+                        key: "Sponsors-Tab",
+                        content:"Sponsors",
+                        href: "#"
+                    },
+                    render: () => (
+                        <Tab.Pane>
+                            <SponsorsTab />
+                        </Tab.Pane>
+                    )
                 },
             );
         // Break intentionally left out to take advantage of switch flow
@@ -73,7 +88,11 @@ export default function DashboardPage() {
         case "coach":
             panes.push(
                 {
-                    menuItem: "Coaches",
+                    menuItem: {
+                        key: "Coaches-Tab",
+                        content:"Coaches",
+                        href: "#"
+                    },
                     render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
                 }
             );
@@ -82,7 +101,11 @@ export default function DashboardPage() {
         case "student":
             panes.push(
                 {
-                    menuItem: "Students",
+                    menuItem: {
+                        key: "Students-Tab",
+                        content:"Students",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <StudentsTab />
@@ -90,7 +113,11 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Projects",
+                    menuItem: {
+                        key: "Projects-Tab",
+                        content:"Projects",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <ProjectsTab semesterData={semesterData} />
@@ -98,7 +125,11 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Action Submissions",
+                    menuItem: {
+                        key: "Action-Submissions-Tab",
+                        content:"Action Submissions",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <ActionLogs semesterData={semesterData} />
@@ -106,7 +137,11 @@ export default function DashboardPage() {
                     ),
                 },
                 {
-                    menuItem: "Dashboard",
+                    menuItem: {
+                        key: "Dashboard-Tab",
+                        content:"Dashboard",
+                        href: "#"
+                    },
                     render: () => (
                         <Tab.Pane>
                             <TimeLinesView />
@@ -117,7 +152,11 @@ export default function DashboardPage() {
             break;
         default:
             panes.push({
-                menuItem: "Loading...",
+                menuItem: {
+                    key: "Loading-Placeholder-Tab",
+                    content:"Loading...",
+                    href: "#"
+                },
                 render: () => (
                     <Tab.Pane>
                         <p>Loading...</p>

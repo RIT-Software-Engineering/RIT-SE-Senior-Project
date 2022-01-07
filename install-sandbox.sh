@@ -19,9 +19,7 @@ sudo systemctl stop nginx
 echo "Starting nginx"
 sudo systemctl start nginx
 echo "Stopping pm2"
-# Kill pm2 instead of just stopping if there are changes to .env
-# sudo pm2 kill
-alias pm2='env HOME=/home/website-test pm2'
+sudo su pm2-user
 sudo pm2 stop dev
 echo "Starting pm2"
 sudo pm2 start /home/website-test/RIT-SE-Senior-Project/ecosystem.dev.config.js

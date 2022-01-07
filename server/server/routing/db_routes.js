@@ -1230,6 +1230,90 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
+
+        const { resultLimit, offset } = req.query;
+
+        let getSponsorsQuery = "";
+        let queryParams = [];
+        let getSponsorsCount = "";
+
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                break;
+            case ROLES.COACH:
+            case ROLES.ADMIN:
+                getSponsorsQuery = `
+                    SELECT *
+                    FROM sponsors
+                    ORDER BY
+                        sponsors.company ASC,
+                        sponsors.division ASC,
+                        sponsors.fname ASC,
+                        sponsors.lname ASC
+                    LIMIT ?
+                    OFFSET ?
+                `;
+                queryParams = [resultLimit || -1, offset || 0];
+                getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
+                break;
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+
+        const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
+        const SponsorsCountPromise = db.query(getSponsorsCount);
+        Promise.all([SponsorsCountPromise, sponsorsPromise])
+            .then(([[sponsorsCount], sponsorsRows]) => {
+                res.send({ sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]], sponsors: sponsorsRows });
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getProjectSponsor", [UserAuth.isSignedIn], (req, res) => {
+
+        let query = `SELECT * FROM sponsors
+            WHERE sponsor_id = (SELECT sponsor FROM projects WHERE project_id = ?)`;
+
+        params = [req.query.project_id]
+        db.query(query, params).then((users) => res.send(users));
+    });
+
+    db_router.get("/getSponsorProjects", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+        let query = `
+            SELECT *
+            FROM projects
+            WHERE sponsor = ?
+        `;
+
+        const params = [req.query.sponsor_id]
+        db.query(query, params).then((projects) => res.send(projects));
+    });
+
+    db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
+        let getSponsorNotesQuery = `
+            SELECT * 
+            FROM sponsor_notes
+            WHERE sponsor = ?
+            ORDER BY creation_date
+        `;
+
+        const queryParams = [req.query.sponsor_id]
+
+        db.query(getSponsorNotesQuery, queryParams)
+            .then((sponsorNotes) => {
+                res.send(sponsorNotes);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    });
+
 
     db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
 
@@ -1364,6 +1448,287 @@ module.exports = (db) => {
             });
     });
 
+
+    db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
+        const { resultLimit, offset, searchQuery } = req.query;
+
+        let getSponsorsQuery = "";
+        let queryParams = [];
+        let getSponsorsCount = "";
+        let sponsorCountParams = [];
+
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                break;
+            case ROLES.COACH:
+            case ROLES.ADMIN:
+                getSponsorsQuery = `
+                    SELECT *
+                    FROM sponsors
+                    WHERE sponsors.OID NOT IN (
+                        SELECT OID 
+                        FROM sponsors
+                        WHERE 
+                              company LIKE ?
+                            OR division LIKE ?
+                            OR fname LIKE ?
+                        OR lname LIKE ?
+                        ORDER BY 
+                            company,
+                            division,
+                            fname,
+                            lname 
+                        LIMIT ?
+                        ) AND (
+                                sponsors.company LIKE ?
+                            OR sponsors.division LIKE ?
+                            OR sponsors.fname LIKE ?
+                            OR sponsors.lname LIKE ?
+                        )
+                    ORDER BY
+                        sponsors.company,
+                        sponsors.division,
+                        sponsors.fname,
+                        sponsors.lname 
+                    LIMIT ?
+                `;
+                getSponsorsCount = `SELECT COUNT(*) 
+                                    FROM sponsors
+                                    WHERE
+                                        company LIKE ?
+                                       OR division LIKE ?
+                                       OR fname LIKE ?
+                                       OR lname LIKE ?
+                                       `;
+                const searchQueryParam = searchQuery || '';
+                queryParams = [
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    offset || 0,
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    resultLimit || 0
+                ];
+                sponsorCountParams =  [
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%',
+                    '%'+searchQueryParam+'%'
+                ];
+
+
+                break;
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+
+        const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
+        const SponsorsCountPromise = db.query(getSponsorsCount, sponsorCountParams);
+        Promise.all([SponsorsCountPromise, sponsorsPromise])
+            .then(([[sponsorsCount], sponsorsRows]) => {
+                res.send({ sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]], sponsors: sponsorsRows });
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+
+    });
+
+    db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+
+        let body = req.body;
+
+        let createSponsorQuery = `
+            INSERT into sponsors(
+                fname,
+                lname,
+                company,
+                division,
+                email,
+                phone,
+                association,
+                type
+            )
+            values (?,?,?,?,?,?,?,?)
+        `;
+
+        let createSponsorParams = [
+            body.fname,
+            body.lname,
+            body.company,
+            body.division,
+            body.email,
+            body.phone,
+            body.association,
+            body.type,
+        ];
+
+
+        let createSponsorQueryPromise = db.query(createSponsorQuery, createSponsorParams)
+            .then(() => {
+                return [200, null];
+            })
+            .catch((err) => {
+                return [500, err];
+            });
+
+        let note_content =
+            "Sponsor created by " + req.user.system_id;
+
+        let createSponsorNoteParams = [
+            note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            null
+        ];
+
+        let createSponsorNotePromise = createSponsorNote(createSponsorNoteParams)
+
+        Promise.all([createSponsorQueryPromise, createSponsorNotePromise]).then(
+            ([[createSponsorQueryStatusCode, createSponsorError], [createNoteStatusCode, createNoteError]]) => {
+                if (createSponsorError){
+                    res.status(createSponsorQueryStatusCode).send(createSponsorError)
+                }
+                else if (createNoteError){
+                    res.status(createNoteStatusCode).send(createNoteError)
+                }
+                else if (createSponsorQueryStatusCode !== createNoteStatusCode){
+                    res.status(500).send("status code mismatch in editing sponsor, please contact an admin to investigate")
+                }
+                else {
+                    res.status(createSponsorQueryStatusCode).send()
+                }
+            }
+        )
+    });
+
+    db_router.post("/editSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        let updateSponsorQuery = `
+            UPDATE sponsors
+            SET fname       = ?,
+                lname       = ?,
+                company     = ?,
+                division    = ?,
+                email       = ?,
+                phone       = ?,
+                association = ?,
+                type        = ?
+            WHERE sponsor_id = ?
+        `;
+
+        let updateSponsorParams = [
+            body.fname,
+            body.lname,
+            body.company,
+            body.division,
+            body.email,
+            body.phone,
+            body.association,
+            body.type,
+            body.sponsor_id
+        ];
+
+
+        let updateQueryPromise = db.query(updateSponsorQuery, updateSponsorParams)
+            .then(() => {
+                return [200, null];
+            })
+            .catch((err) => {
+                return [500, err];
+            });
+
+        let changedFieldsMessageFirstPart = [];
+        let changedFieldsMessageSecondPart = [];
+        let changedFieldsMessageThirdPart = [];
+
+        body.changed_fields = JSON.parse(body.changed_fields)
+
+        for (const field of Object.keys(body.changed_fields)) {
+            changedFieldsMessageFirstPart.push(field);
+            changedFieldsMessageSecondPart.push(body.changed_fields[field][0]);
+            changedFieldsMessageThirdPart.push(body.changed_fields[field][1]);
+        }
+
+        let note_content =
+            "Fields: " + changedFieldsMessageFirstPart.join(", ") +
+            " were changed from: " + changedFieldsMessageSecondPart.join(", ") +
+            " to: " + changedFieldsMessageThirdPart.join(", ");
+
+        let createSponsorNoteParams = [
+            note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            null
+        ];
+
+        let createSponsorNotePromise = createSponsorNote(createSponsorNoteParams)
+
+        Promise.all([updateQueryPromise, createSponsorNotePromise]).then(
+            ([[updateQueryStatusCode, updateSponsorError], [createNoteStatusCode, createNoteError]]) => {
+                if (updateSponsorError){
+                    res.status(updateQueryStatusCode).send(updateSponsorError)
+                }
+                else if (createNoteError){
+                    res.status(createNoteStatusCode).send(createNoteError)
+                }
+                else if (updateQueryStatusCode !== createNoteStatusCode){
+                    res.status(500).send("status code mismatch in editing sponsor, please contact an admin to investigate")
+                }
+                else {
+                    res.status(updateQueryStatusCode).send()
+                }
+            }
+        )
+    });
+
+    async function createSponsorNote(queryParams){
+        let insertQuery = `
+            INSERT into sponsor_notes
+                (note_content, sponsor, author, previous_note)
+            values (?, ?, ?, ?)`;
+
+        let status = 500
+        let error = null
+
+        await db.query(insertQuery, queryParams)
+            .then(() => {
+                status = 200;
+            })
+            .catch((err) => {
+                status = 500;
+                error = err;
+            });
+        return [status, error]
+    }
+
+    db_router.post("/createSponsorNote", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
+        let body = req.body;
+
+        params = [
+            body.note_content,
+            body.sponsor_id,
+            req.user.system_id,
+            body.previous_note
+        ]
+
+        createSponsorNote(params).then(([status, error]) => {
+            console.log("endpoint", status);
+            if (error){
+                res.status(status).send(error)
+            }
+            else {
+                res.status(status).send()
+            }
+        });
+
+    });
 
     db_router.post("/createAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;

@@ -38,3 +38,13 @@ NOTE: In the git repo, the ``install.sh`` script does not have executable permis
 * The server is running locally using pm2.
 
 * pm2 is a pain in the butt. If you are having issues with ``.env`` variables not updating, you may need to restart the pm2 daemon by using ``pm2 kill`` to stop the pm2 process and ``pm2 start /home/website/RIT-SE-Senior-Project/server/main.js`` to start it again.
+
+## Project File Structure Info
+
+* Root level (not in /nginx, /server, or /ui) contains files important for deployment of code onto the production and sandbox servers
+
+* /nginx configuration info for the nginx server/reverse proxy
+
+* /server files for the backend
+
+* /ui files for the REACT based frontend
