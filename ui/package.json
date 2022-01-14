@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
     "comma-separated-values": "^3.6.4",
+    "he": "^1.2.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "react": "^17.0.1",
