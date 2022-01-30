@@ -17,7 +17,6 @@ export default function SponsorEditor(props){
         SecureFetch(`${config.url.API_GET_SPONSOR_PROJECTS}/?sponsor_id=${props?.sponsor?.sponsor_id || ""}`)
             .then((response) => response.json())
             .then((projects) => {
-                console.log(projects)
                 setSponsorProjectData(projects)
             })
             .catch((error) => {
@@ -52,6 +51,7 @@ export default function SponsorEditor(props){
         FAIL: "We were unable to receive your update to the sponsor's info.",
     };
 
+    //submit route for if editing a sponsor
     let submitRoute = config.url.API_POST_EDIT_SPONSOR;
 
     let formFieldArray = [
@@ -60,7 +60,8 @@ export default function SponsorEditor(props){
             label: "Sponsor ID",
             placeHolder: "Sponsor ID",
             name: "sponsor_id",
-            disabled: !initialState.sponsor_id
+            readonly: true,
+            disabled: true//!initialState.sponsor_id
         },
         {
             type: "input",
@@ -124,6 +125,8 @@ export default function SponsorEditor(props){
 
     let trigger = <Button icon={"edit"} />;
 
+    // This is for if you are making a new sponsor
+    // Changes the submit route, trigger button
     if (initialState.sponsor_id === "") {
         submitRoute = config.url.API_POST_CREATE_SPONSOR;
         trigger = <Button icon={"plus"} />
@@ -134,6 +137,7 @@ export default function SponsorEditor(props){
         }
     }
 
+    //Editor component if we are editing or viewing a specific sponsor.
     let editor = (
         <DatabaseTableEditor
             initialState={initialState}
@@ -150,6 +154,7 @@ export default function SponsorEditor(props){
         />
     );
 
+    //The three blocks below are for building the sponsor summary view
     const modalActions = () => {
         return [
             {
@@ -178,6 +183,7 @@ export default function SponsorEditor(props){
         </div>
     };
 
+    //This is a different editor view if the page we are on is the sponsor summary view
     if(props.summaryView){
         trigger = <Button icon={"eye"} />;
 

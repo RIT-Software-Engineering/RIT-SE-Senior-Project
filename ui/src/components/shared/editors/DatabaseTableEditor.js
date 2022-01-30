@@ -63,7 +63,6 @@ export default function DatabaseTableEditor(props) {
                 dataToSubmit["changed_fields"] = JSON.stringify(dataToSubmit["changed_fields"])
             }
         }
-
         Object.keys(dataToSubmit).forEach((key) => {
             body.append(key, dataToSubmit[key]);
         });
@@ -102,9 +101,7 @@ export default function DatabaseTableEditor(props) {
                 value = checked;
             }
         }
-
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
-
         if (newFormData) {
             setFormData(newFormData);
         } else {
