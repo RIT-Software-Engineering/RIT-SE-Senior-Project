@@ -101,7 +101,7 @@ export default function SponsorsTab(props) {
                     {sponsors?.map((sponsor, idx) => {
                         let name = `${sponsor.fname} ${sponsor.lname}`;
                         let compAndDiv = `${sponsor.company} `
-                        if(sponsor.division !== null){
+                        if(sponsor.division !== null && sponsor.division !== ''){
                             compAndDiv += ("("+ sponsor?.division + ")")
                         }
                         return (
