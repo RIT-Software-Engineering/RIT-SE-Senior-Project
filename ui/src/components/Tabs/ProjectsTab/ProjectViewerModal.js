@@ -38,7 +38,6 @@ export default function ProjectViewerModal(props) {
             <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
 
             <h3>Sponsor Info</h3>
-            <b>Sponsor:</b> {props.project.sponsor} <br />
             <b>Organization:</b> {decode(props.project.organization||'')} <br />
             <b>Primary Contact:</b> {decode(props.project.primary_contact||'')} <br />
             <b>Email:</b> {decode(props.project.contact_email||'')} <br />
