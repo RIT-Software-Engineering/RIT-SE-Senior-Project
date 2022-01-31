@@ -126,6 +126,7 @@ export default function ActionModal(props) {
                     if (response.status === 200) {
                         setSubmissionModalResponse("Your submission has been received.")
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+                        props.isOpenCallback(false);
                     } else {
                         response.text().then((data)=>{
                             setSubmissionModalResponse(data || "We were unable to receive your submission.")

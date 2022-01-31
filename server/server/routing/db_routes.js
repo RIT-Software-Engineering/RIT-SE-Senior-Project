@@ -1296,9 +1296,11 @@ module.exports = (db) => {
 
     db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
         let getSponsorNotesQuery = `
-            SELECT * 
+            SELECT * , users.fname, users.lname, users.email
             FROM sponsor_notes
-            WHERE sponsor = ?
+            JOIN users
+            ON users.system_id = sponsor_notes.author
+            WHERE sponsor_notes.sponsor = ?
             ORDER BY creation_date
         `;
 

@@ -3,6 +3,7 @@ import { Button, Modal } from 'semantic-ui-react'
 import { config, USERTYPES } from '../../util/functions/constants'
 import { SecureFetch } from '../../util/functions/secureFetch'
 import { formattedAttachments } from './ProjectEditorModal'
+import {decode} from 'he'
 
 export default function ProjectViewerModal(props) {
 
@@ -37,32 +38,32 @@ export default function ProjectViewerModal(props) {
             <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
 
             <h3>Sponsor Info</h3>
-            <b>Sponsor:</b> {props.project.sponsor} <br />
-            <b>Organization:</b> {props.project.organization} <br />
-            <b>Primary Contact:</b> {props.project.primary_contact} <br />
-            <b>Email:</b> {props.project.contact_email} <br />
-            <b>Phone:</b> {props.project.contact_phone} <br />
+            <b>Organization:</b> {decode(props.project.organization||'')} <br />
+            <b>Primary Contact:</b> {decode(props.project.primary_contact||'')} <br />
+            <b>Email:</b> {decode(props.project.contact_email||'')} <br />
+            <b>Phone:</b> {decode(props.project.contact_phone||'')} <br />
 
             <h3>Project Info</h3>
-            <b>Background info:</b> {props.project.background_info} <br />
-            <b>Description:</b> {props.project.project_description} <br />
-            <b>Scope:</b> {props.project.project_scope} <br />
-            <b>Challenges:</b> {props.project.project_challenges} <br />
-            <b>Constraints & Assumptions:</b> {props.project.constraints_assumptions} <br />
-            <b>Provided Resources:</b> {props.project.sponsor_provided_resources} <br />
-            <b>Search keywords (are we showing this?):</b> {props.project.project_search_keywords} <br />
-            <b>Deliverables:</b> {props.project.sponsor_deliverables} <br />
-            <b>Proprietary Info:</b> {props.project.proprietary_info} <br />
-            <b>Sponsor Available:</b> {props.project.sponsor_avail_checked === "on" ? "Yes" : "No"} <br />
-            <b>Assignment of Rights:</b> {props.project.assignment_of_rights} <br />
-            <b>Semester:</b> {props.semesterMap[props.project.semester]} <br />
-            <b>Status:</b> {props.project.status} <br />
+            <b>Original Submission Date:</b> {decode(props.project.submission_datetime||'')} <br />
+            <b>Background info:</b> {decode(props.project.background_info||'')} <br />
+            <b>Description:</b> {decode(props.project.project_description||'')} <br />
+            <b>Scope:</b> {decode(props.project.project_scope||'')} <br />
+            <b>Challenges:</b> {decode(props.project.project_challenges||'')} <br />
+            <b>Constraints & Assumptions:</b> {decode(props.project.constraints_assumptions||'')} <br />
+            <b>Provided Resources:</b> {decode(props.project.sponsor_provided_resources||'')} <br />
+            <b>Search keywords (are we showing this?):</b> {decode(props.project.project_search_keywords||'')} <br />
+            <b>Deliverables:</b> {decode(props.project.sponsor_deliverables||'')} <br />
+            <b>Proprietary Info:</b> {decode(props.project.proprietary_info||'')} <br />
+            <b>Sponsor Available:</b> {decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"} <br />
+            <b>Assignment of Rights:</b> {decode(props.project.assignment_of_rights||'')} <br />
+            <b>Semester:</b> {decode(props.semesterMap[props.project.semester]||'')} <br />
+            <b>Status:</b> {decode(props.project.status||'')} <br />
 
             <h3>Final Project Info</h3>
-            <b>Poster:</b> {props.project.poster} <br />
-            <b>Video:</b> {props.project.video} <br />
-            <b>Website:</b> {props.project.website} <br />
-            <b>Synopsis:</b> {props.project.synopsis} <br />
+            <b>Poster:</b> {decode(props.project.poster||'')} <br />
+            <b>Video:</b> {decode(props.project.video||'')} <br />
+            <b>Website:</b> {decode(props.project.website||'')} <br />
+            <b>Synopsis:</b> {decode(props.project.synopsis||'')} <br />
 
             <h3>Attachments</h3>
             {props.project.attachments ? formattedAttachments(props.project)?.map(file => {
@@ -72,7 +73,7 @@ export default function ProjectViewerModal(props) {
 
         </>
     }
-
+    console.log(decode("fields &amp; amp;amp;amp;amp;#x2F;tables&amp;amp;amp;amp;amp;#x2F;authorized"))
     return (
         <Modal
             trigger={<Button icon="eye" />}

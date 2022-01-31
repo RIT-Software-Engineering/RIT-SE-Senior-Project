@@ -3,3 +3,12 @@
     background-color: black;
     color: white;
 }
+
+#bringMeDown {
+    margin-bottom: 0px;
+    padding-top: 5em;
+}
+
+#copyright {
+    text-align: center;
+}

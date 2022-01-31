@@ -47,4 +47,36 @@ function Footer() {
     );
 }
 
-export default Footer;
+function Footer2(){
+    const history = useHistory();
+
+    if (history.location.pathname === "/dashboard") {
+        return <></>;
+    }
+
+    return (
+        <div id="footer">
+            <div id= "bringMeDown" className="ui container stackable grid">
+                <div className="three column row">
+                    <div className="column">
+                        <h5>
+                            <a>https://seniorproject-sandbox.se.rit.edu</a>
+                        </h5>
+                    </div>
+                    <div className="column">
+                        <h5 id="copyright">
+                            <i className="ui icon copyright"></i> Rochester Institute of Technology, All Rights Reserved
+                        </h5>
+                    </div>
+                    <div className="column">
+                        <h4>
+                            <i className="ui mail icon"></i> seniorprojects@se.rit.edu
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default Footer2;

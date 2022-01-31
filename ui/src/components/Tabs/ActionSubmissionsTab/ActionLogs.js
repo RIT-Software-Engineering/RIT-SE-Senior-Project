@@ -73,6 +73,7 @@ export default function ActionLogs(props) {
                                         semesterName={semesterMap[action.semester]?.name}
                                         action={action}
                                         target={action?.action_target}
+                                        isOpenCallback={()=>{}}
                                     />
                                 </TableCell>
                             </TableRow>
