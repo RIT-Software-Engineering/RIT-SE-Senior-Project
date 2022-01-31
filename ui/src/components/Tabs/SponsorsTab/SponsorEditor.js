@@ -99,7 +99,7 @@ export default function SponsorEditor(props){
             disabled: false
         },
         {
-            type: "input",
+            type: "phoneInput",
             label: "Phone Number",
             placeHolder: "Phone Number",
             name: "phone",
