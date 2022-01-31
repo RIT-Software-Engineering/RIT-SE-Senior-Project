@@ -3,6 +3,7 @@ import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import { formatPhoneNumber } from 'react-phone-number-input/input'
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -64,7 +65,12 @@ export default function DatabaseTableEditor(props) {
             }
         }
         Object.keys(dataToSubmit).forEach((key) => {
-            body.append(key, dataToSubmit[key]);
+            // if(key === 'phone'){
+            //     body.append(key, formatPhoneNumber(dataToSubmit[key]))
+            // }
+            // else {
+                body.append(key, dataToSubmit[key]);
+            // }
         });
 
         SecureFetch(submitRoute, {
@@ -124,6 +130,20 @@ export default function DatabaseTableEditor(props) {
         if (!field.hidden) {
             switch (field.type) {
                 case "input":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Input
+                                label={field.label}
+                                placeholder={field.placeholder}
+                                name={field.name}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                disabled={field.disabled}
+                            />
+                        </Form.Field>
+                    );
+                    break;
+                case "phoneInput":
                     fieldComponents.push(
                         <Form.Field key={field.name}>
                             <Form.Input
