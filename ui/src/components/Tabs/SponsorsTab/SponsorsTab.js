@@ -15,7 +15,7 @@ import { SecureFetch } from '../../util/functions/secureFetch';
 import { config } from '../../util/functions/constants';
 import SponsorEditor from "./SponsorEditor";
 
-const LOGS_PER_PAGE = 4;
+const LOGS_PER_PAGE = 20;
 
 export default function SponsorsTab(props) {
 

@@ -61,7 +61,7 @@ export default function SponsorEditor(props){
             placeHolder: "Sponsor ID",
             name: "sponsor_id",
             readonly: true,
-            disabled: true//!initialState.sponsor_id
+            disabled: true
         },
         {
             type: "input",
