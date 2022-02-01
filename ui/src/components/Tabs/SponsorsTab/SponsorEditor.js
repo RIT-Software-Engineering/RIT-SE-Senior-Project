@@ -167,7 +167,7 @@ export default function SponsorEditor(props){
 
     let name = `${initialState.fname} ${initialState.lname}`;
     let compAndDiv = `${initialState.company} `
-    if(initialState.division !== null){
+    if(initialState.division !== null && initialState.division !== ''){
         compAndDiv += ("("+ initialState?.division + ")")
     }
 
