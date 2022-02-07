@@ -57,14 +57,6 @@ export default function SponsorEditor(props){
     let formFieldArray = [
         {
             type: "input",
-            label: "Sponsor ID",
-            placeHolder: "Sponsor ID",
-            name: "sponsor_id",
-            readonly: true,
-            disabled: true
-        },
-        {
-            type: "input",
             label: "First Name",
             placeHolder: "First Name",
             name: "fname",
