@@ -93,7 +93,7 @@ export default function DatabaseTableEditor(props) {
     };
 
     const handleChange = (e, { name, value, checked, isActiveField }) => {
-
+        console.log(name);
         if (props.viewOnly) {
             return;
         }

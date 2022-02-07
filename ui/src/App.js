@@ -7,11 +7,13 @@ import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/allPages/Header";
 import Footer from "./components/shared/allPages/Footer";
-import { UserContextProvider } from "./components/util/functions/UserContext";
+import {UserContextProvider} from "./components/util/functions/UserContext";
 import { Container } from "semantic-ui-react";
 import "./App.css";
 
 function App() {
+
+
     return (
         <UserContextProvider>
             <Header />
@@ -26,7 +28,7 @@ function App() {
                     </Switch>
                 </Container>
             </div>
-            <Footer />
+            <Footer/>
         </UserContextProvider>
     );
 }
