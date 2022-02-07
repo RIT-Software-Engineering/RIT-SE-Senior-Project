@@ -70,18 +70,6 @@ export default function DashboardPage() {
                         </Tab.Pane>
                     ),
                 },
-                {
-                    menuItem: {
-                        key: "Sponsors-Tab",
-                        content:"Sponsors",
-                        href: "#"
-                    },
-                    render: () => (
-                        <Tab.Pane>
-                            <SponsorsTab />
-                        </Tab.Pane>
-                    )
-                },
             );
         // Break intentionally left out to take advantage of switch flow
         // eslint-disable-next-line
@@ -95,6 +83,18 @@ export default function DashboardPage() {
                         href: "#"
                     },
                     render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
+                },
+                {
+                    menuItem: {
+                        key: "Sponsors-Tab",
+                            content:"Sponsors",
+                            href: "#"
+                    },
+                    render: () => (
+                        <Tab.Pane>
+                            <SponsorsTab />
+                        </Tab.Pane>
+                    )
                 }
             );
         // Break intentionally left out to take advantage of switch flow
