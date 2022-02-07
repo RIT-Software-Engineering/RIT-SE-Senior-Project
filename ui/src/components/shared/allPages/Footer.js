@@ -5,9 +5,10 @@ import "../../../css/footer.css";
 function Footer() {
     const history = useHistory();
 
-    if (history.location.pathname === "/dashboard") {
-        return <></>;
-    }
+    //What is this???
+    // if (history.location.pathname === "/dashboard") {
+    //     return <></>;
+    // }
 
     return (
         <div id="footer">

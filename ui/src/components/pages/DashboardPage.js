@@ -168,8 +168,11 @@ export default function DashboardPage() {
 
     panes.reverse();
 
-    return <>
-        <AdminView />
-        <Tab panes={panes} className="admin-menu" />
-    </>;
+    return (
+        <>
+            <AdminView />
+            {/*This is for the tabs inside of the dashboard tab*/}
+            <Tab panes={panes} className="admin-menu" />
+        </>
+    );
 }
