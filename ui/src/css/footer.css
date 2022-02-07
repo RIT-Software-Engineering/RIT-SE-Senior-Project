@@ -16,6 +16,10 @@
     padding-top: 2em;
 }
 
+#footer {
+    text-align: right;
+}
+
 #copyright {
-    text-align: center;
+    text-align: left;
 }
