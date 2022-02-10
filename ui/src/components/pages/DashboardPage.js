@@ -78,23 +78,23 @@ export default function DashboardPage() {
             panes.push(
                 {
                     menuItem: {
-                        key: "Coaches-Tab",
-                        content:"Coaches",
-                        href: "#"
-                    },
-                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
-                },
-                {
-                    menuItem: {
                         key: "Sponsors-Tab",
-                            content:"Sponsors",
-                            href: "#"
+                        content:"Sponsors",
+                        href: "#"
                     },
                     render: () => (
                         <Tab.Pane>
                             <SponsorsTab />
                         </Tab.Pane>
                     )
+                },
+                {
+                    menuItem: {
+                        key: "Coaches-Tab",
+                        content:"Coaches",
+                        href: "#"
+                    },
+                    render: () => <Tab.Pane><CoachesTab /></Tab.Pane>
                 }
             );
         // Break intentionally left out to take advantage of switch flow

@@ -30,15 +30,9 @@ function Footer() {
                         </div>
                         <div id="version"className="column">
                             <h5>
-                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project" >V.1.0.0</a>
+                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project" >V.1.3.0</a>
                             </h5>
                         </div>
-
-                        {/*<div className="column">*/}
-                        {/*    <h4>*/}
-                        {/*        <i className="ui mail icon"></i> seniorprojects@se.rit.edu*/}
-                        {/*    </h4>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
             </div>
