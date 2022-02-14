@@ -3,7 +3,9 @@ import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import { formatPhoneNumber } from 'react-phone-number-input/input'
+import PhoneInput from 'react-phone-number-input/input'
+import us from 'react-phone-number-input/locale/en'
+
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -14,7 +16,6 @@ export default function DatabaseTableEditor(props) {
     let formFieldArray = props.formFieldArray;
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
-
     const [formData, setFormData] = useState(initialState);
     // Update initial state if provided initial state is changed
     useEffect(() => {
@@ -93,7 +94,7 @@ export default function DatabaseTableEditor(props) {
     };
 
     const handleChange = (e, { name, value, checked, isActiveField }) => {
-        console.log(name);
+        console.log("hereeee ", e, name, value)
         if (props.viewOnly) {
             return;
         }
@@ -146,13 +147,19 @@ export default function DatabaseTableEditor(props) {
                 case "phoneInput":
                     fieldComponents.push(
                         <Form.Field key={field.name}>
-                            <Form.Input
-                                label={field.label}
-                                placeholder={field.placeholder}
-                                name={field.name}
+                            <label>{field.label}</label>
+                            <PhoneInput
+                                onChange={(value) => {
+                                    handleChange(null, {name : field.name, value : value})
+                                }}
                                 value={formData[field.name]}
-                                onChange={handleChange}
-                                disabled={field.disabled}
+                                labels={us}
+                                // label={field.label}
+                                placeholder={field.placeholder}
+                                //name={field.name}
+                                //value={formData[field.name]}
+                                //onChange={handleChange}
+                                // disabled={field.disabled}
                             />
                         </Form.Field>
                     );

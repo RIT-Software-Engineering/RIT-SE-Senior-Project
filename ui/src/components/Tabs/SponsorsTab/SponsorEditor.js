@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import Proposals from "../ProjectsTab/Proposals";
 import {SecureFetch} from "../../util/functions/secureFetch";
+import { formatPhoneNumber } from 'react-phone-number-input/input'
 
 export default function SponsorEditor(props){
 
@@ -132,6 +133,13 @@ export default function SponsorEditor(props){
     //Editor component if we are editing or viewing a specific sponsor.
     let editor = (
         <DatabaseTableEditor
+            preSubmit={(formData, name, value, checked, isActiveField, e)=>{
+                if(name === "phone"){
+                    formData["phone"] = formatPhoneNumber(value);
+                    return formData;
+                }
+                return formData;
+            }}
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
             submitRoute={submitRoute}
