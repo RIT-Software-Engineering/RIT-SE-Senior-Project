@@ -64,6 +64,30 @@ module.exports = (app, db) => {
         passport.authenticate("saml", CONFIG.saml.options)
     );
 
+    if (process.env.NODE_ENV !== 'production'){
+        app.post(
+            "/saml/DevOnlyLastLogin",
+            [UserAuth.isSignedIn],
+            (req, res)=>{
+                let queryParams = [
+                    req.user.system_id
+                ];
+                let insertQuery = `UPDATE users
+                               SET last_login = TIME('now')
+                               WHERE
+                               system_id = ?`;
+                db.query(insertQuery, queryParams)
+                    .then(() => {
+                        return res.status(200).send();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        return res.status(500).send(err);
+                    });
+            }
+        )
+    }
+
     app.post(
         "/saml/acs/consume",
         passport.authenticate("saml", CONFIG.saml.options)

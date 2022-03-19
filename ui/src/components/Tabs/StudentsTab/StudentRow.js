@@ -14,6 +14,9 @@ export default function StudentRow(props) {
         student_cells.push(
             <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
         )
+        student_cells.push(
+            <TableCell key={'student-login-'+props.student.last_login}>{props.student.last_login? props.student.last_login : "Never Logged in"}</TableCell>
+        )
     }
     else{
         student_cells.push(
@@ -33,6 +36,14 @@ export default function StudentRow(props) {
         student_cells.push(
             <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
         )
+
+        //This is for if youre a student and it is not the first table displayed in the students tab.
+        if(props.showLogin) {
+            student_cells.push(
+                <TableCell
+                    key={'student-login-' + props.student.last_login}>{props.student.last_login ? props.student.last_login : "Never Logged in"}</TableCell>
+            )
+        }
     }
 
     return (

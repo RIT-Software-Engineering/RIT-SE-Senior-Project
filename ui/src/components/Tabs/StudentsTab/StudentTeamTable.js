@@ -13,6 +13,7 @@ import StudentRow from "./StudentRow";
 export default function StudentTeamTable(props) {
 
     let tableHeaderCells = [];
+    let login = true;
 
     if(!props.studentsTab){
         tableHeaderCells.push(
@@ -39,6 +40,11 @@ export default function StudentTeamTable(props) {
                 // onClick={() => changeSort(COLUMNS.ACTION)}
             >
                 Email
+            </TableHeaderCell>
+        )
+        tableHeaderCells.push(
+            <TableHeaderCell key={"student-tab-table-login"}>
+                Last Login
             </TableHeaderCell>
         )
 
@@ -70,6 +76,32 @@ export default function StudentTeamTable(props) {
                 Email
             </TableHeaderCell>
         )
+
+        /**
+        * If the user is a student and it is the first table in the students tab, then it will
+        * display last login of teammates. Otherwise it won't, unless you are any other type of user.
+         * This only effects the students tab and the users in the admin tab.
+        **/
+        if(props.isStudent) {
+            console.log(props.firstTable)
+            if(props.firstTable) {
+                tableHeaderCells.push(
+                    <TableHeaderCell key={"student-tab-table-login"}>
+                        Last Login
+                    </TableHeaderCell>
+                )
+            }
+            else {
+                login = false;
+            }
+        }
+        else{
+            tableHeaderCells.push(
+                <TableHeaderCell key={"student-tab-table-login"}>
+                    Last Login
+                </TableHeaderCell>
+            )
+        }
     }
 
     const table = (
@@ -87,7 +119,7 @@ export default function StudentTeamTable(props) {
             </TableHeader>
             <TableBody>
                 {props.students?.map(student =>
-                    <StudentRow key={student.system_id} student={student} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} studentsTab={props.studentsTab}/>
+                    <StudentRow key={student.system_id} student={student} showLogin={login} semesterData={props.semesterData} projectsData={props.projectsData} viewOnly={props.viewOnly} studentsTab={props.studentsTab}/>
                 )}
 
             </TableBody>

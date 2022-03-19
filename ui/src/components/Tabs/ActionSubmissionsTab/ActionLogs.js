@@ -63,7 +63,7 @@ export default function ActionLogs(props) {
                         return (
                             <TableRow key={idx}>
                                 {userContext.user?.role !== USERTYPES.STUDENT && <TableCell>{action.display_name || action.title}</TableCell>}
-                                <TableCell>{action.action_title}</TableCell>
+                                <TableCell className="foo">{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>
                                 <TableCell>{submittedBy}</TableCell>
                                 <TableCell>{formatDateTime(action.submission_datetime)}</TableCell>

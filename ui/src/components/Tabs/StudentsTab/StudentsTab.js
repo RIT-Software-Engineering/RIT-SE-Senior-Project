@@ -170,6 +170,8 @@ export default function StudentsTab() {
                                                     viewOnly
                                                     noAccordion={true}
                                                     studentsTab={true}
+                                                    firstTable
+                                                    isStudent={userContext.user.role === USERTYPES.STUDENT}
                                                 />
                                         }
                                     }]}
@@ -217,6 +219,7 @@ export default function StudentsTab() {
                                             viewOnly
                                             studentsTab={true}
                                             projectsData={semester.projects}
+                                            isStudent={userContext.user.role === USERTYPES.STUDENT}
                                         />
                                 }
                             }]}

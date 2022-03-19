@@ -73,7 +73,6 @@ export default function ProjectViewerModal(props) {
 
         </>
     }
-    console.log(decode("fields &amp; amp;amp;amp;amp;#x2F;tables&amp;amp;amp;amp;amp;#x2F;authorized"))
     return (
         <Modal
             trigger={<Button icon="eye" />}
