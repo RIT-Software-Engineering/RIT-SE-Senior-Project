@@ -36,6 +36,8 @@ export default function DashboardPage() {
                     semester_group: responseUser.semester_group,
                     isMock: Object.keys(responseUser.mock).length !== 0,
                     mockUser: responseUser.mock,
+                    last_login: responseUser.last_login,
+                    prev_login: responseUser.prev_login,
                 });
             })
         SecureFetch(config.url.API_GET_SEMESTERS)
