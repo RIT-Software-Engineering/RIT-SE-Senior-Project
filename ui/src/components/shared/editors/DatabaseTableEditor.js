@@ -66,12 +66,7 @@ export default function DatabaseTableEditor(props) {
             }
         }
         Object.keys(dataToSubmit).forEach((key) => {
-            // if(key === 'phone'){
-            //     body.append(key, formatPhoneNumber(dataToSubmit[key]))
-            // }
-            // else {
                 body.append(key, dataToSubmit[key]);
-            // }
         });
 
         SecureFetch(submitRoute, {
@@ -153,12 +148,7 @@ export default function DatabaseTableEditor(props) {
                                 }}
                                 value={formData[field.name]}
                                 labels={us}
-                                // label={field.label}
                                 placeholder={field.placeholder}
-                                //name={field.name}
-                                //value={formData[field.name]}
-                                //onChange={handleChange}
-                                // disabled={field.disabled}
                             />
                         </Form.Field>
                     );

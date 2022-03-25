@@ -13,11 +13,6 @@ function Footer() {
         setSignedIn(Object.keys(user).length !== 0);
     }, [user]);
 
-    //What is this???
-    // if (history.location.pathname === "/dashboard") {
-    //     return <></>;
-    // }
-
     if(signedIn){
         return (
             <div id="footer">
