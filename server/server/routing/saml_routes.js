@@ -7,7 +7,24 @@ const session = require("express-session");
 const MemoryStore = require('memorystore')(session);
 const passport = require("passport");
 
+
 module.exports = (app, db) => {
+
+    const adjustLoginTimes = (req, res) => {
+        let queryParams = [
+            req.user.system_id
+        ];
+        let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
+                                    WHERE system_id = ?;`;
+        db.query(insertQuery, queryParams)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
+    }
 
     /** Parse the body of the request / Passport */
     app.use(session({
@@ -60,36 +77,20 @@ module.exports = (app, db) => {
         });
     });
 
+    if (process.env.NODE_ENV !== 'production'){
+        app.post(
+            "/saml/DevOnlyLastLogin", [UserAuth.isSignedIn], adjustLoginTimes
+        )
+    }
+
     app.get(
         "/saml/login",
         passport.authenticate("saml", CONFIG.saml.options)
     );
 
-    if (process.env.NODE_ENV !== 'production'){
-        app.post(
-            "/saml/DevOnlyLastLogin", [UserAuth.isSignedIn], (req, res)=>{
-                let queryParams = [
-
-                    req.user.system_id
-                ];
-
-                let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
-                                    WHERE system_id = ?;`;
-                db.query(insertQuery, queryParams)
-                    .then(() => {
-                        return res.status(200).send();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        return res.status(500).send(err);
-                    });
-            }
-        )
-    }
-
     app.post(
         "/saml/acs/consume",
-        passport.authenticate("saml", CONFIG.saml.options)
+        passport.authenticate("saml", CONFIG.saml.options, adjustLoginTimes)
     );
 
     /**
