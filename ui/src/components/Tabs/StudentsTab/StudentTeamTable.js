@@ -83,7 +83,6 @@ export default function StudentTeamTable(props) {
          * This only effects the students tab and the users in the admin tab.
         **/
         if(props.isStudent) {
-            console.log(props.firstTable)
             if(props.firstTable) {
                 tableHeaderCells.push(
                     <TableHeaderCell key={"student-tab-table-login"}>
