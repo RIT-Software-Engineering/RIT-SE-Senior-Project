@@ -14,6 +14,7 @@ import {
 import { SecureFetch } from '../../util/functions/secureFetch';
 import { config } from '../../util/functions/constants';
 import SponsorEditor from "./SponsorEditor";
+import { formatPhoneNumber } from 'react-phone-number-input/input'
 
 const LOGS_PER_PAGE = 20;
 
@@ -109,7 +110,7 @@ export default function SponsorsTab(props) {
                                 <TableCell>{name}</TableCell>
                                 <TableCell>{compAndDiv}</TableCell>
                                 <TableCell>{sponsor.email}</TableCell>
-                                <TableCell>{sponsor.phone}</TableCell>
+                                <TableCell>{formatPhoneNumber(sponsor.phone)}</TableCell>
                                 <TableCell>{sponsor.association}</TableCell>
                                 <TableCell>{sponsor.type}</TableCell>
                                 <TableCell>{sponsor.status}</TableCell>

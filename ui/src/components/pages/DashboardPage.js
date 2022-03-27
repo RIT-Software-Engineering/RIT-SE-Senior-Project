@@ -36,6 +36,8 @@ export default function DashboardPage() {
                     semester_group: responseUser.semester_group,
                     isMock: Object.keys(responseUser.mock).length !== 0,
                     mockUser: responseUser.mock,
+                    last_login: responseUser.last_login,
+                    prev_login: responseUser.prev_login,
                 });
             })
         SecureFetch(config.url.API_GET_SEMESTERS)
@@ -70,6 +72,11 @@ export default function DashboardPage() {
                         </Tab.Pane>
                     ),
                 },
+            );
+        // Break intentionally left out to take advantage of switch flow
+        // eslint-disable-next-line
+        case "coach":
+            panes.push(
                 {
                     menuItem: {
                         key: "Sponsors-Tab",
@@ -82,12 +89,6 @@ export default function DashboardPage() {
                         </Tab.Pane>
                     )
                 },
-            );
-        // Break intentionally left out to take advantage of switch flow
-        // eslint-disable-next-line
-        case "coach":
-            //console.log(user.role);
-            panes.push(
                 {
                     menuItem: {
                         key: "Coaches-Tab",
@@ -168,8 +169,11 @@ export default function DashboardPage() {
 
     panes.reverse();
 
-    return <>
-        <AdminView />
-        <Tab panes={panes} className="admin-menu" />
-    </>;
+    return (
+        <>
+            <AdminView />
+            {/*This is for the tabs inside of the dashboard tab*/}
+            <Tab panes={panes} className="admin-menu" />
+        </>
+    );
 }

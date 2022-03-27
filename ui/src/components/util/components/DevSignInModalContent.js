@@ -41,10 +41,16 @@ export default function DevSignInModalContent() {
                 document.cookie = `semester_group=${user.semester_group}`;
                 document.cookie = `project=${user.project}`;
                 document.cookie = `active=${user.active}`;
-
-                // Simulate redirect from Shibboleth
-                history.push("/dashboard");
-                window.location.reload();
+                //TODO: MAKE ADJUSTMENTS FOR PRODUCTION, BUT DO NOT REMOVE THIS. UPDATES LOGIN TIMES.
+                SecureFetch(config.url.DEV_ONLY_API_POST_EDIT_LAST_LOGIN, {method: 'post'})
+                    .then(()=>{
+                        // Simulate redirect from Shibboleth
+                        history.push("/dashboard");
+                        window.location.reload();
+                    })
+                    .catch((err)=>{
+                        console.error(err);
+                    });
             }}>Sign In</button>
             {' '}
             <button onClick={() => {

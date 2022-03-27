@@ -9,6 +9,17 @@
     padding-top: 5em;
 }
 
+#bringMeDownSignedIn {
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding-top: 2em;
+}
+
+#footer {
+    text-align: right;
+}
+
 #copyright {
-    text-align: center;
+    text-align: left;
 }

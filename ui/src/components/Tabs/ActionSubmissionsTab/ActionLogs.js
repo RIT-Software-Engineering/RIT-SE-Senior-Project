@@ -21,10 +21,10 @@ export default function ActionLogs(props) {
 
     const semesterMap = {};
     props.semesterData.forEach(semester => semesterMap[semester.semester_id] = semester);
-
     const [actionLogs, setActionLogs] = useState([]);
     const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
     const userContext = useContext(UserContext)
+    const prevLogin = new Date(userContext.user.prev_login);
 
     const getPaginationData = (page) => {
         SecureFetch(`${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`)
@@ -60,10 +60,11 @@ export default function ActionLogs(props) {
                         if (action.mock_id) {
                             submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`
                         }
+                        let showNewSubmissionHighlight = new Date(action.submission_datetime) > prevLogin;
                         return (
-                            <TableRow key={idx}>
+                            <TableRow style={{background: showNewSubmissionHighlight? '#7FFFD4' : 'none'}} key={idx}>
                                 {userContext.user?.role !== USERTYPES.STUDENT && <TableCell>{action.display_name || action.title}</TableCell>}
-                                <TableCell>{action.action_title}</TableCell>
+                                <TableCell className="foo">{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>
                                 <TableCell>{submittedBy}</TableCell>
                                 <TableCell>{formatDateTime(action.submission_datetime)}</TableCell>

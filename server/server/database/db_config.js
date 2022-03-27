@@ -35,5 +35,7 @@ module.exports = {
         "sponsor_avail_checked": "Sponsor Availability Checked",
         "project_agreements_checked": "Project Agreements Checked",
         "assignment_of_rights": "Assignment of Rights",
+        "last_login": "Last Login",
+        "prev_login": "Previous Login",
     },
 };

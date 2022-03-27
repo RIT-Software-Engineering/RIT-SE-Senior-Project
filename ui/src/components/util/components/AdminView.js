@@ -87,7 +87,7 @@ export default function AdminView() {
           search
           button
           value={selectedUser}
-          options={_.sortBy(Object.values(users), ["fname", "lname"]).map((user) => { return { text: `${user.fname} ${user.lname} (${user.system_id})`, value: user.system_id, key: user.system_id } })}
+          options={_.sortBy(Object.values(users), ["fname", "lname", "last_login"]).map((user) => { return { text: `${user.fname} ${user.lname} (${user.system_id}) ${user.last_login}`, value: user.system_id, key: user.system_id } })}
           onChange={(e, target) => setSelectedUser(target.value)} />
         {renderButton()}
       </>

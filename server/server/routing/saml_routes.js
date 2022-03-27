@@ -7,7 +7,24 @@ const session = require("express-session");
 const MemoryStore = require('memorystore')(session);
 const passport = require("passport");
 
+
 module.exports = (app, db) => {
+
+    const adjustLoginTimes = (req, res) => {
+        let queryParams = [
+            req.user.system_id
+        ];
+        let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
+                                    WHERE system_id = ?;`;
+        db.query(insertQuery, queryParams)
+            .then(() => {
+                return res.status(200).send();
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
+    }
 
     /** Parse the body of the request / Passport */
     app.use(session({
@@ -41,13 +58,14 @@ module.exports = (app, db) => {
 
         const user = userResult[0];
         const mockUser = mockResult ? mockResult[0] : {};
-
         res.send({
             system_id: user.system_id,
             type: user.type,
             fname: user.fname,
             lname: user.lname,
             semester_group: user.semester_group,
+            last_login: user.last_login,
+            prev_login: user.prev_login,
 
             mock: {     // TODO: It might make sense to change how this works and how it interacts with user_auth.mockUser in the future once Shibboleth is working.
                 system_id: mockUser.system_id,
@@ -59,6 +77,12 @@ module.exports = (app, db) => {
         });
     });
 
+    if (process.env.NODE_ENV !== 'production'){
+        app.post(
+            "/saml/DevOnlyLastLogin", [UserAuth.isSignedIn], adjustLoginTimes
+        )
+    }
+
     app.get(
         "/saml/login",
         passport.authenticate("saml", CONFIG.saml.options)
@@ -66,7 +90,7 @@ module.exports = (app, db) => {
 
     app.post(
         "/saml/acs/consume",
-        passport.authenticate("saml", CONFIG.saml.options)
+        passport.authenticate("saml", CONFIG.saml.options, adjustLoginTimes)
     );
 
     /**

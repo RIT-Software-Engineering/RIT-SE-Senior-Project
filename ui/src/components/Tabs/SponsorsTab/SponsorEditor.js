@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import Proposals from "../ProjectsTab/Proposals";
 import {SecureFetch} from "../../util/functions/secureFetch";
+import { formatPhoneNumber } from 'react-phone-number-input/input'
 
 export default function SponsorEditor(props){
 
@@ -55,14 +56,6 @@ export default function SponsorEditor(props){
     let submitRoute = config.url.API_POST_EDIT_SPONSOR;
 
     let formFieldArray = [
-        {
-            type: "input",
-            label: "Sponsor ID",
-            placeHolder: "Sponsor ID",
-            name: "sponsor_id",
-            readonly: true,
-            disabled: true
-        },
         {
             type: "input",
             label: "First Name",
@@ -140,6 +133,13 @@ export default function SponsorEditor(props){
     //Editor component if we are editing or viewing a specific sponsor.
     let editor = (
         <DatabaseTableEditor
+            preSubmit={(formData, name, value, checked, isActiveField, e)=>{
+                if(name === "phone"){
+                    formData["phone"] = formatPhoneNumber(value);
+                    return formData;
+                }
+                return formData;
+            }}
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
             submitRoute={submitRoute}
@@ -167,7 +167,7 @@ export default function SponsorEditor(props){
 
     let name = `${initialState.fname} ${initialState.lname}`;
     let compAndDiv = `${initialState.company} `
-    if(initialState.division !== null){
+    if(initialState.division !== null && initialState.division !== ''){
         compAndDiv += ("("+ initialState?.division + ")")
     }
 

@@ -75,7 +75,7 @@ export default function SponsorNote(props){
     );
 
     let content = <Segment float={'left'} basic>
-        <h5>&nbsp;&nbsp;&nbsp;&nbsp; {props.note.fname} {props.note.lname}, &nbsp;{props.note.email}, &nbsp;{props.note.creation_date}</h5>
+        <h5>{props.note.fname} {props.note.lname}, &nbsp;{props.note.email}, &nbsp;{props.note.creation_date}</h5>
         {props.note.note_content}
         <br/>
     </Segment>
