@@ -1129,6 +1129,26 @@ module.exports = (db) => {
             });
     });
 
+    /*
+    * This will join between the action and action_log tables. It returns the due date from
+    * a specific log_id's action_template # = action_id.
+    */
+    db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res)=> {
+        let getLateSubmissionQuery = `SELECT actions.due_date
+                                      FROM action_log
+                                      JOIN actions ON actions.action_id = action_log.action_template
+                                      WHERE action_log.action_log_id = ?`;
+        let params = [req.query.log_id];
+        db.query(getLateSubmissionQuery, params)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    })
+
     db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res) => {
         let getActionLogQuery = "";
         let params = [];

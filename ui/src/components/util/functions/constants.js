@@ -52,6 +52,7 @@ export const config = {
         API_GET_SPONSOR_NOTES: `${BASE_API_URL}/db/getSponsorNotes`,
         API_GET_SEARCH_FOR_SPONSOR: `${BASE_API_URL}/db/searchForSponsor`,
         API_GET_SPONSOR_PROJECTS: `${BASE_API_URL}/db/getSponsorProjects`,
+        API_GET_LATE_SUBMISSION:`${BASE_API_URL}/db/getLateSubmission`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
