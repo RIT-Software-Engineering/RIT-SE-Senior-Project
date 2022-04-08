@@ -76,7 +76,7 @@ function ToolTip(props) {
     const content = () => {
         return <div className="content">
             {metadata()}
-            <br className="h-spacer" />
+            <span className="spacer" />
             {/* 
               * Not sure if it makes more sense to check action.state or action.start_date.
               * However, action.state is based off of server time whereas if we parse action.start_date, 

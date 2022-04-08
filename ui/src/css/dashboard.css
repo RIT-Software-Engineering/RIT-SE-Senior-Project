@@ -62,6 +62,10 @@
     margin-bottom: 1em;
 }
 
+.view-action-button {
+    min-height: 2.5em !important;
+}
+
 .relevant-actions-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--timeline-element-height), 1fr));
