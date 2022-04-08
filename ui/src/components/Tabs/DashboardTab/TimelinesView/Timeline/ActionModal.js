@@ -192,7 +192,7 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={props.trigger || <Button ref={props.ref} fluid >View Action</Button>}
+            trigger={props.trigger || <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
