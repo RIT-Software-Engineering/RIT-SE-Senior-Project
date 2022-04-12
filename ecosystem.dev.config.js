@@ -9,7 +9,7 @@ module.exports = {
                 PORT: "3002"
             },
             error_file : "/home/website-test/.pm2/logs/dev-error.log",
-            out_file : "/home/website-test/.pm2/logs/dev-error.log"
+            out_file : "/home/website-test/.pm2/logs/dev-out.log"
         },
     ]
 }

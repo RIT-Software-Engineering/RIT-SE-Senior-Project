@@ -45,7 +45,9 @@ const samlStrategy = new Strategy(
                     });
 
             }
-            return done("User not added to system yet or has been deactivated.")
+            else{
+                return done("User not added to system yet or has been deactivated.")
+            }
         }).catch((err) => {
             return done(err);
         });
