@@ -12,7 +12,6 @@ function Header() {
     const [visible, setVisible] = useState(false);
     const { user } = useContext(UserContext);
     const [signedIn, setSignedIn] = useState(false);
-
     useEffect(() => {
         // A user is considered signed in if the user object has a value
         // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).

@@ -148,7 +148,27 @@ module.exports = (db) => {
         }
 
         db.query(query, params)
-            .then((users) => res.send(users))
+            .then((users) => {
+                if(req.user.type === ROLES.STUDENT){
+                    users = users.map((user)=> {
+                        let output = {}
+                        if(user.project === req.user.project){
+                            output["last_login"] = user["last_login"]
+                            output["prev_login"] = user["prev_login"]
+                        }
+                        output["active"] = user["active"]
+                        output["email"] = user["email"]
+                        output["fname"] = user["fname"]
+                        output["lname"] = user["lname"]
+                        output["project"] = user["project"]
+                        output["semester_group"] = user["semester_group"]
+                        output["system_id"] = user["system_id"]
+                        output["type"] = user["type"]
+                        return output
+                    })
+                }
+                res.send(users)
+            })
             .catch((err) => {
                 console.error(err);
                 return res.status(500).send(err);
@@ -1296,9 +1316,11 @@ module.exports = (db) => {
 
     db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
         let getSponsorNotesQuery = `
-            SELECT * 
+            SELECT * , users.fname, users.lname, users.email
             FROM sponsor_notes
-            WHERE sponsor = ?
+            JOIN users
+            ON users.system_id = sponsor_notes.author
+            WHERE sponsor_notes.sponsor = ?
             ORDER BY creation_date
         `;
 

@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import Proposals from "../ProjectsTab/Proposals";
 import {SecureFetch} from "../../util/functions/secureFetch";
+import { formatPhoneNumber } from 'react-phone-number-input/input'
 
 export default function SponsorEditor(props){
 
@@ -17,7 +18,6 @@ export default function SponsorEditor(props){
         SecureFetch(`${config.url.API_GET_SPONSOR_PROJECTS}/?sponsor_id=${props?.sponsor?.sponsor_id || ""}`)
             .then((response) => response.json())
             .then((projects) => {
-                console.log(projects)
                 setSponsorProjectData(projects)
             })
             .catch((error) => {
@@ -52,16 +52,10 @@ export default function SponsorEditor(props){
         FAIL: "We were unable to receive your update to the sponsor's info.",
     };
 
+    //submit route for if editing a sponsor
     let submitRoute = config.url.API_POST_EDIT_SPONSOR;
 
     let formFieldArray = [
-        {
-            type: "input",
-            label: "Sponsor ID",
-            placeHolder: "Sponsor ID",
-            name: "sponsor_id",
-            disabled: !initialState.sponsor_id
-        },
         {
             type: "input",
             label: "First Name",
@@ -98,7 +92,7 @@ export default function SponsorEditor(props){
             disabled: false
         },
         {
-            type: "input",
+            type: "phoneInput",
             label: "Phone Number",
             placeHolder: "Phone Number",
             name: "phone",
@@ -124,6 +118,8 @@ export default function SponsorEditor(props){
 
     let trigger = <Button icon={"edit"} />;
 
+    // This is for if you are making a new sponsor
+    // Changes the submit route, trigger button
     if (initialState.sponsor_id === "") {
         submitRoute = config.url.API_POST_CREATE_SPONSOR;
         trigger = <Button icon={"plus"} />
@@ -134,8 +130,16 @@ export default function SponsorEditor(props){
         }
     }
 
+    //Editor component if we are editing or viewing a specific sponsor.
     let editor = (
         <DatabaseTableEditor
+            preSubmit={(formData, name, value, checked, isActiveField, e)=>{
+                if(name === "phone"){
+                    formData["phone"] = formatPhoneNumber(value);
+                    return formData;
+                }
+                return formData;
+            }}
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
             submitRoute={submitRoute}
@@ -150,6 +154,7 @@ export default function SponsorEditor(props){
         />
     );
 
+    //The three blocks below are for building the sponsor summary view
     const modalActions = () => {
         return [
             {
@@ -162,7 +167,7 @@ export default function SponsorEditor(props){
 
     let name = `${initialState.fname} ${initialState.lname}`;
     let compAndDiv = `${initialState.company} `
-    if(initialState.division !== null){
+    if(initialState.division !== null && initialState.division !== ''){
         compAndDiv += ("("+ initialState?.division + ")")
     }
 
@@ -178,6 +183,7 @@ export default function SponsorEditor(props){
         </div>
     };
 
+    //This is a different editor view if the page we are on is the sponsor summary view
     if(props.summaryView){
         trigger = <Button icon={"eye"} />;
 

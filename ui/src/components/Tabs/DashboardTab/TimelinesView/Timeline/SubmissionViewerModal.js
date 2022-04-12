@@ -45,11 +45,11 @@ export default function SubmissionViewerModal(props) {
         <Modal
             onClose={() => {
                 setOpen(false);
-                props.isOpenCallback(false);
+                props?.isOpenCallback(false);
             }}
             onOpen={() => {
                 setOpen(true);
-                props.isOpenCallback(true);
+                props?.isOpenCallback(true);
             }}
             open={open}
             trigger={

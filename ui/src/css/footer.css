@@ -3,3 +3,27 @@
     background-color: black;
     color: white;
 }
+
+#bringMeDown {
+    margin-bottom: 0px;
+    padding-top: 5em;
+}
+
+#bringMeDownSignedIn {
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding-top: 0px;
+}
+
+#version {
+    text-align: right;
+}
+
+#footer {
+    text-align: left;
+}
+
+#copyright {
+    text-align: left;
+}

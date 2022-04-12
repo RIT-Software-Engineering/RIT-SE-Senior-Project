@@ -126,6 +126,7 @@ export default function ActionModal(props) {
                     if (response.status === 200) {
                         setSubmissionModalResponse("Your submission has been received.")
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+                        props.isOpenCallback(false);
                     } else {
                         response.text().then((data)=>{
                             setSubmissionModalResponse(data || "We were unable to receive your submission.")
@@ -191,7 +192,7 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={props.trigger || <Button ref={props.ref} fluid >View Action</Button>}
+            trigger={props.trigger || <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>

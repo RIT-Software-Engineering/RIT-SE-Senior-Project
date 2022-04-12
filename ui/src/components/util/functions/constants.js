@@ -76,6 +76,7 @@ export const config = {
 
         // *** DEVELOPMENT ONLY ***
         DEV_ONLY_API_GET_ALL_USERS: `${BASE_API_URL}/db/DevOnlyGetAllUsersForLogin`,
+        DEV_ONLY_API_POST_EDIT_LAST_LOGIN: `${BASE_API_URL}/saml/DevOnlyLastLogin`,
     },
 };
 

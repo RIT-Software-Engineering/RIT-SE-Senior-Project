@@ -75,9 +75,9 @@ export default function SponsorNote(props){
     );
 
     let content = <Segment float={'left'} basic>
+        <h5>{props.note.fname} {props.note.lname}, &nbsp;{props.note.email}, &nbsp;{props.note.creation_date}</h5>
         {props.note.note_content}
         <br/>
-        &nbsp;&nbsp;&nbsp;&nbsp; {props.note.creation_date} {props.note.author}
     </Segment>
 
     if(props.noEdit || props.revisionsView){
