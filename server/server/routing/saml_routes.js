@@ -90,7 +90,7 @@ module.exports = (app, db) => {
 
     app.post(
         "/saml/acs/consume",
-        passport.authenticate("saml", CONFIG.saml.options, adjustLoginTimes)
+        passport.authenticate("saml", CONFIG.saml.options)
     );
 
     /**

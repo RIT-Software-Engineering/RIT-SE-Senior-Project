@@ -33,7 +33,17 @@ const samlStrategy = new Strategy(
     (expressUser, done) => {
         db.query(`SELECT ${SIGN_IN_SELECT_ATTRIBUTES} FROM users WHERE system_id = ? AND active = ''`, [expressUser[SAML_ATTRIBUTES.uid]]).then((users) => {
             if (users.length === 1) {
-                return done(null, users[0]);
+                let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
+                                    WHERE system_id = ?;`;
+                db.query(insertQuery, [users[0]])
+                    .then(() => {
+                        return done(null, users[0]);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        return done("Unable to update last login.")
+                    });
+
             }
             return done("User not added to system yet or has been deactivated.")
         }).catch((err) => {
