@@ -35,7 +35,7 @@ const samlStrategy = new Strategy(
             if (users.length === 1) {
                 let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
                                     WHERE system_id = ?;`;
-                db.query(insertQuery, [users[0]])
+                db.query(insertQuery, [users[0].system_id])
                     .then(() => {
                         return done(null, users[0]);
                     })
