@@ -16,6 +16,10 @@
     padding-top: 0px;
 }
 
+#version {
+    text-align: right;
+}
+
 #footer {
     text-align: left;
 }
