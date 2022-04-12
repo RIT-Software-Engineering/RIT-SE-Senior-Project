@@ -62,7 +62,7 @@ export default function ActionLogs(props) {
                         }
                         let showNewSubmissionHighlight = new Date(action.submission_datetime) > prevLogin;
                         return (
-                            <TableRow style={{background: showNewSubmissionHighlight? '#7FFFD4' : 'none'}} key={idx}>
+                            <TableRow style={{background: showNewSubmissionHighlight? '#fffaf3' : 'none'}} key={idx}>
                                 {userContext.user?.role !== USERTYPES.STUDENT && <TableCell>{action.display_name || action.title}</TableCell>}
                                 <TableCell className="foo">{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>

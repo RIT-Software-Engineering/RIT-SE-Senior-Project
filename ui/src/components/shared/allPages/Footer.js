@@ -36,7 +36,7 @@ function Footer() {
     else{
         return (
             <div id="footer">
-                <div id= "bringMeDownSignedIn" className="ui container stackable grid">
+                <div id="bringMeDownSignedIn" className="ui container stackable grid">
                     <div className="three column row">
                         <div className="column">
                             <h3>
