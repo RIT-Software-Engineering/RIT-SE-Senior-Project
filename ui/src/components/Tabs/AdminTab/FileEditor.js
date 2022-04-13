@@ -2,8 +2,9 @@ import React, { useRef, useState } from 'react';
 import { Accordion, Form, Button } from 'semantic-ui-react';
 import { config } from '../../util/functions/constants';
 import { SecureFetch } from '../../util/functions/secureFetch';
+import FileRemover from "./FileRemover";
 
-const fileUploadPaths = ["archive", "coach", "site", "student"];
+const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
 
 export default function FileEditor() {
 
@@ -40,44 +41,66 @@ export default function FileEditor() {
             })
     }
 
+
+    const uploadFilesDisplay = () => {
+        return (
+            <div>
+                <Form.Field>
+                    <label>Select path to upload</label>
+                    <select value={path} onChange={(e) => { setPath(e.target.value); setResponse(null); }}>
+                        {fileUploadPaths.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
+                    </select>
+                </Form.Field>
+                <Form.Field>
+                    <label>Select files to upload</label>
+                    <input
+                        type="file"
+                        multiple
+                        ref={fileInput}
+                        onChange={() => { setResponse(null) }}
+                    />
+                </Form.Field>
+                <Form.Field>
+                    {response && <>
+                        <label>{response.msg}</label>
+                        {response.filesUploaded && response.filesUploaded.map((file, idx) => {
+                            return <div key={idx}><a href={file} target="_blank" rel="noreferrer">{file}</a><br /></div>
+                        })}
+                        {response.error && JSON.stringify(response.error)}
+                    </>}
+                </Form.Field>
+                <Button type="submit">Upload Files</Button>
+            </div>
+        )
+    }
+
     return (
         <Accordion
             fluid
             styled
             panels={[{
                 key: "fileEditor",
-                title: "File Uploader",
+                title: "Content Editor",
                 content: {
                     content: <>
                         <Form
                             onSubmit={uploadFiles}
                         >
-                            <Form.Field>
-                                <label>Select path to upload</label>
-                                <select value={path} onChange={(e) => { setPath(e.target.value); setResponse(null); }}>
-                                    {fileUploadPaths.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
-                                </select>
-                            </Form.Field>
-                            <Form.Field>
-                                <label>Select files to upload</label>
-                                <input
-                                    type="file"
-                                    multiple
-                                    ref={fileInput}
-                                    onChange={() => { setResponse(null) }}
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                {response && <>
-                                    <label>{response.msg}</label>
-                                    {response.filesUploaded && response.filesUploaded.map((file, idx) => {
-                                        return <div key={idx}><a href={file} target="_blank" rel="noreferrer">{file}</a><br /></div>
-                                    })}
-                                    {response.error && JSON.stringify(response.error)}
-                                </>}
-                            </Form.Field>
-                            <Button type="submit">Upload Files</Button>
+                         <div>
+                             <Accordion
+                                 fluid
+                                 styled
+                                 panels={[
+                                     {
+                                         key: "fileUploader",
+                                         title: "File Uploader",
+                                         content: { content: uploadFilesDisplay() },
+                                     },
+                                 ]}
+                             />
+                         </div>
                         </Form>
+                        <FileRemover/>
                     </>
                 }
             },]}

@@ -748,6 +748,7 @@ module.exports = (db) => {
             const formattedPath = `resource/${req.body.path}`;
             const baseURL = path.join(__dirname, `../../${formattedPath}`);
 
+            //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
             fs.mkdirSync(baseURL, { recursive: true });
 
             for (let x = 0; x < req.files.files.length; x++) {
@@ -766,6 +767,41 @@ module.exports = (db) => {
 
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
+
+    db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
+        let filesToSend = []
+        //This is the path, with the specified directory we want to find files in.
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.mkdirSync(baseURL, { recursive: true });
+        fs.readdir(baseURL, function (err, files) {
+            //handling error
+            if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+            }
+            //listing all files using forEach
+            files.forEach(function (file) {
+                // Do whatever you want to do with the file
+                filesToSend.push(file)
+            });
+            res.send(filesToSend)
+        })
+
+    });
+
+    db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}/${req.query.file}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.unlink(baseURL, (err => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            else {
+                res.send({ msg: "Success!", fileDeleted: req.query.file });
+            }
+        }));
+    })
 
     db_router.post(
         "/submitProposal",

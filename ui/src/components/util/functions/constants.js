@@ -53,6 +53,7 @@ export const config = {
         API_GET_SEARCH_FOR_SPONSOR: `${BASE_API_URL}/db/searchForSponsor`,
         API_GET_SPONSOR_PROJECTS: `${BASE_API_URL}/db/getSponsorProjects`,
         API_GET_LATE_SUBMISSION:`${BASE_API_URL}/db/getLateSubmission`,
+        API_GET_FILES: `${BASE_API_URL}/db/getFiles`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
@@ -68,6 +69,9 @@ export const config = {
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
         API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,
+
+        //DELETE - Auth needed
+        API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
