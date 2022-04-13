@@ -1115,6 +1115,11 @@ module.exports = (db) => {
             });
     });
 
+    db_router.post("/editOverview", [UserAuth.isAdmin], (req, res) => {
+        let editOverviewQuery = ``;
+        res.send(200);
+    })
+
     db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
         let getActionsQuery = `
             SELECT *

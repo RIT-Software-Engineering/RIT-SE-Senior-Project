@@ -69,6 +69,7 @@ export const config = {
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
         API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,
+        API_POST_EDIT_OVERVIEW: `${BASE_API_URL}/db/editOverview`,
 
         //DELETE - Auth needed
         API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

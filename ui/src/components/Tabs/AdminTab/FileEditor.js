@@ -3,6 +3,7 @@ import { Accordion, Form, Button } from 'semantic-ui-react';
 import { config } from '../../util/functions/constants';
 import { SecureFetch } from '../../util/functions/secureFetch';
 import FileRemover from "./FileRemover";
+import OverviewEditor from "./OverviewEditor"
 
 const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
 
@@ -101,6 +102,7 @@ export default function FileEditor() {
                          </div>
                         </Form>
                         <FileRemover/>
+                        <OverviewEditor/>
                     </>
                 }
             },]}

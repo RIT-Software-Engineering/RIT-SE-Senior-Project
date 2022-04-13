@@ -102,6 +102,7 @@ export default function DatabaseTableEditor(props) {
                 value = checked;
             }
         }
+        //Todo: Ask the bois what this is supposed to do...
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
         if (newFormData) {
             setFormData(newFormData);
