@@ -7,6 +7,7 @@ export default function OverviewEditor(){
 
     const [html, setHtml] = useState("")
     const [path, setPath] = useState("") //Choose a path to upload the html data to, possible remove if uploading to db.
+    const [response, setResponse] = useState(null)
 
     useEffect(() => {
         //secure fetch whatever is stored inside the overview html file.
@@ -25,11 +26,12 @@ export default function OverviewEditor(){
             method: "post",
             body: body,
         })
-            .then((response) => {
-                console.log(response)
+            .then((response) => response.json())
+            .then(response => {
+                setResponse(response)
             })
             .catch((err) => {
-                alert("didn't work bucko " + err);
+                alert("didn't work bucko: " + err);
             })
     }
 
@@ -45,6 +47,12 @@ export default function OverviewEditor(){
                         style={{ minHeight: 200 }}
                         onChange={e => setHtml(e.target.value)}
                     />
+                </Form.Field>
+                <Form.Field>
+                    {response && <>
+                        <label>{response.msg}</label>
+                        {response.error && JSON.stringify(response.error)}
+                    </>}
                 </Form.Field>
                 <Button type="submit">Update Overview</Button>
             </>

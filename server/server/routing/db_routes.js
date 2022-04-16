@@ -1117,6 +1117,7 @@ module.exports = (db) => {
 
     db_router.post("/editOverview", [UserAuth.isAdmin], (req, res) => {
         let editOverviewQuery = ``;
+        res.send({ msg: "Success!"});
         res.send(200);
     })
 
