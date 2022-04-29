@@ -2,14 +2,23 @@ import React, { useState, useEffect } from "react";
 import ExemplaryProject from "./ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
+import {SecureFetch} from "../../util/functions/secureFetch";
 
 const projectsPerPage = 2;
 
 function HomePage() {
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
+    const [html, setHtml] = useState("")
 
     useEffect(() => {
         getPaginationData(0);
+        SecureFetch(`${config.url.API_GET_HTML}?name=overview`)
+            .then((response) => response.json())
+            .then((htmlData) => {
+                console.log(typeof htmlData[0].html)
+                setHtml(htmlData[0].html)
+            })
+
     }, []);
 
     const getPaginationData = (page) => {
@@ -33,23 +42,7 @@ function HomePage() {
 
     return (
         <>
-            <div className="row">
-                <h2>Overview</h2>
-            </div>
-            <div className="row">
-                <p className="overviewText">
-                    Senior Project is a capstone course completed by every Software Engineering senior. Small teams of
-                    students are assigned to solve challenging, real-world software issues for companies and
-                    organizations. External corporate and non-profit sponsors submit proposals for projects that teams
-                    of 4 or 5 students will work on.
-                </p>
-                <p className="overviewText">
-                    Over the course of two terms, each team works with a project sponsor, applying the software
-                    engineering skills that the students learned in class and on co-op. They carry the project from
-                    inception through an entire software development lifecycle. The end result is a functional software
-                    tool ready for use by the sponsor's organization.
-                </p>
-            </div>
+            <div className="content" dangerouslySetInnerHTML={{ __html: html }} />
 
             <div className="ui divider"></div>
 

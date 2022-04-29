@@ -750,7 +750,6 @@ module.exports = (db) => {
 
             //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
             fs.mkdirSync(baseURL, { recursive: true });
-
             for (let x = 0; x < req.files.files.length; x++) {
                 req.files.files[x].mv(
                     `${baseURL}/${req.files.files[x].name}`,
@@ -1115,10 +1114,48 @@ module.exports = (db) => {
             });
     });
 
-    db_router.post("/editOverview", [UserAuth.isAdmin], (req, res) => {
-        let editOverviewQuery = ``;
-        res.send({ msg: "Success!"});
-        res.send(200);
+    db_router.get("/getHtml",  (req, res) => {
+        let getHtmlQuery = `SELECT * FROM page_html`;
+        let queryParams = []
+        //If there is a query parameter, then select html from specified table.
+        if( typeof req.query.name !== 'undefined' && req.query.name){
+            getHtmlQuery = `SELECT html FROM page_html WHERE name = ?`
+            queryParams = [req.query.name]
+        }
+        db.query(getHtmlQuery, queryParams)
+            .then((html) => {
+                console.log(html);
+                res.send(html);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            })
+    })
+
+    db_router.post("/editPage", [UserAuth.isAdmin], (req, res) => {
+        let editPageQuery = `UPDATE page_html
+        SET html = ?
+        WHERE name = ?
+        `;
+        let promises = []
+        //Individually update all html tables from the body of the req.
+        Object.keys(req.body).forEach((key) => {
+            let queryParams = [req.body[key], key]
+            promises.push(
+                db.query(editPageQuery, queryParams)
+                    .then(() => {
+                        //do nothing
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        res.send({error: err})
+                    })
+            );
+        })
+        Promise.all(promises).then(() => {
+            res.send({ msg: "Success!"});
+        });
     })
 
     db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {

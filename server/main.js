@@ -52,7 +52,7 @@ app.use(express.json());
 app.use(
     fileupload({
         safeFileNames: true,
-        preserveExtension: true,
+        preserveExtension: 4,
     })
 );
 
