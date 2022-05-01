@@ -63,7 +63,7 @@ export default function SubmissionViewerModal(props) {
         const dueDate  = formatDate(due);
         const submitDate    = formatDate(submitted);
         const diffInMs   = new Date(submitDate) - new Date(dueDate)
-        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
         setDay(diffInDays);
     }
 
