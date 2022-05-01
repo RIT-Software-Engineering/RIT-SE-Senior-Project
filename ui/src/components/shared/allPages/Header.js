@@ -49,6 +49,14 @@ function Header() {
                     >
                         Home
                     </button>
+                    <button
+                        className="ui button"
+                        onClick={() => {
+                            history.push("/projects");
+                        }}
+                    >
+                        Projects
+                    </button>
                     {signedIn && <button
                         className="ui button"
                         onClick={() => {
@@ -99,6 +107,14 @@ function Header() {
                         }}
                     >
                         Home
+                    </Menu.Item>
+                    <Menu.Item
+                        as="a"
+                        onClick={() => {
+                            history.push("/projects");
+                        }}
+                    >
+                        Projects
                     </Menu.Item>
                     {signedIn && <Menu.Item
                         as="a"

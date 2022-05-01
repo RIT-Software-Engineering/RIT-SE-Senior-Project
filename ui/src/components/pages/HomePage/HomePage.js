@@ -15,7 +15,6 @@ function HomePage() {
         SecureFetch(`${config.url.API_GET_HTML}?name=overview`)
             .then((response) => response.json())
             .then((htmlData) => {
-                console.log(typeof htmlData[0].html)
                 setHtml(htmlData[0].html)
             })
 
