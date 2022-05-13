@@ -413,12 +413,10 @@ module.exports = (db) => {
         const { resultLimit, offset } = req.query;
 
         const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive}
-            WHERE priority >= 0
-            AND oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive}
-                                ORDER BY priority ASC LIMIT ?)
-            ORDER BY priority ASC LIMIT ?`;
+            WHERE oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
+             LIMIT ?`;
 
-        const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE priority >= 0`;
+        const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
 
         const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
