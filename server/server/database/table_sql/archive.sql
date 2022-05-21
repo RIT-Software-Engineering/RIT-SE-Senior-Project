@@ -1,7 +1,7 @@
 CREATE TABLE archive (
     archive_id      INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id      INTEGER,
-    --delete during pull Request priority        INTEGER, -- how high a project should be displayed on clientside
+    --delete this line during pull Request priority        INTEGER, -- how high a project should be displayed on clientside
     csv             TEXT,
     name        TEXT UNIQUE NOT NULL,
     dept        TEXT,
