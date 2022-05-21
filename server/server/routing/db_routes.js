@@ -1122,7 +1122,6 @@ module.exports = (db) => {
         }
         db.query(getHtmlQuery, queryParams)
             .then((html) => {
-                console.log(html);
                 res.send(html);
             })
             .catch((err) => {
@@ -1146,7 +1145,7 @@ module.exports = (db) => {
                         //do nothing
                     })
                     .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                         res.send({error: err})
                     })
             );
