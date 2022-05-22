@@ -19,7 +19,6 @@ export default function OverviewEditor(){
         SecureFetch(`${config.url.API_GET_HTML}`)
             .then((response) => response.json())
             .then((htmlData) => {
-                console.log("This is the htmlData ", htmlData)
                 let htmlMap = {};
                 htmlData.forEach((table) => {
                     htmlMap[table.name] = table.html;
@@ -46,7 +45,6 @@ export default function OverviewEditor(){
         })
             .then((response) => response.json())
             .then(response => {
-                console.log(response);
                 setResponse(response)
             })
             .catch((err) => {
@@ -99,31 +97,6 @@ export default function OverviewEditor(){
         )
     }
 
-    // const Overview = () => {
-    //     return (
-    //         <>
-    //             <Form.Field>
-    //                 <Form.TextArea
-    //                     placeholder={"If you see this text, that means there is nothing being displayed in the Overview."}
-    //                     label={"Overview Html"}
-    //                     name={"overviewValueKey"}
-    //                     value={html}
-    //                     id={"overview"}
-    //                     style={{ minHeight: 200 }}
-    //                     onChange={e => setHtml(e.target.value)}
-    //                 />
-    //             </Form.Field>
-    //             <Form.Field>
-    //                 {response && <>
-    //                     <label>{response.msg}</label>
-    //                     {response.error && JSON.stringify(response.error)}
-    //                 </>}
-    //             </Form.Field>
-    //             <Button type="submit">Update Overview</Button>
-    //         </>
-    //     )
-    // }
-    
     return (
         <>
         <Form
