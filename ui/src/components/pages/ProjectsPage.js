@@ -4,7 +4,7 @@ import { Icon, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 
-const projectsPerPage = 2;
+const projectsPerPage = 10;
 
 function ProjectsPage(){
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
