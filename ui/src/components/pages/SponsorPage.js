@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from "react";
-import { Accordion } from "semantic-ui-react";
-import { useHistory } from "react-router-dom";
 import {SecureFetch} from "../util/functions/secureFetch";
 import {config} from "../util/functions/constants";
 import InnerHTML from 'dangerously-set-html-content'
 
 function SponsorPage() {
-    const history = useHistory();
     const [html, setHtml] = useState("")
 
     useEffect(() => {
