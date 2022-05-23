@@ -9,12 +9,13 @@ import {
     TableHeader,
     TableHeaderCell,
     TableRow,
-    Icon, Input,
+    Icon, Input, Button,
 } from "semantic-ui-react";
 import { SecureFetch } from '../../util/functions/secureFetch';
 import { config } from '../../util/functions/constants';
 import SponsorEditor from "./SponsorEditor";
 import { formatPhoneNumber } from 'react-phone-number-input/input'
+import { CSVLink } from 'react-csv';
 
 const LOGS_PER_PAGE = 20;
 
@@ -74,6 +75,8 @@ export default function SponsorsTab(props) {
     useEffect(() => {
         getPaginationData();
     }, [])
+
+
     return (
         <>
             <Input
@@ -85,6 +88,18 @@ export default function SponsorsTab(props) {
                     leading: true,
                 })}
             />
+            {/*This is a button that is only displayed in the admin tab sponsors. supposed to return a csv of all the data returned by sponsor*/}
+            {props.notSummaryView &&
+                <CSVLink
+                    style={{ textDecoration: 'none' }}
+                    data={sponsors}
+                    filename={'sponsor-data.csv'}
+                    target="_self"
+                >
+                    <Button content={"Sponsor Info"} primary style={{float: 'right'}} color="primary" className="float-right" />
+                </CSVLink>
+
+            }
             <Table>
                 <TableHeader>
                     <TableRow>
