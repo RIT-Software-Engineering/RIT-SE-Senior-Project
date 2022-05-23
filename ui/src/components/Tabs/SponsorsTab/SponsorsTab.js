@@ -96,7 +96,7 @@ export default function SponsorsTab(props) {
                     filename={'sponsor-data.csv'}
                     target="_self"
                 >
-                    <Button content={"Sponsor Info"} primary style={{float: 'right'}} color="primary" className="float-right" />
+                    <Button content={"Sponsor Info"} primary={true} style={{float: 'right'}} color="primary" className="float-right" />
                 </CSVLink>
 
             }
