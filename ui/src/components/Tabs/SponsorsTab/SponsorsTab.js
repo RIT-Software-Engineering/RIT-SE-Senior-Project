@@ -15,9 +15,9 @@ import { SecureFetch } from '../../util/functions/secureFetch';
 import { config } from '../../util/functions/constants';
 import SponsorEditor from "./SponsorEditor";
 import { formatPhoneNumber } from 'react-phone-number-input/input'
-import { CSVLink } from 'react-csv';
+import { CSVLink, CSVDownload } from 'react-csv';
 
-const LOGS_PER_PAGE = 20;
+const LOGS_PER_PAGE = 2;
 
 export default function SponsorsTab(props) {
 
@@ -26,7 +26,7 @@ export default function SponsorsTab(props) {
     const [searchBarValue, setSearchBarValue] = useState("");
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
-
+    const [sponsorData, setSponsorData] = useState([]);
 
     let activePage = 0;
     let summaryView = props?.notSummaryView ? "" : "summaryView";
@@ -41,6 +41,20 @@ export default function SponsorsTab(props) {
             .catch((error) => {
                 alert("Failed to get sponsors data " + error);
             });
+    }
+
+
+
+    const getSponsorData = (event, done) => {
+        SecureFetch(`${config.url.API_GET_SPONSOR_DATA}`)
+            .then((response) => response.json())
+            .then((sponsorDataJson) => {
+                setSponsorData(sponsorDataJson);
+            })
+            .catch((error) => {
+                alert("Failed to get Sponsor Data for csv " + error);
+            })
+
     }
 
     // let handleResultSelect = (e, { result }) => this.setState({ value: result.title })
@@ -90,14 +104,18 @@ export default function SponsorsTab(props) {
             />
             {/*This is a button that is only displayed in the admin tab sponsors. supposed to return a csv of all the data returned by sponsor*/}
             {props.notSummaryView &&
-                <CSVLink
-                    style={{ textDecoration: 'none' }}
-                    data={sponsors}
-                    filename={'sponsor-data.csv'}
-                    target="_self"
-                >
-                    <Button content={"Sponsor Info"} primary={true} style={{float: 'right'}} color="primary" className="float-right" />
-                </CSVLink>
+                <>
+                    <Button content={"Sponsor Info"} onClick={getSponsorData} primary={true} style={{float: 'right'}} color="primary" className="float-right" />
+                    {sponsorData.length !== 0 &&
+
+                        <CSVDownload
+                            data={sponsorData}
+                            filename={'sponsor-data.csv'}
+                            target="_self"
+                        />
+                    }
+                </>
+
 
             }
             <Table>

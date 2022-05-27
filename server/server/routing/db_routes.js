@@ -765,6 +765,23 @@ module.exports = (db) => {
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
 
+    /*
+    * Route to get sponsor data, particularly for getting all sponsor
+    * emails for messaging. Sent to admin sponsor tab for building a csv
+    */
+    
+    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+        let query = `SELECT * FROM sponsors`
+        let params = [];
+        db.query(query, params)
+            .then((response) => {
+                res.send(response);
+            }).catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
+    })
+
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
         let filesToSend = []
         //This is the path, with the specified directory we want to find files in.

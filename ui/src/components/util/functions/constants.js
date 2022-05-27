@@ -55,6 +55,7 @@ export const config = {
         API_GET_LATE_SUBMISSION:`${BASE_API_URL}/db/getLateSubmission`,
         API_GET_FILES: `${BASE_API_URL}/db/getFiles`,
         API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
+        API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
