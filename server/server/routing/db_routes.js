@@ -769,7 +769,7 @@ module.exports = (db) => {
     * Route to get sponsor data, particularly for getting all sponsor
     * emails for messaging. Sent to admin sponsor tab for building a csv
     */
-    
+
     db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
         let query = `SELECT * FROM sponsors`
         let params = [];

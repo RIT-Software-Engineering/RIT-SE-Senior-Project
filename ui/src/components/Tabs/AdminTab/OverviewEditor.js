@@ -48,7 +48,7 @@ export default function OverviewEditor(){
                 setResponse(response)
             })
             .catch((err) => {
-                alert("didn't work bucko: " + err);
+                alert("didn't work, error: " + err);
             })
     }
 
