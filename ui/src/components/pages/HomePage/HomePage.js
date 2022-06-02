@@ -12,7 +12,7 @@ function HomePage() {
 
     useEffect(() => {
         getPaginationData(0);
-        SecureFetch(`${config.url.API_GET_HTML}?name=overview`)
+        SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
             .then((response) => response.json())
             .then((htmlData) => {
                 setHtml(htmlData[0].html)
