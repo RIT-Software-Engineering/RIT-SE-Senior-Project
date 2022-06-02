@@ -19,7 +19,7 @@ export default function StudentRow(props) {
             <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
         )
         student_cells.push(
-            <TableCell key={'student-login-'+props.student.last_login}>{props.student.last_login? props.student.last_login : "Never Logged in"}</TableCell>
+            <TableCell key={'student-login-'+props.student.last_login}>{props.student.last_login? dayjs(props.student.last_login).utc(true).local().format('DD/MM/YYYY HH:mm:ss') : "Never Logged in"}</TableCell>
         )
     }
 
