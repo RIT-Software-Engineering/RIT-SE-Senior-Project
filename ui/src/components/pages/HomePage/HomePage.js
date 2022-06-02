@@ -10,6 +10,11 @@ function HomePage() {
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
     const [html, setHtml] = useState("")
 
+    /*
+    * When the page initially loads, getPaginationData gets all the relevant project information so that it can be
+    * called again in the return with that proper amount of pages to display for the homepage projects.
+    * The secureFetch after it is for getting the html from the database to display above exemplary projects.
+    */
     useEffect(() => {
         getPaginationData(0);
         SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
