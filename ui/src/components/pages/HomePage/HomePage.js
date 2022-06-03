@@ -44,6 +44,10 @@ function HomePage() {
             });
     };
 
+    /*
+    * The Pagination component calls getPaginationData every time the page is
+    * changed, and displays a new set of the archived projects
+    */
     return (
         <>
             <div className="content" dangerouslySetInnerHTML={{ __html: html }} />
