@@ -138,6 +138,13 @@ export default function SponsorsTab(props) {
                         if(sponsor.division !== null && sponsor.division !== ''){
                             compAndDiv += ("("+ sponsor?.division + ")")
                         }
+                        let status = ''
+                        if(sponsor.inActive === 1){
+                            status += "InActive ";
+                        }
+                        if(sponsor.doNotEmail === 1){
+                            status += "Do Not Email "
+                        }
                         return (
                             <TableRow key={idx}>
                                 <TableCell>{name}</TableCell>
@@ -146,7 +153,7 @@ export default function SponsorsTab(props) {
                                 <TableCell>{formatPhoneNumber(sponsor.phone)}</TableCell>
                                 <TableCell>{sponsor.association}</TableCell>
                                 <TableCell>{sponsor.type}</TableCell>
-                                <TableCell>{sponsor.status}</TableCell>
+                                <TableCell>{status}</TableCell>
                                 <TableCell>
                                     <SponsorEditor summaryView={summaryView} sponsor={sponsor} callback={getPaginationData}/>
                                 </TableCell>

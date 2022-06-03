@@ -776,7 +776,7 @@ module.exports = (db) => {
     */
 
     db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
-        let query = `SELECT * FROM sponsors`
+        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
         let params = [];
         db.query(query, params)
             .then((response) => {
