@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Accordion, Form, Button } from 'semantic-ui-react';
-import { config } from '../../util/functions/constants';
-import { SecureFetch } from '../../util/functions/secureFetch';
+import { config } from '../../../util/functions/constants';
+import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileRemover from "./FileRemover";
 import OverviewEditor from "./OverviewEditor"
 
