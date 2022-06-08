@@ -35,7 +35,6 @@ export default function SponsorsTab(props) {
         SecureFetch(`${config.url.API_GET_ALL_SPONSORS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * activePage}`)
             .then((response) => response.json())
             .then((sponsors) => {
-                console.log(sponsors.sponsors[0].inActive)
                 setSponsors(sponsors.sponsors);
                 setSponsorsCount(sponsors.sponsorsCount);
             })

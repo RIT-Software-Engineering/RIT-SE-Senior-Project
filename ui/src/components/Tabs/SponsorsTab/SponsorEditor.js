@@ -44,6 +44,7 @@ export default function SponsorEditor(props){
         association: props?.sponsor?.association || "",
         type: props?.sponsor?.type || "",
         inActive: props?.sponsor?.inActive || "",
+        doNotEmail: props?.sponsor?.doNotEmail || "",
         changed_fields: {}
     };
 
@@ -117,6 +118,13 @@ export default function SponsorEditor(props){
             label: "inActive",
             placeHolder: "inActive",
             name: "inActive",
+            disabled: false
+        },
+        {
+            type: "checkbox",
+            label: "doNotEmail",
+            placeHolder: "doNotEmail",
+            name: "doNotEmail",
             disabled: false
         }
     ]

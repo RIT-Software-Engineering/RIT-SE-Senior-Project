@@ -94,9 +94,7 @@ export default function DatabaseTableEditor(props) {
         }
 
         if (checked !== undefined) {
-            console.log("inside of checked, Checked = ", checked)
             if (isActiveField) {
-                console.log("inside of isActiveField, isActiveField = ", isActiveField)
                 // The active field either stores an empty string or a datetime.
                 // The datetime is set by the server if the active field is set to 'false'.
                 value = checked ? "" : false;

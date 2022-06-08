@@ -1759,9 +1759,18 @@ module.exports = (db) => {
                 email       = ?,
                 phone       = ?,
                 association = ?,
-                type        = ?
+                type        = ?,
+                inActive    = ?,
+                doNotEmail  = ?
             WHERE sponsor_id = ?
         `;
+
+        /**
+         * This is done so that the sponsors table boolean (int) columns can be updated correctly, without them working
+         * against the existing code inside of DatabaseTableEditor.js
+         **/
+        let inActive = (body.inActive === "true" || body.inActive === '1');
+        let doNotEmail = (body.doNotEmail === "true"|| body.doNotEmail === '1');
 
         let updateSponsorParams = [
             body.fname,
@@ -1772,6 +1781,8 @@ module.exports = (db) => {
             body.phone,
             body.association,
             body.type,
+            inActive,
+            doNotEmail,
             body.sponsor_id
         ];
 
