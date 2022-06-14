@@ -1420,6 +1420,20 @@ module.exports = (db) => {
         db.query(query, params).then((users) => res.send(users));
     });
 
+    /**
+     * This is for getting the archive data to view/edit based on a specific ID.
+     * */
+    db_router.get("/getArchiveProject", [UserAuth.isAdmin], (req, res) => {
+        let query = `
+            SELECT *
+            FROM archive
+            WHERE archive_id = ?
+        `;
+
+        const params = [req.query.archive_id]
+        db.query(query, params).then((project) => res.send(project))
+    })
+
     db_router.get("/getSponsorProjects", [UserAuth.isCoachOrAdmin], (req, res) => {
 
         let query = `
@@ -1928,6 +1942,19 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
+
+    db_router.get("/getArchive", [UserAuth.isAdmin], (req,res) => {
+        let getArchiveQuery = `
+            SELECT * 
+            FROM archive`;
+        db.query(getArchiveQuery)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
+    })
 
     db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
 
