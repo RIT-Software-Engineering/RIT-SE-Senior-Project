@@ -410,18 +410,30 @@ module.exports = (db) => {
     });
 
     db_router.get("/selectExemplary", (req, res) => {
-        const { resultLimit, offset } = req.query;
+        const { resultLimit, offset, featured } = req.query;
 
-        /**
-         * This goes through and returns a set of the archived projects that are unique to the pagination
-         * On the home Page.
-         */
-        const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND
+        let projectsQuery = ``;
+        let rowCountQuery = ``;
+        if(featured === "true"){
+            /**
+             * This goes through and returns a set of the archived projects that are unique to the pagination
+             * On the home Page.
+             */
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND
             oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
              LIMIT ?`;
+            //This is for getting the total projects that are going to be displayed on the home page.
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1`;
+        }
+        else{
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
+             LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
+        }
 
-        //This is for getting the total projects that are going to be displayed on the home page.
-        const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1`;
+
+
 
         const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);

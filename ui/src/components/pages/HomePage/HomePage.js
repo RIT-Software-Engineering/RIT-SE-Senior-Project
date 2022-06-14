@@ -3,6 +3,7 @@ import ExemplaryProject from "./ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
 import {SecureFetch} from "../../util/functions/secureFetch";
+import InnerHTML from 'dangerously-set-html-content';
 
 const projectsPerPage = 2;
 
@@ -27,7 +28,7 @@ function HomePage() {
 
     const getPaginationData = (page) => {
         fetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}`
+            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=true`
         )
             .then((response) => {
                 if (response.ok) {
@@ -50,7 +51,9 @@ function HomePage() {
     */
     return (
         <>
-            <div className="content" dangerouslySetInnerHTML={{ __html: html }} />
+            <div className="content">
+                <InnerHTML html={html}/>
+            </div>
 
             <div className="ui divider"></div>
 

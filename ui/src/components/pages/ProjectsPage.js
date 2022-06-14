@@ -14,8 +14,8 @@ function ProjectsPage(){
     }, []);
 
     const getPaginationData = (page) => {
-        fetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}`
+        SecureFetch(
+            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=false`
         )
             .then((response) => {
                 if (response.ok) {

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../util/functions/secureFetch";
 import {config} from "../util/functions/constants";
-import InnerHTML from 'dangerously-set-html-content'
+import InnerHTML from 'dangerously-set-html-content';
 
 function SponsorPage() {
     const [html, setHtml] = useState("")
@@ -10,7 +10,6 @@ function SponsorPage() {
         SecureFetch(`${config.url.API_GET_HTML}?name=sponsor`)
             .then((response) => response.json())
             .then((htmlData) => {
-                console.log(typeof htmlData[0].html)
                 setHtml(htmlData[0].html)
             })
     }, []);

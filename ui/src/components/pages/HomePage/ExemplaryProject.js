@@ -16,6 +16,7 @@ function ExemplaryProject({ project }) {
         return awards
     }
     let awards = makeAwards()
+    console.log(project)
     return (
         <div className="ui segment stackable padded grid">
             <div className="row">
@@ -31,8 +32,8 @@ function ExemplaryProject({ project }) {
                     />
                 </div>
                 <div className="column">
-                    <h4>Team:</h4>
-                    <p>{project.team_name}</p>
+                    <h4>Dates:</h4>
+                    <p>{project.start_date} - {project.end_date}</p>
                     <h4>Students:</h4>
                     <p>{project.members}</p>
                     {awards.length !== 0 && <><h4>Awards:</h4>

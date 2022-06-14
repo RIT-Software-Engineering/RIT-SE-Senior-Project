@@ -10,9 +10,7 @@ export default function OverviewEditor(){
     //TODO: Add environment variables of the types of page that you could be editing.
 
     const [html, setHtml] = useState({})
-    const [htmlChanges, setHtmlChanges] = useState({})
     const [response, setResponse] = useState(null)
-    const [page, setPage] = useState("") //This is for which page is getting a html value added to it.
 
     useEffect(() => {
         //secure fetch whatever is stored inside the overview html file.
@@ -80,7 +78,7 @@ export default function OverviewEditor(){
 
 
     //TODO: MAKE FUNCTION FOR TAKING IN JSON RESPONSE FROM DB AND CREATING HTMLTABLES FROM IT.
-    const OverviewTest = () => {
+    const Overview = () => {
         return (
             <>
                 {html !== {} &&
@@ -110,7 +108,7 @@ export default function OverviewEditor(){
                         {
                             key: "pageEditor",
                             title: "Page Editor",
-                            content: { content: OverviewTest() },
+                            content: { content: Overview() },
                         },
                     ]}
                 />

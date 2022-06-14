@@ -4,6 +4,7 @@ import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
 import { UserContext } from "../../../../util/functions/UserContext";
+import InnerHTML from 'dangerously-set-html-content';
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 /** 
@@ -199,7 +200,9 @@ export default function ActionModal(props) {
                 <Modal.Description>
                     {props.preActionContent}
                     <br />
-                    <div className="content" dangerouslySetInnerHTML={{ __html: props.page_html }} />
+                    <div className="content" >
+                        <InnerHTML html={props.page_html}/>
+                    </div>
                     <br />
                     {fileUpload(props.file_types, props.file_size)}
                     {errors.length > 0 && <div className="submission-errors">
