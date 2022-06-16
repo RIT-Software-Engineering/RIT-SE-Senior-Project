@@ -5,10 +5,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import ProjectEditor from "../AdminTab/ProjectEditor";
 import { UserContext } from "../../util/functions/UserContext";
 
-/**
- * Projects tab inside the dashboard
- **/
-
 export default function ProjectsTab(props) {
 
     const [myProposalData, setMyProposalData] = useState([]);

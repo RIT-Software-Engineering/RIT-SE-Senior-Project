@@ -7,10 +7,6 @@ import _ from "lodash";
 
 const projectsPerPage = 10;
 
-/**
- * Projects page visible on main page of the website without signing in.
- **/
-
 function ProjectsPage(){
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
     const [activePage, setActivePage] = useState(0)
