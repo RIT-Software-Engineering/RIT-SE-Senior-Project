@@ -3,6 +3,7 @@ import ExemplaryProject from "./HomePage/ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
+import _ from "lodash";
 
 const projectsPerPage = 10;
 
@@ -12,6 +13,7 @@ const projectsPerPage = 10;
 
 function ProjectsPage(){
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
+    const [activePage, setActivePage] = useState(0)
 
     useEffect(() => {
         getPaginationData(0);
