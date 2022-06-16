@@ -15,7 +15,7 @@ import { SecureFetch } from '../../util/functions/secureFetch';
 import { config } from '../../util/functions/constants';
 import SponsorEditor from "./SponsorEditor";
 import { formatPhoneNumber } from 'react-phone-number-input/input'
-import { CSVLink, CSVDownload } from 'react-csv';
+import { CSVDownload } from 'react-csv';
 
 const LOGS_PER_PAGE = 2;
 
@@ -57,7 +57,7 @@ export default function SponsorsTab(props) {
 
     }
 
-    // let handleResultSelect = (e, { result }) => this.setState({ value: result.title })
+
     function formatResults(results){
         let formattedResults = []
         for (const result of results){
