@@ -16,12 +16,12 @@ function ProjectsPage(){
     const [activePage, setActivePage] = useState(0)
 
     useEffect(() => {
-        getPaginationData(0);
-    }, []);
+        getPaginationData();
+    }, [activePage]);
 
-    const getPaginationData = (page) => {
+    const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=false`
+            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`
         )
             .then((response) => {
                 if (response.ok) {
@@ -55,7 +55,7 @@ function ProjectsPage(){
             })}
             <div className="pagination-container">
                 <Pagination
-                    defaultActivePage={1}
+                    activePage={activePage}
                     ellipsisItem={null}
                     firstItem={null}
                     lastItem={null}
@@ -63,7 +63,7 @@ function ProjectsPage(){
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
                     totalPages={Math.ceil(projectData.totalProjects / projectsPerPage)}
                     onPageChange={(event, data) => {
-                        getPaginationData(data.activePage - 1);
+                        setActivePage(data.activePage - 1);
                     }}
                 />
             </div>

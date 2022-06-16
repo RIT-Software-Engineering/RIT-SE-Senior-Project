@@ -28,6 +28,7 @@ export default function SponsorsTab(props) {
     const [searchResults, setSearchResults] = useState([]);
     const [sponsorData, setSponsorData] = useState([]);
     const [activePage, setActivePage] = useState(0)
+    const [pageChange, setPageChange] = useState(0)
 
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
@@ -87,7 +88,7 @@ export default function SponsorsTab(props) {
 
     useEffect(() => {
         getPaginationData();
-    }, [activePage])
+    }, [pageChange])
 
 
     return (
@@ -169,10 +170,11 @@ export default function SponsorsTab(props) {
                     lastItem={null}
                     prevItem={{ content: <Icon name="angle left" />, icon: true }}
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
-                    activePage={activePage}
+                    activePage={activePage + 1}
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         setActivePage(data.activePage - 1);
+                        setPageChange(data.activePage - 1)
                     }}
                 />
             </div>
