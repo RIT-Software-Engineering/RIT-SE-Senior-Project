@@ -1705,6 +1705,71 @@ module.exports = (db) => {
 
     });
 
+    db_router.get("/searchForProject", (req, res) => {
+        const { resultLimit, offset, searchQuery } = req.query;
+
+        let getProjectsQuery = "";
+        let queryParams = [];
+        let getProjectsCount = "";
+        let projectCountParams = [];
+
+        getProjectsQuery = `SELECT * FROM  archive WHERE 
+                            archive.OID NOT IN (
+                SELECT OID
+                FROM archive
+                WHERE title LIKE ?
+                   OR sponsor like ?
+                   OR members like ?
+                ORDER BY title,
+                         sponsor,
+                         members
+            LIMIT ?
+            ) AND (
+                archive.title LIKE ?
+                OR archive.sponsor LIKE ?
+                OR archive.members LIKE ?
+                )
+            ORDER BY
+                archive.title,
+                archive.sponsor,
+                archive.members
+            LIMIT ?`;
+
+        getProjectsCount = `SELECT COUNT(*)
+                            FROM archive
+                            WHERE 
+                                title LIKE ?
+                                OR sponsor LIKE ?
+                                OR members LIKE ?
+                                `;
+
+        const searchQueryParam = searchQuery || '';
+        queryParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            offset || 0,
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            resultLimit || 0
+        ];
+        projectCountParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+        ]
+        const projectPromise = db.query(getProjectsQuery, queryParams);
+        const projectCountPromise = db.query(getProjectsCount, projectCountParams);
+        Promise.all([projectCountPromise,projectPromise])
+            .then(([[projectCount], projectRows]) => {
+                res.send({projectCount: projectCount[Object.keys(projectCount)[0]], projects: projectRows})
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
     db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
 
         let body = req.body;

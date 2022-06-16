@@ -16,7 +16,6 @@ function ExemplaryProject({ project }) {
         return awards
     }
     let awards = makeAwards()
-    console.log(project)
     return (
         <div className="ui segment stackable padded grid">
             <div className="row">

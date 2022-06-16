@@ -44,7 +44,9 @@ export default function SponsorsTab(props) {
             });
     }
 
-
+    /**
+     * getSponsorData is used for building the csv with sponsor info.
+     **/
 
     const getSponsorData = (event, done) => {
         SecureFetch(`${config.url.API_GET_SPONSOR_DATA}`)
@@ -73,7 +75,7 @@ export default function SponsorsTab(props) {
         setIsSearchLoading(true);
         setSearchBarValue(value);
 
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * activePage}&searchQuery=${value}`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${LOGS_PER_PAGE}&offset=${0}&searchQuery=${value}`)
             .then((response) => response.json())
             .then((results) => {
                 setSearchResults(formatResults(results.sponsors))
