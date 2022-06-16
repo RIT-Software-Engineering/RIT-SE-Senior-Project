@@ -29,7 +29,6 @@ export default function SponsorsTab(props) {
     const [sponsorData, setSponsorData] = useState([]);
     const [activePage, setActivePage] = useState(0)
 
-    //let activePage = 0;
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
     const getPaginationData = () => {
@@ -79,7 +78,6 @@ export default function SponsorsTab(props) {
                 setSearchResults(formatResults(results.sponsors))
                 setIsSearchLoading(false);
                 setSponsorsCount(results.sponsorsCount);
-                setActivePage(1);
                 setSponsors(results.sponsors);
             })
             .catch((error) => {
@@ -166,17 +164,15 @@ export default function SponsorsTab(props) {
 
             <div className="pagination-container">
                 <Pagination
-                    defaultActivePage={1}
                     ellipsisItem={null}
                     firstItem={null}
                     lastItem={null}
                     prevItem={{ content: <Icon name="angle left" />, icon: true }}
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
-                    //activePage={activePage}
+                    activePage={activePage}
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         setActivePage(data.activePage - 1);
-                        //getPaginationData()
                     }}
                 />
             </div>
