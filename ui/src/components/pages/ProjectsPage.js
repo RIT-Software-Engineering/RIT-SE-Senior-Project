@@ -6,6 +6,10 @@ import { SecureFetch } from "../util/functions/secureFetch";
 
 const projectsPerPage = 10;
 
+/**
+ * Projects page visible on main page of the website without signing in.
+ **/
+
 function ProjectsPage(){
     const [projectData, setProjectData] = useState({ projects: [], totalProjects: 0 });
 
