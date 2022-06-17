@@ -17,7 +17,7 @@ import SponsorEditor from "./SponsorEditor";
 import { formatPhoneNumber } from 'react-phone-number-input/input'
 import { CSVDownload } from 'react-csv';
 
-const LOGS_PER_PAGE = 2;
+const LOGS_PER_PAGE = 20;
 
 export default function SponsorsTab(props) {
 
