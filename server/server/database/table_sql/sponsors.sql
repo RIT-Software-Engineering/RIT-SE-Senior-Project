@@ -8,5 +8,7 @@ CREATE TABLE sponsors (
     phone       TEXT,
     association TEXT,
     type        TEXT,
-    notes       TEXT
+    notes       TEXT,
+    inActive    INTEGER DEFAULT 0,
+    doNotEmail  INTEGER DEFAULT 0
 );

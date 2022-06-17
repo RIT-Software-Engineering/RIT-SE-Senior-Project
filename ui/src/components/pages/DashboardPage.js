@@ -14,9 +14,10 @@ import "./../../css/dashboard.css";
 import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { config } from "../util/functions/constants";
-import FileEditor from "../Tabs/AdminTab/FileEditor";
+import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
+import ArchiveTable from "../Tabs/AdminTab/ArchiveEditor/ArchiveTable";
 
 export default function DashboardPage() {
 
@@ -66,6 +67,7 @@ export default function DashboardPage() {
                             <SemesterEditor />
                             <ActionEditor semesterData={semesterData} />
                             <ProjectEditor semesterData={semesterData} />
+                            <ArchiveTable />
                             <UserEditor />
                             <SponsorEditorAccordion />
                             <FileEditor />

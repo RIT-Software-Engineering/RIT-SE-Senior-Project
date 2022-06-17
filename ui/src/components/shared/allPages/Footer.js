@@ -25,7 +25,7 @@ function Footer() {
                         </div>
                         <div id="version"className="column">
                             <h5>
-                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project" >V.1.3.0</a>
+                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project" target="_blank">V.1.3.0</a>
                             </h5>
                         </div>
                     </div>

@@ -33,7 +33,6 @@ export default function SponsorEditor(props){
             });
     }, []);
 
-
     let initialState = {
         sponsor_id: props?.sponsor?.sponsor_id || "",
         fname: props?.sponsor?.fname || "",
@@ -44,6 +43,8 @@ export default function SponsorEditor(props){
         phone: props?.sponsor?.phone || "",
         association: props?.sponsor?.association || "",
         type: props?.sponsor?.type || "",
+        inActive: props?.sponsor?.inActive || "",
+        doNotEmail: props?.sponsor?.doNotEmail || "",
         changed_fields: {}
     };
 
@@ -110,6 +111,20 @@ export default function SponsorEditor(props){
             label: "Type",
             placeHolder: "Type",
             name: "type",
+            disabled: false
+        },
+        {
+            type: "checkbox",
+            label: "inActive",
+            placeHolder: "inActive",
+            name: "inActive",
+            disabled: false
+        },
+        {
+            type: "checkbox",
+            label: "doNotEmail",
+            placeHolder: "doNotEmail",
+            name: "doNotEmail",
             disabled: false
         }
     ]

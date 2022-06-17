@@ -5,6 +5,17 @@ import { config } from "../../util/functions/constants";
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 function ExemplaryProject({ project }) {
+    const makeAwards = () => {
+        let awards = [];
+        if(project.outstanding === 1){
+            awards[0] = 'Outstanding'
+        }
+        if(project.creative === 1){
+            awards[1] = 'Creative'
+        }
+        return awards
+    }
+    let awards = makeAwards()
     return (
         <div className="ui segment stackable padded grid">
             <div className="row">
@@ -20,10 +31,13 @@ function ExemplaryProject({ project }) {
                     />
                 </div>
                 <div className="column">
-                    <h4>Team:</h4>
-                    <p>{project.team_name}</p>
+                    <h4>Dates:</h4>
+                    <p>{project.start_date} - {project.end_date}</p>
                     <h4>Students:</h4>
                     <p>{project.members}</p>
+                    {awards.length !== 0 && <><h4>Awards:</h4>
+                    <p>{awards.filter(Boolean).join(", ")}</p>
+                    </>}
                 </div>
                 <div className="column">
                     <h4>Sponsor:</h4>

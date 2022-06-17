@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePage from "./components/pages/HomePage/HomePage";
+import ProjectsPage from "./components/pages/ProjectsPage";
 import SponsorPage from "./components/pages/SponsorPage";
 import ProposalPage from "./components/pages/ProposalPage";
 import ErrorPage from "./components/pages/ErrorPage";
@@ -21,6 +22,7 @@ function App() {
                 <Container>
                     <Switch>
                         <Route path="/" component={HomePage} exact />
+                        <Route path="/projects" component={ProjectsPage}/>
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
                         <Route path="/dashboard" component={DashboardPage} />

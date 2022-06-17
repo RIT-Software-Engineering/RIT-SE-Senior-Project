@@ -95,13 +95,14 @@ export default function DatabaseTableEditor(props) {
 
         if (checked !== undefined) {
             if (isActiveField) {
-                // The active field either stores and empty string or a datetime.
+                // The active field either stores an empty string or a datetime.
                 // The datetime is set by the server if the active field is set to 'false'.
                 value = checked ? "" : false;
             } else {
                 value = checked;
             }
         }
+        //Todo: Ask the bois what this is supposed to do...
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
         if (newFormData) {
             setFormData(newFormData);
@@ -119,6 +120,11 @@ export default function DatabaseTableEditor(props) {
 
     };
 
+    /**
+     * This is how the edit table for any form of editting is made and filled with the initial state.
+     * The initial state is renamed to 'formData', and field(aka formFieldArray, the fields that are populated from
+     * other editor.js files, will contain the name of the column being queried from the db.
+     * */
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];

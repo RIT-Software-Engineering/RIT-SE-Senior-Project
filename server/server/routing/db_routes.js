@@ -410,15 +410,30 @@ module.exports = (db) => {
     });
 
     db_router.get("/selectExemplary", (req, res) => {
-        const { resultLimit, offset } = req.query;
+        const { resultLimit, offset, featured } = req.query;
 
-        const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive}
-            WHERE priority >= 0
-            AND oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive}
-                                ORDER BY priority ASC LIMIT ?)
-            ORDER BY priority ASC LIMIT ?`;
+        let projectsQuery = ``;
+        let rowCountQuery = ``;
+        if(featured === "true"){
+            /**
+             * This goes through and returns a set of the archived projects that are unique to the pagination
+             * On the home Page.
+             */
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
+             LIMIT ?`;
+            //This is for getting the total projects that are going to be displayed on the home page.
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1`;
+        }
+        else{
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
+             LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
+        }
 
-        const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE priority >= 0`;
+
+
 
         const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
@@ -748,8 +763,8 @@ module.exports = (db) => {
             const formattedPath = `resource/${req.body.path}`;
             const baseURL = path.join(__dirname, `../../${formattedPath}`);
 
+            //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
             fs.mkdirSync(baseURL, { recursive: true });
-
             for (let x = 0; x < req.files.files.length; x++) {
                 req.files.files[x].mv(
                     `${baseURL}/${req.files.files[x].name}`,
@@ -766,6 +781,58 @@ module.exports = (db) => {
 
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
+
+    /*
+    * Route to get sponsor data, particularly for getting all sponsor
+    * emails for messaging. Sent to admin sponsor tab for building a csv
+    */
+
+    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
+        let params = [];
+        db.query(query, params)
+            .then((response) => {
+                res.send(response);
+            }).catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
+    })
+
+    db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
+        let filesToSend = []
+        //This is the path, with the specified directory we want to find files in.
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.mkdirSync(baseURL, { recursive: true });
+        fs.readdir(baseURL, function (err, files) {
+            //handling error
+            if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+            }
+            //listing all files using forEach
+            files.forEach(function (file) {
+                // Do whatever you want to do with the file
+                filesToSend.push(file)
+            });
+            res.send(filesToSend)
+        })
+
+    });
+
+    db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}/${req.query.file}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.unlink(baseURL, (err => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            else {
+                res.send({ msg: "Success!", fileDeleted: req.query.file });
+            }
+        }));
+    })
 
     db_router.post(
         "/submitProposal",
@@ -1079,6 +1146,49 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getHtml",  (req, res) => {
+        let getHtmlQuery = `SELECT * FROM page_html`;
+        let queryParams = []
+        //If there is a query parameter, then select html from specified table.
+        if( typeof req.query.name !== 'undefined' && req.query.name){
+            getHtmlQuery = `SELECT html FROM page_html WHERE name = ?`
+            queryParams = [req.query.name]
+        }
+        db.query(getHtmlQuery, queryParams)
+            .then((html) => {
+                res.send(html);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            })
+    })
+
+    db_router.post("/editPage", [UserAuth.isAdmin], (req, res) => {
+        let editPageQuery = `UPDATE page_html
+        SET html = ?
+        WHERE name = ?
+        `;
+        let promises = []
+        //Individually update all html tables from the body of the req.
+        Object.keys(req.body).forEach((key) => {
+            let queryParams = [req.body[key], key]
+            promises.push(
+                db.query(editPageQuery, queryParams)
+                    .then(() => {
+                        //do nothing
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        res.send({error: err})
+                    })
+            );
+        })
+        Promise.all(promises).then(() => {
+            res.send({ msg: "Success!"});
+        });
+    })
+
     db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
         let getActionsQuery = `
             SELECT *
@@ -1128,6 +1238,26 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
+
+    /*
+    * This will join between the action and action_log tables. It returns the due date from
+    * a specific log_id's action_template # = action_id.
+    */
+    db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res)=> {
+        let getLateSubmissionQuery = `SELECT actions.due_date
+                                      FROM action_log
+                                      JOIN actions ON actions.action_id = action_log.action_template
+                                      WHERE action_log.action_log_id = ?`;
+        let params = [req.query.log_id];
+        db.query(getLateSubmissionQuery, params)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    })
 
     db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res) => {
         let getActionLogQuery = "";
@@ -1301,6 +1431,20 @@ module.exports = (db) => {
         params = [req.query.project_id]
         db.query(query, params).then((users) => res.send(users));
     });
+
+    /**
+     * This is for getting the archive data to view/edit based on a specific ID.
+     * */
+    db_router.get("/getArchiveProject", [UserAuth.isAdmin], (req, res) => {
+        let query = `
+            SELECT *
+            FROM archive
+            WHERE archive_id = ?
+        `;
+
+        const params = [req.query.archive_id]
+        db.query(query, params).then((project) => res.send(project))
+    })
 
     db_router.get("/getSponsorProjects", [UserAuth.isCoachOrAdmin], (req, res) => {
 
@@ -1561,6 +1705,71 @@ module.exports = (db) => {
 
     });
 
+    db_router.get("/searchForProject", (req, res) => {
+        const { resultLimit, offset, searchQuery } = req.query;
+
+        let getProjectsQuery = "";
+        let queryParams = [];
+        let getProjectsCount = "";
+        let projectCountParams = [];
+
+        getProjectsQuery = `SELECT * FROM  archive WHERE 
+                            archive.OID NOT IN (
+                SELECT OID
+                FROM archive
+                WHERE title LIKE ?
+                   OR sponsor like ?
+                   OR members like ?
+                ORDER BY title,
+                         sponsor,
+                         members
+            LIMIT ?
+            ) AND (
+                archive.title LIKE ?
+                OR archive.sponsor LIKE ?
+                OR archive.members LIKE ?
+                )
+            ORDER BY
+                archive.title,
+                archive.sponsor,
+                archive.members
+            LIMIT ?`;
+
+        getProjectsCount = `SELECT COUNT(*)
+                            FROM archive
+                            WHERE 
+                                title LIKE ?
+                                OR sponsor LIKE ?
+                                OR members LIKE ?
+                                `;
+
+        const searchQueryParam = searchQuery || '';
+        queryParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            offset || 0,
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            resultLimit || 0
+        ];
+        projectCountParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+        ]
+        const projectPromise = db.query(getProjectsQuery, queryParams);
+        const projectCountPromise = db.query(getProjectsCount, projectCountParams);
+        Promise.all([projectCountPromise,projectPromise])
+            .then(([[projectCount], projectRows]) => {
+                res.send({projectCount: projectCount[Object.keys(projectCount)[0]], projects: projectRows})
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
     db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
 
         let body = req.body;
@@ -1641,9 +1850,18 @@ module.exports = (db) => {
                 email       = ?,
                 phone       = ?,
                 association = ?,
-                type        = ?
+                type        = ?,
+                inActive    = ?,
+                doNotEmail  = ?
             WHERE sponsor_id = ?
         `;
+
+        /**
+         * This is done so that the sponsors table boolean (int) columns can be updated correctly, without them working
+         * against the existing code inside of DatabaseTableEditor.js
+         **/
+        let inActive = (body.inActive === "true" || body.inActive === '1');
+        let doNotEmail = (body.doNotEmail === "true"|| body.doNotEmail === '1');
 
         let updateSponsorParams = [
             body.fname,
@@ -1654,6 +1872,8 @@ module.exports = (db) => {
             body.phone,
             body.association,
             body.type,
+            inActive,
+            doNotEmail,
             body.sponsor_id
         ];
 
@@ -1799,6 +2019,19 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
+
+    db_router.get("/getArchive", [UserAuth.isAdmin], (req,res) => {
+        let getArchiveQuery = `
+            SELECT * 
+            FROM archive`;
+        db.query(getArchiveQuery)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
+    })
 
     db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
 
