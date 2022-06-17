@@ -62,8 +62,9 @@ export default function ActionLogs(props) {
                         }
                         let showNewSubmissionHighlight = new Date(action.submission_datetime) > prevLogin;
                         return (
-                            //TODO: Get the color that sam wanted again, I lost it when messing with git.
+
                             <TableRow style={{background: showNewSubmissionHighlight? '#fffaf3' : 'none', fontWeight: showNewSubmissionHighlight? 'bold': 'none'}} key={idx}>
+
                                 {userContext.user?.role !== USERTYPES.STUDENT && <TableCell>{action.display_name || action.title}</TableCell>}
                                 <TableCell>{action.action_title}</TableCell>
                                 <TableCell>{action.action_target}</TableCell>

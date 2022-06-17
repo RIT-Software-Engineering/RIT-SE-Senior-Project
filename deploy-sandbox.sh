@@ -19,7 +19,6 @@ sudo systemctl stop nginx
 echo "Starting nginx"
 sudo systemctl start nginx
 echo "Stopping pm2"
-sudo su pm2-user
 sudo pm2 stop dev
 echo "Starting pm2"
 sudo pm2 start /home/website-test/RIT-SE-Senior-Project/ecosystem.dev.config.js
