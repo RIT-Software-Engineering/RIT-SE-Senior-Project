@@ -17,6 +17,7 @@ function ProjectsPage(){
     const [activePage, setActivePage] = useState(0)
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
+    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
 
     useEffect(() => {
         getPaginationData();
@@ -34,7 +35,6 @@ function ProjectsPage(){
                 }
             })
             .then((data) => {
-                console.log(data);
                 setProjects(data.projects)
                 setProjectCount(data.totalProjects)
             })
@@ -45,6 +45,17 @@ function ProjectsPage(){
 
     let handleSearchChange = (e, { value }) => {
         setSearchBarValue(value);
+        //If this is the first letter entered to value, keep track that a search is being made.
+        if(pageNumBeforeSearch === 0){
+            setPageNumBeforeSearch(activePage + 1);
+        }
+        //If the search value is empty, don't do a search for projects, and return back to the page originally on.
+        if(value === ""){
+            setActivePage(pageNumBeforeSearch - 1);
+            setPageNumBeforeSearch(0);
+            setPageChange(pageChange + 99);
+            return;
+        }
         SecureFetch(`${config.url.API_GET_SEARCH_FOR_PROJECTS}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${value}`)
             .then((response) => response.json())
             .then((results) => {
