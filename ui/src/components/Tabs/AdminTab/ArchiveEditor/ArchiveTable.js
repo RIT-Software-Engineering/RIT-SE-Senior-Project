@@ -13,6 +13,7 @@ import {
 import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import _ from "lodash";
+import ArchivePanel from "./ArchivePanel";
 
 const projectsPerPage = 10
 
@@ -117,7 +118,13 @@ export default function ArchiveTable() {
                                 <TableCell>{members}</TableCell>
                                 <TableCell>{sponsor}</TableCell>
                                 <TableCell>{tags.filter(Boolean).join(", ")}</TableCell>
-                                <TableCell>place holder</TableCell>
+                                <TableCell>
+                                    <ArchivePanel
+                                        project={project}
+                                        header={"Edit Header"}
+                                        buttonIcon={"edit"}
+                                    />
+                                </TableCell>
                             </TableRow>
                         )
                     })}</TableBody>

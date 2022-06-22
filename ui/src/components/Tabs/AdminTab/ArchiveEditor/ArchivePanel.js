@@ -10,16 +10,20 @@ export default function ArchivePanel(props){
     let initialState = {
         featured: props?.project?.featured || "",
         outstanding: props?.project?.outstanding || "",
-        creative: props?.project?.creative || ""
+        creative: props?.project?.creative || "",
+        archive_id: props?.project?.archive_id || ""
     }
 
-    let submissionModalMessages = {
-        SUCCESS: "The archive data has been updated.",
-        FAIL: "We were unable to receive your update to the archived project.",
-    };
+    let submissionModalMessages = props.create ? {
+        SUCCESS: "The archive project has been created.",
+        FAIL: "We were unable to add to archive.",
+    } : {
+        SUCCESS: "The archived project has been Edited.",
+        FAIL: "Could not make edits.",
+    }
 
     //TODO JA Make a route to update the archived project.
-    let submitRouter = "";
+    let submitRouter = config.url.API_POST_EDIT_ARCHIVE;
 
     let formFieldArray = [
         {
@@ -45,5 +49,15 @@ export default function ArchivePanel(props){
         }
     ];
 
-    let trigger = <Button icon {"edit"} />;
+
+    return (
+        <DatabaseTableEditor
+            initialState={initialState}
+            submissionModalMessages={submissionModalMessages}
+            submitRoute={submitRouter}
+            formFieldArray={formFieldArray}
+            header={props.header}
+            button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+        />
+    );
 }

@@ -540,6 +540,34 @@ module.exports = (db) => {
             .catch(err => res.status(500).send(err));
     });
 
+    db_router.post("/editArchive",
+        UserAuth.isAdmin,
+        body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        async (req, res) => {
+        let body = req.body;
+        const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured = ?, outstanding = ?, creative = ?
+                                    WHERE archive_id = ?`;
+        const checkBox = (data) => {
+            if(data === 'true' || data === '1'){
+                return 1;
+            }
+            return 0;
+        }
+
+        const updateArchiveParams = [
+            checkBox(body.featured),
+            checkBox(body.outstanding),
+            checkBox(body.creative),
+            body.archive_id,
+        ]
+
+        db.query(updateArchiveQuery,updateArchiveParams)
+            .then((response) => res.sendStatus(200))
+            .catch(err => res.status(500).send(err))
+
+    });
+
     db_router.post(
         "/editProject",
         [
