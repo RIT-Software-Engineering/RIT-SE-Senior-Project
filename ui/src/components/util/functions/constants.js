@@ -28,6 +28,8 @@ export const config = {
         API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
+        //Get below is currently unused.
+        API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,

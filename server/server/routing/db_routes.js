@@ -109,6 +109,7 @@ module.exports = (db) => {
         let query = "";
         let params = [];
         switch (req.user.type) {
+            //Retrieves all users from a semester group that is similar to the student that is making the query.
             case ROLES.STUDENT:
                 query = `
                     SELECT users.* FROM users
@@ -174,6 +175,7 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
     });
+
 
 
     db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {

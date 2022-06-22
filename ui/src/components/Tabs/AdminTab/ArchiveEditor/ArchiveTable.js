@@ -102,7 +102,7 @@ export default function ArchiveTable() {
                                 Tags
                             </TableHeaderCell>
                             <TableHeaderCell>
-                                Edit/Original
+                                Edit
                             </TableHeaderCell>
                         </TableRow>
                     </TableHeader>
@@ -117,6 +117,7 @@ export default function ArchiveTable() {
                                 <TableCell>{members}</TableCell>
                                 <TableCell>{sponsor}</TableCell>
                                 <TableCell>{tags.filter(Boolean).join(", ")}</TableCell>
+                                <TableCell>place holder</TableCell>
                             </TableRow>
                         )
                     })}</TableBody>
