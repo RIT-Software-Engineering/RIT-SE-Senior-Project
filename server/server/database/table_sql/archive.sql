@@ -18,6 +18,7 @@ CREATE TABLE archive (
     poster_thumb    TEXT,   -- path to poster thumbnail
     poster_full     TEXT,   -- path to full resolution poster image 
     synopsis        TEXT,
+    keywords        TEXT,
     video           TEXT,   -- path to project video (if any)
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );

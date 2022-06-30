@@ -1762,7 +1762,6 @@ module.exports = (db) => {
         let getProjectsCount = "";
         let projectCountParams = [];
 
-        console.log(searchQuery);
         getProjectsQuery = `SELECT * FROM  archive WHERE 
                             archive.OID NOT IN (
                 SELECT OID
@@ -1770,22 +1769,26 @@ module.exports = (db) => {
                 WHERE title like ?
                    OR sponsor like ?
                    OR members like ?
+                   OR keywords like ?
                    OR synopsis like ?
                 ORDER BY title,
                          sponsor,
                          members, 
+                         keywords,
                          synopsis
             LIMIT ?
             ) AND (
                 archive.title like ?
                 OR archive.sponsor like ?
                 OR archive.members like ?
+                OR archive.keywords like ?
                 OR archive.synopsis like ?
                 )
             ORDER BY
                 archive.title,
                 archive.sponsor,
                 archive.members,
+                archive.keywords,
                 archive.synopsis
             LIMIT ?`;
 
@@ -1795,12 +1798,14 @@ module.exports = (db) => {
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
+                                OR keywords like ?
                                 OR synopsis like ?
                                 `;
 
         const searchQueryParam = searchQuery || '';
-        console.log(searchQueryParam)
+
         queryParams = [
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
@@ -1810,9 +1815,11 @@ module.exports = (db) => {
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             resultLimit || 0
         ];
         projectCountParams = [
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
