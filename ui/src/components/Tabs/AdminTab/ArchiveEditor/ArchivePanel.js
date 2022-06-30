@@ -11,7 +11,21 @@ export default function ArchivePanel(props){
         featured: props?.project?.featured || "",
         outstanding: props?.project?.outstanding || "",
         creative: props?.project?.creative || "",
-        archive_id: props?.project?.archive_id || ""
+        archive_id: props?.project?.archive_id || "",
+        project_id: props?.project?.project_id || "",
+        title: props?.project?.title || "",
+        team_name: props?.project?.team_name || "",
+        members: props?.project?.members || "",
+        sponsor: props?.project?.sponsor || "",
+        coach: props?.project?.coach || "",
+        poster_thumb: props?.project?.poster_thumb || "",
+        poster_full: props?.project?.poster_full || "",
+        synopsis: props?.project?.synopsis || "",
+        video: props?.project?.video || "",
+        name: props?.project?.name || "",
+        dept: props?.project?.dept || "",
+        start_date: props?.project?.start_date || "",
+        end_date: props?.project?.end_date || "",
     }
 
     let submissionModalMessages = props.create ? {
@@ -26,6 +40,91 @@ export default function ArchivePanel(props){
     let submitRouter = config.url.API_POST_EDIT_ARCHIVE;
 
     let formFieldArray = [
+        {
+            type: "input",
+            label: "Project ID",
+            placeHolder: "Project ID",
+            name: "project_id",
+            disabled: true
+        },
+        {
+            type: "input",
+            label: "Archive Project Title",
+            placeHolder: "Archive Project Title",
+            name: "title",
+        },
+        {
+            type: "input",
+            label: "Team Name",
+            placeHolder: "Team Name",
+            name: "team_name"
+        },
+        {
+            type: "input",
+            label: "Members",
+            placeHolder: "Members",
+            name: "members"
+        },
+        {
+            type: "input",
+            label: "Sponsor",
+            placeHolder: "Sponsor",
+            name: "sponsor"
+        },
+        {
+            type: "input",
+            label: "Coach",
+            placeHolder: "Coach",
+            name: "coach"
+        },
+        {
+            type: "input",
+            label: "Poster Thumb",
+            placeHolder: "Poster Thumb",
+            name: "poster_thumb"
+        },
+        {
+            type: "input",
+            label: "Poster Full",
+            placeHolder: "Poster Full",
+            name: "poster_full"
+        },
+        {
+            type: "input",
+            label: "Synopsis",
+            placeHolder: "Synopsis",
+            name: "synopsis"
+        },
+        {
+            type: "input",
+            label: "Video",
+            placeHolder: "Video",
+            name: "video"
+        },
+        {
+            type: "input",
+            label: "Name",
+            placeHolder: "Name",
+            name: "name"
+        },
+        {
+            type: "input",
+            label: "Department",
+            placeHolder: "Department",
+            name: "dept"
+        },
+        {
+            type: "date",
+            label: "Start Date",
+            placeHolder: "Start Date",
+            name: "start_date"
+        },
+        {
+            type: "date",
+            label: "End Date",
+            placeHolder: "End Date",
+            name: "end_date"
+        },
         {
             type: "checkbox",
             label: "featured",

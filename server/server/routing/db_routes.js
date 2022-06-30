@@ -546,7 +546,12 @@ module.exports = (db) => {
         async (req, res) => {
         let body = req.body;
         const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured = ?, outstanding = ?, creative = ?
+                                    SET featured = ?, outstanding = ?, creative = ?,
+                                        title = ?, project_id = ?, team_name = ?, 
+                                        members = ?, sponsor = ?, coach = ?,
+                                        poster_thumb = ?, poster_full = ?, synopsis = ?,
+                                        video = ?, name = ?, dept = ?,
+                                        start_date = ?, end_date = ?
                                     WHERE archive_id = ?`;
         const checkBox = (data) => {
             if(data === 'true' || data === '1'){
@@ -559,6 +564,20 @@ module.exports = (db) => {
             checkBox(body.featured),
             checkBox(body.outstanding),
             checkBox(body.creative),
+            body.title,
+            body.project_id,
+            body.team_name,
+            body.members,
+            body.sponsor,
+            body.coach,
+            body.poster_thumb,
+            body.poster_full,
+            body.synopsis,
+            body.video,
+            body.name,
+            body.dept,
+            body.start_date,
+            body.end_date,
             body.archive_id,
         ]
 
@@ -1743,38 +1762,46 @@ module.exports = (db) => {
         let getProjectsCount = "";
         let projectCountParams = [];
 
+        console.log(searchQuery);
         getProjectsQuery = `SELECT * FROM  archive WHERE 
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
-                WHERE title LIKE ?
+                WHERE title like ?
                    OR sponsor like ?
                    OR members like ?
+                   OR synopsis like ?
                 ORDER BY title,
                          sponsor,
-                         members
+                         members, 
+                         synopsis
             LIMIT ?
             ) AND (
-                archive.title LIKE ?
-                OR archive.sponsor LIKE ?
-                OR archive.members LIKE ?
+                archive.title like ?
+                OR archive.sponsor like ?
+                OR archive.members like ?
+                OR archive.synopsis like ?
                 )
             ORDER BY
                 archive.title,
                 archive.sponsor,
-                archive.members
+                archive.members,
+                archive.synopsis
             LIMIT ?`;
 
         getProjectsCount = `SELECT COUNT(*)
                             FROM archive
                             WHERE 
-                                title LIKE ?
-                                OR sponsor LIKE ?
-                                OR members LIKE ?
+                                title like ?
+                                OR sponsor like ?
+                                OR members like ?
+                                OR synopsis like ?
                                 `;
 
         const searchQueryParam = searchQuery || '';
+        console.log(searchQueryParam)
         queryParams = [
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
@@ -1782,9 +1809,11 @@ module.exports = (db) => {
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             resultLimit || 0
         ];
         projectCountParams = [
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
