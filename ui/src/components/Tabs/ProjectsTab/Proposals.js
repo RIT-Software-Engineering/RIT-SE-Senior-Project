@@ -15,6 +15,7 @@ import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
+import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
 
 const COLUMNS = {
     SEMESTER: "semester",
@@ -109,7 +110,12 @@ export default function Proposals(props) {
                         <div className="accordion-buttons-container">
                         {props.viewOnly ?
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
-                            : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
+                            : <>
+                            <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
+                                <ArchivePanel project={null}
+                                              header={"Edit Header"}
+                                              buttonIcon={"bullhorn"}/>
+                            </>
                         }
                             <a
                                 href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
