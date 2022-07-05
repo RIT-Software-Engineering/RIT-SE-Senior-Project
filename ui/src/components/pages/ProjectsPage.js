@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ExemplaryProject from "./HomePage/ExemplaryProject";
-import {Icon, Input, Pagination} from "semantic-ui-react";
+import {Button, Header, Icon, Image, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
+import { Modal } from "semantic-ui-react";
 import _ from "lodash";
+import {useLocation, useHistory} from "react-router-dom";
 
 const projectsPerPage = 10;
 
@@ -18,11 +20,33 @@ function ProjectsPage(){
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
     const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
+    const [selectedProject, setSelectedProject] = useState(null)
+    const [open, setOpen] = useState(false)
+    const [activeArchiveId, setActiveArchiveId] = useState(null)
+
+    //React router url helpers
+    const location = useLocation();
+    const history = useHistory();
 
     useEffect(() => {
         getPaginationData();
     }, [pageChange]);
 
+    //This handles opening specific project page if a unique url is input
+    useEffect(() => {
+        if(location.search){
+            setActiveArchiveId(Number(location.search.split("=")[1]))
+            setOpen(true);
+        }
+    }, [location.pathname])
+
+    //This grabs the selected project from the props that is supposed to display a uniquely identified page.
+    useEffect(() => {
+        if(activeArchiveId !== null){
+            setSelectedProject(projects.find(project => project.archive_id === activeArchiveId))
+        }
+    }, [location, activeArchiveId, projects])
+    
     const getPaginationData = () => {
         SecureFetch(
             `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`
@@ -69,6 +93,40 @@ function ProjectsPage(){
 
     return (
     <>
+        {selectedProject &&
+            <>
+            <Modal
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            open={open}
+            >
+            <Modal.Header>{selectedProject?.title}</Modal.Header>
+            <Modal.Content image>
+            <Image size='medium' src='https://react.semantic-ui.com/images/avatar/large/rachel.png' wrapped />
+            <Modal.Description>
+            <Header>{selectedProject?.title}</Header>
+            <p>
+            We've found the following gravatar image associated with your e-mail
+            address.
+            </p>
+            <p>Is it okay to use this photo?</p>
+            </Modal.Description>
+            </Modal.Content>
+            <Modal.Actions>
+            <Button color='black' onClick={() => setOpen(false)}>
+            Nope
+            </Button>
+            <Button
+            content="Yep, that's me"
+            labelPosition='right'
+            icon='checkmark'
+            onClick={() => setOpen(false)}
+            positive
+            />
+            </Modal.Actions>
+            </Modal>
+            </>}
+
         <div className="ui divider"></div>
 
         <div className="row">
@@ -92,7 +150,7 @@ function ProjectsPage(){
         <div id="exemplaryProjectsDiv">
             {/* <!-- Attach exemplary project elements here --> */}
             {projects.map((project, idx) => {
-                return <ExemplaryProject project={project} key={idx} />;
+                return <ExemplaryProject onClick={() => {setActiveArchiveId(project.archive_id); setOpen(true); history.push(`?archive_id=${project.archive_id}`)}} project={project} key={idx} />;
             })}
             <div className="pagination-container">
                 <Pagination
@@ -110,6 +168,7 @@ function ProjectsPage(){
                 />
             </div>
         </div>
+
     </>
     );
 }

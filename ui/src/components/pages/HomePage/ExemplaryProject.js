@@ -4,7 +4,7 @@ import { config } from "../../util/functions/constants";
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
-function ExemplaryProject({ project }) {
+function ExemplaryProject({ project, onClick}) {
     const makeAwards = () => {
         let awards = [];
         if(project.outstanding === 1){
@@ -17,7 +17,7 @@ function ExemplaryProject({ project }) {
     }
     let awards = makeAwards()
     return (
-        <div className="ui segment stackable padded grid">
+        <div onClick={onClick} className="ui segment stackable padded grid">
             <div className="row">
                 <h3 className="ui header">{project.title}</h3>
             </div>
