@@ -26,6 +26,9 @@ const COLUMNS = {
 const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
+/**
+ * This is what is displayed inside of the admin tab for projects. It may also be used elsewhere in the website.
+ * */
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
     const [active, setActive] = useState(isSemesterActive(props.semester?.start_date, props.semester?.end_date))
@@ -98,7 +101,6 @@ export default function Proposals(props) {
                     rowColor = "";
                     break;
             }
-
             return (
                 <TableRow className={rowColor} key={idx}>
                     <TableCell>{semesterMap[proposal.semester]}</TableCell>
@@ -112,9 +114,14 @@ export default function Proposals(props) {
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
                             : <>
                             <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
-                                <ArchivePanel project={null}
+                                <ArchivePanel project={proposal}
+                                              semesterData={props.semesterData}
+                                              newArchive
+                                              activeCoaches={props.activeCoaches}
+                                              activeSponsors={props.activeSponsors}
                                               header={"Edit Header"}
-                                              buttonIcon={"bullhorn"}/>
+                                              buttonIcon={"bullhorn"}
+                                />
                             </>
                         }
                             <a

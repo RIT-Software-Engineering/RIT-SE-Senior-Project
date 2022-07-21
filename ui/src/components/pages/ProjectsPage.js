@@ -46,7 +46,7 @@ function ProjectsPage(){
             setSelectedProject(projects.find(project => project.archive_id === activeArchiveId))
         }
     }, [location, activeArchiveId, projects])
-    
+
     const getPaginationData = () => {
         SecureFetch(
             `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`

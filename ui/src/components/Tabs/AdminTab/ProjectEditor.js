@@ -4,6 +4,9 @@ import Proposals from "../ProjectsTab/Proposals";
 import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 
+/**
+ * This is the project accordion builder inside the admin tab.
+ * */
 export default function ProjectEditor(props) {
     const [proposalData, setProposalData] = useState({});
     const [activeCoaches, setActiveCoaches] = useState([]);
