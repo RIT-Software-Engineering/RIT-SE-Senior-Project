@@ -93,7 +93,7 @@ export default function SubmissionViewerModal(props) {
                     <p><b>Submitted:</b>
                         {props.action.mock_id && ` ${props.action.mock_name} (${props.action.mock_id}) as `}
                         {` ${props.action.name} (${props.action.system_id}) `}
-                        {formatDateTime(props.action.submission_datetime)}
+                        {formatDate(props.action.submission_datetime)}
                         {` (Due ${formatDate(due)})`}
                         {late && ` ${day} days' late`}
                     </p>
