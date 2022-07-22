@@ -76,8 +76,6 @@ export default function ArchivePanel(props){
         }
     }, [props.project, props.newArchive])
 
-    console.log(props?.project)
-
     const [initialState, setInitialState] = useState({
         featured: props?.project?.featured || "",
         outstanding: props?.project?.outstanding || "",

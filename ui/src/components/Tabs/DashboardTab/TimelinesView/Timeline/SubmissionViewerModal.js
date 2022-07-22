@@ -102,6 +102,9 @@ export default function SubmissionViewerModal(props) {
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
                     {!props.noSubmission && <>
                         {Object.keys(submission)?.map((key) => {
+                            if(key.includes("fakepath")){
+                                return false;
+                            }
                             return (
                                 <div key={key}>
                                     <p><b>{key}:</b> {submission[key]}</p>
