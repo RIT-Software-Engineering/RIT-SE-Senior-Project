@@ -33,7 +33,6 @@ export default function UserEditorUserGroups() {
         SecureFetch(config.url.API_GET_STUDENT_INFO)
             .then((response) => response.json())
             .then((studentsData) => {
-                console.log(studentsData)
                 setStudentsData(studentsData);
             })
             .catch((error) => {
