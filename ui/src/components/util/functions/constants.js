@@ -25,11 +25,13 @@ export const config = {
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
+        //grabs project or projects(ie. coach) info for specific user.
         API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
         //Get below is currently unused.
         API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
+        //Grabs all the semester data from semester_groups and orders them by start and end date.
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,
@@ -61,6 +63,8 @@ export const config = {
         API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
         API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
         API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
+        //Matches semester from project table to semester_id from semester_groups, returns start and end date
+        API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
@@ -78,6 +82,7 @@ export const config = {
         API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,
         API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
         API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
+        API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
 
         //DELETE - Auth needed
         API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

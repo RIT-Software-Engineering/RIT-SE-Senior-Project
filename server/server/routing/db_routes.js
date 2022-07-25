@@ -553,6 +553,7 @@ module.exports = (db) => {
                                         video = ?, name = ?, dept = ?,
                                         start_date = ?, end_date = ?
                                     WHERE archive_id = ?`;
+
         const checkBox = (data) => {
             if(data === 'true' || data === '1'){
                 return 1;
@@ -586,6 +587,79 @@ module.exports = (db) => {
             .catch(err => res.status(500).send(err))
 
     });
+
+    db_router.post("/createArchive",
+        UserAuth.isAdmin,
+        body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        async (req, res) => {
+            let body = req.body;
+            const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
+                                    title, project_id, team_name, members, sponsor, coach, poster_thumb,
+                                    poster_full, synopsis, video, name, dept, start_date, end_date)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?);`
+
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
+            }
+
+            const updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+            ]
+
+            db.query(updateArchiveQuery,updateArchiveParams)
+                .then((response) => {
+                    //Setting project to archive, May also be changed to remove a project from project table
+                    //if  not wanted.
+                    const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
+                                    SET status = 'archive'
+                                    WHERE project_id = ?`
+                    const updateProjectParams = [
+                        body.project_id
+                    ]
+                    db.query(updateProjectQuery,updateProjectParams)
+                        .then((response) => res.sendStatus(200))
+                        .catch(err => res.status(500).send(err))
+                })
+                .catch(err => err)
+
+
+
+        });
+
+    //Gets the start and end dates of a project based on the semester that it is associated with.
+    db_router.get("/getProjectDates", UserAuth.isAdmin,(req, res) => {
+        const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
+        const getDatesParams = [req.query.semester];
+        db.query(getDatesQuery, getDatesParams)
+            .then((dates) => {
+                res.send(dates)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
 
     db_router.post(
         "/editProject",

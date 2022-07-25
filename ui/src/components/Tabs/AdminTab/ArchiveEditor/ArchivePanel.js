@@ -2,8 +2,6 @@ import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import {config, USERTYPES} from "../../../util/functions/constants";
 import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../../../util/functions/secureFetch";
-import {Modal} from "semantic-ui-react";
-import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 
 export default function ArchivePanel(props){
 
@@ -32,6 +30,8 @@ export default function ArchivePanel(props){
     //If there is a newArchive property, then do what's inside the useEffect.
     //It is for filling form data to archive that does not exist.
     useEffect(() => {
+
+        //todo: create if for project.status. If it's already archived, find a way to guard from rearchiving.
         if(props.newArchive) {
             SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
                 .then(response => response.json())
@@ -76,6 +76,25 @@ export default function ArchivePanel(props){
         }
     }, [props.project, props.newArchive])
 
+    useEffect(() => {
+        //this is for getting the start and end date of a project.
+        if(props.project.semester){
+            SecureFetch(`${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project.semester}`)
+                .then(response => response.json())
+                .then((dates) => {
+                    setInitialState((prevInitialState) => {
+                        return {
+                            ...prevInitialState,
+                            start_date: dates[0].start_date,
+                            end_date: dates[0].end_date,
+                            dept: "SE"
+                        }
+                    });
+                })
+        }
+    },[props.project])
+
+
     const [initialState, setInitialState] = useState({
         featured: props?.project?.featured || "",
         outstanding: props?.project?.outstanding || "",
@@ -97,16 +116,32 @@ export default function ArchivePanel(props){
         end_date: props?.project?.end_date || "",
     });
 
-    let submissionModalMessages = props.create ? {
-        SUCCESS: "The archive project has been created.",
-        FAIL: "We were unable to add to archive.",
-    } : {
-        SUCCESS: "The archived project has been Edited.",
-        FAIL: "Could not make edits.",
+    let submissionModalMessages;
+    if(props.newArchive){
+        submissionModalMessages = {
+            SUCCESS: "The project has been archived.",
+            FAIL: "Could not archive the project."
+        }
+    }
+    else{
+        submissionModalMessages = props.create ? {
+            SUCCESS: "The archive project has been created.",
+            FAIL: "We were unable to add to archive.",
+        } : {
+            SUCCESS: "The archived project has been Edited.",
+            FAIL: "Could not make edits.",
+        }
     }
 
+
     //TODO JA Make a route to update the archived project.
-    let submitRouter = config.url.API_POST_EDIT_ARCHIVE;
+    let submitRouter;
+    if(props.newArchive){
+        submitRouter = config.url.API_POST_CREATE_ARCHIVE;
+    }
+    else{
+        submitRouter = config.url.API_POST_EDIT_ARCHIVE;
+    }
 
     let formFieldArray = [
         {

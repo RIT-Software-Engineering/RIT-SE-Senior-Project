@@ -114,14 +114,16 @@ export default function Proposals(props) {
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
                             : <>
                             <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
-                                <ArchivePanel project={proposal}
-                                              semesterData={props.semesterData}
-                                              newArchive
-                                              activeCoaches={props.activeCoaches}
-                                              activeSponsors={props.activeSponsors}
-                                              header={"Edit Header"}
-                                              buttonIcon={"bullhorn"}
-                                />
+                                {proposal.status === "archive" ? <></> :
+                                    <ArchivePanel project={proposal}
+                                    semesterData={props.semesterData}
+                                    newArchive
+                                    activeCoaches={props.activeCoaches}
+                                    activeSponsors={props.activeSponsors}
+                                    header={"Edit Header"}
+                                    buttonIcon={"bullhorn"}
+                                    />}
+
                             </>
                         }
                             <a
