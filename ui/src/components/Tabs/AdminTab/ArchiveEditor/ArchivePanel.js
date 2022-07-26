@@ -114,6 +114,7 @@ export default function ArchivePanel(props){
         dept: props?.project?.dept || "",
         start_date: props?.project?.start_date || "",
         end_date: props?.project?.end_date || "",
+        keywords: props?.project?.project_search_keywords || "",
     });
 
     let submissionModalMessages;
@@ -168,6 +169,12 @@ export default function ArchivePanel(props){
             label: "Members",
             placeHolder: "Members",
             name: "members"
+        },
+        {
+            type: "input",
+            label: "Keywords",
+            placeHolder: "Keywords",
+            name: "keywords"
         },
         {
             type: "input",
