@@ -31,6 +31,7 @@ export default function SponsorsTab(props) {
     const [pageChange, setPageChange] = useState(0)
     const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
 
+    //If summary view, then it is inside of the admin tab.
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
     const getPaginationData = () => {

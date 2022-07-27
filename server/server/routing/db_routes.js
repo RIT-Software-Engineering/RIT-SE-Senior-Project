@@ -2103,7 +2103,6 @@ module.exports = (db) => {
         ]
 
         createSponsorNote(params).then(([status, error]) => {
-            console.log("endpoint", status);
             if (error){
                 res.status(status).send(error)
             }
