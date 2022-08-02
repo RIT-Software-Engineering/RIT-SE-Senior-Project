@@ -96,6 +96,7 @@ function ProjectsPage(){
         {selectedProject &&
             <>
             <Modal
+            className={"sticky"}
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
             open={open}
