@@ -314,6 +314,7 @@ export default function DatabaseTableEditor(props) {
     return (
         <>
             <Modal
+                className={"sticky"}
                 trigger={trigger}
                 header={props.header}
                 content={{ content:

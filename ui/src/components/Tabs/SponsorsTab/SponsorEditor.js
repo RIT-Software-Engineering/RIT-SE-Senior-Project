@@ -203,6 +203,7 @@ export default function SponsorEditor(props){
         trigger = <Button icon={"eye"} />;
 
         editor = <Modal
+            className={"sticky"}
             trigger={trigger}
             header={"Sponsor Summary View"}
             content={{ content:
