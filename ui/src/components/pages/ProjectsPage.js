@@ -8,6 +8,7 @@ import _ from "lodash";
 import {useLocation, useHistory} from "react-router-dom";
 
 const projectsPerPage = 10;
+const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 /**
  * Projects page visible on main page of the website without signing in.
@@ -100,25 +101,25 @@ function ProjectsPage(){
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
             open={open}
+            size='fullscreen'
             >
             <Modal.Header>{selectedProject?.title}</Modal.Header>
+                {console.log(selectedProject)}
             <Modal.Content image>
-            <Image size='medium' src='https://react.semantic-ui.com/images/avatar/large/rachel.png' wrapped />
+            <Image size='medium' src={`${basePosterURL}${selectedProject?.poster_thumb}`} floated='left' />
             <Modal.Description>
             <Header>{selectedProject?.title}</Header>
             <p>
-            We've found the following gravatar image associated with your e-mail
-            address.
+                {selectedProject?.synopsis}
             </p>
-            <p>Is it okay to use this photo?</p>
             </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
             <Button color='black' onClick={() => setOpen(false)}>
-            Nope
+            Close
             </Button>
             <Button
-            content="Yep, that's me"
+            content="Do something"
             labelPosition='right'
             icon='checkmark'
             onClick={() => setOpen(false)}
@@ -151,7 +152,7 @@ function ProjectsPage(){
         <div id="exemplaryProjectsDiv">
             {/* <!-- Attach exemplary project elements here --> */}
             {projects.map((project, idx) => {
-                return <ExemplaryProject onClick={() => {setActiveArchiveId(project.archive_id); setOpen(true); history.push(`?archive_id=${project.archive_id}`)}} project={project} key={idx} />;
+                return <ExemplaryProject onClick={() => {setActiveArchiveId(project.archive_id); setOpen(true); history.push(`?archive_id=${project.archive_id}`)}} project={project} key={idx} projectsPage />;
             })}
             <div className="pagination-container">
                 <Pagination

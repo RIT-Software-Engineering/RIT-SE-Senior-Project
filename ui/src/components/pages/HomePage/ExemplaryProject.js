@@ -4,7 +4,7 @@ import { config } from "../../util/functions/constants";
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
-function ExemplaryProject({ project, onClick}) {
+function ExemplaryProject({ project, onClick, projectsPage}) {
     const makeAwards = () => {
         let awards = [];
         if(project.outstanding === 1){
@@ -47,15 +47,18 @@ function ExemplaryProject({ project, onClick}) {
                 </div>
             </div>
             <div className="row">
-                <Accordion
-                    panels={[
-                        {
-                            key: 0,
-                            title: project.title,
-                            content: { content: <p>{project.synopsis}</p> },
-                        },
-                    ]}
-                />
+                {!projectsPage &&
+                    <Accordion
+                        panels={[
+                            {
+                                key: 0,
+                                title: project.title,
+                                content: { content: <p>{project.synopsis}</p> },
+                            },
+                        ]}
+                    />
+                }
+
             </div>
         </div>
     );
