@@ -1,6 +1,6 @@
-INSERT INTO archive (title, team_name, members, sponsor, coach, poster_thumb, synopsis)
+INSERT INTO archive (name, title, team_name, members, sponsor, coach, poster_thumb, synopsis)
 VALUES 
-    ('Business Action Tracking', 'BAT Team', 'Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy', 'Lockheed Martin - Enterprise Business Services', 'Sam Malachowsky', 'BAT-Thumb.jpg',
+    ('Name 1', 'Business Action Tracking', 'BAT Team', 'Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy', 'Lockheed Martin - Enterprise Business Services', 'Sam Malachowsky', 'BAT-Thumb.jpg',
     'Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, user-friendly task management tool to be used across teams in a corporate setting. The system can be 
     used to create, update, and monitor actions to their completion. Actions can be hierarchical, associated with a project, and/or interdepartmental. An action is assigned to an actor and contains basic fields, including name, description, due date, and status. 
     Additional notes or custom fields can be included.Seamless integration with existing workflows and tools (e.g. Outlook, iPhone, and possibly others) is a core part of the tool. Users can enter and update actions without leaving their existing workflows. The tool will add value without impeding on existing business processes. 
@@ -10,7 +10,7 @@ VALUES
     completion for similar tasks, seeing where teams are falling behind, and for managing risks. To encourage user engagement, the system will reward users for completing actions.'
     ),
 
-    ('RaceChipper 2.0', 'The Chipper Racers', 'Caitlin Li, Colton Dennis, Matthew Crawford, Sam Shiffman', 'Trillium Health', 'Bruce Herring', 'ChipperRacers-Thumb.jpg',
+    ('Name 2', 'RaceChipper 2.0', 'The Chipper Racers', 'Caitlin Li, Colton Dennis, Matthew Crawford, Sam Shiffman', 'Trillium Health', 'Bruce Herring', 'ChipperRacers-Thumb.jpg',
     'RaceChipper is a web and mobile project sponsored by Trillium Health that aims to provide a way to track race participants, while offering viewers and racers a platform 
     to enjoy the race through social media. This is done through an inexpensive Bluetooth device given to each race participant that acts as a tracking beacon, which is tracked
     by event admins equipped with iOS devices along the route.This project is an existing project that continues off the work of a previous senior SE team, so many of the 
@@ -21,7 +21,7 @@ VALUES
     Trillium Health’s needs, we will have weekly meetings with our liaison, AJ Blythe, to discuss their needs and possible solutions.'
     ),
 
-    ('Wegmans Organic Farm', 'Team Woof', 'Luke Harrold, Colton Venditto, Courtney McGorrill, Derick Yung', 'Wegmans Food Markets', 'Kenn Martinez', 'WOOF-Thumb.jpg',
+    ('Name 3', 'Wegmans Organic Farm', 'Team Woof', 'Luke Harrold, Colton Venditto, Courtney McGorrill, Derick Yung', 'Wegmans Food Markets', 'Kenn Martinez', 'WOOF-Thumb.jpg',
     'Wegmans Organic Farm and Orchard in Canandaigua is a functioning and productive farm where best practices and methods in modern farming are put to the test. Day to day 
     activities on the farm are managed largely through excel spreadsheets and paper-trails. The team will create farm management software. The goal is to streamline data-entry 
     and create an easily accessible history of previously completed plantings and harvests. With existing historical data and mathematical formulas, the software will be able 
