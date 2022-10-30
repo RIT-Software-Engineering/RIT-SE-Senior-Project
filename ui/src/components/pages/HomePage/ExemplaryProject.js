@@ -1,10 +1,13 @@
-import React from "react";
-import { Accordion } from "semantic-ui-react";
+import React, {useState} from "react";
+import {Accordion, Button, Modal} from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 function ExemplaryProject({ project, onClick}) {
+    const [open, setOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState(null);
+
     const makeAwards = () => {
         let awards = [];
         if(project.outstanding === 1){
@@ -17,7 +20,7 @@ function ExemplaryProject({ project, onClick}) {
     }
     let awards = makeAwards()
     return (
-        <div onClick={onClick} className="ui segment stackable padded grid">
+    <div onClick={onClick } className="ui segment stackable padded grid">
             <div className="row">
                 <h3 className="ui header">{project.title}</h3>
             </div>

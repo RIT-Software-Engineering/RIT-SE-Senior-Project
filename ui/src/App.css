@@ -2,6 +2,7 @@
     --header-height: 6em;
     --footer-height: 6em;
     --page-padding: 1.5em;
+    --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
 }
 
 #page {
@@ -25,7 +26,7 @@
 }
 
 .accordion {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
     margin-bottom: 1em !important;
 }
 
@@ -73,6 +74,18 @@
     color: #1e70bf;
     text-decoration: none;
     cursor: pointer;
+}
+
+button.ui.button {
+    border-radius: 0 !important;
+    background-color: #f8f9fa;
+    color: #212529;
+    font-size: 1.167rem;
+    padding: 10px 20px;
+}
+
+*:not(i) {
+    font-family: var(--fonts) !important;
 }
 
 .spacer {

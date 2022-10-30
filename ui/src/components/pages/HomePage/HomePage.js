@@ -21,7 +21,7 @@ function HomePage() {
         SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
             .then((response) => response.json())
             .then((htmlData) => {
-                setHtml(htmlData[0].html)
+                setHtml(htmlData[0]?.html)
             })
 
     }, []);

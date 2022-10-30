@@ -25,13 +25,13 @@ export const config = {
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
-        //grabs project or projects(ie. coach) info for specific user.
+        // grabs project or projects (i.e. coach) info for specific user.
         API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
-        //Get below is currently unused.
+        // Get below is currently unused.
         API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
-        //Grabs all the semester data from semester_groups and orders them by start and end date.
+        // Grabs all the semester data from semester_groups and orders them by start and end date.
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,

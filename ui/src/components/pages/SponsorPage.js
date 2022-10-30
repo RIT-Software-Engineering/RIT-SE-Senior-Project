@@ -10,7 +10,7 @@ function SponsorPage() {
         SecureFetch(`${config.url.API_GET_HTML}?name=sponsor`)
             .then((response) => response.json())
             .then((htmlData) => {
-                setHtml(htmlData[0].html)
+                setHtml(htmlData[0]?.html)
             })
     }, []);
 
