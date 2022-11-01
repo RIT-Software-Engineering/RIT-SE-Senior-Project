@@ -7,3 +7,5 @@
 /RIT-SE-Senior-Project.iml
 .idea/
 .DS_Store
+rit-cert.pem
+seniorproject-key.pem
