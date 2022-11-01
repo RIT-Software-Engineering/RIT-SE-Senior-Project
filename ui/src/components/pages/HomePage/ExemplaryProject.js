@@ -1,7 +1,8 @@
 import React, {useState} from "react";
-import {Accordion, Button, Modal} from "semantic-ui-react";
+import {Button, Modal} from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
 import {useHistory} from "react-router-dom";
+import ItemsCarousel from 'react-items-carousel';
 
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
@@ -9,6 +10,9 @@ const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 function ExemplaryProject({ project }) {
     const [open, setOpen] = useState(false);
     const history = useHistory();
+    const [activeItemIndex, setActiveItemIndex] = useState(0);
+    const chevronWidth = 40;
+
     const toggleOpen = () => {
         setOpen(!open);
     }
@@ -60,24 +64,26 @@ function ExemplaryProject({ project }) {
                     <p>{project.coach}</p>
                 </div>
             </div>
-            <div className="row">
-                <Accordion
-                    panels={[
-                        {
-                            key: 0,
-                            title: project.title,
-                            content: { content: <p>{project.synopsis}</p> },
-                        },
-                    ]}
-                />
-            </div>
         <Modal className={"sticky"}  open={open}>
             <Modal.Header>{project?.title}</Modal.Header>
             <Modal.Content>
-                { project.poster_full === null
-                    ? <img className="ui fluid image" src={`${basePosterURL}${project.poster_thumb}`}/>
-                    : <p>FULL POSTER IMAGE</p>
-                }
+                <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
+                    <ItemsCarousel
+                        requestToChangeActive={setActiveItemIndex}
+                        activeItemIndex={activeItemIndex}
+                        numberOfCards={1}
+                        gutter={20}
+                        infiniteLoop={false}
+                        leftChevron={<button>{'<'}</button>}
+                        rightChevron={<button>{'>'}</button>}
+                        outsideChevron
+                        chevronWidth={chevronWidth}
+                    >
+                        <div style={{ height: 200 }}><img src={`${basePosterURL}${project.poster_thumb}`}/></div>
+                        <div style={{ height: 200}}>Second card</div>
+                    </ItemsCarousel>
+                    <p>{project?.synopsis}</p>
+                </div>
             </Modal.Content>
             <Modal.Actions>
                 <Button onClick={() => setOpen(false)}>

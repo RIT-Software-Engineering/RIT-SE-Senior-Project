@@ -16,6 +16,7 @@
     "react": "^17.0.1",
     "react-csv": "^2.2.2",
     "react-dom": "^17.0.1",
+    "react-items-carousel": "^2.8.0",
     "react-phone-number-input": "^3.1.45",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
