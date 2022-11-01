@@ -1,13 +1,20 @@
 import React, {useState} from "react";
 import {Accordion, Button, Modal} from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
+import {useHistory} from "react-router-dom";
+
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
-function ExemplaryProject({ project, onClick}) {
+function ExemplaryProject({ project }) {
     const [open, setOpen] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
-
+    const history = useHistory();
+    const toggleOpen = () => {
+        setOpen(!open);
+    }
+    const sendToProjectPage = () => {
+        history.push(`/projects/${project.archive_id}`)
+    }
     const makeAwards = () => {
         let awards = [];
         if(project.outstanding === 1){
@@ -20,17 +27,21 @@ function ExemplaryProject({ project, onClick}) {
     }
     let awards = makeAwards()
     return (
-    <div onClick={onClick } className="ui segment stackable padded grid">
+    <div className="ui segment stackable padded grid">
             <div className="row">
-                <h3 className="ui header">{project.title}</h3>
+                <h3
+                    className="ui header"
+                    style={{ color: "#C75300", cursor: "pointer" }}
+                    onClick={() => sendToProjectPage() }>{project.title}</h3>
             </div>
 
             <div className="three column row">
                 <div className="column">
                     <img
                         src={`${basePosterURL}${project.poster_thumb}`}
-                        style={{ border: "3px solid rgb(221, 221, 221)" }}
+                        style={{ border: "3px solid rgb(221, 221, 221)", cursor: "pointer" }}
                         alt="Project Poster"
+                        onClick={() => toggleOpen()}
                     />
                 </div>
                 <div className="column">
@@ -60,6 +71,20 @@ function ExemplaryProject({ project, onClick}) {
                     ]}
                 />
             </div>
+        <Modal className={"sticky"}  open={open}>
+            <Modal.Header>{project?.title}</Modal.Header>
+            <Modal.Content>
+                { project.poster_full === null
+                    ? <img className="ui fluid image" src={`${basePosterURL}${project.poster_thumb}`}/>
+                    : <p>FULL POSTER IMAGE</p>
+                }
+            </Modal.Content>
+            <Modal.Actions>
+                <Button onClick={() => setOpen(false)}>
+                    Close
+                </Button>
+            </Modal.Actions>
+        </Modal>
         </div>
     );
 }

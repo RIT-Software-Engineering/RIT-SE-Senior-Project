@@ -94,29 +94,7 @@ function ProjectsPage(){
 
     return (
     <>
-        {selectedProject &&
-            <>
-            <Modal
-            className={"sticky"}
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            open={open}
-            >
-            <Modal.Header>{selectedProject?.title}</Modal.Header>
-            <Modal.Content>
-                {selectedProject.poster_full === null
-                    ? <img className="ui fluid image" src=
-                        {`${basePosterURL}${selectedProject.poster_thumb}`}/>
-                    : <p>full</p>
-                }
-            </Modal.Content>
-            <Modal.Actions>
-            <Button onClick={() => setOpen(false)}>
-            Close
-            </Button>
-            </Modal.Actions>
-            </Modal>
-            </>}
+
 
         <div className="ui divider"></div>
 
@@ -141,12 +119,7 @@ function ProjectsPage(){
         <div id="exemplaryProjectsDiv">
             {/* <!-- Attach exemplary project elements here --> */}
             {projects.map((project, idx) => {
-                return <ExemplaryProject onClick={() => {
-                    console.log(JSON.stringify(project));
-                    setActiveArchiveId(project.archive_id);
-                    setOpen(true);
-                    //history.push(`?archive_id=${project.archive_id}`)
-                }} project={project} key={idx} />;
+                return <ExemplaryProject project={project} key={idx} />;
             })}
             <div className="pagination-container">
                 <Pagination
