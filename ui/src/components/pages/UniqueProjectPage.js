@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { useParams } from 'react-router-dom';
-import ExemplaryProject from "./HomePage/ExemplaryProject";
+import ExemplaryProject from "../shared/ExemplaryProject";
 
 const tempData = {
     "archive_id":1,

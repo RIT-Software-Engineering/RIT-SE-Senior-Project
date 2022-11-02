@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import ExemplaryProject from "./ExemplaryProject";
+import ExemplaryProject from "../shared/ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
-import { config } from "../../util/functions/constants";
-import {SecureFetch} from "../../util/functions/secureFetch";
+import { config } from "../util/functions/constants";
+import {SecureFetch} from "../util/functions/secureFetch";
 import InnerHTML from 'dangerously-set-html-content';
 
 const projectsPerPage = 2;

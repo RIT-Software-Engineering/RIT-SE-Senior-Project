@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import HomePage from "./components/pages/HomePage/HomePage";
+import HomePage from "./components/pages/HomePage";
 import ProjectsPage from "./components/pages/ProjectsPage";
 import UniqueProjectPage from "./components/pages/UniqueProjectPage";
 import SponsorPage from "./components/pages/SponsorPage";

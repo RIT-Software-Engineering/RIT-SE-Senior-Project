@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ExemplaryProject from "./HomePage/ExemplaryProject";
+import ExemplaryProject from "../shared/ExemplaryProject";
 import {Button, Header, Icon, Image, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
