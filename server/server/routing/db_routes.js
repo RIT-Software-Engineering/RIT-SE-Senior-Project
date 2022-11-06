@@ -434,9 +434,6 @@ module.exports = (db) => {
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
         }
 
-
-
-
         const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
 

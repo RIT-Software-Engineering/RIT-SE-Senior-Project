@@ -79,7 +79,6 @@ function ExemplaryProject({ project }) {
                     </div>
                 </div>
             </div>
-            {console.log("project props",project)}
             {/* Modal with expanded information */}
             <Modal className={"sticky"} open={initialOpen}>
                 <Modal.Header>{project?.title}</Modal.Header>
