@@ -4,7 +4,6 @@ import {Icon, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
-import {useLocation, useHistory} from "react-router-dom";
 
 const projectsPerPage = 10;
 
@@ -19,32 +18,11 @@ function ProjectsPage(){
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
     const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
-    const [selectedProject, setSelectedProject] = useState(null)
-    const [open, setOpen] = useState(false)
-    const [activeArchiveId, setActiveArchiveId] = useState(null)
-
-    //React router url helpers
-    const location = useLocation();
-    const history = useHistory();
 
     useEffect(() => {
         getPaginationData();
     }, [pageChange]);
 
-    //This handles opening specific project page if a unique url is input
-    useEffect(() => {
-        if(location.search){
-            setActiveArchiveId(Number(location.search.split("=")[1]))
-            setOpen(true);
-        }
-    }, [location.pathname])
-
-    //This grabs the selected project from the props that is supposed to display a uniquely identified page.
-    useEffect(() => {
-        if(activeArchiveId !== null){
-            setSelectedProject(projects.find(project => project.archive_id === activeArchiveId))
-        }
-    }, [location, activeArchiveId, projects])
 
     const getPaginationData = () => {
         SecureFetch(
@@ -65,6 +43,7 @@ function ProjectsPage(){
                 console.error(error);
             });
     };
+
 
     let handleSearchChange = (e, { value }) => {
         setSearchBarValue(value);
@@ -92,16 +71,12 @@ function ProjectsPage(){
 
     return (
     <>
-
-
         <div className="ui divider"></div>
-
         <div className="row">
             <h2>Projects</h2>
         </div>
 
         <div className="ui hidden divider"></div>
-
         <Input
             icon='search'
             iconPosition='left'
@@ -135,7 +110,6 @@ function ProjectsPage(){
                 />
             </div>
         </div>
-
     </>
     );
 }

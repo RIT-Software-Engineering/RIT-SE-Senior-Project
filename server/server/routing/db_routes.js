@@ -1918,7 +1918,7 @@ module.exports = (db) => {
         let params = [req.query.slug]
         db.query(query, params)
             .then((values) => {
-                res.send(values);
+                res.send(values[0]);
             })
             .catch((err) => {
                 console.error(err);
