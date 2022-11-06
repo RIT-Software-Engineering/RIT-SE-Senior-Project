@@ -73,7 +73,7 @@ function ProjectsPage(){
         if(pageNumBeforeSearch === 0){
             setPageNumBeforeSearch(activePage + 1);
         }
-        //If the search value is empty, don't do a search for projects, and return back to the page originally on.
+        //If the search value is empty, don't do a search for projects, and return to the page originally on.
         if(value === ""){
             setActivePage(pageNumBeforeSearch - 1);
             setPageNumBeforeSearch(0);

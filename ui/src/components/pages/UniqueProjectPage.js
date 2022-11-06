@@ -1,24 +1,33 @@
 import React, {useEffect, useState} from "react";
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import ItemsCarousel from "react-items-carousel";
 import {Button, Modal} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
+import {SecureFetch} from "../util/functions/secureFetch";
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 function UniqueProjectPage({project}) {
-    let { title } = useParams();
+    let {slug} = useParams();
     const [imageOpen, setImageOpen] = useState(false);
     const [activeItemIndex, setActiveItemIndex] = useState(0);
     const chevronWidth = 40;
 
     useEffect(() => {
-        if(project === undefined){
+        if (project === undefined) {
+            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=business-action-tracking`)
+                .then((response) => response.json())
+                .then((results) => {
+                    console.log(results);
+                })
+                .catch((error) => {
+                    alert("An issue occurred while searching for archive content " + error);
+                });
             console.log("I AM ALWAYS RUNNING ON FIRST RENDER!! POOP!!")
         }
-
     }, []);
+
 
     /**
      * Toggle image modal with expanded project details
@@ -52,7 +61,7 @@ function UniqueProjectPage({project}) {
                 ? <ErrorPage />
                 : <div>
                 {console.log("project",project)}
-                <h1>Unique Project Page Title from URL: {title}</h1>
+                <h1>{project?.title}</h1>
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
                     <ItemsCarousel
                         requestToChangeActive={setActiveItemIndex}

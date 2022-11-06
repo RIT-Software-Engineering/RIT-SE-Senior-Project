@@ -22,7 +22,7 @@ function ExemplaryProject({ project }) {
      * Sends user to specific project page
      */
     const sendToProjectPage = () => {
-        history.push(`/projects/${project.archive_id}`)
+        history.push(`/projects/${project.slug}`)
     }
 
     /**
@@ -81,7 +81,6 @@ function ExemplaryProject({ project }) {
             </div>
             {/* Modal with expanded information */}
             <Modal className={"sticky"} open={initialOpen}>
-                <Modal.Header>{project?.title}</Modal.Header>
                 <Modal.Content>
                     <UniqueProjectPage project={project}/>
                 </Modal.Content>

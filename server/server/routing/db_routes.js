@@ -1844,6 +1844,7 @@ module.exports = (db) => {
                    OR members like ?
                    OR keywords like ?
                    OR synopsis like ?
+                   OR slug like ?
                 ORDER BY title,
                          sponsor,
                          members, 
@@ -1856,6 +1857,7 @@ module.exports = (db) => {
                 OR archive.members like ?
                 OR archive.keywords like ?
                 OR archive.synopsis like ?
+                OR archive.slug like ?
                 )
             ORDER BY
                 archive.title,
@@ -1883,7 +1885,9 @@ module.exports = (db) => {
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             offset || 0,
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
@@ -1906,6 +1910,20 @@ module.exports = (db) => {
             })
             .catch((error) => {
                 res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getProjectFromSlug", (req, res) => {
+        let query = `SELECT * FROM archive WHERE slug=?`;
+        let params = [req.query]
+        console.log('params', params)
+        db.query(query, params)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
             });
     });
 
