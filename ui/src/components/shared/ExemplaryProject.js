@@ -2,33 +2,20 @@ import React, {useState} from "react";
 import {Button, Modal} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import {useHistory} from "react-router-dom";
-import ItemsCarousel from 'react-items-carousel';
-
+import UniqueProjectPage from "../pages/UniqueProjectPage";
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
-
 /**
  * Represents a project component
  */
 function ExemplaryProject({ project }) {
     const [initialOpen, setInitialOpen] = useState(false);
-    const [imageOpen, setImageOpen] = useState(false);
-
     const history = useHistory();
-    const [activeItemIndex, setActiveItemIndex] = useState(0);
-    const chevronWidth = 40;
 
     /**
      * Toggle initial modal with expanded project details
      */
     const toggleInitialModalOpen = () => {
         setInitialOpen(!initialOpen);
-    }
-
-    /**
-     * Toggle image modal with expanded project details
-     */
-    const toggleImageModal = () => {
-        setImageOpen(!imageOpen);
     }
 
     /**
@@ -53,25 +40,7 @@ function ExemplaryProject({ project }) {
         return awards
     }
 
-    /**
-     * Creates array of carousel content to be rendered
-     */
-    const makeCarouselContent = () => {
-        let carouselContent = [];
-        if(project.poster_thumb !== null) {
-            carouselContent.push({"type": "image", "content": project.poster_thumb});
-        }
-        if(project.poster_full !== null) {
-            carouselContent.push({"type": "image", "content": project.poster_full});
-        }
-        if(project.video !== null) {
-            carouselContent.push({"type": "video", "content": project.video});
-        }
-        return carouselContent;
-    }
-
     const awards = makeAwards();
-    const carouselContent = makeCarouselContent();
 
     return (
         <div>
@@ -110,56 +79,12 @@ function ExemplaryProject({ project }) {
                     </div>
                 </div>
             </div>
-
+            {console.log("project props",project)}
             {/* Modal with expanded information */}
-            <Modal className={"sticky"}  open={initialOpen}>
+            <Modal className={"sticky"} open={initialOpen}>
                 <Modal.Header>{project?.title}</Modal.Header>
                 <Modal.Content>
-                    <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
-                        <ItemsCarousel
-                            requestToChangeActive={setActiveItemIndex}
-                            activeItemIndex={activeItemIndex}
-                            numberOfCards={1}
-                            gutter={20}
-                            infiniteLoop={false}
-                            leftChevron={<button>{'<'}</button>}
-                            rightChevron={<button>{'>'}</button>}
-                            outsideChevron
-                            chevronWidth={chevronWidth}>
-
-                            {carouselContent.map(content => {
-                                    return <div>
-                                        <div style={{height: 200}} onClick={toggleImageModal} className="ui container">
-                                            {content.type === "image"
-                                                    ? <img src={`${basePosterURL}${content.content}`}/>
-                                                    : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
-                                            }
-
-                                        </div>
-                                        {/* Modal with expanded image, opens when carousel content is clicked */}
-                                        <Modal className={"sticky"}  open={imageOpen}>
-                                            <Modal.Header>{project?.title}</Modal.Header>
-                                            <Modal.Content>
-                                                {content.type === "image"
-                                                    ? <img src={`${basePosterURL}${content.content}`}/>
-                                                    : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
-                                                }
-                                            </Modal.Content>
-                                            <Modal.Actions>
-                                                <Button onClick={() => setImageOpen(false)}>
-                                                    Close
-                                                </Button>
-                                            </Modal.Actions>
-                                        </Modal>
-
-                                    </div>
-                                }
-                            )
-                            }
-
-                        </ItemsCarousel>
-                        <p>{project?.synopsis}</p>
-                    </div>
+                    <UniqueProjectPage project={project}/>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => setInitialOpen(false)}>

@@ -1,43 +1,42 @@
 import React, {useEffect, useState} from "react";
 import { useParams } from 'react-router-dom';
-import ExemplaryProject from "../shared/ExemplaryProject";
+import ItemsCarousel from "react-items-carousel";
+import {Button, Modal} from "semantic-ui-react";
+import {config} from "../util/functions/constants";
 
-const tempData = {
-    "archive_id":1,
-    "project_id":null,
-    "csv":null,
-    "name":"Name 1",
-    "dept":null,
-    "start_date":null,
-    "end_date":null,
-    "featured":0,
-    "outstanding":0,
-    "creative":0,
-    "title":"Business Action Tracking",
-    "team_name":"BAT Team","members":"Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy",
-    "sponsor":"Lockheed Martin - Enterprise Business Services",
-    "coach":"Sam Malachowsky",
-    "poster_thumb":"BAT-Thumb.jpg",
-    "poster_full":null,
-    "synopsis":"Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, " +
-        "user-friendly task management tool to be used across teams in a corporate setting. The system can be \n    " +
-        "used to create, update, and monitor actions to their completion. Actions can be hierarchical, " +
-        "associated with a project, and/or interdepartmental. An action is assigned to an actor and contains basic " +
-        "fields, including name, description, due date, and status. \n    Additional notes or custom fields can be " +
-        "included.Seamless integration with existing workflows and tools (e.g. Outlook, iPhone, and possibly others) " +
-        "is a core part of the tool. Users can enter and update actions without leaving their existing workflows. " +
-        "The tool will add value without impeding on existing business processes. \n    Because of this, the system " +
-        "is designed to be intuitively usable with little instruction or training.\n    To encourage adoption and use, " +
-        "users may manage and update tasks with the tool from a number of devices, including laptops, desktops, " +
-        "and iPhones. All supported devices must have access to useful functionality, and \n    " +
-        "feature intuitive interfaces to ensure that users can easily manage tasks.The system also includes a " +
-        "management interface, allowing administrators to view overall statistics and concerns in a dashboard view. " +
-        "This is especially useful when estimating time to \n    completion for similar tasks, seeing where teams are " +
-        "falling behind, and for managing risks. To encourage user engagement, the system will reward users for " +
-        "completing actions.","video":null}
+const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
-function UniqueProjectPage() {
+function UniqueProjectPage({project}) {
     let { title } = useParams();
+    const [imageOpen, setImageOpen] = useState(false);
+    const [activeItemIndex, setActiveItemIndex] = useState(0);
+    const chevronWidth = 40;
+    /**
+     * Toggle image modal with expanded project details
+     */
+    const toggleImageModal = () => {
+        setImageOpen(!imageOpen);
+    }
+
+    /**
+     * Creates array of carousel content to be rendered
+
+    const makeCarouselContent = () => {
+        let carouselContent = [];
+        if(project.poster_thumb !== null) {
+            carouselContent.push({"type": "image", "content": project.poster_thumb});
+        }
+        if(project.poster_full !== null) {
+            carouselContent.push({"type": "image", "content": project.poster_full});
+        }
+        if(project.video !== null) {
+            carouselContent.push({"type": "video", "content": project.video});
+        }
+        return carouselContent;
+    }
+
+    const carouselContent = makeCarouselContent();
+     */
     /**
      * TODO:
      * - how to query db
@@ -48,8 +47,55 @@ function UniqueProjectPage() {
      */
     return (
         <div>
+            {console.log(project)}
             <h1>Unique Project Page Title from URL: {title}</h1>
-            <ExemplaryProject project={tempData}/>
+            {/**
+            <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
+                <ItemsCarousel
+                    requestToChangeActive={setActiveItemIndex}
+                    activeItemIndex={activeItemIndex}
+                    numberOfCards={1}
+                    gutter={20}
+                    infiniteLoop={false}
+                    leftChevron={<button>{'<'}</button>}
+                    rightChevron={<button>{'>'}</button>}
+                    outsideChevron
+                    chevronWidth={chevronWidth}>
+
+                    {carouselContent.map(content => {
+                            return <div>
+                                <div style={{height: 200}} onClick={toggleImageModal} className="ui container">
+                                    {content.type === "image"
+                                        ? <img src={`${basePosterURL}${content.content}`}/>
+                                        : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
+                                    }
+
+                                </div>
+                                {/* Modal with expanded image, opens when carousel content is clicked
+                                <Modal className={"sticky"}  open={imageOpen}>
+                                    <Modal.Header>{project?.title}</Modal.Header>
+                                    <Modal.Content>
+                                        {content.type === "image"
+                                            ? <img src={`${basePosterURL}${content.content}`}/>
+                                            : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
+                                        }
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                        <Button onClick={() => setImageOpen(false)}>
+                                            Close
+                                        </Button>
+                                    </Modal.Actions>
+                                </Modal>
+
+                            </div>
+                        }
+                    )
+                    }
+                </ItemsCarousel>
+                <p>{project?.synopsis}</p>
+
+            </div>
+             */}
         </div>
     )
 }
