@@ -19,15 +19,21 @@ function UniqueProjectPage({projectData}) {
     useEffect(() => {
         if (project === undefined) {
             SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${slug}`)
-                .then((response) => response.json())
-                .then((results) => {
-                    setProject(results);
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw response;
+                    }
+                })
+                .then((data) => {
+                    setProject(data[0]);
                 })
                 .catch((error) => {
                     alert("An issue occurred while searching for archive content " + error);
                 });
         }
-    }, []);
+    }, [slug]);
 
 
     /**

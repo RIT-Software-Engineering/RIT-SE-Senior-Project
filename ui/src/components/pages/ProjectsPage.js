@@ -91,7 +91,7 @@ function ProjectsPage(){
 
         <div id="exemplaryProjectsDiv">
             {/* <!-- Attach exemplary project elements here --> */}
-            {projects.map((project, idx) => {
+            {projects?.map((project, idx) => {
                 return <ExemplaryProject project={project} key={idx} projectsPage/>;
             })}
             <div className="pagination-container">
