@@ -23,9 +23,8 @@ function App() {
                 <Container>
                     <Switch>
                         <Route path="/" component={HomePage} exact />
-                        <Route path="/projects/:title" component={UniqueProjectPage}/>
+                        <Route path="/projects/:slug" component={UniqueProjectPage}/>
                         <Route path="/projects" component={ProjectsPage}/>
-                        <Route path="/projects/:title" component={UniqueProjectPage}/>
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
                         <Route path="/dashboard" component={DashboardPage} />

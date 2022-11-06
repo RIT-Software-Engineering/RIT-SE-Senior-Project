@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import ExemplaryProject from "../shared/ExemplaryProject";
-import {Button, Header, Icon, Image, Input, Pagination} from "semantic-ui-react";
+import {Icon, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
 import {useLocation, useHistory} from "react-router-dom";
 
 const projectsPerPage = 10;
-const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
 /**
  * Projects page visible on main page of the website without signing in.

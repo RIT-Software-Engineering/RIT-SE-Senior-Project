@@ -8,23 +8,23 @@ import {SecureFetch} from "../util/functions/secureFetch";
 
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
 
-function UniqueProjectPage({project}) {
-    let {slug} = useParams();
+function UniqueProjectPage({projectData}) {
+    const [project, setProject] = useState(projectData);
+    const {slug} = useParams();
     const [imageOpen, setImageOpen] = useState(false);
     const [activeItemIndex, setActiveItemIndex] = useState(0);
     const chevronWidth = 40;
 
     useEffect(() => {
         if (project === undefined) {
-            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=business-action-tracking`)
+            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${slug}`)
                 .then((response) => response.json())
                 .then((results) => {
-                    console.log(results);
+                    setProject(results[0]);
                 })
                 .catch((error) => {
                     alert("An issue occurred while searching for archive content " + error);
                 });
-            console.log("I AM ALWAYS RUNNING ON FIRST RENDER!! POOP!!")
         }
     }, []);
 
@@ -60,10 +60,9 @@ function UniqueProjectPage({project}) {
         {project === undefined
                 ? <ErrorPage />
                 : <div>
-                {console.log("project",project)}
                 <h1>{project?.title}</h1>
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
-                    <ItemsCarousel
+                    <ItemsCarousel id="string"
                         requestToChangeActive={setActiveItemIndex}
                         activeItemIndex={activeItemIndex}
                         numberOfCards={1}

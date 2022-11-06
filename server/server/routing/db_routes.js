@@ -1915,8 +1915,7 @@ module.exports = (db) => {
 
     db_router.get("/getProjectFromSlug", (req, res) => {
         let query = `SELECT * FROM archive WHERE slug=?`;
-        let params = [req.query]
-        console.log('params', params)
+        let params = [req.query.slug]
         db.query(query, params)
             .then((values) => {
                 res.send(values);

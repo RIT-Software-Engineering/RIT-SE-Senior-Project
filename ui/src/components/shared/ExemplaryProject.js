@@ -82,7 +82,7 @@ function ExemplaryProject({ project }) {
             {/* Modal with expanded information */}
             <Modal className={"sticky"} open={initialOpen}>
                 <Modal.Content>
-                    <UniqueProjectPage project={project}/>
+                    <UniqueProjectPage projectData={project}/>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => setInitialOpen(false)}>
