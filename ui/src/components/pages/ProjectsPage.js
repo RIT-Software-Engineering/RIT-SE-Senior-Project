@@ -3,7 +3,6 @@ import ExemplaryProject from "../shared/ExemplaryProject";
 import {Button, Header, Icon, Image, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
-import { Modal } from "semantic-ui-react";
 import _ from "lodash";
 import {useLocation, useHistory} from "react-router-dom";
 
@@ -119,7 +118,7 @@ function ProjectsPage(){
         <div id="exemplaryProjectsDiv">
             {/* <!-- Attach exemplary project elements here --> */}
             {projects.map((project, idx) => {
-                return <ExemplaryProject project={project} key={idx} />;
+                return <ExemplaryProject project={project} key={idx} projectsPage/>;
             })}
             <div className="pagination-container">
                 <Pagination

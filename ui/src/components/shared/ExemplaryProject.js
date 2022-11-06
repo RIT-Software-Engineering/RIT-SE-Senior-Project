@@ -20,7 +20,7 @@ function ExemplaryProject({ project }) {
     /**
      * Toggle initial modal with expanded project details
      */
-    const toggleInitalModalOpen = () => {
+    const toggleInitialModalOpen = () => {
         setInitialOpen(!initialOpen);
     }
 
@@ -76,7 +76,7 @@ function ExemplaryProject({ project }) {
     return (
         <div>
             {/* Div containing all project information */}
-            <div className="ui segment stackable padded grid" onClick={() => toggleInitalModalOpen()} style={{cursor: "pointer" }}>
+            <div className="ui segment stackable padded grid" onClick={() => toggleInitialModalOpen()} style={{cursor: "pointer" }}>
                 <div className="row">
                     <h3
                         className="ui header"
