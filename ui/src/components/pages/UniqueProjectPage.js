@@ -6,7 +6,8 @@ import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
 
-const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
+const basePosterURL =`${config.url.API_GET_POSTER}?fileName=`;
+const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 function UniqueProjectPage({projectData}) {
     const [project, setProject] = useState(projectData);
@@ -69,7 +70,17 @@ function UniqueProjectPage({projectData}) {
         {project === undefined
                 ? <ErrorPage />
                 : <div ref={nodeRef}>
-                <h1>{project?.title}</h1>
+                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.slug}`}>
+                {`${baseProjectURL}${project.slug}`}</a>
+                <div className="ui attached stackable padded grid">
+                    <div className="column">
+                        <p>Sponsor: {project?.sponsor} </p>
+                        <p>Dates: {project.start_date}-{project.end_date}</p>
+                        <p>Coach: {project?.coach}</p>
+                        <p>Students: {project?.members}</p>
+                    </div>
+
+                </div>
 
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
                     <ItemsCarousel
@@ -119,21 +130,7 @@ function UniqueProjectPage({projectData}) {
                         )
                         }
                     </ItemsCarousel>
-                    <div className="ui attached stackable padded grid">
-                        <div className="two column row">
-                            <div className="column">
-                                <h4>Dates: </h4><p>{project.start_date} - {project.end_date}</p>
-                                <h4>Students: </h4><p> {project?.members}</p>
-                            </div>
-                            <div className="column">
-                                <h4>Sponsor: </h4><p>{project?.sponsor} </p>
-                                <h4>Coach: </h4><p>{project?.coach}</p>
-                            </div>
-
-                        </div>
-                    </div>
                     <p>{project?.synopsis}</p>
-                    <Icon name="linkify"/> <a href={slug}>Project Link</a>
                 </div>
             </div>}
         </div>
