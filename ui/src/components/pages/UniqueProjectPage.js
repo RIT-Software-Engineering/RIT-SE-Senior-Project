@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from 'react-router-dom';
 import ItemsCarousel from "react-items-carousel";
-import {Button, Modal} from "semantic-ui-react";
+import {Button, Modal, Icon} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
@@ -18,7 +18,9 @@ function UniqueProjectPage({projectData}) {
 
     useEffect(() => {
         if (project === undefined) {
-            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${slug}`)
+            const userInput = {slug};
+            const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "");
+            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${sanitizedInput}`)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();
@@ -42,7 +44,6 @@ function UniqueProjectPage({projectData}) {
     const toggleImageModal = () => {
         setImageOpen(!imageOpen);
     }
-
 
     /**
      * Creates array of carousel content to be rendered
@@ -69,9 +70,9 @@ function UniqueProjectPage({projectData}) {
                 ? <ErrorPage />
                 : <div ref={nodeRef}>
                 <h1>{project?.title}</h1>
-                <h2>{project?.sponsor}</h2>
-                <h4>{project?.members}</h4>
-                <h4>{project?.coach}</h4>
+                <h4>Sponsor: {project?.sponsor}</h4>
+                <h4>Members: {project?.members}</h4>
+                <h4>Coach: {project?.coach}</h4>
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
                     <ItemsCarousel
                         requestToChangeActive={setActiveItemIndex}
@@ -92,7 +93,9 @@ function UniqueProjectPage({projectData}) {
                                         }
                                     </div>
                                     {/* Modal with expanded image, opens when carousel content is clicked */}
-                                    <Modal className={"sticky"}  open={imageOpen}>
+                                    <Modal className={"sticky"}  open={imageOpen}
+                                           onClose={() => setImageOpen(false)}
+                                           onOpen={() => setImageOpen(true)}>
                                         <Modal.Content>
                                             {content.type === "image"
                                                 ? <img class="ui fluid image" src={`${basePosterURL}${content.content}`}/>
@@ -111,6 +114,7 @@ function UniqueProjectPage({projectData}) {
                         }
                     </ItemsCarousel>
                     <p>{project?.synopsis}</p>
+                    <Icon name="linkify"/> <a href={slug}>Project Link</a>
                 </div>
             </div>}
         </div>

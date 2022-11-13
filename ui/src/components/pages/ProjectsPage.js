@@ -10,14 +10,13 @@ const projectsPerPage = 10;
 /**
  * Projects page visible on main page of the website without signing in.
  **/
-
 function ProjectsPage(){
     const [projects, setProjects] = useState([])
     const [projectCount, setProjectCount] = useState(projectsPerPage)
     const [activePage, setActivePage] = useState(0)
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
-    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
+    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
 
     useEffect(() => {
         getPaginationData();
@@ -46,19 +45,24 @@ function ProjectsPage(){
 
 
     let handleSearchChange = (e, { value }) => {
-        setSearchBarValue(value);
-        //If this is the first letter entered to value, keep track that a search is being made.
+        // Input handling
+        const input = value.replace(/[^a-zA-Z\d\s:\-]/g, "");
+        console.log(input);
+        setSearchBarValue(input);
+        if(input.length === 0) return;
+        // If this is the first letter entered to value, keep track that a search is being made.
         if(pageNumBeforeSearch === 0){
             setPageNumBeforeSearch(activePage + 1);
         }
-        //If the search value is empty, don't do a search for projects, and return to the page originally on.
-        if(value === ""){
+        // If the search value is empty, don't do a search for projects, and return to the page originally on.
+        if(input === ""){
+            console.log("im entering ")
             setActivePage(pageNumBeforeSearch - 1);
             setPageNumBeforeSearch(0);
             setPageChange(pageChange + 99);
             return;
         }
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_PROJECTS}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${value}`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_PROJECTS}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}`)
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);

@@ -1,28 +1,20 @@
 import React, {useState} from "react";
 import {Button, Modal} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
-import {useHistory} from "react-router-dom";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
+
 /**
  * Represents a project component
  */
 function ExemplaryProject({ project }) {
     const [initialOpen, setInitialOpen] = useState(false);
-    const history = useHistory();
 
     /**
      * Toggle initial modal with expanded project details
      */
     const toggleInitialModalOpen = () => {
         setInitialOpen(!initialOpen);
-    }
-
-    /**
-     * Sends user to specific project page
-     */
-    const sendToProjectPage = () => {
-        history.push(`/projects/${project.slug}`)
     }
 
     /**
@@ -49,8 +41,7 @@ function ExemplaryProject({ project }) {
                 <div className="row">
                     <h3
                         className="ui header"
-                        style={{ color: "#C75300", cursor: "pointer" }}
-                        onClick={() => sendToProjectPage() }>{project.title}</h3>
+                        style={{ color: "#C75300"}} >{project.title}</h3>
                 </div>
 
                 <div className="three column row">
@@ -80,7 +71,8 @@ function ExemplaryProject({ project }) {
                 </div>
             </div>
             {/* Modal with expanded information */}
-            <Modal className={"sticky"} open={initialOpen}>
+            <Modal className={"sticky"} open={initialOpen}  onClose={() => setInitialOpen(false)}
+                   onOpen={() => setInitialOpen(true)}>
                 <Modal.Content>
                     <UniqueProjectPage projectData={project}/>
                 </Modal.Content>

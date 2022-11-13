@@ -1842,12 +1842,14 @@ module.exports = (db) => {
                 WHERE title like ?
                    OR sponsor like ?
                    OR members like ?
+                   OR coach like ?
                    OR keywords like ?
                    OR synopsis like ?
                    OR slug like ?
                 ORDER BY title,
                          sponsor,
-                         members, 
+                         members,
+                         coach, 
                          keywords,
                          synopsis
             LIMIT ?
@@ -1855,6 +1857,7 @@ module.exports = (db) => {
                 archive.title like ?
                 OR archive.sponsor like ?
                 OR archive.members like ?
+                OR archive.coach like ?
                 OR archive.keywords like ?
                 OR archive.synopsis like ?
                 OR archive.slug like ?
@@ -1863,6 +1866,7 @@ module.exports = (db) => {
                 archive.title,
                 archive.sponsor,
                 archive.members,
+                archive.coach,
                 archive.keywords,
                 archive.synopsis
             LIMIT ?`;
@@ -1873,6 +1877,7 @@ module.exports = (db) => {
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
+                                OR coach like ?
                                 OR keywords like ?
                                 OR synopsis like ?
                                 `;
@@ -1886,7 +1891,9 @@ module.exports = (db) => {
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             offset || 0,
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
