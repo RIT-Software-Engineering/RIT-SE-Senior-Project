@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Modal} from "semantic-ui-react";
+import {Button, Icon, Modal} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
@@ -23,10 +23,10 @@ function ExemplaryProject({ project }) {
      */
     const makeAwards = () => {
         let awards = [];
-        if(project.outstanding === 1){
+        if(project.outstanding >= 1){
             awards[0] = 'Outstanding'
         }
-        if(project.creative === 1){
+        if(project.creative >= 1){
             awards[1] = 'Creative'
         }
         return awards
@@ -38,10 +38,19 @@ function ExemplaryProject({ project }) {
         <div>
             {/* Div containing all project information */}
             <div className="ui segment stackable padded grid" onClick={() => toggleInitialModalOpen()} style={{cursor: "pointer" }}>
-                <div className="row">
-                    <h3
-                        className="ui header"
-                        style={{ color: "#C75300"}} >{project.title}</h3>
+                <div className="two column row" style={{display:"flex"}}>
+                    <div className="column">
+                        <h3 className="ui header" style={{ color: "#C75300"}} >{project.title}</h3>
+                    </div>
+                    <div className="column">
+                        {awards.length !== 0 &&
+                            <>
+                        {awards.map((award, idx) => {
+                            return <Icon name="trophy" title={award} style={{float: "right"}}/>;
+                        }
+                        )}</>}
+                    </div>
+
                 </div>
 
                 <div className="three column row">
@@ -54,19 +63,12 @@ function ExemplaryProject({ project }) {
                         />
                     </div>
                     <div className="column">
-                        <h4>Dates:</h4>
-                        <p>{project.start_date} - {project.end_date}</p>
-                        <h4>Students:</h4>
-                        <p>{project.members}</p>
-                        {awards.length !== 0 && <><h4>Awards:</h4>
-                            <p>{awards.filter(Boolean).join(", ")}</p>
-                        </>}
+                        <h4>Dates:</h4><p>{project.start_date} - {project.end_date}</p>
+                        <h4>Students:</h4><p>{project.members}</p>
                     </div>
                     <div className="column">
-                        <h4>Sponsor:</h4>
-                        <p>{project.sponsor}</p>
-                        <h4>Faculty Coach:</h4>
-                        <p>{project.coach}</p>
+                        <h4>Sponsor:</h4><p>{project.sponsor}</p>
+                        <h4>Faculty Coach:</h4><p>{project.coach}</p>
                     </div>
                 </div>
             </div>

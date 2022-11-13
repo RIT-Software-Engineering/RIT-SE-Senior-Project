@@ -70,9 +70,7 @@ function UniqueProjectPage({projectData}) {
                 ? <ErrorPage />
                 : <div ref={nodeRef}>
                 <h1>{project?.title}</h1>
-                <h4>Sponsor: {project?.sponsor}</h4>
-                <h4>Members: {project?.members}</h4>
-                <h4>Coach: {project?.coach}</h4>
+
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
                     <ItemsCarousel
                         requestToChangeActive={setActiveItemIndex}
@@ -80,8 +78,16 @@ function UniqueProjectPage({projectData}) {
                         numberOfCards={1}
                         gutter={20}
                         infiniteLoop={false}
-                        leftChevron={<button>{'<'}</button>}
-                        rightChevron={<button>{'>'}</button>}
+                        leftChevron={
+                            <button className="circular ui icon button">
+                                <i className="angle left icon"></i>
+                            </button>
+                        }
+                        rightChevron={
+                            <button className="circular ui icon button">
+                                <i className="angle right icon"></i>
+                            </button>
+                        }
                         outsideChevron
                         chevronWidth={chevronWidth}>
                         {carouselContent.map((content, idx) => {
@@ -113,6 +119,19 @@ function UniqueProjectPage({projectData}) {
                         )
                         }
                     </ItemsCarousel>
+                    <div className="ui attached stackable padded grid">
+                        <div className="two column row">
+                            <div className="column">
+                                <h4>Dates: </h4><p>{project.start_date} - {project.end_date}</p>
+                                <h4>Students: </h4><p> {project?.members}</p>
+                            </div>
+                            <div className="column">
+                                <h4>Sponsor: </h4><p>{project?.sponsor} </p>
+                                <h4>Coach: </h4><p>{project?.coach}</p>
+                            </div>
+
+                        </div>
+                    </div>
                     <p>{project?.synopsis}</p>
                     <Icon name="linkify"/> <a href={slug}>Project Link</a>
                 </div>
