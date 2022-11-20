@@ -5,6 +5,7 @@ import {Button, Modal, Icon} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
+import {Helmet} from "react-helmet";
 
 const basePosterURL =`${config.url.API_GET_POSTER}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
@@ -18,8 +19,10 @@ function UniqueProjectPage({projectData}) {
     const nodeRef = React.useRef(null);
 
     useEffect(() => {
+        {/* Renders the project page client side */}
         if (project === undefined) {
             const userInput = {slug};
+            {/* Input Handling */}
             const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "");
             SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${sanitizedInput}`)
                 .then((response) => {
@@ -69,7 +72,16 @@ function UniqueProjectPage({projectData}) {
         <div>
         {project === undefined
                 ? <ErrorPage />
-                : <div ref={nodeRef}>
+                :
+                <div ref={nodeRef}>
+                    {/* Open Graph Protocol */}
+                    <Helmet>
+                        <meta property="og:title" content={project.title}/>
+                        <meta property="og:type" content="website"/>
+                        <meta property="og:image" content={`${basePosterURL}${project.poster_thumb}`}/>
+                        <meta property="og:url" content={`${baseProjectURL}${project.slug}`}/>
+                        <meta property="og:description" content={project.synopsis}/>
+                    </Helmet>
                 <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.slug}`}>
                 {`${baseProjectURL}${project.slug}`}</a>
                 <div className="ui attached stackable padded grid">

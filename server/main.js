@@ -61,4 +61,7 @@ const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
 
+// Prerendering
+app.use(require('prerender-node'));
+
 app.listen(port);

@@ -4,6 +4,7 @@ import {Icon, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
+import {Helmet} from "react-helmet";
 
 const projectsPerPage = 10;
 
@@ -75,6 +76,15 @@ function ProjectsPage(){
 
     return (
     <>
+        {/* Open Graph Protocol */}
+        <Helmet>
+            <meta property="og:title" content="View Senior Projects - RIT Software Engineering"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:image" content="https://cdn.rit.edu/images/news/2020-09/aerial_drone_09-web.jpg"/>
+            <meta property="og:url" content="https://seniorproject.se.rit.edu/projects"/>
+            <meta property="og:description" content=
+                "View Projects from the RIT Software Engineering Department!"/>
+        </Helmet>
         <div className="ui divider"></div>
         <div className="row">
             <h2>Projects</h2>
