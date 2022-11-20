@@ -14,8 +14,6 @@ import { Container } from "semantic-ui-react";
 import "./App.css";
 
 function App() {
-
-
     return (
         <UserContextProvider>
             <Header />

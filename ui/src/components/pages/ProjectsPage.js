@@ -46,7 +46,7 @@ function ProjectsPage(){
 
     let handleSearchChange = (e, { value }) => {
         // Input handling
-        const input = value.replace(/[^a-zA-Z\d\s:\-]/g, "");
+        const input = value.replace(/[^a-zA-Z\d\s\-]/g, "");
         console.log(input);
         setSearchBarValue(input);
         if(input.length === 0) return;
