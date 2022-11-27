@@ -4,6 +4,8 @@ import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileBrowser from 'react-keyed-file-browser';
 import Moment from "moment/moment";
+import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
+
 /*
 * I need to pass in file paths from file editor to here through props.
 * Props: path, fileInput, fileUploadPaths, response
@@ -42,7 +44,7 @@ export default function FileRemover() {
         },
     ]);
 
-    //If the path that is selected is changed, this will refetch all the files that are found inside of that path.
+    //If the path that is selected is changed, this will refetch all the files that are found inside that path.
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_FILES}?path=${path}`)
             .then((response) => response.json())
@@ -201,8 +203,6 @@ export default function FileRemover() {
 
     return (
         <div>
-            <link href="static/node_modules/react-keyed-file-browser/dist/react-keyed-file-browser.css" rel="stylesheet">
-            </link>
             <FileBrowser
                 files={myFiles}
                 onCreateFile={handleCreateFile}
