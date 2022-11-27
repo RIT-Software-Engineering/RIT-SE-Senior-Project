@@ -19,6 +19,7 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-items-carousel": "^2.8.0",
+    "react-keyed-file-browser": "^1.14.0",
     "react-phone-number-input": "^3.1.45",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
