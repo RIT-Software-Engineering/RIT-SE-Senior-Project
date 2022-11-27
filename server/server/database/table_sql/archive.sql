@@ -19,6 +19,8 @@ CREATE TABLE archive (
     poster_full     TEXT,   -- path to full resolution poster image 
     synopsis        TEXT,
     keywords        TEXT,
+    slug            TEXT,   -- unique project url
     video           TEXT,   -- path to project video (if any)
+    active          TEXT,   -- Empty string if active, Datetime of when deactivated if unactive
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
