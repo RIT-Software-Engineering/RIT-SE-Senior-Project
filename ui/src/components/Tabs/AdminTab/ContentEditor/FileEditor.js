@@ -4,7 +4,6 @@ import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileRemover from "./FileRemover";
 import OverviewEditor from "./OverviewEditor"
-import UniqueProjectPage from "../../../pages/UniqueProjectPage";
 
 const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
 

@@ -105,6 +105,9 @@ export default function FileRemover() {
         )
     }
 
+
+    // NEW FILE MANAGER CODE VVV
+
     /**
      * Creates a new folder in given directory
      * @param key directory to make a new folder in
@@ -116,46 +119,46 @@ export default function FileRemover() {
     }
 
     const handleCreateFile = (files, prefix) => {
-
-        this.setState(state => {
-            const newFiles = files.map((file) => {
-                let newKey = prefix
-                if (prefix !== '' && prefix.substring(prefix.length - 1, prefix.length) !== '/') {
-                    newKey += '/'
-                }
-                newKey += file.name
-                return {
-                    key: newKey,
-                    size: file.size,
-                    modified: +Moment(),
-                }
-            })
-
-            const uniqueNewFiles = []
-            newFiles.map((newFile) => {
-                let exists = false
-                state.files.map((existingFile) => {
-                    if (existingFile.key === newFile.key) {
-                        exists = true
-                    }
-                })
-                if (!exists) {
-                    uniqueNewFiles.push(newFile)
-                }
-            })
-            state.files = state.files.concat(uniqueNewFiles)
-            return state
+        // Create new file entry to add
+        const newFiles = files.map((file) => {
+            let newKey = prefix
+            if (prefix !== '' && prefix.substring(prefix.length - 1, prefix.length) !== '/') {
+                newKey += '/'
+            }
+            newKey += file.name
+            return {
+                key: newKey,
+                size: file.size,
+                modified: +Moment(),
+            }
         })
+        console.log(newFiles)
+        const uniqueNewFiles = []
+        // Check that each of the new uploaded files are not already there (duplicated)
+        newFiles.map((newFile) => {
+            let exists = false;
+            myFiles.map((existingFile) => {
+                // Already existing file found
+                if (existingFile.key === newFile.key) {
+                    exists = true;
+                }
+            })
+            if (!exists) {
+                uniqueNewFiles.push(newFile)
+            }
+        })
+        console.log(uniqueNewFiles);
+        setMyFiles(myFiles.concat(uniqueNewFiles));
     }
 
     const handleRenameFolder = (oldKey, newKey) => {
         const newFiles = [];
         myFiles.map((file) => {
-            if(file.key.substring(0, oldKey[0].length) === oldKey[0]) {
+            if(file.key.substring(0, oldKey.length) === oldKey) {
                 newFiles.push(
                     {
                     ...file,
-                    key: file.key.replace(oldKey[0], newKey[0]),
+                    key: file.key.replace(oldKey, newKey),
                     modified: +Moment(),
                     }
                 );
@@ -169,11 +172,11 @@ export default function FileRemover() {
     const handleRenameFile = (oldKey, newKey) => {
         const newFiles = [];
         myFiles.map((file) => {
-            if (file.key === oldKey[0]) {
+            if (file.key === oldKey) {
                 newFiles.push(
                     {
                         ...file,
-                        key: newKey[0],
+                        key: newKey,
                         modified: +Moment(),
                     }
                 );
@@ -205,7 +208,7 @@ export default function FileRemover() {
         <div>
             <FileBrowser
                 files={myFiles}
-                onCreateFile={handleCreateFile}
+                onCreateFiles={handleCreateFile}
                 onCreateFolder={handleCreateFolder}
                 onDeleteFolder={handleDeleteFolder}
                 onDeleteFile={handleDeleteFile}
