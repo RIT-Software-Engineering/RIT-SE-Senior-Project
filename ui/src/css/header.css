@@ -1,5 +1,7 @@
 #header {
     height: var(--header-height);
+    padding-top: 2em;
+    padding-bottom: 1em;
     background-color: #f76902;
 }
 
@@ -8,6 +10,11 @@
     justify-content: space-between;
     align-items: center;
     height: 100%;
+}
+
+#subHeader {
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 @media only screen and (max-width: 768px) {

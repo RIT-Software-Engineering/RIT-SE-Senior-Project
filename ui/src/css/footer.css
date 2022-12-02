@@ -2,6 +2,8 @@
     min-height: var(--footer-height);
     background-color: black;
     color: white;
+    padding-top: 2em;
+    padding-bottom: 1em;
 }
 
 #bringMeDown {
