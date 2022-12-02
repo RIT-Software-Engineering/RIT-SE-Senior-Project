@@ -27,7 +27,7 @@ const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
 /**
- * This is what is displayed inside of the admin tab for projects. It may also be used elsewhere in the website.
+ * This is what is displayed inside the admin tab for projects. It may also be used elsewhere in the website.
  * */
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
@@ -120,8 +120,8 @@ export default function Proposals(props) {
                                     newArchive
                                     activeCoaches={props.activeCoaches}
                                     activeSponsors={props.activeSponsors}
-                                    header={"Edit Header"}
-                                    buttonIcon={"bullhorn"}
+                                    header={"Archive Project"}
+                                    buttonIcon={"archive"}
                                     />}
 
                             </>

@@ -118,7 +118,7 @@ export default function FileEditor() {
             },]}
         />
             <div className="accordion-buttons-container">
-                <button className="circular ui icon button" onClick={toggleFileUploadModalOpen}>
+                <button className="circular ui icon button" onClick={toggleFileUploadModalOpen} >
                     <i className="plus icon"></i>
                 </button>
             </div>
