@@ -23,7 +23,7 @@ function UniqueProjectPage({projectData}) {
         if (project === undefined) {
             const userInput = {slug};
             {/* Input Handling */}
-            const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "");
+            const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
             SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${sanitizedInput}`)
                 .then((response) => {
                     if (response.ok) {
