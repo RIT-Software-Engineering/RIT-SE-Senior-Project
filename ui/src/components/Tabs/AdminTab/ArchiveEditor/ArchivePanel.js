@@ -2,6 +2,7 @@ import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import {config, USERTYPES} from "../../../util/functions/constants";
 import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../../../util/functions/secureFetch";
+import {slugify} from "../../../util/functions/utils";
 
 export default function ArchivePanel(props){
 
@@ -115,6 +116,8 @@ export default function ArchivePanel(props){
         start_date: props?.project?.start_date || "",
         end_date: props?.project?.end_date || "",
         keywords: props?.project?.project_search_keywords || "",
+        // suggest a slug if this is a new archive project
+        slug: props?.project.slug || (props.newArchive) ? slugify(props?.project?.title) : "",
     });
 
     let submissionModalMessages;
@@ -148,115 +151,120 @@ export default function ArchivePanel(props){
         {
             type: "input",
             label: "Project ID",
-            placeHolder: "Project ID",
+            placeholder: "Project ID",
             name: "project_id",
             disabled: true
         },
         {
             type: "input",
             label: "Archive Project Title",
-            placeHolder: "Archive Project Title",
+            placeholder: "Archive Project Title",
             name: "title",
         },
         {
             type: "input",
             label: "Team Name",
-            placeHolder: "Team Name",
+            placeholder: "Team Name",
             name: "team_name"
         },
         {
             type: "input",
             label: "Members",
-            placeHolder: "Members",
+            placeholder: "Members",
             name: "members"
         },
         {
             type: "input",
             label: "Keywords",
-            placeHolder: "Keywords",
+            placeholder: "Keywords",
             name: "keywords"
         },
         {
             type: "input",
             label: "Sponsor",
-            placeHolder: "Sponsor",
+            placeholder: "Sponsor",
             name: "sponsor"
         },
         {
             type: "input",
             label: "Coach",
-            placeHolder: "Coach",
+            placeholder: "Coach",
             name: "coach"
         },
         {
             type: "input",
             label: "Poster Thumb",
-            placeHolder: "Poster Thumb",
+            placeholder: "Poster Thumb",
             name: "poster_thumb"
         },
         {
             type: "input",
             label: "Poster Full",
-            placeHolder: "Poster Full",
+            placeholder: "Poster Full",
             name: "poster_full"
         },
         {
             type: "input",
             label: "Synopsis",
-            placeHolder: "Synopsis",
+            placeholder: "Synopsis",
             name: "synopsis"
         },
         {
             type: "input",
             label: "Video",
-            placeHolder: "Video",
+            placeholder: "Video",
             name: "video"
         },
         {
             type: "input",
             label: "Name",
-            placeHolder: "Name",
+            placeholder: "Name",
             name: "name"
         },
         {
             type: "input",
             label: "Department",
-            placeHolder: "Department",
+            placeholder: "Department",
             name: "dept"
         },
         {
             type: "date",
             label: "Start Date",
-            placeHolder: "Start Date",
+            placeholder: "Start Date",
             name: "start_date"
         },
         {
             type: "date",
             label: "End Date",
-            placeHolder: "End Date",
+            placeholder: "End Date",
             name: "end_date"
         },
         {
             type: "checkbox",
             label: "featured",
-            placeHolder: "featured",
             name: "featured",
             disabled: false
         },
         {
             type: "checkbox",
             label: "outstanding",
-            placeHolder: "outstanding",
             name: "outstanding",
             disabled: false
         },
         {
             type: "checkbox",
             label: "creative",
-            placeHolder: "creative",
             name: "creative",
             disabled: false
-        }
+        },
+        {
+            type: "input",
+            label: "URL Slug",
+            placeholder: "slug",
+            value: "hello",
+            name: "slug",
+            disabled: !props.newArchive // only allow setting slug on archive submission
+        },
     ];
 
 

@@ -85,7 +85,6 @@ function ProjectsPage(){
             <meta property="og:description" content=
                 "View Projects from the RIT Software Engineering Department!"/>
         </Helmet>
-        <div className="ui divider"></div>
         <div className="row">
             <h2>Projects</h2>
         </div>

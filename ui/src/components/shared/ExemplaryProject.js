@@ -40,7 +40,7 @@ function ExemplaryProject({ project }) {
             <div className="ui segment stackable padded grid" onClick={() => toggleInitialModalOpen()} style={{cursor: "pointer" }}>
                 <div className="two column row" style={{display:"flex"}}>
                     <div className="column">
-                        <h3 className="ui header" style={{ color: "#C75300"}} >{project.title}</h3>
+                        <h3 className="ui header" >{project.title}</h3>
                     </div>
                     <div className="column">
                         {awards.length !== 0 &&

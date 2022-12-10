@@ -29,7 +29,6 @@
     height: auto !important;
     margin-top: 0 !important;
     margin-bottom: 1em !important;
-    color: green;
 }
 
 .accordion-button-group .accordion-buttons-container {
@@ -93,4 +92,8 @@ button.ui.button, .ui.icon.button, .ui.icon.buttons .button {
 
 *:not(i) {
     font-family: var(--fonts) !important;
+}
+
+.pagination-container {
+    padding-top: 1em;
 }

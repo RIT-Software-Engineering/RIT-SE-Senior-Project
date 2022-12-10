@@ -123,7 +123,6 @@ export default function Proposals(props) {
                                     header={"Archive Project"}
                                     buttonIcon={"archive"}
                                     />}
-
                             </>
                         }
                             <a

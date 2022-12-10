@@ -82,7 +82,7 @@ function UniqueProjectPage({projectData}) {
                         <meta property="og:url" content={`${baseProjectURL}${project.slug}`}/>
                         <meta property="og:description" content={project.synopsis}/>
                     </Helmet>
-                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.slug}`}>
+                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.slug}`} target="_blank">
                 {`${baseProjectURL}${project.slug}`}</a>
                 <div className="ui attached stackable padded grid">
                     <div className="column">

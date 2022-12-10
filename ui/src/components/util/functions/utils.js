@@ -88,3 +88,16 @@ export const isSemesterActive = (start_date, end_date) => {
     }
     return parseDate(start_date) <= new Date() && parseDate(end_date) >= new Date();
 }
+
+/**
+ * Converts a string to a url-friendly slug
+ * @param str string
+ * @returns {string} slug
+ */
+export const slugify = (str) => {
+    return str.toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
