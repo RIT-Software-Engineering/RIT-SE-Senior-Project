@@ -3,6 +3,7 @@ import {config, USERTYPES} from "../../../util/functions/constants";
 import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../../../util/functions/secureFetch";
 import {slugify} from "../../../util/functions/utils";
+import {Label} from "semantic-ui-react";
 
 export default function ArchivePanel(props){
 
@@ -257,13 +258,12 @@ export default function ArchivePanel(props){
             name: "creative",
             disabled: false
         },
-        {
+        { // slugs can only be set on new archive submission
             type: "input",
-            label: "URL Slug",
+            label: props.newArchive ? "URL Slug *must be manually changed later" : "URL Slug",
             placeholder: "slug",
-            value: "hello",
             name: "slug",
-            disabled: !props.newArchive // only allow setting slug on archive submission
+            disabled: !props.newArchive
         },
     ];
 
