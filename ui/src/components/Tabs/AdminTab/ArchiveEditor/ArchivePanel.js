@@ -3,7 +3,6 @@ import {config, USERTYPES} from "../../../util/functions/constants";
 import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../../../util/functions/secureFetch";
 import {slugify} from "../../../util/functions/utils";
-import {Label} from "semantic-ui-react";
 
 export default function ArchivePanel(props){
 

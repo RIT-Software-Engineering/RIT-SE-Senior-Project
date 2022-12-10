@@ -15,7 +15,7 @@ export default function ActionEditor(props) {
                 setActionsData(actionsData);
             })
             .catch((error) => {
-                alert("Failed to get actionss data" + error);
+                alert("Failed to get actions data" + error);
             });
     }, []);
 
@@ -50,6 +50,7 @@ export default function ActionEditor(props) {
             <div className="accordion-buttons-container">
                 <ActionPanel
                     semesterData={props.semesterData}
+                    newArchive
                     header={"Create Action/Announcement"}
                     create={true}
                     key={"createAction"}
