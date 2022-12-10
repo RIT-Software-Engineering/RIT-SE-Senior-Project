@@ -126,7 +126,7 @@ export default function ArchiveTable() {
                                 <TableCell>
                                     <ArchivePanel
                                         project={project}
-                                        header={"Edit Header"}
+                                        header={"Edit Archive"}
                                         buttonIcon={"edit"}
                                     />
                                 </TableCell>
@@ -168,9 +168,9 @@ export default function ArchiveTable() {
             />
             <div className="accordion-buttons-container">
                 <ArchivePanel
-                    project={"null"}
-                    header={"Edit Header"}
-                    buttonIcon={"edit"}
+                    newArchive
+                    header={"Create Archive Project"}
+                    buttonIcon={"plus"}
                 />
             </div>
         </div>
