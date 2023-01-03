@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-    Accordion, Icon,
+    Icon,
     Input,
     Pagination,
     Table,
@@ -126,7 +126,7 @@ export default function ArchiveTable() {
                                 <TableCell>
                                     <ArchivePanel
                                         project={project}
-                                        header={"Edit Header"}
+                                        header={"Edit Archive"}
                                         buttonIcon={"edit"}
                                     />
                                 </TableCell>
@@ -154,25 +154,6 @@ export default function ArchiveTable() {
     }
 
     return (
-        <div className="accordion-button-group">
-            <Accordion
-                fluid
-                styled
-                panels={[
-                    {
-                        key: "archiveEditor",
-                        title: "Archive Editor",
-                        content: { content: table() },
-                    },
-                ]}
-            />
-            <div className="accordion-buttons-container">
-                <ArchivePanel
-                    project={"null"}
-                    header={"Edit Header"}
-                    buttonIcon={"edit"}
-                />
-            </div>
-        </div>
-    )
+        table()
+    );
 }
