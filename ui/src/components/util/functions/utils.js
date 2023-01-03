@@ -95,6 +95,7 @@ export const isSemesterActive = (start_date, end_date) => {
  * @returns {string} slug
  */
 export const slugify = (str) => {
+    if(str === undefined) return "";
     return str.toLowerCase()
         .trim()
         .replace(/[^\w\s-]/g, '')

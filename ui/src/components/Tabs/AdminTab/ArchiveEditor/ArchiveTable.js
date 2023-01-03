@@ -51,18 +51,18 @@ export default function ArchiveTable() {
     }, [pageChange]);
 
     //Search feature functionality
-    let handleSearchChange = (e, { value }) => {
+    let handleSearchChange = (e, {value}) => {
         // Input handling
         const input = value.replace(/[^a-zA-Z\d\s\-]/g, "");
         console.log(input);
         setSearchBarValue(input);
-        if(input.length === 0) return;
+        if (input.length === 0) return;
         // If this is the first letter entered to value, keep track that a search is being made.
-        if(pageNumBeforeSearch === 0){
+        if (pageNumBeforeSearch === 0) {
             setPageNumBeforeSearch(activePage + 1);
         }
         // If the search value is empty, don't do a search for projects, and return to the page originally on.
-        if(input === ""){
+        if (input === "") {
             console.log("im entering ")
             setActivePage(pageNumBeforeSearch - 1);
             setPageNumBeforeSearch(0);
@@ -83,15 +83,15 @@ export default function ArchiveTable() {
     const table = () => {
         return (
             <>
-                    <Input
-                        icon='search'
-                        iconPosition='left'
-                        placeholder='Search...'
-                        value={searchBarValue}
-                        onChange={_.debounce(handleSearchChange, 500, {
-                            leading: true,
-                        })}
-                    />
+                <Input
+                    icon='search'
+                    iconPosition='left'
+                    placeholder='Search...'
+                    value={searchBarValue}
+                    onChange={_.debounce(handleSearchChange, 500, {
+                        leading: true,
+                    })}
+                />
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -140,8 +140,8 @@ export default function ArchiveTable() {
                         ellipsisItem={null}
                         firstItem={null}
                         lastItem={null}
-                        prevItem={{ content: <Icon name="angle left" />, icon: true }}
-                        nextItem={{ content: <Icon name="angle right" />, icon: true }}
+                        prevItem={{content: <Icon name="angle left"/>, icon: true}}
+                        nextItem={{content: <Icon name="angle right"/>, icon: true}}
                         totalPages={Math.ceil(projectCount / projectsPerPage)}
                         onPageChange={(event, data) => {
                             setActivePage(data.activePage - 1);

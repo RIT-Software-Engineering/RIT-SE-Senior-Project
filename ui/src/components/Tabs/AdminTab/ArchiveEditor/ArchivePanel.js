@@ -79,7 +79,7 @@ export default function ArchivePanel(props){
 
     useEffect(() => {
         //this is for getting the start and end date of a project.
-        if(props.project.semester){
+        if(props?.project?.semester){
             SecureFetch(`${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project.semester}`)
                 .then(response => response.json())
                 .then((dates) => {
@@ -117,7 +117,7 @@ export default function ArchivePanel(props){
         end_date: props?.project?.end_date || "",
         keywords: props?.project?.project_search_keywords || "",
         // suggest a slug if this is a new archive project
-        slug: props?.project.slug || (props.newArchive) ? slugify(props?.project?.title) : "",
+        slug: props?.project?.slug || (props.newArchive) ? slugify(props?.project?.title) : "",
     });
 
     let submissionModalMessages;

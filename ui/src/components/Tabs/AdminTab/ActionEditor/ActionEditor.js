@@ -50,7 +50,6 @@ export default function ActionEditor(props) {
             <div className="accordion-buttons-container">
                 <ActionPanel
                     semesterData={props.semesterData}
-                    newArchive
                     header={"Create Action/Announcement"}
                     create={true}
                     key={"createAction"}
