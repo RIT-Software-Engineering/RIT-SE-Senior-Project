@@ -4,6 +4,11 @@ import React, {useEffect, useState} from "react";
 import {SecureFetch} from "../../../util/functions/secureFetch";
 import {slugify} from "../../../util/functions/utils";
 
+/**
+ * Represents an archived project in the Admin Tab -> Archive Editor
+ * @param props
+ *      Notable props: newArchive, indicates whether a project has been added to archives or not
+ */
 export default function ArchivePanel(props){
 
     const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [], sponsor: "" })
@@ -116,7 +121,7 @@ export default function ArchivePanel(props){
         start_date: props?.project?.start_date || "",
         end_date: props?.project?.end_date || "",
         keywords: props?.project?.project_search_keywords || "",
-        // suggest a slug if this is a new archive project
+        // suggest a slug if this is a new archive project and the project already exists before archival
         slug: props?.project?.slug || (props.newArchive) ? slugify(props?.project?.title) : "",
     });
 
@@ -132,7 +137,7 @@ export default function ArchivePanel(props){
             SUCCESS: "The archive project has been created.",
             FAIL: "We were unable to add to archive.",
         } : {
-            SUCCESS: "The archived project has been Edited.",
+            SUCCESS: "The archived project has been edited.",
             FAIL: "Could not make edits.",
         }
     }
@@ -260,8 +265,8 @@ export default function ArchivePanel(props){
         { // slugs can only be set on new archive submission
             type: "input",
             label: props.newArchive ? "URL Slug *must be manually changed later" : "URL Slug",
-            placeholder: "slug",
-            name: "slug",
+            placeholder: "URL slug",
+            name: "URL slug",
             disabled: !props.newArchive
         },
     ];

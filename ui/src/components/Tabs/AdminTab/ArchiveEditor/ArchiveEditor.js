@@ -52,6 +52,7 @@ export default function ArchiveEditor() {
                 <ArchivePanel
                     project={"null"}
                     create={true}
+                    newArchive
                     header={"Create Archive"}
                 />
             </div>
