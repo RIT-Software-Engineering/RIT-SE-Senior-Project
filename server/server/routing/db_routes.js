@@ -416,7 +416,7 @@ module.exports = (db) => {
 
         let projectsQuery = ``;
         let rowCountQuery = ``;
-        if(featured === "true"){
+        if(featured === 1){
             /**
              * This goes through and returns a set of the archived projects that are unique to the pagination
              * On the home Page.
@@ -442,7 +442,6 @@ module.exports = (db) => {
                 res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
             })
             .catch((error) => {
-                console.error(error);
                 res.status(500).send(error);
             });
     });
@@ -537,67 +536,97 @@ module.exports = (db) => {
             .catch(err => res.status(500).send(err));
     });
 
-    db_router.post("/editArchive",
-        UserAuth.isAdmin,
-        body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+    db_router.post(
+        "/editArchive",
+        [
+            UserAuth.isAdmin,
+            // TODO: Should the max length be set to something smaller than 5000?
+            body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("outstanding").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("creative").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+            body("project_id").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("team_name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("members").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("coach").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("poster_thumb").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("poster_full").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("video").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("dept").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("start_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("end_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("keywords").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("url_slug").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("inactive").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        ],
         async (req, res) => {
-        let body = req.body;
-        const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured = ?, outstanding = ?, creative = ?,
-                                        title = ?, project_id = ?, team_name = ?, 
-                                        members = ?, sponsor = ?, coach = ?,
-                                        poster_thumb = ?, poster_full = ?, synopsis = ?,
-                                        video = ?, name = ?, dept = ?,
-                                        start_date = ?, end_date = ?, keywords = ?, slug = ?
+            let body = req.body;
+            const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured=?, outstanding=?, creative=?,
+                                        title=?, project_id=?, team_name=?, 
+                                        members=?, sponsor=?, coach=?,
+                                        poster_thumb=?, poster_full=?, synopsis=?,
+                                        video=?, name=?, dept=?,
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
                                     WHERE archive_id = ?`;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
 
-        const checkBox = (data) => {
-            if(data === 'true' || data === '1'){
-                return 1;
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
             }
-            return 0;
+
+            let updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+                body.keywords,
+                body.url_slug,
+                inactive,
+                body.archive_id
+            ];
+
+            db.query(updateArchiveQuery,updateArchiveParams)
+                .then((response) => {
+                    return res.sendStatus(200);
+                })
+                .catch(err => err)
         }
-
-        const updateArchiveParams = [
-            checkBox(body.featured),
-            checkBox(body.outstanding),
-            checkBox(body.creative),
-            body.title,
-            body.project_id,
-            body.team_name,
-            body.members,
-            body.sponsor,
-            body.coach,
-            body.poster_thumb,
-            body.poster_full,
-            body.synopsis,
-            body.video,
-            body.name,
-            body.dept,
-            body.start_date,
-            body.end_date,
-            body.archive_id,
-            body.keywords,
-            body.slug,
-        ]
-
-        db.query(updateArchiveQuery,updateArchiveParams)
-            .then((response) => res.sendStatus(200))
-            .catch(err => res.status(500).send(err))
-
-    });
+    );
 
     db_router.post("/createArchive",
         UserAuth.isAdmin,
         body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
         async (req, res) => {
             let body = req.body;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
+
             const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, synopsis, video, name, dept, start_date, end_date, keywords, slug)
+                                    poster_full, synopsis, video, name, dept, start_date, end_date, keywords, url_slug, 
+                                    inactive)
                                     VALUES(?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?);`
+                                           ?, ?, ?, ?, ?, ?);`
 
             const checkBox = (data) => {
                 if(data === 'true' || data === '1'){
@@ -625,13 +654,14 @@ module.exports = (db) => {
                 body.start_date,
                 body.end_date,
                 body.keywords,
-                body.slug,
+                body.url_slug,
+                inactive
             ]
 
             db.query(updateArchiveQuery,updateArchiveParams)
                 .then((response) => {
-                    //Setting project to archive, May also be changed to remove a project from project table
-                    //if  not wanted.
+                    // Setting project to archive, May also be changed to remove a project from project table
+                    // if not wanted.
                     const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
                                     SET status = 'archive'
                                     WHERE project_id = ?`
@@ -643,8 +673,6 @@ module.exports = (db) => {
                         .catch(err => res.status(500).send(err))
                 })
                 .catch(err => err)
-
-
 
         });
 
@@ -1847,7 +1875,7 @@ module.exports = (db) => {
                    OR coach like ?
                    OR keywords like ?
                    OR synopsis like ?
-                   OR slug like ?
+                   OR url_slug like ?
                 ORDER BY title,
                          sponsor,
                          members,
@@ -1862,7 +1890,7 @@ module.exports = (db) => {
                 OR archive.coach like ?
                 OR archive.keywords like ?
                 OR archive.synopsis like ?
-                OR archive.slug like ?
+                OR archive.url_slug like ?
                 )
             ORDER BY
                 archive.title,
@@ -1923,8 +1951,8 @@ module.exports = (db) => {
     });
 
     db_router.get("/getProjectFromSlug", (req, res) => {
-        let query = `SELECT * FROM archive WHERE slug=?`;
-        let params = [req.query.slug]
+        let query = `SELECT * FROM archive WHERE url_slug=?`;
+        let params = [req.query.url_slug]
         db.query(query, params)
             .then((values) => {
                 res.status(200).send(values);

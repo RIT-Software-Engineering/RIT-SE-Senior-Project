@@ -32,6 +32,7 @@ export default function ArchiveTable() {
         )
             .then((response) => {
                 if (response.ok) {
+                    console.log("?");
                     return response.json();
                 } else {
                     throw response;

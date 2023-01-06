@@ -122,7 +122,8 @@ export default function ArchivePanel(props){
         end_date: props?.project?.end_date || "",
         keywords: props?.project?.project_search_keywords || "",
         // suggest a slug if this is a new archive project and the project already exists before archival
-        slug: props?.project?.slug || (props.newArchive) ? slugify(props?.project?.title) : "",
+        url_slug: props?.project?.url_slug || (props.newArchive) ? slugify(props?.project?.title) : "",
+        inactive: props.project?.inactive || "",
     });
 
     let submissionModalMessages;
@@ -142,8 +143,6 @@ export default function ArchivePanel(props){
         }
     }
 
-
-    //TODO JA Make a route to update the archived project.
     let submitRouter;
     if(props.newArchive){
         submitRouter = config.url.API_POST_CREATE_ARCHIVE;
@@ -265,9 +264,15 @@ export default function ArchivePanel(props){
         { // slugs can only be set on new archive submission
             type: "input",
             label: props.newArchive ? "URL Slug *must be manually changed later" : "URL Slug",
-            placeholder: "URL slug",
-            name: "URL slug",
+            placeholder: "url_slug",
+            name: "url_slug",
             disabled: !props.newArchive
+        },
+        {
+            type: "checkbox",
+            label: "inactive",
+            name: "inactive",
+            disabled: false
         },
     ];
 
@@ -279,7 +284,7 @@ export default function ArchivePanel(props){
             submitRoute={submitRouter}
             formFieldArray={formFieldArray}
             header={props.header}
-            button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+            button={props.buttonIcon || (props.create ? "plus" : "edit")}
         />
     );
 }

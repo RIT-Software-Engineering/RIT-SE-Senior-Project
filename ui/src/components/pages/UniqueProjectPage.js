@@ -79,11 +79,11 @@ function UniqueProjectPage({projectData}) {
                         <meta property="og:title" content={project.title}/>
                         <meta property="og:type" content="website"/>
                         <meta property="og:image" content={`${basePosterURL}${project.poster_thumb}`}/>
-                        <meta property="og:url" content={`${baseProjectURL}${project.slug}`}/>
+                        <meta property="og:url" content={`${baseProjectURL}${project.url_slug}`}/>
                         <meta property="og:description" content={project.synopsis}/>
                     </Helmet>
-                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.slug}`} target="_blank">
-                {`${baseProjectURL}${project.slug}`}</a>
+                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
+                {`${baseProjectURL}${project.url_slug}`}</a>
                 <div className="ui attached stackable padded grid">
                     <div className="column">
                         <p>Sponsor: {project?.sponsor} </p>
