@@ -28,11 +28,10 @@ export default function ArchiveTable() {
 
     const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`
+            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}`
         )
             .then((response) => {
                 if (response.ok) {
-                    console.log("?");
                     return response.json();
                 } else {
                     throw response;
@@ -55,7 +54,6 @@ export default function ArchiveTable() {
     let handleSearchChange = (e, {value}) => {
         // Input handling
         const input = value.replace(/[^a-zA-Z\d\s\-]/g, "");
-        console.log(input);
         setSearchBarValue(input);
         if (input.length === 0) return;
         // If this is the first letter entered to value, keep track that a search is being made.
@@ -64,13 +62,12 @@ export default function ArchiveTable() {
         }
         // If the search value is empty, don't do a search for projects, and return to the page originally on.
         if (input === "") {
-            console.log("im entering ")
             setActivePage(pageNumBeforeSearch - 1);
             setPageNumBeforeSearch(0);
             setPageChange(pageChange + 99);
             return;
         }
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_PROJECTS}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}&inactive=true`)
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);

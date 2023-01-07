@@ -23,10 +23,9 @@ function ProjectsPage(){
         getPaginationData();
     }, [pageChange]);
 
-
     const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`
+            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}`
         )
             .then((response) => {
                 if (response.ok) {
@@ -44,11 +43,9 @@ function ProjectsPage(){
             });
     };
 
-
     let handleSearchChange = (e, { value }) => {
         // Input handling
         const input = value.replace(/[^a-zA-Z\d\s\-]/g, "");
-        console.log(input);
         setSearchBarValue(input);
         if(input.length === 0) return;
         // If this is the first letter entered to value, keep track that a search is being made.
@@ -57,13 +54,12 @@ function ProjectsPage(){
         }
         // If the search value is empty, don't do a search for projects, and return to the page originally on.
         if(input === ""){
-            console.log("im entering ")
             setActivePage(pageNumBeforeSearch - 1);
             setPageNumBeforeSearch(0);
             setPageChange(pageChange + 99);
             return;
         }
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_PROJECTS}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}&inactive=false`)
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);

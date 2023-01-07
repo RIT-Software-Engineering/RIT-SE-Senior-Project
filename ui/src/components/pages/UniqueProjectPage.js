@@ -24,7 +24,7 @@ function UniqueProjectPage({projectData}) {
             const userInput = {slug};
             {/* Input Handling */}
             const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
-            SecureFetch(`${config.url.API_GET_PROJECT_FROM_SLUG}?slug=${sanitizedInput}`)
+            SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?slug=${sanitizedInput}`)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();

@@ -28,7 +28,7 @@ function HomePage() {
 
     const getPaginationData = (page) => {
         fetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=true`
+            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=true`
         )
             .then((response) => {
                 if (response.ok) {

@@ -16,17 +16,18 @@ export const config = {
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
         // No auth needed
-        API_GET_EXEMPLARY_PROJECTS: `${BASE_API_URL}/db/selectExemplary`,
+        API_GET_ACTIVE_ARCHIVES: `${BASE_API_URL}/db/getActiveArchiveProjects`,
+        API_GET_ARCHIVES: `${BASE_API_URL}/db/getArchiveProjects`,
         API_GET_POSTER: `${BASE_API_URL}/db/getPoster`,
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
-        API_GET_SEARCH_FOR_PROJECTS: `${BASE_API_URL}/db/searchForProject`,
-        API_GET_PROJECT_FROM_SLUG: `${BASE_API_URL}/db/getProjectFromSlug`,
+        API_GET_SEARCH_FOR_ARCHIVES: `${BASE_API_URL}/db/searchForArchive`,
+        API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
 
         // GET - Auth needed
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
-        // grabs project or projects (i.e. coach) info for specific user.
+        // Grabs project or projects (i.e. coach) info for specific user.
         API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,

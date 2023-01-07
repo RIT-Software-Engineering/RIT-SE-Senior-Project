@@ -21,6 +21,6 @@ CREATE TABLE archive (
     keywords        TEXT,
     url_slug        TEXT,   -- unique project url
     video           TEXT,   -- path to project video (if any)
-    inactive        TEXT,   -- Empty string if active, Datetime of when deactivated if unactive
+    inactive        TEXT,   -- Empty string if active, Datetime of when deactivated if inactive
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
