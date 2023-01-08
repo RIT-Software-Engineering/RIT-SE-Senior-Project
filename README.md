@@ -1,3 +1,11 @@
+# Website
+
+| Environment | URL                                      |
+|-------------|------------------------------------------|
+| Production  | https://seniorproject.se.rit.edu         |
+| Test        | https://seniorproject-sandbox.se.rit.edu |
+
+
 # Server Setup
 
 ## Add new developer to production server
