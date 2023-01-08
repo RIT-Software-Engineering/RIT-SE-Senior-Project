@@ -13,7 +13,7 @@
     "dayjs": "^1.11.2",
     "he": "^1.2.0",
     "moment": "^2.29.2",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.35",
     "react": "^17.0.1",
     "react-csv": "^2.2.2",
     "react-dom": "^17.0.1",
