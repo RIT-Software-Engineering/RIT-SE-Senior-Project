@@ -102,7 +102,6 @@ export default function DatabaseTableEditor(props) {
                 value = checked;
             }
         }
-        //Todo: Ask the bois what this is supposed to do...
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
         if (newFormData) {
             setFormData(newFormData);
@@ -121,7 +120,7 @@ export default function DatabaseTableEditor(props) {
     };
 
     /**
-     * This is how the edit table for any form of editting is made and filled with the initial state.
+     * This is how the edit table for any form of editing is made and filled with the initial state.
      * The initial state is renamed to 'formData', and field(aka formFieldArray, the fields that are populated from
      * other editor.js files, will contain the name of the column being queried from the db.
      * */
@@ -315,6 +314,7 @@ export default function DatabaseTableEditor(props) {
     return (
         <>
             <Modal
+                className={"sticky"}
                 trigger={trigger}
                 header={props.header}
                 content={{ content:

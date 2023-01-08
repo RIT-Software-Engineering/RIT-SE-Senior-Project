@@ -80,6 +80,7 @@ function Header() {
                         {signInOutBtnText}
                     </button>
                         : <Modal
+                            className={"sticky"}
                             trigger={<Button>Dev Sign in/Sign Out</Button>}
                             header="Sign in/Sign Out"
                             content={{
@@ -141,6 +142,7 @@ function Header() {
                     </Menu.Item>
                         : <Menu.Item as="a">
                             <Modal
+                                className={"sticky"}
                                 trigger={<div>Dev Sign in/Sign Out</div>}
                                 header="Sign in/Sign Out"
                                 content={{

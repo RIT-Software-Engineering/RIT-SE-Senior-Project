@@ -1,10 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import { useHistory } from "react-router-dom";
 import "../../../css/footer.css";
 import {UserContext} from "../../util/functions/UserContext";
 
 function Footer() {
-    const history = useHistory();
     const { user } = useContext(UserContext);
     const [signedIn, setSignedIn] = useState(false);
     useEffect(() => {

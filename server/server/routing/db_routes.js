@@ -85,7 +85,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res) => {
         let getUsersQuery = `
             SELECT *
@@ -103,12 +102,12 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res) => {
 
         let query = "";
         let params = [];
         switch (req.user.type) {
+            //Retrieves all users from a semester group that is similar to the student that is making the query.
             case ROLES.STUDENT:
                 query = `
                     SELECT users.* FROM users
@@ -175,7 +174,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {
 
         let query = `SELECT users.*, project_coaches.project_id FROM users
@@ -186,7 +184,6 @@ module.exports = (db) => {
 
         db.query(query, params).then((users) => res.send(users));
     });
-
 
     // NOTE: This is currently used for getting user for AdminView to mock users, however, I feel that this network request will get quite large
     // as we add about 100 users every semester.
@@ -273,7 +270,6 @@ module.exports = (db) => {
                 });
         }
     );
-
 
     db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         let body = req.body;
@@ -409,31 +405,28 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/selectExemplary", (req, res) => {
+    db_router.get("/getActiveArchiveProjects", (req, res) => {
         const { resultLimit, offset, featured } = req.query;
 
         let projectsQuery = ``;
         let rowCountQuery = ``;
-        if(featured === "true"){
+        if (featured === "true"){
             /**
              * This goes through and returns a set of the archived projects that are unique to the pagination
              * On the home Page.
              */
-            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
-             LIMIT ?`;
-            //This is for getting the total projects that are going to be displayed on the home page.
-            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1`;
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND inactive = '' AND
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?) LIMIT ?`;
+            // This is for getting the total projects that are going to be displayed on the home page.
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND 
+            inactive = ''`;
         }
-        else{
-            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
-             LIMIT ?`;
-            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
+        else {
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = '' AND
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?) LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE 
+            inactive = ''`;
         }
-
-
-
 
         const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
@@ -443,7 +436,26 @@ module.exports = (db) => {
                 res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
             })
             .catch((error) => {
-                console.error(error);
+                res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getArchiveProjects", (req, res) => {
+        const { resultLimit, offset } = req.query;
+
+        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?)
+             LIMIT ?`;
+        let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
+
+        const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
+        const rowCountPromise = db.query(rowCountQuery);
+
+        Promise.all([rowCountPromise, projectsPromise])
+            .then(([[rowCount], projects]) => {
+                res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
+            })
+            .catch((error) => {
                 res.status(500).send(error);
             });
     });
@@ -460,14 +472,12 @@ module.exports = (db) => {
             .catch(err => res.status(500).send(err));
     });
 
-
     db_router.get("/getCandidateProjects", [UserAuth.isSignedIn], async (req, res) => {
         const query = "SELECT * from projects WHERE projects.status = 'candidate';"
         db.query(query)
             .then((projects) => res.send(projects))
             .catch(err => res.status(500).send(err));
     });
-
 
     db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
         let query;
@@ -537,6 +547,160 @@ module.exports = (db) => {
             .then((projects) => res.send(projects))
             .catch(err => res.status(500).send(err));
     });
+
+    db_router.post(
+        "/editArchive",
+        [
+            UserAuth.isAdmin,
+            // TODO: Should the max length be set to something smaller than 5000?
+            body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("outstanding").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("creative").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+            body("project_id").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("team_name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("members").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("coach").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("poster_thumb").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("poster_full").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("video").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("dept").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("start_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("end_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("keywords").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("url_slug").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("inactive").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+        ],
+        async (req, res) => {
+            let body = req.body;
+            const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured=?, outstanding=?, creative=?,
+                                        title=?, project_id=?, team_name=?, 
+                                        members=?, sponsor=?, coach=?,
+                                        poster_thumb=?, poster_full=?, synopsis=?,
+                                        video=?, name=?, dept=?,
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
+                                    WHERE archive_id = ?`;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
+
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
+            }
+
+            let updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+                body.keywords,
+                body.url_slug,
+                inactive,
+                body.archive_id
+            ];
+
+            db.query(updateArchiveQuery,updateArchiveParams)
+                .then((response) => {
+                    return res.sendStatus(200);
+                })
+                .catch(err => err)
+        }
+    );
+
+    db_router.post("/createArchive",
+        UserAuth.isAdmin,
+        body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        async (req, res) => {
+            let body = req.body;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
+
+            const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
+                                    title, project_id, team_name, members, sponsor, coach, poster_thumb,
+                                    poster_full, synopsis, video, name, dept, start_date, end_date, keywords, url_slug, 
+                                    inactive)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?);`
+
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
+            }
+
+            const updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+                body.keywords,
+                body.url_slug,
+                inactive
+            ]
+
+            db.query(updateArchiveQuery,updateArchiveParams)
+                .then((response) => {
+                    // Setting project to archive, May also be changed to remove a project from project table
+                    // if not wanted.
+                    const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
+                                    SET status = 'archive'
+                                    WHERE project_id = ?`
+                    const updateProjectParams = [
+                        body.project_id
+                    ]
+                    db.query(updateProjectQuery,updateProjectParams)
+                        .then((response) => res.sendStatus(200))
+                        .catch(err => res.status(500).send(err))
+                })
+                .catch(err => err)
+
+        });
+
+    //Gets the start and end dates of a project based on the semester that it is associated with.
+    db_router.get("/getProjectDates", UserAuth.isAdmin,(req, res) => {
+        const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
+        const getDatesParams = [req.query.semester];
+        db.query(getDatesQuery, getDatesParams)
+            .then((dates) => {
+                res.send(dates)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
 
     db_router.post(
         "/editProject",
@@ -744,7 +908,6 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
-
     /**
      * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
      */
@@ -786,7 +949,6 @@ module.exports = (db) => {
     * Route to get sponsor data, particularly for getting all sponsor
     * emails for messaging. Sent to admin sponsor tab for building a csv
     */
-
     db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
         let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
         let params = [];
@@ -1301,7 +1463,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getAllActionLogs", [UserAuth.isSignedIn], async (req, res) => {
 
         const { resultLimit, offset } = req.query;
@@ -1480,7 +1641,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
 
         let getSubmissionQuery = "";
@@ -1521,7 +1681,6 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
-
 
     db_router.get("/getSubmissionFile", [UserAuth.isSignedIn], async (req, res) => {
 
@@ -1569,7 +1728,6 @@ module.exports = (db) => {
         res.status(404).send("File not found or you are unauthorized to view file");
     });
 
-
     db_router.post("/editAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
@@ -1613,7 +1771,6 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
     });
-
 
     db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
         const { resultLimit, offset, searchQuery } = req.query;
@@ -1705,50 +1862,137 @@ module.exports = (db) => {
 
     });
 
-    db_router.get("/searchForProject", (req, res) => {
-        const { resultLimit, offset, searchQuery } = req.query;
+    db_router.get("/searchForArchive", (req, res) => {
+        const { resultLimit, offset, searchQuery, inactive } = req.query;
 
         let getProjectsQuery = "";
         let queryParams = [];
         let getProjectsCount = "";
         let projectCountParams = [];
 
-        getProjectsQuery = `SELECT * FROM  archive WHERE 
+        // allow inactive projects in search
+        if(inactive === "true") {
+            getProjectsQuery = `SELECT * FROM  archive WHERE 
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
-                WHERE title LIKE ?
+                WHERE title like ?
                    OR sponsor like ?
                    OR members like ?
+                   OR coach like ?
+                   OR keywords like ?
+                   OR synopsis like ?
+                   OR url_slug like ?
                 ORDER BY title,
                          sponsor,
-                         members
+                         members,
+                         coach, 
+                         keywords,
+                         synopsis,
+                         url_slug
             LIMIT ?
             ) AND (
-                archive.title LIKE ?
-                OR archive.sponsor LIKE ?
-                OR archive.members LIKE ?
+                archive.title like ?
+                OR archive.sponsor like ?
+                OR archive.members like ?
+                OR archive.coach like ?
+                OR archive.keywords like ?
+                OR archive.synopsis like ?
+                OR archive.url_slug like ?
                 )
             ORDER BY
                 archive.title,
                 archive.sponsor,
-                archive.members
+                archive.members,
+                archive.coach,
+                archive.keywords,
+                archive.synopsis,
+                archive.url_slug
             LIMIT ?`;
 
-        getProjectsCount = `SELECT COUNT(*)
+            getProjectsCount = `SELECT COUNT(*)
                             FROM archive
                             WHERE 
-                                title LIKE ?
-                                OR sponsor LIKE ?
-                                OR members LIKE ?
+                                title like ?
+                                OR sponsor like ?
+                                OR members like ?
+                                OR coach like ?
+                                OR keywords like ?
+                                OR synopsis like ?
+                                OR url_slug like ?
+                                `;
+        } else {
+            getProjectsQuery = `SELECT * FROM  archive WHERE 
+                            archive.OID NOT IN (
+                SELECT OID
+                FROM archive
+                WHERE title like ?
+                   OR sponsor like ?
+                   OR members like ?
+                   OR coach like ?
+                   OR keywords like ?
+                   OR synopsis like ?
+                   OR url_slug like ?
+                   AND inactive = ''
+                ORDER BY title,
+                         sponsor,
+                         members,
+                         coach, 
+                         keywords,
+                         synopsis,
+                         url_slug
+            LIMIT ?
+            ) AND (
+                archive.title like ?
+                OR archive.sponsor like ?
+                OR archive.members like ?
+                OR archive.coach like ?
+                OR archive.keywords like ?
+                OR archive.synopsis like ?
+                OR archive.url_slug like ?
+                AND inactive = ''
+                )
+            ORDER BY
+                archive.title,
+                archive.sponsor,
+                archive.members,
+                archive.coach,
+                archive.keywords,
+                archive.synopsis,
+                archive.url_slug
+            LIMIT ?`;
+
+            getProjectsCount = `SELECT COUNT(*)
+                            FROM archive
+                            WHERE 
+                                title like ?
+                                OR sponsor like ?
+                                OR members like ?
+                                OR coach like ?
+                                OR keywords like ?
+                                OR synopsis like ?
+                                OR url_slug like ?
+                                AND (inactive = '' OR inactive IS NULL)
                                 `;
 
+
+        }
+
         const searchQueryParam = searchQuery || '';
+
         queryParams = [
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             offset || 0,
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
@@ -1758,7 +2002,12 @@ module.exports = (db) => {
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
             '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
         ]
+
         const projectPromise = db.query(getProjectsQuery, queryParams);
         const projectCountPromise = db.query(getProjectsCount, projectCountParams);
         Promise.all([projectCountPromise,projectPromise])
@@ -1767,6 +2016,19 @@ module.exports = (db) => {
             })
             .catch((error) => {
                 res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getArchiveFromSlug", (req, res) => {
+        let query = `SELECT * FROM archive WHERE url_slug=?`;
+        let params = [req.query.url_slug]
+        db.query(query, params)
+            .then((values) => {
+                res.status(200).send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
             });
     });
 
@@ -1961,7 +2223,6 @@ module.exports = (db) => {
         ]
 
         createSponsorNote(params).then(([status, error]) => {
-            console.log("endpoint", status);
             if (error){
                 res.status(status).send(error)
             }
@@ -2091,8 +2352,6 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
     });
-
-
 
     db_router.post("/createSemester", [
         UserAuth.isAdmin,

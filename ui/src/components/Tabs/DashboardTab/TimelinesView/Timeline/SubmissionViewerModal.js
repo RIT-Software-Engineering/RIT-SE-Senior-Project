@@ -69,6 +69,7 @@ export default function SubmissionViewerModal(props) {
 
     return (
         <Modal
+            className={"sticky"}
             onClose={() => {
                 setOpen(false);
                 props?.isOpenCallback(false);
@@ -93,7 +94,7 @@ export default function SubmissionViewerModal(props) {
                     <p><b>Submitted:</b>
                         {props.action.mock_id && ` ${props.action.mock_name} (${props.action.mock_id}) as `}
                         {` ${props.action.name} (${props.action.system_id}) `}
-                        {formatDateTime(props.action.submission_datetime)}
+                        {formatDate(props.action.submission_datetime)}
                         {` (Due ${formatDate(due)})`}
                         {late && ` ${day} days' late`}
                     </p>
@@ -102,6 +103,9 @@ export default function SubmissionViewerModal(props) {
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
                     {!props.noSubmission && <>
                         {Object.keys(submission)?.map((key) => {
+                            if(submission[key].includes("fakepath")){
+                                return false;
+                            }
                             return (
                                 <div key={key}>
                                     <p><b>{key}:</b> {submission[key]}</p>

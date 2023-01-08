@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Accordion, Form, Button } from 'semantic-ui-react';
+import {Accordion, Form, Button, Modal} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileRemover from "./FileRemover";
@@ -12,6 +12,14 @@ export default function FileEditor() {
     const fileInput = useRef(null);
     const [path, setPath] = useState(fileUploadPaths[0]);
     const [response, setResponse] = useState(null);
+    const [addFileOpen, setAddFileOpen] = useState(false);
+
+    /**
+     * Toggle modal that lets you upload files
+     */
+    const toggleFileUploadModalOpen = () => {
+        setAddFileOpen(!addFileOpen);
+    }
 
     const uploadFiles = (event) => {
         event.preventDefault();
@@ -76,6 +84,7 @@ export default function FileEditor() {
     }
 
     return (
+        <div className="accordion-button-group">
         <Accordion
             fluid
             styled
@@ -83,29 +92,36 @@ export default function FileEditor() {
                 key: "fileEditor",
                 title: "Content Editor",
                 content: {
-                    content: <>
-                        <Form
-                            onSubmit={uploadFiles}
-                        >
-                         <div>
-                             <Accordion
-                                 fluid
-                                 styled
-                                 panels={[
-                                     {
-                                         key: "fileUploader",
-                                         title: "File Uploader",
-                                         content: { content: uploadFilesDisplay() },
-                                     },
-                                 ]}
-                             />
-                         </div>
-                        </Form>
+                    content:
+                        <>
+                        {/* Modal with add file functionality */}
+                        <Modal className={"sticky"} open={addFileOpen}  onClose={() => setAddFileOpen(false)}
+                               onOpen={() => setAddFileOpen(true)}>
+                            <Modal.Content>
+                                <Form onSubmit={uploadFiles}>
+                                    <div>
+                                        {uploadFilesDisplay()}
+                                    </div>
+
+                                </Form>
+                            </Modal.Content>
+                            <Modal.Actions>
+                                <Button onClick={() => setAddFileOpen(false)}>
+                                    Close
+                                </Button>
+                            </Modal.Actions>
+                        </Modal>
                         <FileRemover/>
                         <OverviewEditor/>
                     </>
                 }
             },]}
         />
+            <div className="accordion-buttons-container">
+                <button className="circular ui icon button" onClick={toggleFileUploadModalOpen} >
+                    <i className="plus icon"></i>
+                </button>
+            </div>
+        </div>
     )
 }

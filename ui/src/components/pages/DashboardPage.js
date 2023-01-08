@@ -17,7 +17,7 @@ import { config } from "../util/functions/constants";
 import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
-import ArchiveTable from "../Tabs/AdminTab/ArchiveEditor/ArchiveTable";
+import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 
 export default function DashboardPage() {
 
@@ -67,7 +67,7 @@ export default function DashboardPage() {
                             <SemesterEditor />
                             <ActionEditor semesterData={semesterData} />
                             <ProjectEditor semesterData={semesterData} />
-                            <ArchiveTable />
+                            <ArchiveEditor />
                             <UserEditor />
                             <SponsorEditorAccordion />
                             <FileEditor />

@@ -15,6 +15,7 @@ import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
+import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
 
 const COLUMNS = {
     SEMESTER: "semester",
@@ -25,6 +26,9 @@ const COLUMNS = {
 const ASCENDING = "ascending";
 const DESCENDING = "descending";
 
+/**
+ * This is what is displayed inside the admin tab for projects. It may also be used elsewhere in the website.
+ * */
 export default function Proposals(props) {
     const [proposalData, setProposalData] = useState({});
     const [active, setActive] = useState(isSemesterActive(props.semester?.start_date, props.semester?.end_date))
@@ -97,7 +101,6 @@ export default function Proposals(props) {
                     rowColor = "";
                     break;
             }
-
             return (
                 <TableRow className={rowColor} key={idx}>
                     <TableCell>{semesterMap[proposal.semester]}</TableCell>
@@ -109,7 +112,18 @@ export default function Proposals(props) {
                         <div className="accordion-buttons-container">
                         {props.viewOnly ?
                             <ProjectViewerModal project={proposal} semesterMap={semesterMap} />
-                            : <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
+                            : <>
+                            <ProjectEditorModal viewOnly={props.viewOnly} project={proposal} semesterData={props.semesterData} activeCoaches={props.activeCoaches} activeSponsors={props.activeSponsors}/>
+                                {proposal.status === "archive" ? <></> :
+                                    <ArchivePanel project={proposal}
+                                    semesterData={props.semesterData}
+                                    newArchive
+                                    activeCoaches={props.activeCoaches}
+                                    activeSponsors={props.activeSponsors}
+                                    header={"Archive Project"}
+                                    buttonIcon={"archive"}
+                                    />}
+                            </>
                         }
                             <a
                                 href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}

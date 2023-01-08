@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import ExemplaryProject from "./ExemplaryProject";
+import ExemplaryProject from "../shared/ExemplaryProject";
 import { Icon, Pagination } from "semantic-ui-react";
-import { config } from "../../util/functions/constants";
-import {SecureFetch} from "../../util/functions/secureFetch";
+import { config } from "../util/functions/constants";
+import {SecureFetch} from "../util/functions/secureFetch";
 import InnerHTML from 'dangerously-set-html-content';
 
 const projectsPerPage = 2;
@@ -21,14 +21,14 @@ function HomePage() {
         SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
             .then((response) => response.json())
             .then((htmlData) => {
-                setHtml(htmlData[0].html)
+                setHtml(htmlData[0]?.html)
             })
 
     }, []);
 
     const getPaginationData = (page) => {
         fetch(
-            `${config.url.API_GET_EXEMPLARY_PROJECTS}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=true`
+            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * page}&featured=true`
         )
             .then((response) => {
                 if (response.ok) {

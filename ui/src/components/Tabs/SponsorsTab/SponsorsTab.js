@@ -29,7 +29,9 @@ export default function SponsorsTab(props) {
     const [sponsorData, setSponsorData] = useState([]);
     const [activePage, setActivePage] = useState(0)
     const [pageChange, setPageChange] = useState(0)
+    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
 
+    //If summary view, then it is inside of the admin tab.
     let summaryView = props?.notSummaryView ? "" : "summaryView";
 
     const getPaginationData = () => {
@@ -74,7 +76,16 @@ export default function SponsorsTab(props) {
     let handleSearchChange = (e, { value }) => {
         setIsSearchLoading(true);
         setSearchBarValue(value);
-
+        //If this is the first letter entered to value, keep track that a search is being made.
+        if(pageNumBeforeSearch === 0){
+            setPageNumBeforeSearch(activePage + 1);
+        }
+        //If the search value is empty, don't do a search for projects, and return back to the page originally on.
+        if(value === ""){
+            setActivePage(pageNumBeforeSearch - 1);
+            setPageNumBeforeSearch(0);
+            setPageChange(pageChange + 99);
+        }
         SecureFetch(`${config.url.API_GET_SEARCH_FOR_SPONSOR}/?resultLimit=${LOGS_PER_PAGE}&offset=${0}&searchQuery=${value}`)
             .then((response) => response.json())
             .then((results) => {
@@ -107,7 +118,7 @@ export default function SponsorsTab(props) {
             {/*This is a button that is only displayed in the admin tab sponsors. supposed to return a csv of all the data returned by sponsor*/}
             {props.notSummaryView &&
                 <>
-                    <Button content={"Sponsor Info"} onClick={getSponsorData} primary={true} style={{float: 'right'}} color="primary" className="float-right" />
+                    <Button content={"Sponsor Csv"} onClick={getSponsorData} primary={true} style={{float: 'right'}} color="primary" className="float-right" />
                     {sponsorData.length !== 0 &&
 
                         <CSVDownload

@@ -184,6 +184,7 @@ export default function ActionModal(props) {
 
     return (
         <Modal
+            className={"sticky"}
             onClose={() => {
                 setOpen(false);
                 props.isOpenCallback(false);
