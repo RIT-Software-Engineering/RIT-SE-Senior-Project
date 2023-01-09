@@ -22,7 +22,7 @@
     "react-keyed-file-browser": "^1.14.0",
     "react-phone-number-input": "^3.1.45",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "4.0.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
     "web-vitals": "^0.2.4"
