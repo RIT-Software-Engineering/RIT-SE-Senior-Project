@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import {Accordion, Form, Button, Modal} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
-import FileRemover from "./FileRemover";
+import FileManager from "./FileManager";
 import OverviewEditor from "./OverviewEditor"
 
 const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
@@ -111,7 +111,7 @@ export default function FileEditor() {
                                 </Button>
                             </Modal.Actions>
                         </Modal>
-                        <FileRemover/>
+                        <FileManager/>
                         <OverviewEditor/>
                     </>
                 }

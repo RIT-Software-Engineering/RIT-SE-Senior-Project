@@ -10,57 +10,80 @@ import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
 * I need to pass in file paths from file editor to here through props.
 * Props: path, fileInput, fileUploadPaths, response
 * */
-//TODO: CHANGE HOW YOU ARE MANAGING FILEUPLOADPATHS. THIS IS BAD. THERE SHOULD BE A BETTER WAY OF GETTING THIS INFO
-//TODO: OTHER THAN COPY AND PASTING FROM FILEEDITOR.JS
-const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
+export default function FileManager() {
 
-export default function FileRemover() {
-
-    const [path, setPath] = useState(fileUploadPaths[0]);
     const [response, setResponse] = useState(null);
     const [files, setFiles] = useState([]) //these are the files that are in the specified path.
     const [file, setFile] = useState("poop") //This is the file that is selected to be removed..
 
     const [myFiles, setMyFiles] = useState([
         {
-            key: 'photos/animals/cat in a hat.png',
-            modified: 0,
-            size: 1.5 * 1024 * 1024,
-        },
-        {
-            key: 'photos/animals/kitten_ball.png',
-            modified: +Moment().subtract(3, 'days'),
-            size: 545 * 1024,
-        },
-        {
-            key: 'documents/letter chunks.doc',
-            modified: +Moment().subtract(15, 'days'),
-            size: 480 * 1024,
-        },
-        {
-            key: 'documents/export.pdf',
-            modified: +Moment().subtract(15, 'days'),
-            size: 4.2 * 1024 * 1024,
-        },
-    ]);
+        key: 'photos/animals/cat in a hat.png',
+        modified: 0,
+        size: 1.5 * 1024 * 1024,
+        }
+    ,]);
 
-    //If the path that is selected is changed, this will refetch all the files that are found inside that path.
     useEffect(() => {
-        SecureFetch(`${config.url.API_GET_FILES}?path=${path}`)
+        getFiles();
+    },[])
+
+    const getFiles = () => {
+        SecureFetch(`${config.url.API_GET_FILES}?path=`)
             .then((response) => response.json())
             .then((fileData) => {
-                setFiles(fileData);
-                setFile(fileData[0])
+                if(fileData?.length !== 0) {
+                    const newFilesToSet = [];
+                    fileData.forEach(pathData => {
+                        if(isDirectory(pathData)) {
+                            callGetFilesWithinDirectory(pathData + "/", pathData + "/", newFilesToSet);
+                        }
+                        else newFilesToSet.push({
+                            key: pathData,
+                            modified: 0,
+                            size: 1.5 * 1024 * 1024,
+                        });
+                    })
+                    console.log(newFilesToSet);
+                    setMyFiles(newFilesToSet);
+                }
             })
             .catch((error) => {
                 alert("Failed to get files" + error);
             });
-    }, [path])
+    }
+
+
+    const callGetFilesWithinDirectory = (directory, prefix, newFilesToSet) => {
+        SecureFetch(`${config.url.API_GET_FILES}?path=${directory}`)
+            .then((response) => response.json())
+            .then((fileData) => {
+                if(fileData?.length !== 0) {
+                    fileData.forEach(pathData => {
+                        if(isDirectory(pathData)) callGetFilesWithinDirectory(pathData, {directory} + "/");
+                        else newFilesToSet.push({
+                            key: prefix+pathData,
+                            modified: 0,
+                            size: 1.5 * 1024 * 1024,
+                        });
+                    })
+                } else {
+                    newFilesToSet.push({
+                        key: prefix,
+                        modified: 0,
+                        size: 1.5 * 1024 * 1024,
+                    });
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get files" + error);
+            });
+    }
 
     /*
     * This is the anon func for when a file is confirmed to be deleted.
     */
-    const removeFile = (event) => {
+    /*const removeFile = (event) => {
 
         event.preventDefault();
         if(file === ""){
@@ -75,9 +98,9 @@ export default function FileRemover() {
             .catch((error) => {
                 alert(`Failed to delete ${file}, error: ${error}`)
             })
-    }
+    }*/
 
-    const removeFileContent = () => {
+    /*const removeFileContent = () => {
         return (
             <div>
 
@@ -103,10 +126,22 @@ export default function FileRemover() {
                 <Button type="submit">Remove File</Button>
             </div>
         )
-    }
+    }*/
 
 
     // NEW FILE MANAGER CODE VVV
+
+    /**
+     * Given a string, checks if it is a file based on if it has a period to represent the file type
+     * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
+     * Based on the assumption that given files / directories do not contain any periods
+     * @param str string to be checked
+     * @returns {boolean} true if is a file, false otherwise
+     */
+    const isDirectory = (str) => {
+        const strSplit = str.split(".");
+        return strSplit.length === 1;
+    }
 
     /**
      * Creates a new folder in given directory

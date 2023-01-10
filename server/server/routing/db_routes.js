@@ -964,7 +964,7 @@ module.exports = (db) => {
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
         let filesToSend = []
         //This is the path, with the specified directory we want to find files in.
-        const formattedPath = `resource/${req.query.path}`;
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.mkdirSync(baseURL, { recursive: true });
         fs.readdir(baseURL, function (err, files) {
