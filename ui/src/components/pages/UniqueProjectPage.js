@@ -12,7 +12,7 @@ const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 function UniqueProjectPage({projectData}) {
     const [project, setProject] = useState(projectData);
-    const { slug } = useParams();
+    const { url_slug } = useParams();
     const [imageOpen, setImageOpen] = useState(false);
     const [activeItemIndex, setActiveItemIndex] = useState(0);
     const chevronWidth = 40;
@@ -20,11 +20,12 @@ function UniqueProjectPage({projectData}) {
 
     useEffect(() => {
         {/* Renders the project page client side */}
+        console.log(project);
         if (project === undefined) {
-            const userInput = {slug};
+            const userInput = {url_slug};
             {/* Input Handling */}
-            const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
-            SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?slug=${sanitizedInput}`)
+            const sanitizedInput = userInput.url_slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
+            SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?url_slug=${sanitizedInput}`)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();
@@ -39,7 +40,7 @@ function UniqueProjectPage({projectData}) {
                     alert("An issue occurred while searching for archive content " + error);
                 });
         }
-    }, [slug]);
+    }, [url_slug]);
 
 
     /**
@@ -67,7 +68,7 @@ function UniqueProjectPage({projectData}) {
     }
 
     const carouselContent = makeCarouselContent();
-
+    console.log(project);
     return (
         <div>
         {project === undefined
