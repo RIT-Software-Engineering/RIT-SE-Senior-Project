@@ -78,6 +78,7 @@ export const config = {
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREATE_USER: `${BASE_API_URL}/db/batchCreateUser`,
+        API_POST_CREATE_DIRECTORY: `${BASE_API_URL}/db/createDirectory`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,

@@ -908,6 +908,22 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
+    /*
+    * Route to get sponsor data, particularly for getting all sponsor
+    * emails for messaging. Sent to admin sponsor tab for building a csv
+    */
+    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
+        let params = [];
+        db.query(query, params)
+            .then((response) => {
+                res.send(response);
+            }).catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
+    })
+
     /**
      * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
      */
@@ -941,25 +957,21 @@ module.exports = (db) => {
                 filesUploaded.push(`${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`);
             }
         }
-
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
 
-    /*
-    * Route to get sponsor data, particularly for getting all sponsor
-    * emails for messaging. Sent to admin sponsor tab for building a csv
-    */
-    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
-        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
-        let params = [];
-        db.query(query, params)
-            .then((response) => {
-                res.send(response);
-            }).catch((err) => {
-            console.error(err);
-            return res.status(500).send(err);
-        });
-    })
+    db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        console.log(baseURL);
+        if (!fs.existsSync(baseURL)){
+            fs.mkdirSync(baseURL, { recursive: true });
+            res.send({msg: "Success!"});
+        } else {
+            res.send({msg: "Fail!"});
+        }
+
+    });
 
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
         let filesToSend = []
@@ -980,7 +992,6 @@ module.exports = (db) => {
             });
             res.send(filesToSend)
         })
-
     });
 
     db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {

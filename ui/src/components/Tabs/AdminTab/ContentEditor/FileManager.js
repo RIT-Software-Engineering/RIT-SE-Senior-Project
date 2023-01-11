@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {Form, Button, Icon} from 'semantic-ui-react';
+import {Icon} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileBrowser from 'react-keyed-file-browser';
 import Moment from "moment/moment";
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
 
-/*
-* I need to pass in file paths from file editor to here through props.
-* Props: path, fileInput, fileUploadPaths, response
-* */
 export default function FileManager() {
-
-    const [response, setResponse] = useState(null);
-    const [files, setFiles] = useState([]) //these are the files that are in the specified path.
-    const [file, setFile] = useState("poop") //This is the file that is selected to be removed..
-
     const [myFiles, setMyFiles] = useState([
         {
         key: 'photos/animals/cat in a hat.png',
@@ -25,10 +16,6 @@ export default function FileManager() {
     ,]);
 
     useEffect(() => {
-        getFiles();
-    },[])
-
-    const getFiles = () => {
         SecureFetch(`${config.url.API_GET_FILES}?path=`)
             .then((response) => response.json())
             .then((fileData) => {
@@ -36,7 +23,7 @@ export default function FileManager() {
                     const newFilesToSet = [];
                     fileData.forEach(pathData => {
                         if(isDirectory(pathData)) {
-                            callGetFilesWithinDirectory(pathData + "/", pathData + "/", newFilesToSet);
+                            getFilesInDirectory(pathData + "/", newFilesToSet);
                         }
                         else newFilesToSet.push({
                             key: pathData,
@@ -44,39 +31,43 @@ export default function FileManager() {
                             size: 1.5 * 1024 * 1024,
                         });
                     })
-                    console.log(newFilesToSet);
-                    setMyFiles(newFilesToSet);
+                    if(newFilesToSet) setMyFiles(newFilesToSet);
                 }
             })
             .catch((error) => {
-                alert("Failed to get files" + error);
+                alert("Failed to get files " + error);
             });
-    }
+    },[])
 
-
-    const callGetFilesWithinDirectory = (directory, prefix, newFilesToSet) => {
+    /**
+     * Gets files from desired directory and adds it to the newFilesToSet array
+     * @param directory Directory to get files from
+     * @param newFilesToSet array to add files to
+     */
+    const getFilesInDirectory = (directory, newFilesToSet) => {
         SecureFetch(`${config.url.API_GET_FILES}?path=${directory}`)
             .then((response) => response.json())
             .then((fileData) => {
                 if(fileData?.length !== 0) {
                     fileData.forEach(pathData => {
-                        if(isDirectory(pathData)) callGetFilesWithinDirectory(pathData, {directory} + "/");
+                        if(isDirectory(pathData)) getFilesInDirectory(directory + pathData + '/', newFilesToSet);
                         else newFilesToSet.push({
-                            key: prefix+pathData,
+                            key: directory + pathData,
                             modified: 0,
                             size: 1.5 * 1024 * 1024,
                         });
                     })
+                // Empty directory
                 } else {
                     newFilesToSet.push({
-                        key: prefix,
+                        key: directory + '/',
                         modified: 0,
                         size: 1.5 * 1024 * 1024,
                     });
                 }
             })
             .catch((error) => {
-                alert("Failed to get files" + error);
+                alert("Failed to get files " + error);
             });
     }
 
@@ -148,9 +139,20 @@ export default function FileManager() {
      * @param key directory to make a new folder in
      */
     const handleCreateFolder = (key) => {
-        setMyFiles( myFiles => [...myFiles, {
-            key: key
-        }]);
+        SecureFetch(`${config.url.API_POST_CREATE_DIRECTORY}?path=${key.substring(0, key.length-1)}`, {
+            method: "post"
+        })
+            .then((response) => response.json())
+            .then(() => {
+                setMyFiles( myFiles => [...myFiles, {
+                    key: key,
+                    modified: 0,
+                    size: 1.5 * 1024 * 1024,
+                }]);
+            })
+            .catch((error) => {
+                alert("Failed to create directory: " + error)
+            });
     }
 
     const handleCreateFile = (files, prefix) => {
@@ -167,7 +169,6 @@ export default function FileManager() {
                 modified: +Moment(),
             }
         })
-        console.log(newFiles)
         const uniqueNewFiles = []
         // Check that each of the new uploaded files are not already there (duplicated)
         newFiles.map((newFile) => {
@@ -182,7 +183,6 @@ export default function FileManager() {
                 uniqueNewFiles.push(newFile)
             }
         })
-        console.log(uniqueNewFiles);
         setMyFiles(myFiles.concat(uniqueNewFiles));
     }
 
