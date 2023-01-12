@@ -81,7 +81,11 @@ export default function AdminView() {
   if (user?.isMock || user?.role === "admin") {
     return (
       <>
-        <h4 style={user?.isMock ? { backgroundColor: 'red' } : {}}>Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"</h4>
+        <h4 style={user?.isMock ? { backgroundColor: 'red' } : {}}>
+            <div className="ui info message">
+                Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
+            </div>
+        </h4>
         <Label pointing='right'>To view this page as a different user</Label>
         <Dropdown
           search

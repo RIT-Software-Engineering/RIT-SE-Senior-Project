@@ -35,8 +35,7 @@ function ExemplaryProject({ project }) {
     const awards = makeAwards();
 
     return (
-        <div>
-            {/* Div containing all project information */}
+        <div> {/* Div containing all project information */}
             <div className="ui segment stackable padded grid" onClick={() => toggleInitialModalOpen()} style={{cursor: "pointer" }}>
                 <div className="two column row" style={{display:"flex"}}>
                     <div className="column">
@@ -50,7 +49,6 @@ function ExemplaryProject({ project }) {
                         }
                         )}</>}
                     </div>
-
                 </div>
 
                 <div className="three column row">
@@ -59,23 +57,25 @@ function ExemplaryProject({ project }) {
                             src={`${basePosterURL}${project.poster_thumb}`}
                             style={{ border: "3px solid rgb(221, 221, 221)", }}
                             alt="Project Poster"
-
                         />
                     </div>
                     <div className="column">
-                        <h4>Dates:</h4><p>{project.start_date} - {project.end_date}</p>
-                        <h4>Students:</h4><p>{project.members}</p>
+                        <div className="ui small header">Dates</div><p>{project.start_date} - {project.end_date}</p>
+                        <div className="ui small header">Students</div><p>{project.members}</p>
                     </div>
                     <div className="column">
-                        <h4>Sponsor:</h4><p>{project.sponsor}</p>
-                        <h4>Faculty Coach:</h4><p>{project.coach}</p>
+                        <div className="ui small header">Sponsor</div><p>{project.sponsor}</p>
+                        <div className="ui small header">Faculty Coach</div><p>{project.coach}</p>
                     </div>
                 </div>
             </div>
             {/* Modal with expanded information */}
-            <Modal className={"sticky"} open={initialOpen}  onClose={() => setInitialOpen(false)}
+            <Modal className={"sticky"}
+                   size={'large'}
+                   open={initialOpen}
+                   onClose={() => setInitialOpen(false)}
                    onOpen={() => setInitialOpen(true)}>
-                <Modal.Content>
+                <Modal.Content image scrolling>
                     <UniqueProjectPage projectData={project}/>
                 </Modal.Content>
                 <Modal.Actions>

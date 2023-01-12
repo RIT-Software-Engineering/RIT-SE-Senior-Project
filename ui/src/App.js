@@ -34,7 +34,7 @@ function App() {
                 <Container>
                     <Switch>
                         <Route path="/" component={HomePage} exact />
-                        <Route path="/projects/:slug" component={UniqueProjectPage}/>
+                        <Route path="/projects/:url_slug" component={UniqueProjectPage}/>
                         <Route path="/projects" component={ProjectsPage}/>
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
