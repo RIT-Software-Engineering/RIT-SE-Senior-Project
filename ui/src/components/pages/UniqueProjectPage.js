@@ -83,8 +83,13 @@ function UniqueProjectPage({projectData}) {
                         <meta property="og:url" content={`${baseProjectURL}${project.url_slug}`}/>
                         <meta property="og:description" content={project.synopsis}/>
                     </Helmet>
-                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
-                {`${baseProjectURL}${project.url_slug}`}</a>
+                <h1>{project?.title}</h1>
+                    {   // display project page link if slug has been defined
+                        project.url_slug !== null && <div>
+                        <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
+                        {`${baseProjectURL}${project.url_slug}`}</a>
+                    </div>
+                    }
                 <div className="ui attached stackable padded grid">
                     <div className="column">
                         <p>Sponsor: {project?.sponsor} </p>
