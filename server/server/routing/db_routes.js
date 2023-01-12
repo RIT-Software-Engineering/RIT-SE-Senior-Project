@@ -973,6 +973,22 @@ module.exports = (db) => {
 
     });
 
+    db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res) => {
+        const { oldPath, newPath } = req.query;
+        const formattedOldPath = oldPath === "" ? `resource/` : `resource/${oldPath}`;
+        const formattedNewPath = newPath === "" ? `resource/` : `resource/${newPath}`;
+        console.log(formattedOldPath);
+        console.log(formattedNewPath);
+        fs.rename(formattedOldPath, formattedNewPath, (error) => {
+            if(error) {
+                res.send({msg: "Fail! " + error});
+            }
+            else {
+                res.send({msg: "Success!"});
+            }
+        })
+    });
+
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
         let filesToSend = []
         //This is the path, with the specified directory we want to find files in.

@@ -7,6 +7,8 @@ import Moment from "moment/moment";
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
 
 export default function FileManager() {
+
+    // Stores the data of files to display to front end
     const [myFiles, setMyFiles] = useState([
         {
         key: 'photos/animals/cat in a hat.png',
@@ -15,6 +17,7 @@ export default function FileManager() {
         }
     ,]);
 
+    // Grabs all files and directories from /resource and adds it to set to "myFiles" front end array
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_FILES}?path=`)
             .then((response) => response.json())
@@ -204,24 +207,37 @@ export default function FileManager() {
         setMyFiles(newFiles);
     }
 
+    /**
+     * Renames selected file
+     * @param oldKey Old path of file (includes old file name)
+     * @param newKey New path of file (includes new file name)
+     */
     const handleRenameFile = (oldKey, newKey) => {
-        const newFiles = [];
-        myFiles.map((file) => {
-            if (file.key === oldKey) {
-                newFiles.push(
-                    {
-                        ...file,
-                        key: newKey,
-                        modified: +Moment(),
-                    }
-                );
-            } else {
-                newFiles.push(file)
-            }
+        SecureFetch(`${config.url.API_POST_RENAME_FILES_DIRECTORY}?oldPath=${oldKey}&newPath=${newKey}`, {
+            method: "post"
         })
-        setMyFiles(newFiles);
+            .then((response) => response.json())
+            .then(() => {
+                const newFiles = [];
+                myFiles.map((file) => {
+                    if (file.key === oldKey) {
+                        newFiles.push(
+                            {
+                                ...file,
+                                key: newKey,
+                                modified: +Moment(),
+                            }
+                        );
+                    } else {
+                        newFiles.push(file)
+                    }
+                })
+                setMyFiles(newFiles);
+            })
+            .catch((error) => {
+                alert("Failed to rename file: " + error)
+            });
     }
-
 
     /**
      * Delete folder and all its files inside in file manager
