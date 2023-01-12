@@ -190,21 +190,30 @@ export default function FileManager() {
     }
 
     const handleRenameFolder = (oldKey, newKey) => {
-        const newFiles = [];
-        myFiles.map((file) => {
-            if(file.key.substring(0, oldKey.length) === oldKey) {
-                newFiles.push(
-                    {
-                    ...file,
-                    key: file.key.replace(oldKey, newKey),
-                    modified: +Moment(),
-                    }
-                );
-            } else {
-                newFiles.push(file);
-            }
+        SecureFetch(`${config.url.API_POST_RENAME_FILES_DIRECTORY}?oldPath=${oldKey}&newPath=${newKey}`, {
+            method: "post"
         })
-        setMyFiles(newFiles);
+            .then((response) => response.json())
+            .then(() => {
+                const newFiles = [];
+                myFiles.map((file) => {
+                    if(file.key.substring(0, oldKey.length) === oldKey) {
+                        newFiles.push(
+                            {
+                                ...file,
+                                key: file.key.replace(oldKey, newKey),
+                                modified: +Moment(),
+                            }
+                        );
+                    } else {
+                        newFiles.push(file);
+                    }
+                })
+                setMyFiles(newFiles);
+            })
+            .catch((error) => {
+                alert("Failed to rename file: " + error)
+            });
     }
 
     /**

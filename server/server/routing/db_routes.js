@@ -4,6 +4,7 @@ const db_router = require("express").Router();
 const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
 const fs = require("fs");
+const fse = require("fs-extra")
 const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
@@ -963,7 +964,6 @@ module.exports = (db) => {
     db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
         const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
-        console.log(baseURL);
         if (!fs.existsSync(baseURL)){
             fs.mkdirSync(baseURL, { recursive: true });
             res.send({msg: "Success!"});
@@ -977,16 +977,20 @@ module.exports = (db) => {
         const { oldPath, newPath } = req.query;
         const formattedOldPath = oldPath === "" ? `resource/` : `resource/${oldPath}`;
         const formattedNewPath = newPath === "" ? `resource/` : `resource/${newPath}`;
-        console.log(formattedOldPath);
-        console.log(formattedNewPath);
-        fs.rename(formattedOldPath, formattedNewPath, (error) => {
-            if(error) {
-                res.send({msg: "Fail! " + error});
-            }
-            else {
-                res.send({msg: "Success!"});
-            }
-        })
+        // New path already exists, so we can't rename
+        if (fs.existsSync(newPath)) {
+            return res.status(500);
+        }
+        // Copy all files from old directory to new directory
+        if (fs.lstatSync(formattedOldPath).isDirectory()) {
+            fse.copySync(formattedOldPath, formattedNewPath);
+            fs.rmdirSync(formattedOldPath, { recursive: true });
+            res.send({msg: "Success!"});
+        // Rename file
+        } else if (fs.lstatSync(formattedOldPath).isFile()) {
+            fs.renameSync(formattedOldPath, formattedNewPath);
+            res.send({msg: "Success!"});
+        }
     });
 
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
