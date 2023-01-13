@@ -12,7 +12,7 @@ const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 function UniqueProjectPage({projectData}) {
     const [project, setProject] = useState(projectData);
-    const { slug } = useParams();
+    const { url_slug } = useParams();
     const [imageOpen, setImageOpen] = useState(false);
     const [activeItemIndex, setActiveItemIndex] = useState(0);
     const chevronWidth = 40;
@@ -20,11 +20,12 @@ function UniqueProjectPage({projectData}) {
 
     useEffect(() => {
         {/* Renders the project page client side */}
+        console.log(project);
         if (project === undefined) {
-            const userInput = {slug};
+            const userInput = {url_slug};
             {/* Input Handling */}
-            const sanitizedInput = userInput.slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
-            SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?slug=${sanitizedInput}`)
+            const sanitizedInput = userInput.url_slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
+            SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?url_slug=${sanitizedInput}`)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();
@@ -39,7 +40,7 @@ function UniqueProjectPage({projectData}) {
                     alert("An issue occurred while searching for archive content " + error);
                 });
         }
-    }, [slug]);
+    }, [url_slug]);
 
 
     /**
@@ -82,18 +83,32 @@ function UniqueProjectPage({projectData}) {
                         <meta property="og:url" content={`${baseProjectURL}${project.url_slug}`}/>
                         <meta property="og:description" content={project.synopsis}/>
                     </Helmet>
-                <h1>{project?.title}</h1> <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
-                {`${baseProjectURL}${project.url_slug}`}</a>
-                <div className="ui attached stackable padded grid">
-                    <div className="column">
-                        <p>Sponsor: {project?.sponsor} </p>
-                        <p>Dates: {project.start_date}-{project.end_date}</p>
-                        <p>Coach: {project?.coach}</p>
-                        <p>Students: {project?.members}</p>
+                    <h1 className="ui header" >{project.title} </h1>
+                            { project?.outstanding === 1 &&
+                                    <Icon name="trophy" title={"Outstanding"} size="large" style={{float: "right"}}/>
+                            }
+                            { project?.creative === 1 &&
+                                <Icon name="trophy" title={"Creative"} size="large" style={{float: "right"}}/>
+                            }
+                    {   // display project page link if slug has been defined
+                        project.url_slug !== null && <div>
+                        <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
+                        {`${baseProjectURL}${project.url_slug}`}</a>
                     </div>
-
+                    }
+                <div className="ui attached stackable padded grid">
+                    <div className="two column row">
+                        <div className="column">
+                            <div className="ui small header">Dates</div><p>{project?.start_date} - {project?.end_date}</p>
+                            <div className="ui small header">Students</div><p>{project?.members}</p>
+                        </div>
+                        <div className="column">
+                            <div className="ui small header">Sponsor</div><p>{project?.sponsor}</p>
+                            <div className="ui small header">Faculty Coach</div><p>{project?.coach}</p>
+                        </div>
+                    </div>
                 </div>
-
+                    <div className="ui hidden divider"></div>
                 <div style={{ padding: `0 ${chevronWidth}px`, textAlign: "center"}}>
                     <ItemsCarousel
                         requestToChangeActive={setActiveItemIndex}
@@ -142,8 +157,9 @@ function UniqueProjectPage({projectData}) {
                         )
                         }
                     </ItemsCarousel>
-                    <p>{project?.synopsis}</p>
                 </div>
+                    <div className="ui small header">Synopsis</div>
+                    <p>{project?.synopsis}</p>
             </div>}
         </div>
     )
