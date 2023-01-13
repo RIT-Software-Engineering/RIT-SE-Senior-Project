@@ -90,6 +90,7 @@ export const config = {
 
         //DELETE - Auth needed
         API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
+        API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,

@@ -74,57 +74,6 @@ export default function FileManager() {
             });
     }
 
-    /*
-    * This is the anon func for when a file is confirmed to be deleted.
-    */
-    /*const removeFile = (event) => {
-
-        event.preventDefault();
-        if(file === ""){
-            alert("No file is selected")
-            return
-        }
-        SecureFetch(`${config.url.API_DELETE_FILE}?path=${path}&file=${file}`, {method: "DELETE"})
-            .then((response) => response.json())
-            .then((response) => {
-                setResponse(response);
-            })
-            .catch((error) => {
-                alert(`Failed to delete ${file}, error: ${error}`)
-            })
-    }*/
-
-    /*const removeFileContent = () => {
-        return (
-            <div>
-
-                <Form.Field>
-                    <label>Select path to remove file from</label>
-                    <select value={path} onChange={(e) => { setPath(e.target.value); setResponse(null); }}>
-                        {fileUploadPaths.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
-                    </select>
-                </Form.Field>
-                <Form.Field>
-                    <label>Select files to remove</label>
-                    <select value={file} onChange={(e) => { console.log(e); setFile(e.target.value);  setResponse(null); }}>
-                        {files?.map((fileInPath, idx) => <option value={fileInPath} key={idx}>{fileInPath}</option>)}
-                    </select>
-                </Form.Field>
-                <Form.Field>
-                    {response && <>
-                        <label>{response.msg} File Deleted:</label>
-                        <div>{response.fileDeleted}<br /></div>
-                        {response.error && JSON.stringify(response.error)}
-                    </>}
-                </Form.Field>
-                <Button type="submit">Remove File</Button>
-            </div>
-        )
-    }*/
-
-
-    // NEW FILE MANAGER CODE VVV
-
     /**
      * Given a string, checks if it is a file based on if it has a period to represent the file type
      * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
@@ -253,7 +202,14 @@ export default function FileManager() {
      * @param folderKey key of folder to be deleted
      */
     const handleDeleteFolder = (folderKey) => {
-        setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
+        SecureFetch(`${config.url.API_DELETE_DIRECTORY}?path=${folderKey}`, {method: "DELETE"})
+            .then((response) => response.json())
+            .then(() => {
+                setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
+            })
+            .catch((error) => {
+                alert("Failed to delete directory: " + error)
+            })
     }
 
     /**
@@ -261,6 +217,14 @@ export default function FileManager() {
      * @param fileKey key of file to be deleted
      */
     const handleDeleteFile = (fileKey) => {
+        /*SecureFetch(`${config.url.API_DELETE_FILE}?path=${path}&file=${file}`, {method: "DELETE"})
+            .then((response) => response.json())
+            .then(() => {
+                setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
+            })
+            .catch((error) => {
+                alert(`Failed to delete ${file}, error: ${error}`)
+            })*/
         setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
     }
 

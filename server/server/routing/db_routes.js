@@ -977,18 +977,21 @@ module.exports = (db) => {
         const { oldPath, newPath } = req.query;
         const formattedOldPath = oldPath === "" ? `resource/` : `resource/${oldPath}`;
         const formattedNewPath = newPath === "" ? `resource/` : `resource/${newPath}`;
+        const baseURLOld = path.join(__dirname, `../../${formattedOldPath}`);
+        const baseURLNew = path.join(__dirname, `../../${formattedNewPath}`);
+
         // New path already exists, so we can't rename
-        if (fs.existsSync(newPath)) {
+        if (fs.existsSync(baseURLNew)) {
             return res.status(500);
         }
         // Copy all files from old directory to new directory
-        if (fs.lstatSync(formattedOldPath).isDirectory()) {
-            fse.copySync(formattedOldPath, formattedNewPath);
-            fs.rmdirSync(formattedOldPath, { recursive: true });
+        if (fs.lstatSync(baseURLOld).isDirectory()) {
+            fse.copySync(baseURLOld, baseURLNew);
+            fs.rmdirSync(baseURLOld, { recursive: true });
             res.send({msg: "Success!"});
         // Rename file
-        } else if (fs.lstatSync(formattedOldPath).isFile()) {
-            fs.renameSync(formattedOldPath, formattedNewPath);
+        } else if (fs.lstatSync(baseURLOld).isFile()) {
+            fs.renameSync(baseURLOld, baseURLNew);
             res.send({msg: "Success!"});
         }
     });
@@ -1025,6 +1028,18 @@ module.exports = (db) => {
                 res.send({ msg: "Success!", fileDeleted: req.query.file });
             }
         }));
+    })
+
+    db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        console.log(baseURL);
+        if (fs.existsSync(baseURL)) {
+            fs.rmdirSync(baseURL, { recursive: true });
+            return res.status(200).send({msg: "Success!"});
+        } else {
+            return res.status(500).send({msg: "Fail!"});
+        }
     })
 
     db_router.post(
