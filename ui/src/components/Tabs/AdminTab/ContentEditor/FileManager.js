@@ -11,7 +11,7 @@ export default function FileManager() {
     // Stores the data of files to display to front end
     const [myFiles, setMyFiles] = useState([
         {
-        key: 'photos/animals/cat in a hat.png',
+        key: 'if you see this please reopen content editor to reload content.txt',
         modified: 0,
         size: 1.5 * 1024 * 1024,
         }
@@ -63,7 +63,7 @@ export default function FileManager() {
                 // Empty directory
                 } else {
                     newFilesToSet.push({
-                        key: directory + '/',
+                        key: directory,
                         modified: 0,
                         size: 1.5 * 1024 * 1024,
                     });
@@ -205,6 +205,7 @@ export default function FileManager() {
         SecureFetch(`${config.url.API_DELETE_DIRECTORY}?path=${folderKey}`, {method: "DELETE"})
             .then((response) => response.json())
             .then(() => {
+                // TODO: handle directory deletion resulting in an empty directory
                 setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
             })
             .catch((error) => {
@@ -217,15 +218,64 @@ export default function FileManager() {
      * @param fileKey key of file to be deleted
      */
     const handleDeleteFile = (fileKey) => {
-        /*SecureFetch(`${config.url.API_DELETE_FILE}?path=${path}&file=${file}`, {method: "DELETE"})
+        console.log(fileKey);
+        SecureFetch(`${config.url.API_DELETE_FILE}?path=${fileKey}`, {method: "DELETE"})
             .then((response) => response.json())
             .then(() => {
-                setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
+                let parent = getParentDirectory(fileKey[0]);
+                // Regular file in root resource directory
+                if(parent === fileKey[0]) {
+                    setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
+                }
+                else {
+                    let fileCount = 0;
+                    const newFiles = [];
+                    myFiles.map((file) => {
+                        // File to be deleted found, don't add to newFiles and keep track of files in parent directory
+                        if(file.key === fileKey[0]) {
+                            fileCount++;
+                        } else {
+                            // Keep track of files in parent directory
+                            if (getParentDirectory(file.key) === parent) {
+                                fileCount++;
+                            }
+                            // Add files to newFiles
+                            newFiles.push(
+                                {
+                                    ...file,
+                                    key: file.key,
+                                    modified: +Moment(),
+                                }
+                            );
+                        }
+                    })
+                    // If there was only one file, which we deleted, we must add the empty directory to newFiles
+                    if(fileCount === 1) {
+                        newFiles.push({
+                            key: parent + '/',
+                            modified: +Moment(),
+                        });
+                    }
+                    setMyFiles(newFiles);
+                }
             })
             .catch((error) => {
-                alert(`Failed to delete ${file}, error: ${error}`)
-            })*/
-        setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
+                alert("Failed to delete file: " + error)
+            })
+    }
+
+    /**
+     * Find parent path by splitting by "/" character and excluding last element in array
+     * ex: resource/archive/txt --> resource/archive
+     * @param path given path
+     */
+    const getParentDirectory = (path) => {
+        const split = path.split('/');
+        if(split.length !== 1) {
+            return split.slice(0,-1).join('/');
+        } else {
+            return path;
+        }
     }
 
     return (

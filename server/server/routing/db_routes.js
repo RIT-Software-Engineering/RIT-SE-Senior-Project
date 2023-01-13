@@ -1018,14 +1018,14 @@ module.exports = (db) => {
     });
 
     db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
-        const formattedPath = `resource/${req.query.path}/${req.query.file}`;
+        const formattedPath = `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.unlink(baseURL, (err => {
             if (err) {
                 return res.status(500).send(err);
             }
             else {
-                res.send({ msg: "Success!", fileDeleted: req.query.file });
+                res.send({ msg: "Success!"});
             }
         }));
     })
