@@ -11,7 +11,7 @@ export default function FileManager() {
     // Stores the data of files to display to front end
     const [myFiles, setMyFiles] = useState([
         {
-        key: 'if you see this please reopen content editor to reload content.txt',
+        key: 'please reopen accordion/',
         modified: 0,
         size: 1.5 * 1024 * 1024,
         }
@@ -138,6 +138,11 @@ export default function FileManager() {
         setMyFiles(myFiles.concat(uniqueNewFiles));
     }
 
+    /**
+     * Renames selected folder
+     * @param oldKey Old folder name
+     * @param newKey New folder name
+     */
     const handleRenameFolder = (oldKey, newKey) => {
         SecureFetch(`${config.url.API_POST_RENAME_FILES_DIRECTORY}?oldPath=${oldKey}&newPath=${newKey}`, {
             method: "post"
@@ -205,8 +210,36 @@ export default function FileManager() {
         SecureFetch(`${config.url.API_DELETE_DIRECTORY}?path=${folderKey}`, {method: "DELETE"})
             .then((response) => response.json())
             .then(() => {
-                // TODO: handle directory deletion resulting in an empty directory
-                setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
+                let parent = getParentDirectory(folderKey[0].substring(0, folderKey[0].length-1));
+                // Regular directory in root resource directory
+                if(parent === folderKey[0])
+                    setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
+                else {
+                    let fileCount = 0;
+                    const newFiles = [];
+                    myFiles.map((file) => {
+                        // Files to be deleted found, don't add to newFiles and keep track of files in parent directory
+                        if (file.key.substring(0, parent.length) === parent) {
+                            fileCount++;
+                        } else {
+                            newFiles.push(
+                                {
+                                    ...file,
+                                    key: file.key,
+                                    modified: +Moment(),
+                                }
+                            );
+                        }
+                    })
+                    // If there was only one item, the directory we deleted, we add the empty parent directory to newFiles
+                    if(fileCount === 1) {
+                        newFiles.push({
+                            key: parent + '/',
+                            modified: +Moment(),
+                        });
+                    }
+                    setMyFiles(newFiles);
+                }
             })
             .catch((error) => {
                 alert("Failed to delete directory: " + error)
@@ -224,9 +257,7 @@ export default function FileManager() {
             .then(() => {
                 let parent = getParentDirectory(fileKey[0]);
                 // Regular file in root resource directory
-                if(parent === fileKey[0]) {
-                    setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
-                }
+                if(parent === fileKey[0]) setMyFiles(myFiles.filter(file => file.key !== fileKey[0]));
                 else {
                     let fileCount = 0;
                     const newFiles = [];
@@ -249,7 +280,7 @@ export default function FileManager() {
                             );
                         }
                     })
-                    // If there was only one file, which we deleted, we must add the empty directory to newFiles
+                    // If there was only one file, which we deleted, we must add the empty parent directory to newFiles
                     if(fileCount === 1) {
                         newFiles.push({
                             key: parent + '/',

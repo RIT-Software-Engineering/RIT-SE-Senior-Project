@@ -1033,7 +1033,6 @@ module.exports = (db) => {
     db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res) => {
         const formattedPath = `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
-        console.log(baseURL);
         if (fs.existsSync(baseURL)) {
             fs.rmdirSync(baseURL, { recursive: true });
             return res.status(200).send({msg: "Success!"});
