@@ -3,7 +3,6 @@ import {Icon} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileBrowser from 'react-keyed-file-browser';
-import Moment from "moment/moment";
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
 
 export default function FileManager() {
@@ -13,7 +12,7 @@ export default function FileManager() {
         {
         key: 'please reopen accordion/',
         modified: 0,
-        size: 1.5 * 1024 * 1024,
+        size: 0,
         }
     ,]);
 
@@ -31,7 +30,7 @@ export default function FileManager() {
                         else newFilesToSet.push({
                             key: pathData,
                             modified: 0,
-                            size: 1.5 * 1024 * 1024,
+                            size: 0,
                         });
                     })
                     if(newFilesToSet) setMyFiles(newFilesToSet);
@@ -57,7 +56,7 @@ export default function FileManager() {
                         else newFilesToSet.push({
                             key: directory + pathData,
                             modified: 0,
-                            size: 1.5 * 1024 * 1024,
+                            size: 0,
                         });
                     })
                 // Empty directory
@@ -65,7 +64,7 @@ export default function FileManager() {
                     newFilesToSet.push({
                         key: directory,
                         modified: 0,
-                        size: 1.5 * 1024 * 1024,
+                        size: 0,
                     });
                 }
             })
@@ -99,7 +98,7 @@ export default function FileManager() {
                 setMyFiles( myFiles => [...myFiles, {
                     key: key,
                     modified: 0,
-                    size: 1.5 * 1024 * 1024,
+                    size: 0,
                 }]);
             })
             .catch((error) => {
@@ -118,7 +117,7 @@ export default function FileManager() {
             return {
                 key: newKey,
                 size: file.size,
-                modified: +Moment(),
+                modified: 0,
             }
         })
         const uniqueNewFiles = []
@@ -156,7 +155,7 @@ export default function FileManager() {
                             {
                                 ...file,
                                 key: file.key.replace(oldKey, newKey),
-                                modified: +Moment(),
+                                modified: 0,
                             }
                         );
                     } else {
@@ -188,7 +187,7 @@ export default function FileManager() {
                             {
                                 ...file,
                                 key: newKey,
-                                modified: +Moment(),
+                                modified: 0,
                             }
                         );
                     } else {
@@ -226,7 +225,7 @@ export default function FileManager() {
                                 {
                                     ...file,
                                     key: file.key,
-                                    modified: +Moment(),
+                                    modified: 0,
                                 }
                             );
                         }
@@ -235,7 +234,7 @@ export default function FileManager() {
                     if(fileCount === 1) {
                         newFiles.push({
                             key: parent + '/',
-                            modified: +Moment(),
+                            modified: 0,
                         });
                     }
                     setMyFiles(newFiles);
@@ -275,7 +274,7 @@ export default function FileManager() {
                                 {
                                     ...file,
                                     key: file.key,
-                                    modified: +Moment(),
+                                    modified: 0,
                                 }
                             );
                         }
@@ -284,7 +283,7 @@ export default function FileManager() {
                     if(fileCount === 1) {
                         newFiles.push({
                             key: parent + '/',
-                            modified: +Moment(),
+                            modified: 0,
                         });
                     }
                     setMyFiles(newFiles);
