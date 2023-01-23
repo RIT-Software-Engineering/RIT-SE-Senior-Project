@@ -929,7 +929,6 @@ module.exports = (db) => {
      * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
      */
     db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
-
         let filesUploaded = [];
 
         // Attachment Handling

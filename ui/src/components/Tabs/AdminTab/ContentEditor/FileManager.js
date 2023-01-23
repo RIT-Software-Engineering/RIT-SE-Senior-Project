@@ -106,35 +106,55 @@ export default function FileManager() {
             });
     }
 
+    /**
+     * Drag and drop functionality for uploading a file
+     * @param files files to upload
+     * @param prefix path to add to
+     */
     const handleCreateFile = (files, prefix) => {
-        // Create new file entry to add
-        const newFiles = files.map((file) => {
-            let newKey = prefix
-            if (prefix !== '' && prefix.substring(prefix.length - 1, prefix.length) !== '/') {
-                newKey += '/'
-            }
-            newKey += file.name
-            return {
-                key: newKey,
-                size: file.size,
-                modified: 0,
-            }
+        const body = new FormData();
+        body.append("path", prefix);
+        for(let i = 0; i < files.length; i++) {
+            body.append("files", files[i]);
+        }
+        SecureFetch(`${config.url.API_POST_UPLOAD_FILES}`, {
+            method: "post",
+            body: body
         })
-        const uniqueNewFiles = []
-        // Check that each of the new uploaded files are not already there (duplicated)
-        newFiles.map((newFile) => {
-            let exists = false;
-            myFiles.map((existingFile) => {
-                // Already existing file found
-                if (existingFile.key === newFile.key) {
-                    exists = true;
-                }
+            .then((response) => response.json())
+            .then(() => {
+                // Create new file entry to add
+                const newFiles = files.map((file) => {
+                    let newKey = prefix
+                    if (prefix !== '' && prefix.substring(prefix.length - 1, prefix.length) !== '/') {
+                        newKey += '/'
+                    }
+                    newKey += file.name
+                    return {
+                        key: newKey,
+                        size: file.size,
+                        modified: 0,
+                    }
+                })
+                const uniqueNewFiles = []
+                // Check that each of the new uploaded files are not already there (duplicated)
+                newFiles.map((newFile) => {
+                    let exists = false;
+                    myFiles.map((existingFile) => {
+                        // Already existing file found
+                        if (existingFile.key === newFile.key) {
+                            exists = true;
+                        }
+                    })
+                    if (!exists) {
+                        uniqueNewFiles.push(newFile)
+                    }
+                })
+                setMyFiles(myFiles.concat(uniqueNewFiles));
             })
-            if (!exists) {
-                uniqueNewFiles.push(newFile)
-            }
-        })
-        setMyFiles(myFiles.concat(uniqueNewFiles));
+            .catch((error) => {
+                alert("Failed to upload file: " + error)
+            });
     }
 
     /**
