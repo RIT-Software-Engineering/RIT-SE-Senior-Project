@@ -4,6 +4,7 @@ const db_router = require("express").Router();
 const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
 const fs = require("fs");
+const fse = require("fs-extra")
 const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
@@ -908,11 +909,26 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
+    /*
+    * Route to get sponsor data, particularly for getting all sponsor
+    * emails for messaging. Sent to admin sponsor tab for building a csv
+    */
+    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
+        let params = [];
+        db.query(query, params)
+            .then((response) => {
+                res.send(response);
+            }).catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
+    })
+
     /**
      * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
      */
     db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
-
         let filesUploaded = [];
 
         // Attachment Handling
@@ -941,30 +957,48 @@ module.exports = (db) => {
                 filesUploaded.push(`${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`);
             }
         }
-
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
 
-    /*
-    * Route to get sponsor data, particularly for getting all sponsor
-    * emails for messaging. Sent to admin sponsor tab for building a csv
-    */
-    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
-        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
-        let params = [];
-        db.query(query, params)
-            .then((response) => {
-                res.send(response);
-            }).catch((err) => {
-            console.error(err);
-            return res.status(500).send(err);
-        });
-    })
+    db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        if (!fs.existsSync(baseURL)){
+            fs.mkdirSync(baseURL, { recursive: true });
+            res.send({msg: "Success!"});
+        } else {
+            res.send({msg: "Fail!"});
+        }
+
+    });
+
+    db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res) => {
+        const { oldPath, newPath } = req.query;
+        const formattedOldPath = oldPath === "" ? `resource/` : `resource/${oldPath}`;
+        const formattedNewPath = newPath === "" ? `resource/` : `resource/${newPath}`;
+        const baseURLOld = path.join(__dirname, `../../${formattedOldPath}`);
+        const baseURLNew = path.join(__dirname, `../../${formattedNewPath}`);
+
+        // New path already exists, so we can't rename
+        if (fs.existsSync(baseURLNew)) {
+            return res.status(500);
+        }
+        // Copy all files from old directory to new directory
+        if (fs.lstatSync(baseURLOld).isDirectory()) {
+            fse.copySync(baseURLOld, baseURLNew);
+            fs.rmdirSync(baseURLOld, { recursive: true });
+            res.send({msg: "Success!"});
+        // Rename file
+        } else if (fs.lstatSync(baseURLOld).isFile()) {
+            fs.renameSync(baseURLOld, baseURLNew);
+            res.send({msg: "Success!"});
+        }
+    });
 
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
         let filesToSend = []
         //This is the path, with the specified directory we want to find files in.
-        const formattedPath = `resource/${req.query.path}`;
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.mkdirSync(baseURL, { recursive: true });
         fs.readdir(baseURL, function (err, files) {
@@ -980,20 +1014,30 @@ module.exports = (db) => {
             });
             res.send(filesToSend)
         })
-
     });
 
     db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
-        const formattedPath = `resource/${req.query.path}/${req.query.file}`;
+        const formattedPath = `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.unlink(baseURL, (err => {
             if (err) {
                 return res.status(500).send(err);
             }
             else {
-                res.send({ msg: "Success!", fileDeleted: req.query.file });
+                res.send({ msg: "Success!"});
             }
         }));
+    })
+
+    db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        if (fs.existsSync(baseURL)) {
+            fs.rmdirSync(baseURL, { recursive: true });
+            return res.status(200).send({msg: "Success!"});
+        } else {
+            return res.status(500).send({msg: "Fail!"});
+        }
     })
 
     db_router.post(

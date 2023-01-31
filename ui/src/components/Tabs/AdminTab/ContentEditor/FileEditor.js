@@ -1,18 +1,76 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Accordion, Form, Button, Modal} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
-import FileRemover from "./FileRemover";
+import FileManager from "./FileManager";
 import OverviewEditor from "./OverviewEditor"
 
-const fileUploadPaths = ["archive", "coach", "site", "student", "publicContent"];
-
+/**
+ * Content Editor Accordion in Admin Tab
+ */
 export default function FileEditor() {
 
     const fileInput = useRef(null);
-    const [path, setPath] = useState(fileUploadPaths[0]);
+    const [directories, setDirectories] = useState([]); // used to store directories from GET request
+    const [path, setPath] = useState(["/"]);
     const [response, setResponse] = useState(null);
-    const [addFileOpen, setAddFileOpen] = useState(false);
+    const [addFileOpen, setAddFileOpen] = useState(false); // used for upload file modal
+
+    // Get all directories from /resource and add it to directories array
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_FILES}?path=`)
+            .then((response) => response.json())
+            .then((fileData) => {
+                if(fileData?.length !== 0) {
+                    const newDirectoriesToSet = [];
+                    fileData.forEach(pathData => {
+                        if(isDirectory(pathData)) {
+                            newDirectoriesToSet.push(pathData);
+                            getDirectoriesInDirectory(pathData + "/", newDirectoriesToSet);
+                        }
+                    })
+                    if(newDirectoriesToSet) setDirectories(newDirectoriesToSet);
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get directories " + error);
+            });
+    }, []);
+
+    /**
+     * Gets files from desired directory and adds directories to newDirectoriesToSet array
+     * @param directory Directory to get files from
+     * @param newDirectoriesToSet array to add directories to
+     */
+    const getDirectoriesInDirectory = (directory, newDirectoriesToSet) => {
+        SecureFetch(`${config.url.API_GET_FILES}?path=${directory}`)
+            .then((response) => response.json())
+            .then((fileData) => {
+                if(fileData?.length !== 0) {
+                    fileData.forEach(pathData => {
+                        if (isDirectory(pathData)) {
+                            newDirectoriesToSet.push(directory + pathData);
+                            getDirectoriesInDirectory(directory + pathData + '/', newDirectoriesToSet);
+                        }
+                    })
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get files in directory " + error);
+            });
+    }
+
+    /**
+     * Given a string, checks if it is a file based on if it has a period to represent the file type
+     * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
+     * Based on the assumption that given files / directories do not contain any periods
+     * @param str string to be checked
+     * @returns {boolean} true if is a file, false otherwise
+     */
+    const isDirectory = (str) => {
+        const strSplit = str.split(".");
+        return strSplit.length === 1;
+    }
 
     /**
      * Toggle modal that lets you upload files
@@ -21,6 +79,9 @@ export default function FileEditor() {
         setAddFileOpen(!addFileOpen);
     }
 
+    /**
+     * Handles logic for sending request to upload files
+     */
     const uploadFiles = (event) => {
         event.preventDefault();
 
@@ -50,14 +111,16 @@ export default function FileEditor() {
             })
     }
 
-
+    /**
+     * Content inside the upload files modal with dropdown to select path, browse files, and upload files button
+     */
     const uploadFilesDisplay = () => {
         return (
             <div>
                 <Form.Field>
-                    <label>Select path to upload</label>
+                    <label>Select directory path to upload</label>
                     <select value={path} onChange={(e) => { setPath(e.target.value); setResponse(null); }}>
-                        {fileUploadPaths.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
+                        {directories.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
                     </select>
                 </Form.Field>
                 <Form.Field>
@@ -97,6 +160,7 @@ export default function FileEditor() {
                         {/* Modal with add file functionality */}
                         <Modal className={"sticky"} open={addFileOpen}  onClose={() => setAddFileOpen(false)}
                                onOpen={() => setAddFileOpen(true)}>
+                            <Modal.Header>Upload Files</Modal.Header>
                             <Modal.Content>
                                 <Form onSubmit={uploadFiles}>
                                     <div>
@@ -111,7 +175,7 @@ export default function FileEditor() {
                                 </Button>
                             </Modal.Actions>
                         </Modal>
-                        <FileRemover/>
+                        <FileManager/>
                         <OverviewEditor/>
                     </>
                 }

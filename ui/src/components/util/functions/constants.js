@@ -78,6 +78,8 @@ export const config = {
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREATE_USER: `${BASE_API_URL}/db/batchCreateUser`,
+        API_POST_CREATE_DIRECTORY: `${BASE_API_URL}/db/createDirectory`,
+        API_POST_RENAME_FILES_DIRECTORY: `${BASE_API_URL}/db/renameDirectoryOrFile`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
@@ -88,6 +90,7 @@ export const config = {
 
         //DELETE - Auth needed
         API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
+        API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
