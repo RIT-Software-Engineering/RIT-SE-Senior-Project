@@ -105,6 +105,7 @@ export default function ArchivePanel(props){
         featured: props?.project?.featured || "",
         outstanding: props?.project?.outstanding || "",
         creative: props?.project?.creative || "",
+        priority: props?.project?.priority || "",
         archive_id: props?.project?.archive_id || "",
         project_id: props?.project?.project_id || "",
         title: props?.project?.title || "",
@@ -260,6 +261,11 @@ export default function ArchivePanel(props){
             label: "creative",
             name: "creative",
             disabled: false
+        },
+        {
+            type: "input",
+            name: "priority",
+            label: "priority ***INTEGERS ONLY",
         },
         { // slugs can only be set on new archive submission
             type: "input",

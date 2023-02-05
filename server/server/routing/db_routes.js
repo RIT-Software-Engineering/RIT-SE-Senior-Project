@@ -557,6 +557,7 @@ module.exports = (db) => {
             body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
             body("outstanding").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
             body("creative").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+            body("priority").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
             body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
             body("project_id").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
             body("team_name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -578,7 +579,7 @@ module.exports = (db) => {
         async (req, res) => {
             let body = req.body;
             const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured=?, outstanding=?, creative=?,
+                                    SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?, 
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, synopsis=?,
@@ -594,10 +595,18 @@ module.exports = (db) => {
                 return 0;
             }
 
+            const strToInt = (data) => {
+                if(typeof data === 'string') {
+                    return parseInt(data);
+                }
+                return 0;
+            }
+
             let updateArchiveParams = [
                 checkBox(body.featured),
                 checkBox(body.outstanding),
                 checkBox(body.creative),
+                strToInt(body.priority),
                 body.title,
                 body.project_id,
                 body.team_name,
@@ -633,11 +642,11 @@ module.exports = (db) => {
             let body = req.body;
             const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
 
-            const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
-                                    title, project_id, team_name, members, sponsor, coach, poster_thumb,
+            const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
+                                    priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
                                     poster_full, synopsis, video, name, dept, start_date, end_date, keywords, url_slug, 
                                     inactive)
-                                    VALUES(?, ?, ?, ?, ?, ?, ?,
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?);`
 
@@ -648,10 +657,18 @@ module.exports = (db) => {
                 return 0;
             }
 
+            const strToInt = (data) => {
+                if(typeof data === 'string') {
+                    return parseInt(data);
+                }
+                return 0;
+            }
+
             const updateArchiveParams = [
                 checkBox(body.featured),
                 checkBox(body.outstanding),
                 checkBox(body.creative),
+                strToInt(body.priority),
                 body.title,
                 body.project_id,
                 body.team_name,
