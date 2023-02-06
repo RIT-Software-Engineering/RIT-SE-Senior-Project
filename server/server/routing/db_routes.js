@@ -629,9 +629,12 @@ module.exports = (db) => {
 
             db.query(updateArchiveQuery,updateArchiveParams)
                 .then((response) => {
-                    return res.sendStatus(200);
+                    return res.sendStatus(200).send(response);
                 })
-                .catch(err => err)
+                .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send(err);
+                });
         }
     );
 
@@ -698,12 +701,15 @@ module.exports = (db) => {
                     const updateProjectParams = [
                         body.project_id
                     ]
+                    res.sendStatus(200).send(response);
                     db.query(updateProjectQuery,updateProjectParams)
-                        .then((response) => res.sendStatus(200))
+                        .then((response) => res.sendStatus(200).send(response))
                         .catch(err => res.status(500).send(err))
                 })
-                .catch(err => err)
-
+                .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send(err);
+                });
         });
 
     //Gets the start and end dates of a project based on the semester that it is associated with.
