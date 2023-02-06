@@ -24,7 +24,6 @@ const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 // Constants
 const port = process.env.PORT;
-const prerenderToken = process.env.PRERENDER_TOKEN;
 
 // Setup CORS policies
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES
@@ -61,9 +60,5 @@ app.use(
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
-
-// Prerendering
-app.use(require('prerender-node'));
-app.use(require('prerender-node').set('prerenderToken', prerenderToken));
 
 app.listen(port);
