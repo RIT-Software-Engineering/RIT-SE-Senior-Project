@@ -19,11 +19,10 @@ function UniqueProjectPage({projectData}) {
     const nodeRef = React.useRef(null);
 
     useEffect(() => {
-        {/* Renders the project page client side */}
-        console.log(project);
+        /* Renders the project page client side */
         if (project === undefined) {
             const userInput = {url_slug};
-            {/* Input Handling */}
+            /* Input Handling */
             const sanitizedInput = userInput.url_slug.replace(/[^a-zA-Z\d\s:\-]/g, "").toLowerCase();
             SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_SLUG}?url_slug=${sanitizedInput}`)
                 .then((response) => {
@@ -40,8 +39,7 @@ function UniqueProjectPage({projectData}) {
                     alert("An issue occurred while searching for archive content " + error);
                 });
         }
-    }, [url_slug]);
-
+    }, [url_slug, project]);
 
     /**
      * Toggle image modal with expanded project details
@@ -92,7 +90,8 @@ function UniqueProjectPage({projectData}) {
                             }
                     {   // display project page link if slug has been defined
                         project.url_slug !== null && <div>
-                        <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`} target="_blank">
+                        <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`}
+                                                  target="_blank" rel="noreferrer">
                         {`${baseProjectURL}${project.url_slug}`}</a>
                     </div>
                     }
@@ -132,8 +131,11 @@ function UniqueProjectPage({projectData}) {
                                 return <div key={idx}>
                                     <div style={{height: 200}} onClick={toggleImageModal} className="ui container">
                                         {content.type === "image"
-                                            ? <img src={`${basePosterURL}${content.content}`}/>
-                                            : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
+                                            ? <img src={`${basePosterURL}${content.content}`}
+                                                   alt={project?.title + " Senior Project Poster"}/>
+                                            : <video controls>
+                                                <source src={`${basePosterURL}${content.content}`} type="video/mp4"/>
+                                            </video>
                                         }
                                     </div>
                                     {/* Modal with expanded image, opens when carousel content is clicked */}
@@ -142,8 +144,11 @@ function UniqueProjectPage({projectData}) {
                                            onOpen={() => setImageOpen(true)}>
                                         <Modal.Content>
                                             {content.type === "image"
-                                                ? <img class="ui fluid image" src={`${basePosterURL}${content.content}`}/>
-                                                : <video controls><source src={`${basePosterURL}${content.content}`} type="video/mp4"/></video>
+                                                ? <img class="ui fluid image" src={`${basePosterURL}${content.content}`}
+                                                       alt={project?.title + " Senior Project Poster"}/>
+                                                : <video controls>
+                                                    <source src={`${basePosterURL}${content.content}`} type="video/mp4"/>
+                                                </video>
                                             }
                                         </Modal.Content>
                                         <Modal.Actions>

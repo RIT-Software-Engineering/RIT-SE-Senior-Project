@@ -270,7 +270,6 @@ export default function FileManager() {
      * @param fileKey key of file to be deleted
      */
     const handleDeleteFile = (fileKey) => {
-        console.log(fileKey);
         SecureFetch(`${config.url.API_DELETE_FILE}?path=${fileKey}`, {method: "DELETE"})
             .then((response) => response.json())
             .then(() => {

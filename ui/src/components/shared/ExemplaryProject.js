@@ -75,7 +75,7 @@ function ExemplaryProject({ project }) {
                    open={initialOpen}
                    onClose={() => setInitialOpen(false)}
                    onOpen={() => setInitialOpen(true)}>
-                <Modal.Content image scrolling>
+                <Modal.Content>
                     <UniqueProjectPage projectData={project}/>
                 </Modal.Content>
                 <Modal.Actions>

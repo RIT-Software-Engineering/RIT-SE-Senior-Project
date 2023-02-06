@@ -3,12 +3,7 @@ import {Form, Button, Accordion} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 
-const PAGE = {OVERVIEW: "Overview", SPONSOR: "Sponsor"};
-
 export default function OverviewEditor(){
-
-    //TODO: Add environment variables of the types of page that you could be editing.
-
     const [html, setHtml] = useState({})
     const [response, setResponse] = useState(null)
 

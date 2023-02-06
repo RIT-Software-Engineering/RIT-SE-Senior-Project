@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
 import { Button, Divider, Icon, Modal } from 'semantic-ui-react';
-import { formatDateTime, formatDate } from '../../../../util/functions/utils';
+import { formatDate } from '../../../../util/functions/utils';
 import { SecureFetch } from '../../../../util/functions/secureFetch';
 
 export default function SubmissionViewerModal(props) {
