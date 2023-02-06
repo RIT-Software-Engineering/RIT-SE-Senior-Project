@@ -1,5 +1,5 @@
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
-import {config, USERTYPES} from "../../util/functions/constants";
+import { config } from "../../util/functions/constants";
 import SponsorNoteEditor from "./SponsorNoteEditor";
 import {Modal} from "semantic-ui-react";
 import React, {useEffect, useState} from "react";

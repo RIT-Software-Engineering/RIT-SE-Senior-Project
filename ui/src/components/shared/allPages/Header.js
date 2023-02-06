@@ -136,11 +136,12 @@ function Header() {
                     {process.env.REACT_APP_NODE_ENV === 'production' ?
                         <Menu.Item
                             as="a"
+                            href={void (0)}
                             onClick={signInOut}
                         >
                             {signInOutBtnText}
                     </Menu.Item>
-                        : <Menu.Item as="a">
+                        : <Menu.Item as="a" href={void (0)}>
                             <Modal
                                 className={"sticky"}
                                 trigger={<div>Dev Sign in/Sign Out</div>}

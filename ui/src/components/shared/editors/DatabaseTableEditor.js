@@ -6,7 +6,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from 'react-phone-number-input/input'
 import us from 'react-phone-number-input/locale/en'
 
-
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
 export default function DatabaseTableEditor(props) {
@@ -327,7 +326,11 @@ export default function DatabaseTableEditor(props) {
                 }}
                 actions={modalActions()}
             />
-            <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
+            <Modal
+                className={"sticky"}
+                size="tiny"
+                open={!!submissionModalOpen} {...generateModalFields()}
+                onClose={() => closeSubmissionModal()} />
         </>
     );
 }
