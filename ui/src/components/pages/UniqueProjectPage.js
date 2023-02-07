@@ -5,7 +5,6 @@ import {Button, Modal, Icon} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
-import {Helmet} from "react-helmet";
 
 const basePosterURL =`${config.url.API_GET_POSTER}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
@@ -73,14 +72,6 @@ function UniqueProjectPage({projectData}) {
                 ? <ErrorPage />
                 :
                 <div ref={nodeRef}>
-                    {/* Open Graph Protocol */}
-                    <Helmet>
-                        <meta property="og:title" content={project.title}/>
-                        <meta property="og:type" content="website"/>
-                        <meta property="og:image" content={`${basePosterURL}${project.poster_thumb}`}/>
-                        <meta property="og:url" content={`${baseProjectURL}${project.url_slug}`}/>
-                        <meta property="og:description" content={project.synopsis}/>
-                    </Helmet>
                     <h1 className="ui header" >{project.title} </h1>
                             { project?.outstanding === 1 &&
                                     <Icon name="trophy" title={"Outstanding"} size="large" style={{float: "right"}}/>
