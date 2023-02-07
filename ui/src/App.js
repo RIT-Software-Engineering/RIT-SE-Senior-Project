@@ -11,6 +11,7 @@ import Header from "./components/shared/allPages/Header";
 import Footer from "./components/shared/allPages/Footer";
 import {UserContextProvider} from "./components/util/functions/UserContext";
 import "./App.css";
+import {Container} from "semantic-ui-react";
 
 function App() {
     return (
