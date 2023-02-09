@@ -6,7 +6,7 @@ import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
 
-const basePosterURL =`${config.url.API_GET_POSTER}?fileName=`;
+const basePosterURL =`${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 function UniqueProjectPage({projectData}) {

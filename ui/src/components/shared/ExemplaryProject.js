@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Button, Icon, Modal} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
-const basePosterURL = `${config.url.API_GET_POSTER}?fileName=`;
+const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
 /**
  * Represents a project component

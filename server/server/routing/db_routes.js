@@ -1238,10 +1238,22 @@ module.exports = (db) => {
         }
     );
 
-    db_router.get("/getPoster", (req, res) => {
+    db_router.get("/getArchivePoster", (req, res) => {
         let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
 
-        res.sendFile(path.join(__dirname, "../posters/" + screenedFileName));
+        res.sendFile(path.join(__dirname, "../../resource/archivePosters/" + screenedFileName));
+    });
+
+    db_router.get("/getArchiveVideo", (req, res) => {
+        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
+
+        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + screenedFileName));
+    });
+
+    db_router.get("/getArchiveImage", (req, res) => {
+        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
+
+        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + screenedFileName));
     });
 
     db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {

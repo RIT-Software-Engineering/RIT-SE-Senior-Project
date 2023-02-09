@@ -223,46 +223,50 @@ export default function FileManager() {
 
     /**
      * Delete folder and all its files inside in file manager
-     * @param folderKey key of folder to be deleted
+     * @param folderKey array with key of folder to be deleted ex: ["archive/poop/"]
      */
     const handleDeleteFolder = (folderKey) => {
-        SecureFetch(`${config.url.API_DELETE_DIRECTORY}?path=${folderKey}`, {method: "DELETE"})
-            .then((response) => response.json())
-            .then(() => {
-                let parent = getParentDirectory(folderKey[0].substring(0, folderKey[0].length-1));
-                // Regular directory in root resource directory
-                if(parent === folderKey[0])
-                    setMyFiles(myFiles.filter(file => file.key.substring(0, folderKey[0].length) !== folderKey[0]));
-                else {
-                    let fileCount = 0;
-                    const newFiles = [];
-                    myFiles.map((file) => {
-                        // Files to be deleted found, don't add to newFiles and keep track of files in parent directory
-                        if (file.key.substring(0, parent.length) === parent) {
-                            fileCount++;
-                        } else {
-                            newFiles.push(
-                                {
-                                    ...file,
-                                    key: file.key,
-                                    modified: 0,
-                                }
-                            );
+        console.log(folderKey[0])
+        if(!getParentDirectory(folderKey[0]).includes("/")) {
+            alert("Can not delete top level directories.");
+        } else {
+            SecureFetch(`${config.url.API_DELETE_DIRECTORY}?path=${folderKey[0]}`, {method: "DELETE"})
+                .then((response) => response.json())
+                .then(() => {
+                    let parent = getParentDirectory(folderKey[0].substring(0, folderKey[0].length-1));
+                        let fileCount = 0;
+                        const newFiles = [];
+                        myFiles.map((file) => {
+                            // Keep count of items in parent directory so that if it's empty, we add the empty directory
+                            // to myFiles and is displayed properly to the user
+                            if (file.key.substring(0, parent.length) === folderKey[0]) {
+                                fileCount++;
+                            }
+                            // Not (in) directory to be deleted, do not add to new array
+                            console.log(getParentDirectory(file.key));
+                            if(getParentDirectory(file.key) + "/" !== folderKey[0]) {
+                                newFiles.push(
+                                    {
+                                        ...file,
+                                        key: file.key,
+                                        modified: 0,
+                                    }
+                                );
+                            }
+                        })
+                        // If there was only one item, the directory we deleted, we add the empty parent directory to newFiles
+                        if(fileCount === 1) {
+                            newFiles.push({
+                                key: parent + '/',
+                                modified: 0,
+                            });
                         }
-                    })
-                    // If there was only one item, the directory we deleted, we add the empty parent directory to newFiles
-                    if(fileCount === 1) {
-                        newFiles.push({
-                            key: parent + '/',
-                            modified: 0,
-                        });
-                    }
-                    setMyFiles(newFiles);
-                }
-            })
-            .catch((error) => {
-                alert("Failed to delete directory: " + error)
-            })
+                        setMyFiles(newFiles);
+                })
+                .catch((error) => {
+                    alert("Failed to delete directory: " + error)
+                })
+        }
     }
 
     /**

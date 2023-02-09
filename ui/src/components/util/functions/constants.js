@@ -18,7 +18,9 @@ export const config = {
         // No auth needed
         API_GET_ACTIVE_ARCHIVES: `${BASE_API_URL}/db/getActiveArchiveProjects`,
         API_GET_ARCHIVES: `${BASE_API_URL}/db/getArchiveProjects`,
-        API_GET_POSTER: `${BASE_API_URL}/db/getPoster`,
+        API_GET_ARCHIVE_POSTER: `${BASE_API_URL}/db/getArchivePoster`,
+        API_GET_ARCHIVE_VIDEO: `${BASE_API_URL}/db/getArchiveVideo`,
+        API_GET_ARCHIVE_IMAGE: `${BASE_API_URL}/db/getArchiveImage`,
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
         API_GET_SEARCH_FOR_ARCHIVES: `${BASE_API_URL}/db/searchForArchive`,
         API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
