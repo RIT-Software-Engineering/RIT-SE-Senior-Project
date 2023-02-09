@@ -10,7 +10,7 @@ import {
     TableHeaderCell,
     TableRow
 } from "semantic-ui-react";
-import { config } from "../../../util/functions/constants";
+import {config} from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import _ from "lodash";
 import ArchivePanel from "./ArchivePanel";
@@ -116,7 +116,7 @@ export default function ArchiveTable() {
                         let sponsor = `${project.sponsor}`
                         let tags = [project.featured ? 'featured' : null, project.creative ? 'creative' : null, project.outstanding ? 'outstanding' : null]
                         return (
-                            <TableRow key={idx}>
+                            <TableRow className={project.inactive === null || project.inactive === "" ? "" : "proposal-row-gray"} key={idx}>
                                 <TableCell>{title}</TableCell>
                                 <TableCell>{members}</TableCell>
                                 <TableCell>{sponsor}</TableCell>
