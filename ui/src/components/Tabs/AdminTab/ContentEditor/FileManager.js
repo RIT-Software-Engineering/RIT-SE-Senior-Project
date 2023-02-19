@@ -3,6 +3,7 @@ import {Icon} from 'semantic-ui-react';
 import { config } from '../../../util/functions/constants';
 import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileBrowser from 'react-keyed-file-browser';
+import CustomItemDetail from "./CustomItemDetail";
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
 
 export default function FileManager() {
@@ -343,6 +344,7 @@ export default function FileManager() {
                 onMoveFile={handleRenameFile}
                 onRenameFolder={handleRenameFolder}
                 onRenameFile={handleRenameFile}
+                detailRenderer={CustomItemDetail}
                 icons={{
                     File: <Icon name="file" />,
                     Image: <Icon name="file image" />,
