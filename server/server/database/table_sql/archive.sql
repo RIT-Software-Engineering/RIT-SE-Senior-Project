@@ -16,7 +16,8 @@ CREATE TABLE archive (
     sponsor         TEXT, 
     coach           TEXT, 
     poster_thumb    TEXT,   -- path to poster thumbnail
-    poster_full     TEXT,   -- path to full resolution poster image 
+    poster_full     TEXT,   -- path to full resolution poster image
+    archive_image   TEXT,   -- path to archive image, miscellaneous image
     synopsis        TEXT,
     keywords        TEXT,
     url_slug        TEXT,   -- unique project url

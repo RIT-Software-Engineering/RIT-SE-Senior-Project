@@ -566,6 +566,7 @@ module.exports = (db) => {
             body("coach").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
             body("poster_thumb").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
             body("poster_full").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
+            body("archive_image").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
             body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
             body("video").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
             body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
@@ -582,7 +583,7 @@ module.exports = (db) => {
                                     SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?, 
                                         members=?, sponsor=?, coach=?,
-                                        poster_thumb=?, poster_full=?, synopsis=?,
+                                        poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
                                     WHERE archive_id = ?`;
@@ -615,6 +616,7 @@ module.exports = (db) => {
                 body.coach,
                 body.poster_thumb,
                 body.poster_full,
+                body.archive_image,
                 body.synopsis,
                 body.video,
                 body.name,
@@ -647,11 +649,11 @@ module.exports = (db) => {
 
             const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, synopsis, video, name, dept, start_date, end_date, keywords, url_slug, 
-                                    inactive)
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
+                                    keywords, url_slug, inactive)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?);`
+                                           ?, ?, ?, ?, ?, ?, ?);`
 
             const checkBox = (data) => {
                 if(data === 'true' || data === '1'){
@@ -680,6 +682,7 @@ module.exports = (db) => {
                 body.coach,
                 body.poster_thumb,
                 body.poster_full,
+                body.archive_image,
                 body.synopsis,
                 body.video,
                 body.name,
@@ -1253,7 +1256,7 @@ module.exports = (db) => {
     db_router.get("/getArchiveImage", (req, res) => {
         let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
 
-        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + screenedFileName));
+        res.sendFile(path.join(__dirname, "../../resource/archiveImages/" + screenedFileName));
     });
 
     db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
