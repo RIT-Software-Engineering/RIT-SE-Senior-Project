@@ -74,7 +74,7 @@ function UniqueProjectPage({projectData}) {
                                onClose={() => setPosterOpen(false)}
                                onOpen={() => setPosterOpen(true)}>
                             <Modal.Content>
-                                { project?.poster_full === null
+                                { project?.poster_full === null || project?.poster_full === ""
                                     ? <img className="ui fluid image" src={`${basePosterURL}${project?.poster_thumb}`}
                                          alt={project?.title + " Senior Project Full Size Poster"}/>
                                     : <img className="ui fluid image" src={`${basePosterURL}${project?.poster_full}`}

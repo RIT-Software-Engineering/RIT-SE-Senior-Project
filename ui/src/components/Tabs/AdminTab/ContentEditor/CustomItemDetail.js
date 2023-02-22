@@ -31,7 +31,8 @@ class CustomItemDetail extends React.Component {
                     <dd>{this.props.file.key}</dd>
                     <h3>Resource link</h3>
                     <dd>
-                        <a href={`${config.url.BASE_URL}/resource/${this.props.file.key}`}>
+                        <a href={`${config.url.BASE_URL}/resource/${this.props.file.key}`}
+                            target="_blank" rel="noreferrer">
                             {config.url.BASE_URL}/resource/{this.props.file.key}
                         </a>
                     </dd>
