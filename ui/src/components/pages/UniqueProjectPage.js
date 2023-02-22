@@ -90,8 +90,8 @@ function UniqueProjectPage({projectData}) {
                                 <source src={`${baseVideoURL}${project?.video}`} type="video/mp4"/>
                             </video>
                         }
-                        { project?.image &&
-                             <img src={`${baseImageURL}${project?.image}`} height={250}
+                        { project?.archive_image &&
+                             <img src={`${baseImageURL}${project?.archive_image}`} height={250}
                                   style={{cursor: "zoom-in", padding: "5px" }}
                                   onClick={() => setImageOpen(true)}
                                   alt={project?.title + " Senior Project Image"}/>
@@ -102,7 +102,7 @@ function UniqueProjectPage({projectData}) {
                                onClose={() => setImageOpen(false)}
                                onOpen={() => setImageOpen(true)}>
                             <Modal.Content>
-                                <img className="ui fluid image" src={`${baseImageURL}${project?.image}`}
+                                <img className="ui fluid image" src={`${baseImageURL}${project?.archive_image}`}
                                      alt={project?.title + " Senior Project Image"}/>
                             </Modal.Content>
                             <Modal.Actions>

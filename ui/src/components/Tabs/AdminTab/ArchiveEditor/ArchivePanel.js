@@ -115,6 +115,7 @@ export default function ArchivePanel(props){
         coach: props?.project?.coach || "",
         poster_thumb: props?.project?.poster_thumb || "",
         poster_full: props?.project?.poster_full || "",
+        archive_image: props?.project?.archive_image || "",
         synopsis: props?.project?.synopsis || "",
         video: props?.project?.video || "",
         name: props?.project?.name || "",
@@ -210,6 +211,12 @@ export default function ArchivePanel(props){
         },
         {
             type: "input",
+            label: "Archive Image",
+            placeholder: "Archive Image",
+            name: "archive_image"
+        },
+        {
+            type: "input",
             label: "Synopsis",
             placeholder: "Synopsis",
             name: "synopsis"
@@ -269,7 +276,7 @@ export default function ArchivePanel(props){
         },
         { // slugs can only be set on new archive submission
             type: "input",
-            label: props.newArchive ? "URL Slug *must be manually changed later" : "URL Slug",
+            label: props.newArchive ? "URL Slug (this can not be changed)" : "URL Slug",
             placeholder: "url_slug",
             name: "url_slug",
             disabled: !props.newArchive
