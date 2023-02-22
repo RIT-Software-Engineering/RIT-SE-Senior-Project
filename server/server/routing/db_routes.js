@@ -629,9 +629,9 @@ module.exports = (db) => {
                 body.archive_id
             ];
 
-            db.query(updateArchiveQuery,updateArchiveParams)
-                .then((response) => {
-                    return res.sendStatus(200).send(response);
+            db.query(updateArchiveQuery, updateArchiveParams)
+                .then(() => {
+                    return res.status(200).send();
                 })
                 .catch((err) => {
                     console.error(err);
