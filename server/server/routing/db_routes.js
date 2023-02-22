@@ -704,9 +704,9 @@ module.exports = (db) => {
                     const updateProjectParams = [
                         body.project_id
                     ]
-                    res.sendStatus(200).send(response);
+                    res.status(200).send(response);
                     db.query(updateProjectQuery,updateProjectParams)
-                        .then((response) => res.sendStatus(200).send(response))
+                        .then((response) => res.status(200).send(response))
                         .catch(err => res.status(500).send(err))
                 })
                 .catch((err) => {
