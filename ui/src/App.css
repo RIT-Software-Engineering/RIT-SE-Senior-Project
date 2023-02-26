@@ -82,7 +82,7 @@
     flex-grow: 1;
 }
 
-button.ui.button, .ui.icon.button, .ui.icon.buttons .button {
+button.ui.button, .ui.icon.button, .ui.icon.buttons, .button, a.ui.button {
     background-color: #f8f9fa;
     color: #212529;
     padding: 10px 20px;

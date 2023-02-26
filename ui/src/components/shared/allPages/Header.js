@@ -41,38 +41,38 @@ function Header() {
         return (
             <>
                 <div id="nav-buttons" className="ui right floated buttons">
-                    <button
+                    <a href={"/"}
                         className="ui button"
                         onClick={() => {
                             history.push("/");
                         }}
                     >
                         Home
-                    </button>
-                    <button
+                    </a>
+                    <a href={"/projects"}
                         className="ui button"
                         onClick={() => {
                             history.push("/projects");
                         }}
                     >
                         Projects
-                    </button>
-                    {signedIn && <button
+                    </a>
+                    {signedIn && <a href={"/dashboard"}
                         className="ui button"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </button>}
-                    <button
+                    </a>}
+                    <a href={"/sponsor"}
                         className="ui button"
                         onClick={() => {
                             history.push("/sponsor");
                         }}
                     >
                         Sponsor a Project
-                    </button>
+                    </a>
                     {process.env.REACT_APP_NODE_ENV === 'production' ? <button
                         className="ui button"
                         onClick={signInOut}
@@ -111,6 +111,7 @@ function Header() {
                     </Menu.Item>
                     <Menu.Item
                         as="a"
+                        href={"/projects"}
                         onClick={() => {
                             history.push("/projects");
                         }}
@@ -119,6 +120,7 @@ function Header() {
                     </Menu.Item>
                     {signedIn && <Menu.Item
                         as="a"
+                        href={"/dashboard"}
                         onClick={() => {
                             history.push("/dashboard");
                         }}
@@ -127,6 +129,7 @@ function Header() {
                     </Menu.Item>}
                     <Menu.Item
                         as="a"
+                        href={"/sponsor"}
                         onClick={() => {
                             history.push("/sponsor");
                         }}
