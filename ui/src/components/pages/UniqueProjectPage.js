@@ -54,7 +54,7 @@ function UniqueProjectPage({projectData}) {
                         <Icon name="trophy" title={"Creative"} size="large" style={{float: "right"}}/>
                     }
                     {   // display project page link if slug has been defined
-                        project.url_slug !== null && <div>
+                        (project.url_slug !== null && project?.url_slug !== "") && <div>
                             <Icon name="linkify"/> <a href={`${baseProjectURL}${project.url_slug}`}
                                                       target="_blank" rel="noreferrer">
                             {`${baseProjectURL}${project.url_slug}`}</a>
