@@ -128,8 +128,12 @@ function UniqueProjectPage({projectData}) {
                         </div>
                     </div>
                     <div className="ui hidden divider"></div>
-                    <div className="ui small header">Synopsis</div>
-                    <p>{project?.synopsis}</p>
+                    <div className="ui attached stackable padded grid">
+                        <div className="column">
+                            <div className="ui small header">Synopsis</div>
+                        <p>{project?.synopsis}</p>
+                        </div>
+                    </div>
                 </div>}
         </div>
     )
