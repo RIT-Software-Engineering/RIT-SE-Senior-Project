@@ -208,6 +208,7 @@ module.exports = (db) => {
     ],
         async (req, res) => {
             let result = validationResult(req);
+            console.log(result);
 
             if (result.errors.length !== 0) {
                 return res.status(400).send(result);
@@ -550,34 +551,7 @@ module.exports = (db) => {
     });
 
     db_router.post(
-        "/editArchive",
-        [
-            UserAuth.isAdmin,
-            // TODO: Should the max length be set to something smaller than 5000?
-            body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-            body("outstanding").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-            body("creative").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-            body("priority").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-            body("title").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-            body("project_id").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
-            body("team_name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("members").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("sponsor").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("coach").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("poster_thumb").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("poster_full").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("archive_image").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("synopsis").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("video").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("name").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("dept").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("start_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("end_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("keywords").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("url_slug").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-            body("inactive").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 5000 }),
-        ],
-        async (req, res) => {
+        "/editArchive", [UserAuth.isAdmin], async (req, res) => {
             let body = req.body;
             const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
@@ -1242,21 +1216,15 @@ module.exports = (db) => {
     );
 
     db_router.get("/getArchivePoster", (req, res) => {
-        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
-
-        res.sendFile(path.join(__dirname, "../../resource/archivePosters/" + screenedFileName));
+        res.sendFile(path.join(__dirname, "../../resource/archivePosters/" + req.query.fileName));
     });
 
     db_router.get("/getArchiveVideo", (req, res) => {
-        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
-
-        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + screenedFileName));
+        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + req.query.fileName));
     });
 
     db_router.get("/getArchiveImage", (req, res) => {
-        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
-
-        res.sendFile(path.join(__dirname, "../../resource/archiveImages/" + screenedFileName));
+        res.sendFile(path.join(__dirname, "../../resource/archiveImages/" + req.query.fileName));
     });
 
     db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
