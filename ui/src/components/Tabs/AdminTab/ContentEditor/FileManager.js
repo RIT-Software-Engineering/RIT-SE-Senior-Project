@@ -26,7 +26,6 @@ export default function FileManager() {
                 if(fileData?.length !== 0) {
                     const newFilesToSet = [];
                     fileData.forEach(pathData => {
-                        console.log(pathData)
                         if(isDirectory(pathData["file"])) {
                             getFilesInDirectory(pathData["file"] + "/", newFilesToSet);
                         }
@@ -55,7 +54,6 @@ export default function FileManager() {
             .then((fileData) => {
                 if(fileData?.length !== 0) {
                     fileData.forEach(pathData => {
-                        console.log(pathData);
                         if(isDirectory(pathData["file"]))
                             getFilesInDirectory(directory + pathData["file"] + '/', newFilesToSet);
                         else newFilesToSet.push({

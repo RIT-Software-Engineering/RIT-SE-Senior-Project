@@ -1001,7 +1001,7 @@ module.exports = (db) => {
         const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.mkdirSync(baseURL, { recursive: true });
-
+        // Get the files in the directory
         fs.readdir(baseURL, function (err, files) {
             if (err) {
                 console.error(err);
@@ -1009,11 +1009,21 @@ module.exports = (db) => {
             }
             const info = fs.statSync(baseURL);
             files.forEach(function (file) {
-                fileData.push({
-                    file: file,
-                    size: info.size,
-                    lastModified: info.mtime
-                });
+                // Only files have sizes, directories do not. Send file size if it is a file
+                const fileInfo = fs.statSync(baseURL+file);
+                if(fileInfo.isFile()) {
+                    fileData.push({
+                        file: file,
+                        size: fileInfo.size,
+                        lastModified: fileInfo.mtime
+                    });
+                } else {
+                    fileData.push({
+                        file: file,
+                        size: 0,
+                        lastModified: info.mtime
+                    });
+                }
             });
             res.send(fileData);
         })
