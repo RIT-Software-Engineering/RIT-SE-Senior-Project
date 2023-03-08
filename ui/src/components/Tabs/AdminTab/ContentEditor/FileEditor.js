@@ -24,9 +24,9 @@ export default function FileEditor() {
                 if(fileData?.length !== 0) {
                     const newDirectoriesToSet = [];
                     fileData.forEach(pathData => {
-                        if(isDirectory(pathData)) {
-                            newDirectoriesToSet.push(pathData);
-                            getDirectoriesInDirectory(pathData + "/", newDirectoriesToSet);
+                        if(isDirectory(pathData["file"])) {
+                            newDirectoriesToSet.push(pathData["file"]);
+                            getDirectoriesInDirectory(pathData["file"] + "/", newDirectoriesToSet);
                         }
                     })
                     if(newDirectoriesToSet) setDirectories(newDirectoriesToSet);
@@ -48,9 +48,9 @@ export default function FileEditor() {
             .then((fileData) => {
                 if(fileData?.length !== 0) {
                     fileData.forEach(pathData => {
-                        if (isDirectory(pathData)) {
-                            newDirectoriesToSet.push(directory + pathData);
-                            getDirectoriesInDirectory(directory + pathData + '/', newDirectoriesToSet);
+                        if (isDirectory(pathData["file"])) {
+                            newDirectoriesToSet.push(directory + pathData["file"]);
+                            getDirectoriesInDirectory(directory + pathData["file"] + '/', newDirectoriesToSet);
                         }
                     })
                 }

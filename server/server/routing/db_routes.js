@@ -996,23 +996,36 @@ module.exports = (db) => {
     });
 
     db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
-        let filesToSend = []
-        //This is the path, with the specified directory we want to find files in.
+        let fileData = []
+        // This is the path with the specified directory we want to find files in.
         const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
         const baseURL = path.join(__dirname, `../../${formattedPath}`);
         fs.mkdirSync(baseURL, { recursive: true });
+        // Get the files in the directory
         fs.readdir(baseURL, function (err, files) {
-            //handling error
             if (err) {
                 console.error(err);
                 return res.status(500).send(err);
             }
-            //listing all files using forEach
+            const info = fs.statSync(baseURL);
             files.forEach(function (file) {
-                // Do whatever you want to do with the file
-                filesToSend.push(file)
+                // Only files have sizes, directories do not. Send file size if it is a file
+                const fileInfo = fs.statSync(baseURL+file);
+                if(fileInfo.isFile()) {
+                    fileData.push({
+                        file: file,
+                        size: fileInfo.size,
+                        lastModified: fileInfo.mtime
+                    });
+                } else {
+                    fileData.push({
+                        file: file,
+                        size: 0,
+                        lastModified: info.mtime
+                    });
+                }
             });
-            res.send(filesToSend)
+            res.send(fileData);
         })
     });
 

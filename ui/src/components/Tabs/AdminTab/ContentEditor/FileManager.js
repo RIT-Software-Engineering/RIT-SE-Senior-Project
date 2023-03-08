@@ -5,6 +5,7 @@ import { SecureFetch } from '../../../util/functions/secureFetch';
 import FileBrowser from 'react-keyed-file-browser';
 import CustomItemDetail from "./CustomItemDetail";
 import 'react-keyed-file-browser/dist/react-keyed-file-browser.css';
+import Moment from 'moment'
 
 export default function FileManager() {
 
@@ -25,13 +26,13 @@ export default function FileManager() {
                 if(fileData?.length !== 0) {
                     const newFilesToSet = [];
                     fileData.forEach(pathData => {
-                        if(isDirectory(pathData)) {
-                            getFilesInDirectory(pathData + "/", newFilesToSet);
+                        if(isDirectory(pathData["file"])) {
+                            getFilesInDirectory(pathData["file"] + "/", newFilesToSet);
                         }
                         else newFilesToSet.push({
-                            key: pathData,
-                            modified: 0,
-                            size: 0,
+                            key: pathData["file"],
+                            modified: Moment(pathData["lastModified"]).toDate(),
+                            size: pathData["size"],
                         });
                     })
                     if(newFilesToSet) setMyFiles(newFilesToSet);
@@ -53,11 +54,12 @@ export default function FileManager() {
             .then((fileData) => {
                 if(fileData?.length !== 0) {
                     fileData.forEach(pathData => {
-                        if(isDirectory(pathData)) getFilesInDirectory(directory + pathData + '/', newFilesToSet);
+                        if(isDirectory(pathData["file"]))
+                            getFilesInDirectory(directory + pathData["file"] + '/', newFilesToSet);
                         else newFilesToSet.push({
-                            key: directory + pathData,
-                            modified: 0,
-                            size: 0,
+                            key: directory + pathData["file"],
+                            modified: Moment(pathData["lastModified"]).toDate(),
+                            size: pathData["size"]
                         });
                     })
                 // Empty directory
