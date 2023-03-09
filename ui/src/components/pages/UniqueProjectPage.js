@@ -10,6 +10,8 @@ const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
+const CONTENT_HEIGHT = 250;
+
 function UniqueProjectPage({projectData}) {
     const [project, setProject] = useState(projectData);
     const { url_slug } = useParams();
@@ -63,7 +65,7 @@ function UniqueProjectPage({projectData}) {
                     <div className="ui hidden divider"></div>
                     <div className="ui relaxed centered grid">
                         { project?.poster_thumb &&
-                            <img src={`${basePosterURL}${project?.poster_thumb}`} height={250}
+                            <img src={`${basePosterURL}${project?.poster_thumb}`} height={CONTENT_HEIGHT}
                                  style={{cursor: "zoom-in", padding: "5px" }}
                                  onClick={() => setPosterOpen(true)}
                                  alt={project?.title + " Senior Project Thumbnail Poster"}/>
@@ -86,12 +88,12 @@ function UniqueProjectPage({projectData}) {
                             </Modal.Actions>
                         </Modal>
                         { project?.video &&
-                            <video controls height={250}>
+                            <video controls height={CONTENT_HEIGHT}>
                                 <source src={`${baseVideoURL}${project?.video}`} type="video/mp4"/>
                             </video>
                         }
                         { project?.archive_image &&
-                             <img src={`${baseImageURL}${project?.archive_image}`} height={250}
+                             <img src={`${baseImageURL}${project?.archive_image}`} height={CONTENT_HEIGHT}
                                   style={{cursor: "zoom-in", padding: "5px" }}
                                   onClick={() => setImageOpen(true)}
                                   alt={project?.title + " Senior Project Image"}/>

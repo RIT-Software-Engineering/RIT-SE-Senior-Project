@@ -408,29 +408,33 @@ module.exports = (db) => {
     });
 
     db_router.get("/getActiveArchiveProjects", (req, res) => {
-        const { resultLimit, offset, featured } = req.query;
-
-        let projectsQuery = ``;
-        let rowCountQuery = ``;
-        if (featured === "true"){
+        const { resultLimit, page, featured } = req.query;
+        let skipNum = (page * resultLimit);
+        let projectsQuery;
+        let rowCountQuery;
+        if (featured === "true") {
             /**
              * This goes through and returns a set of the archived projects that are unique to the pagination
              * On the home Page.
              */
-            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND inactive = '' AND
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?) LIMIT ?`;
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id ASC LIMIT ? ) 
+            AND featured = 1 AND inactive = ''
+            ORDER BY archive_id ASC LIMIT ?`;
             // This is for getting the total projects that are going to be displayed on the home page.
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 AND 
             inactive = ''`;
-        }
-        else {
-            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = '' AND
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?) LIMIT ?`;
+        } else {
+            // queries for all archived projects, regardless of whether they have been set as 'featured'
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id ASC LIMIT ? ) 
+            AND inactive = ''
+            ORDER BY archive_id ASC LIMIT ?`;
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE 
             inactive = ''`;
         }
 
-        const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
+        const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
 
         Promise.all([rowCountPromise, projectsPromise])
