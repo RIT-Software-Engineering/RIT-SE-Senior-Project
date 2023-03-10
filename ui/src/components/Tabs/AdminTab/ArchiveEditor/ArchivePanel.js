@@ -216,7 +216,7 @@ export default function ArchivePanel(props){
             name: "archive_image"
         },
         {
-            type: "input",
+            type: "textArea",
             label: "Synopsis",
             placeholder: "Synopsis",
             name: "synopsis"
