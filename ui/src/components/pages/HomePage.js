@@ -29,7 +29,7 @@ function HomePage() {
 
     const getPaginationData = (page) => {
         fetch(
-            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&page=${page}&featured=true}`
+            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&page=${page}&featured=true`
         )
             .then((response) => {
                 if (response.ok) {
