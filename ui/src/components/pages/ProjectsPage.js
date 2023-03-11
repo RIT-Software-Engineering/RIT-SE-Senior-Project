@@ -4,8 +4,9 @@ import {Icon, Input, Pagination} from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
+import { shuffle } from "../util/functions/utils";
 
-const PROJECTS_PER_PAGE = 10;
+const PROJECTS_PER_PAGE = 5;
 
 /**
  * Projects page visible on main page of the website without signing in.
@@ -34,7 +35,7 @@ function ProjectsPage(){
                 }
             })
             .then((data) => {
-                setProjects(data.projects)
+                setProjects(shuffle(data.projects));
                 setProjectCount(data.totalProjects)
             })
             .catch((error) => {
@@ -62,7 +63,7 @@ function ProjectsPage(){
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);
-                setProjects(results.projects);
+                setProjects(shuffle(results.projects));
             })
             .catch((error) => {
                 alert("An issue occurred while searching for archive content " + error);
