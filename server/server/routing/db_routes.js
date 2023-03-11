@@ -1016,13 +1016,13 @@ module.exports = (db) => {
                     fileData.push({
                         file: file,
                         size: fileInfo.size,
-                        lastModified: fileInfo.mtime
+                        lastModified: fileInfo.ctime
                     });
                 } else {
                     fileData.push({
                         file: file,
                         size: 0,
-                        lastModified: info.mtime
+                        lastModified: info.ctime
                     });
                 }
             });
