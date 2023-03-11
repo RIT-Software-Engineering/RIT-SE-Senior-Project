@@ -121,7 +121,7 @@ export default function Proposals(props) {
                                     activeCoaches={props.activeCoaches}
                                     activeSponsors={props.activeSponsors}
                                     header={"Archive Project"}
-                                    buttonIcon={"archive"}
+                                    buttonIcon={"bullhorn"}
                                     />}
                             </>
                         }
