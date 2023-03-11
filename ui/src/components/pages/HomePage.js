@@ -4,7 +4,6 @@ import { Icon, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import InnerHTML from 'dangerously-set-html-content';
-import { shuffle } from "../util/functions/utils";
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -39,7 +38,6 @@ function HomePage() {
                 }
             })
             .then((data) => {
-                data.projects = shuffle(data.projects);
                 setProjectData(data);
             })
             .catch((error) => {

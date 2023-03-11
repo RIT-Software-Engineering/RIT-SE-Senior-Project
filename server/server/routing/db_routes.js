@@ -419,18 +419,17 @@ module.exports = (db) => {
              * On the home Page.
              */
             projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ? ) 
-            AND featured = 1 AND inactive = '' LIMIT ?`;
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+            AND featured = 1 AND inactive = '' ORDER BY archive_id LIMIT ?`;
             // This is for getting the total projects that are going to be displayed on the home page.
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}
             WHERE featured = 1 AND inactive = ''`;
         } else {
             // queries for all archived projects, regardless of whether they have been set as 'featured'
             projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ? ) 
-            AND inactive = '' LIMIT ?`;
-            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE 
-            inactive = ''`;
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+            AND inactive = '' ORDER BY archive_id LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
         }
         const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
@@ -449,7 +448,8 @@ module.exports = (db) => {
         const { resultLimit, offset } = req.query;
         let skipNum = (offset * resultLimit);
         let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ?) LIMIT ?`;
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?) 
+            ORDER BY archive_id LIMIT ?`;
         let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
 
         const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
