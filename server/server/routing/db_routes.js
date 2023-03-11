@@ -8,6 +8,7 @@ const fse = require("fs-extra")
 const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
+const he = require('he');
 
 function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
@@ -1209,7 +1210,7 @@ module.exports = (db) => {
                         {
                             underline: true,
                         };
-                        doc.fontSize(12).fill("black").text(body[key]); // Text value from proposal
+                        doc.fontSize(12).fill("black").text(he.decode(body[key].replace(/\r\n|\r/g, '\n'))); // Text value from proposal
                         doc.moveDown();
                         doc.save();
                     }

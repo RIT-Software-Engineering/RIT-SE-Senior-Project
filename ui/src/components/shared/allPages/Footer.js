@@ -24,7 +24,7 @@ function Footer() {
                         <div id="version" className="column">
                             <h5>
                                 <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
-                                   target="_blank" rel="noreferrer">V.1.3.0</a>
+                                   target="_blank" rel="noreferrer">V.1.4.0</a>
                             </h5>
                         </div>
                     </div>

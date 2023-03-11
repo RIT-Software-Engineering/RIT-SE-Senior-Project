@@ -16,7 +16,7 @@ export default function SponsorNote(props){
     }
 
     let revisionsModal =
-        <Modal
+        <Modal className={"sticky"}
             trigger={modalButton}
             header={"Sponsor Note Revisions"}
             content={{ content:
