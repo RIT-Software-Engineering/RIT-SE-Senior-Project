@@ -47,8 +47,7 @@ function UniqueProjectPage({projectData}) {
      * @returns {string} sanitized synopsis
      */
     const decodeSynopsis = (synopsis) => {
-        console.log(decode(synopsis));
-        return decode(synopsis);
+        return decode(synopsis).replace(/\r\n|\r/g, '\n');
     };
 
     return (
@@ -142,7 +141,7 @@ function UniqueProjectPage({projectData}) {
                     <div className="ui attached stackable padded grid">
                         <div className="column">
                             <div className="ui small header">Synopsis</div>
-                        <p>{decodeSynopsis(project?.synopsis)}</p>
+                        <p style={{whiteSpace: "pre-line"}}>{decodeSynopsis(project?.synopsis)}</p>
                         </div>
                     </div>
                 </div>}
