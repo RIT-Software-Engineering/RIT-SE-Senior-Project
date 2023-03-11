@@ -14,7 +14,7 @@ export default function ArchiveEditor() {
 
     useEffect(() => {
         SecureFetch(
-            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}&featured=false`
+            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${activePage}&featured=false`
         )
             .then((response) => {
                 if (response.ok) {

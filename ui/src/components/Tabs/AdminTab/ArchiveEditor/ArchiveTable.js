@@ -28,7 +28,7 @@ export default function ArchiveTable() {
 
     const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}`
+            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${activePage}`
         )
             .then((response) => {
                 if (response.ok) {
