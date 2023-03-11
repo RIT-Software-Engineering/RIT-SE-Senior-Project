@@ -419,18 +419,16 @@ module.exports = (db) => {
              * On the home Page.
              */
             projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id ASC LIMIT ? ) 
-            AND featured = 1 AND inactive = ''
-            ORDER BY archive_id ASC LIMIT ?`;
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ? ) 
+            AND featured = 1 AND inactive = '' LIMIT ?`;
             // This is for getting the total projects that are going to be displayed on the home page.
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}
             WHERE featured = 1 AND inactive = ''`;
         } else {
             // queries for all archived projects, regardless of whether they have been set as 'featured'
             projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id ASC LIMIT ? ) 
-            AND inactive = ''
-            ORDER BY archive_id ASC LIMIT ?`;
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} LIMIT ? ) 
+            AND inactive = '' LIMIT ?`;
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE 
             inactive = ''`;
         }
