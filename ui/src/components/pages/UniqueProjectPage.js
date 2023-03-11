@@ -4,6 +4,7 @@ import {Button, Modal, Icon} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
+import {decode} from "html-entities";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
@@ -39,6 +40,15 @@ function UniqueProjectPage({projectData}) {
                 });
         }
     }, [url_slug, project]);
+
+    /**
+     * Decodes sanitized text so that it is readable without ugly letters
+     * @param synopsis archive synopsis
+     * @returns {string} sanitized synopsis
+     */
+    const decodeSynopsis = (synopsis) => {
+        return decode(synopsis).replace(/\r\n|\r/g, '\n');
+    };
 
     return (
         <div>
@@ -131,7 +141,7 @@ function UniqueProjectPage({projectData}) {
                     <div className="ui attached stackable padded grid">
                         <div className="column">
                             <div className="ui small header">Synopsis</div>
-                        <p>{project?.synopsis}</p>
+                        <p style={{whiteSpace: "pre-line"}}>{decodeSynopsis(project?.synopsis)}</p>
                         </div>
                     </div>
                 </div>}
