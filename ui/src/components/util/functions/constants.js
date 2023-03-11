@@ -16,6 +16,7 @@ export const config = {
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
         // No auth needed
+        API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
         API_GET_ACTIVE_ARCHIVES: `${BASE_API_URL}/db/getActiveArchiveProjects`,
         API_GET_ARCHIVES: `${BASE_API_URL}/db/getArchiveProjects`,
         API_GET_ARCHIVE_POSTER: `${BASE_API_URL}/db/getArchivePoster`,
