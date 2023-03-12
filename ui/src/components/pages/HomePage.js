@@ -14,24 +14,11 @@ function HomePage() {
     const [html, setHtml] = useState("")
 
     /*
-    * When the page initially loads, getPaginationData gets all the relevant project information so that it can be
-    * called again in the return with that proper amount of pages to display for the homepage projects.
-    * The secureFetch after it is for getting the html from the database to display above exemplary projects.
+    * When the page initially loads, fetches random featured archives.
+    * The secureFetch after it is for getting the HTML from the database to display above exemplary projects.
     */
     useEffect(() => {
-        getPaginationData(0);
-        SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
-            .then((response) => response.json())
-            .then((htmlData) => {
-                setHtml(htmlData[0]?.html)
-            })
-
-    }, []);
-
-    const getPaginationData = (page) => {
-        fetch(
-            `${config.url.API_GET_FEATURED_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}`
-        )
+        SecureFetch(`${config.url.API_GET_FEATURED_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -41,16 +28,17 @@ function HomePage() {
             })
             .then((data) => {
                 setProjects(data);
+                SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
+                    .then((response) => response.json())
+                    .then((htmlData) => {
+                        setHtml(htmlData[0]?.html);
+                    });
             })
             .catch((error) => {
                 console.error(error);
             });
-    };
+    }, []);
 
-    /*
-    * The Pagination component calls getPaginationData every time the page is
-    * changed, and displays a new set of the archived projects
-    */
     return (
         <>
             <div className="content">
