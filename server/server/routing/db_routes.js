@@ -373,7 +373,6 @@ module.exports = (db) => {
     })
 
     db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
-
         const getCoachInfoQuery = `
             SELECT users.system_id,
             users.fname,

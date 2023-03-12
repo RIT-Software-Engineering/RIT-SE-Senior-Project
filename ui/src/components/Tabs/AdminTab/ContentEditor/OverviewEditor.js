@@ -85,7 +85,7 @@ export default function OverviewEditor(){
                         {response.error && JSON.stringify(response.error)}
                     </>}
                 </Form.Field>
-                <Button type="submit">Update Html</Button>
+                <Button type="submit">Update HTML</Button>
             </>
         )
     }
