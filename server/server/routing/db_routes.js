@@ -449,7 +449,7 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/getFeaturedArchiveProjects", (req, res) => {
+    db_router.get("/getFeaturedArchiveProjects", async (req, res) => {
         const { resultLimit } = req.query;
         let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} 
             WHERE featured = 1
