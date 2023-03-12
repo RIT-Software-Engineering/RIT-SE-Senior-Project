@@ -19,7 +19,13 @@ function HomePage() {
     */
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_FEATURED_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw response;
+                }
+            })
             .then((data) => {
                 setProjects(data);
             })
