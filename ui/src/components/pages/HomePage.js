@@ -18,7 +18,7 @@ function HomePage() {
     * The secureFetch after it is for getting the HTML from the database to display above exemplary projects.
     */
     useEffect(() => {
-        SecureFetch(`${config.url.API_GET_FEATURED_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}`)
+        SecureFetch(`${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&page=${0}&featured=${true}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -27,7 +27,7 @@ function HomePage() {
                 }
             })
             .then((data) => {
-                setProjects(data);
+                setProjects(data.projects);
             })
             .catch((error) => {
                 console.error(error);

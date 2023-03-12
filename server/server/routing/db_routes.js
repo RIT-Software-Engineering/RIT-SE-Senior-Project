@@ -407,28 +407,28 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/getFeaturedArchiveProjects", (req, res) => {
-        const { resultLimit } = req.query;
-        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} 
-        WHERE featured = 1 AND inactive = '' ORDER BY random() LIMIT ${resultLimit}`;
-        db.query(projectsQuery).then((projects) => {
-            console.log(res);
-            res.send(projects);
-        }).catch((error) => res.status(500).send(error));
-    });
-
     // used in the /projects page and home page if featured
     db_router.get("/getActiveArchiveProjects", (req, res) => {
-        const { resultLimit, page } = req.query;
+        const { resultLimit, page, featured } = req.query;
+        console.log(req.query)
         let skipNum = (page * resultLimit);
-        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-        ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
-        AND inactive = '' ORDER BY archive_id LIMIT ?`;
-        let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
-
+        let projectsQuery;
+        let rowCountQuery;
+        if (featured === "true") {
+            // home page - randomized order of projects
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? ) 
+            AND inactive = '' ORDER BY random() LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
+        } else {
+            // projects page - all archived projects data regardless if they are archived or not
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+            AND inactive = '' ORDER BY archive_id LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
+        }
         const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
-
         Promise.all([rowCountPromise, projectsPromise])
             .then(([[rowCount], projects]) => {
                 res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
