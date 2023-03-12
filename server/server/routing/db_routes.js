@@ -410,7 +410,6 @@ module.exports = (db) => {
     // used in the /projects page and home page if featured
     db_router.get("/getActiveArchiveProjects", (req, res) => {
         const { resultLimit, page, featured } = req.query;
-        console.log(req.query)
         let skipNum = (page * resultLimit);
         let projectsQuery;
         let rowCountQuery;
@@ -418,7 +417,7 @@ module.exports = (db) => {
             // home page - randomized order of projects
             projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
             ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? ) 
-            AND inactive = '' ORDER BY random() LIMIT ?`;
+            AND inactive = '' AND featured = 1 ORDER BY random() LIMIT ?`;
             rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
         } else {
             // projects page - all archived projects data regardless if they are archived or not
