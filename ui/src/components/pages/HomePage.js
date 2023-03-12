@@ -19,23 +19,18 @@ function HomePage() {
     */
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_FEATURED_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}`)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw response;
-                }
-            })
+            .then((response) => response.json())
             .then((data) => {
                 setProjects(data);
-                SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
-                    .then((response) => response.json())
-                    .then((htmlData) => {
-                        setHtml(htmlData[0]?.html);
-                    });
             })
             .catch((error) => {
                 console.error(error);
+            });
+
+        SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
+            .then((response) => response.json())
+            .then((htmlData) => {
+                setHtml(htmlData[0]?.html);
             });
     }, []);
 

@@ -407,6 +407,13 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getFeaturedArchiveProjects",  (req, res) => {
+        const { resultLimit } = req.query;
+        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE featured = 1 ORDER BY RANDOM() LIMIT ?`;
+        db.query(projectsQuery, resultLimit).then((projects) => res.send(projects))
+            .catch((error) => res.status(500).send(error));
+    });
+
     // used in the /projects page
     db_router.get("/getActiveArchiveProjects", (req, res) => {
         const { resultLimit, page } = req.query;
@@ -445,22 +452,6 @@ module.exports = (db) => {
                 res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
             })
             .catch((error) => {
-                res.status(500).send(error);
-            });
-    });
-
-    db_router.get("/getFeaturedArchiveProjects", async (req, res) => {
-        const { resultLimit } = req.query;
-        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} 
-            WHERE featured = 1
-            ORDER BY RANDOM() LIMIT ?`;
-
-        db.query(projectsQuery, [resultLimit])
-            .then((projects) => {
-                res.send(projects)
-            })
-            .catch((error) => {
-                console.error(error);
                 res.status(500).send(error);
             });
     });

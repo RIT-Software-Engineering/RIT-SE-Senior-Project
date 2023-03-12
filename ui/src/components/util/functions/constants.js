@@ -16,7 +16,6 @@ export const config = {
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
         // No auth needed
-        API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
         API_GET_ACTIVE_ARCHIVES: `${BASE_API_URL}/db/getActiveArchiveProjects`,
         API_GET_ARCHIVES: `${BASE_API_URL}/db/getArchiveProjects`,
         API_GET_ARCHIVE_POSTER: `${BASE_API_URL}/db/getArchivePoster`,
@@ -25,6 +24,7 @@ export const config = {
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
         API_GET_SEARCH_FOR_ARCHIVES: `${BASE_API_URL}/db/searchForArchive`,
         API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
+        API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
 
         // GET - Auth needed
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
