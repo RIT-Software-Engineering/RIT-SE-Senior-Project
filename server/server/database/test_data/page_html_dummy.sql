@@ -34,7 +34,7 @@ INSERT INTO page_html (name, html) VALUES
                              </button>
                              <script>
                               function clickHandler() {
-                                     window.location.href = window.location.origin + '/proposal-form';
+                                     window.location.href = window.location.origin + \'/proposal-form\';
                               }
                             </script>
                          </div>

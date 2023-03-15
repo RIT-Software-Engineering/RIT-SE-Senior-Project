@@ -92,12 +92,14 @@ export default function ArchivePanel(props){
                     setInitialState((prevInitialState) => {
                         return {
                             ...prevInitialState,
-                            start_date: dates[0].start_date,
-                            end_date: dates[0].end_date,
+                            start_date: dates.start_date,
+                            end_date: dates.end_date,
                             dept: "SE"
                         }
                     });
-                })
+                }) .catch((error) => {
+                alert("An issue occurred while searching for archive content " + error);
+            });
         }
     },[props.project])
 
