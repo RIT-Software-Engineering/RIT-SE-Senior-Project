@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
     Logger.warn("NOT IN PRODUCTION MODE - USERS CAN SIGN IN BY CHANGING THEIR COOKIES")
 }
 
-else if(process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'){
+else if(process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'production'){
     console.warn("NO ENVIRONMENT VARIABLES SET - MAKES SURE USERS CAN'T SIGN IN BY CHANGING THEIR COOKIES")
 }
 
