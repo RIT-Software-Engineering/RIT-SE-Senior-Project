@@ -132,7 +132,8 @@ function ProposalPage() {
 
     return (
         <>
-            <Modal open={!!modalOpen} {...generateModalFields()} onClose={() => closeModal()} dimmer="blurring" />
+            <Modal open={!!modalOpen} {...generateModalFields()} onClose={() => closeModal()} dimmer="blurring"
+                   className={"sticky"} />
             <div className="row">
                 <h2>Submit A Project Proposal</h2>
             </div>

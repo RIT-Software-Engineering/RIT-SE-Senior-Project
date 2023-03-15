@@ -1,7 +1,8 @@
 :root {
-    --header-height: 6em;
-    --footer-height: 12em;
+    --header-height: 7em;
+    --footer-height: 7em;
     --page-padding: 1.5em;
+    --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
 }
 
 #page {
@@ -25,7 +26,8 @@
 }
 
 .accordion {
-    margin-top: 0px !important;
+    height: auto !important;
+    margin-top: 0 !important;
     margin-bottom: 1em !important;
 }
 
@@ -58,6 +60,7 @@
 }
 
 .accordion-buttons-container :first-child {
+
     margin: 0 0 0 0 !important;
     border-top-left-radius: 0.28571429rem !important;
     border-bottom-left-radius: 0.28571429rem !important;
@@ -77,4 +80,20 @@
 
 .spacer {
     flex-grow: 1;
+}
+
+button.ui.button, .ui.icon.button, .ui.icon.buttons, .button, a.ui.button {
+    background-color: #f8f9fa;
+    color: #212529;
+    padding: 10px 20px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+*:not(i) {
+    font-family: var(--fonts) !important;
+}
+
+.pagination-container {
+    padding-top: 1em;
 }

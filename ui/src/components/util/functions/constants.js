@@ -16,17 +16,27 @@ export const config = {
         PROPOSAL_FORM: `${BASE_URL}/proposal-form`,
 
         // No auth needed
-        API_GET_EXEMPLARY_PROJECTS: `${BASE_API_URL}/db/selectExemplary`,
-        API_GET_POSTER: `${BASE_API_URL}/db/getPoster`,
+        API_GET_ACTIVE_ARCHIVES: `${BASE_API_URL}/db/getActiveArchiveProjects`,
+        API_GET_ARCHIVES: `${BASE_API_URL}/db/getArchiveProjects`,
+        API_GET_ARCHIVE_POSTER: `${BASE_API_URL}/db/getArchivePoster`,
+        API_GET_ARCHIVE_VIDEO: `${BASE_API_URL}/db/getArchiveVideo`,
+        API_GET_ARCHIVE_IMAGE: `${BASE_API_URL}/db/getArchiveImage`,
         API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
+        API_GET_SEARCH_FOR_ARCHIVES: `${BASE_API_URL}/db/searchForArchive`,
+        API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
+        API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
 
         // GET - Auth needed
         API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
         API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
         API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
+        // Grabs project or projects (i.e. coach) info for specific user.
         API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
         API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
         API_GET_PROJECT_MEMBERS: `${BASE_API_URL}/db/getProjectMembers`,
+        // Get below is currently unused.
+        API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
+        // Grabs all the semester data from semester_groups and orders them by start and end date.
         API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
         API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
         API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,
@@ -52,6 +62,14 @@ export const config = {
         API_GET_SPONSOR_NOTES: `${BASE_API_URL}/db/getSponsorNotes`,
         API_GET_SEARCH_FOR_SPONSOR: `${BASE_API_URL}/db/searchForSponsor`,
         API_GET_SPONSOR_PROJECTS: `${BASE_API_URL}/db/getSponsorProjects`,
+        API_GET_ARCHIVE_PROJECT: `${BASE_API_URL}/db/getArchiveProject`,
+        API_GET_LATE_SUBMISSION:`${BASE_API_URL}/db/getLateSubmission`,
+        API_GET_FILES: `${BASE_API_URL}/db/getFiles`,
+        API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
+        API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
+        API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
+        //Matches semester from project table to semester_id from semester_groups, returns start and end date
+        API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
 
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
@@ -63,14 +81,22 @@ export const config = {
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
         API_POST_CREATE_USER: `${BASE_API_URL}/db/createUser`,
         API_POST_BATCH_CREATE_USER: `${BASE_API_URL}/db/batchCreateUser`,
+        API_POST_CREATE_DIRECTORY: `${BASE_API_URL}/db/createDirectory`,
+        API_POST_RENAME_FILES_DIRECTORY: `${BASE_API_URL}/db/renameDirectoryOrFile`,
         API_POST_UPLOAD_FILES: `${BASE_API_URL}/db/uploadFiles`,
         API_POST_CREATE_SPONSOR: `${BASE_API_URL}/db/createSponsor`,
         API_POST_EDIT_SPONSOR: `${BASE_API_URL}/db/editSponsor`,
         API_POST_CREATE_SPONSOR_NOTE: `${BASE_API_URL}/db/createSponsorNote`,
+        API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
+        API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
+        API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
+
+        //DELETE - Auth needed
+        API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
+        API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
 
         // PATCH - Auth needed
         API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
-
 
 
 

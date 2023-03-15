@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
 import { Button, Divider, Icon, Modal } from 'semantic-ui-react';
-import { formatDateTime } from '../../../../util/functions/utils';
+import { formatDate } from '../../../../util/functions/utils';
 import { SecureFetch } from '../../../../util/functions/secureFetch';
 
 export default function SubmissionViewerModal(props) {
@@ -10,6 +10,9 @@ export default function SubmissionViewerModal(props) {
     const [submission, setSubmission] = useState({});
     const [files, setFiles] = useState([]);
     const [noSubmission, setNoSubmission] = useState(true)
+    const [due, setDue] = useState()
+    const [late, setLate] = useState(false);
+    const [day, setDay] = useState(0)
 
     const loadSubmission = () => {
         SecureFetch(`${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`)
@@ -26,6 +29,21 @@ export default function SubmissionViewerModal(props) {
             .catch((error) => {
                 alert("Failed to get action log data " + error);
             });
+
+        SecureFetch(`${config.url.API_GET_LATE_SUBMISSION}?log_id=${props.action?.action_log_id}`)
+            .then((response) => response.json())
+            .then((dueDate) => {
+                let dueDateTime = new Date(dueDate[0].due_date);
+                setDue(dueDateTime);
+                let submitDate = new Date(props.action.submission_datetime.split(' ')[0].toString());
+                setLate(dueDateTime < submitDate);
+                if(dueDateTime < submitDate){
+                    daysLate(dueDateTime, submitDate)
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get due and submission data " + error);
+            })
     }
 
     const noSubmissionText = (target) => {
@@ -41,8 +59,17 @@ export default function SubmissionViewerModal(props) {
         }
     }
 
+    const daysLate = (due, submitted) => {
+        const dueDate  = formatDate(due);
+        const submitDate    = formatDate(submitted);
+        const diffInMs   = new Date(submitDate) - new Date(dueDate)
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+        setDay(diffInDays);
+    }
+
     return (
         <Modal
+            className={"sticky"}
             onClose={() => {
                 setOpen(false);
                 props?.isOpenCallback(false);
@@ -65,15 +92,20 @@ export default function SubmissionViewerModal(props) {
                 content: <div>
                     <p><b>Semester/Project:</b> {props.semesterName} - {props.projectName}</p>
                     <p><b>Submitted:</b>
-                        {props.action.mock_id && `${props.action.mock_name} (${props.action.mock_id}) as `}
-                        {`${props.action.name} (${props.action.system_id}) `}
-                        {formatDateTime(props.action.submission_datetime)}
+                        {props.action.mock_id && ` ${props.action.mock_name} (${props.action.mock_id}) as `}
+                        {` ${props.action.name} (${props.action.system_id}) `}
+                        {formatDate(props.action.submission_datetime)}
+                        {` (Due ${formatDate(due)})`}
+                        {late && ` ${day} days' late`}
                     </p>
                     <Divider />
                     <h3>Submission</h3>
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
                     {!props.noSubmission && <>
                         {Object.keys(submission)?.map((key) => {
+                            if(submission[key].includes("fakepath")){
+                                return false;
+                            }
                             return (
                                 <div key={key}>
                                     <p><b>{key}:</b> {submission[key]}</p>

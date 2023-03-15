@@ -6,7 +6,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from 'react-phone-number-input/input'
 import us from 'react-phone-number-input/locale/en'
 
-
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
 export default function DatabaseTableEditor(props) {
@@ -95,7 +94,7 @@ export default function DatabaseTableEditor(props) {
 
         if (checked !== undefined) {
             if (isActiveField) {
-                // The active field either stores and empty string or a datetime.
+                // The active field either stores an empty string or a datetime.
                 // The datetime is set by the server if the active field is set to 'false'.
                 value = checked ? "" : false;
             } else {
@@ -119,6 +118,11 @@ export default function DatabaseTableEditor(props) {
 
     };
 
+    /**
+     * This is how the edit table for any form of editing is made and filled with the initial state.
+     * The initial state is renamed to 'formData', and field(aka formFieldArray, the fields that are populated from
+     * other editor.js files, will contain the name of the column being queried from the db.
+     * */
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
@@ -309,6 +313,7 @@ export default function DatabaseTableEditor(props) {
     return (
         <>
             <Modal
+                className={"sticky"}
                 trigger={trigger}
                 header={props.header}
                 content={{ content:
@@ -321,7 +326,11 @@ export default function DatabaseTableEditor(props) {
                 }}
                 actions={modalActions()}
             />
-            <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
+            <Modal
+                className={"sticky"}
+                size="tiny"
+                open={!!submissionModalOpen} {...generateModalFields()}
+                onClose={() => closeSubmissionModal()} />
         </>
     );
 }

@@ -75,12 +75,14 @@ export default function UserEditorUserGroups() {
                             semesterMap[coaches] = [];
                         }
                         semesterMap[coaches].push(user);
+                        semesterMap[coaches].sort((a, b) => a.lname.localeCompare(b.lname))
                         break;
                     case USERTYPES.ADMIN:
                         if (!semesterMap[admins]) {
                             semesterMap[admins] = [];
                         }
                         semesterMap[admins].push(user);
+                        semesterMap[admins].sort((a, b) => a.lname.localeCompare(b.lname))
                         break;
 
                     default:
@@ -102,6 +104,7 @@ export default function UserEditorUserGroups() {
                 }
 
                 if (student.project) {
+                    //If a students project doesn't exist inside the semestermap yet, it creates it
                     if (!semesterMap["semesters"][student.semester_id]["projects"][student.project]) {
                         semesterMap["semesters"][student.semester_id]["projects"][student.project] = {
                             name: projectMap[student.project].display_name || projectMap[student.project].title,
@@ -110,19 +113,24 @@ export default function UserEditorUserGroups() {
                         };
                     }
                     semesterMap["semesters"][student.semester_id]["projects"][student.project]["students"].push(student);
+                    //Sorting after insertion, not the most optimal, but should be okay.
+                    semesterMap["semesters"][student.semester_id]["projects"][student.project]["students"].sort((a, b) => a.lname.localeCompare(b.lname))
                 } else {
                     // if a student hasn't been assigned a project yet
                     if (!semesterMap["semesters"][student.semester_id][unassignedStudentsStr]) {
                         semesterMap["semesters"][student.semester_id][unassignedStudentsStr] = [];
                     }
                     semesterMap["semesters"][student.semester_id][unassignedStudentsStr].push(student);
+                    semesterMap["semesters"][student.semester_id][unassignedStudentsStr].sort((a, b) => a.lname.localeCompare(b.lname))
                 }
-            } else {
+            }
+            else {
                 //if a student doesn't have an assigned semester group yet
                 if (!semesterMap[unassignedStudentsStr]) {
                     semesterMap[unassignedStudentsStr] = [];
                 }
                 semesterMap[unassignedStudentsStr].push(student);
+                semesterMap[unassignedStudentsStr].sort((a, b) => a.lname.localeCompare(b.lname))
             }
         }
         return semesterMap;

@@ -2,11 +2,13 @@
     min-height: var(--footer-height);
     background-color: black;
     color: white;
+    padding-top: 2em;
+    padding-bottom: 1em;
 }
 
 #bringMeDown {
     margin-bottom: 0px;
-    padding-top: 5em;
+    padding-top: 1.5em;
 }
 
 #bringMeDownSignedIn {

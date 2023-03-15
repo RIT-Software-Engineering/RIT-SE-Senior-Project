@@ -52,7 +52,7 @@ app.use(express.json());
 app.use(
     fileupload({
         safeFileNames: true,
-        preserveExtension: true,
+        preserveExtension: 4,
     })
 );
 
@@ -60,5 +60,4 @@ app.use(
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
-
 app.listen(port);

@@ -71,6 +71,7 @@ export default function ViewProjectMembers(props) {
 
     return (
         <Modal
+            className={"sticky"}
             trigger={<Button onClick={fetchProjectCoaches} icon={<Icon name="eye" />} />}
             header={`${userType} for '${props.projectName}'`}
             content={{

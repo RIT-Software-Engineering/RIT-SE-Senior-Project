@@ -15,7 +15,7 @@ export default function ActionEditor(props) {
                 setActionsData(actionsData);
             })
             .catch((error) => {
-                alert("Failed to get actionss data" + error);
+                alert("Failed to get actions data" + error);
             });
     }, []);
 

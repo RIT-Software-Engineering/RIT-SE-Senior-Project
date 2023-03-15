@@ -1,10 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import { useHistory } from "react-router-dom";
 import "../../../css/footer.css";
 import {UserContext} from "../../util/functions/UserContext";
 
 function Footer() {
-    const history = useHistory();
     const { user } = useContext(UserContext);
     const [signedIn, setSignedIn] = useState(false);
     useEffect(() => {
@@ -23,9 +21,10 @@ function Footer() {
                                 <i className="ui icon copyright"></i> Rochester Institute of Technology, All Rights Reserved
                             </h5>
                         </div>
-                        <div id="version"className="column">
+                        <div id="version" className="column">
                             <h5>
-                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project" >V.1.3.0</a>
+                                <a href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
+                                   target="_blank" rel="noreferrer">V.1.4.0</a>
                             </h5>
                         </div>
                     </div>

@@ -41,30 +41,38 @@ function Header() {
         return (
             <>
                 <div id="nav-buttons" className="ui right floated buttons">
-                    <button
+                    <a href={"/"}
                         className="ui button"
                         onClick={() => {
                             history.push("/");
                         }}
                     >
                         Home
-                    </button>
-                    {signedIn && <button
+                    </a>
+                    <a href={"/projects"}
+                        className="ui button"
+                        onClick={() => {
+                            history.push("/projects");
+                        }}
+                    >
+                        Projects
+                    </a>
+                    {signedIn && <a href={"/dashboard"}
                         className="ui button"
                         onClick={() => {
                             history.push("/dashboard");
                         }}
                     >
                         Dashboard
-                    </button>}
-                    <button
+                    </a>}
+                    <a href={"/sponsor"}
                         className="ui button"
                         onClick={() => {
                             history.push("/sponsor");
                         }}
                     >
                         Sponsor a Project
-                    </button>
+                    </a>
                     {process.env.REACT_APP_NODE_ENV === 'production' ? <button
                         className="ui button"
                         onClick={signInOut}
@@ -72,6 +80,7 @@ function Header() {
                         {signInOutBtnText}
                     </button>
                         : <Modal
+                            className={"sticky"}
                             trigger={<Button>Dev Sign in/Sign Out</Button>}
                             header="Sign in/Sign Out"
                             content={{
@@ -100,8 +109,18 @@ function Header() {
                     >
                         Home
                     </Menu.Item>
+                    <Menu.Item
+                        as="a"
+                        href={"/projects"}
+                        onClick={() => {
+                            history.push("/projects");
+                        }}
+                    >
+                        Projects
+                    </Menu.Item>
                     {signedIn && <Menu.Item
                         as="a"
+                        href={"/dashboard"}
                         onClick={() => {
                             history.push("/dashboard");
                         }}
@@ -110,6 +129,7 @@ function Header() {
                     </Menu.Item>}
                     <Menu.Item
                         as="a"
+                        href={"/sponsor"}
                         onClick={() => {
                             history.push("/sponsor");
                         }}
@@ -119,12 +139,14 @@ function Header() {
                     {process.env.REACT_APP_NODE_ENV === 'production' ?
                         <Menu.Item
                             as="a"
+                            href={void (0)}
                             onClick={signInOut}
                         >
                             {signInOutBtnText}
                     </Menu.Item>
-                        : <Menu.Item as="a">
+                        : <Menu.Item as="a" href={void (0)}>
                             <Modal
+                                className={"sticky"}
                                 trigger={<div>Dev Sign in/Sign Out</div>}
                                 header="Sign in/Sign Out"
                                 content={{

@@ -109,6 +109,7 @@ export default function ActionPanel(props) {
 
     ];
 
+    //Processing to be done before data is sent to the backend.
     const preChange = (formData, name, value) => {
         if (name === action_target && [ACTION_TARGETS.coach_announcement, ACTION_TARGETS.student_announcement].includes(value)) {
             formData[short_desc] = "";

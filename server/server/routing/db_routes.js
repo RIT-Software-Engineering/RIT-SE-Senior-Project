@@ -4,9 +4,11 @@ const db_router = require("express").Router();
 const { validationResult, body } = require("express-validator");
 const PDFDoc = require("pdfkit");
 const fs = require("fs");
+const fse = require("fs-extra")
 const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
+const he = require('he');
 
 function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
@@ -85,7 +87,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res) => {
         let getUsersQuery = `
             SELECT *
@@ -103,12 +104,12 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res) => {
 
         let query = "";
         let params = [];
         switch (req.user.type) {
+            //Retrieves all users from a semester group that is similar to the student that is making the query.
             case ROLES.STUDENT:
                 query = `
                     SELECT users.* FROM users
@@ -175,7 +176,6 @@ module.exports = (db) => {
             });
     });
 
-
     db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {
 
         let query = `SELECT users.*, project_coaches.project_id FROM users
@@ -186,7 +186,6 @@ module.exports = (db) => {
 
         db.query(query, params).then((users) => res.send(users));
     });
-
 
     // NOTE: This is currently used for getting user for AdminView to mock users, however, I feel that this network request will get quite large
     // as we add about 100 users every semester.
@@ -210,6 +209,7 @@ module.exports = (db) => {
     ],
         async (req, res) => {
             let result = validationResult(req);
+            console.log(result);
 
             if (result.errors.length !== 0) {
                 return res.status(400).send(result);
@@ -273,7 +273,6 @@ module.exports = (db) => {
                 });
         }
     );
-
 
     db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
         let body = req.body;
@@ -374,7 +373,6 @@ module.exports = (db) => {
     })
 
     db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
-
         const getCoachInfoQuery = `
             SELECT users.system_id,
             users.fname,
@@ -409,18 +407,46 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/selectExemplary", (req, res) => {
+    // used in the /projects page and home page if featured
+    db_router.get("/getActiveArchiveProjects", (req, res) => {
+        const { resultLimit, page, featured } = req.query;
+        let skipNum = (page * resultLimit);
+        let projectsQuery;
+        let rowCountQuery;
+        if (featured === "true") {
+            // home page - randomized order of projects
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? ) 
+            AND inactive = '' AND featured = 1 ORDER BY random() LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
+        } else {
+            // projects page - all archived projects data regardless if they are archived or not
+            projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+            AND inactive = '' ORDER BY archive_id LIMIT ?`;
+            rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
+        }
+        const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
+        const rowCountPromise = db.query(rowCountQuery);
+        Promise.all([rowCountPromise, projectsPromise])
+            .then(([[rowCount], projects]) => {
+                res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
+    // endpoint for getting ALL archive data to view within admin view/editor
+    db_router.get("/getArchiveProjects", (req, res) => {
         const { resultLimit, offset } = req.query;
+        let skipNum = (offset * resultLimit);
+        let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?) 
+            ORDER BY archive_id LIMIT ?`;
+        let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
 
-        const projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive}
-            WHERE priority >= 0
-            AND oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive}
-                                ORDER BY priority ASC LIMIT ?)
-            ORDER BY priority ASC LIMIT ?`;
-
-        const rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE priority >= 0`;
-
-        const projectsPromise = db.query(projectsQuery, [offset, resultLimit]);
+        const projectsPromise = db.query(projectsQuery, [skipNum, resultLimit]);
         const rowCountPromise = db.query(rowCountQuery);
 
         Promise.all([rowCountPromise, projectsPromise])
@@ -428,7 +454,6 @@ module.exports = (db) => {
                 res.send({ totalProjects: rowCount[Object.keys(rowCount)[0]], projects: projects });
             })
             .catch((error) => {
-                console.error(error);
                 res.status(500).send(error);
             });
     });
@@ -445,14 +470,12 @@ module.exports = (db) => {
             .catch(err => res.status(500).send(err));
     });
 
-
     db_router.get("/getCandidateProjects", [UserAuth.isSignedIn], async (req, res) => {
         const query = "SELECT * from projects WHERE projects.status = 'candidate';"
         db.query(query)
             .then((projects) => res.send(projects))
             .catch(err => res.status(500).send(err));
     });
-
 
     db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
         let query;
@@ -522,6 +545,159 @@ module.exports = (db) => {
             .then((projects) => res.send(projects))
             .catch(err => res.status(500).send(err));
     });
+
+    db_router.post(
+        "/editArchive", [UserAuth.isAdmin], async (req, res) => {
+            let body = req.body;
+            const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured=?, outstanding=?, creative=?, priority=?,
+                                        title=?, project_id=?, team_name=?, 
+                                        members=?, sponsor=?, coach=?,
+                                        poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
+                                        video=?, name=?, dept=?,
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
+                                    WHERE archive_id = ?`;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
+
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
+            }
+
+            const strToInt = (data) => {
+                if(typeof data === 'string') {
+                    return parseInt(data);
+                }
+                return 0;
+            }
+
+            let updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                strToInt(body.priority),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.archive_image,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+                body.keywords,
+                body.url_slug,
+                inactive,
+                body.archive_id
+            ];
+
+            db.query(updateArchiveQuery, updateArchiveParams)
+                .then(() => {
+                    return res.status(200).send();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send(err);
+                });
+        }
+    );
+
+    db_router.post("/createArchive",
+        UserAuth.isAdmin,
+        body("featured").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
+        async (req, res) => {
+            let body = req.body;
+            const inactive = body.inactive === 'true' ? moment().format(CONSTANTS.datetime_format) : "";
+
+            const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
+                                    priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
+                                    keywords, url_slug, inactive)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?);`
+
+            const checkBox = (data) => {
+                if(data === 'true' || data === '1'){
+                    return 1;
+                }
+                return 0;
+            }
+
+            const strToInt = (data) => {
+                if(typeof data === 'string') {
+                    return parseInt(data);
+                }
+                return 0;
+            }
+
+            const updateArchiveParams = [
+                checkBox(body.featured),
+                checkBox(body.outstanding),
+                checkBox(body.creative),
+                strToInt(body.priority),
+                body.title,
+                body.project_id,
+                body.team_name,
+                body.members,
+                body.sponsor,
+                body.coach,
+                body.poster_thumb,
+                body.poster_full,
+                body.archive_image,
+                body.synopsis,
+                body.video,
+                body.name,
+                body.dept,
+                body.start_date,
+                body.end_date,
+                body.keywords,
+                body.url_slug,
+                inactive
+            ]
+
+            db.query(updateArchiveQuery,updateArchiveParams)
+                .then((response) => {
+                    // Setting project to archive, May also be changed to remove a project from project table
+                    // if not wanted.
+                    const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
+                                    SET status = 'archive'
+                                    WHERE project_id = ?`
+                    const updateProjectParams = [
+                        body.project_id
+                    ]
+                    res.status(200).send(response);
+                    db.query(updateProjectQuery,updateProjectParams)
+                        .then((response) => res.status(200).send(response))
+                        .catch(err => res.status(500).send(err))
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send(err);
+                });
+        });
+
+    //Gets the start and end dates of a project based on the semester that it is associated with.
+    db_router.get("/getProjectDates", UserAuth.isAdmin,(req, res) => {
+        const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
+        const getDatesParams = [req.query.semester];
+        db.query(getDatesQuery, getDatesParams)
+            .then((dates) => {
+                res.send(dates)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
 
     db_router.post(
         "/editProject",
@@ -729,12 +905,26 @@ module.exports = (db) => {
         } else res.send("File not found");
     });
 
+    /*
+    * Route to get sponsor data, particularly for getting all sponsor
+    * emails for messaging. Sent to admin sponsor tab for building a csv
+    */
+    db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+        let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`
+        let params = [];
+        db.query(query, params)
+            .then((response) => {
+                res.send(response);
+            }).catch((err) => {
+            console.error(err);
+            return res.status(500).send(err);
+        });
+    })
 
     /**
      * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
      */
     db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
-
         let filesUploaded = [];
 
         // Attachment Handling
@@ -748,8 +938,8 @@ module.exports = (db) => {
             const formattedPath = `resource/${req.body.path}`;
             const baseURL = path.join(__dirname, `../../${formattedPath}`);
 
+            //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
             fs.mkdirSync(baseURL, { recursive: true });
-
             for (let x = 0; x < req.files.files.length; x++) {
                 req.files.files[x].mv(
                     `${baseURL}/${req.files.files[x].name}`,
@@ -763,9 +953,101 @@ module.exports = (db) => {
                 filesUploaded.push(`${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`);
             }
         }
-
         res.send({ msg: "Success!", filesUploaded: filesUploaded });
     });
+
+    db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        if (!fs.existsSync(baseURL)){
+            fs.mkdirSync(baseURL, { recursive: true });
+            res.send({msg: "Success!"});
+        } else {
+            res.send({msg: "Fail!"});
+        }
+
+    });
+
+    db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res) => {
+        const { oldPath, newPath } = req.query;
+        const formattedOldPath = oldPath === "" ? `resource/` : `resource/${oldPath}`;
+        const formattedNewPath = newPath === "" ? `resource/` : `resource/${newPath}`;
+        const baseURLOld = path.join(__dirname, `../../${formattedOldPath}`);
+        const baseURLNew = path.join(__dirname, `../../${formattedNewPath}`);
+
+        // New path already exists, so we can't rename
+        if (fs.existsSync(baseURLNew)) {
+            return res.status(500);
+        }
+        // Copy all files from old directory to new directory
+        if (fs.lstatSync(baseURLOld).isDirectory()) {
+            fse.copySync(baseURLOld, baseURLNew);
+            fs.rmdirSync(baseURLOld, { recursive: true });
+            res.send({msg: "Success!"});
+        // Rename file
+        } else if (fs.lstatSync(baseURLOld).isFile()) {
+            fs.renameSync(baseURLOld, baseURLNew);
+            res.send({msg: "Success!"});
+        }
+    });
+
+    db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
+        let fileData = []
+        // This is the path with the specified directory we want to find files in.
+        const formattedPath = req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.mkdirSync(baseURL, { recursive: true });
+        // Get the files in the directory
+        fs.readdir(baseURL, function (err, files) {
+            if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+            }
+            const info = fs.statSync(baseURL);
+            files.forEach(function (file) {
+                // Only files have sizes, directories do not. Send file size if it is a file
+                const fileInfo = fs.statSync(baseURL+file);
+                if(fileInfo.isFile()) {
+                    fileData.push({
+                        file: file,
+                        size: fileInfo.size,
+                        lastModified: fileInfo.ctime
+                    });
+                } else {
+                    fileData.push({
+                        file: file,
+                        size: 0,
+                        lastModified: info.ctime
+                    });
+                }
+            });
+            res.send(fileData);
+        })
+    });
+
+    db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        fs.unlink(baseURL, (err => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            else {
+                res.send({ msg: "Success!"});
+            }
+        }));
+    })
+
+    db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res) => {
+        const formattedPath = `resource/${req.query.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+        if (fs.existsSync(baseURL)) {
+            fs.rmdirSync(baseURL, { recursive: true });
+            return res.status(200).send({msg: "Success!"});
+        } else {
+            return res.status(500).send({msg: "Fail!"});
+        }
+    })
 
     db_router.post(
         "/submitProposal",
@@ -919,7 +1201,7 @@ module.exports = (db) => {
                         {
                             underline: true,
                         };
-                        doc.fontSize(12).fill("black").text(body[key]); // Text value from proposal
+                        doc.fontSize(12).fill("black").text(he.decode(body[key].replace(/\r\n|\r/g, '\n'))); // Text value from proposal
                         doc.moveDown();
                         doc.save();
                     }
@@ -942,10 +1224,16 @@ module.exports = (db) => {
         }
     );
 
-    db_router.get("/getPoster", (req, res) => {
-        let screenedFileName = path.normalize(req.query.fileName).replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
+    db_router.get("/getArchivePoster", (req, res) => {
+        res.sendFile(path.join(__dirname, "../../resource/archivePosters/" + req.query.fileName));
+    });
 
-        res.sendFile(path.join(__dirname, "../posters/" + screenedFileName));
+    db_router.get("/getArchiveVideo", (req, res) => {
+        res.sendFile(path.join(__dirname, "../../resource/archiveVideos/" + req.query.fileName));
+    });
+
+    db_router.get("/getArchiveImage", (req, res) => {
+        res.sendFile(path.join(__dirname, "../../resource/archiveImages/" + req.query.fileName));
     });
 
     db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
@@ -1079,6 +1367,49 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getHtml",  (req, res) => {
+        let getHtmlQuery = `SELECT * FROM page_html`;
+        let queryParams = []
+        //If there is a query parameter, then select html from specified table.
+        if( typeof req.query.name !== 'undefined' && req.query.name){
+            getHtmlQuery = `SELECT html FROM page_html WHERE name = ?`
+            queryParams = [req.query.name]
+        }
+        db.query(getHtmlQuery, queryParams)
+            .then((html) => {
+                res.send(html);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            })
+    })
+
+    db_router.post("/editPage", [UserAuth.isAdmin], (req, res) => {
+        let editPageQuery = `UPDATE page_html
+        SET html = ?
+        WHERE name = ?
+        `;
+        let promises = []
+        //Individually update all html tables from the body of the req.
+        Object.keys(req.body).forEach((key) => {
+            let queryParams = [req.body[key], key]
+            promises.push(
+                db.query(editPageQuery, queryParams)
+                    .then(() => {
+                        //do nothing
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        res.send({error: err})
+                    })
+            );
+        })
+        Promise.all(promises).then(() => {
+            res.send({ msg: "Success!"});
+        });
+    })
+
     db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
         let getActionsQuery = `
             SELECT *
@@ -1129,6 +1460,26 @@ module.exports = (db) => {
             });
     });
 
+    /*
+    * This will join between the action and action_log tables. It returns the due date from
+    * a specific log_id's action_template # = action_id.
+    */
+    db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res)=> {
+        let getLateSubmissionQuery = `SELECT actions.due_date
+                                      FROM action_log
+                                      JOIN actions ON actions.action_id = action_log.action_template
+                                      WHERE action_log.action_log_id = ?`;
+        let params = [req.query.log_id];
+        db.query(getLateSubmissionQuery, params)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    })
+
     db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res) => {
         let getActionLogQuery = "";
         let params = [];
@@ -1170,7 +1521,6 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
-
 
     db_router.get("/getAllActionLogs", [UserAuth.isSignedIn], async (req, res) => {
 
@@ -1302,6 +1652,20 @@ module.exports = (db) => {
         db.query(query, params).then((users) => res.send(users));
     });
 
+    /**
+     * This is for getting the archive data to view/edit based on a specific ID.
+     * */
+    db_router.get("/getArchiveProject", [UserAuth.isAdmin], (req, res) => {
+        let query = `
+            SELECT *
+            FROM archive
+            WHERE archive_id = ?
+        `;
+
+        const params = [req.query.archive_id]
+        db.query(query, params).then((project) => res.send(project))
+    })
+
     db_router.get("/getSponsorProjects", [UserAuth.isCoachOrAdmin], (req, res) => {
 
         let query = `
@@ -1335,7 +1699,6 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
-
 
     db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
 
@@ -1377,7 +1740,6 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
-
 
     db_router.get("/getSubmissionFile", [UserAuth.isSignedIn], async (req, res) => {
 
@@ -1425,7 +1787,6 @@ module.exports = (db) => {
         res.status(404).send("File not found or you are unauthorized to view file");
     });
 
-
     db_router.post("/editAction", [UserAuth.isAdmin, body("page_html").unescape()], (req, res) => {
         let body = req.body;
 
@@ -1469,7 +1830,6 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
     });
-
 
     db_router.get("/searchForSponsor", [UserAuth.isCoachOrAdmin, body("page_html").escape()], (req, res) => {
         const { resultLimit, offset, searchQuery } = req.query;
@@ -1561,6 +1921,174 @@ module.exports = (db) => {
 
     });
 
+    db_router.get("/searchForArchive", (req, res) => {
+        const { resultLimit, offset, searchQuery, inactive } = req.query;
+        let skipNum = (offset * resultLimit);
+        let getProjectsQuery = "";
+        let queryParams = [];
+        let getProjectsCount = "";
+        let projectCountParams = [];
+
+        // allow inactive projects in search
+        if(inactive === "true") {
+            getProjectsQuery = `SELECT * FROM  archive WHERE 
+                            archive.OID NOT IN (
+                SELECT OID
+                FROM archive
+                WHERE title like ?
+                   OR sponsor like ?
+                   OR members like ?
+                   OR coach like ?
+                   OR keywords like ?
+                   OR synopsis like ?
+                   OR url_slug like ?
+                ORDER BY title,
+                         sponsor,
+                         members,
+                         coach, 
+                         keywords,
+                         synopsis,
+                         url_slug
+            LIMIT ?
+            ) AND (
+                archive.title like ?
+                OR archive.sponsor like ?
+                OR archive.members like ?
+                OR archive.coach like ?
+                OR archive.keywords like ?
+                OR archive.synopsis like ?
+                OR archive.url_slug like ?
+                )
+            ORDER BY
+                archive.title,
+                archive.sponsor,
+                archive.members,
+                archive.coach,
+                archive.keywords,
+                archive.synopsis,
+                archive.url_slug
+            LIMIT ?`;
+
+            getProjectsCount = `SELECT COUNT(*)
+                            FROM archive
+                            WHERE 
+                                title like ?
+                                OR sponsor like ?
+                                OR members like ?
+                                OR coach like ?
+                                OR keywords like ?
+                                OR synopsis like ?
+                                OR url_slug like ?
+                                `;
+        } else {
+            getProjectsQuery = `SELECT * FROM  archive WHERE 
+                            archive.OID NOT IN (
+                SELECT OID
+                FROM archive
+                WHERE title like ?
+                   OR sponsor like ?
+                   OR members like ?
+                   OR coach like ?
+                   OR keywords like ?
+                   OR synopsis like ?
+                   OR url_slug like ?
+                   AND inactive = ''
+                ORDER BY title,
+                         sponsor,
+                         members,
+                         coach, 
+                         keywords,
+                         synopsis,
+                         url_slug
+            LIMIT ?
+            ) AND (
+                archive.title like ?
+                OR archive.sponsor like ?
+                OR archive.members like ?
+                OR archive.coach like ?
+                OR archive.keywords like ?
+                OR archive.synopsis like ?
+                OR archive.url_slug like ?
+                AND inactive = ''
+                )
+            ORDER BY
+                archive.title,
+                archive.sponsor,
+                archive.members,
+                archive.coach,
+                archive.keywords,
+                archive.synopsis,
+                archive.url_slug
+            LIMIT ?`;
+
+            getProjectsCount = `SELECT COUNT(*)
+                            FROM archive
+                            WHERE 
+                                title like ?
+                                OR sponsor like ?
+                                OR members like ?
+                                OR coach like ?
+                                OR keywords like ?
+                                OR synopsis like ?
+                                OR url_slug like ?
+                                AND (inactive = '' OR inactive IS NULL)
+                                `;
+        }
+
+        const searchQueryParam = searchQuery || '';
+
+        queryParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            skipNum || 0,
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            resultLimit || 0
+        ];
+        projectCountParams = [
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+            '%'+searchQueryParam+'%',
+        ]
+
+        const projectPromise = db.query(getProjectsQuery, queryParams);
+        const projectCountPromise = db.query(getProjectsCount, projectCountParams);
+        Promise.all([projectCountPromise,projectPromise])
+            .then(([[projectCount], projectRows]) => {
+                res.send({projectCount: projectCount[Object.keys(projectCount)[0]], projects: projectRows})
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
+    db_router.get("/getArchiveFromSlug", (req, res) => {
+        let query = `SELECT * FROM archive WHERE url_slug=?`;
+        let params = [req.query.url_slug]
+        db.query(query, params)
+            .then((values) => {
+                res.status(200).send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    });
+
     db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
 
         let body = req.body;
@@ -1641,9 +2169,18 @@ module.exports = (db) => {
                 email       = ?,
                 phone       = ?,
                 association = ?,
-                type        = ?
+                type        = ?,
+                inActive    = ?,
+                doNotEmail  = ?
             WHERE sponsor_id = ?
         `;
+
+        /**
+         * This is done so that the sponsors table boolean (int) columns can be updated correctly, without them working
+         * against the existing code inside of DatabaseTableEditor.js
+         **/
+        let inActive = (body.inActive === "true" || body.inActive === '1');
+        let doNotEmail = (body.doNotEmail === "true"|| body.doNotEmail === '1');
 
         let updateSponsorParams = [
             body.fname,
@@ -1654,6 +2191,8 @@ module.exports = (db) => {
             body.phone,
             body.association,
             body.type,
+            inActive,
+            doNotEmail,
             body.sponsor_id
         ];
 
@@ -1741,7 +2280,6 @@ module.exports = (db) => {
         ]
 
         createSponsorNote(params).then(([status, error]) => {
-            console.log("endpoint", status);
             if (error){
                 res.status(status).send(error)
             }
@@ -1799,6 +2337,19 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
+
+    db_router.get("/getArchive", [UserAuth.isAdmin], (req,res) => {
+        let getArchiveQuery = `
+            SELECT * 
+            FROM archive`;
+        db.query(getArchiveQuery)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
+    })
 
     db_router.get("/getSemesterAnnouncements", [UserAuth.isSignedIn], (req, res) => {
 
@@ -1858,8 +2409,6 @@ module.exports = (db) => {
                 return res.status(500).send(err);
             });
     });
-
-
 
     db_router.post("/createSemester", [
         UserAuth.isAdmin,

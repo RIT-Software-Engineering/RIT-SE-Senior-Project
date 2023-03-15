@@ -1,3 +1,11 @@
+# Website
+
+| Environment | URL                                      |
+|-------------|------------------------------------------|
+| Production  | https://seniorproject.se.rit.edu         |
+| Test        | https://seniorproject-sandbox.se.rit.edu |
+
+
 # Server Setup
 
 ## Add new developer to production server
@@ -25,11 +33,17 @@ _**On first login, new user must change password by using the ``passwd`` command
 5. Add user to pm2 group: ``usermod -aG pm2 USERNAME``
 6. Paste ``alias pm2='env HOME=/home/website/RIT-SE-Senior-Project/server pm2'`` into the bottom of ``~/.bashrc``
 
-## Install updates
+## Install locally
 
-There is a ``install.sh`` script in the git repo that can be run to install any updates in the git repo.
+Run ``install.bat`` to get dependencies set up locally
 
-NOTE: In the git repo, the ``install.sh`` script does not have executable permissions, so on the server, you may need to do a ``chmod +x ./install.sh`` to give it executable permissions. If you change this script, you will need to remove the executable permissions ``chmod -x ./install.sh`` then do a ``git pull`` and then readd the executable permissions with ``chmod +x ./install.sh``
+## Run locally
+
+In order to get things running locally, you'll need to run ``npm start`` in both the ``./server`` and ``./ui`` folders
+
+## Deploying to prod
+
+After sshing into the server, cd into either prod or test project. Then run according deploy.sh script
 
 ## Technical Information
 
