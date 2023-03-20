@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Accordion } from "semantic-ui-react";
 import { formatDateTime } from "../../util/functions/utils";
 import {
     Pagination,
@@ -43,6 +44,60 @@ export default function ActionLogs(props) {
     }, [])
     return (
         <>
+            <h3>Time Logging</h3>
+            <div>
+                <div className="accordion-button-group">
+                    <Accordion
+                        fluid
+                        styled
+                        defaultActiveIndex={0}
+                        panels={[
+                            {
+                                key: "Semester Here",
+                                title: "Semester Here",
+                                content: {
+                                    content: <div className="accordion-button-group">
+                                        <Accordion
+                                            fluid
+                                            styled
+                                            defaultActiveIndex={0}
+                                            panels={[
+                                                {
+                                                    key: "Project Here",
+                                                    title: "Project Here",
+                                                    content: {
+                                                        content: <Table>
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHeaderCell>Name</TableHeaderCell>
+                                                                    <TableHeaderCell>Date</TableHeaderCell>
+                                                                    <TableHeaderCell>Time</TableHeaderCell>
+                                                                    <TableHeaderCell>Comment</TableHeaderCell>
+                                                                    <TableHeaderCell>Submission Date</TableHeaderCell>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                <TableRow style={{background: 'none', fontWeight: 'none'}}>
+                                                                    <TableHeaderCell>Jeffery Beril (qrs123)</TableHeaderCell>
+                                                                    <TableHeaderCell>03/06/2023</TableHeaderCell>
+                                                                    <TableHeaderCell>3 hrs</TableHeaderCell>
+                                                                    <TableHeaderCell>Coded Widget</TableHeaderCell>
+                                                                    <TableHeaderCell>03/07/2023</TableHeaderCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    },
+                                                },
+                                            ]}
+                                        />
+                                    </div>
+                                },
+                            },
+                        ]}
+                    />
+                </div>
+            </div>
+            <h3>Action Submissions</h3>
             <Table>
                 <TableHeader>
                     <TableRow>
