@@ -112,7 +112,7 @@ export default function ArchivePanel(props){
         title: decode(props?.project?.title) || "",
         team_name: decode(props?.project?.team_name) || "",
         members: decode(props?.project?.members) || "",
-        sponsor: decode(props?.activeSponsors) || "",
+        sponsor: decode(props?.project?.sponsor) || "",
         coach: decode(props?.project?.coach) || "",
         poster_thumb: decode(props?.project?.poster_thumb) || "",
         poster_full: decode(props?.project?.poster_full) || "",
