@@ -110,7 +110,7 @@ export default function ArchiveTable() {
                             </TableHeaderCell>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>{projects?.map((project, idx) => {
+                    <TableBody key={projects}>{projects?.map((project, idx) => {
                         let title = `${project.title}`
                         let members = `${project.members}`
                         let sponsor = `${project.sponsor}`
