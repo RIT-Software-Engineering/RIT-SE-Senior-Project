@@ -24,6 +24,8 @@ export default function ActionLogs(props) {
     props.semesterData.forEach(semester => semesterMap[semester.semester_id] = semester);
     const [actionLogs, setActionLogs] = useState([]);
     const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
+    const [timeLogs, setTimeLogs] = useState([]);
+    const [timeLogCount, setTimeLogCount] = useState(LOGS_PER_PAGE)
     const userContext = useContext(UserContext)
     const prevLogin = new Date(userContext.user.prev_login);
 
@@ -38,6 +40,16 @@ export default function ActionLogs(props) {
                 alert("Failed to get action log data " + error);
             });
     }
+
+    SecureFetch(`${config.url.API_GET_ALL_TIME_LOGS}/?resultLimit=${LOGS_PER_PAGE}`)
+        .then((response) => response.json())
+        .then((time_logs) => {
+            setTimeLogs(time_logs.timeLogs);
+            setTimeLogCount(time_logs.timeLogCount);
+            })
+            .catch((error) => {
+                alert("Failed to get time log data " + error);
+            });
 
     useEffect(() => {
         getPaginationData(0);
@@ -77,13 +89,24 @@ export default function ActionLogs(props) {
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
-                                                                <TableRow style={{background: 'none', fontWeight: 'none'}}>
-                                                                    <TableHeaderCell>Jeffery Beril (qrs123)</TableHeaderCell>
-                                                                    <TableHeaderCell>03/06/2023</TableHeaderCell>
-                                                                    <TableHeaderCell>3 hrs</TableHeaderCell>
-                                                                    <TableHeaderCell>Coded Widget</TableHeaderCell>
-                                                                    <TableHeaderCell>03/07/2023</TableHeaderCell>
-                                                                </TableRow>
+                                                                {timeLogs?.map((timeLog, idx) => {
+                                                                    let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
+                                                                    if (timeLog.mock_id) {
+                                                                        submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`
+                                                                    }
+                                                                    let showNewSubmissionHighlight = new Date(timeLog.submission_datetime) > prevLogin;
+                                                                    return (
+
+                                                                        <TableRow style={{background: showNewSubmissionHighlight? '#fffaf3' : 'none', fontWeight: showNewSubmissionHighlight? 'bold': 'none'}} key={idx}>
+
+                                                                            <TableCell>{submittedBy}</TableCell>
+                                                                            <TableCell>{timeLog.work_date}</TableCell>
+                                                                            <TableCell>{timeLog.time_amount}</TableCell>
+                                                                            <TableCell>{timeLog.work_comment}</TableCell>
+                                                                            <TableCell>{formatDateTime(timeLog.submission_datetime)}</TableCell>
+                                                                        </TableRow>
+                                                                    );
+                                                                })}
                                                             </TableBody>
                                                         </Table>
                                                     },
