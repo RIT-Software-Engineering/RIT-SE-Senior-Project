@@ -1605,6 +1605,116 @@ module.exports = (db) => {
             });
     });
 
+    db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+        let getTimeLogQuery = "";
+        let params = [];
+
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
+                //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
+                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        WHERE time_log.project = ?`;
+                params = [req.user.project];
+                break;
+            case ROLES.COACH:
+            case ROLES.ADMIN:
+                getTimeLogQuery = `SELECT time_log.*,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) AS name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) AS mock_name
+                    FROM time_log
+                    WHERE time_log.project = ?`;
+                params = [req.query.project_id];
+                break;
+
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+        db.query(getTimeLogQuery, params)
+            .then((values) => {
+                res.send(values);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(err);
+            });
+    });
+
+    db_router.get("/getAllTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+
+        const { resultLimit, offset } = req.query;
+
+        let getTimeLogQuery = "";
+        let queryParams = [];
+        let getTimeLogCount = "";
+        let countParams = [];
+
+        switch (req.user.type) {
+            case ROLES.STUDENT:
+                getTimeLogQuery = `SELECT time_log.*,
+                        projects.display_name, projects.title,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        JOIN projects ON projects.project_id = time_log.project
+                        WHERE time_log.project = ?
+                        AND time_log.oid NOT IN (SELECT oid FROM time_log
+                            ORDER BY submission_datetime DESC LIMIT ?)
+                        ORDER BY submission_datetime DESC LIMIT ?`;
+                queryParams = [req.user.project, offset || 0, resultLimit || 0];
+                getTimeLogCount = `SELECT COUNT(*) FROM time_log
+                    WHERE time_log.project = ?
+                    AND time_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+                countParams = [req.user.project, req.user.project];
+                break;
+            case ROLES.COACH:
+                getTimeLogQuery = `SELECT time_log.*,
+                    projects.display_name, projects.title,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        JOIN projects ON projects.project_id = time_log.project
+                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
+                        AND time_log.oid NOT IN (SELECT oid FROM time_log
+                            ORDER BY submission_datetime DESC LIMIT ?)
+                        ORDER BY submission_datetime DESC LIMIT ?`;
+                queryParams = [req.user.system_id, offset || 0, resultLimit || 0];
+                getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+                countParams = [req.user.system_id];
+                break;
+            case ROLES.ADMIN:
+                getTimeLogQuery = `SELECT time_log.*,
+                projects.display_name, projects.title,
+                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                FROM time_log
+                    JOIN projects ON projects.project_id = time_log.project
+                    AND time_log.oid NOT IN (SELECT oid FROM time_log
+                        ORDER BY submission_datetime DESC LIMIT ?)
+                    ORDER BY submission_datetime DESC LIMIT ?`;
+                queryParams = [offset || 0, resultLimit || 0];
+                getTimeLogCount = `SELECT COUNT(*) FROM Time_log`;
+                break;
+            default:
+                res.status(401).send("Unknown role");
+                return;
+        }
+
+        const timeLogsPromise = db.query(getTimeLogQuery, queryParams);
+        const timeLogsCountPromise = db.query(getTimeLogCount, countParams);
+        Promise.all([timeLogsCountPromise, timeLogsPromise])
+            .then(([[timeLogCount], projects]) => {
+                res.send({ timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]], timeLogs: projects });
+            })
+            .catch((error) => {
+                res.status(500).send(error);
+            });
+    });
+
     db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
 
         const { resultLimit, offset } = req.query;

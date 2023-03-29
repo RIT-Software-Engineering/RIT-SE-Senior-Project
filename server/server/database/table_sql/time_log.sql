@@ -1,5 +1,6 @@
 CREATE TABLE time_log (
     time_log_id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    semester        INTEGER NOT NULL,
     submission_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
     system_id       TEXT NOT NULL,
     project         INTEGER NOT NULL,
