@@ -1697,7 +1697,7 @@ module.exports = (db) => {
                         ORDER BY submission_datetime DESC LIMIT ?)
                     ORDER BY submission_datetime DESC LIMIT ?`;
                 queryParams = [offset || 0, resultLimit || 0];
-                getTimeLogCount = `SELECT COUNT(*) FROM Time_log`;
+                getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
                 break;
             default:
                 res.status(401).send("Unknown role");
