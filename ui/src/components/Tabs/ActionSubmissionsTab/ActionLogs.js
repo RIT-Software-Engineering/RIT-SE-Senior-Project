@@ -15,6 +15,7 @@ import SubmissionViewerModal from "../DashboardTab/TimelinesView/Timeline/Submis
 import { SecureFetch } from '../../util/functions/secureFetch';
 import { config, USERTYPES } from '../../util/functions/constants';
 import { UserContext } from "../../util/functions/UserContext";
+import TimeLogPanel from "./TimeLogPanel";
 
 const LOGS_PER_PAGE = 50;
 
@@ -125,6 +126,9 @@ export default function ActionLogs(props) {
                                                 },
                                             ]}
                                         />
+                                        <div className="accordion-buttons-container">
+                                            <TimeLogPanel header="Log Time" />
+                                        </div>
                                         <Accordion
                                             fluid
                                             styled
