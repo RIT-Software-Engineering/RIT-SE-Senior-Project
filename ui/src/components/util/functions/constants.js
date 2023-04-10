@@ -77,6 +77,7 @@ export const config = {
         API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,
         API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
         API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
+        API_POST_CREATE_TIME_LOG: `${BASE_API_URL}/db/createTimeLog`,
         API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
         API_POST_CREATE_SEMESTER: `${BASE_API_URL}/db/createSemester`,
         API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,

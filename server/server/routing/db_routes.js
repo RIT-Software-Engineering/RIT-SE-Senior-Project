@@ -312,6 +312,46 @@ module.exports = (db) => {
             });
     });
 
+    db_router.post("/createTimeLog", [
+        //todo: un-hardcode
+        body("work_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("time_amount").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("work_comment").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+    ],
+        async (req, res) => {
+            let result = validationResult(req);
+            console.log(result);
+
+            if (result.errors.length !== 0) {
+                return res.status(400).send(result);
+            }
+
+            let body = req.body;
+
+            const sql = `INSERT INTO ${DB_CONFIG.tableNames.time_log}
+                (system_id, work_date, time_amount, work_comment, project, semester, mock_id)
+                VALUES (?,?,?,?,?,?,?)`;
+
+            const params = [
+                'abc123',
+                body.work_date,
+                body.time_amount,
+                body.work_comment,
+                "2021-5-14_da90mGtCgojqWElAItowB",
+                "2021-21 Spring / Summer",
+                "",
+            ];
+            db.query(sql, params)
+                .then(() => {
+                    return res.status(200).send();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send(err);
+                });
+        }
+    );
+
     db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
         let getProjectsQuery = `
             SELECT *
