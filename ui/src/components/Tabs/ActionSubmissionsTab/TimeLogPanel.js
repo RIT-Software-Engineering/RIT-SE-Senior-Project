@@ -15,7 +15,7 @@ export default function TimeLogPanel(props) {
         FAIL: "We were unable to receive your time logging.",
     };
 
-    /*let submitRoute = initialState.time_log_id === "" ? config.url.API_POST_ : config.url.API_POST_;*/
+    let submitRoute = initialState.time_log_id === config.url.API_POST_CREATE_TIME_LOG;
 
     let formFieldArray = [
         {
@@ -43,10 +43,10 @@ export default function TimeLogPanel(props) {
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
             header={props.header}
-            /*submitRoute={submitRoute}*/
+            submitRoute={submitRoute}
             formFieldArray={formFieldArray}
             create={initialState.time_log_id === ""}
-            button={initialState.time_log_id === "" ? "plus" : "edit"}
+            button="calendar plus"
         />
     );
 }

@@ -315,7 +315,7 @@ module.exports = (db) => {
     db_router.post("/createTimeLog", [
         //todo: un-hardcode
         body("work_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-        body("time_amount").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
+        body("time_amount").not().isEmpty().trim().escape().withMessage("Input Number").isLength({ max: 50 }),
         body("work_comment").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     ],
         async (req, res) => {
@@ -1701,11 +1701,8 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project = ?
-                        AND time_log.oid NOT IN (SELECT oid FROM time_log
-                            ORDER BY submission_datetime DESC LIMIT ?)
-                        ORDER BY submission_datetime DESC LIMIT ?`;
-                queryParams = [req.user.project, offset || 0, resultLimit || 0];
+                        WHERE time_log.project = ?`;
+                queryParams = [req.user.project];
                 getTimeLogCount = `SELECT COUNT(*) FROM time_log
                     WHERE time_log.project = ?
                     AND time_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
@@ -1718,11 +1715,8 @@ module.exports = (db) => {
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
-                        AND time_log.oid NOT IN (SELECT oid FROM time_log
-                            ORDER BY submission_datetime DESC LIMIT ?)
-                        ORDER BY submission_datetime DESC LIMIT ?`;
-                queryParams = [req.user.system_id, offset || 0, resultLimit || 0];
+                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+                queryParams = [req.user.system_id];
                 getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
                 countParams = [req.user.system_id];
                 break;
@@ -1732,11 +1726,7 @@ module.exports = (db) => {
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                 FROM time_log
-                    JOIN projects ON projects.project_id = time_log.project
-                    AND time_log.oid NOT IN (SELECT oid FROM time_log
-                        ORDER BY submission_datetime DESC LIMIT ?)
-                    ORDER BY submission_datetime DESC LIMIT ?`;
-                queryParams = [offset || 0, resultLimit || 0];
+                    JOIN projects ON projects.project_id = time_log.project`;
                 getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
                 break;
             default:

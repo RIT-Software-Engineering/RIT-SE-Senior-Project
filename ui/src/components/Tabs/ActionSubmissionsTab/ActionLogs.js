@@ -16,6 +16,7 @@ import { SecureFetch } from '../../util/functions/secureFetch';
 import { config, USERTYPES } from '../../util/functions/constants';
 import { UserContext } from "../../util/functions/UserContext";
 import TimeLogPanel from "./TimeLogPanel";
+import TimeLogDelete from "./TimeLogDelete";
 
 const LOGS_PER_PAGE = 50;
 
@@ -43,7 +44,7 @@ export default function ActionLogs(props) {
     }
 
     const getTimeData = (page) => {
-        /*SecureFetch(`${config.url.API_GET_ALL_TIME_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=0`)
+        SecureFetch(`${config.url.API_GET_ALL_TIME_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=0`)
             .then((response) => response.json())
             .then((time_logs) => {
                 setTimeLogs(time_logs.timeLogs);
@@ -51,14 +52,7 @@ export default function ActionLogs(props) {
             })
             .catch((error) => {
                 alert("Failed to get time log data " + error);
-            });*/
-        setTimeLogs([{name:'Jeffery Beril', system_id:'qrs123', submission_datetime:'2021-03-08', work_comment:"Coded Widget", time_amount:3, work_date:'2021-03-06', project_id:'2021-5-14_RUM5kpFxW_doOsiZpkdri'},
-                     {name:'Steven Jobe', system_id:'tuv123', submission_datetime:'2021-03-07', work_comment:"Debugged Feature", time_amount:2, work_date:'2021-03-05', project_id:'2021-5-14_RUM5kpFxW_doOsiZpkdri'},
-                     {name:'John Smith', system_id:'abc123', submission_datetime:'2021-03-07', work_comment:"Designed Architecture", time_amount:4, work_date:'2021-03-07', project_id:'2021-5-14_da90mGtCgojqWElAItowB'},
-                     {name:'Tom Amaril', system_id:'nop123', submission_datetime:'2021-03-09', work_comment:"Applied Code Standards", time_amount:1, work_date:'2021-03-06', project_id:'2021-5-14_RUM5kpFxW_doOsiZpkdri'},
-                     {name:'Dude Bro', system_id:'def123', submission_datetime:'2021-03-05', work_comment:"Documented Progress", time_amount:2, work_date:'2021-03-06', project_id:'2021-5-14_da90mGtCgojqWElAItowB'},
-                     {name:'Steven Jobe', system_id:'tuv123', submission_datetime:'2021-03-06', work_comment:"Resolved Merge Request", time_amount:3, work_date:'2021-03-07', project_id:'2021-5-14_RUM5kpFxW_doOsiZpkdri'},
-                     {name:'Tom Amaril', system_id:'nop123', submission_datetime:'2021-03-06', work_comment:"Ate Spaghetti Code", time_amount:2, work_date:'2021-03-05', project_id:'2021-5-14_RUM5kpFxW_doOsiZpkdri'}])
+            });
     }
 
     useEffect(() => {
@@ -99,10 +93,11 @@ export default function ActionLogs(props) {
                                                                     <TableHeaderCell>Time</TableHeaderCell>
                                                                     <TableHeaderCell>Comment</TableHeaderCell>
                                                                     <TableHeaderCell>Submission Date</TableHeaderCell>
+                                                                    <TableHeaderCell>Delete</TableHeaderCell>
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
-                                                                {timeLogs?.filter(log => log.project_id == '2021-5-14_da90mGtCgojqWElAItowB').map((timeLog, idx) => {
+                                                                {timeLogs?.filter(log => log.project == '2021-5-14_da90mGtCgojqWElAItowB').map((timeLog, idx) => {
                                                                     let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
                                                                     if (timeLog.mock_id) {
                                                                         submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`
@@ -117,6 +112,11 @@ export default function ActionLogs(props) {
                                                                             <TableCell>{timeLog.time_amount}</TableCell>
                                                                             <TableCell>{timeLog.work_comment}</TableCell>
                                                                             <TableCell>{formatDateTime(timeLog.submission_datetime)}</TableCell>
+                                                                            <TableCell>
+                                                                                <div className="accordion-buttons-container">
+                                                                                    <TimeLogDelete header="Delete log? (This action cannot be undone)" />
+                                                                                </div>
+                                                                            </TableCell>
                                                                         </TableRow>
                                                                     );
                                                                 })}
@@ -149,7 +149,7 @@ export default function ActionLogs(props) {
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
-                                                                {timeLogs?.filter(log => log.project_id == '2021-5-14_RUM5kpFxW_doOsiZpkdri').map((timeLog, idx) => {
+                                                                {timeLogs?.filter(log => log.project == '2021-5-14_RUM5kpFxW_doOsiZpkdri').map((timeLog, idx) => {
                                                                     let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
                                                                     if (timeLog.mock_id) {
                                                                         submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`
