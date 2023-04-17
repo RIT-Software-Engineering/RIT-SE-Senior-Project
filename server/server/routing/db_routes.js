@@ -314,9 +314,6 @@ module.exports = (db) => {
 
     db_router.post("/createTimeLog", [
         //todo: un-hardcode
-        body("work_date").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
-        body("time_amount").not().isEmpty().trim().escape().withMessage("Input Number").isLength({ max: 50 }),
-        body("work_comment").not().isEmpty().trim().escape().withMessage("Cannot be empty").isLength({ max: 50 }),
     ],
         async (req, res) => {
             let result = validationResult(req);
@@ -328,18 +325,18 @@ module.exports = (db) => {
 
             let body = req.body;
 
-            const sql = `INSERT INTO ${DB_CONFIG.tableNames.time_log}
-                (system_id, work_date, time_amount, work_comment, project, semester, mock_id)
+            const sql = `INSERT INTO time_log
+                (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
                 VALUES (?,?,?,?,?,?,?)`;
 
             const params = [
+                8,
                 'abc123',
-                body.work_date,
-                body.time_amount,
-                body.work_comment,
                 "2021-5-14_da90mGtCgojqWElAItowB",
-                "2021-21 Spring / Summer",
                 "",
+                '2023-04-10',
+                3,
+                "did work",
             ];
             db.query(sql, params)
                 .then(() => {

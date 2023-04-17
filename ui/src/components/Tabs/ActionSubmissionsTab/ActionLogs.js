@@ -27,7 +27,8 @@ export default function ActionLogs(props) {
     const [actionLogs, setActionLogs] = useState([]);
     const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
     const [timeLogs, setTimeLogs] = useState([]);
-    const [timeLogCount, setTimeLogCount] = useState(LOGS_PER_PAGE)
+    const [timeLogCount, setTimeLogCount] = useState(LOGS_PER_PAGE);
+    const [timeStats, setTimeStats] = useState([]);
     const userContext = useContext(UserContext)
     const prevLogin = new Date(userContext.user.prev_login);
 
@@ -49,6 +50,21 @@ export default function ActionLogs(props) {
             .then((time_logs) => {
                 setTimeLogs(time_logs.timeLogs);
                 setTimeLogCount(time_logs.timeLogCount);
+                var users = [];
+                for (var i = 0; i < time_logs.timeLogs.length; i++){
+                    var timeLog = time_logs.timeLogs[i]
+                    if (!users.includes(timeLog.name)){
+                        users.push(timeLog.name);
+                    }
+                }
+                var userStats = [];
+                for (var i = 0; i < users.length; i++){
+                    var userTotal = time_logs.timeLogs.filter(log => log.name == users[i]).map(log=>log.time_amount).reduce((a,b)=>a+b);
+                    var uProject = time_logs.timeLogs.filter(log => log.name == users[i])[0].project;
+                    var sysid = time_logs.timeLogs.filter(log => log.name == users[i])[0].system_id;
+                    userStats.push({name: users[i], total: userTotal, lastWeek: 4, thisWeek: 2, project: uProject, system_id: sysid});
+                }
+                setTimeStats(userStats);
             })
             .catch((error) => {
                 alert("Failed to get time log data " + error);
@@ -90,7 +106,7 @@ export default function ActionLogs(props) {
                                                                 <TableRow>
                                                                     <TableHeaderCell>Name</TableHeaderCell>
                                                                     <TableHeaderCell>Date</TableHeaderCell>
-                                                                    <TableHeaderCell>Time</TableHeaderCell>
+                                                                    <TableHeaderCell>Time (hrs)</TableHeaderCell>
                                                                     <TableHeaderCell>Comment</TableHeaderCell>
                                                                     <TableHeaderCell>Submission Date</TableHeaderCell>
                                                                     <TableHeaderCell>Delete</TableHeaderCell>
@@ -138,12 +154,13 @@ export default function ActionLogs(props) {
                                                     key: "Project Here",
                                                     title: "Lenel onGaurd Datawarehouse",
                                                     content: {
-                                                        content: <Table>
+                                                        content: <div>
+                                                        <Table>
                                                             <TableHeader>
                                                                 <TableRow>
                                                                     <TableHeaderCell>Name</TableHeaderCell>
                                                                     <TableHeaderCell>Date</TableHeaderCell>
-                                                                    <TableHeaderCell>Time</TableHeaderCell>
+                                                                    <TableHeaderCell>Time (hrs)</TableHeaderCell>
                                                                     <TableHeaderCell>Comment</TableHeaderCell>
                                                                     <TableHeaderCell>Submission Date</TableHeaderCell>
                                                                 </TableRow>
@@ -169,6 +186,33 @@ export default function ActionLogs(props) {
                                                                 })}
                                                             </TableBody>
                                                         </Table>
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHeaderCell>Name</TableHeaderCell>
+                                                                    <TableHeaderCell>04/07/2023 - 04/15/2023</TableHeaderCell>
+                                                                    <TableHeaderCell>03/31/2023 - 04/06/2023</TableHeaderCell>
+                                                                    <TableHeaderCell>Total (hrs)</TableHeaderCell>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {timeStats?.filter(log => log.project == '2021-5-14_RUM5kpFxW_doOsiZpkdri').map((timeLog, idx) => {
+                                                                    let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
+                                                                    let showNewSubmissionHighlight = new Date(timeLog.submission_datetime) > prevLogin;
+                                                                    return (
+
+                                                                        <TableRow style={{background: showNewSubmissionHighlight? '#fffaf3' : 'none', fontWeight: showNewSubmissionHighlight? 'bold': 'none'}} key={idx}>
+
+                                                                            <TableCell>{submittedBy}</TableCell>
+                                                                            <TableCell>{timeLog.thisWeek}</TableCell>
+                                                                            <TableCell>{timeLog.lastWeek}</TableCell>
+                                                                            <TableCell>{timeLog.total}</TableCell>
+                                                                        </TableRow>
+                                                                    );
+                                                                })}
+                                                            </TableBody>
+                                                        </Table>
+                                                        </div>
                                                     },
                                                 },
                                             ]}

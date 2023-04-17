@@ -15,7 +15,7 @@ export default function TimeLogPanel(props) {
         FAIL: "We were unable to receive your time logging.",
     };
 
-    let submitRoute = initialState.time_log_id === config.url.API_POST_CREATE_TIME_LOG;
+    let submitRoute = config.url.API_POST_CREATE_TIME_LOG;
 
     let formFieldArray = [
         {
@@ -31,7 +31,7 @@ export default function TimeLogPanel(props) {
             name: "time_amount",
         },
         {
-            type: "input",
+            type: "textArea",
             label: "Comment",
             placeHolder: "Comment",
             name: "comment",
