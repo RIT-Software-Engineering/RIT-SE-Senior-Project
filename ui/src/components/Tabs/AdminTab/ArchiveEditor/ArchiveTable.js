@@ -15,12 +15,12 @@ import { SecureFetch } from "../../../util/functions/secureFetch";
 import _ from "lodash";
 import ArchivePanel from "./ArchivePanel";
 
-const projectsPerPage = 10
+const PROJECTS_PER_PAGE = 10
 
 export default function ArchiveTable() {
 
     const [projects, setProjects] = useState([])
-    const [projectCount, setProjectCount] = useState(projectsPerPage)
+    const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE)
     const [activePage, setActivePage] = useState(0)
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
@@ -28,7 +28,7 @@ export default function ArchiveTable() {
 
     const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}`
+            `${config.url.API_GET_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&offset=${activePage}`
         )
             .then((response) => {
                 if (response.ok) {
@@ -67,7 +67,7 @@ export default function ArchiveTable() {
             setPageChange(pageChange + 99);
             return;
         }
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}&inactive=true`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${PROJECTS_PER_PAGE}&offset=${0}&searchQuery=${input}&inactive=true`)
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);
@@ -110,7 +110,7 @@ export default function ArchiveTable() {
                             </TableHeaderCell>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>{projects?.map((project, idx) => {
+                    <TableBody key={projects}>{projects?.map((project, idx) => {
                         let title = `${project.title}`
                         let members = `${project.members}`
                         let sponsor = `${project.sponsor}`
@@ -140,7 +140,7 @@ export default function ArchiveTable() {
                         lastItem={null}
                         prevItem={{content: <Icon name="angle left"/>, icon: true}}
                         nextItem={{content: <Icon name="angle right"/>, icon: true}}
-                        totalPages={Math.ceil(projectCount / projectsPerPage)}
+                        totalPages={Math.ceil(projectCount / PROJECTS_PER_PAGE)}
                         onPageChange={(event, data) => {
                             setActivePage(data.activePage - 1);
                             setPageChange(data.activePage - 1);

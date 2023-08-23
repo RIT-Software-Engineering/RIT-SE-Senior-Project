@@ -102,3 +102,4 @@ export const slugify = (str) => {
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '');
 }
+

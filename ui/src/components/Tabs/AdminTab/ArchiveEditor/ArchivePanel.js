@@ -3,6 +3,7 @@ import { config, USERTYPES } from "../../../util/functions/constants";
 import React, { useEffect, useState } from "react";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { slugify } from "../../../util/functions/utils";
+import { decode } from "html-entities";
 
 /**
  * Represents an archived project in the Admin Tab -> Archive Editor
@@ -121,21 +122,21 @@ export default function ArchivePanel(props) {
     priority: props?.project?.priority || "",
     archive_id: props?.project?.archive_id || "",
     project_id: props?.project?.project_id || "",
-    title: props?.project?.title || "",
-    team_name: props?.project?.team_name || "",
-    members: props?.project?.members || "",
-    sponsor: props?.activeSponsors || "",
-    coach: props?.project?.coach || "",
-    poster_thumb: props?.project?.poster_thumb || "",
-    poster_full: props?.project?.poster_full || "",
-    archive_image: props?.project?.archive_image || "",
-    synopsis: props?.project?.synopsis || "",
-    video: props?.project?.video || "",
-    name: props?.project?.name || "",
+    title: decode(props?.project?.title) || "",
+    team_name: decode(props?.project?.team_name) || "",
+    members: decode(props?.project?.members) || "",
+    sponsor: decode(props?.project?.sponsor) || "",
+    coach: decode(props?.project?.coach) || "",
+    poster_thumb: decode(props?.project?.poster_thumb) || "",
+    poster_full: decode(props?.project?.poster_full) || "",
+    archive_image: decode(props?.project?.archive_image) || "",
+    synopsis: decode(props?.project?.synopsis).replace(/\r\n|\r/g, "\n") || "",
+    video: decode(props?.project?.video) || "",
+    name: decode(props?.project?.name) || "",
     dept: props?.project?.dept || "",
     start_date: props?.project?.start_date || "",
     end_date: props?.project?.end_date || "",
-    keywords: props?.project?.project_search_keywords || "",
+    keywords: decode(props?.project?.project_search_keywords) || "",
     // suggest a slug if this is a new archive project and the project already exists before archival
     url_slug:
       props?.project?.url_slug || props.newArchive
@@ -232,7 +233,7 @@ export default function ArchivePanel(props) {
       name: "archive_image",
     },
     {
-      type: "input",
+      type: "textArea",
       label: "Synopsis",
       placeholder: "Synopsis",
       name: "synopsis",

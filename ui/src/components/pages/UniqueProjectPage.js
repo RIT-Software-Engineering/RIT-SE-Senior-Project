@@ -4,11 +4,14 @@ import {Button, Modal, Icon} from "semantic-ui-react";
 import {config} from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import {SecureFetch} from "../util/functions/secureFetch";
+import {decode} from "html-entities";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
+
+const CONTENT_HEIGHT = 250;
 
 function UniqueProjectPage({projectData}) {
     const [project, setProject] = useState(projectData);
@@ -40,6 +43,15 @@ function UniqueProjectPage({projectData}) {
         }
     }, [url_slug, project]);
 
+    /**
+     * Decodes sanitized text so that it is readable without ugly letters
+     * @param synopsis archive synopsis
+     * @returns {string} sanitized synopsis
+     */
+    const decodeSynopsis = (synopsis) => {
+        return decode(synopsis).replace(/\r\n|\r/g, '\n');
+    };
+
     return (
         <div>
             {project === undefined
@@ -63,7 +75,7 @@ function UniqueProjectPage({projectData}) {
                     <div className="ui hidden divider"></div>
                     <div className="ui relaxed centered grid">
                         { project?.poster_thumb &&
-                            <img src={`${basePosterURL}${project?.poster_thumb}`} height={250}
+                            <img src={`${basePosterURL}${project?.poster_thumb}`} height={CONTENT_HEIGHT}
                                  style={{cursor: "zoom-in", padding: "5px" }}
                                  onClick={() => setPosterOpen(true)}
                                  alt={project?.title + " Senior Project Thumbnail Poster"}/>
@@ -86,12 +98,12 @@ function UniqueProjectPage({projectData}) {
                             </Modal.Actions>
                         </Modal>
                         { project?.video &&
-                            <video controls height={250}>
+                            <video controls height={CONTENT_HEIGHT}>
                                 <source src={`${baseVideoURL}${project?.video}`} type="video/mp4"/>
                             </video>
                         }
                         { project?.archive_image &&
-                             <img src={`${baseImageURL}${project?.archive_image}`} height={250}
+                             <img src={`${baseImageURL}${project?.archive_image}`} height={CONTENT_HEIGHT}
                                   style={{cursor: "zoom-in", padding: "5px" }}
                                   onClick={() => setImageOpen(true)}
                                   alt={project?.title + " Senior Project Image"}/>
@@ -131,7 +143,7 @@ function UniqueProjectPage({projectData}) {
                     <div className="ui attached stackable padded grid">
                         <div className="column">
                             <div className="ui small header">Synopsis</div>
-                        <p>{project?.synopsis}</p>
+                        <p style={{whiteSpace: "pre-line"}}>{decodeSynopsis(project?.synopsis)}</p>
                         </div>
                     </div>
                 </div>}

@@ -74,7 +74,7 @@ export default function ProjectViewerModal(props) {
         </>
     }
     return (
-        <Modal
+        <Modal className={"sticky"}
             trigger={<Button icon="eye" />}
             header={`Viewing "${props.project.display_name || props.project.title}"`}
             content={{ content: generateModalContent() }}

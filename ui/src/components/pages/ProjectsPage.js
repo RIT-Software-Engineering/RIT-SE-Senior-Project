@@ -5,14 +5,14 @@ import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
 
-const projectsPerPage = 10;
+const PROJECTS_PER_PAGE = 5;
 
 /**
  * Projects page visible on main page of the website without signing in.
  **/
 function ProjectsPage(){
     const [projects, setProjects] = useState([])
-    const [projectCount, setProjectCount] = useState(projectsPerPage)
+    const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
     const [activePage, setActivePage] = useState(0)
     const [pageChange, setPageChange] = useState(0)
     const [searchBarValue, setSearchBarValue] = useState("")
@@ -24,7 +24,7 @@ function ProjectsPage(){
 
     const getPaginationData = () => {
         SecureFetch(
-            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${projectsPerPage * activePage}`
+            `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&page=${activePage}`
         )
             .then((response) => {
                 if (response.ok) {
@@ -34,7 +34,7 @@ function ProjectsPage(){
                 }
             })
             .then((data) => {
-                setProjects(data.projects)
+                setProjects(data.projects);
                 setProjectCount(data.totalProjects)
             })
             .catch((error) => {
@@ -58,7 +58,7 @@ function ProjectsPage(){
             setPageChange(pageChange + 99);
             return;
         }
-        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${projectsPerPage}&offset=${0}&searchQuery=${input}&inactive=false`)
+        SecureFetch(`${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${PROJECTS_PER_PAGE}&offset=${0}&searchQuery=${input}&inactive=false`)
             .then((response) => response.json())
             .then((results) => {
                 setProjectCount(results.projectCount);
@@ -101,7 +101,7 @@ function ProjectsPage(){
                     lastItem={null}
                     prevItem={{ content: <Icon name="angle left" />, icon: true }}
                     nextItem={{ content: <Icon name="angle right" />, icon: true }}
-                    totalPages={Math.ceil(projectCount / projectsPerPage)}
+                    totalPages={Math.ceil(projectCount / PROJECTS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         setActivePage(data.activePage - 1);
                         setPageChange(data.activePage - 1);
