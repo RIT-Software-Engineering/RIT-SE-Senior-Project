@@ -13,7 +13,7 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
     ),
 
     (
-        '2021-5-14_4kQZZwNzM3v0eoteo64Vb','needs revision', 'I need revision', 'REvision inc', 'Revisor', 'revisor@ revision.com', '454 454 4545', NULL, 
+        '2021-5-14_4kQZZwNzM3v0eoteo64Vb','in progress', 'I need revision', 'REvision inc', 'Revisor', 'revisor@ revision.com', '454 454 4545', NULL, 
         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', 'Alternate time stuff', 'on', 'full-rights', NULL,
         NULL, NULL, NULL, NULL, NULL, 2

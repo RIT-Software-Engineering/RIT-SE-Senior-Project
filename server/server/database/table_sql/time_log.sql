@@ -8,7 +8,7 @@ CREATE TABLE time_log (
     work_date       TEXT,
     time_amount     INTEGER,
     work_comment    TEXT,
-    active          INTEGER DEFAULT 1,
+    active          TEXT, -- changed from integer to text and now shows deletion information
     FOREIGN KEY (system_id) REFERENCES users(system_id),
     FOREIGN KEY (project) REFERENCES projects(project_id)
 );
