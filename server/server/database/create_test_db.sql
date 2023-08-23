@@ -5,5 +5,3 @@
  */
 .read table_sql/create_all_tables.sql 
 .read test_data/fill_test_data.sql 
--- .read table_sql/time_log.sql
--- .read test_data/time_log_dummy.sql
