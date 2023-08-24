@@ -7,7 +7,7 @@ VALUES
     ('nop123', 'Tom', 'Amaral', 'bp123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
     ('qrs123', 'Jeffery', 'Beril', 'qrs123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
     ('tuv123', 'Steven', 'Jobe', 'tuv123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
-    ('wxy123', 'Brimstone', 'Obadia', 'wxy123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
+    ('wxy123', 'Brimstone', 'Obadia', 'wxy123@rit.edu', 'student', 4, '2021-5-14_4kQZZwNzM3v0eoteo64Vb', ''),
     ('adminA', 'Samuel', 'Sangsong', 'adminA@rit.edu', 'admin', NULL, NULL, ''),
     ('coachA', 'SomeCoach', 'AAA', 'coachA@rit.edu', 'coach', NULL, NULL, ''),
     ('coachB', 'SomeCoach', 'BBB', 'coachB@rit.edu', 'coach', NULL, NULL, ''),

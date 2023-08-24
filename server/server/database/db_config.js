@@ -14,6 +14,7 @@ module.exports = {
         semester: "semester_group",
         actions: "actions",
         action_logs: "action_log",
+        time_logs: "time_log",
         users: "users",
         project_coaches: "project_coaches",
     },
