@@ -1,16 +1,17 @@
-import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
-import { config, USERTYPES } from "../../../util/functions/constants";
+import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
+import { config, USERTYPES } from "../../util/functions/constants";
 import React, { useEffect, useState } from "react";
-import { SecureFetch } from "../../../util/functions/secureFetch";
-import { slugify } from "../../../util/functions/utils";
+import { SecureFetch } from "../../util/functions/secureFetch";
+import { slugify } from "../../util/functions/utils";
 import { decode } from "html-entities";
+import { UserContext } from "../../util/functions/UserContext";
 
 /**
  * Represents an archived project in the Admin Tab -> Archive Editor
  * @param props
  *      Notable props: newArchive, indicates whether a project has been added to archives or not
  */
-export default function ArchivePanel(props) {
+export default function ProjectArchivePanel(props) {
   const [projectMembers, setProjectMembers] = useState({
     students: [],
     coaches: [],
@@ -116,10 +117,6 @@ export default function ArchivePanel(props) {
   }, [props.project]);
 
   const [initialState, setInitialState] = useState({
-    featured: props?.project?.featured || "",
-    outstanding: props?.project?.outstanding || "",
-    creative: props?.project?.creative || "",
-    priority: props?.project?.priority || "",
     archive_id: props?.project?.archive_id || "",
     project_id: props?.project?.project_id || "",
     title: decode(props?.project?.title) || "",
@@ -166,25 +163,12 @@ export default function ArchivePanel(props) {
 
   let submitRouter;
   if (props.newArchive) {
-    submitRouter = config.url.API_POST_CREATE_ARCHIVE;
+    submitRouter = config.url.API_POST_CREATE_ARCHIVE_STUDENT;
   } else {
-    submitRouter = config.url.API_POST_EDIT_ARCHIVE;
+    submitRouter = config.url.API_POST_EDIT_ARCHIVE_STUDENT;
   }
 
   let formFieldArray = [
-    {
-      type: "input",
-      label: "Project ID",
-      placeholder: "Project ID",
-      name: "project_id",
-      disabled: true,
-    },
-    {
-      type: "input",
-      label: "Archive Project Title",
-      placeholder: "Archive Project Title",
-      name: "title",
-    },
     {
       type: "input",
       label: "Team Name",
@@ -193,27 +177,9 @@ export default function ArchivePanel(props) {
     },
     {
       type: "input",
-      label: "Members",
-      placeholder: "Members",
-      name: "members",
-    },
-    {
-      type: "input",
       label: "Keywords",
       placeholder: "Keywords",
       name: "keywords",
-    },
-    {
-      type: "input",
-      label: "Sponsor",
-      placeholder: "Sponsor",
-      name: "sponsor",
-    },
-    {
-      type: "input",
-      label: "Coach",
-      placeholder: "Coach",
-      name: "coach",
     },
     {
       type: "input",
@@ -247,66 +213,17 @@ export default function ArchivePanel(props) {
     },
     {
       type: "input",
-      label: "Department",
-      placeholder: "Department",
-      name: "dept",
-    },
-    {
-      type: "date",
-      label: "Start Date",
-      placeholder: "Start Date",
-      name: "start_date",
-    },
-    {
-      type: "date",
-      label: "End Date",
-      placeholder: "End Date",
-      name: "end_date",
-    },
-    {
-      type: "checkbox",
-      label: "featured",
-      name: "featured",
-      disabled: false,
-    },
-    {
-      type: "checkbox",
-      label: "outstanding",
-      name: "outstanding",
-      disabled: false,
-    },
-    {
-      type: "checkbox",
-      label: "creative",
-      name: "creative",
-      disabled: false,
-    },
-    {
-      type: "input",
-      name: "priority",
-      label: "priority ***INTEGERS ONLY",
-    },
-    {
-      // slugs can only be set on new archive submission
-      type: "input",
-      label: props.newArchive
-        ? "URL Slug (this can not be changed)"
-        : "URL Slug",
+      label: "URL Slug",
       placeholder: "url_slug",
       name: "url_slug",
-      disabled: !props.newArchive,
+      disabled: true,
     },
     {
       type: "checkbox",
-      label: "inactive",
-      name: "inactive",
-      disabled: false,
-    },
-    {
-      type: "checkbox",
-      label: "locked",
+      label: "Locked",
+      placeholder: "locked",
       name: "locked",
-      disabled: false,
+      disabled: true,
     },
   ];
 

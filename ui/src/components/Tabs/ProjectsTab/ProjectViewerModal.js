@@ -37,6 +37,9 @@ export default function ProjectViewerModal(props) {
             <b>Students:</b> {projectMembers.students?.join(",")} <br />
             <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
 
+            <h3>Website</h3>
+            <b></b> <br />
+
             <h3>Sponsor Info</h3>
             <b>Organization:</b> {decode(props.project.organization||'')} <br />
             <b>Primary Contact:</b> {decode(props.project.primary_contact||'')} <br />
@@ -58,12 +61,6 @@ export default function ProjectViewerModal(props) {
             <b>Assignment of Rights:</b> {decode(props.project.assignment_of_rights||'')} <br />
             <b>Semester:</b> {decode(props.semesterMap[props.project.semester]||'')} <br />
             <b>Status:</b> {decode(props.project.status||'')} <br />
-
-            <h3>Final Project Info</h3>
-            <b>Poster:</b> {decode(props.project.poster||'')} <br />
-            <b>Video:</b> {decode(props.project.video||'')} <br />
-            <b>Website:</b> {decode(props.project.website||'')} <br />
-            <b>Synopsis:</b> {decode(props.project.synopsis||'')} <br />
 
             <h3>Attachments</h3>
             {props.project.attachments ? formattedAttachments(props.project)?.map(file => {

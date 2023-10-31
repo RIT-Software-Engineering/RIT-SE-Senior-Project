@@ -3,7 +3,6 @@ CREATE TABLE archive (
     project_id      INTEGER,
     priority        INTEGER DEFAULT 0, -- how high a project should be displayed on client side
     csv             TEXT,
-    name            TEXT UNIQUE NOT NULL,
     dept            TEXT,
     start_date      TEXT,
     end_date        TEXT,
@@ -23,5 +22,6 @@ CREATE TABLE archive (
     url_slug        TEXT,   -- unique project url
     video           TEXT,   -- path to project video (if any)
     inactive        TEXT DEFAULT '' NOT NULL,   -- Empty string if active, Datetime of when deactivated if inactive
+    locked          TEXT DEFAULT '' NOT NULL,   -- Empty string if unlocked, Datetime of when locked and user otherwise
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );

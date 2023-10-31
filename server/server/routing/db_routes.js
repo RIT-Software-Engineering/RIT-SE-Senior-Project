@@ -738,11 +738,16 @@ module.exports = (db) => {
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
-                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
       body.inactive === "true"
         ? moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const locked =
+      body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
         : "";
 
     const checkBox = (data) => {
@@ -782,6 +787,7 @@ module.exports = (db) => {
       body.keywords,
       body.url_slug,
       inactive,
+      locked,
       body.archive_id,
     ];
 
@@ -810,11 +816,166 @@ module.exports = (db) => {
         body.inactive === "true"
           ? moment().format(CONSTANTS.datetime_format)
           : "";
+      const locked =
+        body.locked === "true"
+          ? "user locked at " + moment().format(CONSTANTS.datetime_format)
+          : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
                                     poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
-                                    keywords, url_slug, inactive)
+                                    keywords, url_slug, inactive, locked)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?);`;
+
+      const checkBox = (data) => {
+        if (data === "true" || data === "1") {
+          return 1;
+        }
+        return 0;
+      };
+
+      const strToInt = (data) => {
+        if (typeof data === "string") {
+          return parseInt(data);
+        }
+        return 0;
+      };
+
+      const updateArchiveParams = [
+        checkBox(body.featured),
+        checkBox(body.outstanding),
+        checkBox(body.creative),
+        strToInt(body.priority),
+        body.title,
+        body.project_id,
+        body.team_name,
+        body.members,
+        body.sponsor,
+        body.coach,
+        body.poster_thumb,
+        body.poster_full,
+        body.archive_image,
+        body.synopsis,
+        body.video,
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.keywords,
+        body.url_slug,
+        inactive,
+      ];
+
+      db.query(updateArchiveQuery, updateArchiveParams)
+        .then((response) => {
+          // Setting project to archive, May also be changed to remove a project from project table
+          // if not wanted.
+          const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
+                                    SET status = 'archive'
+                                    WHERE project_id = ?`;
+          const updateProjectParams = [body.project_id];
+          res.status(200).send(response);
+          db.query(updateProjectQuery, updateProjectParams)
+            .then((response) => res.status(200).send(response))
+            .catch((err) => res.status(500).send(err));
+        })
+        .catch((err) => {
+          console.error(err);
+          return res.status(500).send(err);
+        });
+    }
+  );
+
+  db_router.post("/editArchiveStudent", async (req, res) => {
+    let body = req.body;
+    const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured=?, outstanding=?, creative=?, priority=?,
+                                        title=?, project_id=?, team_name=?,
+                                        members=?, sponsor=?, coach=?,
+                                        poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
+                                        video=?, name=?, dept=?,
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
+                                    WHERE archive_id = ?`;
+    const inactive =
+      body.inactive === "true"
+        ? moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const locked =
+      body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const checkBox = (data) => {
+      if (data === "true" || data === "1") {
+        return 1;
+      }
+      return 0;
+    };
+
+    const strToInt = (data) => {
+      if (typeof data === "string") {
+        return parseInt(data);
+      }
+      return 0;
+    };
+
+    let updateArchiveParams = [
+      checkBox(body.featured),
+      checkBox(body.outstanding),
+      checkBox(body.creative),
+      strToInt(body.priority),
+      body.title,
+      body.project_id,
+      body.team_name,
+      body.members,
+      body.sponsor,
+      body.coach,
+      body.poster_thumb,
+      body.poster_full,
+      body.archive_image,
+      body.synopsis,
+      body.video,
+      body.name,
+      body.dept,
+      body.start_date,
+      body.end_date,
+      body.keywords,
+      body.url_slug,
+      inactive,
+      locked,
+      body.archive_id,
+    ];
+
+    db.query(updateArchiveQuery, updateArchiveParams)
+      .then(() => {
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).send(err);
+      });
+  });
+
+  db_router.post(
+    "/createArchiveStudent",
+    body("featured")
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .withMessage("Cannot be empty"),
+    async (req, res) => {
+      let body = req.body;
+      const inactive = "";
+      const locked = "";
+
+      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
+                                    priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
+                                    keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?);`;

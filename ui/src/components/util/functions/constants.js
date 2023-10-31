@@ -97,6 +97,8 @@ export const config = {
     API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
+    API_POST_EDIT_ARCHIVE_STUDENT: `${BASE_API_URL}/db/editArchiveStudent`,
+    API_POST_CREATE_ARCHIVE_STUDENT: `${BASE_API_URL}/db/createArchiveStudent`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

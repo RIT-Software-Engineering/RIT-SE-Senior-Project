@@ -10,12 +10,14 @@ import {
   Accordion,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
+import ProjectArchivePanel from "./ProjectArchivePanel"
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
 import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
+import { UserContext } from "../../util/functions/UserContext";
 
 const COLUMNS = {
   SEMESTER: "semester",
@@ -114,10 +116,18 @@ export default function Proposals(props) {
           <TableCell>
             <div className="accordion-buttons-container">
               {props.viewOnly ? (
-                <ProjectViewerModal
-                  project={proposal}
-                  semesterMap={semesterMap}
-                />
+                <>
+                  <ProjectViewerModal
+                    project={proposal}
+                    semesterMap={semesterMap}
+                  />
+                  <ProjectArchivePanel
+                    project={proposal}
+                    semesterData={props.semesterData}
+                    activeCoaches={props.activeCoaches}
+                    activeSponsors={props.activeSponsors}
+                  />
+                </>
               ) : (
                 <>
                   <ProjectEditorModal
