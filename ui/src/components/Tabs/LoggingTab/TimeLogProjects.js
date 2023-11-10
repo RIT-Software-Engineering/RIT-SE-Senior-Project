@@ -246,7 +246,9 @@ export default function TimeLogProjects(props) {
                                   <TableCell>
                                     {weeksWorked === 0
                                       ? studentData.avgHours
-                                      : studentData.totalHours / weeksWorked}
+                                      : (
+                                          studentData.totalHours / weeksWorked
+                                        ).toFixed(2)}
                                   </TableCell>
                                   <TableCell>
                                     {studentData.totalHours}

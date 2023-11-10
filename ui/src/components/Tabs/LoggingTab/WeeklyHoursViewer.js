@@ -80,7 +80,7 @@ export default function WeeklyHoursViewer(props) {
                       let avgHours =
                         weeksWorked === 0
                           ? studentData.avgHours
-                          : studentData.totalHours / weeksWorked;
+                          : (studentData.totalHours / weeksWorked).toFixed(2);
                       return (
                         <TableRow>
                           <TableCell style={{ whiteSpace: "nowrap" }}>
