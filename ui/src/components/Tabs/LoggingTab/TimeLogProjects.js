@@ -119,7 +119,11 @@ export default function TimeLogProjects(props) {
                             {projectTimelogs[project]?.timelogs.map(
                               (timeLog, idx) => {
                                 let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
-                                if (timeLog.mock_id === undefined) {
+                                if (
+                                  timeLog.mock_id != "undefined" &&
+                                  timeLog.mock_id != null &&
+                                  timeLog.mock_id != ""
+                                ) {
                                   submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`;
                                 }
                                 let showNewSubmissionHighlight =
@@ -127,6 +131,8 @@ export default function TimeLogProjects(props) {
                                   prevLogin;
                                 const isNotDeactivated =
                                   timeLog.active === null;
+
+                                let date = timeLog.work_date.split("-");
 
                                 return (
                                   <TableRow
@@ -144,7 +150,7 @@ export default function TimeLogProjects(props) {
                                   >
                                     <TableCell>{submittedBy}</TableCell>
                                     <TableCell>
-                                      {formatDate(timeLog.work_date)}
+                                      {`${date[1]}/${date[2]}/${date[0]}`}
                                     </TableCell>
                                     <TableCell>{timeLog.time_amount}</TableCell>
                                     <TableCell>
@@ -158,7 +164,7 @@ export default function TimeLogProjects(props) {
                                     <TableCell>
                                       <div className="delete-button-container">
                                         {timeLog.active === null &&
-                                        projectsData[project].status ===
+                                        projectsData[project].details.status ===
                                           "in progress" &&
                                         timeLog.system_id ===
                                           currentUser.user ? (

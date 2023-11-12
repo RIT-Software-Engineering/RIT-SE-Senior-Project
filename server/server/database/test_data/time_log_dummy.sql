@@ -1,6 +1,5 @@
 INSERT INTO
     time_log (
-        semester,
         system_id,
         project,
         mock_id,
@@ -11,7 +10,6 @@ INSERT INTO
     )
 VALUES
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -20,7 +18,6 @@ VALUES
         'Coded Widget'
     ),
     (
-        8,
         'tuv123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -29,7 +26,6 @@ VALUES
         'Debugged Feature'
     ),
     (
-        8,
         'abc123',
         '2021-5-14_da90mGtCgojqWElAItowB',
         NULL,
@@ -38,7 +34,6 @@ VALUES
         'Designed Architecture'
     ),
     (
-        8,
         'nop123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -47,7 +42,6 @@ VALUES
         'Applied Code Standards'
     ),
     (
-        8,
         'def123',
         '2021-5-14_da90mGtCgojqWElAItowB',
         NULL,
@@ -56,7 +50,6 @@ VALUES
         'Documented Progress'
     ),
     (
-        8,
         'tuv123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -65,7 +58,6 @@ VALUES
         'Resolved Merge Request'
     ),
     (
-        8,
         'nop123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -74,7 +66,6 @@ VALUES
         'Ate Spaghetti Code'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -83,7 +74,6 @@ VALUES
         'Vama added'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -92,7 +82,6 @@ VALUES
         'Vama added 1'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -101,7 +90,6 @@ VALUES
         'Vama added 2'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -110,7 +98,6 @@ VALUES
         'Vama added 3'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -119,7 +106,6 @@ VALUES
         'Vama added 4'
     ),
     (
-        8,
         'wxy123',
         '2021-5-14_4kQZZwNzM3v0eoteo64Vb',
         NULL,
@@ -128,7 +114,6 @@ VALUES
         'Vama added 5'
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -138,7 +123,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -148,7 +132,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -158,7 +141,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -168,7 +150,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -178,7 +159,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -188,7 +168,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,
@@ -198,7 +177,6 @@ VALUES
         NULL
     ),
     (
-        8,
         'qrs123',
         '2021-5-14_RUM5kpFxW_doOsiZpkdri',
         NULL,

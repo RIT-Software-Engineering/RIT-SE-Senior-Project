@@ -12,7 +12,6 @@ export default function TimeLogPanel(props) {
     mockId: props.mockUser.system_id,
     user: props.user,
     userId: props.user.user,
-    semester: props.user.semester_group,
     project: props.project,
   };
 
