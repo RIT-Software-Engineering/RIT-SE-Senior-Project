@@ -65,20 +65,47 @@ export default function LoggingTab(props) {
     let pastWeekEnd = new Date(pastWeekStart);
     pastWeekEnd.setDate(pastWeekEnd.getDate() + 6);
 
-    setCurrentWeek(
-      formatDate(currentWeekStart) + " - " + formatDate(currentWeekEnd)
-    );
-    setPastWeek(formatDate(pastWeekStart) + " - " + formatDate(pastWeekEnd));
+    let currentStart =
+      String(currentWeekStart.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      String(currentWeekStart.getDate()).padStart(2, "0") +
+      "/" +
+      currentWeekStart.getFullYear();
+
+    let currentEnd =
+      String(currentWeekEnd.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      String(currentWeekEnd.getDate()).padStart(2, "0") +
+      "/" +
+      currentWeekEnd.getFullYear();
+
+    let pastStart =
+      String(pastWeekStart.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      String(pastWeekStart.getDate()).padStart(2, "0") +
+      "/" +
+      pastWeekStart.getFullYear();
+
+    let pastEnd =
+      String(pastWeekEnd.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      String(pastWeekEnd.getDate()).padStart(2, "0") +
+      "/" +
+      pastWeekEnd.getFullYear();
+
+    setCurrentWeek(currentStart + " - " + currentEnd);
+
+    setPastWeek(pastStart + " - " + pastEnd);
 
     if (
-      workDate >= currentWeekStart.toLocaleDateString() &&
-      workDate <= currentWeekEnd.toLocaleDateString()
+      workDate.setHours(0, 0, 0, 0) >= currentWeekStart.setHours(0, 0, 0, 0) &&
+      workDate.setHours(0, 0, 0, 0) <= currentWeekEnd.setHours(0, 0, 0, 0)
     ) {
       thisWeek += timeAmount;
     }
     if (
-      workDate >= pastWeekStart.toLocaleDateString() &&
-      workDate <= pastWeekEnd.toLocaleDateString()
+      workDate.setHours(0, 0, 0, 0) >= pastWeekStart.setHours(0, 0, 0, 0) &&
+      workDate.setHours(0, 0, 0, 0) <= pastWeekEnd.setHours(0, 0, 0, 0)
     ) {
       lastWeek += timeAmount;
     }
@@ -161,7 +188,6 @@ export default function LoggingTab(props) {
     SecureFetch(config.url.API_GET_SEMESTER_STUDENTS)
       .then((response) => response.json())
       .then((studentsData) => {
-        console.log("students data ", studentsData);
         if (studentsData.length > 0) {
           Object.entries(studentsData).map(([key, student], i) => {
             if (student.project != null) {
@@ -264,14 +290,15 @@ export default function LoggingTab(props) {
 
             logs[timeLog.project].timelogs.push(timeLog);
 
-            const workDate = new Date(timeLog.work_date).toLocaleDateString();
+            let date = timeLog.work_date.split("-");
+            let timelogDate = `${date[1]}/${date[2]}/${date[0]}`;
 
             if (timeLog.active === null) {
               logs[timeLog.project].students[timeLog.system_id].totalHours +=
                 timeLog.time_amount;
 
               let [thisWeek, lastWeek] = setWeekDates(
-                workDate,
+                new Date(timelogDate),
                 timeLog.time_amount,
                 logs[timeLog.project].students[timeLog.system_id].thisWeek,
                 logs[timeLog.project].students[timeLog.system_id].lastWeek
@@ -310,14 +337,13 @@ export default function LoggingTab(props) {
 
   useEffect(() => {
     if (Object.keys(projectsData).length > 0) {
-      console.log("now student data ");
       getStudentData();
     }
   }, [projectsData]);
 
   useEffect(() => {
     if (Object.keys(myProjects).length > 0) {
-      console.log("now time data ");
+      // console.log("now time data ");
       getTimeData();
     }
   }, [myProjects]);
