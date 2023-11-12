@@ -6,7 +6,7 @@ import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
 import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
 import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
 import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
-import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
+import LoggingTab from "../Tabs/LoggingTab/LoggingTab";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
 import AdminView from "../util/components/AdminView";
 import { UserContext } from "../util/functions/UserContext";
@@ -137,7 +137,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ActionLogs semesterData={semesterData} />
+              <LoggingTab semesterData={semesterData} />
             </Tab.Pane>
           ),
         },
