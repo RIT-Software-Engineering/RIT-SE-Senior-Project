@@ -426,7 +426,7 @@ module.exports = (db) => {
 
       const currentDate = new Date();
       const pastWeekDate = new Date();
-      pastWeekDate.setDate(currentDate.getDate() - 7);
+      pastWeekDate.setDate(currentDate.getDate() - 8);
       const timelogDate = new Date(body.date);
 
       if (pastWeekDate > timelogDate || timelogDate > currentDate) {
@@ -438,11 +438,10 @@ module.exports = (db) => {
       }
 
       const sql = `INSERT INTO time_log
-                  (semester, system_id, project, mock_id, work_date, time_amount, work_comment,active)
-                  VALUES (?,?,?,?,?,?,?,?)`;
+                  ( system_id, project, mock_id, work_date, time_amount, work_comment,active)
+                  VALUES (?,?,?,?,?,?,?)`;
 
       let params = [
-        body.semester,
         body.userId,
         body.project,
         body.mockId,
