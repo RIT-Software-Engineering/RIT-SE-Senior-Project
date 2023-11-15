@@ -77,7 +77,7 @@ export default function TimeLogProjects(props) {
 
   const projectTable = (semester) => {
     return Object.keys(semesterProjects[semester]).map((project, idx) => {
-      projectTimelogs[project].timelogs.sort(
+      projectTimelogs[project]?.timelogs.sort(
         (a, b) => b.time_log_id - a.time_log_id
       );
 
