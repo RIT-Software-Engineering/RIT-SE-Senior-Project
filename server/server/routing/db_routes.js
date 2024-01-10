@@ -827,7 +827,7 @@ module.exports = (db) => {
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?);`;
+                                           ?, ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
         if (data === "true" || data === "1") {

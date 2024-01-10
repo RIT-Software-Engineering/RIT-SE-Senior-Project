@@ -123,9 +123,8 @@ export default function Proposals(props) {
                   />
                   <ProjectArchivePanel
                     project={proposal}
-                    semesterData={props.semesterData}
-                    activeCoaches={props.activeCoaches}
-                    activeSponsors={props.activeSponsors}
+                    header={"Edit Archive"}
+                    buttonIcon={"edit"}
                   />
                 </>
               ) : (

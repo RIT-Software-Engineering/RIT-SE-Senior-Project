@@ -13,31 +13,10 @@ import { UserContext } from "../../util/functions/UserContext";
  */
 export default function ProjectArchivePanel(props) {
   const [projectMembers, setProjectMembers] = useState({
-    students: [],
-    coaches: [],
+    students: "",
+    coaches: "",
     sponsor: "",
   });
-
-  const assignSponsor = () => {
-    //finds the sponsor name inside the list of sponsor objects.
-    if (props.activeSponsors !== undefined) {
-      let sponsorName = props?.activeSponsors.find(
-        (sponsyBoi) => sponsyBoi.sponsor_id === props?.project?.sponsor
-      );
-      if (sponsorName !== undefined) {
-        setInitialState((prevInitialState) => {
-          return {
-            ...prevInitialState,
-            sponsor: `${sponsorName.fname} ${sponsorName.lname}`,
-          };
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    assignSponsor();
-  }, [props.activeSponsors]);
 
   //This is for if creating a new archived project.
   //If there is a newArchive property, then do what's inside the useEffect.
@@ -95,26 +74,6 @@ export default function ProjectArchivePanel(props) {
         });
     }
   }, [props.project, props.newArchive]);
-
-  useEffect(() => {
-    //this is for getting the start and end date of a project.
-    if (props?.project?.semester) {
-      SecureFetch(
-        `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project.semester}`
-      )
-        .then((response) => response.json())
-        .then((dates) => {
-          setInitialState((prevInitialState) => {
-            return {
-              ...prevInitialState,
-              start_date: dates[0].start_date,
-              end_date: dates[0].end_date,
-              dept: "SE",
-            };
-          });
-        });
-    }
-  }, [props.project]);
 
   const [initialState, setInitialState] = useState({
     archive_id: props?.project?.archive_id || "",
