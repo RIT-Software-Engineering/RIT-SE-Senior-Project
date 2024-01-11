@@ -18,6 +18,31 @@ export default function ProjectArchivePanel(props) {
     sponsor: "",
   });
 
+  const [projectArchive, setProjectArchive] = useState({
+    projectArchive: {
+      archive_id: "",
+      project_id: "",
+      title: "",
+      team_name: "",
+      members: "",
+      sponsor: "",
+      coach: "",
+      poster_thumb: "",
+      poster_full: "",
+      archive_image: "",
+      synopsis: "",
+      video: "",
+      name: "",
+      dept: "",
+      start_date: "",
+      end_date: "",
+      keywords: "",
+      url_slug: "",
+      inactive: "",
+      locked: "",
+    }
+  });
+
   //This is for if creating a new archived project.
   //If there is a newArchive property, then do what's inside the useEffect.
   //It is for filling form data to archive that does not exist.
@@ -71,6 +96,41 @@ export default function ProjectArchivePanel(props) {
             };
           });
           setProjectMembers(projectMemberOptions);
+        });
+    }
+  }, [props.project, props.newArchive]);
+
+  useEffect(() => {
+    if (!props.newArchive) {
+      SecureFetch(
+        `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`
+      )
+        .then((response) => response.json())
+        .then((archive) => {
+          setProjectArchive((archive) => {
+            return {
+              projectArchive.archive_id: archive.archive_id,
+              projectArchive.project_id: archive.project_id,
+              projectArchive.title: archive.title,
+              projectArchive.team_name: archive.team_name,
+              projectArchive.members: archive.members,
+              projectArchive.sponsor: archive.sponsor,
+              projectArchive.coach: archive.coach,
+              projectArchive.poster_thumb: archive.poster_thumb,
+              projectArchive.poster_full: archive.poster_full,
+              projectArchive.archive_image: archive.archive_image,
+              projectArchive.synopsis: archive.synopsis,
+              projectArchive.video: archive.video,
+              projectArchive.name: archive.name,
+              projectArchive.dept: archive.dept,
+              projectArchive.start_date: archive.start_date,
+              projectArchive.end_date: archive.end_date,
+              projectArchive.keywords: archive.keywords,
+              projectArchive.url_slug: archive.url_slug,
+              projectArchive.inactive: archive.inactive,
+              projectArchive.locked: archive.locked,
+            };
+          });
         });
     }
   }, [props.project, props.newArchive]);

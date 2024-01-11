@@ -28,6 +28,7 @@ export const config = {
     API_POST_SUBMIT_PROJECT: `${BASE_API_URL}/db/submitProposal`,
     API_GET_SEARCH_FOR_ARCHIVES: `${BASE_API_URL}/db/searchForArchive`,
     API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
+    API_GET_ARCHIVE_FROM_PROJECT: `${BASE_API_URL}/db/getArchiveFromProject`,
     API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
 
     // GET - Auth needed

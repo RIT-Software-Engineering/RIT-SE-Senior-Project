@@ -2827,6 +2827,19 @@ module.exports = (db) => {
       });
   });
 
+  db_router.get("/getArchiveFromProject", (req, res) => {
+    let query = `SELECT * FROM archive WHERE archive.project_id=?`;
+    let params = [req.query.project_id];
+    db.query(query, params)
+      .then((values) => {
+        res.status(200).send(values);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(err);
+      });
+  });
+
   db_router.post(
     "/createSponsor",
     [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
