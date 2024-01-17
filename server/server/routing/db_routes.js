@@ -818,7 +818,7 @@ module.exports = (db) => {
           : "";
       const locked =
         body.locked === "true"
-          ? "user locked at " + moment().format(CONSTANTS.datetime_format)
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
           : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
@@ -866,6 +866,7 @@ module.exports = (db) => {
         body.keywords,
         body.url_slug,
         inactive,
+        locked,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -969,8 +970,14 @@ module.exports = (db) => {
       .withMessage("Cannot be empty"),
     async (req, res) => {
       let body = req.body;
-      const inactive = "";
-      const locked = "";
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
+      const locked =
+        body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
@@ -978,7 +985,7 @@ module.exports = (db) => {
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?);`;
+                                           ?, ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
         if (data === "true" || data === "1") {
@@ -1017,6 +1024,7 @@ module.exports = (db) => {
         body.keywords,
         body.url_slug,
         inactive,
+        locked,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)

@@ -123,8 +123,6 @@ export default function Proposals(props) {
                   />
                   <ProjectArchivePanel
                     project={proposal}
-                    header={"Edit Archive"}
-                    buttonIcon={"edit"}
                   />
                 </>
               ) : (

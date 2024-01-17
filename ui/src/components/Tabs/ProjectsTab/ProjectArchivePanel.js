@@ -18,37 +18,78 @@ export default function ProjectArchivePanel(props) {
     sponsor: "",
   });
 
-  const [projectArchive, setProjectArchive] = useState({
-    projectArchive: {
-      archive_id: "",
-      project_id: "",
-      title: "",
-      team_name: "",
-      members: "",
-      sponsor: "",
-      coach: "",
-      poster_thumb: "",
-      poster_full: "",
-      archive_image: "",
-      synopsis: "",
-      video: "",
-      name: "",
-      dept: "",
-      start_date: "",
-      end_date: "",
-      keywords: "",
-      url_slug: "",
-      inactive: "",
-      locked: "",
-    }
+  const [newArchive, setNewArchive] = useState({});
+
+  const [initialState, setInitialState] = useState({
+    archive_id: "",
+    project_id: "",
+    title: "",
+    team_name: "",
+    members: "",
+    sponsor: "",
+    coach: "",
+    poster_thumb: "",
+    poster_full: "",
+    archive_image: "",
+    synopsis: "",
+    video: "",
+    name: "",
+    dept: "",
+    start_date: "",
+    end_date: "",
+    keywords: "",
+    url_slug: "",
+    inactive: "",
+    locked: "",
   });
+
+
+  //This is for checking for existing archives and assigning their values as defaults.
+  useEffect(() => {
+    SecureFetch(
+      `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`
+    )
+      .then((response) => response.json())
+      .then((archives) => {
+        if (archives.length > 0){
+          let archive = archives[0];
+          setNewArchive(false);
+          setInitialState((prevInitialState) => {
+            return {
+              ...prevInitialState,
+              archive_id: archive.archive_id,
+              project_id: archive.project_id,
+              title: archive.title,
+              team_name: archive.team_name,
+              members: archive.members,
+              sponsor: archive.sponsor,
+              coach: archive.coach,
+              poster_thumb: archive.poster_thumb,
+              poster_full: archive.poster_full,
+              archive_image: archive.archive_image,
+              synopsis: archive.synopsis,
+              video: archive.video,
+              name: archive.name,
+              dept: archive.dept,
+              start_date: archive.start_date,
+              end_date: archive.end_date,
+              keywords: archive.keywords,
+              url_slug: archive.url_slug,
+              inactive: archive.inactive,
+              locked: archive.locked,
+            };
+          });
+        }else{
+          setNewArchive(true);
+        }
+      });
+  }, [props.project]);
 
   //This is for if creating a new archived project.
   //If there is a newArchive property, then do what's inside the useEffect.
   //It is for filling form data to archive that does not exist.
   useEffect(() => {
-    //todo: create if for project.status. If it's already archived, find a way to guard from rearchiving.
-    if (props.newArchive) {
+    if (newArchive) {
       SecureFetch(
         `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`
       )
@@ -98,90 +139,23 @@ export default function ProjectArchivePanel(props) {
           setProjectMembers(projectMemberOptions);
         });
     }
-  }, [props.project, props.newArchive]);
-
-  useEffect(() => {
-    if (!props.newArchive) {
-      SecureFetch(
-        `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`
-      )
-        .then((response) => response.json())
-        .then((archive) => {
-          setProjectArchive((archive) => {
-            return {
-              projectArchive.archive_id: archive.archive_id,
-              projectArchive.project_id: archive.project_id,
-              projectArchive.title: archive.title,
-              projectArchive.team_name: archive.team_name,
-              projectArchive.members: archive.members,
-              projectArchive.sponsor: archive.sponsor,
-              projectArchive.coach: archive.coach,
-              projectArchive.poster_thumb: archive.poster_thumb,
-              projectArchive.poster_full: archive.poster_full,
-              projectArchive.archive_image: archive.archive_image,
-              projectArchive.synopsis: archive.synopsis,
-              projectArchive.video: archive.video,
-              projectArchive.name: archive.name,
-              projectArchive.dept: archive.dept,
-              projectArchive.start_date: archive.start_date,
-              projectArchive.end_date: archive.end_date,
-              projectArchive.keywords: archive.keywords,
-              projectArchive.url_slug: archive.url_slug,
-              projectArchive.inactive: archive.inactive,
-              projectArchive.locked: archive.locked,
-            };
-          });
-        });
-    }
-  }, [props.project, props.newArchive]);
-
-  const [initialState, setInitialState] = useState({
-    archive_id: props?.project?.archive_id || "",
-    project_id: props?.project?.project_id || "",
-    title: decode(props?.project?.title) || "",
-    team_name: decode(props?.project?.team_name) || "",
-    members: decode(props?.project?.members) || "",
-    sponsor: decode(props?.project?.sponsor) || "",
-    coach: decode(props?.project?.coach) || "",
-    poster_thumb: decode(props?.project?.poster_thumb) || "",
-    poster_full: decode(props?.project?.poster_full) || "",
-    archive_image: decode(props?.project?.archive_image) || "",
-    synopsis: decode(props?.project?.synopsis).replace(/\r\n|\r/g, "\n") || "",
-    video: decode(props?.project?.video) || "",
-    name: decode(props?.project?.name) || "",
-    dept: props?.project?.dept || "",
-    start_date: props?.project?.start_date || "",
-    end_date: props?.project?.end_date || "",
-    keywords: decode(props?.project?.project_search_keywords) || "",
-    // suggest a slug if this is a new archive project and the project already exists before archival
-    url_slug:
-      props?.project?.url_slug || props.newArchive
-        ? slugify(props?.project?.title)
-        : "",
-    inactive: props.project?.inactive || "",
-    locked: props.project?.locked || "",
-  });
+  }, [props.project]);
 
   let submissionModalMessages;
-  if (props.newArchive) {
+  if (newArchive) {
     submissionModalMessages = {
       SUCCESS: "The project has been archived.",
       FAIL: "Could not archive the project.",
     };
   } else {
-    submissionModalMessages = props.create
-      ? {
-          SUCCESS: "The archive project has been created.",
-          FAIL: "We were unable to add to archive.",
-        }
-      : {
-          SUCCESS: "The archived project has been edited.",
-          FAIL: "Could not make edits.",
-        };
+    submissionModalMessages = {
+      SUCCESS: "The archive project has been created.",
+      FAIL: "We were unable to add to archive.",
+    };
   }
 
   let submitRouter;
-  if (props.newArchive) {
+  if (newArchive) {
     submitRouter = config.url.API_POST_CREATE_ARCHIVE_STUDENT;
   } else {
     submitRouter = config.url.API_POST_EDIT_ARCHIVE_STUDENT;
@@ -252,8 +226,8 @@ export default function ProjectArchivePanel(props) {
       submissionModalMessages={submissionModalMessages}
       submitRoute={submitRouter}
       formFieldArray={formFieldArray}
-      header={props.header}
-      button={props.buttonIcon || (props.create ? "plus" : "edit")}
+      header={(newArchive ? "Create Archive" : "Edit Archive")}
+      button={(newArchive ? "plus" : "edit")}
     />
   );
 }
