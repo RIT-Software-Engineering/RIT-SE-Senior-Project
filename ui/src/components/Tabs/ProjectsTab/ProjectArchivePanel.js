@@ -226,7 +226,7 @@ export default function ProjectArchivePanel(props) {
       submissionModalMessages={submissionModalMessages}
       submitRoute={submitRouter}
       formFieldArray={formFieldArray}
-      header={(newArchive ? "Create Archive" : "Edit Archive")}
+      header={(newArchive ? "Create Website" : "Edit Website")}
       button={(newArchive ? "plus" : "edit")}
     />
   );

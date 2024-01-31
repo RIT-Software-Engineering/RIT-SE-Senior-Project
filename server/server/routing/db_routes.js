@@ -737,7 +737,7 @@ module.exports = (db) => {
                                         title=?, project_id=?, team_name=?, 
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
-                                        video=?, name=?, dept=?,
+                                        video=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
@@ -780,7 +780,6 @@ module.exports = (db) => {
       body.archive_image,
       body.synopsis,
       body.video,
-      body.name,
       body.dept,
       body.start_date,
       body.end_date,
@@ -823,11 +822,11 @@ module.exports = (db) => {
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
+                                    poster_full, archive_image, synopsis, video, dept, start_date, end_date,
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?, ?);`;
+                                           ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
         if (data === "true" || data === "1") {
@@ -859,7 +858,6 @@ module.exports = (db) => {
         body.archive_image,
         body.synopsis,
         body.video,
-        body.name,
         body.dept,
         body.start_date,
         body.end_date,
@@ -871,16 +869,7 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          // Setting project to archive, May also be changed to remove a project from project table
-          // if not wanted.
-          const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
-                                    SET status = 'archive'
-                                    WHERE project_id = ?`;
-          const updateProjectParams = [body.project_id];
-          res.status(200).send(response);
-          db.query(updateProjectQuery, updateProjectParams)
-            .then((response) => res.status(200).send(response))
-            .catch((err) => res.status(500).send(err));
+          return res.status(200).send(response);
         })
         .catch((err) => {
           console.error(err);
@@ -896,7 +885,7 @@ module.exports = (db) => {
                                         title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
-                                        video=?, name=?, dept=?,
+                                        video=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
@@ -939,7 +928,6 @@ module.exports = (db) => {
       body.archive_image,
       body.synopsis,
       body.video,
-      body.name,
       body.dept,
       body.start_date,
       body.end_date,
@@ -981,11 +969,11 @@ module.exports = (db) => {
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
+                                    poster_full, archive_image, synopsis, video, dept, start_date, end_date,
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?, ?);`;
+                                           ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
         if (data === "true" || data === "1") {
@@ -1017,7 +1005,6 @@ module.exports = (db) => {
         body.archive_image,
         body.synopsis,
         body.video,
-        body.name,
         body.dept,
         body.start_date,
         body.end_date,
@@ -1029,16 +1016,7 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          // Setting project to archive, May also be changed to remove a project from project table
-          // if not wanted.
-          const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
-                                    SET status = 'archive'
-                                    WHERE project_id = ?`;
-          const updateProjectParams = [body.project_id];
-          res.status(200).send(response);
-          db.query(updateProjectQuery, updateProjectParams)
-            .then((response) => res.status(200).send(response))
-            .catch((err) => res.status(500).send(err));
+          return res.status(200).send(response);
         })
         .catch((err) => {
           console.error(err);
@@ -1420,6 +1398,42 @@ module.exports = (db) => {
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 
+  /**
+   * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
+   */
+  db_router.post("/uploadFilesStudent", (req, res) => {
+    let filesUploaded = [];
+
+    // Attachment Handling
+    if (req.files && req.files.files) {
+      // If there is only one attachment, then it does not come as a list
+      if (req.files.files.length === undefined) {
+        req.files.files = [req.files.files];
+      }
+
+      const formattedPath = `resource/${req.body.path}`;
+      const baseURL = path.join(__dirname, `../../${formattedPath}`);
+
+      //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
+      fs.mkdirSync(baseURL, { recursive: true });
+      for (let x = 0; x < req.files.files.length; x++) {
+        req.files.files[x].mv(
+          `${baseURL}/${req.files.files[x].name}`,
+          function (err) {
+            if (err) {
+              console.error(err);
+              return res.status(500).send(err);
+            }
+          }
+        );
+        filesUploaded.push(
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+        );
+      }
+    }
+    res.send({ msg: "Success!", filesUploaded: filesUploaded });
+  });
+
   db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
@@ -1462,6 +1476,40 @@ module.exports = (db) => {
     // This is the path with the specified directory we want to find files in.
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+    const baseURL = path.join(__dirname, `../../${formattedPath}`);
+    fs.mkdirSync(baseURL, { recursive: true });
+    // Get the files in the directory
+    fs.readdir(baseURL, function (err, files) {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+      const info = fs.statSync(baseURL);
+      files.forEach(function (file) {
+        // Only files have sizes, directories do not. Send file size if it is a file
+        const fileInfo = fs.statSync(baseURL + file);
+        if (fileInfo.isFile()) {
+          fileData.push({
+            file: file,
+            size: fileInfo.size,
+            lastModified: fileInfo.ctime,
+          });
+        } else {
+          fileData.push({
+            file: file,
+            size: 0,
+            lastModified: info.ctime,
+          });
+        }
+      });
+      res.send(fileData);
+    });
+  });
+
+  db_router.get("/getProjectFiles", (req, res) => {
+    let fileData = [];
+    // This is the path with the specified directory we want to find files in.
+    const formattedPath = `resource/`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     fs.mkdirSync(baseURL, { recursive: true });
     // Get the files in the directory

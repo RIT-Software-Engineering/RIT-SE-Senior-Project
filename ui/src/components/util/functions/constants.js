@@ -30,6 +30,9 @@ export const config = {
     API_GET_ARCHIVE_FROM_SLUG: `${BASE_API_URL}/db/getArchiveFromSlug`,
     API_GET_ARCHIVE_FROM_PROJECT: `${BASE_API_URL}/db/getArchiveFromProject`,
     API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
+    API_POST_EDIT_ARCHIVE_STUDENT: `${BASE_API_URL}/db/editArchiveStudent`,
+    API_POST_CREATE_ARCHIVE_STUDENT: `${BASE_API_URL}/db/createArchiveStudent`,
+    API_POST_UPLOAD_FILES_STUDENT: `${BASE_API_URL}/db/uploadFilesStudent`
 
     // GET - Auth needed
     API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
@@ -98,8 +101,6 @@ export const config = {
     API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
-    API_POST_EDIT_ARCHIVE_STUDENT: `${BASE_API_URL}/db/editArchiveStudent`,
-    API_POST_CREATE_ARCHIVE_STUDENT: `${BASE_API_URL}/db/createArchiveStudent`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

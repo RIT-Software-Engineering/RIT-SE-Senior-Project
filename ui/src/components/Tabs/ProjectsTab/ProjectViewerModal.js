@@ -8,6 +8,7 @@ import {decode} from 'he'
 export default function ProjectViewerModal(props) {
 
     const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
+    const [URL, setURL] = useState({})
 
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
@@ -31,6 +32,16 @@ export default function ProjectViewerModal(props) {
             })
     }, [props.project?.project_id])
 
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`)
+            .then(response => response.json())
+            .then(archives => {
+                if (archives.length > 0) {
+                    setURL(archives[0].url_slug);
+                }
+            });
+    }, [props.project?.project_id])
+
     const generateModalContent = () => {
         return <>
             <h3>Team members</h3>
@@ -38,7 +49,7 @@ export default function ProjectViewerModal(props) {
             <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
 
             <h3>Website</h3>
-            <b></b> <br />
+            <b>URL:</b> {URL} <br />
 
             <h3>Sponsor Info</h3>
             <b>Organization:</b> {decode(props.project.organization||'')} <br />
@@ -54,7 +65,7 @@ export default function ProjectViewerModal(props) {
             <b>Challenges:</b> {decode(props.project.project_challenges||'')} <br />
             <b>Constraints & Assumptions:</b> {decode(props.project.constraints_assumptions||'')} <br />
             <b>Provided Resources:</b> {decode(props.project.sponsor_provided_resources||'')} <br />
-            <b>Search keywords (are we showing this?):</b> {decode(props.project.project_search_keywords||'')} <br />
+            <b>Search keywords:</b> {decode(props.project.project_search_keywords||'')} <br />
             <b>Deliverables:</b> {decode(props.project.sponsor_deliverables||'')} <br />
             <b>Proprietary Info:</b> {decode(props.project.proprietary_info||'')} <br />
             <b>Sponsor Available:</b> {decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"} <br />

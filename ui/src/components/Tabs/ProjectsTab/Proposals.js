@@ -10,7 +10,8 @@ import {
   Accordion,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
-import ProjectArchivePanel from "./ProjectArchivePanel"
+import ProjectArchivePanel from "./ProjectArchivePanel";
+import FileUpload from "./FileUpload";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
@@ -124,6 +125,7 @@ export default function Proposals(props) {
                   <ProjectArchivePanel
                     project={proposal}
                   />
+                  <FileUpload/>
                 </>
               ) : (
                 <>
