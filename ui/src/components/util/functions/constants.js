@@ -32,7 +32,7 @@ export const config = {
     API_GET_FEATURED_ARCHIVES: `${BASE_API_URL}/db/getFeaturedArchiveProjects`,
     API_POST_EDIT_ARCHIVE_STUDENT: `${BASE_API_URL}/db/editArchiveStudent`,
     API_POST_CREATE_ARCHIVE_STUDENT: `${BASE_API_URL}/db/createArchiveStudent`,
-    API_POST_UPLOAD_FILES_STUDENT: `${BASE_API_URL}/db/uploadFilesStudent`
+    API_POST_UPLOAD_FILES_STUDENT: `${BASE_API_URL}/db/uploadFilesStudent`,
 
     // GET - Auth needed
     API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,

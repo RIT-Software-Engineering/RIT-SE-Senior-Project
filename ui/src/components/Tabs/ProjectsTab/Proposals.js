@@ -125,7 +125,9 @@ export default function Proposals(props) {
                   <ProjectArchivePanel
                     project={proposal}
                   />
-                  <FileUpload/>
+                  <FileUpload
+                    project={proposal}
+                  />
                 </>
               ) : (
                 <>

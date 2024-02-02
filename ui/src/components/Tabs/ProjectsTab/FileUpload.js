@@ -3,7 +3,7 @@ import {Accordion, Form, Button, Modal} from 'semantic-ui-react';
 import { config } from '../../util/functions/constants';
 import { SecureFetch } from '../../util/functions/secureFetch';
 
-export default function FileUpload() {
+export default function FileUpload(props) {
 
     const fileInput = useRef(null);
     const fields = ["Archive Image", "Poster Thumbnail", "Poster Full", "Video"];
@@ -12,29 +12,32 @@ export default function FileUpload() {
     const [addFileOpen, setAddFileOpen] = useState(false); // used for upload file modal
 
     /**
-     * Given a string, checks if it is a file based on if it has a period to represent the file type
-     * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
-     * Based on the assumption that given files / directories do not contain any periods
-     * @param str string to be checked
-     * @returns {boolean} true if is a file, false otherwise
-     */
-    const isDirectory = (str) => {
-        const strSplit = str.split(".");
-        return strSplit.length === 1;
-    }
-
-    /**
      * Toggle modal that lets you upload files
      */
     const toggleFileUploadModalOpen = () => {
         setAddFileOpen(!addFileOpen);
     }
 
+    const createProjectSubpath = (input) => {
+        let projectSubfolder = props.project.project_id
+        let formattedPath = ""
+        switch(input) {
+            case ("Archive Image"):
+                formattedPath = "archiveImages/" + projectSubfolder;
+            case ("Poster Thumbnail"):
+                formattedPath = "archivePosters/Thumb/" + projectSubfolder;
+            case ("Poster Full"):
+                formattedPath = "archivePosters/Full/" + projectSubfolder;
+            case ("Video"):
+                formattedPath = "archiveVideos/" + projectSubfolder;
+        }
+        return formattedPath
+    }
+
     /**
      * Handles logic for sending request to upload files
      */
     const uploadFiles = (event) => {
-
         return; /*doing nothing until routing implemented for safety*/
         event.preventDefault();
 
@@ -65,14 +68,14 @@ export default function FileUpload() {
     }
 
     /**
-     * Content inside the upload files modal with dropdown to select path, browse files, and upload files button
+     * The upload files modal to select path, browse files, and upload files
      */
     const uploadFilesDisplay = () => {
         return (
             <div>
                 <Form.Field>
                     <label>Select file type to upload</label>
-                    <select value={path} onChange={(e) => { setPath(e.target.value); setResponse(null); }}>
+                    <select value={path} onChange={(e) => { setPath(createProjectSubpath(e.target.value)); setResponse(null); }}>
                         {fields.map((uploadPath, idx) => <option value={uploadPath} key={idx}>{uploadPath}</option>)}
                     </select>
                 </Form.Field>
