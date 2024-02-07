@@ -1431,6 +1431,14 @@ module.exports = (db) => {
         );
       }
     }
+    let query = `UPDATE ${DB_CONFIG.tableNames.archive}
+                 SET ${req.body.column} = ${req.body.path}
+                 WHERE archive_id = ${req.body.archive_id}`
+    db.query(query)
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).send(err);
+      });
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 

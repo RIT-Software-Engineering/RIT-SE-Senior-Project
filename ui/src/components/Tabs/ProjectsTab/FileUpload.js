@@ -7,6 +7,8 @@ export default function FileUpload(props) {
 
     const fileInput = useRef(null);
     const fields = ["Archive Image", "Poster Thumbnail", "Poster Full", "Video"];
+    const [archive, setArchive] = useState(null);
+    const [column, setColumn] = useState("");
     const [path, setPath] = useState(["/"]);
     const [response, setResponse] = useState(null);
     const [addFileOpen, setAddFileOpen] = useState(false); // used for upload file modal
@@ -18,27 +20,46 @@ export default function FileUpload(props) {
         setAddFileOpen(!addFileOpen);
     }
 
+    useEffect(() => {
+        SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`)
+            .then((response) => response.json())
+            .then((archives) => {
+                if(archives.length > 0){
+                    setArchive(archives[0]);
+                }
+            });
+    }, [props.project]);
+
     const createProjectSubpath = (input) => {
-        let projectSubfolder = props.project.project_id
-        let formattedPath = ""
+        let formattedPath = "";
+        if (archive === null){return formattedPath;}
+        let projectSubfolder = archive.url_slug;
         switch(input) {
             case ("Archive Image"):
+                console.log("step 1")
                 formattedPath = "archiveImages/" + projectSubfolder;
+                setColumn("archive_image");
+                break;
             case ("Poster Thumbnail"):
                 formattedPath = "archivePosters/Thumb/" + projectSubfolder;
+                setColumn("poster_thumb");
+                break;
             case ("Poster Full"):
                 formattedPath = "archivePosters/Full/" + projectSubfolder;
+                setColumn("poster_full");
+                break;
             case ("Video"):
                 formattedPath = "archiveVideos/" + projectSubfolder;
+                setColumn("video");
+                break;
         }
-        return formattedPath
+        return formattedPath;
     }
 
     /**
      * Handles logic for sending request to upload files
      */
     const uploadFiles = (event) => {
-        return; /*doing nothing until routing implemented for safety*/
         event.preventDefault();
 
         if (fileInput.current.files.length === 0) {
@@ -46,9 +67,16 @@ export default function FileUpload(props) {
             return;
         }
 
+        if (archive === null){
+            alert("No archive to upload to");
+            return;
+        }
+
         const body = new FormData();
 
         body.append("path", path);
+        body.append("archive", archive);
+        body.append("column", column);
 
         for (let i = 0; i < fileInput.current.files.length; i++) {
             body.append("files", fileInput.current.files[i]);
