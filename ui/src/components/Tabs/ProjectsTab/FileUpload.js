@@ -75,7 +75,7 @@ export default function FileUpload(props) {
         const body = new FormData();
 
         body.append("path", path);
-        body.append("archive", archive);
+        body.append("archive", archive.archive_id);
         body.append("column", column);
 
         for (let i = 0; i < fileInput.current.files.length; i++) {
