@@ -247,6 +247,12 @@ export default function ArchivePanel(props) {
     },
     {
       type: "input",
+      label: "Name",
+      placeholder: "Name",
+      name: "name",
+    },
+    {
+      type: "input",
       label: "Department",
       placeholder: "Department",
       name: "dept",
