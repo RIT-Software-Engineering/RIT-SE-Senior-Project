@@ -737,7 +737,7 @@ module.exports = (db) => {
                                         title=?, project_id=?, team_name=?, 
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
-                                        video=?, dept=?,
+                                        video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
@@ -780,6 +780,7 @@ module.exports = (db) => {
       body.archive_image,
       body.synopsis,
       body.video,
+      body.name,
       body.dept,
       body.start_date,
       body.end_date,
@@ -822,10 +823,10 @@ module.exports = (db) => {
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, dept, start_date, end_date,
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
@@ -858,6 +859,7 @@ module.exports = (db) => {
         body.archive_image,
         body.synopsis,
         body.video,
+        body.name,
         body.dept,
         body.start_date,
         body.end_date,
@@ -885,7 +887,7 @@ module.exports = (db) => {
                                         title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
-                                        video=?, dept=?,
+                                        video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
@@ -928,6 +930,7 @@ module.exports = (db) => {
       body.archive_image,
       body.synopsis,
       body.video,
+      body.name,
       body.dept,
       body.start_date,
       body.end_date,
@@ -969,10 +972,10 @@ module.exports = (db) => {
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, dept, start_date, end_date,
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
                                     keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
@@ -1005,6 +1008,7 @@ module.exports = (db) => {
         body.archive_image,
         body.synopsis,
         body.video,
+        body.name,
         body.dept,
         body.start_date,
         body.end_date,
