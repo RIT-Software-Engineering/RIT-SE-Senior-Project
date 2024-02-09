@@ -3,6 +3,7 @@ CREATE TABLE archive (
     project_id      INTEGER,
     priority        INTEGER DEFAULT 0, -- how high a project should be displayed on client side
     csv             TEXT,
+    name            TEXT UNIQUE NOT NULL,
     dept            TEXT,
     start_date      TEXT,
     end_date        TEXT,
