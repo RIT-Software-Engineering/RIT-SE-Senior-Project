@@ -882,6 +882,7 @@ module.exports = (db) => {
 
   db_router.post("/editArchiveStudent", async (req, res) => {
     let body = req.body;
+    let files = req.files;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?,
@@ -899,6 +900,49 @@ module.exports = (db) => {
       body.locked === "true"
         ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
         : "";
+
+    let files_uploaded = [];
+
+    let poster_full = ``;
+    if (files.poster_full === undefined){
+      poster_full = body.poster_full;
+    }else{
+      let formattedPath = `Full/${body.url_slug}`
+      poster_full = `${formattedPath}/${files.poster_full.name}`;
+      let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
+      files_uploaded.push([files.poster_full, poster_URL);
+    }
+
+    let archive_image = ``;
+    if (files.archive_image === undefined){
+      archive_image = body.archive_image;
+    }else{
+      archive_image = `${body.url_slug}/${files.archive_image.name}`;
+      let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
+      files_uploaded.push([files.archive_image, image_URL);
+    }
+
+    let video = ``;
+    if (files.video === undefined){
+      video = body.video;
+    }else{
+      video = `${body.url_slug}/${files.video.name}`;
+      let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
+      files_uploaded.push([files.video, video_URL);
+    }
+
+    for (int i = 0; i<files_uploaded.length; i++) {
+      fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+      files_uploaded[i][0].mv(
+        `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+        function (err) {
+          if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+          }
+        }
+      );
+    }
 
     const checkBox = (data) => {
       if (data === "true" || data === "1") {
@@ -926,10 +970,10 @@ module.exports = (db) => {
       body.sponsor,
       body.coach,
       body.poster_thumb,
-      body.poster_full,
-      body.archive_image,
+      poster_full,
+      archive_image,
       body.synopsis,
-      body.video,
+      video,
       body.name,
       body.dept,
       body.start_date,
@@ -1438,7 +1482,6 @@ module.exports = (db) => {
         pathString = pathString.split("/");
         pathString.shift();
         pathString = '"' + pathString.join("/") + "/" + fileName + '"';
-        console.log(req.body.archive);
         let query = `UPDATE ${DB_CONFIG.tableNames.archive}
                      SET ${req.body.column} = ${pathString}
                      WHERE archive_id = ${req.body.archive}`

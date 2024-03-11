@@ -64,11 +64,10 @@ export default function ProjectArchivePanel(props) {
               members: archive.members,
               sponsor: archive.sponsor,
               coach: archive.coach,
-              poster_thumb: archive.poster_thumb,
-              poster_full: archive.poster_full,
-              archive_image: archive.archive_image,
+              poster_full: "",
+              archive_image: "",
               synopsis: archive.synopsis,
-              video: archive.video,
+              video: "",
               name: archive.name,
               dept: archive.dept,
               start_date: archive.start_date,
@@ -144,13 +143,13 @@ export default function ProjectArchivePanel(props) {
   let submissionModalMessages;
   if (newArchive) {
     submissionModalMessages = {
-      SUCCESS: "The project has been archived.",
-      FAIL: "Could not archive the project.",
+      SUCCESS: "The website was created.",
+      FAIL: "We were unable to create the website.",
     };
   } else {
     submissionModalMessages = {
-      SUCCESS: "The archive project has been created.",
-      FAIL: "We were unable to add to archive.",
+      SUCCESS: "The website has been updated.",
+      FAIL: "We were unable to update to website.",
     };
   }
 
@@ -175,19 +174,13 @@ export default function ProjectArchivePanel(props) {
       name: "keywords",
     },
     {
-      type: "input",
-      label: "Poster Thumb",
-      placeholder: "Poster Thumb",
-      name: "poster_thumb",
-    },
-    {
-      type: "input",
-      label: "Poster Full",
+      type: "upload",
+      label: "Poster",
       placeholder: "Poster Full",
       name: "poster_full",
     },
     {
-      type: "input",
+      type: "upload",
       label: "Archive Image",
       placeholder: "Archive Image",
       name: "archive_image",
@@ -199,7 +192,7 @@ export default function ProjectArchivePanel(props) {
       name: "synopsis",
     },
     {
-      type: "input",
+      type: "upload",
       label: "Video",
       placeholder: "Video",
       name: "video",

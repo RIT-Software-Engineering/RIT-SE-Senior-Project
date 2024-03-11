@@ -93,6 +93,8 @@ export default function DatabaseTableEditor(props) {
       body.append(key, dataToSubmit[key]);
     });
 
+    console.log(...body);
+
     SecureFetch(submitRoute, {
       method: "post",
       body: body,
@@ -116,7 +118,6 @@ export default function DatabaseTableEditor(props) {
     if (props.viewOnly) {
       return;
     }
-
     if (checked !== undefined) {
       if (isActiveField) {
         // The active field either stores an empty string or a datetime.
@@ -144,6 +145,22 @@ export default function DatabaseTableEditor(props) {
       });
     }
   };
+
+  function handleUpload(event, name) {
+    let value = event.target.files[0];
+    const newFormData =
+      props.preChange &&
+      props.preChange(formData, name, value);
+
+    if (newFormData) {
+      setFormData(newFormData);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  }
 
   /**
    * This is how the edit table for any form of editing is made and filled with the initial state.
@@ -269,6 +286,17 @@ export default function DatabaseTableEditor(props) {
               ) : (
                 <p>No Attachments</p>
               )}
+            </Form.Field>
+          );
+          break;
+        case "upload":
+          fieldComponents.push(
+            <Form.Field key={field["name"]}>
+              <label>{field.label}</label>
+              <input
+                type="file"
+                onChange={event => handleUpload(event, field.name)}
+              />
             </Form.Field>
           );
           break;
