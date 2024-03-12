@@ -910,7 +910,7 @@ module.exports = (db) => {
       let formattedPath = `Full/${body.url_slug}`
       poster_full = `${formattedPath}/${files.poster_full.name}`;
       let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
-      files_uploaded.push([files.poster_full, poster_URL);
+      files_uploaded.push([files.poster_full, poster_URL]);
     }
 
     let archive_image = ``;
@@ -919,7 +919,7 @@ module.exports = (db) => {
     }else{
       archive_image = `${body.url_slug}/${files.archive_image.name}`;
       let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
-      files_uploaded.push([files.archive_image, image_URL);
+      files_uploaded.push([files.archive_image, image_URL]);
     }
 
     let video = ``;
@@ -928,10 +928,10 @@ module.exports = (db) => {
     }else{
       video = `${body.url_slug}/${files.video.name}`;
       let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
-      files_uploaded.push([files.video, video_URL);
+      files_uploaded.push([files.video, video_URL]);
     }
 
-    for (int i = 0; i<files_uploaded.length; i++) {
+    for (let i = 0; i<files_uploaded.length; i++) {
       fs.mkdirSync(files_uploaded[i][1], { recursive: true });
       files_uploaded[i][0].mv(
         `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
