@@ -80,64 +80,96 @@ export default function ProjectArchivePanel(props) {
           });
         }else{
           setNewArchive(true);
-        }
-      });
-  }, [props.project]);
-
-  //This is for if creating a new archived project.
-  //If there is a newArchive property, then do what's inside the useEffect.
-  //It is for filling form data to archive that does not exist.
-  useEffect(() => {
-    if (newArchive) {
-      SecureFetch(
-        `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`
-      )
-        .then((response) => response.json())
-        .then((members) => {
-          let projectMemberOptions = { students: [], coaches: [] };
-          let projectGroupedValues = { students: [], coaches: [] };
-          members.forEach((member) => {
-            switch (member.type) {
-              case USERTYPES.STUDENT:
-                projectMemberOptions.students.push({
-                  key: member.system_id,
-                  text: `${member.lname}, ${member.fname} (${member.system_id})`,
-                  value: member.system_id,
-                });
-                projectGroupedValues.students.push(
-                  ` ${member.fname} ${member.lname}`
-                );
-                break;
-              case USERTYPES.COACH:
-                if (props.viewOnly) {
-                  projectMemberOptions.coaches.push({
-                    key: member.system_id,
-                    text: `${member.lname}, ${member.fname} (${member.system_id})`,
-                    value: member.system_id,
-                  });
-                }
-                projectGroupedValues.coaches.push(
-                  `${member.fname} ${member.lname}`
-                );
-                break;
-              default:
-                console.error(
-                  `Project editor error - invalid project member type "${member.type}" for member: `,
-                  member
-                );
-                break;
-            }
-          });
           setInitialState((prevInitialState) => {
             return {
               ...prevInitialState,
-              members: projectGroupedValues.students,
-              coach: projectGroupedValues.coaches,
+              project_id: props.project?.project_id,
+              title: props.project?.title,
+              url_slug: slugify(props.project?.title),
+              inactive: false,
+              locked: false,
             };
           });
-          setProjectMembers(projectMemberOptions);
-        });
-    }
+          SecureFetch(
+            `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`
+          )
+            .then((response) => response.json())
+            .then((members) => {
+              let projectMemberOptions = { students: [], coaches: [] };
+              let projectGroupedValues = { students: [], coaches: [] };
+              members.forEach((member) => {
+                switch (member.type) {
+                  case USERTYPES.STUDENT:
+                    projectMemberOptions.students.push({
+                      key: member.system_id,
+                      text: `${member.lname}, ${member.fname} (${member.system_id})`,
+                      value: member.system_id,
+                    });
+                    projectGroupedValues.students.push(
+                      ` ${member.fname} ${member.lname}`
+                    );
+                    break;
+                  case USERTYPES.COACH:
+                    if (props.viewOnly) {
+                      projectMemberOptions.coaches.push({
+                        key: member.system_id,
+                        text: `${member.lname}, ${member.fname} (${member.system_id})`,
+                        value: member.system_id,
+                      });
+                    }
+                    projectGroupedValues.coaches.push(
+                      `${member.fname} ${member.lname}`
+                    );
+                    break;
+                  default:
+                    console.error(
+                      `Project editor error - invalid project member type "${member.type}" for member: `,
+                      member
+                    );
+                    break;
+                }
+              });
+              setInitialState((prevInitialState) => {
+                return {
+                  ...prevInitialState,
+                  members: projectGroupedValues.students,
+                  coach: projectGroupedValues.coaches,
+                };
+              });
+              setProjectMembers(projectMemberOptions);
+            });
+          if (props.project?.semester) {
+            SecureFetch(
+              `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project?.semester}`
+            )
+              .then((response) => response.json())
+              .then((dates) => {
+                setInitialState((prevInitialState) => {
+                  return {
+                    ...prevInitialState,
+                    start_date: dates[0].start_date,
+                    end_date: dates[0].end_date,
+                    dept: "SE",
+                  };
+                });
+              });
+          }
+          SecureFetch(
+           `${config.url.API_GET_PROJECT_SPONSOR}/?project_id=${props.project?.project_id}`
+          )
+            .then((response) => response.json())
+            .then((sponsor) => {
+              if (sponsor.length > 0) {
+                setInitialState((prevInitialState) => {
+                  return {
+                    ...prevInitialState,
+                    sponsor: `${sponsor[0].fname} ${sponsor[0].lname}`
+                  };
+                });
+              }
+            });
+        }
+      });
   }, [props.project]);
 
   let submissionModalMessages;
@@ -175,13 +207,13 @@ export default function ProjectArchivePanel(props) {
     },
     {
       type: "upload",
-      label: "Poster",
+      label: "Poster - PNG files only",
       placeholder: "Poster Full",
       name: "poster_full",
     },
     {
       type: "upload",
-      label: "Archive Image",
+      label: "Archive Image - PNG files only",
       placeholder: "Archive Image",
       name: "archive_image",
     },
@@ -193,7 +225,7 @@ export default function ProjectArchivePanel(props) {
     },
     {
       type: "upload",
-      label: "Video",
+      label: "Video - MP4 files only",
       placeholder: "Video",
       name: "video",
     },
