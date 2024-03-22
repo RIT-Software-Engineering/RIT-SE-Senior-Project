@@ -93,8 +93,6 @@ export default function DatabaseTableEditor(props) {
       body.append(key, dataToSubmit[key]);
     });
 
-    console.log(...body);
-
     SecureFetch(submitRoute, {
       method: "post",
       body: body,
