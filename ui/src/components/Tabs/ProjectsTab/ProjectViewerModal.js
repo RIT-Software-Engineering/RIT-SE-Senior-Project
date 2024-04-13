@@ -8,7 +8,7 @@ import {decode} from 'he'
 export default function ProjectViewerModal(props) {
 
     const [projectMembers, setProjectMembers] = useState({ students: [], coaches: [] })
-    const [URL, setURL] = useState({})
+    const [URL, setURL] = useState("No URL found")
 
     useEffect(() => {
         SecureFetch(`${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`)
@@ -37,7 +37,9 @@ export default function ProjectViewerModal(props) {
             .then(response => response.json())
             .then(archives => {
                 if (archives.length > 0) {
-                    setURL(archives[0].url_slug);
+                    if (archives[0].url_slug != null && archives[0].url_slug != ""){
+                        setURL(archives[0].url_slug);
+                    }
                 }
             });
     }, [props.project?.project_id])

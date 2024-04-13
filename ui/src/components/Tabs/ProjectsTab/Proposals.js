@@ -16,6 +16,7 @@ import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
+import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
 import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
 import { UserContext } from "../../util/functions/UserContext";
@@ -123,6 +124,9 @@ export default function Proposals(props) {
                     semesterMap={semesterMap}
                   />
                   <ProjectArchivePanel
+                    project={proposal}
+                  />
+                  <WebsiteViewerModal
                     project={proposal}
                   />
                 </>
