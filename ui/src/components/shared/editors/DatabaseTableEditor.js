@@ -253,6 +253,21 @@ export default function DatabaseTableEditor(props) {
           );
           break;
         case "checkbox":
+          if (field.disabled){
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label style={{color: "lightgray"}}>{field.label}</label>
+                <Form.Checkbox
+                  label={field["label"]}
+                  checked={!!formData[field["name"]]}
+                  name={field["name"]}
+                  onChange={handleChange}
+                  disabled={field.disabled}
+                />
+              </Form.Field>
+            );
+            break;
+          }
           fieldComponents.push(
             <Form.Field key={field["name"]}>
               <label>{field.label}</label>
