@@ -208,13 +208,13 @@ export default function ProjectArchivePanel(props) {
     {
       type: "upload",
       label: "Poster - PNG files only, max size 30MB",
-      placeholder: "Poster Full",
+      accept: ".png",
       name: "poster_full",
     },
     {
       type: "upload",
       label: "Archive Image - PNG files only, max size 30MB",
-      placeholder: "Archive Image",
+      accept: ".png",
       name: "archive_image",
     },
     {
@@ -226,7 +226,7 @@ export default function ProjectArchivePanel(props) {
     {
       type: "upload",
       label: "Video - MP4 files only, max size 300MB",
-      placeholder: "Video",
+      accept: ".mp4",
       name: "video",
     },
     {

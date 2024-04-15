@@ -294,6 +294,7 @@ export default function DatabaseTableEditor(props) {
               <input
                 type="file"
                 onChange={event => handleUpload(event, field.name)}
+                accept={field.accept}
               />
             </Form.Field>
           );
