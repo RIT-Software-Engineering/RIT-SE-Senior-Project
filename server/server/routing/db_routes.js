@@ -901,15 +901,19 @@ module.exports = (db) => {
         ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
         : "";
 
+    const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
+
     let files_uploaded = [];
 
     let poster_full = ``;
     if (files.poster_full === undefined){
       poster_full = body.poster_full;
+      poster_thumb = body.poster_thumb;
     }else{
       if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
         let formattedPath = `Full/${body.url_slug}`
         poster_full = `${formattedPath}/${files.poster_full.name}`;
+        poster_thumb = poster_full;
         let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
         files_uploaded.push([files.poster_full, poster_URL]);
       }else{res.status(500).send();}
@@ -975,12 +979,12 @@ module.exports = (db) => {
       body.members,
       body.sponsor,
       body.coach,
-      body.poster_thumb,
+      poster_thumb,
       poster_full,
       archive_image,
       body.synopsis,
       video,
-      body.name,
+      name,
       body.dept,
       body.start_date,
       body.end_date,
