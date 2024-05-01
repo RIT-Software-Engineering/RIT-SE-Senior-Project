@@ -905,52 +905,59 @@ module.exports = (db) => {
 
     let poster_full = ``;
     let poster_thumb = ``;
-    if (files.poster_full === undefined){
+    let archive_image = ``;
+    let video = ``;
+    if (files === undefined){
+      if (files.poster_full === undefined){
+        poster_full = body.poster_full;
+        poster_thumb = body.poster_thumb;
+      }else{
+        if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
+          let formattedPath = `Full/${body.url_slug}`
+          poster_full = `${formattedPath}/${files.poster_full.name}`;
+          poster_thumb = poster_full;
+          let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
+          files_uploaded.push([files.poster_full, poster_URL]);
+        }else{res.status(500).send();}
+      }
+
+      if (files.archive_image === undefined){
+        archive_image = body.archive_image;
+      }else{
+        if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
+          archive_image = `${body.url_slug}/${files.archive_image.name}`;
+          let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
+          files_uploaded.push([files.archive_image, image_URL]);
+        }else{res.status(500).send();}
+      }
+
+      if (files.video === undefined){
+        video = body.video;
+      }else{
+        if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
+          video = `${body.url_slug}/${files.video.name}`;
+          let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
+          files_uploaded.push([files.video, video_URL]);
+        }else{res.status(500).send();}
+      }
+
+      for (let i = 0; i<files_uploaded.length; i++) {
+        fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+        files_uploaded[i][0].mv(
+          `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+          function (err) {
+            if (err) {
+              console.error(err);
+              return res.status(500).send(err);
+            }
+          }
+        );
+      }
+    }else{
       poster_full = body.poster_full;
       poster_thumb = body.poster_thumb;
-    }else{
-      if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-        let formattedPath = `Full/${body.url_slug}`
-        poster_full = `${formattedPath}/${files.poster_full.name}`;
-        poster_thumb = poster_full;
-        let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
-        files_uploaded.push([files.poster_full, poster_URL]);
-      }else{res.status(500).send();}
-    }
-
-    let archive_image = ``;
-    if (files.archive_image === undefined){
       archive_image = body.archive_image;
-    }else{
-      if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-        archive_image = `${body.url_slug}/${files.archive_image.name}`;
-        let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
-        files_uploaded.push([files.archive_image, image_URL]);
-      }else{res.status(500).send();}
-    }
-
-    let video = ``;
-    if (files.video === undefined){
       video = body.video;
-    }else{
-      if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-        video = `${body.url_slug}/${files.video.name}`;
-        let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
-        files_uploaded.push([files.video, video_URL]);
-      }else{res.status(500).send();}
-    }
-
-    for (let i = 0; i<files_uploaded.length; i++) {
-      fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-      files_uploaded[i][0].mv(
-        `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
-        function (err) {
-          if (err) {
-            console.error(err);
-            return res.status(500).send(err);
-          }
-        }
-      );
     }
 
     const checkBox = (data) => {
@@ -1030,52 +1037,59 @@ module.exports = (db) => {
 
       let poster_full = ``;
       let poster_thumb = ``;
-      if (files.poster_full === undefined){
+      let archive_image = ``;
+      let video = ``;
+      if (files === undefined){
+        if (files.poster_full === undefined){
+          poster_full = body.poster_full;
+          poster_thumb = body.poster_thumb;
+        }else{
+          if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
+            let formattedPath = `Full/${body.url_slug}`
+            poster_full = `${formattedPath}/${files.poster_full.name}`;
+            poster_thumb = poster_full;
+            let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
+            files_uploaded.push([files.poster_full, poster_URL]);
+          }else{res.status(500).send();}
+        }
+
+        if (files.archive_image === undefined){
+          archive_image = body.archive_image;
+        }else{
+          if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
+            archive_image = `${body.url_slug}/${files.archive_image.name}`;
+            let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
+            files_uploaded.push([files.archive_image, image_URL]);
+          }else{res.status(500).send();}
+        }
+
+        if (files.video === undefined){
+          video = body.video;
+        }else{
+          if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
+            video = `${body.url_slug}/${files.video.name}`;
+            let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
+            files_uploaded.push([files.video, video_URL]);
+          }else{res.status(500).send();}
+        }
+
+        for (let i = 0; i<files_uploaded.length; i++) {
+          fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+          files_uploaded[i][0].mv(
+            `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            function (err) {
+              if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+              }
+            }
+          );
+        }
+      }else{
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
-      }else{
-        if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-          let formattedPath = `Full/${body.url_slug}`
-          poster_full = `${formattedPath}/${files.poster_full.name}`;
-          poster_thumb = poster_full;
-          let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
-          files_uploaded.push([files.poster_full, poster_URL]);
-        }else{res.status(500).send();}
-      }
-
-      let archive_image = ``;
-      if (files.archive_image === undefined){
         archive_image = body.archive_image;
-      }else{
-        if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-          archive_image = `${body.url_slug}/${files.archive_image.name}`;
-          let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
-          files_uploaded.push([files.archive_image, image_URL]);
-        }else{res.status(500).send();}
-      }
-
-      let video = ``;
-      if (files.video === undefined){
         video = body.video;
-      }else{
-        if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-          video = `${body.url_slug}/${files.video.name}`;
-          let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
-          files_uploaded.push([files.video, video_URL]);
-        }else{res.status(500).send();}
-      }
-
-      for (let i = 0; i<files_uploaded.length; i++) {
-        fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-        files_uploaded[i][0].mv(
-          `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
-          function (err) {
-            if (err) {
-              console.error(err);
-              return res.status(500).send(err);
-            }
-          }
-        );
       }
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
