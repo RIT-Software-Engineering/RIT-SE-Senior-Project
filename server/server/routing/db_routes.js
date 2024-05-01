@@ -901,8 +901,6 @@ module.exports = (db) => {
         ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
         : "";
 
-    const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
-
     let files_uploaded = [];
 
     let poster_full = ``;
@@ -1024,6 +1022,8 @@ module.exports = (db) => {
         body.locked === "true"
         ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
           : "";
+
+      const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
 
       let files = req.files;
       let files_uploaded = [];
