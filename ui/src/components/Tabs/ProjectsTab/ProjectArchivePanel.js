@@ -64,6 +64,7 @@ export default function ProjectArchivePanel(props) {
               members: archive.members,
               sponsor: archive.sponsor,
               coach: archive.coach,
+              poster_thumb: archive.poster_thumb,
               poster_full: archive.poster_full,
               archive_image: archive.archive_image,
               synopsis: archive.synopsis,

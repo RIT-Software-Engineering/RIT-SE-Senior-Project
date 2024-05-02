@@ -907,7 +907,7 @@ module.exports = (db) => {
     let poster_thumb = ``;
     let archive_image = ``;
     let video = ``;
-    if (files === undefined){
+    if (!(files === undefined || files === null)){
       if (files.poster_full === undefined){
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
@@ -1039,7 +1039,7 @@ module.exports = (db) => {
       let poster_thumb = ``;
       let archive_image = ``;
       let video = ``;
-      if (files === undefined){
+      if (!(files === undefined || files === null)){
         if (files.poster_full === undefined){
           poster_full = body.poster_full;
           poster_thumb = body.poster_thumb;
