@@ -880,7 +880,7 @@ module.exports = (db) => {
     }
   );
 
-  db_router.post("/editArchiveStudent", async (req, res) => {
+  db_router.post("/editArchiveStudent", UserAuth.isSignedIn, async (req, res) => {
     let body = req.body;
     let files = req.files;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
@@ -1013,6 +1013,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createArchiveStudent",
+    UserAuth.isSignedIn,
     body("featured")
       .not()
       .isEmpty()
@@ -1152,7 +1153,7 @@ module.exports = (db) => {
   );
 
   //Gets the start and end dates of a project based on the semester that it is associated with.
-  db_router.get("/getProjectDates", UserAuth.isAdmin, (req, res) => {
+  db_router.get("/getProjectDates", UserAuth.isSignedIn, (req, res) => {
     const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
     const getDatesParams = [req.query.semester];
     db.query(getDatesQuery, getDatesParams)
