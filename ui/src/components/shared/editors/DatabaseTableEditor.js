@@ -126,6 +126,7 @@ export default function DatabaseTableEditor(props) {
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
+        console.log(formFieldArray)
         if (!field.hidden) {
             switch (field.type) {
                 case "input":

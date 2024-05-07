@@ -18,6 +18,7 @@ import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
+import TimeLogs from "../Tabs/TimeTrackingTab/TimeLogs";
 
 export default function DashboardPage() {
 
@@ -149,6 +150,18 @@ export default function DashboardPage() {
                     render: () => (
                         <Tab.Pane>
                             <TimeLinesView />
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    menuItem: {
+                        key: "TimeTracking-Tab",
+                        content:"Time Tracking",
+                        href: "#"
+                    },
+                    render: () => (
+                        <Tab.Pane>
+                            <TimeLogs semesterData={semesterData} />
                         </Tab.Pane>
                     ),
                 },
