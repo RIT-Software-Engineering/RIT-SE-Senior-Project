@@ -262,7 +262,7 @@ export default function DatabaseTableEditor(props) {
                   checked={!!formData[field["name"]]}
                   name={field["name"]}
                   onChange={handleChange}
-                  disabled={field.disabled}
+                  disabled={true}
                 />
               </Form.Field>
             );
@@ -276,7 +276,7 @@ export default function DatabaseTableEditor(props) {
                 checked={!!formData[field["name"]]}
                 name={field["name"]}
                 onChange={handleChange}
-                disabled={field.disabled}
+                disabled={false}
               />
             </Form.Field>
           );
@@ -303,16 +303,31 @@ export default function DatabaseTableEditor(props) {
           );
           break;
         case "upload":
-          fieldComponents.push(
-            <Form.Field key={field["name"]}>
-              <label>{field.label}</label>
-              <input
-                type="file"
-                onChange={event => handleUpload(event, field.name)}
-                accept={field.accept}
-              />
-            </Form.Field>
-          );
+          if(field.disabled){
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label style={{color: "lightgray"}}>{field.label}</label>
+                <input
+                  type="file"
+                  onChange={event => handleUpload(event, field.name)}
+                  accept={field.accept}
+                  disabled={true}
+                />
+              </Form.Field>
+           );
+          }else{
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label>{field.label}</label>
+                <input
+                  type="file"
+                  onChange={event => handleUpload(event, field.name)}
+                  accept={field.accept}
+                  disabled={false}
+                />
+              </Form.Field>
+           );
+          }
           break;
         case "multiSelectDropdown":
           fieldComponents.push(
