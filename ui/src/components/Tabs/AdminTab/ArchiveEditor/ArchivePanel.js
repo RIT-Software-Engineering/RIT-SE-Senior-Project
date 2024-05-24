@@ -136,7 +136,7 @@ export default function ArchivePanel(props) {
     dept: props?.project?.dept || "",
     start_date: props?.project?.start_date || "",
     end_date: props?.project?.end_date || "",
-    keywords: decode(props?.project?.project_search_keywords) || "",
+    keywords: decode(props?.project?.keywords) || "",
     // suggest a slug if this is a new archive project and the project already exists before archival
     url_slug:
       props?.project?.url_slug || props.newArchive
