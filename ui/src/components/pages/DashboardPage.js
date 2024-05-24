@@ -18,7 +18,7 @@ import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
-import TimeLogs from "../Tabs/TimeTrackingTab/TimeLogs";
+import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 
 export default function DashboardPage() {
 
@@ -161,7 +161,7 @@ export default function DashboardPage() {
                     },
                     render: () => (
                         <Tab.Pane>
-                            <TimeLogs semesterData={semesterData} />
+                            <TimeLog semesterData={semesterData} />
                         </Tab.Pane>
                     ),
                 },
