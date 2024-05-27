@@ -10,23 +10,31 @@ export default function GanttChart(props) {
     const containerRef = useRef(null);
     const firstActionRef = useRef(null);
     const todayRef = useRef(null);
-    const semesterStartDate = props.semesterStart;
-    const semesterEndDate = props.semesterEnd;
-    const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
-    const semesterActive = isSemesterActive(semesterStartDate, semesterEndDate);
-    const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
+
+    const semesterStartDate = new Date(props.semesterStart);
+    const semesterEndDate = new Date(props.semesterEnd);
+
+    // use these for the beginning and end of the gantt chart
+    const ganttStartDate = new Date(semesterStartDate.getFullYear(), semesterStartDate.getMonth());
+    const ganttEndDate = new Date(semesterEndDate.getFullYear(), semesterEndDate.getMonth()+1, 0);
+    const ganttLength = dateDiff(ganttStartDate, ganttEndDate) + 2;
+
+    const semesterActive = isSemesterActive(props.semesterStart, props.semesterEnd);
     let today = new Date();
     if (!(semesterActive)) {
-        today = new Date(semesterStartDate);
+        today = ganttStartDate;
     }
-    let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) >= today}); // make this work
-    const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
+    const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
+    today.setHours(0,0,0,0);
+    const firstAction = sortedActions.find((action) => {
+        let dueDate = new Date(action?.due_date);
+        return dueDate.getUTCDate() >= today.getUTCDate() && dueDate.getUTCMonth() >= today.getUTCMonth() && dueDate.getUTCFullYear() >= today.getUTCFullYear();});
+    const timeSpans = {'week' : 14, 'month' : 31, 'project' : ganttLength};
     const [selectedTimeSpan, setSelectedTimeSpan] = React.useState("week");
     let sidebarWidth = isMobile() ? 0 : 200;    // sticky text left - 200px is fixed sidebar width
 
     useEffect(()=> {
-        document.documentElement.style.setProperty('--gantt-maximum-columns', semesterLength + 1);
-        // document.documentElement.style.setProperty('--gantt-maximum-rows', sortedActions.length + 4); //this appears to crunch rows. why???
+        document.documentElement.style.setProperty('--gantt-maximum-columns', ganttLength + 1);
 
         if (semesterActive && firstAction) {
             try {
@@ -57,8 +65,8 @@ export default function GanttChart(props) {
     // ----------------- ROWS -------------------
     let ganttBars = [];
     let leftSideRows = [];
-    let startCol = new Date(semesterStartDate);
-    leftSideRows.push(<div className="sidebar header">Name</div>);
+    let startCol = ganttStartDate;
+    leftSideRows.push(<div key={'sidebar header'} className="sidebar header">Name</div>);
 
     sortedActions.forEach((action, idx) => {
         
@@ -85,8 +93,8 @@ export default function GanttChart(props) {
         const gridrow = 3 + idx;
         const startDate = new Date(action?.start_date);
         const dueDate = new Date(action?.due_date);
-        const barStart = Math.round(dateDiff(startCol, startDate)) + 1; 
-        const barSpan = Math.round(dateDiff(startDate, dueDate)) + 1;
+        const barStart = dateDiff(startCol, startDate) + 1; 
+        const barSpan = dateDiff(startDate, dueDate) + 1 + 1; // plus 1 for an action's reach (midnight of day 1 looks like start of day 2)
 
         let admin = false;
         if(props.admin && props.admin == "true") {
@@ -170,8 +178,11 @@ export default function GanttChart(props) {
         style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
         <GanttChartBackdrop
             ref={todayRef}
-            semesterStart={semesterStartDate}
-            semesterEnd={semesterEndDate}
+            ganttStart={ganttStartDate}
+            ganttEnd={ganttEndDate}
+            ganttLength={ganttLength}
+            semesterActive={semesterActive}
+            today={today}
             timeSpan={selectedTimeSpan}
             isMobile={isMobile()}/>
         {ganttChartContainer}

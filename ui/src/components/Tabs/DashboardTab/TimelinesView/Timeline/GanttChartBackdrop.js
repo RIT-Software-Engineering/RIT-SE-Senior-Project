@@ -3,23 +3,17 @@ import { numDaysLeftInYear, isSemesterActive, dateDiff, daysInMonth } from "../.
 import _ from "lodash";
 
 export default forwardRef(function GanttChartBackdrop(props, todayRef) {
-    const semesterStartDate = props.semesterStart;
-    const semesterEndDate = props.semesterEnd;
-    const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
-    const semesterActive = isSemesterActive(semesterStartDate, semesterEndDate);
-    let today = new Date();
-    if (!(semesterActive)) {
-        today = new Date(semesterStartDate);
-    }
+    const semesterActive = props.semesterActive;
+    const today = props.today;
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
+    const weekNames = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
     let ganttHeader = [];
     let ganttCols = [];
 
     // ------------- CHART CONSTRUCTION -------------
-    let startCol = new Date(semesterStartDate);
-    let cols = semesterLength;
+    let startCol = props.ganttStart;
+    let cols = props.ganttLength;
     // curr for current ___ in the construction of the chart
     let currDate = startCol.getUTCDate();
     let currMonth = startCol.getUTCMonth();
@@ -34,7 +28,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         ganttHeader.push(<div
             key={props.timeSpan + 'first' + 0}
             className="gantt-header first"
-            style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1), 'left' : sidebarWidth}}
+            style={{'gridColumn' : 1 + ' / span ' + (7-(startCol.getDay()%7)), 'left' : sidebarWidth}}
             >{monthNames[currMonth]} {currDate}</div>);
 
     } else if (props.timeSpan == 'month') {
@@ -75,7 +69,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                 monthLength = daysInMonth(currMonth, currYear);
             }
 
-            if ((startCol.getDate() + i)%7 == 0) {
+            if ((startCol.getDay() + i)%7 == 0) {
                 ganttHeader.push(<div
                 key={props.timeSpan + 'first' + i}
                 className="gantt-header first"
@@ -86,10 +80,9 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             // per day (header names)
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
-                // ref={isToday ? todayRef : null}
                 className="gantt-header second"
                 style={{'gridColumn' : i, 'left' : sidebarWidth}}
-                >{weekNames[(startCol.getDay() + i)%7]}</div>); // days of week
+                >{weekNames[(startCol.getDay() + i - 1)%7]}</div>); // days of week
 
         } else if (props.timeSpan == 'month') {
             // if new month
@@ -101,7 +94,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                     currYear++;
                 }
                 monthLength = daysInMonth(currMonth, currYear);
-                if (i + monthLength > cols) { // to cut off the month at the end of the calendar
+                if (i + monthLength > cols) { // to cut off the month at the end of the calendar (not really necessary)
                     monthLength = monthLength - (i + monthLength - cols);
                 }
     
@@ -115,7 +108,6 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             // per day (header names)
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
-                // ref={isToday ? todayRef : null}
                 className="gantt-header second"
                 style={{'gridColumn' : i, 'left' : sidebarWidth}}
                 >{currDate}</div>); // date
