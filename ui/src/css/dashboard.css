@@ -89,6 +89,14 @@
     background-color: #f76902;
 }
 
+.gantt-col.projectStart {
+    background-color: #000000;
+}
+
+.gantt-col.projectEnd {
+    background-color: #000000;
+}
+
 .sidebar-container {
     display: grid;
     grid-template-rows: subgrid;

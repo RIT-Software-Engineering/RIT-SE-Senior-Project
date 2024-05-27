@@ -11,15 +11,15 @@ export default function GanttChart(props) {
     const firstActionRef = useRef(null);
     const todayRef = useRef(null);
 
-    const semesterStartDate = new Date(props.semesterStart);
-    const semesterEndDate = new Date(props.semesterEnd);
+    const projectStartDate = new Date(props.projectStart);
+    const projectEndDate = new Date(props.projectEnd);
 
     // use these for the beginning and end of the gantt chart
-    const ganttStartDate = new Date(semesterStartDate.getFullYear(), semesterStartDate.getMonth());
-    const ganttEndDate = new Date(semesterEndDate.getFullYear(), semesterEndDate.getMonth()+1, 0);
+    const ganttStartDate = new Date(projectStartDate.getFullYear(), projectStartDate.getMonth());
+    const ganttEndDate = new Date(projectEndDate.getFullYear(), projectEndDate.getMonth()+1, 0);
     const ganttLength = dateDiff(ganttStartDate, ganttEndDate) + 2;
 
-    const semesterActive = isSemesterActive(props.semesterStart, props.semesterEnd);
+    const semesterActive = isSemesterActive(props.projectStart, props.projectEnd);
     let today = new Date();
     if (!(semesterActive)) {
         today = ganttStartDate;
@@ -30,7 +30,7 @@ export default function GanttChart(props) {
         let dueDate = new Date(action?.due_date);
         return dueDate.getUTCDate() >= today.getUTCDate() && dueDate.getUTCMonth() >= today.getUTCMonth() && dueDate.getUTCFullYear() >= today.getUTCFullYear();});
     const timeSpans = {'week' : 14, 'month' : 31, 'project' : ganttLength};
-    const [selectedTimeSpan, setSelectedTimeSpan] = React.useState("week");
+    const [selectedTimeSpan, setSelectedTimeSpan] = React.useState(semesterActive ? 'week' : 'project');
     let sidebarWidth = isMobile() ? 0 : 200;    // sticky text left - 200px is fixed sidebar width
 
     useEffect(()=> {
@@ -45,7 +45,7 @@ export default function GanttChart(props) {
                 console.log('issue with snapping to current day (x), first action (y)', e);
             }
         }
-    }, [semesterStartDate, semesterEndDate, firstAction, today]);
+    }, [projectStartDate, projectEndDate, firstAction, today]);
 
     function onTimeSpanChange(e) {
         setSelectedTimeSpan(e.target.value);
@@ -181,6 +181,8 @@ export default function GanttChart(props) {
             ganttStart={ganttStartDate}
             ganttEnd={ganttEndDate}
             ganttLength={ganttLength}
+            projectStart={projectStartDate}
+            projectEnd={projectEndDate}
             semesterActive={semesterActive}
             today={today}
             timeSpan={selectedTimeSpan}

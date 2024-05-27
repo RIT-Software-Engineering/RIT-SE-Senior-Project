@@ -22,7 +22,9 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
 
     // sticky text left - 200px is fixed sidebar width
     let sidebarWidth = props.isMobile ? 0 : '200px';
-    let isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
+    let isToday;
+    let isProjectStart;
+    let isProjectEnd;
 
     if (props.timeSpan == 'week') {
         ganttHeader.push(<div
@@ -56,6 +58,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
     // columns
     for (let i = 1; i < cols; i++) {
         isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
+        isProjectStart = props.projectStart.getUTCDate() == currDate && props.projectStart.getUTCMonth() == currMonth && props.projectStart.getUTCFullYear() == currYear;
+        isProjectEnd = props.projectEnd.getUTCDate() == currDate && props.projectEnd.getUTCMonth() == currMonth && props.projectEnd.getUTCFullYear() == currYear;
 
         if (props.timeSpan == 'week') {
             // if new month
@@ -147,7 +151,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         // per day (column colors)
         ganttCols.push(<div
             key={props.timeSpan + i}
-            className={isToday ? 'gantt-col today' : ((startCol.getUTCDay() + i)%7 == 0 || ((startCol.getUTCDay() + i)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
+            className={isToday ? 'gantt-col today' : isProjectStart ? 'gantt-col projectStart' : isProjectEnd ? 'gantt-col projectEnd' 
+                : ((startCol.getUTCDay() + i)%7 == 0 || ((startCol.getUTCDay() + i)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
             ref={isToday ? todayRef : null}
             style={{'gridColumn' : i, 'left' : sidebarWidth}}
             ></div>);

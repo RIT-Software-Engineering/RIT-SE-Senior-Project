@@ -73,8 +73,8 @@ export default function Timeline(props) {
                     projectName={props.elementData.display_name || props.elementData.title}
                     projectId={props.elementData.project_id}
                     semesterName={props.elementData.semester_name}
-                    semesterStart={props.elementData.start_date} 
-                    semesterEnd={props.elementData.end_date} 
+                    projectStart={props.elementData.start_date} 
+                    projectEnd={props.elementData.end_date} 
                     actions={actions}
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
