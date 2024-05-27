@@ -76,6 +76,7 @@ export default function Timeline(props) {
                     projectStart={props.elementData.start_date} 
                     projectEnd={props.elementData.end_date} 
                     actions={actions}
+                    isOpen={ganttVisible}
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </div>
