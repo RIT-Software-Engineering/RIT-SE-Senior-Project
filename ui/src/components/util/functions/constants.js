@@ -1,12 +1,11 @@
 const BASE_API_URL =
   process.env.NODE_ENV === "development"
-    ? `//192.168.1.205:3001`
-    : process.env.SERVER_BASE_URL; // Production URLs should always be HTTPS
+  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? `//192.168.1.205:3001`
-    // ? `${window.location.protocol}//localhost:${process.env.SERVER_PORT}`
-    : process.env.SERVER_BASE_URL; // Production URLs should always be HTTPS
+  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
 export const config = {
   url: {
