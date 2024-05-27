@@ -165,14 +165,12 @@
 
 .action-bar.proposal-row-green {
     border: 2px #2c662d solid;
-    font-size: 0.85rem;
     color: black;
     grid-column: span 2 / auto;
 }
 
 .action-bar.proposal-row-gray {
     border: 2px #484848 solid;
-    font-size: 0.85rem;
     color: #000000;
     grid-column: span 2 / auto;
 }
