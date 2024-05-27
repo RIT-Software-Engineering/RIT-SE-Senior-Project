@@ -29,7 +29,7 @@ export default function GanttChart(props) {
     today.setHours(0,0,0,0);
     const firstAction = sortedActions.find((action) => {
         let dueDate = new Date(action?.due_date);
-        return dueDate.getUTCDate() >= today.getUTCDate();});
+        return dueDate.getUTCDate() >= today.getUTCDate() && dueDate.getUTCMonth() >= today.getUTCMonth() && dueDate.getUTCFullYear() >= today.getUTCFullYear();});
     const timeSpans = {'week' : 14, 'month' : 31, 'project' : ganttLength};
     const [selectedTimeSpan, setSelectedTimeSpan] = React.useState(semesterActive ? 'week' : 'project');
     let sidebarWidth = isMobile() ? 0 : 200;    // sticky text left - 200px is fixed sidebar width
