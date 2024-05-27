@@ -30,14 +30,7 @@ export default function Timeline(props) {
 
     return (
         <div>
-            <div className="project-header">
-                <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
-                <TimelineCheckboxes 
-                    projectId={props.elementData.project_id} 
-                    milestonesId={milestonesId} 
-                    ganttId={ganttId}
-                />
-            </div>
+            
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
                 <UpcomingActions
@@ -48,6 +41,14 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
+            <div className="project-header">
+                <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+                <TimelineCheckboxes 
+                    projectId={props.elementData.project_id} 
+                    milestonesId={milestonesId} 
+                    ganttId={ganttId}
+                />
+            </div>
             <div id={milestonesId}>
                 <h3>Action Milestones</h3>
                 <ActionElements
