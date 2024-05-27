@@ -216,6 +216,9 @@ export default function ProjectArchivePanel(props) {
     {
       type: "upload",
       label: "Poster - PNG files only, max size 30MB",
+      placeholder: !!initialState.poster_full
+        ? "Current File: - " + initialState.poster_full.split("/").slice().pop()
+        : null,
       accept: ".png",
       name: "poster_full",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
@@ -223,6 +226,9 @@ export default function ProjectArchivePanel(props) {
     {
       type: "upload",
       label: "Archive Image - PNG files only, max size 30MB",
+      placeholder: !!initialState.archive_image
+        ? "Current File: - " + initialState.archive_image.split("/").slice().pop()
+        : null,
       accept: ".png",
       name: "archive_image",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
@@ -237,6 +243,9 @@ export default function ProjectArchivePanel(props) {
     {
       type: "upload",
       label: "Video - MP4 files only, max size 300MB",
+      placeholder: !!initialState.video
+        ? "Current File: - " + initialState.video.split("/").slice().pop()
+        : null,
       accept: ".mp4",
       name: "video",
       disabled: (initialState.locked || initialState.inactive) && isStudent,

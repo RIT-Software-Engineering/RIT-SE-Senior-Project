@@ -307,6 +307,7 @@ export default function DatabaseTableEditor(props) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
                 <label style={{color: "lightgray"}}>{field.label}</label>
+                <label style={{color: "lightgray"}}>{field.placeholder}</label>
                 <input
                   type="file"
                   onChange={event => handleUpload(event, field.name)}
@@ -319,6 +320,7 @@ export default function DatabaseTableEditor(props) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
                 <label>{field.label}</label>
+                <label style={{color: "gray"}}>{field.placeholder}</label>
                 <input
                   type="file"
                   onChange={event => handleUpload(event, field.name)}
