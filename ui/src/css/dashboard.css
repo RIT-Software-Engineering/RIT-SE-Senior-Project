@@ -56,14 +56,12 @@
 .gantt-header.first {
     grid-row: 1;
     position: sticky;
-    left: 200px;
     text-wrap: nowrap;
 }
 
 .gantt-header.second {
     grid-row: 2;
     position: sticky;
-    left: 200px;
 }
 
 .gantt-background {
