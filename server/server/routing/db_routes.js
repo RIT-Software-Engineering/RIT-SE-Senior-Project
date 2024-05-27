@@ -721,19 +721,6 @@ module.exports = (db) => {
     }
   );
 
-  db_router.get("/getActionViewPreference", [UserAuth.isSignedIn],
-    async(req, res) => {
-      let query = `
-        SELECT action_view FROM users WHERE users.system_id = ?
-      `;
-      let params = [req.user.system_id];
-
-      db.query(query, params)
-      .then((viewPref) => res.send(viewPref))
-      .catch((err) => res.status(500).send(err));
-    }
-  );
-
   db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res) => {
     let body = req.body;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}

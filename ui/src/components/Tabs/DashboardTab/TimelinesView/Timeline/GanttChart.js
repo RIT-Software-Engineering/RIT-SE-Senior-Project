@@ -40,7 +40,6 @@ export default function GanttChart(props) {
     let ganttCols = [];
     let leftSideRows = [];
 
-
     function onTimeSpanChange(e) {
         setSelectTimeSpan(e.target.value);
     }

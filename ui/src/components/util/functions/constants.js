@@ -34,7 +34,6 @@ export const config = {
     API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
     API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
     API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
-    API_GET_MY_ACTION_VIEW_PREFERENCE: `${BASE_API_URL}/db/getActionViewPreference`,
     // Grabs project or projects (i.e. coach) info for specific user.
     API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
     API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,
