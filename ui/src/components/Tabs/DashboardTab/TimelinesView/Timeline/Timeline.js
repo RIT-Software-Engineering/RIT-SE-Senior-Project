@@ -48,19 +48,16 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
-            <div className="action-checkboxes">
-                <h3>Action Views</h3>
-                <span>
+            <div className="checkbox-container">
+                <h3>All Actions</h3>
                 <TimelineCheckboxes 
                         projectId={props.elementData.project_id}
                         milestonesId={milestonesId} 
                         ganttId={ganttId}
                     />
-
-                </span>
             </div>
             <div class='timeline-action-block' id={milestonesId} style={{display : viewMilestoneElement}}>
-                <h3>Action Milestones</h3>
+                <h3>Milestones</h3>
                 <ActionElements
                     projectName={props.elementData.display_name || props.elementData.title}
                     projectId={props.elementData.project_id}
@@ -70,7 +67,7 @@ export default function Timeline(props) {
                 />
             </div>
             <div class='timeline-action-block' id={ganttId} style={{display : viewGanttElement}}>
-                <h3>Action Gantt</h3>
+                <h3>Gantt</h3>
                 <GanttChart
                     projectName={props.elementData.display_name || props.elementData.title}
                     projectId={props.elementData.project_id}

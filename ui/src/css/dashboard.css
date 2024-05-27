@@ -83,7 +83,7 @@
 
 .gantt-col.today {
     /* border: rebeccapurple 1px; */
-    background-color: #ac94b1;
+    background-color: #f76902;
 }
 
 .sidebar-container {
@@ -123,8 +123,10 @@
     cursor: default;
     text-align: left;
     grid-column-start: 1;
-    position: absolute;
-    bottom: 0;
+    border: #000000 1px;
+    /* position: absolute; */
+    position: sticky;
+    top: 0;
 }
 
 .gantt-chart {
@@ -289,6 +291,18 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.checkbox-container {
+    display: flex;
+    margin-top: 15px;
+    position: relative;
+    justify-content: space-between;
+    right: 0;
+}
+
+.timeline-action-block {
+    margin-top: 15px;
 }
 
 .timeline-checkbox {
