@@ -114,6 +114,7 @@ export default function GanttChart(props) {
                 autoLoadSubmissions={props.autoLoadSubmissions}
                 color={color} noPopup={props.noPopup}
                 trigger={ganttRowButton}
+                containerRef={containerRef}
                 action={action} projectId={props.projectId}
                 semesterData={props.semesterData}
                 semesterName={props.semesterName}
@@ -127,6 +128,7 @@ export default function GanttChart(props) {
                 autoLoadSubmissions={props.autoLoadSubmissions}
                 color={color} noPopup={props.noPopup}
                 trigger={ganttRowButton}
+                containerRef={containerRef}
                 action={action} projectId={props.projectId}
                 semesterName={props.semesterName}
                 projectName={props.projectName}

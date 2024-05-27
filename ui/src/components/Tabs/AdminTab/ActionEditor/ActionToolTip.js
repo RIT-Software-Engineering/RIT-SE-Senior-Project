@@ -16,6 +16,7 @@ const submissionTypeMap = {
 
 function ActionToolTip(props) {
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+  const [offsetX, setOffsetX] = useState(0);
   //const [open, setOpen] = React.useState(false);
 
   // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
@@ -84,6 +85,20 @@ function ActionToolTip(props) {
       style={{ zIndex: 100 }}
       trigger={props.trigger}
       on="click"
+      offset={[offsetX, 0]}
+      onOpen={(event, data) => {
+        if (props.containerRef) {
+          try {
+            // purpose is to get the mouse's position relative to the start of the bar
+            let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
+            let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
+            let mouseXWithinContainer = event.clientX - props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+            setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
+          } catch (e) {
+            console.log('tooltip positioning', e);
+          }
+        }
+      }}
     />
   );
 }

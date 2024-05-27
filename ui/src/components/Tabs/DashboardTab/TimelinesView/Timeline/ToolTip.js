@@ -16,8 +16,9 @@ const submissionTypeMap = {
   [ACTION_TARGETS.admin]: "Admin",
 };
 
-function ToolTip(props) {
+export default function ToolTip(props) {
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+  const [offsetX, setOffsetX] = useState(0);
 
   const [submissions, setSubmissions] = useState(null);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
@@ -145,11 +146,23 @@ function ToolTip(props) {
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
       style={{ zIndex: 100 }}
+      offset={[offsetX, 0]}
       trigger={props.trigger}
       on="click"
-      onOpen={() => loadSubmission(props.projectId, props.action?.action_id)}
+      onOpen={(event, data) => {
+        if (props.containerRef) {
+          try {
+            // purpose is to get the mouse's position relative to the start of the bar
+            let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
+            let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
+            let mouseXWithinContainer = event.clientX - props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+            setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
+            } catch (e) {
+              console.log('tooltip positioning', e);
+          }
+        }
+        loadSubmission(props.projectId, props.action?.action_id);
+      }}
     />
   );
 }
-
-export default ToolTip;
