@@ -6,7 +6,6 @@ export default function TimelineCheckboxes(props) {
     const milestonesCheckboxId = props.projectId + " Milestones Checkbox";
     const ganttCheckboxId = props.projectId + " Gantt Checkbox";
 
-    const [actionViewPreference, setActionViewPreference] = useState(props.viewState);
     const [isMilestonesChecked, setIsMilestonesChecked] = useState(props.viewPreference == 'milestone' || props.viewPreference == 'all');
     const [isGanttChecked, setIsGanttChecked] = useState(props.viewPreference == 'gantt' || props.viewPreference == 'all');
 
@@ -27,15 +26,6 @@ export default function TimelineCheckboxes(props) {
 
         gantt.style.display = ganttCheckbox.checked ? 'block' : 'none';
     }
-
-    async function updateView () {
-        setIsGanttChecked(props.viewPreference == 'gantt' || props.viewPreference == 'all');
-        setIsMilestonesChecked(props.viewPreference == 'milestone' || props.viewPreference == 'all');
-    }
-
-    useEffect(() => {
-        updateView();
-    }, [props.viewPreference])
 
     return (
         <div>

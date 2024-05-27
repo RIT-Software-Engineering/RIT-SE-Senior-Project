@@ -9,8 +9,6 @@ import TimelineCheckboxes from "./TimelineCheckboxes";
 
 export default function Timeline(props) {
 
-    const [actionViewPreference, setActionViewPreference] = useState('');
-    const [loading, setLoading] = useState(true);
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
 
@@ -23,37 +21,23 @@ export default function Timeline(props) {
             .catch(error => console.error(error));
     }
 
-    const loadUserViewPreference = () => {
-        SecureFetch(config.url.API_GET_MY_ACTION_VIEW_PREFERENCE)
-        .then((response) => response.json())
-        .then((userViewPref) => {
-            setLoading(false);
-            setActionViewPreference(userViewPref);
-        })
-        .catch(error => {
-            setLoading(false);
-            console.error(error)
-        });
-    }
-
     useEffect(() => {
         loadTimelineActions(props.elementData?.project_id);
-        loadUserViewPreference();
     }, [props.elementData?.project_id])
 
     const milestonesId = props.elementData.project_id + " milestones";
     const ganttId = props.elementData.project_id + " gantt";
 
-    if (loading) {
-        return 'loading';
-    }
-
-    let viewPref = actionViewPreference[0]?.action_view;
-    let viewGanttElement = !loading && (viewPref == 'gantt' || viewPref == 'all') ? 'block' : 'none';
-    let viewMilestoneElement = !loading && (viewPref == 'milestone' || viewPref == 'all') ? 'block' : 'none';
+    let viewPref = 'gantt';
+    let viewGanttElement = viewPref == 'gantt' || viewPref == 'all' ? 'block' : 'none';
+    let viewMilestoneElement = viewPref == 'milestone' || viewPref == 'all' ? 'block' : 'none';
 
     return (
         <div>
+            <div className="project-header">
+                <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+            </div>
+
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
                 <UpcomingActions
@@ -64,16 +48,18 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
-            <div className="project-header">
-                <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+            <div className="action-checkboxes">
+                <h3>Action Views</h3>
+                <span>
                 <TimelineCheckboxes 
-                    projectId={props.elementData.project_id}
-                    viewPreference={actionViewPreference[0]?.action_view}
-                    milestonesId={milestonesId} 
-                    ganttId={ganttId}
-                />
+                        projectId={props.elementData.project_id}
+                        milestonesId={milestonesId} 
+                        ganttId={ganttId}
+                    />
+
+                </span>
             </div>
-            <div id={milestonesId} style={{display : viewMilestoneElement}}>
+            <div class='timeline-action-block' id={milestonesId} style={{display : viewMilestoneElement}}>
                 <h3>Action Milestones</h3>
                 <ActionElements
                     projectName={props.elementData.display_name || props.elementData.title}
@@ -83,7 +69,7 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </div>
-            <div id={ganttId} style={{display : viewGanttElement}}>
+            <div class='timeline-action-block' id={ganttId} style={{display : viewGanttElement}}>
                 <h3>Action Gantt</h3>
                 <GanttChart
                     projectName={props.elementData.display_name || props.elementData.title}
