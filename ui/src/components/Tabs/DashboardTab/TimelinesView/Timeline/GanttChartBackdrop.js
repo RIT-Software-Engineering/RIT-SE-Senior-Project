@@ -30,28 +30,28 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         ganttHeader.push(<div
             key={props.timeSpan + 'first' + 0}
             className="gantt-header first"
-            style={{'gridColumn' : 1 + ' / span ' + (7-(startCol.getDay()%7)), 'left' : sidebarWidth}}
-            >{monthNames[currMonth]} {currDate}</div>);
+            style={{'gridColumn' : 1 + ' / span ' + (7-(startCol.getDay()%7))}}
+            ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]} {currDate}</p></div>);
 
     } else if (props.timeSpan == 'month') {
         ganttHeader.push(<div
             key={props.timeSpan + 'first' + 0}
             className="gantt-header first"
-            style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1), 'left' : sidebarWidth}}
-            >{monthNames[currMonth]}</div>);
+            style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
+            ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]}</p></div>);
 
     } else { // project
         ganttHeader.push(<div
             key={props.timeSpan + 'first' + 0}
             className="gantt-header first"
-            style={{'gridColumn' : 1 + ' / span ' + (numDaysLeftInYear(startCol) + 1), 'left' : sidebarWidth}}
-            >{currYear}</div>);
+            style={{'gridColumn' : 1 + ' / span ' + (numDaysLeftInYear(startCol) + 1)}}
+            ><p style={{'left' : sidebarWidth}}>{currYear}</p></div>);
 
         ganttHeader.push(<div
             key={props.timeSpan + 'second' + 0}
             className="gantt-header second"
-            style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1), 'left' : sidebarWidth}}
-            >{monthNames[currMonth]}</div>);
+            style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
+            ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]}</p></div>);
 
     }
 
@@ -77,16 +77,16 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                 ganttHeader.push(<div
                 key={props.timeSpan + 'first' + i}
                 className="gantt-header first"
-                style={{'gridColumn' : i + ' / span ' + 7, 'left' : sidebarWidth}}
-                >{monthNames[currMonth]} {currDate}</div>);
+                style={{'gridColumn' : i + ' / span ' + 7}}
+                ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]} {currDate}</p></div>);
             }
 
             // per day (header names)
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
                 className="gantt-header second"
-                style={{'gridColumn' : i, 'left' : sidebarWidth}}
-                >{weekNames[(startCol.getDay() + i - 1)%7]}</div>); // days of week
+                style={{'gridColumn' : i}}
+                ><p style={{'left' : sidebarWidth}}>{weekNames[(startCol.getDay() + i - 1)%7]}</p></div>); // days of week
 
         } else if (props.timeSpan == 'month') {
             // if new month
@@ -105,8 +105,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                 ganttHeader.push(<div
                     key={props.timeSpan + 'first' + i}
                     className="gantt-header first"
-                    style={{'gridColumn' : i + ' / span ' + monthLength, 'left' : sidebarWidth}}
-                    >{monthNames[currMonth]}</div>);
+                    style={{'gridColumn' : i + ' / span ' + monthLength}}
+                    ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]}</p></div>);
             }
 
             let paddingLeft = props.isMobile ? 0 : '5px';
@@ -114,8 +114,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
                 className="gantt-header second"
-                style={{'gridColumn' : i, 'left' : sidebarWidth, 'paddingLeft' : paddingLeft}}
-                >{currDate}</div>); // date
+                style={{'gridColumn' : i}}
+                ><p style={{'left' : sidebarWidth, 'paddingLeft' : paddingLeft}}>{currDate}</p></div>); // date
 
     
         } else { // project
@@ -130,8 +130,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                     ganttHeader.push(<div
                     key={props.timeSpan + 'first' + i}
                     className="gantt-header first"
-                        style={{'gridColumn' : i + ' / span ' + (((currYear % 4 === 0 && currYear % 100 > 0) || currYear %400 == 0) ? 366 : 365), 'left' : sidebarWidth}}
-                        >{currYear}</div>);
+                        style={{'gridColumn' : i + ' / span ' + (((currYear % 4 === 0 && currYear % 100 > 0) || currYear %400 == 0) ? 366 : 365)}}
+                        ><p style={{'left' : sidebarWidth}}>{currYear}</p></div>);
                 }
                 monthLength = daysInMonth(currMonth, currYear);
                 if (i + monthLength > cols) { // to cut off the month at the end of the calendar
@@ -142,8 +142,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                 ganttHeader.push(<div
                     key={props.timeSpan + 'second' + i}
                     className="gantt-header second"
-                    style={{'gridColumn' : i + '/ span ' + monthLength, 'left' : sidebarWidth}}
-                    >{monthNames[currMonth]}</div>); // month
+                    style={{'gridColumn' : i + '/ span ' + monthLength}}
+                    ><p style={{'left' : sidebarWidth}}>{monthNames[currMonth]}</p></div>); // month
                 }
 
             
@@ -155,7 +155,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             className={isToday ? 'gantt-col today' : isProjectStart ? 'gantt-col projectStart' : isProjectEnd ? 'gantt-col projectEnd' 
                 : ((startCol.getUTCDay() + i - 1)%7 == 0 || ((startCol.getUTCDay() + i - 1)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
             ref={isToday ? todayRef : null}
-            style={{'gridColumn' : i, 'left' : sidebarWidth}}
+            style={{'gridColumn' : i}}
             ></div>);
     
         currDate++;

@@ -33,6 +33,11 @@
     height: 100%;
 }
 
+.gantt-header > p {
+    position: sticky;
+    padding-left: 5px;
+}
+
 .gantt-header {
     display: grid;
     grid-template-columns: subgrid;
@@ -53,14 +58,12 @@
     position: sticky;
     left: 200px;
     text-wrap: nowrap;
-    padding-left: 5px;
 }
 
 .gantt-header.second {
     grid-row: 2;
     position: sticky;
     left: 200px;
-    padding-left: 5px;
 }
 
 .gantt-background {
@@ -115,6 +118,7 @@
     width: 100%;
     background: rgb(255, 255, 255);
     text-wrap: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     border: none;
     border-top: #000000 1px solid;
@@ -147,7 +151,7 @@
     grid-row: 1/var(--gantt-maximum-rows);
     grid-template-columns: subgrid;
     /* grid-column: 2/var(--gantt-maximum-columns); */
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 .action-bar > p {
@@ -161,7 +165,7 @@
     align-items: center;
     border-radius: 1em;
     padding: 6px;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     cursor: pointer;
 }
