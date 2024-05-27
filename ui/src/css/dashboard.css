@@ -6,26 +6,31 @@
     width: 100%;
 }
 
-.gantt-grid {
+.gantt-container {
     position: absolute;
     display: grid;
-    
-
-}
-
-.gantt-action-instance {
+    grid-template-columns: 100px repeat(7, 1fr) auto;
     width: 100%;
-    background-color: #00000000;
-    border: #00000000;
 }
 
-.ganttSidepane {
-    float: left;
-    width: 25%;
+.gantt-first-row {
+    grid-row: 1;
+    border: #000000 1px solid;
 }
 
-.gantt-action-bar {
-    float: right;
+.gantt-second-row {
+    grid-row: 2;
+    border: #000000 1px solid;
+}
+
+.gantt-cols {
+    grid-row: 3 / auto;
+    border: #000000 1px solid;
+}
+
+.gantt-bars {
+    background-color: #9578ff;
+    text-wrap: nowrap;
 }
 
 .action-bar {

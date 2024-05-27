@@ -1,14 +1,34 @@
-import React, { act } from 'react'
+import React, { act, createElement } from 'react'
 import ActionElements from './ActionElements';
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import _ from "lodash";
 import ToolTip from "./ToolTip";
-
+import {
+    formatDateNoOffset,
+    formatDateTime,
+  } from "../../../../util/functions/utils";
+  
 // a copy of UpcomingActions
-export default function ActionGantt(props) {
+export default function GanttChart(props) {
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let actionsComponents = [];
+    let ganttBars = [];
 
+
+    let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
+
+    
+    let cols = 7;
+
+    // columns - currently only a weekly view
+    let ganttCols = []
+    for (let i = 0; i < cols; i++) {
+        ganttCols.push(<div class="gantt-first-row">monthname</div>);
+        ganttCols.push(<div class="gantt-second-row">{weekNames[i]}</div>);
+        // ganttCols.push(<div class="gantt-cols">.</div>);
+    }
+
+    // rows
     sortedActions.forEach((action, idx) => {
 
         let color = "";
@@ -31,20 +51,23 @@ export default function ActionGantt(props) {
                 break;
         }
 
-        // this may be messy
-        // having the entirety of the row be the "button" so the tooltip will appear
-        // no matter where on the row you click- but now it's a matter of changing the
-        // html within the button contents to get the desired "row" look
-        // we may just scrap all of this after
+        // perhaps find way to not use css inline? feels messy
+        const gridrow = 3 + idx;
+
+        // will want to use span from start to end date
+        // props.action?.start_date
+        // props.action?.due_date
+        // these are date(?) objects, or at least formatted strangely. must get the start and end
+        // dates from them first.
         const ganttRow = <button
-            class="gantt-action-instance"
+            className="gantt-bars"
+            style={{'gridRow' : gridrow, 'gridColumn' : '4 / span 3'}} //example span
             // className={`action-bar ${color}`}
             key={idx}
         >
-            <div class="ganttSidepane">{action.action_title}</div>
             {<div className="gantt-action-bar" title={action.action_title}>{action.action_title}</div>}
         </button>
-        actionsComponents.push(
+        ganttBars.push(
             <ToolTip
                 autoLoadSubmissions={props.autoLoadSubmissions}
                 color={color} noPopup={props.noPopup}
@@ -58,6 +81,8 @@ export default function ActionGantt(props) {
         )
     })
 
+    // full container
+    let container = <div class="gantt-container">{ganttCols}{ganttBars}</div>
 
     // time span currently does nothing
     return (
@@ -70,8 +95,9 @@ export default function ActionGantt(props) {
                     <option value="project">project</option>
                 </select>
             </div>
-            <div class="gantt-grid"></div>
-            <div>{actionsComponents}</div>
+            <div className={props.noPopup ? "relevant-actions-container" : "actions-container"}>
+            {container}
+            </div>
         </div>
     );
 }

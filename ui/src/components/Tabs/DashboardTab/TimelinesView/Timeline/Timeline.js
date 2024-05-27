@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import ActionElements from "./ActionElements";
 import UpcomingActions from "./UpcomingActions";
-import ActionGantt from "./ActionGantt";
+import GanttChart from "./GanttChart";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
@@ -46,7 +46,7 @@ export default function Timeline(props) {
                 reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
             />
             <h3>Gantt Chart</h3>
-            <ActionGantt
+            <GanttChart
                 projectName={props.elementData.display_name || props.elementData.title}
                 projectId={props.elementData.project_id}
                 semesterName={props.elementData.semester_name}
