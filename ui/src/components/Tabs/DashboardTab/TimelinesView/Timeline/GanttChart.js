@@ -174,8 +174,7 @@ export default function GanttChart(props) {
         </div>);
 
     const ganttContainer = (<div
-        className='gantt-container'
-        style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
+        className='gantt-container'>
         <GanttChartBackdrop
             ref={todayRef}
             ganttStart={ganttStartDate}
@@ -221,7 +220,7 @@ export default function GanttChart(props) {
             </div>
             <div className={containerClassname}
                 ref={containerRef}
-                style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
+                style={{'gridAutoColumns' : 100/(timeSpans[selectedTimeSpan] > 200 ? 200 : timeSpans[selectedTimeSpan]) + '%'}}>
                 {ganttSideContainer}
                 {ganttContainer}
             </div>
