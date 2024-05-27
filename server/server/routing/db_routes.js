@@ -891,6 +891,15 @@ module.exports = (db) => {
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
+    const inactive =
+      body.inactive === "true"
+        ? moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const locked =
+      body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+        : "";
 
     let files_uploaded = [];
 
@@ -987,8 +996,8 @@ module.exports = (db) => {
       body.end_date,
       body.keywords,
       body.url_slug,
-      body.inactive,
-      body.locked,
+      inactive,
+      locked,
       body.archive_id,
     ];
 

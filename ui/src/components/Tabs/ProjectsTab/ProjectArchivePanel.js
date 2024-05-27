@@ -1,6 +1,6 @@
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config, USERTYPES } from "../../util/functions/constants";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { slugify } from "../../util/functions/utils";
 import { decode } from "html-entities";
@@ -19,6 +19,7 @@ export default function ProjectArchivePanel(props) {
   });
 
   const [newArchive, setNewArchive] = useState({});
+  const isStudent = (useContext(UserContext).user?.role === USERTYPES.STUDENT);
 
   const [initialState, setInitialState] = useState({
     archive_id: "",
@@ -75,8 +76,12 @@ export default function ProjectArchivePanel(props) {
               end_date: archive.end_date,
               keywords: archive.keywords,
               url_slug: archive.url_slug,
-              inactive: archive.inactive,
-              locked: archive.locked,
+              inactive: archive.inactive === ""
+                ? false
+                : true,
+              locked: archive.locked === ""
+                ? false
+                : true,
             };
           });
         }else{
@@ -199,42 +204,42 @@ export default function ProjectArchivePanel(props) {
       label: "Team Name",
       placeholder: "Team Name",
       name: "team_name",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "input",
       label: "Keywords",
       placeholder: "Keywords",
       name: "keywords",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "upload",
       label: "Poster - PNG files only, max size 30MB",
       accept: ".png",
       name: "poster_full",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "upload",
       label: "Archive Image - PNG files only, max size 30MB",
       accept: ".png",
       name: "archive_image",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "textArea",
       label: "Synopsis",
       placeholder: "Synopsis",
       name: "synopsis",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "upload",
       label: "Video - MP4 files only, max size 300MB",
       accept: ".mp4",
       name: "video",
-      disabled: initialState.locked || initialState.inactive,
+      disabled: (initialState.locked || initialState.inactive) && isStudent,
     },
     {
       type: "input",
@@ -245,10 +250,17 @@ export default function ProjectArchivePanel(props) {
     },
     {
       type: "checkbox",
-      label: "Locked",
+      label: "Inactive - Not Displayed On Public Site",
+      placeholder: "locked",
+      name: "inactive",
+      disabled: isStudent,
+    },
+    {
+      type: "checkbox",
+      label: "Locked - Unable To Edit",
       placeholder: "locked",
       name: "locked",
-      disabled: true,
+      disabled: isStudent,
     },
   ];
 
