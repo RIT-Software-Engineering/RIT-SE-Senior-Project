@@ -10,6 +10,7 @@ import TimelineCheckboxes from "./TimelineCheckboxes";
 export default function Timeline(props) {
 
     const [actionViewPreference, setActionViewPreference] = useState('');
+    const [loading, setLoading] = useState(true);
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
 
@@ -20,24 +21,39 @@ export default function Timeline(props) {
                 setActions(actions);
             })
             .catch(error => console.error(error));
+    }
+
+    const loadUserViewPreference = () => {
         SecureFetch(config.url.API_GET_MY_ACTION_VIEW_PREFERENCE)
-            .then((response) => response.json())
-            .then((userViewPref) => {
-                setActionViewPreference(userViewPref);
-            })
-            .catch(error => console.error(error));
+        .then((response) => response.json())
+        .then((userViewPref) => {
+            setLoading(false);
+            setActionViewPreference(userViewPref);
+        })
+        .catch(error => {
+            setLoading(false);
+            console.error(error)
+        });
     }
 
     useEffect(() => {
         loadTimelineActions(props.elementData?.project_id);
+        loadUserViewPreference();
     }, [props.elementData?.project_id])
 
     const milestonesId = props.elementData.project_id + " milestones";
     const ganttId = props.elementData.project_id + " gantt";
 
+    if (loading) {
+        return 'loading';
+    }
+
+    let viewPref = actionViewPreference[0]?.action_view;
+    let viewGanttElement = !loading && (viewPref == 'gantt' || viewPref == 'all') ? 'block' : 'none';
+    let viewMilestoneElement = !loading && (viewPref == 'milestone' || viewPref == 'all') ? 'block' : 'none';
+
     return (
         <div>
-            
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
                 <UpcomingActions
@@ -57,7 +73,7 @@ export default function Timeline(props) {
                     ganttId={ganttId}
                 />
             </div>
-            <div id={milestonesId}>
+            <div id={milestonesId} style={{display : viewMilestoneElement}}>
                 <h3>Action Milestones</h3>
                 <ActionElements
                     projectName={props.elementData.display_name || props.elementData.title}
@@ -67,7 +83,7 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </div>
-            <div id={ganttId}>
+            <div id={ganttId} style={{display : viewGanttElement}}>
                 <h3>Action Gantt</h3>
                 <GanttChart
                     projectName={props.elementData.display_name || props.elementData.title}

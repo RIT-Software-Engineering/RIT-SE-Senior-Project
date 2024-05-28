@@ -1,13 +1,12 @@
 import { Checkbox } from "semantic-ui-react";
 import React, { useState, useEffect } from 'react';
-import { SecureFetch } from "../../../../util/functions/secureFetch";
-import { config } from "../../../../util/functions/constants";
 
 export default function TimelineCheckboxes(props) {
 
     const milestonesCheckboxId = props.projectId + " Milestones Checkbox";
     const ganttCheckboxId = props.projectId + " Gantt Checkbox";
 
+    const [actionViewPreference, setActionViewPreference] = useState(props.viewState);
     const [isMilestonesChecked, setIsMilestonesChecked] = useState(props.viewPreference == 'milestone' || props.viewPreference == 'all');
     const [isGanttChecked, setIsGanttChecked] = useState(props.viewPreference == 'gantt' || props.viewPreference == 'all');
 
@@ -15,28 +14,18 @@ export default function TimelineCheckboxes(props) {
         const milestonesCheckbox = document.getElementById(milestonesCheckboxId);
         const milestones = document.getElementById(props.milestonesId);
 
-        setIsMilestonesChecked(isMilestonesChecked);
+        setIsMilestonesChecked(milestonesCheckbox.checked);
 
-        if(milestonesCheckbox.checked) {
-            milestones.style.display = 'block';
-        }
-        else {
-            milestones.style.display = 'none';
-        }
+        milestones.style.display = milestonesCheckbox.checked ? 'block' : 'none';
     }
 
     const ganttChange = (e, {isGanttChecked}) => {
         const ganttCheckbox = document.getElementById(ganttCheckboxId);
         const gantt = document.getElementById(props.ganttId);
 
-        setIsGanttChecked(isGanttChecked);
+        setIsGanttChecked(ganttCheckbox.checked);
 
-        if(ganttCheckbox.checked) {
-            gantt.style.display = 'block';
-        }
-        else {
-            gantt.style.display = 'none';
-        }
+        gantt.style.display = ganttCheckbox.checked ? 'block' : 'none';
     }
 
     async function updateView () {
