@@ -11,16 +11,17 @@ export default function GanttChart(props) {
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
+    const semesterActive = isSemesterActive(semesterStartDate, semesterEndDate);
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
     let today = new Date(); // eventually set it to current date (no param). this is for dev
-    if (!(isSemesterActive(semesterStartDate, semesterEndDate))) {
+    if (!(semesterActive)) {
         today = new Date(semesterStartDate);
     }
-    let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) > today});
+    let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) >= today}); // make this work
     const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
 
     useEffect(()=> {
-        if (isSemesterActive(semesterStartDate, semesterEndDate) && firstAction) {
+        if (semesterActive && firstAction) {
             try {
                 let header = todayRef.current.offsetParent;
                 let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
@@ -97,7 +98,7 @@ export default function GanttChart(props) {
             ganttHeader.push(monthLabel);
         }
 
-        let isToday = (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear);
+        let isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
 
         // per day (header names)
         ganttHeader.push(<div
@@ -118,11 +119,6 @@ export default function GanttChart(props) {
 
     // ----------------- ROWS -------------------
     sortedActions.forEach((action, idx) => {
-
-        // use this to determine if scroll
-        if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
-
-        }
         
         let color = "";
 
