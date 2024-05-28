@@ -1,6 +1,6 @@
 import React, { act, createElement, useEffect, useLayoutEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
-import { isSemesterActive, parseDate } from "../../../../util/functions/utils";
+import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import { Grid } from 'semantic-ui-react';
@@ -202,13 +202,3 @@ export default function GanttChart(props) {
 
 // move these to utils?
 
-// Month+1 in Date constructor to account for how it determines month from numbers
-function daysInMonth (month, year) {
-    return new Date(year, month+1, 0).getDate();
-}
-
-// magic number 86400000 is milli * sec * min * hr
-// difference in days
-function dateDiff (firstDate, secondDate) {
-    return (parseDate(secondDate) - parseDate(firstDate)) / 86400000;
-}
