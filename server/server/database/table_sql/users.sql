@@ -4,6 +4,7 @@ CREATE TABLE users (
     lname       TEXT,
     email       TEXT,
     type        TEXT,
+    action_view     TEXT,
     semester_group  INTEGER,
     project         TEXT,
     active          TEXT,   -- Empty string if active, Datetime of when deactivated if unactive

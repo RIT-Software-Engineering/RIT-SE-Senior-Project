@@ -1,11 +1,12 @@
 const BASE_API_URL =
   process.env.NODE_ENV === "development"
-    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+    ? `//192.168.1.205:3001`
+    : process.env.SERVER_BASE_URL; // Production URLs should always be HTTPS
 const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+    ? `//192.168.1.205:3001`
+    // ? `${window.location.protocol}//localhost:${process.env.SERVER_PORT}`
+    : process.env.SERVER_BASE_URL; // Production URLs should always be HTTPS
 
 export const config = {
   url: {
@@ -34,6 +35,7 @@ export const config = {
     API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
     API_GET_PROJECTS: `${BASE_API_URL}/db/getProjects`,
     API_GET_MY_PROJECTS: `${BASE_API_URL}/db/getMyProjects`,
+    API_GET_MY_ACTION_VIEW_PREFERENCE: `${BASE_API_URL}/db/getActionViewPreference`,
     // Grabs project or projects (i.e. coach) info for specific user.
     API_GET_SEMESTER_PROJECTS: `${BASE_API_URL}/db/getSemesterProjects`,
     API_GET_CANDIDATE_PROJECTS: `${BASE_API_URL}/db/getCandidateProjects`,

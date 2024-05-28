@@ -2,6 +2,8 @@ import React, { act, createElement, useEffect, useLayoutEffect, useRef } from 'r
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
+import { SecureFetch } from '../../../../util/functions/secureFetch';
+import { config } from '../../../../util/functions/constants';
 import ToolTip from "./ToolTip";
 
 export default function GanttChart(props) {
@@ -17,10 +19,18 @@ export default function GanttChart(props) {
         today = new Date(semesterStartDate);
     }
     let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) > today});
+    const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
+    const [actionViewPreference, setActionViewPreference] = React.useState("gantt");
 
     useEffect(()=> {
+        SecureFetch(config.url.API_GET_MY_ACTION_VIEW_PREFERENCE)
+        .then((response) => response.json())
+        .then((responseUser) => {
+            setActionViewPreference(responseUser[0].action_view);
+        })
+        .catch(error => console.error(error));
+
         if (isSemesterActive(semesterStartDate, semesterEndDate) && firstAction) {
-            console.log(firstAction, semesterStartDate, 'boooyeah')
             let header = todayRef.current.offsetParent;
             let viewTop = firstActionRef.current.offsetTop - header.offsetHeight;
             let viewLeft = todayRef.current.offsetLeft;
@@ -36,7 +46,6 @@ export default function GanttChart(props) {
     let ganttCols = [];
     let leftSideRows = [];
 
-    const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
 
     function onTimeSpanChange(e) {
         setSelectTimeSpan(e.target.value);
