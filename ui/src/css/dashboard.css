@@ -6,6 +6,28 @@
     width: 100%;
 }
 
+.gantt-grid {
+    position: absolute;
+    display: grid;
+    
+
+}
+
+.gantt-action-instance {
+    width: 100%;
+    background-color: #00000000;
+    border: #00000000;
+}
+
+.ganttSidepane {
+    float: left;
+    width: 25%;
+}
+
+.gantt-action-bar {
+    float: right;
+}
+
 .action-bar {
     display: flex;
     align-items: center;
