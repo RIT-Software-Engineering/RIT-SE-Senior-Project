@@ -1,24 +1,33 @@
 import React, { act, createElement, useEffect, useLayoutEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
-import { formatDate, formatDateNoOffset, isSemesterActive, parseDate } from "../../../../util/functions/utils";
+import { isSemesterActive, parseDate } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import { Grid } from 'semantic-ui-react';
 
 export default function GanttChart(props) {
     const containerRef = React.useRef(null);
+    // const firstActionRef = React.useRef(null);
+    // const todayRef = React.useRef(null);
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 1; // + 1 to account for left side panel column
-    // useEffect(()=> {
-    //     const today = new Date();
-    //     containerRef.current.scrollTop += 200;
-    // }, semesterStartDate, semesterEndDate);
+    const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
+    let today = new Date('2019-09-13'); // eventually set it to current date (no param). this is for dev
+    let firstAction = sortedActions.find((action) => {
+        return new Date(action?.due_date) > today});
+
+    useEffect(()=> {
+        // if (firstAction) {
+        //     containerRef.current.scrollTo(0, 12*12);
+        // }
+        containerRef.current.scrollIntoView();
+    }, [semesterStartDate, semesterEndDate, firstAction, today]);
+    console.log(firstAction)
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
     const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
-    const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
     let ganttHeader = [];
     let ganttBars = [];
     let leftSideRows = []
@@ -29,11 +38,8 @@ export default function GanttChart(props) {
         setSelectTimeSpan(e.target.value);
     }
 
-    leftSideRows.push(<div className="sidebar header empty" style={{'gridRow' : 1}}></div>);
-    leftSideRows.push(<div className="sidebar header" style={{'gridRow' : 2}}>Name</div>);
+    leftSideRows.push(<div className="sidebar header">Name</div>);
 
-    // eventually set it to current date (no param). this is for dev
-    let today = new Date('2018-10-02');
     let startCol = new Date(semesterStartDate);
     if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
         today = startCol;
@@ -75,13 +81,17 @@ export default function GanttChart(props) {
                 >{monthNames[currMonth]}</div>
             ganttHeader.push(monthLabel);
         }
-        ganttHeader.push(<div className="gantt-header second">{currDate}</div>); // date
+        ganttHeader.push(<div
+            className="gantt-header second"
+            style={{'gridColumn' : i + 1}}
+            >{currDate}</div>); // date
         // ganttHeader.push(<div className="gantt-header second">{weekNames[(startCol.getDay() + i)%7]}</div>); //days of week
         currDate++;
     }
 
     // ----------------- ROWS -------------------
     sortedActions.forEach((action, idx) => {
+
         // use this to determine if scroll
         if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
 
@@ -147,21 +157,25 @@ export default function GanttChart(props) {
         leftSideRows.push(leftRow)
     })
 
-    // const container = (<div
-    //     className="gantt-container"
-    //     style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
-    //         {ganttHeader}{ganttBars}
-    //     </div>)
+    const ganttHeaderContainer = (<div
+        className="gantt-header">
+            {ganttHeader}
+    </div>);
 
-
-    const container = (<div
+    const ganttChartContainer = (<div
         ref={containerRef}
-        className="gantt-container"
-        style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
-            {ganttHeader}{ganttBars}
+        className="gantt-chart">
+            {ganttBars}
         </div>);
+
+    const ganttContainer = (<div
+        className='gantt-container'
+        style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
+        {ganttHeaderContainer}
+        {ganttChartContainer}
+    </div>)
     
-    const sidebarContainer = (<div
+    const ganttSideContainer = (<div
         className='sidebar-container'>
         {leftSideRows}
     </div>)
@@ -177,13 +191,16 @@ export default function GanttChart(props) {
                     <option value="project">project</option>
                 </select>
             </div>
-            <div className="gantt">
+            <div className="gantt"
+            style={{'grid-auto-columns' : 100/timeSpans[selectTimeSpan] + '%'}}>
                 {leftSideRows}
-                {container}
+                {ganttContainer}
             </div>
         </div>
     );
 }
+
+// move these to utils?
 
 // Month+1 in Date constructor to account for how it determines month from numbers
 function daysInMonth (month, year) {
