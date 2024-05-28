@@ -11,6 +11,8 @@ export default function Timeline(props) {
 
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
+    const [milestoneVisible, setMilestoneVisible] = useState(false);
+    const [ganttVisible, setGanttVisible] = useState(true);
 
     const loadTimelineActions = (project_id) => {
         SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`)
@@ -24,13 +26,6 @@ export default function Timeline(props) {
     useEffect(() => {
         loadTimelineActions(props.elementData?.project_id);
     }, [props.elementData?.project_id])
-
-    const milestonesId = props.elementData.project_id + " milestones";
-    const ganttId = props.elementData.project_id + " gantt";
-
-    let viewPref = 'gantt';
-    let viewGanttElement = viewPref == 'gantt' || viewPref == 'all' ? 'block' : 'none';
-    let viewMilestoneElement = viewPref == 'milestone' || viewPref == 'all' ? 'block' : 'none';
 
     return (
         <div>
@@ -51,12 +46,13 @@ export default function Timeline(props) {
             <div className="checkbox-container">
                 <h3>All Actions</h3>
                 <TimelineCheckboxes 
-                        projectId={props.elementData.project_id}
-                        milestonesId={milestonesId} 
-                        ganttId={ganttId}
+                        setMilestoneVisible={setMilestoneVisible}
+                        setGanttVisible={setGanttVisible}
+                        milestoneVisible={milestoneVisible}
+                        ganttVisible={ganttVisible}
                     />
             </div>
-            <div class='timeline-action-block' id={milestonesId} style={{display : viewMilestoneElement}}>
+            <div className='timeline-action-block' style={{display : milestoneVisible ? 'block' : 'none'}}>
                 <h3>Milestones</h3>
                 <ActionElements
                     projectName={props.elementData.display_name || props.elementData.title}
@@ -66,7 +62,7 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </div>
-            <div class='timeline-action-block' id={ganttId} style={{display : viewGanttElement}}>
+            <div className='timeline-action-block' style={{display : ganttVisible ? 'block' : 'none'}}>
                 <h3>Gantt</h3>
                 <GanttChart
                     projectName={props.elementData.display_name || props.elementData.title}
