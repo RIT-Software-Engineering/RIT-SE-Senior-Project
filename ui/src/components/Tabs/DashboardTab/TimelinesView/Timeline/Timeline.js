@@ -37,7 +37,7 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
-            <h3>Action Milestones (previously Timelines)</h3>
+            <h3>Action Milestones</h3>
             <ActionElements
                 projectName={props.elementData.display_name || props.elementData.title}
                 projectId={props.elementData.project_id}
@@ -45,11 +45,13 @@ export default function Timeline(props) {
                 actions={actions}
                 reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
             />
-            <h3>Gantt Chart</h3>
+            <h3>Action Gantt</h3>
             <GanttChart
                 projectName={props.elementData.display_name || props.elementData.title}
                 projectId={props.elementData.project_id}
                 semesterName={props.elementData.semester_name}
+                semesterStart={props.elementData.start_date} 
+                semesterEnd={props.elementData.end_date} 
                 actions={actions}
                 reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
             />

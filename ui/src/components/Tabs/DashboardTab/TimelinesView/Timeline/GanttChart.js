@@ -1,20 +1,32 @@
 import React, { act, createElement } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
-import { parseDate } from "../../../../util/functions/utils";
+import { formatDate, formatDateNoOffset, isSemesterActive, parseDate } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import { Grid } from 'semantic-ui-react';
-  
+
+// not sure if class is getting too big yet
 export default function GanttChart(props) {
+    const semesterStartDate = props.semesterStart;
+    const semesterEndDate = props.semesterEnd;
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
+    const timeSpans = {'week' : 14, 'month' : 31, 'project' : dateDiff(semesterStartDate, semesterEndDate)};
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
     let ganttCols = []
     let ganttBars = [];
     let leftSideRows = []
 
-    leftSideRows.push(<div className="left-row-empty" gridRow="1"></div>)
-    leftSideRows.push(<div className="left-row-empty" gridRow="2"></div>)
+    const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
+
+    function onTimeSpanChange(e) {
+        setSelectTimeSpan(e.target.value);
+    }
+
+    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 1}}></div>)
+    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 2}}></div>)
     leftSideRows.push(
-        <div className="left-row-header" gridRow="3">
+        <div className="left-row-header" style={{'gridRow' : 3}}>
             <div className="left-row number">
                 No.
             </div>
@@ -24,28 +36,26 @@ export default function GanttChart(props) {
         </div>
     )
 
-    // not actually the first day, but I didn't feel like sorting the actions again by start date
-    // let firstDay = sortedActions[0]?.start_date;
-
     // eventually set it to current date (no param). this is for dev
-    let today = new Date("2019/8/27");
+    let today = new Date();
+    let startCol = new Date(semesterStartDate);
+    if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
+        // snap to today
+    }
 
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
-
-    let cols = 70; // arbitrary for now
+    let cols = dateDiff(semesterStartDate, semesterEndDate);
 
     // curr for current ___ in the construction of the chart
-    let currDate = today.getDate();
-    let currMonth = today.getMonth();
-    let currYear = today.getFullYear();
-    let monthLength = daysInMonth(today.getMonth(), today.getFullYear());    
+    let currDate = startCol.getDate();
+    let currMonth = startCol.getMonth();
+    let currYear = startCol.getFullYear();
+    let monthLength = daysInMonth(startCol.getMonth(), startCol.getFullYear());    
 
     const monthLabel = <div
         className="gantt-first-row"
         style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
         >
-            {monthNames[currMonth]} {currYear}
+            {monthNames[currMonth]}
         </div>
     ganttCols.push(monthLabel);
 
@@ -55,19 +65,22 @@ export default function GanttChart(props) {
         if (currDate == monthLength + 1) {
             currDate = 1;
             currMonth = currMonth + 1;
-            if (currMonth == 13) {
-                currMonth = 1;
+            if (currMonth == 12) {
+                currMonth = 0;
                 currYear++;
             }
             monthLength = daysInMonth(currMonth, currYear);
+            if (i + monthLength > cols) { // to cut off the month at the end of the calendar
+                monthLength = monthLength - (i + monthLength - cols);
+            }
             const monthLabel = <div
                 className="gantt-first-row"
                 style={{'gridColumn' : i + 1 + ' / span ' + monthLength}}
-                >{monthNames[currMonth]} {currYear}</div>
+                >{monthNames[currMonth]}</div>
             ganttCols.push(monthLabel);
         }
         ganttCols.push(<div className="gantt-second-row">{currDate}</div>); // date
-        // ganttCols.push(<div className="gantt-second-row">{weekNames[(today.getDay() + i)%7]}</div>); //days of week
+        // ganttCols.push(<div className="gantt-second-row">{weekNames[(startCol.getDay() + i)%7]}</div>); //days of week
 
         // ganttCols.push(<div className="gantt-cols">.</div>);
 
@@ -98,14 +111,15 @@ export default function GanttChart(props) {
         }
 
         const gridrow = 3 + idx;
-        const startDate = action?.start_date;
-        const dueDate = action?.due_date;
-        const barStart = dateDiff(today, startDate) < 1 ? 1 : dateDiff(today, startDate) + 1; 
-        const barSpan = dateDiff(today, startDate) < 1 ? dateDiff(startDate, dueDate) + dateDiff(today, startDate) + 1: dateDiff(startDate, dueDate) + 1;
+        const startDate = new Date(action?.start_date);
+        const dueDate = new Date(action?.due_date);
+        const barStart = dateDiff(startCol, startDate) + 1; 
+        const barSpan = dateDiff(startDate, dueDate) + 1;
 
         const ganttRow = <button
             className={`action-bar ${color}`}
-            style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan}}
+            style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
+                    'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
             >{action.action_title}</button>
 
@@ -147,9 +161,12 @@ export default function GanttChart(props) {
         leftSideRows.push(leftRow)
     })
 
-    let container = <div className="gantt-container">{ganttCols}{ganttBars}</div>
+    let container = <div
+        className="gantt-container"
+        style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
+            {ganttCols}{ganttBars}
+        </div>
 
-    // time span currently does nothing
     return (
         <div className="gantt">
             <div className="gantt-left">
@@ -160,8 +177,8 @@ export default function GanttChart(props) {
             <div className="gantt-right">
                 <div>
                     <label htmlFor="TimeSpan">Time Span </label>
-                    <select name="TimeSpan" defaultValue={"weekly"}>
-                        <option value="week">week</option>
+                    <select name="TimeSpan" defaultValue={selectTimeSpan} onChange={onTimeSpanChange}>
+                        <option value="week">2 weeks</option>
                         <option value="month">month</option>
                         <option value="project">project</option>
                     </select>

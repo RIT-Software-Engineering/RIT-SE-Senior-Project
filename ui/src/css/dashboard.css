@@ -69,15 +69,9 @@
 .gantt-container {
     display: grid;
     justify-self: center;
-    grid-auto-columns: 20px;
-    /* grid-template-columns: repeat(auto-fill, 120px); */
     overflow-x: scroll;
     text-wrap: nowrap;
     text-align: left;
-}
-
-.gantt-container > div {
-    min-width: 100%;
 }
 
 .gantt-first-row {
@@ -93,9 +87,6 @@
 /* .gantt-cols {
     grid-row: 3 / auto;
     border: #000000 1px solid;
-} */
-
-/* .gantt-bars {
 } */
 
 .action-bar {

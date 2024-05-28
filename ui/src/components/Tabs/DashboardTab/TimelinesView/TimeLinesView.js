@@ -8,7 +8,7 @@ import { isSemesterActive } from "../../../util/functions/utils";
 
 const noSemesterStr = "No Semester";
 
-export default function TimeLinesView() {
+export default function TimeLinesView(props) {
     const [timelines, setTimelines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeSemesters, setActiveSemesters] = useState({});
@@ -66,7 +66,11 @@ export default function TimeLinesView() {
                     title: semesterData[0]?.semester_name,
                     active: activeSemesters[semesterData[0]?.semester_name],
                     content: {
-                        content: <Semester key="semester" projects={semesterData} semesterName={semesterData[0]?.semester_name} />,
+                        content: <Semester key="semester"
+                                projects={semesterData}
+                                semesterName={semesterData[0]?.semester_name}
+                                semesterStart={props.semesterData[idx]?.start_date}
+                                semesterEnd={props.semesterData[idx]?.end_date} />,
                     },
                     semester_id: semesterData[0]?.semester_id,
                 },
