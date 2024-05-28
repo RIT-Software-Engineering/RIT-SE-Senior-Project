@@ -1,11 +1,9 @@
 import React, { act, createElement } from 'react'
-import ActionElements from './ActionElements';
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import {
-    formatDateNoOffset,
-    formatDateTime,
+    parseDate,
   } from "../../../../util/functions/utils";
   
 // a copy of UpcomingActions
@@ -23,9 +21,9 @@ export default function GanttChart(props) {
     // columns - currently only a weekly view
     let ganttCols = []
     for (let i = 0; i < cols; i++) {
-        ganttCols.push(<div class="gantt-first-row">monthname</div>);
-        ganttCols.push(<div class="gantt-second-row">{weekNames[i]}</div>);
-        // ganttCols.push(<div class="gantt-cols">.</div>);
+        ganttCols.push(<div className="gantt-first-row">month</div>);
+        ganttCols.push(<div className="gantt-second-row">{weekNames[i]}</div>);
+        // ganttCols.push(<div className="gantt-cols">.</div>);
     }
 
     // rows
@@ -55,18 +53,21 @@ export default function GanttChart(props) {
         const gridrow = 3 + idx;
 
         // will want to use span from start to end date
-        // props.action?.start_date
-        // props.action?.due_date
-        // these are date(?) objects, or at least formatted strangely. must get the start and end
-        // dates from them first.
+        // use parseDate(start/duedate) to get the date
+        let startDate = action?.start_date;
+        let dueDate = action?.due_date;
+        
         const ganttRow = <button
             className="gantt-bars"
-            style={{'gridRow' : gridrow, 'gridColumn' : '4 / span 3'}} //example span
+            style={{'gridRow' : gridrow, 'gridColumn' : '4 / span 3'}} //example span, eventually use dates to determine this
             // className={`action-bar ${color}`}
             key={idx}
         >
-            {<div className="gantt-action-bar" title={action.action_title}>{action.action_title}</div>}
+            {<div className="gantt-action-bar" title={action.action_title}>
+                {action.action_title}
+            </div>}
         </button>
+
         ganttBars.push(
             <ToolTip
                 autoLoadSubmissions={props.autoLoadSubmissions}
@@ -82,13 +83,13 @@ export default function GanttChart(props) {
     })
 
     // full container
-    let container = <div class="gantt-container">{ganttCols}{ganttBars}</div>
+    let container = <div className="gantt-container">{ganttCols}{ganttBars}</div>
 
     // time span currently does nothing
     return (
         <div>
             <div>
-                <label for="TimeSpan">Time Span </label>
+                <label htmlFor="TimeSpan">Time Span </label>
                 <select name="TimeSpan" defaultValue={"weekly"}>
                     <option value="week">week</option>
                     <option value="month">month</option>
