@@ -9,6 +9,7 @@ import TimelineCheckboxes from "./TimelineCheckboxes";
 
 export default function Timeline(props) {
 
+    const [actionViewPreference, setActionViewPreference] = useState('');
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
 
@@ -18,7 +19,13 @@ export default function Timeline(props) {
             .then(actions => {
                 setActions(actions);
             })
-            .catch(error => console.error(error))
+            .catch(error => console.error(error));
+        SecureFetch(config.url.API_GET_MY_ACTION_VIEW_PREFERENCE)
+            .then((response) => response.json())
+            .then((userViewPref) => {
+                setActionViewPreference(userViewPref);
+            })
+            .catch(error => console.error(error));
     }
 
     useEffect(() => {
@@ -44,7 +51,8 @@ export default function Timeline(props) {
             <div className="project-header">
                 <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
                 <TimelineCheckboxes 
-                    projectId={props.elementData.project_id} 
+                    projectId={props.elementData.project_id}
+                    viewPreference={actionViewPreference[0]?.action_view}
                     milestonesId={milestonesId} 
                     ganttId={ganttId}
                 />
