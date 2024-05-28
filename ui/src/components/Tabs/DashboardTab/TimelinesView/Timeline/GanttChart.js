@@ -12,12 +12,15 @@ export default function GanttChart(props) {
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let today = new Date('2019-11-08'); // eventually set it to current date (no param). this is for dev
-    let firstAction = sortedActions.find((action) => {
-        return new Date(action?.due_date) > today});
+    let today = new Date(); // eventually set it to current date (no param). this is for dev
+    if (!(isSemesterActive(semesterStartDate, semesterEndDate))) {
+        today = new Date(semesterStartDate);
+    }
+    let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) > today});
 
     useEffect(()=> {
-        if (firstAction) {
+        if (isSemesterActive(semesterStartDate, semesterEndDate) && firstAction) {
+            console.log(firstAction, semesterStartDate, 'boooyeah')
             let header = todayRef.current.offsetParent;
             let viewTop = firstActionRef.current.offsetTop - header.offsetHeight;
             let viewLeft = todayRef.current.offsetLeft;
@@ -137,7 +140,7 @@ export default function GanttChart(props) {
             style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
-            >{action.action_title}</button>
+            ><p>{action.action_title}</p></button>
         const ganttBar = <ToolTip
             autoLoadSubmissions={props.autoLoadSubmissions}
             color={color} noPopup={props.noPopup}

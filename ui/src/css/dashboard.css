@@ -14,8 +14,8 @@
     border: #000000 1px solid;
     width: 100%;
     grid-auto-flow: column;
-    grid-template-columns: minmax(200px, min-content);
-    /* I've changed the max-height to make scroll snap easier
+    grid-template-columns: 200px;
+    /* I've changed the max-height to make scroll snap easier to view
     original value: 500. change back later */
     max-height: 300px;
     overflow: auto;
@@ -52,13 +52,13 @@
 .gantt-header.first {
     grid-row: 1;
     position: sticky;
-    left: 0;
+    left: 200px;
 }
 
 .gantt-header.second {
     grid-row: 2;
     position: sticky;
-    left: 0;
+    left: 200px;
 }
 
 .gantt-background {
@@ -103,7 +103,7 @@
 
 .sidebar {
     width: 100%;
-    background: white;
+    background: rgb(255, 255, 255);
     text-wrap: nowrap;
     text-overflow: ellipsis;
     border: none;
@@ -139,10 +139,10 @@
     /* overflow-x: scroll; */
 }
 
-/* .gantt-bar > p {
+.action-bar > p {
     position: sticky;
-    left: 0;
-} */
+    left: 200px;
+}
 
 .action-bar {
     display: flex;
