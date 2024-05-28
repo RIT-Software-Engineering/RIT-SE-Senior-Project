@@ -7,30 +7,31 @@ import { Grid } from 'semantic-ui-react';
 
 export default function GanttChart(props) {
     const containerRef = React.useRef(null);
-    // const firstActionRef = React.useRef(null);
-    // const todayRef = React.useRef(null);
+    const firstActionRef = React.useRef(null);
+    const todayRef = React.useRef(null);
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 1; // + 1 to account for left side panel column
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let today = new Date('2019-09-13'); // eventually set it to current date (no param). this is for dev
+    let today = new Date('2019-09-23'); // eventually set it to current date (no param). this is for dev
     let firstAction = sortedActions.find((action) => {
         return new Date(action?.due_date) > today});
 
     useEffect(()=> {
-        // if (firstAction) {
-        //     containerRef.current.scrollTo(0, 12*12);
-        // }
-        containerRef.current.scrollIntoView();
+        if (firstAction) {
+            let header = todayRef.current.offsetParent;
+            let viewTop = firstActionRef.current.offsetTop - header.offsetHeight;
+            let viewLeft = todayRef.current.offsetLeft;
+            containerRef.current.scrollTo(viewLeft, viewTop);
+        }
     }, [semesterStartDate, semesterEndDate, firstAction, today]);
-    console.log(firstAction)
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
     const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
     let ganttHeader = [];
     let ganttBars = [];
-    let leftSideRows = []
+    let leftSideRows = [];
 
     const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
 
@@ -41,10 +42,6 @@ export default function GanttChart(props) {
     leftSideRows.push(<div className="sidebar header">Name</div>);
 
     let startCol = new Date(semesterStartDate);
-    if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
-        today = startCol;
-    }
-
     let cols = semesterLength;
 
     // curr for current ___ in the construction of the chart
@@ -54,6 +51,7 @@ export default function GanttChart(props) {
     let monthLength = daysInMonth(startCol.getMonth(), startCol.getFullYear());    
 
     const monthLabel = <div
+        ref={(today.getDate() + 1 == currDate && today.getMonth() == currMonth && today.getFullYear() == currYear) ? todayRef : null}
         className="gantt-header first"
         style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
         >
@@ -82,6 +80,7 @@ export default function GanttChart(props) {
             ganttHeader.push(monthLabel);
         }
         ganttHeader.push(<div
+            ref={(today.getDate() + 1 == currDate && today.getMonth() == currMonth && today.getFullYear() == currYear) ? todayRef : null}
             className="gantt-header second"
             style={{'gridColumn' : i + 1}}
             >{currDate}</div>); // date
@@ -120,10 +119,11 @@ export default function GanttChart(props) {
         const gridrow = 3 + idx;
         const startDate = new Date(action?.start_date);
         const dueDate = new Date(action?.due_date);
-        const barStart = dateDiff(startCol, startDate) + 1; 
-        const barSpan = dateDiff(startDate, dueDate) + 1;
+        const barStart = Math.round(dateDiff(startCol, startDate)) + 1; 
+        const barSpan = Math.round(dateDiff(startDate, dueDate)) + 1;
 
         const ganttRowButton = <button
+            ref={(action == firstAction) ? firstActionRef : null}
             className={`action-bar ${color}`}
             style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
@@ -163,7 +163,6 @@ export default function GanttChart(props) {
     </div>);
 
     const ganttChartContainer = (<div
-        ref={containerRef}
         className="gantt-chart">
             {ganttBars}
         </div>);
@@ -192,13 +191,11 @@ export default function GanttChart(props) {
                 </select>
             </div>
             <div className="gantt"
-            style={{'grid-auto-columns' : 100/timeSpans[selectTimeSpan] + '%'}}>
-                {leftSideRows}
+                ref={containerRef}
+                style={{'grid-auto-columns' : 100/timeSpans[selectTimeSpan] + '%'}}>
+                {ganttSideContainer}
                 {ganttContainer}
             </div>
         </div>
     );
 }
-
-// move these to utils?
-
