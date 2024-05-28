@@ -27,9 +27,6 @@ export default function GanttChart(props) {
     leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 2}}></div>)
     leftSideRows.push(
         <div className="left-row-header" style={{'gridRow' : 3}}>
-            <div className="left-row number">
-                No.
-            </div>
             <div className="left-row task">
                 Name
             </div>
@@ -139,9 +136,6 @@ export default function GanttChart(props) {
 
         const leftRowButton = 
             <button className="left-row">
-                <div className="left-row number">
-                    {idx}
-                </div>
                 <div className="left-row task">
                     {action.action_title}
                 </div>
