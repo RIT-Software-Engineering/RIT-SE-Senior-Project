@@ -42,6 +42,17 @@ export default function GanttChart(props) {
         setSelectTimeSpan(e.target.value);
     }
 
+    // Function to check if a user a on a mobile device in multiple ways, 
+    // also limits the sidebar to a small screen of 768px.
+    function isMobile() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const hasOrientation = typeof window.orientation !== "undefined";
+
+        return isMobileDevice || isSmallScreen || hasOrientation;
+    }
+
     // ------------- CHART CONSTRUCTION -------------
     leftSideRows.push(<div className="sidebar header">Name</div>);
     let startCol = new Date(semesterStartDate);
@@ -52,9 +63,12 @@ export default function GanttChart(props) {
     let currYear = startCol.getUTCFullYear();
     let monthLength = daysInMonth(startCol.getUTCMonth(), startCol.getUTCFullYear());  
 
+    // sticky text left - 200px is fixed sidebar width
+    let sidebarWidth = isMobile() ? 0 : '200px';
+
     const monthLabel = <div
         className="gantt-header first"
-        style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
+        style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1), 'left' : sidebarWidth}}
         >
             {monthNames[currMonth]}
         </div>
@@ -76,7 +90,7 @@ export default function GanttChart(props) {
             }
             const monthLabel = <div
                 className="gantt-header first"
-                style={{'gridColumn' : i + ' / span ' + monthLength}}
+                style={{'gridColumn' : i + ' / span ' + monthLength, 'left' : sidebarWidth}}
                 >{monthNames[currMonth]}</div>
             ganttHeader.push(monthLabel);
         }
@@ -87,14 +101,14 @@ export default function GanttChart(props) {
         ganttHeader.push(<div
             ref={isToday ? todayRef : null}
             className="gantt-header second"
-            style={{'gridColumn' : i}}
+            style={{'gridColumn' : i, 'left' : sidebarWidth}}
             >{currDate}</div>); // date
             // weekNames[(startCol.getDay() + i)%7] // days of week
 
         // per day (column colors)
         ganttCols.push(<div
             className={isToday ? 'gantt-col today' : ((startCol.getUTCDay() + i)%7 == 0 || ((startCol.getUTCDay() + i)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
-            style={{'gridColumn' : i}}
+            style={{'gridColumn' : i, 'left' : sidebarWidth}}
             ></div>);
     
         currDate++;
@@ -140,7 +154,7 @@ export default function GanttChart(props) {
             style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
-            ><p>{action.action_title}</p></button>
+            ><p style={{'left' : sidebarWidth}}>{action.action_title}</p></button>
         const ganttBar = <ToolTip
             autoLoadSubmissions={props.autoLoadSubmissions}
             color={color} noPopup={props.noPopup}
@@ -192,17 +206,6 @@ export default function GanttChart(props) {
         {ganttHeaderContainer}
         {ganttChartContainer}
     </div>)
-
-    // Function to check if a user a on a mobile device in multiple ways, 
-    // also limits the sidebar to a small screen of 768px.
-    function isMobile() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-        const hasOrientation = typeof window.orientation !== "undefined";
-
-        return isMobileDevice || isSmallScreen || hasOrientation;
-    }
     
     // Show or hide sidebar according to if the user is on mobile or not
     let containerClassname;
