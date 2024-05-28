@@ -9,8 +9,17 @@
 .gantt-container {
     position: absolute;
     display: grid;
-    grid-template-columns: 100px repeat(7, 1fr) auto;
-    width: 100%;
+    width: 96%;
+    justify-self: center;
+    grid-auto-columns: 80px;
+    /* grid-template-columns: repeat(auto-fill, 120px); */
+    overflow-x: scroll;
+    text-wrap: nowrap;
+    text-align: left;
+}
+
+.gantt-container > div {
+    min-width: 100%;
 }
 
 .gantt-first-row {
@@ -23,15 +32,13 @@
     border: #000000 1px solid;
 }
 
-.gantt-cols {
+/* .gantt-cols {
     grid-row: 3 / auto;
     border: #000000 1px solid;
-}
+} */
 
-.gantt-bars {
-    background-color: #9578ff;
-    text-wrap: nowrap;
-}
+/* .gantt-bars {
+} */
 
 .action-bar {
     display: flex;
