@@ -1,6 +1,7 @@
 import React, { act, createElement, useEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
+import GanttChartBackdrop from './GanttChartBackdrop';
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import ActionToolTip from '../../../AdminTab/ActionEditor/ActionToolTip';
@@ -19,9 +20,13 @@ export default function GanttChart(props) {
         today = new Date(semesterStartDate);
     }
     let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) >= today}); // make this work
-    const [selectTimeSpan, setSelectTimeSpan] = React.useState("week");
+    const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
+    const [selectedTimeSpan, setSelectedTimeSpan] = React.useState("week");
 
     useEffect(()=> {
+        document.documentElement.style.setProperty('--gantt-maximum-columns', semesterLength);
+        document.documentElement.style.setProperty('--gantt-maximum-rows', sortedActions.length + 4);
+
         if (semesterActive && firstAction) {
             try {
                 let header = todayRef.current.offsetParent;
@@ -34,16 +39,8 @@ export default function GanttChart(props) {
         }
     }, [semesterStartDate, semesterEndDate, firstAction, today]);
 
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
-    const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
-    let ganttHeader = [];
-    let ganttBars = [];
-    let ganttCols = [];
-    let leftSideRows = [];
-
     function onTimeSpanChange(e) {
-        setSelectTimeSpan(e.target.value);
+        setSelectedTimeSpan(e.target.value);
     }
 
     // Function to check if a user a on a mobile device in multiple ways, 
@@ -57,68 +54,13 @@ export default function GanttChart(props) {
         return isMobileDevice || isSmallScreen || hasOrientation;
     }
 
-    // ------------- CHART CONSTRUCTION -------------
-    leftSideRows.push(<div className="sidebar header">Name</div>);
-    let startCol = new Date(semesterStartDate);
-    let cols = semesterLength;
-    // curr for current ___ in the construction of the chart
-    let currDate = startCol.getUTCDate();
-    let currMonth = startCol.getUTCMonth();
-    let currYear = startCol.getUTCFullYear();
-    let monthLength = daysInMonth(startCol.getUTCMonth(), startCol.getUTCFullYear());  
-
-    // sticky text left - 200px is fixed sidebar width
-    let sidebarWidth = isMobile() ? 0 : '200px';
-
-    const monthLabel = <div
-        className="gantt-header first"
-        style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1), 'left' : sidebarWidth}}
-        >
-            {monthNames[currMonth]}
-        </div>
-    ganttHeader.push(monthLabel);
-
-    // columns
-    for (let i = 1; i < cols; i++) {
-        // if new month
-        if (currDate == monthLength + 1) {
-            currDate = 1;
-            currMonth = currMonth + 1;
-            if (currMonth == 12) {
-                currMonth = 0;
-                currYear++;
-            }
-            monthLength = daysInMonth(currMonth, currYear);
-            if (i + monthLength > cols) { // to cut off the month at the end of the calendar
-                monthLength = monthLength - (i + monthLength - cols);
-            }
-            const monthLabel = <div
-                className="gantt-header first"
-                style={{'gridColumn' : i + ' / span ' + monthLength, 'left' : sidebarWidth}}
-                >{monthNames[currMonth]}</div>
-            ganttHeader.push(monthLabel);
-        }
-
-        let isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
-
-        // per day (header names)
-        ganttHeader.push(<div
-            ref={isToday ? todayRef : null}
-            className="gantt-header second"
-            style={{'gridColumn' : i, 'left' : sidebarWidth}}
-            >{currDate}</div>); // date
-            // weekNames[(startCol.getDay() + i)%7] // days of week
-
-        // per day (column colors)
-        ganttCols.push(<div
-            className={isToday ? 'gantt-col today' : ((startCol.getUTCDay() + i)%7 == 0 || ((startCol.getUTCDay() + i)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
-            style={{'gridColumn' : i, 'left' : sidebarWidth}}
-            ></div>);
-    
-        currDate++;
-    }
-
     // ----------------- ROWS -------------------
+    let ganttBars = [];
+    let leftSideRows = [];
+    let startCol = new Date(semesterStartDate);
+    let sidebarWidth = isMobile() ? 0 : '200px';    // sticky text left - 200px is fixed sidebar width
+    leftSideRows.push(<div className="sidebar header">Name</div>);
+
     sortedActions.forEach((action, idx) => {
         
         let color = "";
@@ -219,17 +161,6 @@ export default function GanttChart(props) {
         leftSideRows.push(leftRow)
     })
 
-    const ganttHeaderContainer = (<div
-        className="gantt-header">
-            {ganttHeader}
-    </div>);
-
-    const ganttColsContainer = (<div
-        className='gantt-background'
-        >
-        {ganttCols}
-    </div>);
-
     const ganttChartContainer = (<div
         className="gantt-chart">
             {ganttBars}
@@ -237,9 +168,12 @@ export default function GanttChart(props) {
 
     const ganttContainer = (<div
         className='gantt-container'
-        style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
-        {ganttColsContainer}
-        {ganttHeaderContainer}
+        style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
+        <GanttChartBackdrop
+            semesterStart={semesterStartDate}
+            semesterEnd={semesterEndDate}
+            timeSpan={selectedTimeSpan}
+            isMobile={isMobile()}/>
         {ganttChartContainer}
     </div>)
     
@@ -266,7 +200,7 @@ export default function GanttChart(props) {
         <div>
             <div>
                 <label htmlFor="TimeSpan">Time Span </label>
-                <select name="TimeSpan" defaultValue={selectTimeSpan} onChange={onTimeSpanChange}>
+                <select name="TimeSpan" defaultValue={selectedTimeSpan} onChange={onTimeSpanChange}>
                     <option value="week">2 weeks</option>
                     <option value="month">month</option>
                     <option value="project">project</option>
@@ -274,7 +208,7 @@ export default function GanttChart(props) {
             </div>
             <div className={containerClassname}
                 ref={containerRef}
-                style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
+                style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
                 {ganttSideContainer}
                 {ganttContainer}
             </div>

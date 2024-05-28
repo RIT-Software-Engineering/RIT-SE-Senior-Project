@@ -40,6 +40,12 @@ export const dateDiff = (firstDate, secondDate) => {
     return (parseDate(secondDate) - parseDate(firstDate)) / 86400000;
 }
 
+export const numDaysLeftInYear = (dateTime) => {
+    let nextYear = new Date(dateTime.getFullYear() + 1, 0, 1);
+
+    return Math.floor((nextYear - dateTime) / 86400000);
+}
+
 /**
  * Format bytes as human-readable text.
  *
