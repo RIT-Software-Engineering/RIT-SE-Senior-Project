@@ -16,7 +16,6 @@
     grid-template-columns: minmax(200px, min-content);
     max-height: 500px;
     overflow-y: scroll;
-    overflow-x: auto;
 }
 
 .gantt-container {
@@ -25,8 +24,6 @@
     grid-column: 1/var(--gantt-maximum-columns);
     grid-template-rows: subgrid;
     grid-row: 1/var(--gantt-maximum-rows);
-    width: 100%;
-    overflow-x: scroll;
 }
 
 .gantt-header {
@@ -53,6 +50,7 @@
     position: sticky;
     left: 0;
 }
+
 
 .sidebar-container {
     display: grid;
