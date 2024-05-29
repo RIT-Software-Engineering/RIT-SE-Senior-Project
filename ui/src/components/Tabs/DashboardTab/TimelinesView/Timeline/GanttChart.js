@@ -1,19 +1,25 @@
-import React, { act, createElement } from 'react'
+import React, { act, createElement, useEffect, useLayoutEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import { formatDate, formatDateNoOffset, isSemesterActive, parseDate } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import { Grid } from 'semantic-ui-react';
 
-// not sure if class is getting too big yet
 export default function GanttChart(props) {
+    const containerRef = React.useRef(null);
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
+    const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 1; // + 1 to account for left side panel column
+    // useEffect(()=> {
+    //     const today = new Date();
+    //     containerRef.current.scrollTop += 200;
+    // }, semesterStartDate, semesterEndDate);
+
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
-    const timeSpans = {'week' : 14, 'month' : 31, 'project' : dateDiff(semesterStartDate, semesterEndDate)};
+    const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let ganttCols = []
+    let ganttHeader = [];
     let ganttBars = [];
     let leftSideRows = []
 
@@ -23,18 +29,17 @@ export default function GanttChart(props) {
         setSelectTimeSpan(e.target.value);
     }
 
-    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 1}}></div>)
-    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 2}}></div>)
-    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 3}}></div>);
+    leftSideRows.push(<div className="sidebar header empty" style={{'gridRow' : 1}}></div>);
+    leftSideRows.push(<div className="sidebar header" style={{'gridRow' : 2}}>Name</div>);
 
     // eventually set it to current date (no param). this is for dev
-    let today = new Date();
+    let today = new Date('2018-10-02');
     let startCol = new Date(semesterStartDate);
     if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
-        // snap to today
+        today = startCol;
     }
 
-    let cols = dateDiff(semesterStartDate, semesterEndDate) + 1; // + 1 to account for left side panel column
+    let cols = semesterLength;
 
     // curr for current ___ in the construction of the chart
     let currDate = startCol.getDate() + 1; // + 1 to account for left side panel column
@@ -43,12 +48,12 @@ export default function GanttChart(props) {
     let monthLength = daysInMonth(startCol.getMonth(), startCol.getFullYear());    
 
     const monthLabel = <div
-        className="gantt-first-row"
+        className="gantt-header first"
         style={{'gridColumn' : 1 + ' / span ' + (monthLength - currDate + 1)}}
         >
             {monthNames[currMonth]}
         </div>
-    ganttCols.push(monthLabel);
+    ganttHeader.push(monthLabel);
 
     // columns
     for (let i = 0; i < cols; i++) {
@@ -65,22 +70,23 @@ export default function GanttChart(props) {
                 monthLength = monthLength - (i + monthLength - cols);
             }
             const monthLabel = <div
-                className="gantt-first-row"
+                className="gantt-header first"
                 style={{'gridColumn' : i + 1 + ' / span ' + monthLength}}
                 >{monthNames[currMonth]}</div>
-            ganttCols.push(monthLabel);
+            ganttHeader.push(monthLabel);
         }
-        ganttCols.push(<div className="gantt-second-row">{currDate}</div>); // date
-        // ganttCols.push(<div className="gantt-second-row">{weekNames[(startCol.getDay() + i)%7]}</div>); //days of week
-
-        // ganttCols.push(<div className="gantt-cols">.</div>);
-
+        ganttHeader.push(<div className="gantt-header second">{currDate}</div>); // date
+        // ganttHeader.push(<div className="gantt-header second">{weekNames[(startCol.getDay() + i)%7]}</div>); //days of week
         currDate++;
     }
 
-    // rows
+    // ----------------- ROWS -------------------
     sortedActions.forEach((action, idx) => {
+        // use this to determine if scroll
+        if (!isSemesterActive(semesterStartDate, semesterEndDate)) {
 
+        }
+        
         let color = "";
 
         switch (action.state) {
@@ -107,32 +113,27 @@ export default function GanttChart(props) {
         const barStart = dateDiff(startCol, startDate) + 1; 
         const barSpan = dateDiff(startDate, dueDate) + 1;
 
-        const ganttRow = <button
+        const ganttRowButton = <button
             className={`action-bar ${color}`}
             style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
             >{action.action_title}</button>
-
         const ganttBar = <ToolTip
             autoLoadSubmissions={props.autoLoadSubmissions}
             color={color} noPopup={props.noPopup}
-            trigger={ganttRow}
+            trigger={ganttRowButton}
             action={action} projectId={props.projectId}
             semesterName={props.semesterName}
             projectName={props.projectName}
             key={`tooltip-${action.action_title}-${idx}`}
             reloadTimelineActions={props.reloadTimelineActions}
         />
-
         ganttBars.push(ganttBar)
 
-
-        const leftRowButton = 
-            <button className="left-row">
-                {action.action_title}
-            </button>
-
+        const leftRowButton = <button
+            className="sidebar"
+            style={{'gridRow' : gridrow}}>{action.action_title}</button>
         const leftRow = <ToolTip
             autoLoadSubmissions={props.autoLoadSubmissions}
             color={color} noPopup={props.noPopup}
@@ -143,35 +144,42 @@ export default function GanttChart(props) {
             key={`tooltip-${action.action_title}-${idx}`}
             reloadTimelineActions={props.reloadTimelineActions}
         />
-
         leftSideRows.push(leftRow)
     })
 
-    let container = <div
+    // const container = (<div
+    //     className="gantt-container"
+    //     style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
+    //         {ganttHeader}{ganttBars}
+    //     </div>)
+
+
+    const container = (<div
+        ref={containerRef}
         className="gantt-container"
         style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
-            {ganttCols}{ganttBars}
-        </div>
-
+            {ganttHeader}{ganttBars}
+        </div>);
+    
+    const sidebarContainer = (<div
+        className='sidebar-container'>
+        {leftSideRows}
+    </div>)
+    
+    // ---------------- RENDER ------------------
     return (
-        <div className="gantt">
-            <div className="gantt-left">
-                <div className="left-column">
-                    {leftSideRows}
-                </div>
+        <div>
+            <div>
+                <label htmlFor="TimeSpan">Time Span </label>
+                <select name="TimeSpan" defaultValue={selectTimeSpan} onChange={onTimeSpanChange}>
+                    <option value="week">2 weeks</option>
+                    <option value="month">month</option>
+                    <option value="project">project</option>
+                </select>
             </div>
-            <div className="gantt-right">
-                <div>
-                    <label htmlFor="TimeSpan">Time Span </label>
-                    <select name="TimeSpan" defaultValue={selectTimeSpan} onChange={onTimeSpanChange}>
-                        <option value="week">2 weeks</option>
-                        <option value="month">month</option>
-                        <option value="project">project</option>
-                    </select>
-                </div>
-                <div>
-                    {container}
-                </div>
+            <div className="gantt">
+                {leftSideRows}
+                {container}
             </div>
         </div>
     );

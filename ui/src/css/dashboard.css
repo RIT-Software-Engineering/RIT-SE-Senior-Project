@@ -1,5 +1,6 @@
 :root {
     --timeline-element-height: 4.6em;
+    --gantt-maximum-rows: 300;
 }
 
 .admin-menu {
@@ -8,75 +9,69 @@
 
 .gantt {
     display: grid;
-}
-
-.gantt-left {
-    grid-row: 1;
-}
-
-.gantt-right {
-    grid-row: 1;
     border: #000000 1px solid;
-    overflow-x: auto;
-}
-
-.left-column {
-    display: grid;
-    border: #000000 1px solid;
-}
-
-.left-row-empty {
-    min-height: 21px;
-}
-
-/* Uncomment to add back header for sidebar if needed, else delete
-/* .left-row-header {
-    display: flex;
     width: 100%;
-    min-height: 21px;
-    border-top: #000000 1px solid;
-    padding-left: 7px;
-    padding-right: 7px;
-} */
+    grid-auto-flow: column;
+    grid-template-columns: minmax(200px, min-content) auto;
+    height: 500px;
+    overflow-y: scroll;
+}
 
-.left-row {
-    display: flex;
+.sidebar-container {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+}
+
+.sidebar {
     width: 100%;
     background: white;
-    margin: 0px;
     text-wrap: nowrap;
     text-overflow: ellipsis;
+    border: none;
     border-top: #000000 1px solid;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    padding: 7px;
-    justify-content: right;
-    cursor: pointer;
+    border-right: #000000 1px solid;
+    text-align: right;
+    grid-column-start: 1;
+    position: sticky;
+    left: 0;
+}
+
+.sidebar.header {
+    border: none;
+    padding-right: 5px;
+    border-right: #000000 1px solid;
 }
 
 .gantt-container {
     display: grid;
-    justify-self: center;
     overflow-x: scroll;
     text-wrap: nowrap;
     text-align: left;
+    width: 100%;
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+    grid-column-start: 2;
 }
 
-.gantt-first-row {
+.gantt-header {
+    position: sticky;
+    top: 0;
+    align-self: self-start;
+    border: #000000 1px solid;
+}
+
+.gantt-header.topleft {
+    grid-row: 1/3;
+}
+
+.gantt-header.first {
     grid-row: 1;
-    border: #000000 1px solid;
 }
 
-.gantt-second-row {
+.gantt-header.second {
     grid-row: 2;
-    border: #000000 1px solid;
 }
-
-/* .gantt-cols {
-    grid-row: 3 / auto;
-    border: #000000 1px solid;
-} */
 
 .action-bar {
     display: flex;
