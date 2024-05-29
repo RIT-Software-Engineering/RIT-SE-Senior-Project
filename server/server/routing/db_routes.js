@@ -1022,6 +1022,14 @@ module.exports = (db) => {
       .withMessage("Cannot be empty"),
     async (req, res) => {
       let body = req.body;
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
+      const locked =
+        body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
 
@@ -1129,8 +1137,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        body.inactive,
-        body.locked,
+        inactive,
+        locked,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
