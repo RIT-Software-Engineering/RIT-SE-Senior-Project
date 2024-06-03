@@ -913,10 +913,10 @@ module.exports = (db) => {
         poster_thumb = body.poster_thumb;
       }else{
         if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-          let formattedPath = `Full/${body.url_slug}`
-          poster_full = `${formattedPath}/${files.poster_full.name}`;
+          files.poster_full.name = body.url_slug+"-poster"
+          poster_full = `${files.poster_full.name}`;
           poster_thumb = poster_full;
-          let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
+          let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
           files_uploaded.push([files.poster_full, poster_URL]);
         }else{res.status(500).send();}
       }
@@ -925,8 +925,9 @@ module.exports = (db) => {
         archive_image = body.archive_image;
       }else{
         if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-          archive_image = `${body.url_slug}/${files.archive_image.name}`;
-          let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
+          files.archive_image.name = body.url_slug+"-image"
+          archive_image = `${files.archive_image.name}`;
+          let image_URL = path.join(__dirname, `../../resource/archiveImages`);
           files_uploaded.push([files.archive_image, image_URL]);
         }else{res.status(500).send();}
       }
@@ -935,8 +936,9 @@ module.exports = (db) => {
         video = body.video;
       }else{
         if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-          video = `${body.url_slug}/${files.video.name}`;
-          let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
+          files.video.name = body.url_slug+"-video"
+          video = `${files.video.name}`;
+          let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
           files_uploaded.push([files.video, video_URL]);
         }else{res.status(500).send();}
       }
@@ -1046,10 +1048,10 @@ module.exports = (db) => {
           poster_thumb = body.poster_thumb;
         }else{
           if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-            let formattedPath = `Full/${body.url_slug}`
-            poster_full = `${formattedPath}/${files.poster_full.name}`;
+            files.poster_full.name = body.url_slug+"-poster"
+            poster_full = `${files.poster_full.name}`;
             poster_thumb = poster_full;
-            let poster_URL = path.join(__dirname, `../../resource/archivePosters/${formattedPath}`);
+            let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
             files_uploaded.push([files.poster_full, poster_URL]);
           }else{res.status(500).send();}
         }
@@ -1058,8 +1060,9 @@ module.exports = (db) => {
           archive_image = body.archive_image;
         }else{
           if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-            archive_image = `${body.url_slug}/${files.archive_image.name}`;
-            let image_URL = path.join(__dirname, `../../resource/archiveImages/${body.url_slug}`);
+            files.archive_image.name = body.url_slug+"-image"
+            archive_image = `${files.archive_image.name}`;
+            let image_URL = path.join(__dirname, `../../resource/archiveImages`);
             files_uploaded.push([files.archive_image, image_URL]);
           }else{res.status(500).send();}
         }
@@ -1068,8 +1071,9 @@ module.exports = (db) => {
           video = body.video;
         }else{
           if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-            video = `${body.url_slug}/${files.video.name}`;
-            let video_URL = path.join(__dirname, `../../resource/archiveVideos/${body.url_slug}`);
+            files.video.name = body.url_slug+"-video"
+            video = `${files.video.name}`;
+            let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
             files_uploaded.push([files.video, video_URL]);
           }else{res.status(500).send();}
         }
