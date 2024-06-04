@@ -11,14 +11,12 @@ import {
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
 import ProjectArchivePanel from "./ProjectArchivePanel";
-import FileUpload from "./FileUpload";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
-import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
 import { UserContext } from "../../util/functions/UserContext";
 
 const COLUMNS = {
@@ -125,6 +123,7 @@ export default function Proposals(props) {
                   />
                   <ProjectArchivePanel
                     project={proposal}
+                    reloadSemesters={props.reloadSemesters}
                   />
                   <WebsiteViewerModal
                     project={proposal}
@@ -139,19 +138,6 @@ export default function Proposals(props) {
                     activeCoaches={props.activeCoaches}
                     activeSponsors={props.activeSponsors}
                   />
-                  {proposal.status === "archive" ? (
-                    <></>
-                  ) : (
-                    <ArchivePanel
-                      project={proposal}
-                      semesterData={props.semesterData}
-                      newArchive
-                      activeCoaches={props.activeCoaches}
-                      activeSponsors={props.activeSponsors}
-                      header={"Archive Project"}
-                      buttonIcon={"bullhorn"}
-                    />
-                  )}
                 </>
               )}
               <a

@@ -272,6 +272,7 @@ export default function ProjectArchivePanel(props) {
       formFieldArray={formFieldArray}
       header={(newArchive ? "Create Website" : "Edit Website")}
       button={(newArchive ? "plus" : "edit")}
+      callback={props.reloadSemesters}
     />
   );
 }

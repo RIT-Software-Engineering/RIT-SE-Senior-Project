@@ -23,6 +23,17 @@ export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
 
+  const loadSemesterData = () => {
+    SecureFetch(config.url.API_GET_SEMESTERS)
+      .then((response) => response.json())
+      .then((semestersData) => {
+        setSemestersData(semestersData);
+      })
+      .catch((error) => {
+        console.error("Failed to get semestersData data" + error);
+      });
+  }
+
   // When dashboard loads, check who is currently signed in
   useEffect(() => {
     SecureFetch(config.url.API_WHO_AM_I)
@@ -40,14 +51,7 @@ export default function DashboardPage() {
           prev_login: responseUser.prev_login,
         });
       });
-    SecureFetch(config.url.API_GET_SEMESTERS)
-      .then((response) => response.json())
-      .then((semestersData) => {
-        setSemestersData(semestersData);
-      })
-      .catch((error) => {
-        console.error("Failed to get semestersData data" + error);
-      });
+    loadSemesterData();
   }, []);
 
   let panes = [];
@@ -125,7 +129,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} />
+              <ProjectsTab
+                semesterData={semesterData}
+                reloadSemesters={() => { loadSemesterData() }}
+              />
             </Tab.Pane>
           ),
         },
