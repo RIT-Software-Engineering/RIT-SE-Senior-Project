@@ -123,7 +123,6 @@ export default function Proposals(props) {
                   />
                   <ProjectArchivePanel
                     project={proposal}
-                    reloadSemesters={props.reloadSemesters}
                   />
                   <WebsiteViewerModal
                     project={proposal}

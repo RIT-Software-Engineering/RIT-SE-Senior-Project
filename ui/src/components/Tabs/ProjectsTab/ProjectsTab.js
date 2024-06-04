@@ -49,7 +49,6 @@ export default function ProjectsTab(props) {
             viewOnly
             proposalData={candidateProjects}
             semesterData={props.semesterData}
-            reloadSemesters={props.reloadSemesters}
           />
           <br />
         </>

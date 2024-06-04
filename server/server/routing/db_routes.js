@@ -1080,6 +1080,9 @@ module.exports = (db) => {
 
         for (let i = 0; i<files_uploaded.length; i++) {
           fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+          if (fs.existsSync(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`)){
+            fs.unlink(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`);
+          }
           files_uploaded[i][0].mv(
             `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
             function (err) {

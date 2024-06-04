@@ -44,9 +44,7 @@ export default function ProjectArchivePanel(props) {
     locked: "",
   });
 
-
-  //This is for checking for existing archives and assigning their values as defaults.
-  useEffect(() => {
+  const loadArchiveData = () => {
     SecureFetch(
       `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`
     )
@@ -176,6 +174,11 @@ export default function ProjectArchivePanel(props) {
             });
         }
       });
+  }
+
+  //This is for checking for existing archives and assigning their values as defaults.
+  useEffect(() => {
+    loadArchiveData(props.project)
   }, [props.project]);
 
   let submissionModalMessages;
@@ -272,7 +275,7 @@ export default function ProjectArchivePanel(props) {
       formFieldArray={formFieldArray}
       header={(newArchive ? "Create Website" : "Edit Website")}
       button={(newArchive ? "plus" : "edit")}
-      callback={props.reloadSemesters}
+      callback={() => { loadArchiveData(props.project) }}
     />
   );
 }
