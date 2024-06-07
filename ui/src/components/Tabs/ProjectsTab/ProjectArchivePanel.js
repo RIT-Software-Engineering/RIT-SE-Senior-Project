@@ -3,7 +3,6 @@ import { config, USERTYPES } from "../../util/functions/constants";
 import React, { useEffect, useState, useContext } from "react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { slugify } from "../../util/functions/utils";
-import { decode } from "html-entities";
 import { UserContext } from "../../util/functions/UserContext";
 
 /**
@@ -12,11 +11,6 @@ import { UserContext } from "../../util/functions/UserContext";
  *      Notable props: newArchive, indicates whether a project has been added to archives or not
  */
 export default function ProjectArchivePanel(props) {
-  const [projectMembers, setProjectMembers] = useState({
-    students: "",
-    coaches: "",
-    sponsor: "",
-  });
 
   const [newArchive, setNewArchive] = useState({});
   const isStudent = (useContext(UserContext).user?.role === USERTYPES.STUDENT);
@@ -140,7 +134,6 @@ export default function ProjectArchivePanel(props) {
                   coach: projectGroupedValues.coaches,
                 };
               });
-              setProjectMembers(projectMemberOptions);
             });
           if (props.project?.semester) {
             SecureFetch(

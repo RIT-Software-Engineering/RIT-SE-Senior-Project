@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Icon } from 'semantic-ui-react';
-import { config, USERTYPES } from '../../util/functions/constants';
+import { config } from '../../util/functions/constants';
 import { SecureFetch } from '../../util/functions/secureFetch';
-import { formattedAttachments } from './ProjectEditorModal';
 import ErrorPage from "../../pages/ErrorPage";
 import {decode} from 'he';
 

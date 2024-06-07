@@ -17,7 +17,6 @@ import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
-import { UserContext } from "../../util/functions/UserContext";
 
 const COLUMNS = {
   SEMESTER: "semester",
