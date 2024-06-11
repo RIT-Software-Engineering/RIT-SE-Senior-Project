@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
     // Required for SSO authentication
     // TODO: This may no longer be needed because of our cors policy lower down "credentials: true".
     res.header("Access-Control-Allow-Credentials", "true");
-
+    
     next();
 });
 app.use(
