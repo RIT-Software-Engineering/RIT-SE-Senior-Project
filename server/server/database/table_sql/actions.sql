@@ -2,7 +2,7 @@ CREATE TABLE actions (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     semester        INTEGER NOT NULL, 
     action_title    TEXT,   -- The title of the action
-    action_target   TEXT,   -- individual, coach, team, admin
+    action_target   TEXT,   -- individual, coach, team, admin, peer-eval
     date_deleted    TEXT,   -- Empty string if active, Datetime of when deactivated if unactive
     short_desc      TEXT,
     start_date      TEXT,

@@ -50,7 +50,7 @@ function createAllTables() {
                 reject(err);
                 return;
             }
-
+            
             files
             .filter((file) => file.toString() != "create_all_tables.sql")
             .forEach((file) => {

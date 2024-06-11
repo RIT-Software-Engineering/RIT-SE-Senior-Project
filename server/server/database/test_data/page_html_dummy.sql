@@ -34,7 +34,7 @@ INSERT INTO page_html (name, html) VALUES
                              </button>
                              <script>
                               function clickHandler() {
-                                     window.location.href = window.location.origin + \'/proposal-form\';
+                                     window.location.href = window.location.origin + "/proposal-form";
                               }
                             </script>
                          </div>
@@ -53,7 +53,7 @@ INSERT INTO page_html (name, html) VALUES
                              <div class="ui styled fluid accordion">
                <div class="title">
              <script>
-             $(\'.ui.accordion\').accordion();
+             $(".ui.accordion").accordion();
              </script>
                  <i class="dropdown icon"></i>
                  How will my organization benefit from sponsoring a Senior Project?
