@@ -153,6 +153,12 @@ export const DROPDOWN_ITEMS = {
             text: "Coach Announcement",
             value: "coach_announcement",
         },
+        // TODO: This is where we would add action targets
+        {
+            key:"peer_evaluation",
+            text:"Peer Evaluation",
+            value:"peer_evaluation",
+        }
     ],
 
     userTypes: [
@@ -175,6 +181,8 @@ export const DROPDOWN_ITEMS = {
 }
 
 export const PROJECT_STATUSES = {
+    // PLANNING: Do we need to add a "waiting for coach" status?
+    // Or can we just use needs revision?
     SUBMITTED: "submitted",
     NEEDS_REVISION: "needs revision",
     REJECTED: "rejected",

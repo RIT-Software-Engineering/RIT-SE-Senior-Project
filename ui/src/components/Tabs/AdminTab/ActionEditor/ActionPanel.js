@@ -82,6 +82,8 @@ export default function ActionPanel(props) {
             placeHolder: "Due Date / Announcement End Date",
             name: "due_date",
         },
+        // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
+        // Or add a taggle to switch bettwen the html and the form builder
         {
             type: "textArea",
             label: "Page Html",

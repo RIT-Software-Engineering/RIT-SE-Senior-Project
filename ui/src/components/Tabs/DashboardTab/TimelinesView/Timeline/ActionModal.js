@@ -18,6 +18,9 @@ export default function ActionModal(props) {
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
 
+    // PLANNING: Maybe add useEffect for saving fourm when edited
+    // So when re-opened, the form is still filled out
+
     const generateModalFields = () => {
         switch (submissionModalOpen) {
             case MODAL_STATUS.SUCCESS:
@@ -87,7 +90,7 @@ export default function ActionModal(props) {
                     }
                     formData[formDataInputs[x].name] = formDataInputs[formDataInputs[x].name]?.value;
                 }
-                else{
+                else {
                     if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
                         errors.push(`'${formDataInputs[x].name}' can not be empty`);
                     }
@@ -129,7 +132,7 @@ export default function ActionModal(props) {
                         setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
                         props.isOpenCallback(false);
                     } else {
-                        response.text().then((data)=>{
+                        response.text().then((data) => {
                             setSubmissionModalResponse(data || "We were unable to receive your submission.")
                         })
                         setSubmissionModalOpen(MODAL_STATUS.FAIL);
@@ -183,7 +186,10 @@ export default function ActionModal(props) {
     }
 
     return (
+        // TODO: Add property for Modal to not close when clicking outside of it
+        // Property is called closeOnDimmerClick
         <Modal
+            closeOnDimmerClick={false}
             className={"sticky"}
             onClose={() => {
                 setOpen(false);

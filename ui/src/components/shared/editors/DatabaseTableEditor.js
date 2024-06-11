@@ -16,6 +16,7 @@ export default function DatabaseTableEditor(props) {
 
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [formData, setFormData] = useState(initialState);
+
     // Update initial state if provided initial state is changed
     useEffect(() => {
         setFormData(initialState)
@@ -87,6 +88,8 @@ export default function DatabaseTableEditor(props) {
             });
     };
 
+    // PLANNING: Replicate this idea in the student view of editing
+    // So that the fourm saves the data in the same way as the admin view when closed and reoened
     const handleChange = (e, { name, value, checked, isActiveField }) => {
         if (props.viewOnly) {
             return;
@@ -187,6 +190,9 @@ export default function DatabaseTableEditor(props) {
                         </Form.Field>
                     );
                     break;
+
+                // TODO: Add a new type for the forum builder
+                // case "forumBuilder":
                 case "dropdown":
                     fieldComponents.push(
                         <Form.Field key={field.name} disabled={field.loading || field.disabled}>
