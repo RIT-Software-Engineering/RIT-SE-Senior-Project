@@ -1,6 +1,7 @@
 .env
 *.code-workspace
 *.vscode
+*.nvim.lua
 .eslintcache
 *.pem
 *.ignore
