@@ -13,8 +13,8 @@ require('dotenv').config({ path: require('path').join(__dirname, '.env') });
  *
  * UNCOMMENT THIS TO RESET DATABASE
  */
-// const redeployDatabase = require("./db_setup");
-// redeployDatabase();
+const redeployDatabase = require("./db_setup");
+redeployDatabase();
 
 // Imports
 const express = require("express");

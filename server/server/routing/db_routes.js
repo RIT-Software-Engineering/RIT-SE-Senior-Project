@@ -46,10 +46,12 @@ const ACTION_TARGETS = {
     INDIVIDUAL: 'individual',
     COACH_ANNOUNCEMENT: 'coach_announcement',
     STUDENT_ANNOUNCEMENT: 'student_announcement',
+    PEER_EVALUATION: 'peer_evaluation',
 };
 
 // Routes
 module.exports = (db) => {
+    // TODO: Add Route for Get Templates
 
     /**
      * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
@@ -1288,6 +1290,11 @@ module.exports = (db) => {
             case ACTION_TARGETS.TEAM:
                 // Anyone can submit team actions
                 break;
+            case ACTION_TARGETS.PEER_EVALUATION:
+                if (req.user.type !== ROLES.STUDENT) {
+                    return res.status(401).send("Only students can submit peer evaluations.");
+                }
+                break;
             default:
                 return res.status(500).send("Invalid action target.");
         }
@@ -1431,6 +1438,8 @@ module.exports = (db) => {
             return res.status(401).send("Trying to access project that is not your own");
         }
 
+        // Add a case for when the action target is 'peer_evaluation' 
+        // The action is not done unless compelted by all students, AND the coach has passed it through
         let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
                 CASE
                     WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'

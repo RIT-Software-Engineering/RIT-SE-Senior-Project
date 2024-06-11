@@ -51,13 +51,15 @@ function createAllTables() {
                 return;
             }
 
-            for (file of files) {
-                fs.readFile(path.join(table_sql_path, file), "utf8", (err, sql) => {
+            files
+            .filter((file) => file.toString() != "create_all_tables.sql")
+            .forEach((file) => {
+                fs.readFile(path.join(table_sql_path, file), "utf8", (_err, sql) => {
                     Promise.resolve(db.query(sql).catch((err) => {
                         reject(`${file} : ${err}`);
                     }));
                 });
-            }
+            })
             setTimeout(() => {
                 resolve();
             }, 1000);
@@ -72,13 +74,15 @@ function populateDummyData() {
                 reject(err);
             }
 
-            for (file of files) {
-                fs.readFile(path.join(dummy_data_path, file), "utf8", (err, sql) => {
+            files
+                .filter((file) => file.toString() != "fill_test_data.sql")
+                .forEach((file) => {
+                fs.readFile(path.join(dummy_data_path, file), "utf8", (_err, sql) => {
                     Promise.resolve(db.query(sql).catch((err) => {
                         reject(`${file} : ${err}`);
                     }));
                 });
-            }
+            })
             setTimeout(() => {
                 resolve();
             }, 3000);
