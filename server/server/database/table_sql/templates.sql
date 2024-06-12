@@ -2,7 +2,7 @@
 CREATE TABLE eval_templete (
     question_id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_title TEXT,
-    question_HTML TEXT,
+    question_HTML TEXT
 );
 
 -- TODO: Create tables for coach feedback
