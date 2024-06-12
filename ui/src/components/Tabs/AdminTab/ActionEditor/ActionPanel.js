@@ -1,4 +1,3 @@
-import React from "react";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import { ACTION_TARGETS, config, DROPDOWN_ITEMS } from "../../../util/functions/constants";
 import {createSemesterDropdownOptions, humanFileSize, SEMESTER_DROPDOWN_NULL_VALUE} from "../../../util/functions/utils";
@@ -120,10 +119,12 @@ export default function ActionPanel(props) {
         }
         else if ([ACTION_TARGETS.coach_announcement, ACTION_TARGETS.student_announcement].includes(formData[action_target]) && [short_desc, file_types].includes(name)) {
             return formData;
+            
         }
     }
-
+    
     return (
+        
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
@@ -141,5 +142,6 @@ export default function ActionPanel(props) {
                 return data;
             }}
         />
+        
     );
 }

@@ -5,8 +5,10 @@ import { Dropdown, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from 'react-phone-number-input/input'
 import us from 'react-phone-number-input/locale/en'
-
+import { Dropdown as SemanticDropdown } from "semantic-ui-react";
+import FormBuilder from "./FormBuilder";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+
 
 export default function DatabaseTableEditor(props) {
     let initialState = props.initialState;
@@ -176,23 +178,33 @@ export default function DatabaseTableEditor(props) {
                     );
                     break;
                 case "textArea":
-                    fieldComponents.push(
-                        <Form.Field key={field.name}>
-                            <Form.TextArea
-                                placeholder={field.placeholder}
-                                label={field.label}
-                                name={field.name}
-                                value={formData[field.name]}
-                                style={{ minHeight: 200 }}
+                    if (formData.action_target === 'peer_evaluation') {
+                        fieldComponents.push(
+                            <FormBuilder
+                                key={field.name}
+                                field={field}
+                                title={formData[field.name]}
                                 onChange={handleChange}
-                                disabled={field.disabled}
-                            />
-                        </Form.Field>
-                    );
+                            >
+                            </FormBuilder>
+                        );
+                    } else {
+                        fieldComponents.push(
+                            <Form.Field key={field.name}>
+                                <Form.TextArea
+                                    placeholder={field.placeholder}
+                                    label={field.label}
+                                    name={field.name}
+                                    value={formData[field.name]}
+                                    style={{ minHeight: 200 }}
+                                    onChange={handleChange}
+                                    disabled={field.disabled}
+                                />
+                            </Form.Field>
+                        );
+                    }
                     break;
-
                 // TODO: Add a new type for the forum builder
-                // case "forumBuilder":
                 case "dropdown":
                     fieldComponents.push(
                         <Form.Field key={field.name} disabled={field.loading || field.disabled}>
