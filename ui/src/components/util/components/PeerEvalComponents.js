@@ -6,10 +6,46 @@ import {
     Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
 } from 'semantic-ui-react';
 
-// TODO: Add Feedback Component - Basically just a header and text area, non required
+// TODO: Change props to a single props table
+// TODO: Add propogation of onChange handler
+// TODO: Make fields required unles specified otherwise in props
+export const QuestionFeedback = ({ title, questions, ordered }) => {
+    const [feedback, setFeedback] = useState({});
+
+    const handleFeedbackChange = (question, newFeedback) => {
+        setFeedback(prevFeedback => ({
+            ...prevFeedback,
+            [question]: newFeedback
+        }));
+    };
+
+    if (title == null) title = "Feedback"
+    if (ordered == null) ordered = false
+
+    return (
+        <>
+            {title !== "" ? <><Header textAlign='left' as='h2' content={title} />  <br /></> : null}
+            <Form>
+                {
+                    questions.map((question, index) => (
+                        <div key={index} style={{ marginBottom: '30px' }}>
+                            <Header textAlign='left' as='h4' content={ordered ? `${index + 1}. ${question}` : question} />
+                            <TextArea
+                                placeholder='Talk about your experience'
+                                value={feedback[question] || ''}
+                                onChange={(e) => handleFeedbackChange(question, e.target.value)}
+                            />
+                        </div>
+                    ))
+                }
+            </Form>
+        </>
+    );
+};
 
 // TODO: Change props to a single props table
-// TODO: Add propogation of onChange handler// TODO: Make fields required unles specified otherwise in props
+// TODO: Add propogation of onChange handler
+// TODO: Make fields required unles specified otherwise in props
 export const QuestionTable = ({ questions, students }) => {
     const questionRatings = {};
     questions.forEach(question => questionRatings[question] = {})
@@ -71,6 +107,7 @@ export const QuestionTable = ({ questions, students }) => {
 
 // TODO: Change props to a single props table
 // TODO: Add propogation of onChange handler
+// TODO: Make fields required unles specified otherwise in props
 export const QuestionMoodRating = ({ question, student_names, satisfactionLevels }) => {
     if (!satisfactionLevels) {
         satisfactionLevels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'];
