@@ -68,7 +68,7 @@ export default function DatabaseTableEditor(props) {
             }
         }
         Object.keys(dataToSubmit).forEach((key) => {
-                body.append(key, dataToSubmit[key]);
+            body.append(key, dataToSubmit[key]);
         });
 
         SecureFetch(submitRoute, {
@@ -82,7 +82,7 @@ export default function DatabaseTableEditor(props) {
                     setSubmissionModalOpen(MODAL_STATUS.FAIL);
                 }
                 if(props.callback){
-                   props.callback()
+                    props.callback()
                 }
             })
             .catch((error) => {
@@ -335,12 +335,12 @@ export default function DatabaseTableEditor(props) {
                 trigger={trigger}
                 header={props.header}
                 content={{ content:
-                    <>
-                        <Form>
-                            {fieldComponents}
-                        </Form>
-                        {props.childComponents}
-                    </>
+                        <>
+                            <Form>
+                                {fieldComponents}
+                            </Form>
+                            {props.childComponents}
+                        </>
                 }}
                 actions={modalActions()}
             />
