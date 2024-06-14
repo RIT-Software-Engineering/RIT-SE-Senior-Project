@@ -1283,10 +1283,10 @@ module.exports = (db) => {
                     return res.status(401).send("Only students can submit individual actions.");
                 }
                 break;
+            //TODO: Add case for PEER_EVALUATION
             case ACTION_TARGETS.COACH_ANNOUNCEMENT:
             case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
                 return res.status(401).send("You can not submit an announcement");
-                break;
             case ACTION_TARGETS.TEAM:
                 // Anyone can submit team actions
                 break;
