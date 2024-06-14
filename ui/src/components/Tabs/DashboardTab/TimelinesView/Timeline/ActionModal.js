@@ -246,7 +246,7 @@ export default function ActionModal(props) {
             </Modal.Actions>
         </Modal>
     );
-    }else {
+    } else {
         return (
             // TODO: Add property for Modal to not close when clicking outside of it
             // Property is called closeOnDimmerClick

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import {
-  Form,
   Grid, GridColumn, GridRow,
   Header, Radio,
   Rating,
   Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
   TextArea
 } from 'semantic-ui-react';
+
 
 // TODO: Change props to a single props table
 // TODO: Add propogation of onChange handler
@@ -28,7 +28,6 @@ export const QuestionFeedback = ({ title, questions, ordered }) => {
     return (
         <div>
             {title !== "" ? <><Header textAlign='left' as='h2' content={title} />  <br /></> : null}
-            <Form>
                 {
                     questions.map((question, index) => (
                         <div key={index} style={{ marginBottom: '30px' }}>
@@ -41,7 +40,6 @@ export const QuestionFeedback = ({ title, questions, ordered }) => {
                         </div>
                     ))
                 }
-            </Form>
         </div>
     );
 };
@@ -54,6 +52,8 @@ export const QuestionTable = ({ questions, students }) => {
     questions.forEach(question => questionRatings[question] = {})
     const [selections, setSelections] = useState(questionRatings);
 
+    const pixelWidth = Math.floor(900 / questions.length);
+
     const handleRate = (student, question, rating) => {
         setSelections(prevSelections => ({
             ...prevSelections,
@@ -65,12 +65,13 @@ export const QuestionTable = ({ questions, students }) => {
     };
 
     return (
+    <div>
         <Table basic='very' celled collapsing unstackable >
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell />
                     {questions.map(question => (
-                        <TableHeaderCell style={{ width: '100px', wordWrap: 'break-word', textAlign: 'center', verticalAlign: 'bottom' }} key={question}>
+                        <TableHeaderCell style={{ width: pixelWidth + "px", wordWrap: 'break-word', textAlign: 'center', verticalAlign: 'bottom' }} key={question}>
                             <Header as='h4'> {question} </Header>
                         </TableHeaderCell>
                     ))}
@@ -87,12 +88,12 @@ export const QuestionTable = ({ questions, students }) => {
                             </TableCell>
                             {
                                 questions.map(question => (
-                                    <TableCell key={question}>
+                                    <TableCell key={question} textAlign='center'>
                                         <Rating
                                             maxRating={5}
                                             defaultRating={selections[question][student] || 0}
                                             clearable
-                                            // icon='star'
+                                            // icon='heart'
                                             onRate={(_, data) => handleRate(student, question, data.rating)}
                                         />
                                     </TableCell>
@@ -105,6 +106,7 @@ export const QuestionTable = ({ questions, students }) => {
 
             </TableBody>
         </Table>
+    </div>
     );
 };
 
@@ -131,11 +133,11 @@ export const QuestionMoodRating = ({ question, student_names, satisfactionLevels
             <br />
             <Grid divided='vertically'>
                 {student_names.map(name => (
-                    <GridRow columns={satisfactionLevels.length + 1}>
-                        <GridColumn style={{ textAlign: 'left' }}><Header as='h3' content={name} /></GridColumn>
+                    <GridRow key={name} columns={satisfactionLevels.length + 1}>
+                        <GridColumn key={`col-${name}`} style={{ textAlign: 'left' }}><Header as='h3' content={name} /></GridColumn>
                         {
                             satisfactionLevels.map((level, index) => (
-                                <GridColumn style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                                <GridColumn key={`col-${name}-${index}`} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
                                     <Radio style={{ margin: '8px auto' }} value={index} checked={selections[name] === index} onChange={() => handleSelection(name, index)} />
                                     {level}
                                 </GridColumn>
