@@ -5,7 +5,7 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
 import { UserContext } from "../../../../util/functions/UserContext";
 import InnerHTML from 'dangerously-set-html-content';
-
+import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 /** 
 *This file is only used in ToolTips, it should be removed completely
@@ -180,11 +180,13 @@ export default function ActionModal(props) {
                 return user.role === USERTYPES.COACH ? submitButton : " Coach Actions are Available Only to Coaches";
             case ACTION_TARGETS.individual:
                 return user.role === USERTYPES.STUDENT ? submitButton : " Individual Actions are Available Only to Students";
+            //case ACTION_TARGETS.peer_evaluation:
             default:
                 return submitButton;
         }
     }
 
+    if (ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
     return (
         // TODO: Add property for Modal to not close when clicking outside of it
         // Property is called closeOnDimmerClick
@@ -200,27 +202,26 @@ export default function ActionModal(props) {
                 props.isOpenCallback(true);
             }}
             open={open}
-            trigger={props.trigger || <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
+            trigger={props.trigger ||
+                <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
         >
             <Modal.Header>{props.action_title}</Modal.Header>
             <Modal.Content>
                 <Modal.Description>
                     {props.preActionContent}
-                    <br />
-                    <div className="content" >
-                        <InnerHTML html={props.page_html}/>
-                    </div>
-                    <br />
-                    {fileUpload(props.file_types, props.file_size)}
-                    {errors.length > 0 && <div className="submission-errors">
-                        <br />
+                    <br/>
+                    <div className="content">
+                        <CoachFeedBack
+                        team = {props.projectId}
+                        />
                         <h4>Errors:</h4>
                         <ul>
                             {errors.map(err => <li key={err}>{err}</li>)}
                         </ul>
-                    </div>}
+                    </div>
                 </Modal.Description>
-                <Modal open={!!submissionModalOpen} {...generateModalFields()} onClose={() => closeSubmissionModal()} />
+                <Modal open={!!submissionModalOpen} {...generateModalFields()}
+                       onClose={() => closeSubmissionModal()}/>
             </Modal.Content>
             <Modal.Actions>
                 <Button
@@ -236,4 +237,59 @@ export default function ActionModal(props) {
             </Modal.Actions>
         </Modal>
     );
+    }else {
+        return (
+            // TODO: Add property for Modal to not close when clicking outside of it
+            // Property is called closeOnDimmerClick
+            <Modal
+                closeOnDimmerClick={false}
+                className={"sticky"}
+                onClose={() => {
+                    setOpen(false);
+                    props.isOpenCallback(false);
+                }}
+                onOpen={() => {
+                    setOpen(true);
+                    props.isOpenCallback(true);
+                }}
+                open={open}
+                trigger={props.trigger ||
+                    <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
+            >
+                <Modal.Header>{props.action_title}</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        {props.preActionContent}
+                        <br/>
+                        <div className="content">
+                            <InnerHTML html={props.page_html}/>
+                        </div>
+                        <br/>
+                        {fileUpload(props.file_types, props.file_size)}
+                        {errors.length > 0 && <div className="submission-errors">
+                            <br/>
+                            <h4>Errors:</h4>
+                            <ul>
+                                {errors.map(err => <li key={err}>{err}</li>)}
+                            </ul>
+                        </div>}
+                    </Modal.Description>
+                    <Modal open={!!submissionModalOpen} {...generateModalFields()}
+                           onClose={() => closeSubmissionModal()}/>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button
+                        onClick={() => {
+                            onActionCancel();
+                            setOpen(false);
+                            props.isOpenCallback(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    {renderSubmitButton()}
+                </Modal.Actions>
+            </Modal>
+        );
+    }
 }

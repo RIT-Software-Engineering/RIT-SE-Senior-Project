@@ -119,6 +119,8 @@ export const ACTION_TARGETS = {
     admin: 'admin',
     student_announcement: 'student_announcement',
     coach_announcement: 'coach_announcement',
+    peer_evaluation: 'peer_evaluation'
+
 }
 
 export const DROPDOWN_ITEMS = {
