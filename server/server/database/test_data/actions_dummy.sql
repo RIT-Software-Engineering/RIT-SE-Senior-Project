@@ -41,44 +41,50 @@ VALUES
         '2024-05-13',
         '2024-09-30',
         '<h1>Take the individual test form</h1>
-        <form style={{ textAlign: "left" }} class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
-          <h2 >Instructions</h2>
-          <p>
-            Rate every member of the team, including yourself, in each category on a scale of 1 to 5.
-            <br />
-            <br />
-            <b>Cooperation and Attitude: </b>being motivated and interested in working on the project. Working harmoniously with others to meet group responsibilities.
-            <br />
-            <br />
-            <b>Quantity of Work:</b>  Comparing the actual work output of the team member to the project.        Quality of Work: Demonstrating accuracy, completeness, and neatness of work.
-            <br />
-            <br />
-            <b>Initiative:</b> Planning work and going ahead with a task without being told every detail.  Willingness to add own ideas to the project.
-            <br />
-            <br />
-            <b>Dependability:</b> Being relied upon and trusted to handle work assignments.  Work is completed on time.
-            <br />
-            <br />
-            <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
+          <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <h2>Instructions</h2>
+            <p>
+              Rate every member of the team, including yourself, in each category on a scale of 1 to 5.
+              <br />
+              <br />
+              <b>Cooperation and Attitude: </b>being motivated and interested in working on the project. Working harmoniously with others to meet group responsibilities.
+              <br />
+              <br />
+              <b>Quantity of Work:</b> Comparing the actual work output of the team member to the project. Quality of Work: Demonstrating accuracy, completeness, and neatness of work.
+              <br />
+              <br />
+              <b>Initiative:</b> Planning work and going ahead with a task without being told every detail. Willingness to add own ideas to the project.
+              <br />
+              <br />
+              <b>Dependability:</b> Being relied upon and trusted to handle work assignments. Work is completed on time.
+              <br />
+              <br />
+              <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
+              
+              <br />
+              <h2>Question Matrix Showcase</h2>
+              <div>
+              <QuestionTable questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]'' students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              </div>
 
-            
-            <br />
-            <h2>Question Matrix Showcase</h2>
-            <QuestionTable questions={["Cooperation and Attitude", "Quantity of Work", "Initiative"]} students={["Aiden", "Lucille", "Juliet", "Bryson"]}} />
+              <br />
+              <h2>Question Mood Ratings Showcase</h2>
+              <div>
+              <QuestionMoodRating question="Dependability" student_names=''["Aiden", "Lucille", "Juliet", "Bryson"]'' required />
+              </div>
+              <br />
+              <div>
+              <QuestionMoodRating question="Group Maintenance" student_names=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              </div>
 
-            <br />
-            <h2>Question Mood Ratings Showcase</h2>
-            <QuestionMoodRating question={"Dependability"} student_names={["Aiden", "Lucille", "Juliet", "Bryson"]}} />
+              <br />
+              <br />
+              <div>
+              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered="true" />
+              </div>
 
-            <br />
-            <QuestionMoodRating question={"Group Maintenance"} student_names={["Aiden", "Lucille", "Juliet", "Bryson"]}} />
-
-            <br />
-            <br />
-            <QuestionFeedback title={"Feedback"} questions={["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handeled.", "Yap yap yap"]} ordered />
-
-          </p>
-        </form>
+            </p>
+          </form>
     ',
         ''
     ),

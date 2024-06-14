@@ -13,6 +13,7 @@
     "dayjs": "^1.11.2",
     "he": "^1.2.0",
     "html-entities": "^2.3.3",
+    "html-react-parser": "^1.2.9",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.35",
     "react": "^17.0.1",
