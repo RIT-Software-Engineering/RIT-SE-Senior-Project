@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import {
-    Grid, GridColumn, GridRow,
-    Header, Radio,
-    Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
+  Form,
+  Grid, GridColumn, GridRow,
+  Header, Radio,
+  Rating,
+  Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
+  TextArea
 } from 'semantic-ui-react';
 
 // TODO: Change props to a single props table
@@ -23,7 +26,7 @@ export const QuestionFeedback = ({ title, questions, ordered }) => {
     if (ordered == null) ordered = false
 
     return (
-        <>
+        <div>
             {title !== "" ? <><Header textAlign='left' as='h2' content={title} />  <br /></> : null}
             <Form>
                 {
@@ -39,7 +42,7 @@ export const QuestionFeedback = ({ title, questions, ordered }) => {
                     ))
                 }
             </Form>
-        </>
+        </div>
     );
 };
 

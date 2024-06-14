@@ -5,8 +5,11 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
 import { UserContext } from "../../../../util/functions/UserContext";
 import InnerHTML from 'dangerously-set-html-content';
+import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
+import { QuestionFeedback, QuestionTable, QuestionMoodRating} from "../../../../util/components/PeerEvalComponents";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
+
 /** 
 *This file is only used in ToolTips, it should be removed completely
 */
@@ -17,6 +20,12 @@ export default function ActionModal(props) {
     const [submissionModalResponse, setSubmissionModalResponse] = useState("We were unable to receive your submission.");
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
+
+    const peerEvaluationComponents = {
+        QuestionFeedback: QuestionFeedback,
+        QuestionTable: QuestionTable,
+        QuestionMoodRating: QuestionMoodRating,
+    }
 
     // PLANNING: Maybe add useEffect for saving fourm when edited
     // So when re-opened, the form is still filled out
@@ -188,7 +197,7 @@ export default function ActionModal(props) {
 
     if (ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
     return (
-        // TODO: Add property for Modal to not close when clicking outside of it
+        // HACK: Add property for Modal to not close when clicking outside of it
         // Property is called closeOnDimmerClick
         <Modal
             closeOnDimmerClick={false}
@@ -262,7 +271,11 @@ export default function ActionModal(props) {
                         {props.preActionContent}
                         <br/>
                         <div className="content">
-                            <InnerHTML html={props.page_html}/>
+                        {
+                          props.action_target === ACTION_TARGETS.peer_evaluation
+                            ? <ParsedInnerHTML html={props.page_html} components={peerEvaluationComponents} />
+                            : <InnerHTML html={props.page_html} />
+                        }
                         </div>
                         <br/>
                         {fileUpload(props.file_types, props.file_size)}
