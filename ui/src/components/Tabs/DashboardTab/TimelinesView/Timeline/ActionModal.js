@@ -189,7 +189,8 @@ export default function ActionModal(props) {
                 return user.role === USERTYPES.COACH ? submitButton : " Coach Actions are Available Only to Coaches";
             case ACTION_TARGETS.individual:
                 return user.role === USERTYPES.STUDENT ? submitButton : " Individual Actions are Available Only to Students";
-            //case ACTION_TARGETS.peer_evaluation:
+            case ACTION_TARGETS.peer_evaluation:
+                return user.role !== USERTYPES.COACH ?  submitButton : "Available when all Students Submit";
             default:
                 return submitButton;
         }

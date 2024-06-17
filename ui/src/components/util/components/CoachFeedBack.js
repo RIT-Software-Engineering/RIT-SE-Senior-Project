@@ -31,18 +31,28 @@ export default function CoachFeedBack(props) {
                     <Header as="h4">Ratings from Team Members</Header>
                     <List>
                         <ListItem>
-                    <Label>Student 2 </Label>
-                    <input type="text" value="4.5 / 5" disabled/>
+                            <Label>Student 2 </Label>
+                            <div>
+                            <label>Communication</label>
+                            <input type="text" value="4.5 / 5" disabled/>
+                            <label>Participation</label>
+                            <input type="text" value="3.5 / 5" disabled/>
+                            </div>
                         </ListItem>
                         <ListItem>
-                    <Label>Student 3 </Label>
-                    <input type="text" value="4 / 5" disabled/>
+                            <Label>Student 3 </Label>
+                            <div>
+                                <label>Communication</label>
+                                <input type="text" value="4.5 / 5" disabled/>
+                                <label>Participation</label>
+                                <input type="text" value="3.5 / 5" disabled/>
+                            </div>
                         </ListItem>
                     </List>
                 <FormField>
-                <label>Coach Feedback</label>
-                    <textarea rows={4} />
-                    <Button attached='bottom' content='Generate AI Summarization' />
+                    <label>Coach Feedback</label>
+                    <textarea rows={4}/>
+                    <Button attached='bottom' content='Generate AI Summarization'/>
                 </FormField>
             </Form>
         </>
