@@ -3,11 +3,26 @@ import { ACTION_STATES } from '../../../../util/functions/constants';
 import { parseDate } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
+import { Grid } from 'semantic-ui-react';
   
 export default function GanttChart(props) {
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
     let ganttCols = []
     let ganttBars = [];
+    let leftSideRows = []
+
+    leftSideRows.push(<div className="left-row-empty" gridRow="1"></div>)
+    leftSideRows.push(<div className="left-row-empty" gridRow="2"></div>)
+    leftSideRows.push(
+        <div className="left-row-header" gridRow="3">
+            <div className="left-row number">
+                No.
+            </div>
+            <div className="left-row task">
+                Name
+            </div>
+        </div>
+    )
 
     // not actually the first day, but I didn't feel like sorting the actions again by start date
     // let firstDay = sortedActions[0]?.start_date;
@@ -84,9 +99,9 @@ export default function GanttChart(props) {
 
         const gridrow = 3 + idx;
         const startDate = action?.start_date;
-        const dueDate = action?.due_date;        
-        const barStart = dateDiff(today, startDate) < 1 ? 1 : dateDiff(today, startDate); 
-        const barSpan = dateDiff(today, startDate) < 1 ? dateDiff(startDate, dueDate) + dateDiff(today, startDate) : dateDiff(startDate, dueDate);
+        const dueDate = action?.due_date;
+        const barStart = dateDiff(today, startDate) < 1 ? 1 : dateDiff(today, startDate) + 1; 
+        const barSpan = dateDiff(today, startDate) < 1 ? dateDiff(startDate, dueDate) + dateDiff(today, startDate) + 1: dateDiff(startDate, dueDate) + 1;
 
         const ganttRow = <button
             className={`action-bar ${color}`}
@@ -94,42 +109,74 @@ export default function GanttChart(props) {
             key={idx}
             >{action.action_title}</button>
 
-        ganttBars.push(
-            <ToolTip
-                autoLoadSubmissions={props.autoLoadSubmissions}
-                color={color} noPopup={props.noPopup}
-                trigger={ganttRow}
-                action={action} projectId={props.projectId}
-                semesterName={props.semesterName}
-                projectName={props.projectName}
-                key={`tooltip-${action.action_title}-${idx}`}
-                reloadTimelineActions={props.reloadTimelineActions}
-            />
-        )
+        const ganttBar = <ToolTip
+            autoLoadSubmissions={props.autoLoadSubmissions}
+            color={color} noPopup={props.noPopup}
+            trigger={ganttRow}
+            action={action} projectId={props.projectId}
+            semesterName={props.semesterName}
+            projectName={props.projectName}
+            key={`tooltip-${action.action_title}-${idx}`}
+            reloadTimelineActions={props.reloadTimelineActions}
+        />
+
+        ganttBars.push(ganttBar)
+
+
+        const leftRowButton = 
+            <button className="left-row">
+                <div className="left-row number">
+                    {idx}
+                </div>
+                <div className="left-row task">
+                    {action.action_title}
+                </div>
+            </button>
+
+        const leftRow = <ToolTip
+            autoLoadSubmissions={props.autoLoadSubmissions}
+            color={color} noPopup={props.noPopup}
+            trigger={leftRowButton}
+            action={action} projectId={props.projectId}
+            semesterName={props.semesterName}
+            projectName={props.projectName}
+            key={`tooltip-${action.action_title}-${idx}`}
+            reloadTimelineActions={props.reloadTimelineActions}
+        />
+
+        leftSideRows.push(leftRow)
     })
 
     let container = <div className="gantt-container">{ganttCols}{ganttBars}</div>
 
     // time span currently does nothing
     return (
-        <div>
-            <div>
-                <label htmlFor="TimeSpan">Time Span </label>
-                <select name="TimeSpan" defaultValue={"weekly"}>
-                    <option value="week">week</option>
-                    <option value="month">month</option>
-                    <option value="project">project</option>
-                </select>
+        <div className="gantt">
+            <div className="gantt-left">
+                <div className="left-column">
+                    {leftSideRows}
+                </div>
             </div>
-            <div className={props.noPopup ? "relevant-actions-container" : "actions-container"}>
-            {container}
+            <div className="gantt-right">
+                <div>
+                    <label htmlFor="TimeSpan">Time Span </label>
+                    <select name="TimeSpan" defaultValue={"weekly"}>
+                        <option value="week">week</option>
+                        <option value="month">month</option>
+                        <option value="project">project</option>
+                    </select>
+                </div>
+                <div>
+                    {container}
+                </div>
             </div>
         </div>
     );
 }
 
+// Month+1 in Date constructor to account for how it determines month from numbers
 function daysInMonth (month, year) {
-    return new Date(year, month, 0).getDate();
+    return new Date(year, month+1, 0).getDate();
 }
 
 // magic number 86400000 is milli * sec * min * hr
@@ -137,4 +184,3 @@ function daysInMonth (month, year) {
 function dateDiff (firstDate, secondDate) {
     return (parseDate(secondDate) - parseDate(firstDate)) / 86400000;
 }
-

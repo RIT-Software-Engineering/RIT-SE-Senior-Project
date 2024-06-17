@@ -6,12 +6,70 @@
     width: 100%;
 }
 
-.gantt-container {
-    position: absolute;
+.gantt {
     display: grid;
-    width: 96%;
+}
+
+.gantt-left {
+    grid-row: 1;
+}
+
+.gantt-right {
+    grid-row: 1;
+    border: #000000 1px solid;
+    overflow-x: auto;
+}
+
+.left-column {
+    display: grid;
+    border: #000000 1px solid;
+}
+
+.left-row-empty {
+    min-height: 21px;
+}
+
+.left-row-header {
+    display: flex;
+    width: 100%;
+    min-height: 21px;
+    border-top: #000000 1px solid;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.left-row {
+    display: flex;
+    width: 100%;
+    background: white;
+    margin: 0px;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    border-top: #000000 1px solid;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    padding: 7px;
+}
+
+.left-row.number {
+    justify-content: left;
+    border-top: none;
+    padding: 0px;
+    margin-right: 7px;
+}
+
+.left-row.task {
+    justify-content: right;
+    border-top: none;
+    padding: 0px;
+    margin-left: 7px;
+}
+
+.gantt-container {
+    display: grid;
     justify-self: center;
-    grid-auto-columns: 80px;
+    grid-auto-columns: 20px;
     /* grid-template-columns: repeat(auto-fill, 120px); */
     overflow-x: scroll;
     text-wrap: nowrap;
