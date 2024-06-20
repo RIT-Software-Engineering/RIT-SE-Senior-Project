@@ -154,7 +154,6 @@ export const QuestionMoodRating = ({
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
                                    }) => {
 
-    console.log(levels)
     const [selections, setSelections] = useState({});
 
     const handleSelection = (student, rating) => {
@@ -163,6 +162,7 @@ export const QuestionMoodRating = ({
             [student]: rating
         });
     };
+    const numColumns = levels.length + 1;
 
     return (
         <div>
@@ -170,7 +170,7 @@ export const QuestionMoodRating = ({
             <br/>
             <Grid divided='vertically'>
                 {students.map(name => (
-                    <GridRow key={name} columns={levels.length + 1}>
+                    <GridRow key={name} columns={numColumns}>
                         <GridColumn key={`col-${name}`} style={{textAlign: 'left'}}>
                             <Header as='h3' content={name} />
                         </GridColumn>
