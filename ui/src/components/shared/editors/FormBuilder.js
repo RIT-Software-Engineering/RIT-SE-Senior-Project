@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
+<<<<<<< HEAD
 import QuestionBuilder from "../../util/components/QuestionBuilder";
+=======
+import {Dropdown, Grid, Label, Segment} from "semantic-ui-react";
+
+>>>>>>> 758e87a982f6bac83e570f6751907d3404163849
 export default function FormBuilder(props) {
+    const field = props.field;
     const [formHtml, setFormHtml] = useState("");
     const [editorOpen, setEditorOpen] = useState(false);
     useEffect(() => {
@@ -31,7 +37,7 @@ export default function FormBuilder(props) {
      }
     function handleChange(event) {
         setFormHtml(event.target.value);
-        props.onChange(event.target.name, event.target.value);
+        props.onChange(event, { name: event.target.name, value: event.target.value });
     }
 
     function onSelect(event, { value }) {
@@ -40,11 +46,17 @@ export default function FormBuilder(props) {
 
     return (
         <Form.Field>
+<<<<<<< HEAD
             <Button circular={true} onClick={openEditor}>Open Live Editor</Button>
             <QuestionBuilder isOpen={editorOpen} OnClose={closeEditor} currentCode={formHtml} onChange={handleChange}/>
+=======
+
+
+            <Button floated={"right"}>Live Question Editor</Button>
+>>>>>>> 758e87a982f6bac83e570f6751907d3404163849
             <Form.TextArea
-                placeholder={props.field.placeholder}
-                label={props.field.label}
+                placeholder={field.placeholder}
+                label={field.label}
                 name={props.title}
                 value={formHtml}
                 style={{ minHeight: 200 }}

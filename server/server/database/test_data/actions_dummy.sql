@@ -27,17 +27,16 @@ VALUES
 
             <label for="email">Email</label>
             <input name="email" type="text"/>
-            
-        </form>
+       </form>
         ',
         '.png,.pdf,.jpg'
     ),
     (
-        3, 
-        'Peer Evaluation Form', 
-        '', 
+        3,
+        'Peer Evaluation Form',
+        '',
         'Evaluate your team members',
-        'peer-evaluation', 
+        'peer_evaluation',
         '2024-05-13',
         '2024-09-30',
         '<h1>Take the individual test form</h1>
@@ -60,7 +59,7 @@ VALUES
               <br />
               <br />
               <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
-              
+
               <br />
               <h2>Question Matrix Showcase</h2>
               <div>
@@ -70,19 +69,27 @@ VALUES
               <br />
               <h2>Question Mood Ratings Showcase</h2>
               <div>
-              <QuestionMoodRating question="Dependability" student_names=''["Aiden", "Lucille", "Juliet", "Bryson"]'' required />
+              <QuestionMoodRating
+                  question="Dependability"
+                  students=''["Aiden", "Lucille", "Juliet", "Bryson"]''
+                  levels=''["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]''
+                  required
+              />
               </div>
               <br />
               <div>
-              <QuestionMoodRating question="Group Maintenance" student_names=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionMoodRating question="Group Maintenance" students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
               </div>
 
               <br />
               <br />
               <div>
-              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered="true" />
+              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered />
               </div>
 
+              <div>
+              <QuestionPeerFeedback questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]''  students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              </div>
             </p>
           </form>
     ',

@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom";
-import { config } from '../functions/constants';
-import { SecureFetch } from '../functions/secureFetch';
+import React, {useRef, useState, useEffect} from 'react';
+import {useHistory} from "react-router-dom";
+import {config} from '../functions/constants';
+import {SecureFetch} from '../functions/secureFetch';
 
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
@@ -23,13 +23,15 @@ export default function DevSignInModalContent() {
 
     return (
         <div>
-            <h1 style={{ color: "red" }}>FOR DEVELOPMENT PURPOSES ONLY</h1>
-            <p><b>Note:</b> If you see an alert when signing in, this is fine and can be ignored. It only happens in dev because we don't have RIT's login.</p>
+            <h1 style={{color: "red"}}>FOR DEVELOPMENT PURPOSES ONLY</h1>
+            <p><b>Note:</b> If you see an alert when signing in, this is fine and can be ignored. It only happens in dev
+                because we don't have RIT's login.</p>
             Sign in as {' '}
             <select ref={selectedUserIdx}>
-                {users.map((user, idx) => <option value={idx} key={idx}>{`${user.fname} ${user.lname} (${user.system_id})`}</option>)}
+                {users.map((user, idx) => <option value={idx}
+                                                  key={idx}>{`${user.fname} ${user.lname} (${user.system_id})`}</option>)}
             </select>
-            <br /><br /><br />
+            <br/><br/><br/>
             <button onClick={() => {
                 const user = users[selectedUserIdx.current.value];
 
@@ -43,15 +45,16 @@ export default function DevSignInModalContent() {
                 document.cookie = `active=${user.active}`;
                 //TODO: MAKE ADJUSTMENTS FOR PRODUCTION, BUT DO NOT REMOVE THIS. UPDATES LOGIN TIMES.
                 SecureFetch(config.url.DEV_ONLY_API_POST_EDIT_LAST_LOGIN, {method: 'post'})
-                    .then(()=>{
+                    .then(() => {
                         // Simulate redirect from Shibboleth
                         history.push("/dashboard");
                         window.location.reload();
                     })
-                    .catch((err)=>{
+                    .catch((err) => {
                         console.error(err);
                     });
-            }}>Sign In</button>
+            }}>Sign In
+            </button>
             {' '}
             <button onClick={() => {
                 // Delete all cookies
@@ -60,7 +63,8 @@ export default function DevSignInModalContent() {
                 // Simulate redirect from Shibboleth
                 history.push("/");
                 window.location.reload();
-            }}>Sign Out</button>
+            }}>Sign Out
+            </button>
         </div>
     )
 }
