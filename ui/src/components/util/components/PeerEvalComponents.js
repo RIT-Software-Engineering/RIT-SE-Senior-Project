@@ -11,7 +11,13 @@ import assert from "assert";
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
-export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = false, students=[""], anon=false}) => {
+export const QuestionFeedback = ({
+                                     title = "Feedback",
+                                     questions = [""],
+                                     ordered = false,
+                                     students = [""],
+                                     anon = false
+                                 }) => {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
     const hasQuestions = questions.length > 1 || questions[0] !== "";
@@ -29,7 +35,7 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
 
     return (
         <div>
-            { hasTitle && <Header textAlign='left' as='h2' content={title} dividing style={{marginBottom: '30px'}}/> }
+            {hasTitle && <Header textAlign='left' as='h2' content={title} dividing style={{marginBottom: '30px'}}/>}
             {
                 questions.map((question, index) => (
                     <div key={index} style={{marginBottom: '30px'}}>
@@ -37,7 +43,7 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
                             hasQuestions &&
                             <Header
                                 textAlign='left'
-                                as=  'h3'
+                                as='h3'
                                 content={ordered ? `${index + 1}. ${question}` : question}
                                 dividing={hasStudents}
                                 style={{marginBottom: '30px'}}
@@ -48,6 +54,7 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
                                 <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
+                                        name={`${question}-${student}`}
                                         placeholder='Talk about your experience'
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
@@ -67,14 +74,14 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
 export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students}) => {
     return (
-        <QuestionFeedback title={title} questions = {questions} students={ students } anon="false"/>
+        <QuestionFeedback title={title} questions={questions} students={students} anon="false"/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 //TODO: Let user switch between 5 and 3 point scale
-export const QuestionTable = ({questions, students, scale=5}) => {
+export const QuestionTable = ({questions, students, scale = 5}) => {
     //TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -129,6 +136,7 @@ export const QuestionTable = ({questions, students, scale=5}) => {
                                     questions.map(question => (
                                         <TableCell key={question} textAlign='center'>
                                             <Rating
+                                                name={`${question}-${student}`}
                                                 maxRating={scale}
                                                 defaultRating={selections[question][student] || 0}
                                                 clearable
@@ -172,18 +180,20 @@ export const QuestionMoodRating = ({
             <Header as='h2' content={question} textAlign='left' dividing/>
             <br/>
             <Grid divided='vertically'>
-                {students.map(name => (
-                    <GridRow key={name} columns={numColumns}>
-                        <GridColumn key={`col-${name}`} style={{textAlign: 'left'}}>
-                            <Header as='h3' content={name} />
+                {students.map(student => (
+                    <GridRow key={student} columns={numColumns}>
+                        <GridColumn key={`col-${student}`} style={{textAlign: 'left'}}>
+                            <Header as='h3' content={student}/>
                         </GridColumn>
                         {
                             levels.map((level, index) => (
-                                <GridColumn key={`col-${name}-${index}`}
+                                <GridColumn key={`col-${student}-${index}`}
                                             style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
-                                    <Radio style={{margin: '8px auto'}} value={index}
-                                           checked={selections[name] === index}
-                                           onChange={() => handleSelection(name, index)}/>
+                                    <Radio style={{margin: '8px auto'}}
+                                           name={`${question}-${student}`}
+                                           value={index}
+                                           checked={selections[student] === index}
+                                           onChange={() => handleSelection(student, index)}/>
                                     {level}
                                 </GridColumn>
                             ))
