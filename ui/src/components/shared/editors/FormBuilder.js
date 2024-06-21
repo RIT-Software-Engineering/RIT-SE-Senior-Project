@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-<<<<<<< HEAD
 import QuestionBuilder from "../../util/components/QuestionBuilder";
-=======
-import {Dropdown, Grid, Label, Segment} from "semantic-ui-react";
-
->>>>>>> 758e87a982f6bac83e570f6751907d3404163849
 export default function FormBuilder(props) {
     const field = props.field;
     const [formHtml, setFormHtml] = useState("");
@@ -46,14 +41,10 @@ export default function FormBuilder(props) {
 
     return (
         <Form.Field>
-<<<<<<< HEAD
             <Button circular={true} onClick={openEditor}>Open Live Editor</Button>
             <QuestionBuilder isOpen={editorOpen} OnClose={closeEditor} currentCode={formHtml} onChange={handleChange}/>
-=======
-
 
             <Button floated={"right"}>Live Question Editor</Button>
->>>>>>> 758e87a982f6bac83e570f6751907d3404163849
             <Form.TextArea
                 placeholder={field.placeholder}
                 label={field.label}
