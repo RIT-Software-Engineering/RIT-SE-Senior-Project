@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {Accordion, Button} from "semantic-ui-react";
+import {
+    Accordion,
+    Button,
+    Divider,
+    Header, Modal,
+    ModalActions,
+    ModalContent,
+    ModalDescription,
+    ModalHeader
+} from "semantic-ui-react";
 import { formatDateTime, formatDate } from "../../util/functions/utils";
 import {
     Pagination,
@@ -18,6 +27,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import TimeLogPanel from "./TimeLogPanel";
 import TimeLogDelete from "./TimeLogDelete";
 import { FaRegTrashCan } from "react-icons/fa6";
+import IndividualTimeModal from "./IndividualTimeModal";
 
 const LOGS_PER_PAGE = 50;
 
@@ -33,6 +43,42 @@ export default function TimeLog(props) {
     const [timeStats, setTimeStats] = useState([]);
     const userContext = useContext(UserContext)
     const prevLogin = new Date(userContext.user.prev_login);
+    const [currProj, setCurrProject] = useState({});
+    const [currSem, setCurrSem] = useState({});
+    const [avgTime, setAvgTime] = useState({});
+    const [isOpen, setOpen] = useState(false);
+    useEffect(() => {
+        // TODO: Do pagination
+        setActionLogs([]);
+        SecureFetch(config.url.API_GET_MY_PROJECTS)
+            .then((response) => response.json())
+            .then((project) => {
+                console.log(props.semesterData)
+
+                if(project.length !== 0) {
+                    setCurrProject(project[0])
+                    setCurrSem(props.semesterData[project[0].semester_group-1])
+
+
+                }
+            })
+            .catch((error) => {
+                alert("Failed to get proposal data " + error);
+            });
+
+    }, [userContext]);
+
+    useEffect(() => {
+        let isMounted = true;
+        if(currProj){
+            handleAvg().then(data =>{if (isMounted) setAvgTime(data);    // add conditional check
+             })
+         return () => { isMounted = false }
+        }
+
+    }, [currProj])
+
+
 
     const getPaginationData = (page) => {
         SecureFetch(`${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`)
@@ -46,10 +92,20 @@ export default function TimeLog(props) {
             });
     }
 
+
+    const handleAvg = async function  () {
+        SecureFetch(`${config.url.API_GET_TIME_AVG}?project_id=${currProj.project_id}`)
+            .then((response) => response.json()).then((time) => {
+            return setAvgTime(time)
+        }).catch((error) => {
+            alert("Failed to get action log data " + error);
+        });
+    }
     const getTimeData = (page) => {
         SecureFetch(`${config.url.API_GET_ALL_TIME_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=0`)
             .then((response) => response.json())
             .then((time_logs) => {
+
                 setTimeLogs(time_logs.timeLogs);
                 setTimeLogCount(time_logs.timeLogCount);
                 var users = [];
@@ -59,6 +115,7 @@ export default function TimeLog(props) {
                         users.push(timeLog.name);
                     }
                 }
+
                 var userStats = [];
                 for (var i = 0; i < users.length; i++){
                     var userTotal = time_logs.timeLogs.filter(log => log.name == users[i]).map(log=>log.time_amount).reduce((a,b)=>a+b);
@@ -73,6 +130,7 @@ export default function TimeLog(props) {
             });
     }
 
+
     useEffect(() => {
         getPaginationData(0);
     }, [])
@@ -82,8 +140,7 @@ export default function TimeLog(props) {
     return (
         //TODO FULLY INTEGRATE DATABASE
         <>
-            <h3>Time Logging</h3>
-            <div>
+            <h3>Time Logs</h3>
                 <div className="accordion-button-group">
                     <Accordion
                         fluid
@@ -92,7 +149,7 @@ export default function TimeLog(props) {
                         panels={[
                             {
                                 key: "Semester Here",
-                                title: "2021-21 Spring / Summer",
+                                title: currSem.name,
                                 content: {
                                     content: <div className="accordion-button-group">
                                         <Accordion
@@ -102,9 +159,9 @@ export default function TimeLog(props) {
                                             panels={[
                                                 {
                                                     key: "Project Here",
-                                                    title: "Lenel onGaurd Datawarehouse",
+                                                    title: currProj.title,
                                                     content: {
-                                                        content:<div> <Table>
+                                                        content: <div><Table>
                                                             <TableHeader>
                                                                 <TableRow>
                                                                     {/*Headers for the table */}
@@ -113,11 +170,11 @@ export default function TimeLog(props) {
                                                                     <TableHeaderCell>Time(hrs)</TableHeaderCell>
                                                                     <TableHeaderCell>Comment</TableHeaderCell>
                                                                     <TableHeaderCell>Submission Date</TableHeaderCell>
-                                                                    <TableHeaderCell>Delete</TableHeaderCell>
+                                                                    <TableHeaderCell>View</TableHeaderCell>
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
-                                                                {timeLogs?.filter(log => log.project == '2021-5-14_da90mGtCgojqWElAItowB').map((timeLog, idx) => {
+                                                                {timeLogs?.filter(log => log.project == currProj.project_id).map((timeLog, idx) => {
                                                                     let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
                                                                     if (timeLog.mock_id) {
                                                                         submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`
@@ -125,19 +182,52 @@ export default function TimeLog(props) {
                                                                     let showNewSubmissionHighlight = new Date(timeLog.submission_datetime) > prevLogin;
                                                                     return (
 
-                                                                        <TableRow style={{background: showNewSubmissionHighlight? '#fffaf3' : 'none', fontWeight: showNewSubmissionHighlight? 'bold': 'none'}} key={idx}>
+                                                                        <TableRow style={{
+                                                                            background: showNewSubmissionHighlight ? '#fffaf3' : 'none',
+                                                                            fontWeight: showNewSubmissionHighlight ? 'bold' : 'none'
+                                                                        }} key={idx}>
 
                                                                             <TableCell>{submittedBy}</TableCell>
                                                                             <TableCell>{formatDate(timeLog.work_date)}</TableCell>
-                                                                            <TableCell>{ time}</TableCell>
+                                                                            <TableCell>{timeLog.time_amount}</TableCell>
                                                                             <TableCell>{timeLog.work_comment}</TableCell>
-                                                                            <TableCell>{formatDate(timeLog.submission_datetime)}</TableCell>
-                                                                            <TableCell><Button><FaRegTrashCan/></Button></TableCell>
+                                                                            <TableCell>{formatDateTime(timeLog.submission_datetime)}</TableCell>
+                                                                            <TableCell>
+                                                                                 <IndividualTimeModal
+
+                                                                                        projectName={currProj.title}
+                                                                                        semesterName={currSem.name}
+                                                                                        user = {submittedBy}
+                                                                                        timeLog={timeLog}
+                                                                                        id = {timeLog.time_log_id}
+                                                                                        isOpenCallback={()=>{}}
+                                                                                    />
+                                                                            </TableCell>
                                                                         </TableRow>
                                                                     );
                                                                 })}
                                                             </TableBody>
                                                         </Table>
+                                                            <div className="pagination-container">
+                                                                <Pagination
+                                                                    defaultActivePage={1}
+                                                                    ellipsisItem={null}
+                                                                    firstItem={null}
+                                                                    lastItem={null}
+                                                                    prevItem={{
+                                                                        content: <Icon name="angle left"/>,
+                                                                        icon: true
+                                                                    }}
+                                                                    nextItem={{
+                                                                        content: <Icon name="angle right"/>,
+                                                                        icon: true
+                                                                    }}
+                                                                    totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
+                                                                    onPageChange={(event, data) => {
+                                                                        getPaginationData(data.activePage - 1);
+                                                                    }}
+                                                                />
+                                                            </div>
                                                             <Table>
                                                                 <TableHeader>
                                                                     <TableRow>
@@ -148,11 +238,11 @@ export default function TimeLog(props) {
                                                                     </TableRow>
                                                                 </TableHeader>
                                                                 <TableBody>
-                                                                    {timeStats?.filter(log => log.project == '2021-5-14_da90mGtCgojqWElAItowB').map((timeStat, idx) => {
+                                                                    {timeStats?.filter(log => log.project == currProj.project_id).map((timeStat, idx) => {
                                                                         return (
                                                                             <TableRow key={idx}>
                                                                                 <TableCell>{timeStat.name}</TableCell>
-                                                                                <TableCell>{timeStat.lastWeek}</TableCell>
+                                                                                <TableCell>{avgTime[idx] !== undefined ? Math.floor(avgTime[idx].avgTime) : 0}</TableCell>
                                                                                 <TableCell>{timeStat.total}</TableCell>
                                                                             </TableRow>
                                                                         );
@@ -166,32 +256,16 @@ export default function TimeLog(props) {
                                             }
                                         />
                                         <div className="accordion-buttons-container">
-                                            <TimeLogPanel header="Log Time" />
+                                            <TimeLogPanel header="Log Time"/>
                                         </div>
                                     </div>
                                 },
-                            },{
-
-                            }
+                            }, {}
                         ]}
                     />
                 </div>
-            </div>
 
-            <div className="pagination-container">
-                <Pagination
-                    defaultActivePage={1}
-                    ellipsisItem={null}
-                    firstItem={null}
-                    lastItem={null}
-                    prevItem={{ content: <Icon name="angle left" />, icon: true }}
-                    nextItem={{ content: <Icon name="angle right" />, icon: true }}
-                    totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
-                    onPageChange={(event, data) => {
-                        getPaginationData(data.activePage - 1);
-                    }}
-                />
-            </div>
+
         </>
     )
 }

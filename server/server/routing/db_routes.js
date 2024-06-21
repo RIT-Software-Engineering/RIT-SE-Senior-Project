@@ -312,12 +312,36 @@ module.exports = (db) => {
             });
     });
 
+    db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
+       console.log(req.body.id)
+        const sql = "DELETE FROM time_log WHERE time_log_id = ?"
+
+        db.query(sql,[req.body.id])
+    });
+
+    db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
+        const sql = "SELECT AVG(time_amount)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+        console.log(req.query.project_id)
+
+         db.query(sql, [req.query.project_id])
+            .then((time) => {
+                console.log(time)
+                res.send(time)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
+
+
     db_router.post("/createTimeLog", [
-        //todo: un-hardcode
+
     ],
         async (req, res) => {
+
+
             let result = validationResult(req);
-            console.log(result);
 
             if (result.errors.length !== 0) {
                 return res.status(400).send(result);
@@ -330,13 +354,13 @@ module.exports = (db) => {
                 VALUES (?,?,?,?,?,?,?)`;
 
             const params = [
-                8,
-                'abc123',
-                "2021-5-14_da90mGtCgojqWElAItowB",
+                req.user.semester_group,
+                req.user.system_id,
+                req.user.project,
                 "",
-                '2023-04-10',
-                3,
-                "did work",
+                req.body.date,
+                req.body.time_amount,
+                req.body.comment,
             ];
             db.query(sql, params)
                 .then(() => {
@@ -393,21 +417,9 @@ module.exports = (db) => {
                 console.error(error);
                 res.status(500).send(error);
             });
-    })
+    });
 
-    db_router.get("/getProjectStudents", [UserAuth.isCoachOrAdmin], (req, res) => {
 
-        const getProjectStudents = "SELECT * FROM users WHERE users.project = ?";
-
-        db.query(getProjectStudents, [req.query.project_id])
-            .then((students) => {
-                res.send(students)
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).send(error);
-            });
-    })
 
     db_router.get("/selectAllCoachInfo", [UserAuth.isCoachOrAdmin], (req, res) => {
 
@@ -1090,6 +1102,7 @@ module.exports = (db) => {
             return res.status(500).send({msg: "Fail!"});
         }
     })
+
 
     db_router.post(
         "/submitProposal",

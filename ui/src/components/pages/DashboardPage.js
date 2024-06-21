@@ -131,12 +131,13 @@ export default function DashboardPage() {
                 },
                 {
                     menuItem: {
-                        key: "Action-Submissions-Tab",
-                        content:"Action Submissions",
+                        key: "Logging-Tab",
+                        content:"Logging",
                         href: "#"
                     },
                     render: () => (
                         <Tab.Pane>
+                            <TimeLog semesterData={semesterData} />
                             <ActionLogs semesterData={semesterData} />
                         </Tab.Pane>
                     ),
@@ -153,18 +154,7 @@ export default function DashboardPage() {
                         </Tab.Pane>
                     ),
                 },
-                {
-                    menuItem: {
-                        key: "TimeTracking-Tab",
-                        content:"Time Tracking",
-                        href: "#"
-                    },
-                    render: () => (
-                        <Tab.Pane>
-                            <TimeLog semesterData={semesterData} />
-                        </Tab.Pane>
-                    ),
-                },
+
             );
             break;
         default:

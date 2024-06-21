@@ -58,7 +58,7 @@ export default function DatabaseTableEditor(props) {
         const dataToSubmit = !!props.preSubmit ? props.preSubmit(formData) : formData;
 
         let body = new FormData();
-
+         console.log(submitRoute)
         if("changed_fields" in dataToSubmit){
             if(typeof dataToSubmit["changed_fields"] === 'object'){
                 dataToSubmit["changed_fields"] = JSON.stringify(dataToSubmit["changed_fields"])
@@ -67,7 +67,6 @@ export default function DatabaseTableEditor(props) {
         Object.keys(dataToSubmit).forEach((key) => {
                 body.append(key, dataToSubmit[key]);
         });
-
         SecureFetch(submitRoute, {
             method: "post",
             body: body,
@@ -101,7 +100,9 @@ export default function DatabaseTableEditor(props) {
                 value = checked;
             }
         }
+
         const newFormData = props.preChange && props.preChange(formData, name, value, checked, isActiveField, e);
+
         if (newFormData) {
             setFormData(newFormData);
         } else {
@@ -126,7 +127,6 @@ export default function DatabaseTableEditor(props) {
     let fieldComponents = [];
     for (let i = 0; i < formFieldArray.length; i++) {
         let field = formFieldArray[i];
-        console.log(formFieldArray)
         if (!field.hidden) {
             switch (field.type) {
                 case "input":
