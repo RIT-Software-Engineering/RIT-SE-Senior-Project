@@ -10,7 +10,13 @@ import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import {QuestionComponentsMap} from "../../../../util/components/PeerEvalComponents";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 
-/** 
+const camelCaseToSentence = (string = "") =>
+    string.replaceAll(
+        /([A-Z])/g,
+        word => ` ${word}`
+    ).trimStart()
+
+/**
 *This file is only used in ToolTips, it should be removed completely
 */
 export default function ActionModal(props) {
@@ -22,8 +28,40 @@ export default function ActionModal(props) {
     const filesRef = useRef();
 
 
-    // PLANNING: Maybe add useEffect for saving fourm when edited
-    // So when re-opened, the form is still filled out
+    // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
+    function getPeerEvalData(formData) {
+        const translation = {
+            CoachFeedback: {},
+            Students: {}
+        }
+
+        for (const key in formData) {
+            let [category, header, student] = key.split("-")
+            let value = formData[key]
+            const IS_FEEDBACK = category === "Feedback"
+
+            header = camelCaseToSentence(header)
+            value = IS_FEEDBACK ? value.trim() : parseInt(value)
+
+            if (IS_FEEDBACK && student === "Anon") {
+                translation.CoachFeedback[header] = value
+                continue
+            }
+
+            if (!translation.Students[student]) {
+                translation.Students[student] = {Feedback: {}, Ratings: {}}
+            }
+
+            if (IS_FEEDBACK) {
+                translation.Students[student].Feedback[header] = value
+            } else {
+                translation.Students[student].Ratings[header] = value
+            }
+
+        }
+
+        return translation
+    }
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -98,7 +136,7 @@ export default function ActionModal(props) {
                     if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
                         errors.push(`'${formDataInputs[x].name}' can not be empty`);
                     }
-                    formData[formDataInputs[x].name] = formDataInputs[x]?.value;
+                    formData[formDataInputs[x].name] = String(formDataInputs[x]?.value);
                 }
             }
 
@@ -111,6 +149,11 @@ export default function ActionModal(props) {
             if (errors.length > 0) {
                 setErrors(errors);
                 return;
+            }
+
+            // TODO: If the action is a peer evaluation, we need to translate the form data
+            if (props.action_target === ACTION_TARGETS.peer_evaluation) {
+                formData = getPeerEvalData(formData);
             }
 
             body.append("form_data", JSON.stringify(formData));

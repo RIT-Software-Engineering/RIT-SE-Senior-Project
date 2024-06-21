@@ -9,6 +9,12 @@ import {
 } from 'semantic-ui-react';
 import assert from "assert";
 
+const sentenceToCamelCase = (string = "") =>
+    string.replaceAll(
+        /(\w+).?/g,
+        word => word.charAt(0).toUpperCase() + word.slice(1).trim()
+    )
+
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 export const QuestionFeedback = ({
@@ -54,7 +60,7 @@ export const QuestionFeedback = ({
                                 <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
-                                        name={`${question}-${student}`}
+                                        name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents?student:"Anon"}`}
                                         placeholder='Talk about your experience'
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
@@ -117,7 +123,7 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                 wordWrap: 'break-word',
                                 textAlign: 'center',
                                 verticalAlign: 'bottom'
-                            }} key={question}>
+                        }} key={question}>
                                 <Header as='h4'> {question} </Header>
                             </TableHeaderCell>
                         ))}
@@ -136,18 +142,21 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                     questions.map(question => (
                                         <TableCell key={question} textAlign='center'>
                                             <Rating
-                                                name={`${question}-${student}`}
                                                 maxRating={scale}
                                                 defaultRating={selections[question][student] || 0}
                                                 clearable
                                                 // icon='star'
                                                 onRate={(_, data) => handleRate(student, question, data.rating)}
                                             />
+                                            <input
+                                                type="hidden"
+                                                name={`Table-${sentenceToCamelCase(question)}-${student}`}
+                                                value={selections[question][student] || 0}
+                                            />
                                         </TableCell>
                                     ))
                                 }
                             </TableRow>
-
                         ))
                     }
 
@@ -190,7 +199,7 @@ export const QuestionMoodRating = ({
                                 <GridColumn key={`col-${student}-${index}`}
                                             style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
                                     <Radio style={{margin: '8px auto'}}
-                                           name={`${question}-${student}`}
+                                           name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                                            value={index}
                                            checked={selections[student] === index}
                                            onChange={() => handleSelection(student, index)}/>
