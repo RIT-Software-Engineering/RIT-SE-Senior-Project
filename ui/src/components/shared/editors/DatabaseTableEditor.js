@@ -181,9 +181,9 @@ export default function DatabaseTableEditor(props) {
                     if (formData.action_target === 'peer_evaluation') {
                         fieldComponents.push(
                             <FormBuilder
-                                key={field.name}
                                 field={field}
-                                title={formData[field.name]}
+                                data={formData}
+                                title={field.name}
                                 onChange={handleChange}
                             >
                             </FormBuilder>

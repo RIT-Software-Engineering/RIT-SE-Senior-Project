@@ -4,6 +4,7 @@ import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Grid, Segment } from "semantic-ui-react";
 
 export default function FormBuilder(props) {
+    const field = props.field;
     const [formHtml, setFormHtml] = useState("");
 
     useEffect(() => {
@@ -27,7 +28,7 @@ export default function FormBuilder(props) {
 
     function handleChange(event) {
         setFormHtml(event.target.value);
-        props.onChange(event.target.name, event.target.value);
+        props.onChange(event, { name: event.target.name, value: event.target.value });
     }
 
     function onSelect(event, { value }) {
@@ -37,8 +38,8 @@ export default function FormBuilder(props) {
     return (
         <Form.Field>
             <Form.TextArea
-                placeholder={props.field.placeholder}
-                label={props.field.label}
+                placeholder={field.placeholder}
+                label={field.label}
                 name={props.title}
                 value={formHtml}
                 style={{ minHeight: 200 }}

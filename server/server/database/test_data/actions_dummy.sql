@@ -36,7 +36,7 @@ VALUES
         'Peer Evaluation Form',
         '',
         'Evaluate your team members',
-        'peer-evaluation',
+        'peer_evaluation',
         '2024-05-13',
         '2024-09-30',
         '<h1>Take the individual test form</h1>
