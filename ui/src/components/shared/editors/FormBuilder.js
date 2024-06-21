@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Grid, Segment } from "semantic-ui-react";
+import {Dropdown, Grid, Label, Segment} from "semantic-ui-react";
 
 export default function FormBuilder(props) {
     const field = props.field;
@@ -37,6 +37,9 @@ export default function FormBuilder(props) {
 
     return (
         <Form.Field>
+
+
+            <Button floated={"right"}>Live Question Editor</Button>
             <Form.TextArea
                 placeholder={field.placeholder}
                 label={field.label}
@@ -45,14 +48,7 @@ export default function FormBuilder(props) {
                 style={{ minHeight: 200 }}
                 onChange={handleChange}
             />
-            <Dropdown
-                options={options}
-                placeholder='Import a Template'
-                selection
-                search
-                onChange={onSelect}
-                style={{ width: '50%' }}
-            />
+
         </Form.Field>
     );
 }

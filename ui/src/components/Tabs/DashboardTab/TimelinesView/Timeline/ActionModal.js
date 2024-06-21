@@ -191,7 +191,7 @@ export default function ActionModal(props) {
         }
     }
 
-    if (ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
+    if (props.action_target===ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
     return (
         // HACK: Add property for Modal to not close when clicking outside of it
         // Property is called closeOnDimmerClick
