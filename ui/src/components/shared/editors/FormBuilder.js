@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Grid, Segment } from "semantic-ui-react";
-
+import QuestionBuilder from "../../util/components/QuestionBuilder";
 export default function FormBuilder(props) {
     const [formHtml, setFormHtml] = useState("");
-
+    const [editorOpen, setEditorOpen] = useState(false);
     useEffect(() => {
         if (props.title) {
             setFormHtml(props.title);
@@ -24,7 +23,12 @@ export default function FormBuilder(props) {
             value: 'name',
         },
     ];
-
+     function openEditor(){
+         setEditorOpen(true);
+     }
+     function closeEditor(){
+         setEditorOpen(false);
+     }
     function handleChange(event) {
         setFormHtml(event.target.value);
         props.onChange(event.target.name, event.target.value);
@@ -36,6 +40,8 @@ export default function FormBuilder(props) {
 
     return (
         <Form.Field>
+            <Button circular={true} onClick={openEditor}>Open Live Editor</Button>
+            <QuestionBuilder isOpen={editorOpen} OnClose={closeEditor} currentCode={formHtml} onChange={handleChange}/>
             <Form.TextArea
                 placeholder={props.field.placeholder}
                 label={props.field.label}
@@ -44,14 +50,7 @@ export default function FormBuilder(props) {
                 style={{ minHeight: 200 }}
                 onChange={handleChange}
             />
-            <Dropdown
-                options={options}
-                placeholder='Import a Template'
-                selection
-                search
-                onChange={onSelect}
-                style={{ width: '50%' }}
-            />
+
         </Form.Field>
     );
 }
