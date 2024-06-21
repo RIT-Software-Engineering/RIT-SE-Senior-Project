@@ -1,5 +1,5 @@
 import React, {useState, useRef, useContext} from "react";
-import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
+import {Button, Modal, Loader, Form, Input, Message, MessageHeader, MessageList, Icon} from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../../util/functions/constants";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
@@ -127,13 +127,16 @@ export default function ActionModal(props) {
             for (let x = 0; x < formDataInputs.length; x++) {
                 if (formDataInputs[x].type === "radio") {
                     if (formDataInputs[x]?.required && !formDataInputs[formDataInputs[x].name]?.value && !radioErrorSet.has(formDataInputs[x].name)) {
-                        errors.push(`radio option selection is required`);
+                        errors.push(`radio option selection "${formDataInputs[x].name}" is required`);
                         radioErrorSet.add(formDataInputs[x].name)
                     }
                     formData[formDataInputs[x].name] = formDataInputs[formDataInputs[x].name]?.value;
                 }
                 else {
                     if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
+                        errors.push(`'${formDataInputs[x].name}' can not be empty`);
+                    }
+                    if(formDataInputs[x]?.required && formDataInputs[x]?.name.startsWith("Table") && formDataInputs[x]?.value === "0"){
                         errors.push(`'${formDataInputs[x].name}' can not be empty`);
                     }
                     formData[formDataInputs[x].name] = String(formDataInputs[x]?.value);
@@ -320,10 +323,16 @@ export default function ActionModal(props) {
                         {fileUpload(props.file_types, props.file_size)}
                         {errors.length > 0 && <div className="submission-errors">
                             <br/>
-                            <h4>Errors:</h4>
-                            <ul>
-                                {errors.map(err => <li key={err}>{err}</li>)}
-                            </ul>
+                            {/*<h4>Errors:</h4>*/}
+                            {/*<ul>*/}
+                            {/*    {errors.map(err => <li key={err}>{err}</li>)}*/}
+                            {/*</ul>*/}
+                            <Message error>
+                                <MessageHeader>Errors:</MessageHeader>
+                                <MessageList>
+                                    {errors.map(err => <li key={err}>{err}</li>)}
+                                </MessageList>
+                            </Message>
                         </div>}
                     </Modal.Description>
                     <Modal open={!!submissionModalOpen} {...generateModalFields()}

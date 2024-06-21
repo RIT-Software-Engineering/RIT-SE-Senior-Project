@@ -22,7 +22,8 @@ export const QuestionFeedback = ({
                                      questions = [""],
                                      ordered = false,
                                      students = [""],
-                                     anon = false
+                                     anon = false,
+                                     required = false,
                                  }) => {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
@@ -64,6 +65,7 @@ export const QuestionFeedback = ({
                                         placeholder='Talk about your experience'
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
+                                        required={required}
                                     />
                                     <br/>
                                 </div>
@@ -78,16 +80,16 @@ export const QuestionFeedback = ({
 };
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students}) => {
+export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students, required}) => {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} anon="false"/>
+        <QuestionFeedback title={title} questions={questions} students={students} anon="false" required={required}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 //TODO: Let user switch between 5 and 3 point scale
-export const QuestionTable = ({questions, students, scale = 5}) => {
+export const QuestionTable = ({questions, students, scale = 5, required=false}) => {
     //TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -143,7 +145,7 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                         <TableCell key={question} textAlign='center'>
                                             <Rating
                                                 maxRating={scale}
-                                                defaultRating={selections[question][student] || 0}
+                                                defaultRating={selections[question][student] || ""}
                                                 clearable
                                                 // icon='star'
                                                 onRate={(_, data) => handleRate(student, question, data.rating)}
@@ -152,6 +154,7 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                                 type="hidden"
                                                 name={`Table-${sentenceToCamelCase(question)}-${student}`}
                                                 value={selections[question][student] || 0}
+                                                required={required}
                                             />
                                         </TableCell>
                                     ))
@@ -172,6 +175,7 @@ export const QuestionMoodRating = ({
                                        question,
                                        students,
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
+                                       required=false
                                    }) => {
 
     const [selections, setSelections] = useState({});
@@ -202,7 +206,9 @@ export const QuestionMoodRating = ({
                                            name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                                            value={index}
                                            checked={selections[student] === index}
-                                           onChange={() => handleSelection(student, index)}/>
+                                           onChange={() => handleSelection(student, index)}
+                                           required={required}
+                                    />
                                     {level}
                                 </GridColumn>
                             ))
