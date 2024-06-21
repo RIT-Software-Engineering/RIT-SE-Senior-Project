@@ -17,12 +17,15 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
     const hasQuestions = questions.length > 1 || questions[0] !== "";
     const hasTitle = title !== "";
 
-    const handleFeedbackChange = (question, newFeedback) => {
+    const handleFeedbackChange = (question, student, newFeedback) => {
         setFeedback(prevFeedback => ({
             ...prevFeedback,
-            [question]: newFeedback
+            [question]: {
+                ...prevFeedback[question],
+                [student]: newFeedback
+            }
         }));
-    };
+    }
 
     return (
         <div>
@@ -46,8 +49,8 @@ export const QuestionFeedback = ({title = "Feedback", questions=[""], ordered = 
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
                                         placeholder='Talk about your experience'
-                                        value={feedback[question] || ''}
-                                        onChange={(e) => handleFeedbackChange(question, e.target.value)}
+                                        value={!!feedback[question] ? feedback[question][student] : ''}
+                                        onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
                                     />
                                     <br/>
                                 </div>
