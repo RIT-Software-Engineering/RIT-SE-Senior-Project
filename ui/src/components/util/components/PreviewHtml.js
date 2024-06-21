@@ -4,6 +4,14 @@ import {Form, Icon, Input, Modal} from "semantic-ui-react";
 import {formatDateNoOffset, humanFileSize} from "../functions/utils";
 import {ACTION_TARGETS, DEFAULT_UPLOAD_LIMIT} from "../functions/constants";
 import Announcements from "../../Tabs/DashboardTab/TimelinesView/Announcements";
+import {
+    QuestionComponentsMap,
+    QuestionFeedback,
+    QuestionMoodRating,
+    QuestionPeerFeedback,
+    QuestionTable
+} from "./PeerEvalComponents";
+import ParsedInnerHTML from "./ParsedInnerHtml";
 export default function PreviewHtml(props){
 
     const submissionTypeMap = {
@@ -16,6 +24,7 @@ export default function PreviewHtml(props){
     function modalContent(props) {
         const isStudentAnnouncement = props.action.action_target === ACTION_TARGETS.student_announcement;
         const isCoachAnnouncement = props.action.action_target === ACTION_TARGETS.coach_announcement;
+        const isPeerEvaluation = props.action.action_target === ACTION_TARGETS.peer_evaluation;
 
         if(isStudentAnnouncement || isCoachAnnouncement){
             return (
@@ -27,7 +36,11 @@ export default function PreviewHtml(props){
             <div>
                 {preActionContent()}
                 <br/>
-                <div className="content" dangerouslySetInnerHTML={{__html: props.action.page_html}}/>
+                {
+                    isPeerEvaluation ?
+                        <ParsedInnerHTML html={props.action.page_html} components={QuestionComponentsMap} />:
+                        <div className="content" dangerouslySetInnerHTML={{__html: props.action.page_html}}/>
+                }
                 <br/>
                 {fileUpload(props.action.file_types, props.action.file_size)}
             </div>
@@ -74,3 +87,5 @@ export default function PreviewHtml(props){
         />
     )
 }
+
+

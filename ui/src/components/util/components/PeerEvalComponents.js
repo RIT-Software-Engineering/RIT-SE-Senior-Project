@@ -191,3 +191,10 @@ export const QuestionMoodRating = ({
         </div>
     );
 };
+
+export const QuestionComponentsMap = {
+    QuestionFeedback: QuestionFeedback,
+    QuestionTable: QuestionTable,
+    QuestionMoodRating: QuestionMoodRating,
+    QuestionPeerFeedback: QuestionPeerFeedback
+}

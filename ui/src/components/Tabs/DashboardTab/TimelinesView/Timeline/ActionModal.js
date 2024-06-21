@@ -7,12 +7,7 @@ import { UserContext } from "../../../../util/functions/UserContext";
 import InnerHTML from 'dangerously-set-html-content';
 import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
-import {
-    QuestionFeedback,
-    QuestionTable,
-    QuestionMoodRating,
-    QuestionPeerFeedback
-} from "../../../../util/components/PeerEvalComponents";
+import {QuestionComponentsMap} from "../../../../util/components/PeerEvalComponents";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 
 /** 
@@ -26,12 +21,6 @@ export default function ActionModal(props) {
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
 
-    const peerEvaluationComponents = {
-        QuestionFeedback: QuestionFeedback,
-        QuestionTable: QuestionTable,
-        QuestionMoodRating: QuestionMoodRating,
-        QuestionPeerFeedback: QuestionPeerFeedback
-    }
 
     // PLANNING: Maybe add useEffect for saving fourm when edited
     // So when re-opened, the form is still filled out
@@ -280,7 +269,7 @@ export default function ActionModal(props) {
                         <div className="content">
                         {
                           props.action_target === ACTION_TARGETS.peer_evaluation
-                            ? <ParsedInnerHTML html={props.page_html} components={peerEvaluationComponents} />
+                            ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap} />
                             : <InnerHTML html={props.page_html} />
                         }
                         </div>
