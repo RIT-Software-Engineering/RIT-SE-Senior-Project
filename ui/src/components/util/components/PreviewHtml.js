@@ -4,12 +4,10 @@ import {Form, Icon, Input, Modal} from "semantic-ui-react";
 import {formatDateNoOffset, humanFileSize} from "../functions/utils";
 import {ACTION_TARGETS, DEFAULT_UPLOAD_LIMIT} from "../functions/constants";
 import Announcements from "../../Tabs/DashboardTab/TimelinesView/Announcements";
+
 import {
     QuestionComponentsMap,
-    QuestionFeedback,
-    QuestionMoodRating,
-    QuestionPeerFeedback,
-    QuestionTable
+
 } from "./PeerEvalComponents";
 import ParsedInnerHTML from "./ParsedInnerHtml";
 export default function PreviewHtml(props){

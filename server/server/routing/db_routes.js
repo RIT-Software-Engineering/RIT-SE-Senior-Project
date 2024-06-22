@@ -38,6 +38,7 @@ const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
 const { ROLES } = require("../consts");
+const USERAuth = require("./user_auth");
 
 const ACTION_TARGETS = {
     ADMIN: 'admin',
@@ -367,6 +368,21 @@ module.exports = (db) => {
         db.query(getProjectStudents, [req.query.project_id])
             .then((students) => {
                 res.send(students)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
+
+    db_router.get("/getProjectStudentNames",[UserAuth.isSignedIn], (req, res) => {
+
+        const getProjectStudents = "SELECT fname,lname FROM users WHERE users.project = ? and users.system_id!=?";
+
+        db.query(getProjectStudents, [req.query.project_id,req.user.system_id])
+            .then((students) => {
+                res.send(students)
+                console.log(students)
             })
             .catch((error) => {
                 console.error(error);
