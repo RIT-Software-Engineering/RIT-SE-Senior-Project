@@ -1,5 +1,5 @@
 import React, {useState, useRef, useContext} from "react";
-import {Button, Modal, Loader, Form, Input } from "semantic-ui-react";
+import {Button, Modal, Loader, Form, Input, Message, MessageHeader, MessageList, Icon} from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../../util/functions/constants";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
@@ -10,7 +10,13 @@ import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import {QuestionComponentsMap} from "../../../../util/components/PeerEvalComponents";
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 
-/** 
+const camelCaseToSentence = (string = "") =>
+    string.replaceAll(
+        /([A-Z])/g,
+        word => ` ${word}`
+    ).trimStart()
+
+/**
 *This file is only used in ToolTips, it should be removed completely
 */
 export default function ActionModal(props) {
@@ -22,8 +28,40 @@ export default function ActionModal(props) {
     const filesRef = useRef();
 
 
-    // PLANNING: Maybe add useEffect for saving fourm when edited
-    // So when re-opened, the form is still filled out
+    // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
+    function getPeerEvalData(formData) {
+        const translation = {
+            CoachFeedback: {},
+            Students: {}
+        }
+
+        for (const key in formData) {
+            let [category, header, student] = key.split("-")
+            let value = formData[key]
+            const IS_FEEDBACK = category === "Feedback"
+
+            header = camelCaseToSentence(header)
+            value = IS_FEEDBACK ? value.trim() : parseInt(value)
+
+            if (IS_FEEDBACK && student === "Anon") {
+                translation.CoachFeedback[header] = value
+                continue
+            }
+
+            if (!translation.Students[student]) {
+                translation.Students[student] = {Feedback: {}, Ratings: {}}
+            }
+
+            if (IS_FEEDBACK) {
+                translation.Students[student].Feedback[header] = value
+            } else {
+                translation.Students[student].Ratings[header] = value
+            }
+
+        }
+
+        return translation
+    }
 
     const generateModalFields = () => {
         switch (submissionModalOpen) {
@@ -89,7 +127,7 @@ export default function ActionModal(props) {
             for (let x = 0; x < formDataInputs.length; x++) {
                 if (formDataInputs[x].type === "radio") {
                     if (formDataInputs[x]?.required && !formDataInputs[formDataInputs[x].name]?.value && !radioErrorSet.has(formDataInputs[x].name)) {
-                        errors.push(`radio option selection is required`);
+                        errors.push(`radio option selection "${formDataInputs[x].name}" is required`);
                         radioErrorSet.add(formDataInputs[x].name)
                     }
                     formData[formDataInputs[x].name] = formDataInputs[formDataInputs[x].name]?.value;
@@ -98,7 +136,10 @@ export default function ActionModal(props) {
                     if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
                         errors.push(`'${formDataInputs[x].name}' can not be empty`);
                     }
-                    formData[formDataInputs[x].name] = formDataInputs[x]?.value;
+                    if(formDataInputs[x]?.required && formDataInputs[x]?.name.startsWith("Table") && formDataInputs[x]?.value === "0"){
+                        errors.push(`'${formDataInputs[x].name}' can not be empty`);
+                    }
+                    formData[formDataInputs[x].name] = String(formDataInputs[x]?.value);
                 }
             }
 
@@ -111,6 +152,11 @@ export default function ActionModal(props) {
             if (errors.length > 0) {
                 setErrors(errors);
                 return;
+            }
+
+            // TODO: If the action is a peer evaluation, we need to translate the form data
+            if (props.action_target === ACTION_TARGETS.peer_evaluation) {
+                formData = getPeerEvalData(formData);
             }
 
             body.append("form_data", JSON.stringify(formData));
@@ -277,10 +323,16 @@ export default function ActionModal(props) {
                         {fileUpload(props.file_types, props.file_size)}
                         {errors.length > 0 && <div className="submission-errors">
                             <br/>
-                            <h4>Errors:</h4>
-                            <ul>
-                                {errors.map(err => <li key={err}>{err}</li>)}
-                            </ul>
+                            {/*<h4>Errors:</h4>*/}
+                            {/*<ul>*/}
+                            {/*    {errors.map(err => <li key={err}>{err}</li>)}*/}
+                            {/*</ul>*/}
+                            <Message error>
+                                <MessageHeader>Errors:</MessageHeader>
+                                <MessageList>
+                                    {errors.map(err => <li key={err}>{err}</li>)}
+                                </MessageList>
+                            </Message>
                         </div>}
                     </Modal.Description>
                     <Modal open={!!submissionModalOpen} {...generateModalFields()}

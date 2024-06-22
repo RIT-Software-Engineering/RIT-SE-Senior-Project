@@ -9,6 +9,12 @@ import {
 } from 'semantic-ui-react';
 import assert from "assert";
 
+const sentenceToCamelCase = (string = "") =>
+    string.replaceAll(
+        /(\w+).?/g,
+        word => word.charAt(0).toUpperCase() + word.slice(1).trim()
+    )
+
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 export const QuestionFeedback = ({
@@ -16,7 +22,8 @@ export const QuestionFeedback = ({
                                      questions = [""],
                                      ordered = false,
                                      students = [""],
-                                     anon = false
+                                     anon = false,
+                                     required = false,
                                  }) => {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
@@ -54,10 +61,11 @@ export const QuestionFeedback = ({
                                 <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
-                                        name={`${question}-${student}`}
+                                        name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents?student:"Anon"}`}
                                         placeholder='Talk about your experience'
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
+                                        required={required}
                                     />
                                     <br/>
                                 </div>
@@ -72,16 +80,16 @@ export const QuestionFeedback = ({
 };
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students}) => {
+export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students, required}) => {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} anon="false"/>
+        <QuestionFeedback title={title} questions={questions} students={students} anon="false" required={required}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 //TODO: Let user switch between 5 and 3 point scale
-export const QuestionTable = ({questions, students, scale = 5}) => {
+export const QuestionTable = ({questions, students, scale = 5, required=false}) => {
     //TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -117,7 +125,7 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                 wordWrap: 'break-word',
                                 textAlign: 'center',
                                 verticalAlign: 'bottom'
-                            }} key={question}>
+                        }} key={question}>
                                 <Header as='h4'> {question} </Header>
                             </TableHeaderCell>
                         ))}
@@ -136,18 +144,22 @@ export const QuestionTable = ({questions, students, scale = 5}) => {
                                     questions.map(question => (
                                         <TableCell key={question} textAlign='center'>
                                             <Rating
-                                                name={`${question}-${student}`}
                                                 maxRating={scale}
-                                                defaultRating={selections[question][student] || 0}
+                                                defaultRating={selections[question][student] || ""}
                                                 clearable
                                                 // icon='star'
                                                 onRate={(_, data) => handleRate(student, question, data.rating)}
+                                            />
+                                            <input
+                                                type="hidden"
+                                                name={`Table-${sentenceToCamelCase(question)}-${student}`}
+                                                value={selections[question][student] || 0}
+                                                required={required}
                                             />
                                         </TableCell>
                                     ))
                                 }
                             </TableRow>
-
                         ))
                     }
 
@@ -163,6 +175,7 @@ export const QuestionMoodRating = ({
                                        question,
                                        students,
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
+                                       required=false
                                    }) => {
 
     const [selections, setSelections] = useState({});
@@ -190,10 +203,12 @@ export const QuestionMoodRating = ({
                                 <GridColumn key={`col-${student}-${index}`}
                                             style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
                                     <Radio style={{margin: '8px auto'}}
-                                           name={`${question}-${student}`}
+                                           name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                                            value={index}
                                            checked={selections[student] === index}
-                                           onChange={() => handleSelection(student, index)}/>
+                                           onChange={() => handleSelection(student, index)}
+                                           required={required}
+                                    />
                                     {level}
                                 </GridColumn>
                             ))

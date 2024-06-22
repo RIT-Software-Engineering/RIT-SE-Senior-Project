@@ -73,7 +73,7 @@ VALUES
                   question="Dependability"
                   students=''["Aiden", "Lucille", "Juliet", "Bryson"]''
                   levels=''["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]''
-                  required
+                  required=''true''
               />
               </div>
               <br />
