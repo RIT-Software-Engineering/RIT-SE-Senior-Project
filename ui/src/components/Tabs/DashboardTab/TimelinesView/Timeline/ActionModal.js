@@ -1,15 +1,15 @@
-import React, {useState, useRef, useContext} from "react";
-import {Button, Modal, Loader, Form, Input, Message, MessageHeader, MessageList, Icon} from "semantic-ui-react";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {Button, Form, Input, Loader, Message, MessageHeader, MessageList, Modal} from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../../util/functions/constants";
-import { SecureFetch } from "../../../../util/functions/secureFetch";
+import {SecureFetch} from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
-import { UserContext } from "../../../../util/functions/UserContext";
+import {UserContext} from "../../../../util/functions/UserContext";
 import InnerHTML from 'dangerously-set-html-content';
 import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import {QuestionComponentsMap} from "../../../../util/components/PeerEvalComponents";
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 
+const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
 const camelCaseToSentence = (string = "") =>
     string.replaceAll(
         /([A-Z])/g,
@@ -26,7 +26,24 @@ export default function ActionModal(props) {
     const [submissionModalResponse, setSubmissionModalResponse] = useState("We were unable to receive your submission.");
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
+    const [studentOptions, setStudentOptions] = useState([]);
 
+    const fetchStudentNames = () => {
+        if (user.role === USERTYPES.STUDENT) {
+            let url = config.url.API_GET_PROJECT_STUDENT_NAMES;
+            SecureFetch(`${url}?project_id=${props.projectId}`)
+                .then(response => response.json())
+                .then((data) => {
+                    const combinedNames = data.map(student => `${student.fname} ${student.lname}`);
+                    setStudentOptions(combinedNames);
+                })
+                .catch(err => {
+                    console.error("Failed to get students", err);
+                });
+        } else {
+            setStudentOptions(["Student 1", "Student 2", "Student 3", "Student 4"]);
+        }
+    };
 
     // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
     function getPeerEvalData(formData) {
@@ -157,6 +174,7 @@ export default function ActionModal(props) {
             // TODO: If the action is a peer evaluation, we need to translate the form data
             if (props.action_target === ACTION_TARGETS.peer_evaluation) {
                 formData = getPeerEvalData(formData);
+
             }
 
             body.append("form_data", JSON.stringify(formData));
@@ -251,6 +269,7 @@ export default function ActionModal(props) {
             onOpen={() => {
                 setOpen(true);
                 props.isOpenCallback(true);
+
             }}
             open={open}
             trigger={props.trigger ||
@@ -270,7 +289,7 @@ export default function ActionModal(props) {
                             {errors.map(err => <li key={err}>{err}</li>)}
                         </ul>
                     </div>
-                </Modal.Description>
+                </Modal.Description >
                 <Modal open={!!submissionModalOpen} {...generateModalFields()}
                        onClose={() => closeSubmissionModal()}/>
             </Modal.Content>
@@ -302,6 +321,8 @@ export default function ActionModal(props) {
                 onOpen={() => {
                     setOpen(true);
                     props.isOpenCallback(true);
+                    fetchStudentNames();
+
                 }}
                 open={open}
                 trigger={props.trigger ||
@@ -313,9 +334,10 @@ export default function ActionModal(props) {
                         {props.preActionContent}
                         <br/>
                         <div className="content">
+
                         {
                           props.action_target === ACTION_TARGETS.peer_evaluation
-                            ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap} />
+                            ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap} studentsList={studentOptions} />
                             : <InnerHTML html={props.page_html} />
                         }
                         </div>

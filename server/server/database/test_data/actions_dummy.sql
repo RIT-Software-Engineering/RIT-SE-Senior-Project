@@ -39,7 +39,7 @@ VALUES
         'peer_evaluation',
         '2024-05-13',
         '2024-09-30',
-        '<h1>Take the individual test form</h1>
+        '<h1>Peer Evaluation</h1>
           <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <h2>Instructions</h2>
             <p>
@@ -63,7 +63,7 @@ VALUES
               <br />
               <h2>Question Matrix Showcase</h2>
               <div>
-              <QuestionTable questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]'' students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionTable questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]''  students=''exampleStudents''/>
               </div>
 
               <br />
@@ -71,24 +71,24 @@ VALUES
               <div>
               <QuestionMoodRating
                   question="Dependability"
-                  students=''["Aiden", "Lucille", "Juliet", "Bryson"]''
+                  students=''exampleStudents''
                   levels=''["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]''
                   required=''true''
               />
               </div>
               <br />
               <div>
-              <QuestionMoodRating question="Group Maintenance" students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionMoodRating question="Group Maintenance" students=''exampleStudents'' />
               </div>
 
               <br />
               <br />
               <div>
-              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered />
+              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered students=''exampleStudents''/>
               </div>
 
               <div>
-              <QuestionPeerFeedback questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]''  students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionPeerFeedback questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]'' students=''exampleStudents''  />
               </div>
             </p>
           </form>

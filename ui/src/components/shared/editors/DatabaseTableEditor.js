@@ -90,6 +90,8 @@ export default function DatabaseTableEditor(props) {
             });
     };
 
+
+
     // PLANNING: Replicate this idea in the student view of editing
     // So that the fourm saves the data in the same way as the admin view when closed and reoened
     const handleChange = (e, { name, value, checked, isActiveField }) => {
@@ -183,7 +185,6 @@ export default function DatabaseTableEditor(props) {
                             <FormBuilder
                                 field={field}
                                 data={formData}
-                                title={field.name}
                                 onChange={handleChange}
                             >
                             </FormBuilder>

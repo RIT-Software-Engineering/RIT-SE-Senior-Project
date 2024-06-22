@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
+
 
 const parseAttributes = (attribs) => {
     const parsedAttribs = {};
@@ -10,32 +12,46 @@ const parseAttributes = (attribs) => {
             parsedAttribs[key] = attribs[key];
         }
     }
-    return parsedAttribs;
-}
 
-const parseHTML = (html, components) => {
-    const componentsLowerCase = {}
-    Object.keys(components).forEach(key => componentsLowerCase[key.toLowerCase()] = key);
+
+    return parsedAttribs;
+};
+
+
+const parseHTML = (html, components,studentList) => {
+    const componentsLowerCase = {};
+    Object.keys(components).forEach(key => {
+        componentsLowerCase[key.toLowerCase()] = key;
+    });
 
     return parse(html, {
         replace: (node) => {
             if (node.type !== 'tag') return;
-            if (!componentsLowerCase[node.name]) return;
+            const componentKey = componentsLowerCase[node.name.toLowerCase()];
+            if (!componentKey) return;
 
-            node.name = componentsLowerCase[node.name]
+            if (studentList){
+                node.attribs['students'] = studentList;
+            }
 
-            const Component = components[node.name];
-            return <Component {...parseAttributes(node.attribs)}/>
+
+            const Component = components[componentKey];
+            return <Component {...parseAttributes(node.attribs)} />;
         },
     });
 };
 
-const ParsedInnerHTML = ({html, components}) => {
-    return <div>
+const ParsedInnerHTML = ({ html, components, studentsList }) => {
+    return (
+        <div >
+            {parseHTML(html, components,studentsList)}
+        </div>
+    );
+};
 
-        {parseHTML(html, components)}
-
-    </div>;
+ParsedInnerHTML.propTypes = {
+    html: PropTypes.string.isRequired,
+    components: PropTypes.objectOf(PropTypes.elementType).isRequired
 };
 
 export default ParsedInnerHTML;

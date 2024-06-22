@@ -21,7 +21,7 @@ export const QuestionFeedback = ({
                                      title = "Feedback",
                                      questions = [""],
                                      ordered = false,
-                                     students = [""],
+                                     students ,
                                      anon = false,
                                      required = false,
                                  }) => {
@@ -173,7 +173,7 @@ export const QuestionTable = ({questions, students, scale = 5, required=false}) 
 // TODO: Make fields required unless specified otherwise in props
 export const QuestionMoodRating = ({
                                        question,
-                                       students,
+                                       students ,
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
                                        required=false
                                    }) => {
