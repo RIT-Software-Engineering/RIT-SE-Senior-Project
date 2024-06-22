@@ -41,10 +41,10 @@ export default function FormBuilder(props) {
 
     return (
         <Form.Field>
-            <Button circular={true} onClick={openEditor}>Open Live Editor</Button>
+
             <QuestionBuilder isOpen={editorOpen} OnClose={closeEditor} currentCode={formHtml} onChange={handleChange}/>
 
-            <Button floated={"right"}>Live Question Editor</Button>
+            <Button circular={true} onClick={openEditor} floated={"right"}>Open Live Editor</Button>
             <Form.TextArea
                 placeholder={field.placeholder}
                 label={field.label}
