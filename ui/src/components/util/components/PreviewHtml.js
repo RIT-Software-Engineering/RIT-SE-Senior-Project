@@ -16,6 +16,7 @@ export default function PreviewHtml(props){
 
     const submissionTypeMap = {
         [ACTION_TARGETS.individual]: "Individual",
+        [ACTION_TARGETS.peer_evaluation]: "Individual",
         [ACTION_TARGETS.team]: "Team",
         [ACTION_TARGETS.coach]: "Coach",
         [ACTION_TARGETS.admin]: "Admin",

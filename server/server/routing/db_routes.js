@@ -1284,6 +1284,11 @@ module.exports = (db) => {
                 }
                 break;
             //TODO: Add case for PEER_EVALUATION
+            case ACTION_TARGETS.PEER_EVALUATION:
+                if (req.user.type !== ROLES.COACH && req.user.type !== ROLES.STUDENT) {
+                    return res.status(401).send("Only coaches and students can submit peer evaluations.");
+                }
+                break;
             case ACTION_TARGETS.COACH_ANNOUNCEMENT:
             case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
                 return res.status(401).send("You can not submit an announcement");

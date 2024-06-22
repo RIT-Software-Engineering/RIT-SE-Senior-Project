@@ -26,10 +26,9 @@ export default function ActionModal(props) {
     const [submissionModalResponse, setSubmissionModalResponse] = useState("We were unable to receive your submission.");
     const [errors, setErrors] = useState([])
     const filesRef = useRef();
-
-
+    
     // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
-    function getPeerEvalData(formData) {
+    function translatePeerEvalData(formData) {
         const translation = {
             CoachFeedback: {},
             Students: {}
@@ -156,7 +155,7 @@ export default function ActionModal(props) {
 
             // TODO: If the action is a peer evaluation, we need to translate the form data
             if (props.action_target === ACTION_TARGETS.peer_evaluation) {
-                formData = getPeerEvalData(formData);
+                formData = translatePeerEvalData(formData);
             }
 
             body.append("form_data", JSON.stringify(formData));

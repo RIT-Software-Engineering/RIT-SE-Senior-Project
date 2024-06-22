@@ -38,11 +38,14 @@ function ToolTip(props) {
             })
     }
 
+  //TODO: Make a loadTeamMembers(projectId) to be able to check if everyone has submitted or not
+  //API_GET_PROJECT_MEMBERS
+
     useEffect(() => {
         if (props.autoLoadSubmissions) {
             loadSubmission(props.projectId, props.action?.action_id);
         }
-    }, [props.autoLoadSubmissions, props.projectId, props.action?.action_id])
+    }, [props.autoLoadSubmissions, props.projectId,props.action?.action_id])
 
     const metadata = (longSubmissionTitle) => {
         return <>
