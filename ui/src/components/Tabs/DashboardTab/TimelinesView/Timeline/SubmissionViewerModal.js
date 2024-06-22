@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
-import {Button, Divider, Header, Icon, Label, Message, MessageHeader, Modal, Rating, Segment} from 'semantic-ui-react';
+import {Button, Divider, Header, Icon, Message, MessageHeader, Modal, Rating, Segment} from 'semantic-ui-react';
 import { formatDate } from '../../../../util/functions/utils';
 import { SecureFetch } from '../../../../util/functions/secureFetch';
 
@@ -62,9 +62,9 @@ export default function SubmissionViewerModal(props) {
     }
 
     const daysLate = (due, submitted) => {
-        const dueDate  = formatDate(due);
-        const submitDate    = formatDate(submitted);
-        const diffInMs   = new Date(submitDate) - new Date(dueDate)
+        const dueDate = formatDate(due);
+        const submitDate = formatDate(submitted);
+        const diffInMs = new Date(submitDate) - new Date(dueDate)
         const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
         setDay(diffInDays);
     }
@@ -105,9 +105,10 @@ export default function SubmissionViewerModal(props) {
                     <Divider />
                     <h3>Submission</h3>
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
+                    {/* Normal Submissions */}
                     {(!noSubmission && !IS_PEER_EVALUATION) && <>
                         {Object.keys(submission)?.map((key) => {
-                            if (submission[key].includes ("fakepath")) {
+                            if (submission[key].includes("fakepath")) {
                                 return false;
                             }
                             return (
@@ -125,54 +126,54 @@ export default function SubmissionViewerModal(props) {
                                 >
                                     {file.replace(/^[^/]*\/(.*)$/, "$1")}
                                 </a>
-                                <br />
+                                <br/>
                             </div>;
                         })}
                     </>}
+                    {/* Peer Evaluations */}
                     {(!noSubmission && IS_PEER_EVALUATION) && <>
                         <h2>Coach Feedback</h2>
-                        {/*<p>{console.log(submission.CoachFeedback)}</p>*/}
                         <Segment secondary={false}>
-                        {Object.keys(submission.CoachFeedback??{})?.map(key => (
-                            <div style={{marginBottom: '35px'}}>
-                                <Header as={'h3'} dividing content={key} />
-                                {/*<p >{submission.CoachFeedback[key]}</p>*/}
-                                {/*<Message>*/}
-                                    <p> {submission.CoachFeedback[key]}</p>
-                                {/*</Message>*/}
-                            </div>
-                        ))}
+                            {Object.keys(submission.CoachFeedback ?? {})?.map(key => (
+                                <div style={{marginBottom: '35px'}}>
+                                    <Header as={'h3'} dividing content={key}/>
+                                    <p> {submission.CoachFeedback[key] || <i>No Feedback Provided</i>}</p>
+                                </div>
+                            ))}
                         </Segment>
 
                         <h2>Peer Feedback</h2>
-                        {/*<p>{console.log(submission.Students)}</p>*/}
-                        {Object.keys(submission.Students??{})?.map(key => (
+                        {Object.keys(submission.Students ?? {})?.map(key => (
                             <div>
                                 <Header as={'h2'} dividing content={key}/>
                                 <Segment raised>
+                                    {/* Peer Qualative Feedback */}
                                     {Object.keys(submission.Students[key].Feedback)?.map(feedback_key => (
                                         <div style={{marginBottom: '25px'}}>
                                             <Header as={'h3'} dividing content={feedback_key}/>
-                                            {!!submission.Students[key].Ratings[feedback_key] && (
+
+                                            {/* Showing quantative feedback with written feedback */}
+                                            {submission.Students[key].Ratings.hasOwnProperty(feedback_key) && (
                                                 <Rating
                                                     rating={submission.Students[key].Ratings[feedback_key]}
                                                     maxRating={5}
                                                     disabled
                                                 />
                                             )}
+
                                             {submission.Students[key].Feedback[feedback_key] === "" ?
-                                                <p style={{marginTop:'5px'}}> <i>No Feedback Provided</i></p> :
-                                                <Message label={{content: 'apple'}}>
+                                                <p style={{marginTop: '5px'}}><i>No Feedback Provided</i></p> :
+                                                <Message>
                                                     <MessageHeader>Feedback:</MessageHeader>
                                                     <p> {submission.Students[key].Feedback[feedback_key]}</p>
                                                 </Message>
                                             }
-                                            {/*<p style={{marginTop: '5px'}}>{submission.Students[key].Feedback[feedback_key]}</p>*/}
                                         </div>
                                     ))}
 
+                                    {/* Peer Quantative Feedback */}
                                     {Object.keys(submission.Students[key].Ratings)?.map(rating_key => {
-                                        if (!!submission.Students[key].Feedback[rating_key] === true) {
+                                        if (submission.Students[key].Feedback.hasOwnProperty(rating_key)) {
                                             return false;
                                         }
                                         return <div style={{marginBottom: '25px'}}>
