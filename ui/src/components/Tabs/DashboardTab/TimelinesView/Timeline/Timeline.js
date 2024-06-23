@@ -5,6 +5,7 @@ import GanttChart from "./GanttChart";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
+import TimelineCheckboxes from "./TimelineCheckboxes";
 
 export default function Timeline(props) {
 
@@ -24,9 +25,19 @@ export default function Timeline(props) {
         loadTimelineActions(props.elementData?.project_id);
     }, [props.elementData?.project_id])
 
+    const milestonesId = props.elementData.project_id + " milestones";
+    const ganttId = props.elementData.project_id + " gantt";
+
     return (
         <div>
-            <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+            <div className="project-header">
+                <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
+                <TimelineCheckboxes 
+                    projectId={props.elementData.project_id} 
+                    milestonesId={milestonesId} 
+                    ganttId={ganttId}
+                />
+            </div>
             {userContext.user?.role !== USERTYPES.ADMIN && <>
                 <h3>Relevant Actions</h3>
                 <UpcomingActions
@@ -37,24 +48,28 @@ export default function Timeline(props) {
                     reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
                 />
             </>}
-            <h3>Action Milestones</h3>
-            <ActionElements
-                projectName={props.elementData.display_name || props.elementData.title}
-                projectId={props.elementData.project_id}
-                semesterName={props.elementData.semester_name}
-                actions={actions}
-                reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
-            />
-            <h3>Action Gantt</h3>
-            <GanttChart
-                projectName={props.elementData.display_name || props.elementData.title}
-                projectId={props.elementData.project_id}
-                semesterName={props.elementData.semester_name}
-                semesterStart={props.elementData.start_date} 
-                semesterEnd={props.elementData.end_date} 
-                actions={actions}
-                reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
-            />
+            <div id={milestonesId}>
+                <h3>Action Milestones</h3>
+                <ActionElements
+                    projectName={props.elementData.display_name || props.elementData.title}
+                    projectId={props.elementData.project_id}
+                    semesterName={props.elementData.semester_name}
+                    actions={actions}
+                    reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
+                />
+            </div>
+            <div id={ganttId}>
+                <h3>Action Gantt</h3>
+                <GanttChart
+                    projectName={props.elementData.display_name || props.elementData.title}
+                    projectId={props.elementData.project_id}
+                    semesterName={props.elementData.semester_name}
+                    semesterStart={props.elementData.start_date} 
+                    semesterEnd={props.elementData.end_date} 
+                    actions={actions}
+                    reloadTimelineActions={() => { loadTimelineActions(props.elementData?.project_id) }}
+                />
+            </div>
         </div>
     );
 }

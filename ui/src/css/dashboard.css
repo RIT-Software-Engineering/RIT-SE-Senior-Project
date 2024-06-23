@@ -230,3 +230,19 @@
     padding: 10px;
     border-radius: 5px;
 }
+
+.project-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timeline-checkbox {
+    padding-left: 10px;
+    margin-bottom: 14px;
+}
+
+.hidden {
+    visibility: collapse;
+}
