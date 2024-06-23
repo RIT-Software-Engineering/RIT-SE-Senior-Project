@@ -25,13 +25,7 @@ export default function GanttChart(props) {
 
     leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 1}}></div>)
     leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 2}}></div>)
-    leftSideRows.push(
-        <div className="left-row-header" style={{'gridRow' : 3}}>
-            <div className="left-row task">
-                Name
-            </div>
-        </div>
-    )
+    leftSideRows.push(<div className="left-row-empty" style={{'gridRow' : 3}}></div>);
 
     // eventually set it to current date (no param). this is for dev
     let today = new Date();
@@ -136,9 +130,7 @@ export default function GanttChart(props) {
 
         const leftRowButton = 
             <button className="left-row">
-                <div className="left-row task">
-                    {action.action_title}
-                </div>
+                {action.action_title}
             </button>
 
         const leftRow = <ToolTip
