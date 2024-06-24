@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import QuestionBuilder from "./QuestionBuilder";
@@ -11,9 +11,13 @@ export default function FormBuilder(props) {
     useEffect(() => {
         fetch("/MasterPeerEval.txt")
             .then(response => response.text())
-            .then(data => setFormHtml(data))
+            .then(data => {
+                setFormHtml(data)
+                props.onChange({ target: { name: field.name, value: data } }, { name: field.name, value: data });
+            })
             .catch(error => console.error("Error fetching MasterPeerEval.txt", error));
     }, []);
+
 
     function openEditor() {
         setEditorOpen(true);
@@ -36,13 +40,13 @@ export default function FormBuilder(props) {
                 currentCode={formHtml}
                 onChange={handleChange}
             />
-            <Button  disabled={true} onClick={openEditor} floated={"right"}>
+            <Button disabled={true} onClick={openEditor} floated={"right"}>
                 Open Live Editor
             </Button>
             <Form.TextArea
                 placeholder={field.placeholder}
                 label={field.label}
-                name={props.title}
+                name={field.name}
                 value={formHtml}
                 style={{ minHeight: 200 }}
                 onChange={handleChange}
