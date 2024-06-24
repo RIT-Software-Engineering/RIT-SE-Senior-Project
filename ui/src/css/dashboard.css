@@ -13,7 +13,7 @@
     width: 100%;
     grid-auto-flow: column;
     grid-template-columns: minmax(200px, min-content) auto;
-    height: 500px;
+    max-height: 500px;
     overflow-y: scroll;
 }
 
@@ -35,12 +35,14 @@
     grid-column-start: 1;
     position: sticky;
     left: 0;
+    cursor: pointer;
 }
 
 .sidebar.header {
     border: none;
     padding-right: 5px;
     border-right: #000000 1px solid;
+    cursor: default;
 }
 
 .gantt-container {
