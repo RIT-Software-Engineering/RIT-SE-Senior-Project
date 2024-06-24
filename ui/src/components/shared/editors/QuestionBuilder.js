@@ -9,7 +9,7 @@ export default function QuestionBuilder(props) {
 
     useEffect(() => {
         setInhtml(props.currentCode);
-    }, [props.currentCode]);
+    }, [props.currentCode])
 
     function handleChange(editor, data, value) {
         setInhtml(value);
@@ -35,7 +35,7 @@ export default function QuestionBuilder(props) {
                     />
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <div dangerouslySetInnerHTML={{__html: inhtml}} />
+                    <div ></div>
                 </Grid.Column>
             </Grid>
 

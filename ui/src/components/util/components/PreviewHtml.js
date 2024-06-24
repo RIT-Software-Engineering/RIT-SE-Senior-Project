@@ -20,6 +20,7 @@ export default function PreviewHtml(props){
         [ACTION_TARGETS.admin]: "Admin",
     }
 
+
     function modalContent(props) {
         const isStudentAnnouncement = props.action.action_target === ACTION_TARGETS.student_announcement;
         const isCoachAnnouncement = props.action.action_target === ACTION_TARGETS.coach_announcement;
