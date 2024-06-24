@@ -84,7 +84,7 @@ VALUES
               <br />
               <br />
               <div>
-              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered students=''exampleStudents''/>
+              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered />
               </div>
 
               <div>

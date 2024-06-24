@@ -30,7 +30,10 @@ const parseHTML = (html, components,studentList) => {
             const componentKey = componentsLowerCase[node.name.toLowerCase()];
             if (!componentKey) return;
 
-            if (studentList){
+            // Note: Normal question feedbacks are for coach not particularly for adding students
+            // Only QuestionStudentFeedback should be used for student ones.
+            // QuestionStudentFeedback could be made to also allow anonymous questions.
+            if (studentList && componentKey !== "QuestionFeedback"){
                 node.attribs['students'] = studentList;
             }
 

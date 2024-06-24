@@ -22,7 +22,7 @@
               <br />
               <h2>Question Matrix Showcase</h2>
               <div>
-              <QuestionTable questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]'' students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionTable questions='["Cooperation and Attitude", "Quantity of Work", "Initiative"]'  />
               </div>
 
               <br />
@@ -30,24 +30,24 @@
               <div>
               <QuestionMoodRating
                   question="Dependability"
-                  students=''["Aiden", "Lucille", "Juliet", "Bryson"]''
-                  levels=''["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]''
-                  required=''true''
+                  levels='["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]'
+                  required='true'
               />
               </div>
               <br />
               <div>
-              <QuestionMoodRating question="Group Maintenance" students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionMoodRating question="Group Maintenance" />
               </div>
 
               <br />
               <br />
               <div>
-              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered />
+              <QuestionFeedback title="Feedback" questions='["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]' ordered />
               </div>
 
               <div>
-              <QuestionPeerFeedback questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]''  students=''["Aiden", "Lucille", "Juliet", "Bryson"]'' />
+              <QuestionPeerFeedback questions='["Cooperation and Attitude", "Quantity of Work", "Initiative"]'  />
               </div>
             </p>
           </form>
+

@@ -21,8 +21,8 @@ export const QuestionFeedback = ({
                                      title = "Feedback",
                                      questions = [""],
                                      ordered = false,
-                                     students ,
-                                     anon = false,
+                                     students = [""],
+                                     anon = true,
                                      required = false,
                                  }) => {
     const [feedback, setFeedback] = useState({});
@@ -82,7 +82,7 @@ export const QuestionFeedback = ({
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
 export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students, required}) => {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} anon="false" required={required}/>
+        <QuestionFeedback title={title} questions={questions} students={students} anon={false} required={required}/>
     )
 }
 
