@@ -34,10 +34,10 @@ export default function GanttChart(props) {
         // snap to today
     }
 
-    let cols = dateDiff(semesterStartDate, semesterEndDate);
+    let cols = dateDiff(semesterStartDate, semesterEndDate) + 1; // + 1 to account for left side panel column
 
     // curr for current ___ in the construction of the chart
-    let currDate = startCol.getDate();
+    let currDate = startCol.getDate() + 1; // + 1 to account for left side panel column
     let currMonth = startCol.getMonth();
     let currYear = startCol.getFullYear();
     let monthLength = daysInMonth(startCol.getMonth(), startCol.getFullYear());    
