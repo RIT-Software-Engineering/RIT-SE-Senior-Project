@@ -41,9 +41,10 @@ const parseHTML = (html, components,studentList) => {
     });
 };
 
-const ParsedInnerHTML = ({ html, components, studentsList }) => {
+const ParsedInnerHTML = ({ html, components, studentsList=["Student 1","Student 2","Student 3","Student 4"] }) => {
     return (
         <div >
+
             {parseHTML(html, components,studentsList)}
         </div>
     );

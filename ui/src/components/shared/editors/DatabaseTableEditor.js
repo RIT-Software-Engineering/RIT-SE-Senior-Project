@@ -186,6 +186,7 @@ export default function DatabaseTableEditor(props) {
                                 field={field}
                                 data={formData}
                                 onChange={handleChange}
+
                             >
                             </FormBuilder>
                         );
