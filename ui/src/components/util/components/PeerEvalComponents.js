@@ -17,14 +17,14 @@ const sentenceToCamelCase = (string = "") =>
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
-export const QuestionFeedback = ({
+export function QuestionFeedback({
                                      title = "Feedback",
                                      questions = [""],
                                      ordered = false,
                                      students = [""],
                                      anon = true,
                                      required = false,
-                                 }) => {
+                                 }) {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
     const hasQuestions = questions.length > 1 || questions[0] !== "";
@@ -80,7 +80,7 @@ export const QuestionFeedback = ({
 };
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, students, required}) => {
+export function QuestionPeerFeedback({title = "Individual Feedback", questions, students, required}) {
     return (
         <QuestionFeedback title={title} questions={questions} students={students} anon={false} required={required}/>
     )
@@ -89,7 +89,7 @@ export const QuestionPeerFeedback = ({title = "Individual Feedback", questions, 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 //TODO: Let user switch between 5 and 3 point scale
-export const QuestionTable = ({questions, students, scale = 5, required=false}) => {
+export function QuestionTable({questions, students, scale = 5, required = false}) {
     //TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -171,13 +171,12 @@ export const QuestionTable = ({questions, students, scale = 5, required=false}) 
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
-export const QuestionMoodRating = ({
+export function QuestionMoodRating({
                                        question,
-                                       students ,
+                                       students,
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
-                                       required=false
-                                   }) => {
-
+                                       required = false
+                                   }) {
     const [selections, setSelections] = useState({});
 
     const handleSelection = (student, rating) => {
