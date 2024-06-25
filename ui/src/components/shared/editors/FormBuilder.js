@@ -40,7 +40,7 @@ export default function FormBuilder(props) {
                 currentCode={formHtml}
                 onChange={handleChange}
             />
-            <Button disabled={true} onClick={openEditor} floated={"right"}>
+            <Button disabled={false} onClick={openEditor} floated={"right"}>
                 Open Live Editor
             </Button>
             <Form.TextArea

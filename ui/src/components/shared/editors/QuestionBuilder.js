@@ -3,7 +3,8 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import {Button, Grid, Modal} from "semantic-ui-react";
 import { QuestionComponentsMap} from "../../util/components/PeerEvalComponents";
 import ParsedInnerHTML from "../../util/components/ParsedInnerHtml";
-
+import {eclipse} from "@uiw/codemirror-theme-eclipse";
+import {html} from "@codemirror/lang-html";
 export default function QuestionBuilder(props) {
     const [inhtml, setInhtml] = useState("");
 
@@ -11,7 +12,7 @@ export default function QuestionBuilder(props) {
         setInhtml(props.currentCode);
     }, [props.currentCode])
 
-    function handleChange(editor, data, value) {
+    function handleChange(value, data) {
         setInhtml(value);
         props.onChange(value);
     }
@@ -26,16 +27,17 @@ export default function QuestionBuilder(props) {
             <Grid>
                 <Grid.Column width={8}>
                     <ReactCodeMirror
+                        theme={eclipse}
                         onChange={handleChange}
                         value={inhtml}
-                        options={{
-                            theme: "light",
-                            mode: "html"
-                        }}
+                        extensions={[html({autoCloseTags:true})]}
                     />
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <div ></div>
+                    {/*{ console.warn(inhtml) }*/}
+                    <div >
+                        <ParsedInnerHTML html={inhtml} components={QuestionComponentsMap} />
+                    </div>
                 </Grid.Column>
             </Grid>
 
