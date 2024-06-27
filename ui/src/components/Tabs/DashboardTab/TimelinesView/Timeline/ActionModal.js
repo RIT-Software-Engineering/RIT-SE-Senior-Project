@@ -130,6 +130,7 @@ export default function ActionModal(props) {
         if (form !== null && form !== undefined) {
 
             let body = new FormData();
+            const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
             body.append("action_template", props.action_id);
             // Note: A user could spoof this and submit actions for other projects...although idk what they could gain from doing that.
@@ -138,22 +139,56 @@ export default function ActionModal(props) {
             let formData = {};
             const formDataInputs = document.forms[0].elements;
 
+            const isRequiredAndEmpty = (input, errorsSetKey = null) =>
+                formDataInputs[input]?.required && (errorsSetKey !== null && !errorsSet.has(errorsSetKey) || errorsSetKey===null) && (
+                    (!formDataInputs[formDataInputs[input].name]?.value) ||
+                    (!formDataInputs[input]?.value) ||
+                    (formDataInputs[input]?.name.startsWith("Table") && formDataInputs[input]?.value === "0")
+                )
+
+
             let errors = [];
-            let radioErrorSet = new Set();
+            let errorsSet = new Set();
 
             for (let x = 0; x < formDataInputs.length; x++) {
+                if (isPeerEval) {
+                    const input = formDataInputs[x], inputName = formDataInputs[x].name,
+                        inputType = formDataInputs[x].type
+
+                    formData[inputName] = inputType === "radio" ?
+                        formDataInputs[inputName]?.value
+                        : String(input?.value);
+
+                    // Error Handling for Peer Evaluations
+                    const [questionType, questionName, studentName] = inputName.split("-")
+                    const questionSetKey = questionType + questionName
+                    const isEmpty = isRequiredAndEmpty(x, questionSetKey);
+
+                    if (questionType === "Table" && isEmpty) {
+                        errors.push(`'${camelCaseToSentence(questionName)}' column is required to be filled out.`);
+                        errorsSet.add(questionSetKey)
+                    } else if (questionType === "Feedback" && isEmpty) {
+                        if (studentName === "Anon") {
+                            errors.push(`'${camelCaseToSentence(questionName)}' feedback is required.`);
+                        } else {
+                            errors.push(`'${camelCaseToSentence(questionName)}' feedback is required for all students.`);
+                            errorsSet.add(questionSetKey)
+                        }
+                    } else if (questionType === "Mood" && isEmpty) {
+                        errors.push(`'${camelCaseToSentence(questionName)}' question is required to be answered.`);
+                        errorsSet.add(questionSetKey)
+                    }
+
+                    continue;
+                }
                 if (formDataInputs[x].type === "radio") {
-                    if (formDataInputs[x]?.required && !formDataInputs[formDataInputs[x].name]?.value && !radioErrorSet.has(formDataInputs[x].name)) {
+                    if (isRequiredAndEmpty(x, formDataInputs[x].name)) {
                         errors.push(`radio option selection "${formDataInputs[x].name}" is required`);
-                        radioErrorSet.add(formDataInputs[x].name)
+                        errorsSet.add(formDataInputs[x].name)
                     }
                     formData[formDataInputs[x].name] = formDataInputs[formDataInputs[x].name]?.value;
-                }
-                else {
-                    if (formDataInputs[x]?.required && !formDataInputs[x]?.value) {
-                        errors.push(`'${formDataInputs[x].name}' can not be empty`);
-                    }
-                    if(formDataInputs[x]?.required && formDataInputs[x]?.name.startsWith("Table") && formDataInputs[x]?.value === "0"){
+                } else {
+                    if (isRequiredAndEmpty(x)) {
                         errors.push(`'${formDataInputs[x].name}' can not be empty`);
                     }
                     formData[formDataInputs[x].name] = String(formDataInputs[x]?.value);
@@ -172,7 +207,7 @@ export default function ActionModal(props) {
             }
 
             // TODO: If the action is a peer evaluation, we need to translate the form data
-            if (props.action_target === ACTION_TARGETS.peer_evaluation) {
+            if (isPeerEval) {
                 formData = translatePeerEvalData(formData);
             }
 
@@ -256,8 +291,6 @@ export default function ActionModal(props) {
 
     if (props.action_target===ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
     return (
-        // HACK: Add property for Modal to not close when clicking outside of it
-        // Property is called closeOnDimmerClick
         <Modal
             closeOnDimmerClick={false}
             className={"sticky"}
