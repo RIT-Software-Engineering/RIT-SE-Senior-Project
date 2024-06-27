@@ -57,7 +57,6 @@ export default function DatabaseTableEditor(props) {
     };
 
     const handleSubmit = async function (e) {
-
         const dataToSubmit = !!props.preSubmit ? props.preSubmit(formData) : formData;
 
         let body = new FormData();
@@ -186,7 +185,7 @@ export default function DatabaseTableEditor(props) {
                                 field={field}
                                 data={formData}
                                 onChange={handleChange}
-
+                                value={formData[field.name]}
                             >
                             </FormBuilder>
                         );
