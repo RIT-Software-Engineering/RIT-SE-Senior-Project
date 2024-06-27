@@ -22,7 +22,6 @@ export function QuestionFeedback({
                                      questions = [""],
                                      ordered = false,
                                      students = [""],
-                                     anon = true,
                                      required = false,
                                  }) {
     const [feedback, setFeedback] = useState({});
@@ -47,6 +46,10 @@ export function QuestionFeedback({
                 questions.map((question, index) => (
                     <div key={index} style={{marginBottom: '30px'}}>
                         {
+                            required &&
+                            <Header content="*" color={'red'} floated='left'/>
+                        }
+                        {
                             hasQuestions &&
                             <Header
                                 textAlign='left'
@@ -61,7 +64,7 @@ export function QuestionFeedback({
                                 <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
-                                        name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents?student:"Anon"}`}
+                                        name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`}
                                         placeholder='Talk about your experience'
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
@@ -82,19 +85,19 @@ export function QuestionFeedback({
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
 export function QuestionPeerFeedback({title = "Individual Feedback", questions, students, required}) {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} anon={false} required={required}/>
+        <QuestionFeedback title={title} questions={questions} students={students} required={required}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
-//TODO: Let user switch between 5 and 3 point scale
-export function QuestionTable({questions, students, scale = 5, required = false}) {
-    //TODO: Limit max questions to 5
+// TODO: Let user switch between 5 and 3 point scale
+export function QuestionTable({questions, students, scale = 5, required = false, icon = true}) {
+    // TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
 
-    //TODO: Limit scale to 5 or 3
+    // TODO: Limit scale to 5 or 3
     assert(scale === 5 || scale === 3, `Scale must be either 5 or 3, but got ${scale}`)
 
     const questionRatings = {};
@@ -115,6 +118,10 @@ export function QuestionTable({questions, students, scale = 5, required = false}
 
     return (
         <div>
+            {
+                required &&
+                <Header content="*" color={'red'} floated='left'/>
+            }
             <Table basic='very' celled collapsing unstackable>
                 <TableHeader>
                     <TableRow>
@@ -125,7 +132,7 @@ export function QuestionTable({questions, students, scale = 5, required = false}
                                 wordWrap: 'break-word',
                                 textAlign: 'center',
                                 verticalAlign: 'bottom'
-                        }} key={question}>
+                            }} key={question}>
                                 <Header as='h4'> {question} </Header>
                             </TableHeaderCell>
                         ))}
@@ -147,7 +154,7 @@ export function QuestionTable({questions, students, scale = 5, required = false}
                                                 maxRating={scale}
                                                 defaultRating={selections[question][student] || ""}
                                                 clearable
-                                                // icon='star'
+                                                icon={icon}
                                                 onRate={(_, data) => handleRate(student, question, data.rating)}
                                             />
                                             <input
@@ -189,6 +196,10 @@ export function QuestionMoodRating({
 
     return (
         <div>
+            {
+                required &&
+                <Header content="*" color={'red'} floated='left'/>
+            }
             <Header as='h2' content={question} textAlign='left' dividing/>
             <br/>
             <Grid divided='vertically'>
