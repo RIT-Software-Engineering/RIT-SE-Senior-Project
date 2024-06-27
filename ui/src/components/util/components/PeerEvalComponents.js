@@ -65,7 +65,7 @@ export function QuestionFeedback({
                                     <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                     <TextArea
                                         name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`}
-                                        placeholder='Talk about your experience'
+                                        placeholder={`${student}${hasStudents?" - ":""}${question}`}
                                         value={!!feedback[question] ? feedback[question][student] : ''}
                                         onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
                                         required={required}
