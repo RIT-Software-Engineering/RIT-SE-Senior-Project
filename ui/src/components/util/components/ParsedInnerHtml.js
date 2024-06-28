@@ -18,7 +18,7 @@ const parseAttributes = (attribs) => {
 };
 
 
-const parseHTML = (html, components,studentList) => {
+const parseHTML = (html, components,studentList, errorFields) => {
     const componentsLowerCase = {};
     Object.keys(components).forEach(key => {
         componentsLowerCase[key.toLowerCase()] = key;
@@ -37,6 +37,7 @@ const parseHTML = (html, components,studentList) => {
                 node.attribs['students'] = studentList;
             }
 
+            node.attribs['errorFields'] = errorFields
 
             const Component = components[componentKey];
             return <Component {...parseAttributes(node.attribs)} />;
@@ -44,14 +45,18 @@ const parseHTML = (html, components,studentList) => {
     });
 };
 
-const ParsedInnerHTML = ({ html, components, studentsList=["Student 1","Student 2","Student 3","Student 4"] }) => {
+function ParsedInnerHTML({
+                             html,
+                             components,
+                             studentsList = ["Student 1", "Student 2", "Student 3", "Student 4"],
+                             errorFields = []
+                         }) {
     return (
-        <div >
-
-            {parseHTML(html, components,studentsList)}
+        <div>
+            {parseHTML(html, components, studentsList, errorFields)}
         </div>
     );
-};
+}
 
 ParsedInnerHTML.propTypes = {
     html: PropTypes.string.isRequired,

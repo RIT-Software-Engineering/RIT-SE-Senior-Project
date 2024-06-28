@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
-import {Button, Form, Input, Loader, Message, MessageHeader, MessageList, Modal} from "semantic-ui-react";
+import {Button, Form, Icon, Input, Loader, Message, MessageHeader, MessageList, Modal} from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../../util/functions/constants";
 import {SecureFetch} from "../../../../util/functions/secureFetch";
 import {formatDateTime, humanFileSize} from "../../../../util/functions/utils";
@@ -9,7 +9,7 @@ import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import {QuestionComponentsMap} from "../../../../util/components/PeerEvalComponents";
 
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false };
+const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", SUBMITTING: "submitting", CLOSED: false};
 const camelCaseToSentence = (string = "") =>
     string.replaceAll(
         /([A-Z])/g,
@@ -17,16 +17,19 @@ const camelCaseToSentence = (string = "") =>
     ).trimStart()
 
 /**
-*This file is only used in ToolTips, it should be removed completely
-*/
+ *This file is only used in ToolTips, it should be removed completely
+ */
 export default function ActionModal(props) {
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const [open, setOpen] = React.useState(false);
     const [submissionModalOpen, setSubmissionModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [submissionModalResponse, setSubmissionModalResponse] = useState("We were unable to receive your submission.");
     const [errors, setErrors] = useState([])
+    const [errorFields, setErrorFields] = useState(new Set())
     const filesRef = useRef();
     const [studentOptions, setStudentOptions] = useState([]);
+
+    const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
     const fetchStudentNames = () => {
         if (user.role === USERTYPES.STUDENT) {
@@ -86,19 +89,19 @@ export default function ActionModal(props) {
                 return {
                     header: "Success",
                     content: submissionModalResponse,
-                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
+                    actions: [{header: "Success!", content: "Close", positive: true, key: 0}],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content: submissionModalResponse,
-                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
+                    actions: [{header: "There was an issue", content: "Cancel", positive: true, key: 0}],
                 };
             case MODAL_STATUS.SUBMITTING:
                 return {
                     header: "Submitting...",
                     content: submissionModalResponse,
-                    actions: [{ header: "Submitting the action", content: "Cancel", positive: true, key: 0 }],
+                    actions: [{header: "Submitting the action", content: "Cancel", positive: true, key: 0}],
                 };
             default:
                 return;
@@ -130,7 +133,6 @@ export default function ActionModal(props) {
         if (form !== null && form !== undefined) {
 
             let body = new FormData();
-            const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
             body.append("action_template", props.action_id);
             // Note: A user could spoof this and submit actions for other projects...although idk what they could gain from doing that.
@@ -139,16 +141,17 @@ export default function ActionModal(props) {
             let formData = {};
             const formDataInputs = document.forms[0].elements;
 
-            const isRequiredAndEmpty = (input, errorsSetKey = null) =>
-                formDataInputs[input]?.required && (errorsSetKey !== null && !errorsSet.has(errorsSetKey) || errorsSetKey===null) && (
-                    (!formDataInputs[formDataInputs[input].name]?.value) ||
+            const isRequiredAndEmpty = (input) =>
+                formDataInputs[input]?.required & (
                     (!formDataInputs[input]?.value) ||
+                    (!formDataInputs[formDataInputs[input].name]?.value) ||
                     (formDataInputs[input]?.name.startsWith("Table") && formDataInputs[input]?.value === "0")
                 )
 
 
             let errors = [];
             let errorsSet = new Set();
+            let errorFields = new Set();
 
             for (let x = 0; x < formDataInputs.length; x++) {
                 if (isPeerEval) {
@@ -159,22 +162,40 @@ export default function ActionModal(props) {
                         formDataInputs[inputName]?.value
                         : String(input?.value);
 
-                    // Error Handling for Peer Evaluations
+
+                    // Error Handling
                     const [questionType, questionName, studentName] = inputName.split("-")
                     const questionSetKey = questionType + questionName
-                    const isEmpty = isRequiredAndEmpty(x, questionSetKey);
+                    const isEmpty = isRequiredAndEmpty(x);
+                    const hasDoneError = errorsSet.has(questionSetKey)
 
-                    if (questionType === "Table" && isEmpty) {
+                    if (!isEmpty) continue;
+
+                    // Push errors to the actual components
+                    switch (questionType) {
+                        case "Feedback":
+                        case "Mood":
+                            errorFields.add(inputName)
+                            break;
+                        case "Table":
+                            errorFields.add(questionName)
+                            break;
+                    }
+
+                    if (hasDoneError) continue;
+
+                    // Push errors to the error list at bottom of page
+                    if (questionType === "Table") {
                         errors.push(`'${camelCaseToSentence(questionName)}' column is required to be filled out.`);
                         errorsSet.add(questionSetKey)
-                    } else if (questionType === "Feedback" && isEmpty) {
+                    } else if (questionType === "Feedback") {
                         if (studentName === "Anon") {
                             errors.push(`'${camelCaseToSentence(questionName)}' feedback is required.`);
                         } else {
                             errors.push(`'${camelCaseToSentence(questionName)}' feedback is required for all students.`);
                             errorsSet.add(questionSetKey)
                         }
-                    } else if (questionType === "Mood" && isEmpty) {
+                    } else if (questionType === "Mood") {
                         errors.push(`'${camelCaseToSentence(questionName)}' question is required to be answered.`);
                         errorsSet.add(questionSetKey)
                     }
@@ -182,7 +203,7 @@ export default function ActionModal(props) {
                     continue;
                 }
                 if (formDataInputs[x].type === "radio") {
-                    if (isRequiredAndEmpty(x, formDataInputs[x].name)) {
+                    if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
                         errors.push(`radio option selection "${formDataInputs[x].name}" is required`);
                         errorsSet.add(formDataInputs[x].name)
                     }
@@ -203,6 +224,7 @@ export default function ActionModal(props) {
 
             if (errors.length > 0) {
                 setErrors(errors);
+                setErrorFields(errorFields);
                 return;
             }
 
@@ -219,7 +241,8 @@ export default function ActionModal(props) {
 
             setSubmissionModalResponse(
                 <div className={"content"}>
-                    <Loader className={"workaround"} indeterminate active inverted inline={'centered'}>Uploading Files</Loader>
+                    <Loader className={"workaround"} indeterminate active inverted inline={'centered'}>Uploading
+                        Files</Loader>
                 </div>
             );
             setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
@@ -254,7 +277,7 @@ export default function ActionModal(props) {
                 <label className="file-submission-required">File Submission (Accepted: {fileTypes.split(",").join(", ")})
                     (Max size of each file: {humanFileSize((fileSize || DEFAULT_UPLOAD_LIMIT), false, 0)})
                 </label>
-                <Input fluid required ref={filesRef} type="file" accept={fileTypes} multiple />
+                <Input fluid required ref={filesRef} type="file" accept={fileTypes} multiple/>
             </Form.Field>
         </Form>;
     }
@@ -283,62 +306,68 @@ export default function ActionModal(props) {
             case ACTION_TARGETS.individual:
                 return user.role === USERTYPES.STUDENT ? submitButton : " Individual Actions are Available Only to Students";
             case ACTION_TARGETS.peer_evaluation:
-                return user.role !== USERTYPES.COACH ?  submitButton : "Available when all Students Submit";
+                return user.role !== USERTYPES.COACH ? submitButton : "Available when all Students Submit";
             default:
                 return submitButton;
         }
     }
 
-    if (props.action_target===ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
-    return (
-        <Modal
-            closeOnDimmerClick={false}
-            className={"sticky"}
-            onClose={() => {
-                setOpen(false);
-                props.isOpenCallback(false);
-            }}
-            onOpen={() => {
-                setOpen(true);
-                props.isOpenCallback(true);
+    if (props.action_target === ACTION_TARGETS.peer_evaluation && user.role === USERTYPES.COACH) {
+        return (
+            <Modal
+                closeOnDimmerClick={false}
+                className={"sticky"}
+                onClose={() => {
+                    setOpen(false);
+                    props.isOpenCallback(false);
+                }}
+                onOpen={() => {
+                    setOpen(true);
+                    props.isOpenCallback(true);
 
-            }}
-            open={open}
-            trigger={props.trigger ||
-                <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
-        >
-            <Modal.Header>{props.action_title}</Modal.Header>
-            <Modal.Content>
-                <Modal.Description>
-                    {props.preActionContent}
-                    <br/>
-                    <div className="content">
-                        <CoachFeedBack
-                        team = {props.projectId}
-                        />
-                        <h4>Errors:</h4>
-                        <ul>
-                            {errors.map(err => <li key={err}>{err}</li>)}
-                        </ul>
-                    </div>
-                </Modal.Description >
-                <Modal open={!!submissionModalOpen} {...generateModalFields()}
-                       onClose={() => closeSubmissionModal()}/>
-            </Modal.Content>
-            <Modal.Actions>
-                <Button
-                    onClick={() => {
-                        onActionCancel();
-                        setOpen(false);
-                        props.isOpenCallback(false);
-                    }}
-                >
-                    Cancel
-                </Button>
-                {renderSubmitButton()}
-            </Modal.Actions>
-        </Modal>
-    );
+                }}
+                open={open}
+                trigger={props.trigger ||
+                    <Button ref={props.ref} fluid className="view-action-button">View Action</Button>}
+            >
+                <Modal.Header>{props.action_title}</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        {props.preActionContent}
+                        <br/>
+                        <div className="content">
+                            <CoachFeedBack
+                                team={props.projectId}
+                            />
+                            <Message error>
+                                <MessageHeader>
+                                    <Icon name="warning circle"/>
+                                    {" "}
+                                    Errors:
+                                </MessageHeader>
+                                <MessageList>
+                                    {errors.map(err => <li key={err}>{err}</li>)}
+                                </MessageList>
+                            </Message>
+                        </div>
+                    </Modal.Description>
+                    <Modal open={!!submissionModalOpen} {...generateModalFields()}
+                           onClose={() => closeSubmissionModal()}/>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button
+                        onClick={() => {
+                            onActionCancel();
+                            setOpen(false);
+                            props.isOpenCallback(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    {renderSubmitButton()}
+                </Modal.Actions>
+            </Modal>
+        );
     } else {
         return (
             // TODO: Add property for Modal to not close when clicking outside of it
@@ -367,22 +396,23 @@ export default function ActionModal(props) {
                         <br/>
                         <div className="content">
 
-                        {
-                          props.action_target === ACTION_TARGETS.peer_evaluation
-                            ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap} studentsList={studentOptions} />
-                            : <InnerHTML html={props.page_html} />
-                        }
+                            {
+                                isPeerEval
+                                    ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap}
+                                                       studentsList={studentOptions} errorFields={errorFields}/>
+                                    : <InnerHTML html={props.page_html}/>
+                            }
                         </div>
                         <br/>
                         {fileUpload(props.file_types, props.file_size)}
                         {errors.length > 0 && <div className="submission-errors">
                             <br/>
-                            {/*<h4>Errors:</h4>*/}
-                            {/*<ul>*/}
-                            {/*    {errors.map(err => <li key={err}>{err}</li>)}*/}
-                            {/*</ul>*/}
                             <Message error>
-                                <MessageHeader>Errors:</MessageHeader>
+                                <MessageHeader>
+                                    <Icon name="warning circle"/>
+                                    {" "}
+                                    Errors:
+                                </MessageHeader>
                                 <MessageList>
                                     {errors.map(err => <li key={err}>{err}</li>)}
                                 </MessageList>

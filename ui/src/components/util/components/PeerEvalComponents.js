@@ -1,8 +1,10 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import {
+    FormField,
+    FormInput,
     Grid, GridColumn, GridRow,
-    Header, Radio,
+    Header, HeaderContent, Icon, Label, Radio,
     Rating,
     Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
     TextArea
@@ -23,6 +25,7 @@ export function QuestionFeedback({
                                      ordered = false,
                                      students = [""],
                                      required = false,
+                                     errorFields = new Set(),
                                  }) {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
@@ -46,33 +49,40 @@ export function QuestionFeedback({
                 questions.map((question, index) => (
                     <div key={index} style={{marginBottom: '30px'}}>
                         {
-                            required &&
-                            <Header content="*" color={'red'} floated='left'/>
-                        }
-                        {
                             hasQuestions &&
                             <Header
                                 textAlign='left'
                                 as='h3'
-                                content={ordered ? `${index + 1}. ${question}` : question}
                                 dividing={hasStudents}
                                 style={{marginBottom: '30px'}}
-                            />
+                            >
+                                {ordered ? `${index + 1}. ${question}` : question}
+                                {
+                                    required &&
+                                    <Header content="*" color={'red'} floated='left'/>
+                                }
+                            </Header>
                         }
                         {
-                            students.map((student, students_index) => (
-                                <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
-                                    <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
-                                    <TextArea
-                                        name={`Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`}
-                                        placeholder={`${student}${hasStudents?" - ":""}${question}`}
-                                        value={!!feedback[question] ? feedback[question][student] : ''}
-                                        onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
-                                        required={required}
-                                    />
-                                    <br/>
-                                </div>
-                            ))
+                            students.map((student, students_index) => {
+                                const name = `Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`;
+                                const isErrored = errorFields.has(name);
+                                return (
+                                    <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
+                                        <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
+                                        <FormInput
+                                            name={name}
+                                            placeholder={`${student}${hasStudents ? " - " : ""}${question}`}
+                                            value={!!feedback[question] ? feedback[question][student] : ''}
+                                            onChange={(e) => handleFeedbackChange(question, student, e.target.value)}
+                                            required={required}
+                                            error={isErrored}
+                                            control={TextArea}
+                                        />
+                                        <br/>
+                                    </div>
+                                )
+                            })
                         }
 
                     </div>
@@ -83,16 +93,16 @@ export function QuestionFeedback({
 };
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export function QuestionPeerFeedback({title = "Individual Feedback", questions, students, required}) {
+export function QuestionPeerFeedback({title = "Individual Feedback", questions, students, required, errorFields}) {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} required={required}/>
+        <QuestionFeedback title={title} questions={questions} students={students} required={required} errorFields={errorFields}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 // TODO: Let user switch between 5 and 3 point scale
-export function QuestionTable({questions, students, scale = 5, required = false, icon = true}) {
+export function QuestionTable({questions, students, scale = 5, required = false, icon = true, errorFields = new Set()}) {
     // TODO: Limit max questions to 5
     const MAX_QUESTIONS = 5;
     assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -120,22 +130,34 @@ export function QuestionTable({questions, students, scale = 5, required = false,
         <div>
             {
                 required &&
-                <Header content="*" color={'red'} floated='left'/>
+                <Icon size={'small'} fitted content="*" color={'red'} floated='left' name={'asterisk'}/>
             }
             <Table basic='very' celled collapsing unstackable>
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell/>
-                        {questions.map(question => (
-                            <TableHeaderCell style={{
-                                width: pixelWidth + "px",
-                                wordWrap: 'break-word',
-                                textAlign: 'center',
-                                verticalAlign: 'bottom'
-                            }} key={question}>
-                                <Header as='h4'> {question} </Header>
-                            </TableHeaderCell>
-                        ))}
+                        {questions.map(question => {
+                            const name = `${sentenceToCamelCase(question)}`;
+                            const isErrored = errorFields.has(name);
+                            return (
+                                <TableHeaderCell collapsing style={{
+                                    width: pixelWidth + "px",
+                                    wordWrap: 'break-word',
+                                    textAlign: 'center',
+                                    verticalAlign: 'bottom'
+                                }} key={question}>
+                                    <Header as={'h4'}>
+                                        <HeaderContent as={isErrored ? 'i' : null}>
+                                            {
+                                                isErrored && <Icon fitted name={'warning circle'} color={'red'}/>
+                                            }
+                                            {" "}
+                                            {question}
+                                        </HeaderContent>
+                                    </Header>
+                                </TableHeaderCell>
+                            )
+                        })}
                     </TableRow>
                 </TableHeader>
 
@@ -182,7 +204,8 @@ export function QuestionMoodRating({
                                        question,
                                        students,
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
-                                       required = false
+                                       required = false,
+                                       errorFields = new Set(),
                                    }) {
     const [selections, setSelections] = useState({});
 
@@ -196,35 +219,47 @@ export function QuestionMoodRating({
 
     return (
         <div>
-            {
-                required &&
-                <Header content="*" color={'red'} floated='left'/>
-            }
-            <Header as='h2' content={question} textAlign='left' dividing/>
+            <Header as='h2' content={question} textAlign='left' dividing>
+                {question}
+                {
+                    required &&
+                    <Header content="*" color={'red'} floated='left'/>
+                }
+            </Header>
             <br/>
             <Grid divided='vertically'>
-                {students.map(student => (
-                    <GridRow key={student} columns={numColumns}>
-                        <GridColumn key={`col-${student}`} style={{textAlign: 'left'}}>
-                            <Header as='h3' content={student}/>
-                        </GridColumn>
-                        {
-                            levels.map((level, index) => (
-                                <GridColumn key={`col-${student}-${index}`}
-                                            style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
-                                    <Radio style={{margin: '8px auto'}}
-                                           name={`Mood-${sentenceToCamelCase(question)}-${student}`}
-                                           value={index}
-                                           checked={selections[student] === index}
-                                           onChange={() => handleSelection(student, index)}
-                                           required={required}
-                                    />
-                                    {level}
-                                </GridColumn>
-                            ))
-                        }
-                    </GridRow>
-                ))}
+                {students.map(student => {
+                    const name = `Mood-${sentenceToCamelCase(question)}-${student}`
+                    const isErrored = errorFields.has(name);
+                    return (
+                        <GridRow key={student} columns={numColumns}>
+                            <GridColumn key={`col-${student}`} style={{textAlign: 'left'}}>
+                                <Header as={'h3'}>
+                                    {
+                                        isErrored && <Icon size='tiny' name={'exclamation circle'} color={'red'}/>
+                                    }
+                                    <HeaderContent as={isErrored?'i':null} content={student}/>
+                                </Header>
+                            </GridColumn>
+                            {
+                                levels.map((level, index) => (
+                                    <GridColumn key={`col-${student}-${index}`}
+                                                style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
+                                        <Radio
+                                            style={{margin: '8px auto'}}
+                                            name={`Mood-${sentenceToCamelCase(question)}-${student}`}
+                                            value={index}
+                                            checked={selections[student] === index}
+                                            onChange={() => handleSelection(student, index)}
+                                            required={required}
+                                        />
+                                        {level}
+                                    </GridColumn>
+                                ))
+                            }
+                        </GridRow>
+                    )
+                })}
             </Grid>
         </div>
     );
