@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Label, Modal } from "semantic-ui-react";
-import { SecureFetch } from "../../util/functions/secureFetch";
+import {Dropdown, Header, Label, Modal} from "semantic-ui-react";
+import {SecureFetch} from "../../util/functions/secureFetch";
 import PhoneInput from 'react-phone-number-input/input'
 import us from 'react-phone-number-input/locale/en'
-import { Dropdown as SemanticDropdown } from "semantic-ui-react";
+import {Dropdown as SemanticDropdown} from "semantic-ui-react";
 import FormBuilder from "./FormBuilder";
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+import ReactCodeMirror, {oneDark, oneDarkHighlightStyle} from "@uiw/react-codemirror";
+import {html} from "@codemirror/lang-html";
+import {eclipseInit} from "@uiw/codemirror-theme-eclipse";
 
+const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
+
+const modifiedEclipse = eclipseInit({settings: {caret: "#000000"}})
 
 export default function DatabaseTableEditor(props) {
     let initialState = props.initialState;
@@ -30,13 +35,13 @@ export default function DatabaseTableEditor(props) {
                 return {
                     header: "Success",
                     content: submissionModalMessages["SUCCESS"],
-                    actions: [{ header: "Success!", content: "Close", positive: true, key: 0 }],
+                    actions: [{header: "Success!", content: "Close", positive: true, key: 0}],
                 };
             case MODAL_STATUS.FAIL:
                 return {
                     header: "There was an issue...",
                     content: submissionModalMessages["FAIL"],
-                    actions: [{ header: "There was an issue", content: "Cancel", positive: true, key: 0 }],
+                    actions: [{header: "There was an issue", content: "Cancel", positive: true, key: 0}],
                 };
             default:
                 return;
@@ -57,13 +62,12 @@ export default function DatabaseTableEditor(props) {
     };
 
     const handleSubmit = async function (e) {
-
         const dataToSubmit = !!props.preSubmit ? props.preSubmit(formData) : formData;
 
         let body = new FormData();
 
-        if("changed_fields" in dataToSubmit){
-            if(typeof dataToSubmit["changed_fields"] === 'object'){
+        if ("changed_fields" in dataToSubmit) {
+            if (typeof dataToSubmit["changed_fields"] === 'object') {
                 dataToSubmit["changed_fields"] = JSON.stringify(dataToSubmit["changed_fields"])
             }
         }
@@ -81,7 +85,7 @@ export default function DatabaseTableEditor(props) {
                 } else {
                     setSubmissionModalOpen(MODAL_STATUS.FAIL);
                 }
-                if(props.callback){
+                if (props.callback) {
                     props.callback()
                 }
             })
@@ -91,10 +95,9 @@ export default function DatabaseTableEditor(props) {
     };
 
 
-
     // PLANNING: Replicate this idea in the student view of editing
     // So that the fourm saves the data in the same way as the admin view when closed and reoened
-    const handleChange = (e, { name, value, checked, isActiveField }) => {
+    const handleChange = (e, {name, value, checked, isActiveField}) => {
         if (props.viewOnly) {
             return;
         }
@@ -155,7 +158,7 @@ export default function DatabaseTableEditor(props) {
                             <label>{field.label}</label>
                             <PhoneInput
                                 onChange={(value) => {
-                                    handleChange(null, {name : field.name, value : value})
+                                    handleChange(null, {name: field.name, value: value})
                                 }}
                                 value={formData[field.name]}
                                 labels={us}
@@ -186,20 +189,27 @@ export default function DatabaseTableEditor(props) {
                                 field={field}
                                 data={formData}
                                 onChange={handleChange}
-                            >
-                            </FormBuilder>
+                                value={formData[field.name]}
+                            />
                         );
                     } else {
                         fieldComponents.push(
                             <Form.Field key={field.name}>
+                                <label>{field.label}</label>
                                 <Form.TextArea
-                                    placeholder={field.placeholder}
                                     label={field.label}
-                                    name={field.name}
+                                    as={ReactCodeMirror}
+                                    theme={modifiedEclipse}
+                                    onChange={(value) => handleChange(null, {name: field.name, value: value})}
                                     value={formData[field.name]}
-                                    style={{ minHeight: 200 }}
-                                    onChange={handleChange}
-                                    disabled={field.disabled}
+                                    maxHeight={"700px"}
+                                    extensions={[html({autoCloseTags: true})]}
+                                    style={{
+                                        border: "1px solid #d4d4d5",
+                                        borderRadius: "5px",
+                                        padding: "10px",
+                                        minHeight: "200px",
+                                    }}
                                 />
                             </Form.Field>
                         );
@@ -242,7 +252,7 @@ export default function DatabaseTableEditor(props) {
                             <label>{field.label}</label>
                             {formData[field["name"]].length > 0 ? formData[field["name"]].map(file => {
                                 return <React.Fragment key={file.link}>
-                                    <a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br />
+                                    <a target="_blank" rel="noreferrer" href={file.link}>{file.title}</a><br/>
                                 </React.Fragment>
                             }) : <p>No Attachments</p>}
                         </Form.Field>
@@ -288,12 +298,18 @@ export default function DatabaseTableEditor(props) {
                 case "activeCheckbox":
                     fieldComponents.push(
                         <Form.Field key={field["name"]}>
-                            {formData[field["name"]] !== "" && <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
+                            {formData[field["name"]] !== "" &&
+                                <Label>Deactivated at: {formData[field["name"]] || "now"}</Label>}
                             <Form.Checkbox
                                 label={field["label"]}
                                 checked={formData[field["name"]] === ""}
                                 name={field["name"]}
-                                onChange={(e, { name, value, checked }) => handleChange(e, { name, value, checked, isActiveField: true })}
+                                onChange={(e, {name, value, checked}) => handleChange(e, {
+                                    name,
+                                    value,
+                                    checked,
+                                    isActiveField: true
+                                })}
                                 disabled={field.disabled}
                             />
                         </Form.Field>
@@ -324,8 +340,8 @@ export default function DatabaseTableEditor(props) {
             },
         ]
     }
-    let trigger = <Button icon={props.button} />;
-    if(props.trigger){
+    let trigger = <Button icon={props.button}/>;
+    if (props.trigger) {
         trigger = props.trigger
     }
 
@@ -335,7 +351,8 @@ export default function DatabaseTableEditor(props) {
                 className={"sticky"}
                 trigger={trigger}
                 header={props.header}
-                content={{ content:
+                content={{
+                    content:
                         <>
                             <Form>
                                 {fieldComponents}
@@ -349,7 +366,7 @@ export default function DatabaseTableEditor(props) {
                 className={"sticky"}
                 size="tiny"
                 open={!!submissionModalOpen} {...generateModalFields()}
-                onClose={() => closeSubmissionModal()} />
+                onClose={() => closeSubmissionModal()}/>
         </>
     );
 }
