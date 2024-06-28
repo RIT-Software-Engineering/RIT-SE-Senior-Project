@@ -3,9 +3,7 @@ import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import QuestionBuilder from "./QuestionBuilder";
 import {Grid, Header, Label} from "semantic-ui-react";
-import ReactCodeMirror from "@uiw/react-codemirror";
-import {eclipse} from "@uiw/codemirror-theme-eclipse";
-import {html} from "@codemirror/lang-html";
+import HTMLEditor from "../../util/components/HTMLEditor";
 
 export default function FormBuilder(props) {
     const field = props.field;
@@ -41,6 +39,7 @@ export default function FormBuilder(props) {
     }
 
     return (
+
         <Form.Field>
             <Grid>
                 <Grid.Row>
@@ -51,27 +50,19 @@ export default function FormBuilder(props) {
                         onChange={handleChange}
                     />
                     <Grid.Column width={8}>
-                        <Header as="h4">Page html</Header>
+                        <Header as="h5">Page html</Header>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Button disabled={false} onClick={openEditor} floated={"right"}>
-                            Open Live Editor
+                            Open Question Builder
                         </Button>
                     </Grid.Column>
                 </Grid.Row>
-
-                <Grid.Row>
+                <Grid.Row style={{marginTop:"-35px"}}>
                     <Grid.Column>
-                        <ReactCodeMirror
-                            theme={eclipse}
-                            onChange={handleChange}
-                            value={formHtml}
-                            maxWidth={"200"}
-                            extensions={[html({autoCloseTags: true})]}
-                        />
+                        <HTMLEditor field={field} formData={props.data} handleChange={handleChange}/>
                     </Grid.Column>
                 </Grid.Row>
-
             </Grid>
         </Form.Field>
     );

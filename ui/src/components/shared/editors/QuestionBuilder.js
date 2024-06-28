@@ -3,8 +3,8 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import {Button, Grid, Modal } from "semantic-ui-react";
 import { QuestionComponentsMap } from "../../util/components/PeerEvalComponents";
 import ParsedInnerHTML from "../../util/components/ParsedInnerHtml";
-import {eclipse} from "@uiw/codemirror-theme-eclipse";
 import {html} from "@codemirror/lang-html";
+import {eclipse} from "@uiw/codemirror-theme-eclipse";
 export default function QuestionBuilder(props) {
     const [inhtml, setInhtml] = useState("");
 
@@ -23,23 +23,10 @@ export default function QuestionBuilder(props) {
             open={props.isOpen}
             className={"sticky"}
         >
-            <Modal.Header closeOnDimmerClick={false}> Live Form Builder</Modal.Header>
+            <Modal.Header closeOnDimmerClick={false}> Question Builder</Modal.Header>
             <Grid>
-                <Grid.Column width={8}>
-                    <ReactCodeMirror
-                        theme={eclipse}
-                        onChange={handleChange}
-                        value={inhtml}
-                        extensions={[html({autoCloseTags:true})]}
-                    />
-                </Grid.Column>
-                <Grid.Column width={8}>
-                    <div >
-                        <ParsedInnerHTML html={inhtml} components={QuestionComponentsMap}/>
-                    </div>
-                </Grid.Column>
-            </Grid>
 
+            </Grid>
             <Modal.Actions>
                 <Button onClick={props.onClose}>Close</Button>
             </Modal.Actions>
