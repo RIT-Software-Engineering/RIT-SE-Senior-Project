@@ -32,6 +32,7 @@ function ToolTip(props) {
             .then(actionLogs => {
                 setSubmissions(actionLogs);
                 setLoadingSubmissions(false)
+
             })
             .catch(err => {
                 console.error("FAILED TO GET SUBMISSIONS: ", err)
@@ -84,10 +85,14 @@ function ToolTip(props) {
               * Not sure if it makes more sense to check action.state or action.start_date.
               * However, action.state is based off of server time whereas if we parse action.start_date, 
               * we need to deal with parsing with time zones and all of that.
-              */}
+              */
+
+            }
+
             <ActionModal
                 key={props.action?.action_id}
                 {...props.action}
+
                 isOpenCallback={isOpenCallback}
                 projectId={props.projectId}
                 preActionContent={metadata(true)}

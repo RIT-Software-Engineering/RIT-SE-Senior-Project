@@ -254,7 +254,8 @@ export default function ActionModal(props) {
         }
     }
 
-    if (props.action_target===ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH){
+
+    if (props.action_target===ACTION_TARGETS.peer_evaluation && user.role===USERTYPES.COACH) {
     return (
         // HACK: Add property for Modal to not close when clicking outside of it
         // Property is called closeOnDimmerClick
@@ -282,6 +283,9 @@ export default function ActionModal(props) {
                     <div className="content">
                         <CoachFeedBack
                         team = {props.projectId}
+                        action_id = {props.action?.action_id}
+
+                        {...props}
                         />
                         <h4>Errors:</h4>
                         <ul>

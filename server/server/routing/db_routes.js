@@ -381,8 +381,9 @@ module.exports = (db) => {
 
         db.query(getProjectStudents, [req.query.project_id,req.user.system_id])
             .then((students) => {
+
                 res.send(students)
-                console.log(students)
+
             })
             .catch((error) => {
                 console.error(error);
@@ -1545,6 +1546,7 @@ module.exports = (db) => {
         db.query(getActionLogQuery, params)
             .then((values) => {
                 res.send(values);
+
             })
             .catch((err) => {
                 console.error(err);
