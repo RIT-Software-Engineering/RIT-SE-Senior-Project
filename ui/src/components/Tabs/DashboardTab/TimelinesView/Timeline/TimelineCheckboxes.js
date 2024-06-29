@@ -40,6 +40,7 @@ export default function TimelineCheckboxes(props) {
     return (
         <div>
             <Checkbox
+                toggle
                 className="timeline-checkbox"
                 label="Milestones"
                 id={milestonesCheckboxId}
@@ -47,6 +48,7 @@ export default function TimelineCheckboxes(props) {
                 onChange={milestonesChange}
             />
             <Checkbox
+                toggle
                 className="timeline-checkbox"
                 label="Gantt"
                 id={ganttCheckboxId}
