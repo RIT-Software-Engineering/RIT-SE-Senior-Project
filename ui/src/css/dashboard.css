@@ -18,9 +18,13 @@
     /* I've changed the max-height to make scroll snap easier
     original value: 500. change back later */
     max-height: 300px;
-    overflow:auto;
+    overflow: auto;
     overflow-y: scroll;
     /* overflow-x: hidden; */
+}
+
+.gantt.no-sidebar {
+    grid-template-columns: minmax(0px, min-content);
 }
 
 .gantt-container {
@@ -93,6 +97,10 @@
     z-index: 100;
 }
 
+.sidebar-container.empty {
+    width: 0px;
+}
+
 .sidebar {
     width: 100%;
     background: white;
@@ -101,27 +109,22 @@
     border: none;
     border-top: #000000 1px solid;
     border-right: #000000 1px solid;
-    text-align: right;
+    text-align: left;
     cursor: pointer;
 }
 
 .sidebar.header {
-    border: none;
-    padding-right: 5px;
-    border-right: #000000 1px solid;
-    cursor: default;
-    border-right: #000000 1px solid;
-    text-align: right;
-    grid-column-start: 1;
-    position: sticky;
-    left: 0;
-    top:0;
-    z-index: 100;
-}
-
-.sidebar.header {
     grid-row: 1/3;
-    border: #000000 1px solid;
+    border: none;
+    padding-left: 6px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: none;
+    cursor: default;
+    text-align: left;
+    grid-column-start: 1;
+    position: absolute;
+    bottom: 0;
 }
 
 .gantt-chart {

@@ -3,7 +3,6 @@ import { ACTION_STATES } from '../../../../util/functions/constants';
 import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
-import { Grid } from 'semantic-ui-react';
 
 export default function GanttChart(props) {
     const containerRef = React.useRef(null);
@@ -190,11 +189,35 @@ export default function GanttChart(props) {
         {ganttHeaderContainer}
         {ganttChartContainer}
     </div>)
+
+    // Function to check if a user a on a mobile device in multiple ways, 
+    // also limits the sidebar to a small screen of 768px.
+    function isMobile() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
+        const hasOrientation = typeof window.orientation !== "undefined";
+
+        return isMobileDevice || isSmallScreen || hasOrientation;
+    }
     
-    const ganttSideContainer = (<div
-        className='sidebar-container'>
-        {leftSideRows}
-    </div>)
+    // Show or hide sidebar according to if the user is on mobile or not
+    let containerClassname;
+    let ganttSideContainer;
+    if(isMobile()) {
+        // If it is a mobile device allow 0px col size using "gantt no-sidebar" style
+        // and set sidebar size to 0px
+        containerClassname = "gantt no-sidebar";
+        ganttSideContainer = (<div className='sidebar-container empty'></div>);
+    } else {
+        // If it isn't mobile just use the default "gantt" style with a 
+        // min 200px size to allow for the sidebar and add in the sidebar
+        containerClassname = "gantt";
+        ganttSideContainer = (<div
+            className='sidebar-container'>
+            {leftSideRows}
+        </div>);
+    }
     
     // ---------------- RENDER ------------------
     return (
@@ -207,7 +230,7 @@ export default function GanttChart(props) {
                     <option value="project">project</option>
                 </select>
             </div>
-            <div className="gantt"
+            <div className={containerClassname}
                 ref={containerRef}
                 style={{'gridAutoColumns' : 100/timeSpans[selectTimeSpan] + '%'}}>
                 {ganttSideContainer}
