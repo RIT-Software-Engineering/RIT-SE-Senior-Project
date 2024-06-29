@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import {
     FormField,
@@ -28,7 +28,6 @@ export function QuestionFeedback({
                                      errorFields = new Set(),
                                      includeStudents = false,
                                      selfFeedback = false,
-
                                  }) {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
@@ -47,17 +46,17 @@ export function QuestionFeedback({
 
     return (
         <div>
-            {hasTitle && <Header textAlign='left' as='h2' content={title} dividing style={{ marginBottom: '30px' }} />}
+            {hasTitle && <Header textAlign='left' as='h2' content={title} dividing style={{marginBottom: '30px'}}/>}
             {
                 questions.map((question, index) => (
-                    <div key={index} style={{ marginBottom: '30px' }}>
+                    <div key={index} style={{marginBottom: '30px'}}>
                         {
                             hasQuestions &&
-                            <Header textAlign='left' as='h3' dividing={hasStudents} style={{ marginBottom: '30px' }} >
+                            <Header textAlign='left' as='h3' dividing={hasStudents} style={{marginBottom: '30px'}}>
                                 {ordered ? `${index + 1}. ${question}` : question}
                                 {
                                     required &&
-                                    <Header content="*" color={'red'} floated='left' />
+                                    <Header content="*" color={'red'} floated='left'/>
                                 }
                             </Header>
                         }
@@ -66,8 +65,8 @@ export function QuestionFeedback({
                                 const name = `Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`;
                                 const isErrored = errorFields.has(name);
                                 return (
-                                    <div key={`${index}:${students_index}`} style={{ marginBottom: '30px' }}>
-                                        <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'} />
+                                    <div key={`${index}:${students_index}`} style={{marginBottom: '30px'}}>
+                                        <Header textAlign='left' content={student} as={hasQuestions ? 'h4' : 'h3'}/>
                                         <FormInput
                                             name={name}
                                             placeholder={`${student}${hasStudents ? " - " : ""}${question}`}
@@ -77,7 +76,7 @@ export function QuestionFeedback({
                                             error={isErrored}
                                             control={TextArea}
                                         />
-                                        <br />
+                                        <br/>
                                     </div>
                                 )
                             })
@@ -91,16 +90,34 @@ export function QuestionFeedback({
 }
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export function QuestionPeerFeedback({ title = "Individual Feedback", questions, students, required, errorFields, includeStudents = true, selfFeedback = false }) {
+export function QuestionPeerFeedback({
+                                         title = "Individual Feedback",
+                                         questions,
+                                         students,
+                                         required,
+                                         errorFields,
+                                         includeStudents = true,
+                                         selfFeedback = false
+                                     }) {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} required={required} errorFields={errorFields} includeStudents={includeStudents}/>
+        <QuestionFeedback title={title} questions={questions} students={students} required={required}
+                          errorFields={errorFields} includeStudents={includeStudents}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 // TODO: Let user switch between 5 and 3 point scale
-export function QuestionTable({ questions, students, scale = 5, required = false, icon = true, errorFields = new Set(), includeStudents = true, selfFeedback = false}) {
+export function QuestionTable({
+                                  questions,
+                                  students,
+                                  scale = 5,
+                                  required = false,
+                                  icon = true,
+                                  errorFields = new Set(),
+                                  includeStudents = true,
+                                  selfFeedback = false
+                              }) {
     // TODO: Limit max questions to 5
     // const MAX_QUESTIONS = 5;
     // assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
@@ -128,12 +145,12 @@ export function QuestionTable({ questions, students, scale = 5, required = false
         <div>
             {
                 required &&
-                <Icon size={'small'} fitted content="*" color={'red'} floated='left' name={'asterisk'} />
+                <Icon size={'small'} fitted content="*" color={'red'} floated='left' name={'asterisk'}/>
             }
             <Table basic='very' celled collapsing unstackable>
                 <TableHeader>
                     <TableRow>
-                        <TableHeaderCell />
+                        <TableHeaderCell/>
                         {questions.map(question => {
                             const name = `${sentenceToCamelCase(question)}`;
                             const isErrored = errorFields.has(name);
@@ -147,7 +164,7 @@ export function QuestionTable({ questions, students, scale = 5, required = false
                                     <Header as={'h4'}>
                                         <HeaderContent as={isErrored ? 'i' : null}>
                                             {
-                                                isErrored && <Icon fitted name={'warning circle'} color={'red'} />
+                                                isErrored && <Icon fitted name={'warning circle'} color={'red'}/>
                                             }
                                             {" "}
                                             {question}
@@ -223,30 +240,30 @@ export function QuestionMoodRating({
                 {question}
                 {
                     required &&
-                    <Header content="*" color={'red'} floated='left' />
+                    <Header content="*" color={'red'} floated='left'/>
                 }
             </Header>
-            <br />
+            <br/>
             <Grid divided='vertically'>
                 {students.map(student => {
                     const name = `Mood-${sentenceToCamelCase(question)}-${student}`
                     const isErrored = errorFields.has(name);
                     return (
                         <GridRow key={student} columns={numColumns}>
-                            <GridColumn key={`col-${student}`} style={{ textAlign: 'left' }}>
+                            <GridColumn key={`col-${student}`} style={{textAlign: 'left'}}>
                                 <Header as={'h3'}>
                                     {
-                                        isErrored && <Icon size='tiny' name={'exclamation circle'} color={'red'} />
+                                        isErrored && <Icon size='tiny' name={'exclamation circle'} color={'red'}/>
                                     }
-                                    <HeaderContent as={isErrored ? 'i' : null} content={student} />
+                                    <HeaderContent as={isErrored ? 'i' : null} content={student}/>
                                 </Header>
                             </GridColumn>
                             {
                                 levels.map((level, index) => (
                                     <GridColumn key={`col-${student}-${index}`}
-                                                style={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                                                style={{textAlign: 'center', display: 'flex', flexDirection: 'column'}}>
                                         <Radio
-                                            style={{ margin: '8px auto' }}
+                                            style={{margin: '8px auto'}}
                                             name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                                             value={index}
                                             checked={selections[student] === index}

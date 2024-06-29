@@ -404,7 +404,8 @@ export default function ActionModal(props) {
                             {
                                 isPeerEval
                                     ? <ParsedInnerHTML html={props.page_html} components={QuestionComponentsMap}
-                                                       studentsList={studentOptions} errorFields={errorFields}/>
+                                                       studentsList={studentOptions} errorFields={errorFields}
+                                                       submitter={user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`}/>
                                     : <InnerHTML html={props.page_html}/>
                             }
                         </div>

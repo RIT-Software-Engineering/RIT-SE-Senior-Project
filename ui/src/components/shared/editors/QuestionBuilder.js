@@ -104,22 +104,22 @@ const QuestionBuilder = (props) => {
     const copyHtmlToClipboard = () => {
         let html = "";
         questions.map((question, index) => {
-            html += '<div>\n'
             if (question.addHeader) {
                 html += `<h2>${question.title}</h2>\n`;
             }
+            html += '<div>\n'
             if (question.type === 'QuestionFeedback') {
                 html += `<QuestionFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' ordered='${question.ordered}' required='${question.isRequired}' includeStudents='${question.isForStudents}' selfFeedback='${globalSettings.selfRating}' />`
             } else if (question.type === 'QuestionPeerFeedback') {
-                html += `<QuestionPeerFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' />`
+                html += `<QuestionPeerFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
             } else if (question.type === 'QuestionTable') {
-                html += `<QuestionTable questions='${JSON.stringify(question.questions)}' scale='${globalSettings.ratingScale}' required='${question.isRequired}' icon='${question.icon}' selfFeedback='${globalSettings.selfRating}' />`
+                html += `<QuestionTable questions='${JSON.stringify(question.questions)}' scale='${globalSettings.ratingScale}' required='${question.isRequired}' icon='${question.icon}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
             } else if (question.type === 'QuestionMoodRating') {
                 const levels = globalSettings.ratingScale === 3
                     ? question.levels.slice(1, 4)
                     : [...question.levels]
                 question.questions.map((question_title, _) => {
-                    html += `<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' />`
+                    html += `<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
                 })
             }
             html += '\n</div>\n<br/>\n'
