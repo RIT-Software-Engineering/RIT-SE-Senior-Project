@@ -53,7 +53,9 @@ export default function CoachFeedback(props) {
 
     },[props.team] );
 
+    const allSubmited =() =>(
 
+    )
 
     // Function to generate feedback form for a student
     const generateFeedbackForm = (student, index) => {

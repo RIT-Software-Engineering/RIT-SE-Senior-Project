@@ -196,7 +196,7 @@ export function QuestionTable({questions, students, scale = 5, required = false,
             </Table>
         </div>
     );
-};
+}
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
@@ -263,7 +263,7 @@ export function QuestionMoodRating({
             </Grid>
         </div>
     );
-};
+}
 
 export const QuestionComponentsMap = {
     QuestionFeedback: QuestionFeedback,
