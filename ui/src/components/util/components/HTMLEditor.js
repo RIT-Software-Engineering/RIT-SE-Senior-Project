@@ -9,14 +9,13 @@ const modifiedEclipse = eclipseInit({settings: {caret: "#000000"}})
 export default function HTMLEditor(props) {
     const field = props.field;
     const formData = props.formData;
-    const handleChange = props.handleChange;
 
     return (
         <Form.TextArea
             label={field.label}
             as={ReactCodeMirror}
             theme={modifiedEclipse}
-            onChange={(value) => handleChange(null, {name: field.name, value: value})}
+            onChange={props.handleChange}
             value={formData[field.name]}
             maxHeight={"700px"}
             extensions={[html({autoCloseTags: true})]}
