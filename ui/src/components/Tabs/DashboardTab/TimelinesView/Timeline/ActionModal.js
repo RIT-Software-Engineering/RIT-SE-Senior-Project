@@ -52,7 +52,8 @@ export default function ActionModal(props) {
     function translatePeerEvalData(formData) {
         const translation = {
             CoachFeedback: {},
-            Students: {}
+            Students: {},
+            Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`
         }
 
         for (const key in formData) {
@@ -312,7 +313,7 @@ export default function ActionModal(props) {
         }
     }
 
-    if (props.action_target === ACTION_TARGETS.peer_evaluation && user.role === USERTYPES.COACH) {
+    if (isPeerEval && user.role === USERTYPES.COACH) {
         return (
             <Modal
                 closeOnDimmerClick={false}
@@ -338,17 +339,21 @@ export default function ActionModal(props) {
                         <div className="content">
                             <CoachFeedBack
                                 team={props.projectId}
+                                action_id={props.action_id}
                             />
-                            <Message error>
-                                <MessageHeader>
-                                    <Icon name="warning circle"/>
-                                    {" "}
-                                    Errors:
-                                </MessageHeader>
-                                <MessageList>
-                                    {errors.map(err => <li key={err}>{err}</li>)}
-                                </MessageList>
-                            </Message>
+                            {errors.length > 0 && <div className="submission-errors">
+                                <br/>
+                                <Message error>
+                                    <MessageHeader>
+                                        <Icon name="warning circle"/>
+                                        {" "}
+                                        Errors:
+                                    </MessageHeader>
+                                    <MessageList>
+                                        {errors.map(err => <li key={err}>{err}</li>)}
+                                    </MessageList>
+                                </Message>
+                            </div>}
                         </div>
                     </Modal.Description>
                     <Modal open={!!submissionModalOpen} {...generateModalFields()}
