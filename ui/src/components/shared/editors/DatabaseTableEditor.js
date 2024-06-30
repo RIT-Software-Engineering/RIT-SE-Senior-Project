@@ -6,10 +6,10 @@ import {SecureFetch} from "../../util/functions/secureFetch";
 import PhoneInput from 'react-phone-number-input/input'
 import us from 'react-phone-number-input/locale/en'
 import {Dropdown as SemanticDropdown} from "semantic-ui-react";
-import FormBuilder from "./FormBuilder";
 import ReactCodeMirror, {oneDark, oneDarkHighlightStyle} from "@uiw/react-codemirror";
 import {html} from "@codemirror/lang-html";
 import {eclipseInit} from "@uiw/codemirror-theme-eclipse";
+import QuestionBuilder from "./QuestionBuilder";
 
 const MODAL_STATUS = {SUCCESS: "success", FAIL: "fail", CLOSED: false};
 
@@ -185,7 +185,7 @@ export default function DatabaseTableEditor(props) {
                 case "textArea":
                     if (formData.action_target === 'peer_evaluation') {
                         fieldComponents.push(
-                            <FormBuilder
+                            <QuestionBuilder
                                 field={field}
                                 data={formData}
                                 onChange={handleChange}

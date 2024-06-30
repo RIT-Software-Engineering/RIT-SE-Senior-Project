@@ -9,7 +9,7 @@ import {
     Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow,
     TextArea
 } from 'semantic-ui-react';
-import assert from "assert";
+import assert from 'assert';
 
 const sentenceToCamelCase = (string = "") =>
     string.replaceAll(
@@ -26,6 +26,8 @@ export function QuestionFeedback({
                                      students = [""],
                                      required = false,
                                      errorFields = new Set(),
+                                     includeStudents = false,
+                                     selfFeedback = false,
                                  }) {
     const [feedback, setFeedback] = useState({});
     const hasStudents = students.length > 1 || students[0] !== "";
@@ -50,12 +52,7 @@ export function QuestionFeedback({
                     <div key={index} style={{marginBottom: '30px'}}>
                         {
                             hasQuestions &&
-                            <Header
-                                textAlign='left'
-                                as='h3'
-                                dividing={hasStudents}
-                                style={{marginBottom: '30px'}}
-                            >
+                            <Header textAlign='left' as='h3' dividing={hasStudents} style={{marginBottom: '30px'}}>
                                 {ordered ? `${index + 1}. ${question}` : question}
                                 {
                                     required &&
@@ -90,25 +87,43 @@ export function QuestionFeedback({
             }
         </div>
     );
-};
+}
 
 // TODO: Add version of QuestionFeedback that uses PeerFeedback easier
-export function QuestionPeerFeedback({title = "Individual Feedback", questions, students, required, errorFields}) {
+export function QuestionPeerFeedback({
+                                         title = "Individual Feedback",
+                                         questions,
+                                         students,
+                                         required,
+                                         errorFields,
+                                         includeStudents = true,
+                                         selfFeedback = false
+                                     }) {
     return (
-        <QuestionFeedback title={title} questions={questions} students={students} required={required} errorFields={errorFields}/>
+        <QuestionFeedback title={title} questions={questions} students={students} required={required}
+                          errorFields={errorFields} includeStudents={includeStudents}/>
     )
 }
 
 // TODO: Add propagation of onChange handler
 // TODO: Make fields required unless specified otherwise in props
 // TODO: Let user switch between 5 and 3 point scale
-export function QuestionTable({questions, students, scale = 5, required = false, icon = true, errorFields = new Set()}) {
+export function QuestionTable({
+                                  questions,
+                                  students,
+                                  scale = 5,
+                                  required = false,
+                                  icon = true,
+                                  errorFields = new Set(),
+                                  includeStudents = true,
+                                  selfFeedback = false
+                              }) {
     // TODO: Limit max questions to 5
-    const MAX_QUESTIONS = 5;
-    assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
+    // const MAX_QUESTIONS = 5;
+    // assert(questions.length <= MAX_QUESTIONS, `Number of questions exceeds maximum of ${MAX_QUESTIONS}`);
 
     // TODO: Limit scale to 5 or 3
-    assert(scale === 5 || scale === 3, `Scale must be either 5 or 3, but got ${scale}`)
+    // assert(scale === 5 || scale === 3, `Scale must be either 5 or 3, but got ${scale}`)
 
     const questionRatings = {};
     questions.forEach(question => questionRatings[question] = {})
@@ -206,6 +221,8 @@ export function QuestionMoodRating({
                                        levels = ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
                                        required = false,
                                        errorFields = new Set(),
+                                       includeStudents = true,
+                                       selfFeedback = false
                                    }) {
     const [selections, setSelections] = useState({});
 
@@ -238,7 +255,7 @@ export function QuestionMoodRating({
                                     {
                                         isErrored && <Icon size='tiny' name={'exclamation circle'} color={'red'}/>
                                     }
-                                    <HeaderContent as={isErrored?'i':null} content={student}/>
+                                    <HeaderContent as={isErrored ? 'i' : null} content={student}/>
                                 </Header>
                             </GridColumn>
                             {

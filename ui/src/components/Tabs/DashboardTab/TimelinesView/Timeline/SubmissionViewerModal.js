@@ -146,7 +146,7 @@ export default function SubmissionViewerModal(props) {
                         {Object.keys(submission.Students ?? {})?.map(key => (
                             <div>
                                 <Header as={'h2'} dividing content={key}/>
-                                <Segment raised>
+                                <Segment >
                                     {/* Peer Qualative Feedback */}
                                     {Object.keys(submission.Students[key].Feedback)?.map(feedback_key => (
                                         <div style={{marginBottom: '25px'}}>
