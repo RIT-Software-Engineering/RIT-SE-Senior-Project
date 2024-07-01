@@ -179,7 +179,7 @@ export function QuestionTable({
 
                 <TableBody>
                     {
-                        Object.values(students).map(student => (
+                        students.map(student => (
                             <TableRow key={student}>
                                 <TableCell>
                                     <Header as='h4'> {student} </Header>
@@ -246,7 +246,7 @@ export function QuestionMoodRating({
             </Header>
             <br/>
             <Grid divided='vertically'>
-                {Object.values(students).map(student => {
+                {students.map(student => {
                     const name = `Mood-${sentenceToCamelCase(question)}-${student}`
                     const isErrored = errorFields.has(name);
                     return (
