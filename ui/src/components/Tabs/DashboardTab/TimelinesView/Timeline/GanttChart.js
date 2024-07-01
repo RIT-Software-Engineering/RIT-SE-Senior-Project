@@ -1,13 +1,13 @@
-import React, { act, createElement, useEffect, useLayoutEffect, useRef } from 'react'
+import React, { act, createElement, useEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
 import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 
 export default function GanttChart(props) {
-    const containerRef = React.useRef(null);
-    const firstActionRef = React.useRef(null);
-    const todayRef = React.useRef(null);
+    const containerRef = useRef(null);
+    const firstActionRef = useRef(null);
+    const todayRef = useRef(null);
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
@@ -21,10 +21,14 @@ export default function GanttChart(props) {
 
     useEffect(()=> {
         if (isSemesterActive(semesterStartDate, semesterEndDate) && firstAction) {
-            let header = todayRef.current.offsetParent;
-            let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
-            let viewLeft = todayRef.current.offsetLeft;
-            containerRef.current.scrollTo(viewLeft, viewTop);
+            try {
+                let header = todayRef.current.offsetParent;
+                let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
+                let viewLeft = todayRef.current.offsetLeft;
+                containerRef.current.scrollTo(viewLeft, viewTop);    
+            } catch (e) {
+                console.log('issue with snapping to current day (x), first action (y)', e);
+            }
         }
     }, [semesterStartDate, semesterEndDate, firstAction, today]);
 
