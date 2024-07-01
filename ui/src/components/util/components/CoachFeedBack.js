@@ -5,7 +5,6 @@ import {
 } from "semantic-ui-react";
 import {SecureFetch} from "../functions/secureFetch";
 import {config} from "../functions/constants";
-import ResultTable from "./ResultTable";
 
 export default function CoachFeedback(props) {
     const [studentList, setStudentList] = useState([]);
@@ -105,63 +104,113 @@ export default function CoachFeedback(props) {
                     <Header size={"large"} block>{student}</Header>
                     <Header as="h3">Coach Feedback</Header>
                     <Grid>
-                        {Object.keys(CoachFeedback).map((category, index) => {
-                            if (index % 2 === 0) {
-                                return (
-                                    <Grid.Row columns={2} key={index}>
-                                        <Grid.Column>
-                                            <Label as='h2'>{Object.keys(CoachFeedback)[index]}</Label>
-                                            <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index]]} readOnly={true} />
-                                        </Grid.Column>
-                                        {Object.keys(CoachFeedback)[index + 1] && (
-                                            <Grid.Column>
-                                                <Label as='h2'>{Object.keys(CoachFeedback)[index + 1]}</Label>
-                                                <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]]} readOnly={true} />
-                                            </Grid.Column>
-                                        )}
-                                    </Grid.Row>
-                                );
-                            }
-                            return null;
-                        })}
+                        {Object.keys(CoachFeedback).map((category, index) => (
+                            <Grid.Row columns={2} key={index}>
+                                <Grid.Column>
+                                    <Label as='h2'>{category}</Label>
+                                    <textarea rows={4} value={CoachFeedback[category]} readOnly={true}/>
+                                </Grid.Column>
+                            </Grid.Row>
+
+                        ))}
                     </Grid>
                     <Divider section/>
-
+                    {/*<Header as="h3">Ratings from Team Members</Header>*/}
+                    {/*<List>*/}
+                    {/*    {studentList.map((otherStudent, otherIndex) =>*/}
+                    {/*            index !== otherIndex && (*/}
+                    {/*                <ListItem key={otherIndex}>*/}
+                    {/*                    <Label>{otherStudent}</Label>*/}
+                    {/*                    <div>*/}
+                    {/*                        <label>Communication</label>*/}
+                    {/*                        <input type="text" value="4.5 / 5" disabled />*/}
+                    {/*                        <label>Participation</label>*/}
+                    {/*                        <input type="text" value="3.5 / 5" disabled />*/}
+                    {/*                    </div>*/}
+                    {/*                </ListItem>*/}
+                    {/*            )*/}
+                    {/*    )}*/}
+                    {/*</List>*/}
                     <Header as="h3">{showAverage && "Average "} Ratings from Team Members</Header>
                     {/*NOTE: This can probably be deleted since we have the ability to just view the full submissions on SubmissionView model*/}
+                    {!showAverage && OthersFeedback.map((otherStudent, otherIndex) => (
+                        <div>
+                            <Label ribbon size={'large'} color={'grey'}>{otherStudent.From}</Label>
+
+                            <Table collapsing celled striped>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHeaderCell>Category</TableHeaderCell>
+                                        <TableHeaderCell>Rating</TableHeaderCell>
+                                        <TableHeaderCell>Feedback</TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                {Object.keys(otherStudent.Ratings).map((category, index) => (
+                                    <Table.Row key={index}>
+                                        <Table.Cell>
+                                            <label>{camelCaseToSentence(category)}</label>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Rating disabled defaultRating={otherStudent.Ratings[category]}
+                                                    maxRating={maxRating}/>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            {otherStudent.Feedback[category]}
+                                        </Table.Cell>
+                                    </Table.Row>
+                                ))}
+                            </Table>
+                            <br/>
+                        </div>
+                    ))}
 
                     {/*NOTE: AVERAGE RATINGS VIEW*/}
                     {showAverage && (
                         <div>
-                            <ResultTable
-                                OthersFeedbackAvg={OthersFeedbackAvg}
-                                maxRating={maxRating}
-                                OthersFeedback = {OthersFeedback}
-                            />
+                            <Table collapsing celled striped>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHeaderCell>Category</TableHeaderCell>
+                                        <TableHeaderCell>Average Rating</TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                {/*List of categories and their average ratings*/}
+                                {Object.keys(OthersFeedbackAvg).map((category, index) => (
+                                    <Table.Row key={index}>
+                                        <Table.Cell>
+                                            <label>{camelCaseToSentence(category)}</label>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Rating disabled defaultRating={OthersFeedbackAvg[category]}
+                                                    maxRating={maxRating}/>
+                                            <span>  ({OthersFeedbackAvg[category]})</span>
+                                        </Table.Cell>
+                                    </Table.Row>
+                                ))}
+                            </Table>
                             <Divider section/>
 
                             {/*NOTE: Since Feedback isnt in the average, do we display it here?*/}
                             {/*Or just say they view in full submission viewer and have the AI generation be the "average"*/}
-                            {/*<Header as="h3">Feedback from Team Members</Header>*/}
-                            {/*<List>*/}
-                            {/*    {OthersFeedback.map((otherStudent, otherIndex) => (*/}
-                            {/*        <ListItem key={otherIndex}>*/}
-                            {/*            <Label ribbon size={'large'} color={'grey'}>{otherStudent.From}</Label>*/}
-                            {/*            <List relaxed>*/}
-                            {/*                {Object.keys(otherStudent.Feedback).map((category, index) => (*/}
-                            {/*                    <ListItem key={index}>*/}
-                            {/*                        <Label size={"medium"}>{category}</Label>*/}
-                            {/*                        <TextArea disabled>{otherStudent.Feedback[category]}</TextArea>*/}
-                            {/*                    </ListItem>*/}
-                            {/*                ))}*/}
-                            {/*            </List>*/}
-                            {/*            <br/>*/}
-                            {/*        </ListItem>*/}
-                            {/*    ))}*/}
-                            {/*</List>*/}
+                            <Header as="h3">Feedback from Team Members</Header>
+                            <List>
+                                {OthersFeedback.map((otherStudent, otherIndex) => (
+                                    <ListItem key={otherIndex}>
+                                        <Label ribbon size={'large'} color={'grey'}>{otherStudent.From}</Label>
+                                        <List relaxed>
+                                            {Object.keys(otherStudent.Feedback).map((category, index) => (
+                                                <ListItem key={index}>
+                                                    <Label size={"medium"}>{category}</Label>
+                                                    <TextArea disabled>{otherStudent.Feedback[category]}</TextArea>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                        <br/>
+                                    </ListItem>
+                                ))}
+                            </List>
                         </div>
                     )}
-
                     <Divider section/>
                     <FormField>
                         <Header as={'h3'}>Coach Feedback</Header>
