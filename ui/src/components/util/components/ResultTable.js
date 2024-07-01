@@ -47,14 +47,20 @@ export default function ResultTable(props) {
                                     <TableCell colSpan="3">
                                         <Card fluid>
                                             <CardContent>
-                                                <CardHeader>{camelCaseToSentence(category)+ " Breakdown & Feedback"}</CardHeader>
+                                                <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback"}</CardHeader>
                                                 <Card.Description>
                                                     <List>
-                                                        {props.OthersFeedback.map((student,otherIndex)=>(
+                                                        {props.OthersFeedback.map((student, otherIndex) => (
                                                             <ListItem key={otherIndex}>
-                                                                <Label ribbon size={'large'} color={'grey'}>{student.From}</Label>
-                                                                <Rating disabled defaultRating={student.Ratings[category]} maxRating={props.maxRating}/>
-                                                                <TextArea disabled>{student.Feedback[category]}</TextArea>
+                                                                <Label ribbon size='large' color='grey'>{student.From}</Label>
+                                                                <Rating
+                                                                    disabled
+                                                                    defaultRating={student.Ratings[category]}
+                                                                    maxRating={props.maxRating}
+                                                                />
+                                                                <TextArea disabled>
+                                                                    {student.Feedback[category] || "No Feedback Given"}
+                                                                </TextArea>
                                                             </ListItem>
                                                         ))}
                                                     </List>

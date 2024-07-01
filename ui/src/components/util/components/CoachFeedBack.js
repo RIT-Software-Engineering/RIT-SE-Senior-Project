@@ -135,12 +135,12 @@ export default function CoachFeedback(props) {
                                     <Grid.Row columns={2} key={index}>
                                         <Grid.Column>
                                             <Label as='h2'>{Object.keys(CoachFeedback)[index]}</Label>
-                                            <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index]]} readOnly={true} />
+                                            <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index]] || "No Feedback Given" } readOnly={true} />
                                         </Grid.Column>
                                         {Object.keys(CoachFeedback)[index + 1] && (
                                             <Grid.Column>
                                                 <Label as='h2'>{Object.keys(CoachFeedback)[index + 1]}</Label>
-                                                <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]]} readOnly={true} />
+                                                <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]] || "No Feedback Given"} readOnly={true} />
                                             </Grid.Column>
                                         )}
                                     </Grid.Row>
@@ -206,23 +206,23 @@ export default function CoachFeedback(props) {
     return (
         <>
             <Header as="h1">Peer Evaluation Summary</Header>
-            {/*{allSubmissionsMade ? (*/}
-            {/*    studentList.map((student, index) => generateFeedbackForm(student, index))*/}
-            {/*) : (*/}
-            {/*    <>*/}
-            {/*        <Header as="h3" color="red">Not all students have submitted their feedback.</Header>*/}
-            {/*        <Header as="h4">The following students are yet to submit their feedback:</Header>*/}
-            {/*        <List>*/}
-            {/*            {missingStudents.map((student, index) => (*/}
-            {/*                <ListItem key={index}>*/}
-            {/*                    {student}*/}
-            {/*                </ListItem>*/}
-            {/*            ))}*/}
-            {/*        </List>*/}
-            {/*    </>*/}
-            {/*)}*/}
+            {allSubmissionsMade ? (
+                studentList.map((student, index) => generateFeedbackForm(student, index))
+            ) : (
+                <>
+                    <Header as="h3" color="red">Not all students have submitted their feedback.</Header>
+                    <Header as="h4">The following students are yet to submit their feedback:</Header>
+                    <List>
+                        {missingStudents.map((student, index) => (
+                            <ListItem key={index}>
+                                {student}
+                            </ListItem>
+                        ))}
+                    </List>
+                </>
+            )}
 
-            {studentList.map((student, index) => generateFeedbackForm(student, index))}
+            {/*{studentList.map((student, index) => generateFeedbackForm(student, index))}*/}
         </>
     );
 }
