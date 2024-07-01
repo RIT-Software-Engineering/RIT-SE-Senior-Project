@@ -18,7 +18,7 @@ const parseAttributes = (attribs) => {
 };
 
 
-const parseHTML = (html, components, studentList, errorFields, submitter) => {
+const parseHTML = (html, components,studentList, errorFields) => {
     const componentsLowerCase = {};
     Object.keys(components).forEach(key => {
         componentsLowerCase[key.toLowerCase()] = key;
@@ -33,15 +33,8 @@ const parseHTML = (html, components, studentList, errorFields, submitter) => {
             // Note: Normal question feedbacks are for coach not particularly for adding students
             // Only QuestionStudentFeedback should be used for student ones.
             // QuestionStudentFeedback could be made to also allow anonymous questions.
-            // if (studentList && componentKey !== "QuestionFeedback"){
-            //     node.attribs['students'] = studentList;
-            // }
-            if (studentList && node.attribs['includestudents'] && node.attribs['includestudents'] === "true") {
-                if (node.attribs['selffeedback'] && node.attribs['selffeedback'] === "true") {
-                    node.attribs['students'] = [...studentList, submitter]
-                } else {
-                    node.attribs['students'] = studentList;
-                }
+            if (studentList && componentKey !== "QuestionFeedback"){
+                node.attribs['students'] = studentList;
             }
 
             node.attribs['errorFields'] = errorFields
@@ -56,12 +49,11 @@ function ParsedInnerHTML({
                              html,
                              components,
                              studentsList = ["Student 1", "Student 2", "Student 3", "Student 4"],
-                             errorFields = new Set(),
-                             submitter = "Student (SELF)",
+                             errorFields = []
                          }) {
     return (
         <div>
-            {parseHTML(html, components, studentsList, errorFields, submitter)}
+            {parseHTML(html, components, studentsList, errorFields)}
         </div>
     );
 }

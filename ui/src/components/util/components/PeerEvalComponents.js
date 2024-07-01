@@ -61,7 +61,8 @@ export function QuestionFeedback({
                             </Header>
                         }
                         {
-                            students.map((student, students_index) => {
+
+                            (students).map((student, students_index) => {
                                 const name = `Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`;
                                 const isErrored = errorFields.has(name);
                                 return (
@@ -178,7 +179,7 @@ export function QuestionTable({
 
                 <TableBody>
                     {
-                        students.map(student => (
+                        Object.values(students).map(student => (
                             <TableRow key={student}>
                                 <TableCell>
                                     <Header as='h4'> {student} </Header>
@@ -245,7 +246,7 @@ export function QuestionMoodRating({
             </Header>
             <br/>
             <Grid divided='vertically'>
-                {students.map(student => {
+                {Object.values(students).map(student => {
                     const name = `Mood-${sentenceToCamelCase(question)}-${student}`
                     const isErrored = errorFields.has(name);
                     return (
