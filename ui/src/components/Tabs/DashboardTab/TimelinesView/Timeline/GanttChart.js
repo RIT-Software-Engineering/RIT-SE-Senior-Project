@@ -22,7 +22,7 @@ export default function GanttChart(props) {
     useEffect(()=> {
         if (isSemesterActive(semesterStartDate, semesterEndDate) && firstAction) {
             let header = todayRef.current.offsetParent;
-            let viewTop = firstActionRef.current.offsetTop - header.offsetHeight;
+            let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
             let viewLeft = todayRef.current.offsetLeft;
             containerRef.current.scrollTo(viewLeft, viewTop);
         }
