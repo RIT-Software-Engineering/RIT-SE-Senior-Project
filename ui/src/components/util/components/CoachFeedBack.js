@@ -61,12 +61,14 @@ export default function CoachFeedback(props) {
         setMissingStudents(missing);
         setAllSubmissionsMade(missing.length === 0);
     };
+
     const handleFeedbackChange=(studentName,currFeedback)=>{
         setFeedback(prevFeedback => ({
             ...prevFeedback,
             [studentName]: currFeedback
         }));
     }
+
     useEffect(() => {
         fetchStudentList();
         fetchSubmissions();
@@ -147,7 +149,7 @@ export default function CoachFeedback(props) {
                                 );
                             }
                             return null;
-                        })}
+                       })}
                     </Grid>
                     <Divider section/>
 
