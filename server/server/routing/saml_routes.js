@@ -64,6 +64,7 @@ module.exports = (app, db) => {
             fname: user.fname,
             lname: user.lname,
             semester_group: user.semester_group,
+            project:user.project,
             last_login: user.last_login,
             prev_login: user.prev_login,
 

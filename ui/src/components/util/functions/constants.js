@@ -71,7 +71,7 @@ export const config = {
         API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
         //Matches semester from project table to semester_id from semester_groups, returns start and end date
         API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
-
+        API_GET_COACH_FEEDBACK:`${BASE_API_URL}/db/getCoachFeedback`,
         // POST - Auth needed
         API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
         API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,

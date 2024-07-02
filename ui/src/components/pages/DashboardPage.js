@@ -19,6 +19,7 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 
+
 export default function DashboardPage() {
 
     const { user, setUser } = useContext(UserContext);
@@ -35,6 +36,7 @@ export default function DashboardPage() {
                     fname: responseUser.fname,
                     lname: responseUser.lname,
                     semester_group: responseUser.semester_group,
+                    project: responseUser.project,
                     isMock: Object.keys(responseUser.mock).length !== 0,
                     mockUser: responseUser.mock,
                     last_login: responseUser.last_login,
@@ -112,7 +114,10 @@ export default function DashboardPage() {
                     },
                     render: () => (
                         <Tab.Pane>
-                            <StudentsTab />
+                            <StudentsTab
+
+                                project_id={user.project}
+                            />
                         </Tab.Pane>
                     ),
                 },

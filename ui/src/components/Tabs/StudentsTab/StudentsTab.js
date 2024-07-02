@@ -7,7 +7,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
 
-export default function StudentsTab() {
+export default function StudentsTab(props) {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
@@ -15,7 +15,7 @@ export default function StudentsTab() {
     const [activeSemesters, setActiveSemesters] = useState({})
     const [activeProjectIds, setActiveProjectIds] = useState({})
     const userContext = useContext(UserContext);
-
+    const [coachFeedback, setCoachFeedback] = useState([]);
     const unassignedStudentsStr = "Unassigned students";
 
     useEffect(() => {
@@ -23,6 +23,8 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((studentsData) => {
                 setStudentsData(studentsData);
+                console.log("Students Data", studentsData)
+
             })
             .catch((error) => {
                 alert("Failed to get students data" + error);
@@ -31,10 +33,21 @@ export default function StudentsTab() {
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
+                //console.log("Semesters Data", semestersData)
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
+
+        console.log(props.project_id)
+        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${props.project_id}`)
+            .then((response) => response.json())
+            .then((data)=>{
+                console.warn(data)
+            }).catch((error) => {
+            alert("Failed to get Coach's Feedback" + error);
+        });
+
         const getProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_SEMESTER_PROJECTS;
         SecureFetch(getProjects)
             .then((response) => response.json())
@@ -44,6 +57,7 @@ export default function StudentsTab() {
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
             });
+
         const getMyProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_MY_PROJECTS;
         SecureFetch(getMyProjects)
             .then((response) => response.json())
@@ -242,15 +256,27 @@ export default function StudentsTab() {
         semesterPanels.push(
             <h3>All Students</h3>
         )
-
         if (userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0) {
             semesterPanels.push(
                 activeProjects,
                 <h3>My Teams</h3>
+
             )
         }
 
     }
+
+    semesterPanels.push(
+        <>
+            <h3>My PeerEvaluations</h3>
+            <Accordion
+                fluid
+                styled
+            />
+
+
+        </>
+    )
 
     return semesterPanels.reverse();
 }

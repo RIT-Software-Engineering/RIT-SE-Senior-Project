@@ -60,36 +60,29 @@ VALUES
               <br />
               <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
 
-              <br />
               <h2>Question Matrix Showcase</h2>
-              <div>
-              <QuestionTable questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]''  students=''exampleStudents''/>
-              </div>
+                <div>
+                <QuestionTable questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' scale=''5'' required=''false'' icon=''default'' selfFeedback=''false'' includeStudents=''true''/>
+                </div>
+                <br/>
+                <h2>Question Mood Ratings Showcase</h2>
+                <div>
+                <QuestionMoodRating question="Dependability" levels=''["Not Dependable","Somewhat Dependable","Dependable","Very Dependable","Extremely Dependable"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+                </div>
+                <br/>
+                <div>
+                <QuestionMoodRating question="Group Maintenance" levels=''["Extremely Dissatisfied","Dissatisfied","Neutral","Satisfied","Extremely Satisfied"]'' required=''false'' selfFeedback=''false'' includeStudents=''true''/>
+                </div>
+                <br/>
+                <div>
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+                </div>
+                <br/>
+                <div>
+                <QuestionPeerFeedback title="Question Title" questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+                </div>
+                <br/>
 
-              <br />
-              <h2>Question Mood Ratings Showcase</h2>
-              <div>
-              <QuestionMoodRating
-                  question="Dependability"
-                  students=''exampleStudents''
-                  levels=''["Not Dependable", "Somewhat Dependable", "Dependable", "Very Dependable", "Extremely Dependable"]''
-                  required=''true''
-              />
-              </div>
-              <br />
-              <div>
-              <QuestionMoodRating question="Group Maintenance" students=''exampleStudents'' />
-              </div>
-
-              <br />
-              <br />
-              <div>
-              <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations", "Identify disputes or problems that happened and how they were handled.", "Yap yap yap"]'' ordered />
-              </div>
-
-              <div>
-              <QuestionPeerFeedback questions=''["Cooperation and Attitude", "Quantity of Work", "Initiative"]'' students=''exampleStudents''  />
-              </div>
             </p>
           </form>
     ',

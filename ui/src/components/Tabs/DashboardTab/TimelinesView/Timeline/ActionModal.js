@@ -50,38 +50,95 @@ export default function ActionModal(props) {
 
     // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
     function translatePeerEvalData(formData) {
-        const translation = {
-            CoachFeedback: {},
-            Students: {},
-            Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`
+        let translation = null;
+        if(user.role === USERTYPES.STUDENT) {
+            translation = {
+                CoachFeedback: {},
+                Students: {},
+                Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`,
+                Settings: {
+                    Scale: 5,
+                    includesSelf: false
+                }
+            }
+
+            for (const key in formData) {
+                let [category, header, student] = key.split("-")
+                let value = formData[key]
+                const isFeedback = category === "Feedback"
+
+                header = camelCaseToSentence(header)
+                value = isFeedback ? value.trim() : parseInt(value)
+
+                if (isFeedback && student === "Anon") {
+                    translation.CoachFeedback[header] = value
+                    continue
+                }
+
+                if (!translation.Students[student]) {
+                    translation.Students[student] = {Feedback: {}, Ratings: {}}
+                }
+
+                if (isFeedback) {
+                    translation.Students[student].Feedback[header] = value
+                } else {
+                    translation.Students[student].Ratings[header] = value
+                }
+
+            }
+        } else if (user.role === USERTYPES.COACH) {
+           translation = {
+               Submitter: "COACH",
+               Students: {
+                   // Student: {
+                   //     usedAI: boolean,
+                   //     Feedback: "",
+                   //     AverageRatings: {
+                   //          Category: value
+                   //     }
+                   //     SelfRating: {
+                   //          Category: value
+                   //     }
+                   // }
+               }
+            }
+
+            for (const key in formData) {
+                let [category, header, student] = key.split("-")
+                if(student===undefined) {
+                    console.error( `Incorrect Name Formatting ${key}. Not Parsable`)
+                    continue
+                }
+
+                let value = formData[key]
+
+                if (!translation.Students[student]) {
+                    translation.Students[student] = {Feedback: "", UsedAI:false, AverageRatings: {}, SelfRating: {}}
+                }
+
+                const StudentData = translation.Students[student]
+
+                switch (category) {
+                    case "CoachFeedback":
+                        StudentData.Feedback = value
+                        break;
+                    case "AverageFeedback":
+                        StudentData.AverageRatings[header] = value
+                        break;
+                    case "UsedAI":
+                        StudentData.UsedAI = value
+                        break;
+                    case "SelfFeedback":
+                        StudentData.SelfRating[header] = value
+                        break;
+                    default:
+                        console.warn(`Feedback Type ${key} not valid`)
+                }
+            }
+
         }
 
-        for (const key in formData) {
-            let [category, header, student] = key.split("-")
-            let value = formData[key]
-            const IS_FEEDBACK = category === "Feedback"
-
-            header = camelCaseToSentence(header)
-            value = IS_FEEDBACK ? value.trim() : parseInt(value)
-
-            if (IS_FEEDBACK && student === "Anon") {
-                translation.CoachFeedback[header] = value
-                continue
-            }
-
-            if (!translation.Students[student]) {
-                translation.Students[student] = {Feedback: {}, Ratings: {}}
-            }
-
-            if (IS_FEEDBACK) {
-                translation.Students[student].Feedback[header] = value
-            } else {
-                translation.Students[student].Ratings[header] = value
-            }
-
-        }
-
-        return translation
+        return translation;
     }
 
     const generateModalFields = () => {
@@ -163,7 +220,6 @@ export default function ActionModal(props) {
                         formDataInputs[inputName]?.value
                         : String(input?.value);
 
-
                     // Error Handling
                     const [questionType, questionName, studentName] = inputName.split("-")
                     const questionSetKey = questionType + questionName
@@ -203,6 +259,7 @@ export default function ActionModal(props) {
 
                     continue;
                 }
+
                 if (formDataInputs[x].type === "radio") {
                     if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
                         errors.push(`radio option selection "${formDataInputs[x].name}" is required`);
@@ -232,6 +289,7 @@ export default function ActionModal(props) {
             // TODO: If the action is a peer evaluation, we need to translate the form data
             if (isPeerEval) {
                 formData = translatePeerEvalData(formData);
+                console.warn("post translation:", formData);
             }
 
             body.append("form_data", JSON.stringify(formData));
@@ -306,8 +364,8 @@ export default function ActionModal(props) {
                 return user.role === USERTYPES.COACH ? submitButton : " Coach Actions are Available Only to Coaches";
             case ACTION_TARGETS.individual:
                 return user.role === USERTYPES.STUDENT ? submitButton : " Individual Actions are Available Only to Students";
-            case ACTION_TARGETS.peer_evaluation:
-                return user.role !== USERTYPES.COACH ? submitButton : "Available when all Students Submit";
+            // case ACTION_TARGETS.peer_evaluation:
+            //     return user.role !== USERTYPES.COACH ? submitButton : "Available when all Students Submit";
             default:
                 return submitButton;
         }
@@ -375,8 +433,6 @@ export default function ActionModal(props) {
         );
     } else {
         return (
-            // TODO: Add property for Modal to not close when clicking outside of it
-            // Property is called closeOnDimmerClick
             <Modal
                 closeOnDimmerClick={false}
                 className={"sticky"}

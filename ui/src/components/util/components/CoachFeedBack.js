@@ -1,13 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
-    Button, Divider, Form, FormField, Grid, Header, Label, List, ListItem, Rating,
+    Button, Divider, Form, FormField, Grid, Header, Label, List, ListItem, Rating,FormInput,
     Table, TableHeader, TableHeaderCell, TableRow, TextArea
 } from "semantic-ui-react";
 import {SecureFetch} from "../functions/secureFetch";
-import {config} from "../functions/constants";
+import {config, USERTYPES} from "../functions/constants";
 import ResultTable from "./ResultTable";
+import {UserContext} from "../functions/UserContext";
+
+
 
 export default function CoachFeedback(props) {
+    const {user} = useContext(UserContext);
     const [studentList, setStudentList] = useState([]);
     const [submissionList, setSubmissionList] = useState([]);
     const [studentData, setStudentData] = useState([]);
@@ -16,6 +20,8 @@ export default function CoachFeedback(props) {
     const [studentListFetched, setStudentListFetched] = useState(false);
     const [submissionsFetched, setSubmissionsFetched] = useState(false);
     const [feedback, setFeedback] = useState({});
+
+    const getFullName = (student) => `${student.fname} ${student.lname}`
 
     const camelCaseToSentence = (string = "") =>
         string.replace(
@@ -29,6 +35,7 @@ export default function CoachFeedback(props) {
             .then(response => response.json())
             .then((actionLogs) => {
                 const formatedLogs = actionLogs.map(submission => JSON.parse(submission.form_data));
+                console.warn('formatedLogs', formatedLogs)
                 setSubmissionList(actionLogs);
                 setStudentData(formatedLogs);
                 setSubmissionsFetched(true);
@@ -82,9 +89,11 @@ export default function CoachFeedback(props) {
     // Function to generate feedback form for a student
     const generateFeedbackForm = (student, index) => {
         // TODO: Implement max rating based on the form
+        console.warn("CURRENT STUDENT", student, studentData)
         const maxRating = 5
         const showAverage = true;
-        console.log(student)
+
+        // console.log(student)
         // console.log("Students", studentList);
         // console.log("Submissions", submissionList);
         // console.log("Student Data", studentData);
@@ -96,7 +105,7 @@ export default function CoachFeedback(props) {
 
         // NOTE: Get other student ratings separate from self ratings for average
         const otherStudentRatings = studentData
-            .filter(formData => formData.Submitter !== student && formData.Students[student])
+            .filter(formData => formData.Submitter !== student && formData.Submitter !== "COACH" && formData.Students[student])
             .map(formData => ({
                 From: formData.Submitter,
                 Ratings: formData.Students[student].Ratings,
@@ -123,13 +132,13 @@ export default function CoachFeedback(props) {
 
         // console.log("OthersFeedbackAvg", OthersFeedbackAvg);
         // console.log("OthersFeedback", OthersFeedback);
-        console.log("CoachFeedback", CoachFeedback);
+        // console.log("CoachFeedback", CoachFeedback);
         return (
             <div key={index}>
-                <Form>
-                    <Divider section/>
-                    <Header size={"large"} block>{student}</Header>
-                    <Header as="h3">Coach Feedback</Header>
+                        <Divider section/>
+                        <Header size={"large"} block>{student}</Header>
+
+                    <div><Header as="h3">Coach Feedback</Header>
                     <Grid>
                         {Object.keys(CoachFeedback).map((category, index) => {
                             if (index % 2 === 0) {
@@ -137,66 +146,54 @@ export default function CoachFeedback(props) {
                                     <Grid.Row columns={2} key={index}>
                                         <Grid.Column>
                                             <Label as='h2'>{Object.keys(CoachFeedback)[index]}</Label>
-                                            <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index]] || "No Feedback Given" } readOnly={true} />
+                                            <textarea rows={4}
+                                                      value={CoachFeedback[Object.keys(CoachFeedback)[index]] || "No Feedback Given"}
+                                                      readOnly={true}/>
                                         </Grid.Column>
                                         {Object.keys(CoachFeedback)[index + 1] && (
                                             <Grid.Column>
                                                 <Label as='h2'>{Object.keys(CoachFeedback)[index + 1]}</Label>
-                                                <textarea rows={4} value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]] || "No Feedback Given"} readOnly={true} />
+                                                <textarea rows={4}
+                                                          value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]] || "No Feedback Given"}
+                                                          readOnly={true}/>
                                             </Grid.Column>
                                         )}
                                     </Grid.Row>
                                 );
                             }
                             return null;
-                       })}
+                        })}
                     </Grid>
                     <Divider section/>
+                    </div>
+                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members</Header>
+                        {/*NOTE: This can probably be deleted since we have the ability to just view the full submissions on SubmissionView model*/}
 
-                    <Header as="h3">{showAverage && "Average "} Ratings from Team Members</Header>
-                    {/*NOTE: This can probably be deleted since we have the ability to just view the full submissions on SubmissionView model*/}
+                        {/*NOTE: AVERAGE RATINGS VIEW*/}
+                        {showAverage && (
+                            <div>
+                                <ResultTable
+                                    OthersFeedbackAvg={OthersFeedbackAvg}
+                                    maxRating={maxRating}
+                                    OthersFeedback={OthersFeedback}
+                                    student={student}
+                                />
 
-                    {/*NOTE: AVERAGE RATINGS VIEW*/}
-                    {showAverage && (
-                        <div>
-                            <ResultTable
-                                OthersFeedbackAvg={OthersFeedbackAvg}
-                                maxRating={maxRating}
-                                OthersFeedback = {OthersFeedback}
-                            />
-                            <Divider section/>
+                                <Divider section/>
 
-                            {/*NOTE: Since Feedback isnt in the average, do we display it here?*/}
-                            {/*Or just say they view in full submission viewer and have the AI generation be the "average"*/}
-                            {/*<Header as="h3">Feedback from Team Members</Header>*/}
-                            {/*<List>*/}
-                            {/*    {OthersFeedback.map((otherStudent, otherIndex) => (*/}
-                            {/*        <ListItem key={otherIndex}>*/}
-                            {/*            <Label ribbon size={'large'} color={'grey'}>{otherStudent.From}</Label>*/}
-                            {/*            <List relaxed>*/}
-                            {/*                {Object.keys(otherStudent.Feedback).map((category, index) => (*/}
-                            {/*                    <ListItem key={index}>*/}
-                            {/*                        <Label size={"medium"}>{category}</Label>*/}
-                            {/*                        <TextArea disabled>{otherStudent.Feedback[category]}</TextArea>*/}
-                            {/*                    </ListItem>*/}
-                            {/*                ))}*/}
-                            {/*            </List>*/}
-                            {/*            <br/>*/}
-                            {/*        </ListItem>*/}
-                            {/*    ))}*/}
-                            {/*</List>*/}
-                        </div>
-                    )}
 
-                    <Divider section/>
-                    <FormField>
-                        <Header as={'h3'}>Coach Feedback</Header>
-                        <textarea rows={4} />
-                        <Button attached='bottom' content='Generate AI Summarization' />
-                    </FormField>
-                </Form>
+                            </div>
+                        )}
+
+                        <Divider section/>
+                        <FormField>
+                            <Header as={'h3'}>Coach Feedback</Header>
+                            <textarea name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4}/>
+                            <Button attached='bottom' content='Generate AI Summarization'/>
+                        </FormField>
+
             </div>
-        );
+    );
     }
 
     // Render the component only if both studentList and submissionList are populated
@@ -209,7 +206,7 @@ export default function CoachFeedback(props) {
         <>
             <Header as="h1">Peer Evaluation Summary</Header>
             {allSubmissionsMade ? (
-                studentList.map((student, index) => generateFeedbackForm(student, index))
+                <></>
             ) : (
                 <>
                     <Header as="h3" color="red">Not all students have submitted their feedback.</Header>
@@ -224,7 +221,11 @@ export default function CoachFeedback(props) {
                 </>
             )}
 
-            {/*{studentList.map((student, index) => generateFeedbackForm(student, index))}*/}
+            <Form>
+            {studentList
+                // .filter(student => user.role === USERTYPES.COACH || getFullName(user) === student )
+                .map((student, index) => generateFeedbackForm(student, index))}
+            </Form>
         </>
     );
 }

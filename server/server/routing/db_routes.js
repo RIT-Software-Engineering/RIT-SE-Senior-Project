@@ -1414,6 +1414,8 @@ module.exports = (db) => {
             })
     })
 
+
+
     db_router.post("/editPage", [UserAuth.isAdmin], (req, res) => {
         let editPageQuery = `UPDATE page_html
         SET html = ?
@@ -1630,6 +1632,25 @@ module.exports = (db) => {
             .catch((error) => {
                 res.status(500).send(error);
             });
+    });
+
+    db_router.get("/getCoachFeedback",[UserAuth.isSignedIn],async(req,res)=>{
+        const getFeedbackQuery = `
+            SELECT form_data 
+            FROM action_log
+            JOIN main.users u on action_log.system_id = u.system_id
+            WHERE action_log.project = ?  AND u.type = 'coach'
+        `;
+
+        db.query(getFeedbackQuery, req.query.project_id)
+            .then((feedback)=>{
+                console.warn(feedback);
+                res.send(feedback);})
+            .catch((e)=> {
+                console.error(e);
+                res.status(500).send(e);
+            });
+
     });
 
     db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {

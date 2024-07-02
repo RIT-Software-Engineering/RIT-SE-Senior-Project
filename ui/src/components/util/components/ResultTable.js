@@ -40,6 +40,11 @@ export default function ResultTable(props) {
                                         maxRating={props.maxRating}
                                     />
                                     <span> ({props.OthersFeedbackAvg[category]})</span>
+                                    <input
+                                        type="hidden"
+                                        name={`AverageFeedback-${category}-${props.student}`}
+                                        value={props.OthersFeedbackAvg[category]}
+                                    />
                                 </TableCell>
                             </TableRow>
                             {expandedRow === index && (

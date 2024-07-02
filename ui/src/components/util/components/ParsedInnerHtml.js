@@ -35,11 +35,12 @@ const parseHTML = (html, components,studentList, errorFields, submitter) => {
             if (studentList && node.attribs['includestudents'] && node.attribs['includestudents'] === "true") {
                 if (node.attribs['selffeedback'] && node.attribs['selffeedback'] === "true") {
                     node.attribs['students'] = [...studentList, submitter]
+
                 } else {
                     node.attribs['students'] = studentList;
                 }
             }
-
+            console.log(node.attribs['students'])
             node.attribs['errorFields'] = errorFields
 
             const Component = components[componentKey];
