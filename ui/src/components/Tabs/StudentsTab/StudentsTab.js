@@ -50,6 +50,10 @@ export default function StudentsTab(props) {
                 alert("Failed to get students data" + error);
             });
 
+        if (props.project_id !== null) {
+            getCoachFeedback(props.project_id)
+        }
+
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {

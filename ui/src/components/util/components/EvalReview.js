@@ -57,7 +57,7 @@ export default function EvalReview (props){
 
                                         </Table.Body>
                                     </Table>
-                                    <Message fluid color={'blue'}>
+                                    <Message fluid color={'grey'}>
                                         <Message.Header content={"Coach Feedback"}/>
                                         <Divider />
                                         <Message.Content content={data.Feedback}/>
