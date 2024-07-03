@@ -1650,7 +1650,6 @@ module.exports = (db) => {
                 console.error(e);
                 res.status(500).send(e);
             });
-
     });
 
     db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {

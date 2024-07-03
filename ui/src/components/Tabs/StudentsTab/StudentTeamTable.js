@@ -98,6 +98,7 @@ export default function StudentTeamTable(props) {
             tableHeaderCells.push(
                 <TableHeaderCell key={"student-tab-table-login"}>
                     Last Login
+                    {console.log("test")}
                 </TableHeaderCell>
             )
         }

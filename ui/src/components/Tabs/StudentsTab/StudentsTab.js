@@ -2,10 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import { Accordion, Icon } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
-import _ from "lodash";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
+import EvalReview from "../../util/components/EvalReview";
+import _ from "lodash";
+import CoachFeedback from "../../util/components/CoachFeedBack";
 
 export default function StudentsTab(props) {
     const [students, setStudentsData] = useState([]);
@@ -14,39 +16,50 @@ export default function StudentsTab(props) {
     const [myProjects, setMyProjectsData] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({})
     const [activeProjectIds, setActiveProjectIds] = useState({})
-    const userContext = useContext(UserContext);
     const [coachFeedback, setCoachFeedback] = useState([]);
+    const [isCoachSub, setIsCoachSub] = useState(false);
+
+    const userContext = useContext(UserContext);
     const unassignedStudentsStr = "Unassigned students";
+
+    function getCoachFeedback(project_id) {
+        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${props.project_id}`)
+            .then((response) => response.json())
+            .then((data)=>{
+                let forms = data.map(s =>JSON.parse(s.form_data));
+                setCoachFeedback(forms);
+                console.log("id", props.project_id);
+                if(CoachFeedback.length !==0){
+                    setIsCoachSub(true);
+                }
+            }).catch((error) => {
+            alert("Failed to get Coach's Feedback" + error);
+        });
+    }
 
     useEffect(() => {
         SecureFetch(config.url.API_GET_SEMESTER_STUDENTS)
             .then((response) => response.json())
             .then((studentsData) => {
+
                 setStudentsData(studentsData);
-                console.log("Students Data", studentsData)
+                //console.log("Students Data", studentsData)
 
             })
             .catch((error) => {
                 alert("Failed to get students data" + error);
             });
+
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                //console.log("Semesters Data", semestersData)
+                console.log("Semesters Data", semestersData)
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
 
-        console.log(props.project_id)
-        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${props.project_id}`)
-            .then((response) => response.json())
-            .then((data)=>{
-                console.warn(data)
-            }).catch((error) => {
-            alert("Failed to get Coach's Feedback" + error);
-        });
 
         const getProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_SEMESTER_PROJECTS;
         SecureFetch(getProjects)
@@ -138,6 +151,7 @@ export default function StudentsTab(props) {
     if (students.length > 0 && semesters.length > 0) {
 
         let semesterMap = generateMappedData(students, semesters, projects);
+        console.warn("SEMESTER MAP", semesterMap)
         let projectMap = generateMappedProjects(myProjects);
         semesterMap = _.sortBy(semesterMap, ["end_date", "start_date", "name"]);
 
@@ -208,6 +222,27 @@ export default function StudentsTab(props) {
 
                 activeProjects.reverse()
 
+                semesterPanels.push(
+                    <div>
+                        <h3>My PeerEvaluations</h3>
+                        <Accordion
+                            key={semester.semester_id}
+                            fluid
+                            styled
+                            panels={[
+                                {
+                                    key: 'eval',
+                                    title: semester.name,
+                                    content: {content: <EvalReview
+                                        user={userContext.user}
+                                        forms={coachFeedback}
+                                        isSub={isCoachSub}
+                                        />}
+                                }
+                            ]}
+                        />
+                    </div>
+                )
 
                 semesterPanels.push(
                     <div className="accordion-button-group">
@@ -255,6 +290,7 @@ export default function StudentsTab(props) {
 
         semesterPanels.push(
             <h3>All Students</h3>
+
         )
         if (userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0) {
             semesterPanels.push(
@@ -266,17 +302,7 @@ export default function StudentsTab(props) {
 
     }
 
-    semesterPanels.push(
-        <>
-            <h3>My PeerEvaluations</h3>
-            <Accordion
-                fluid
-                styled
-            />
 
-
-        </>
-    )
 
     return semesterPanels.reverse();
 }
