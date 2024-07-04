@@ -10,7 +10,7 @@ export default function ResultTable(props) {
         setExpandedRow(expandedRow === index ? null : index);
     };
     useEffect( ()=>{
-        console.log(props.OthersFeedback);
+        // console.log(props.OthersFeedback);
     },[]);
     return (
         <Container fluid>

@@ -13,7 +13,7 @@ export default function EvalReview(props) {
     const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
 
     useEffect(() => {
-        console.info("COACH FEEDBACK", coachFeedback);
+        // console.info("COACH FEEDBACK", coachFeedback);
         sortFeedback();
     }, []);
 
@@ -42,7 +42,7 @@ export default function EvalReview(props) {
             <div key={"EvalReview" + props.id}>
                 {
                     Object.entries(student).map(([student_name, data]) => {
-                            console.log(student_name, data)
+                            // console.log(student_name, data)
                             return <Card key={props.id + student_name + "Card" + index} fluid>
                                 <Card.Content>
                                     <Header size='tiny' onClick={() => {

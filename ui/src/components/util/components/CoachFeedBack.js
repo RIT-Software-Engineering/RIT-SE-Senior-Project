@@ -35,7 +35,7 @@ export default function CoachFeedback(props) {
             .then(response => response.json())
             .then((actionLogs) => {
                 const formatedLogs = actionLogs.map(submission => JSON.parse(submission.form_data));
-                console.warn('formatedLogs', formatedLogs)
+                // console.warn('formatedLogs', formatedLogs)
                 setSubmissionList(actionLogs);
                 setStudentData(formatedLogs);
                 setSubmissionsFetched(true);
@@ -89,7 +89,7 @@ export default function CoachFeedback(props) {
     // Function to generate feedback form for a student
     const generateFeedbackForm = (student, index) => {
         // TODO: Implement max rating based on the form
-        console.warn("CURRENT STUDENT", student, studentData)
+        // console.warn("CURRENT STUDENT", student, studentData)
         const maxRating = 5
         const showAverage = true;
 

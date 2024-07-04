@@ -1645,7 +1645,7 @@ module.exports = (db) => {
 
         db.query(getFeedbackQuery, req.query.project_id)
             .then((feedback)=>{
-                console.warn(feedback);
+                // console.warn(feedback);
                 res.send(feedback);})
             .catch((e)=> {
                 console.error(e);
