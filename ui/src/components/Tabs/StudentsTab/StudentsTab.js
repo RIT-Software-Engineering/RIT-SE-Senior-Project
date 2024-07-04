@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Accordion, Icon } from "semantic-ui-react";
-import { config, USERTYPES } from "../../util/functions/constants";
+import React, {useEffect, useState, useContext} from "react";
+import {Accordion, Card, Icon, Table} from "semantic-ui-react";
+import {config, USERTYPES} from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
-import { SecureFetch } from "../../util/functions/secureFetch";
-import { UserContext } from "../../util/functions/UserContext";
-import { isSemesterActive } from "../../util/functions/utils";
+import {SecureFetch} from "../../util/functions/secureFetch";
+import {UserContext} from "../../util/functions/UserContext";
+import {isSemesterActive} from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
 import _ from "lodash";
-import CoachFeedback from "../../util/components/CoachFeedBack";
+import SubmissionViewerModal from "../DashboardTab/TimelinesView/Timeline/SubmissionViewerModal";
 
 export default function StudentsTab(props) {
     const [students, setStudentsData] = useState([]);
@@ -16,22 +16,30 @@ export default function StudentsTab(props) {
     const [myProjects, setMyProjectsData] = useState([]);
     const [activeSemesters, setActiveSemesters] = useState({})
     const [activeProjectIds, setActiveProjectIds] = useState({})
-    const [coachFeedback, setCoachFeedback] = useState([]);
-    const [isCoachSub, setIsCoachSub] = useState(false);
+    const [coachFeedback, setCoachFeedback] = useState({});
 
     const userContext = useContext(UserContext);
     const unassignedStudentsStr = "Unassigned students";
 
+    function updateCoachFeedback(project_id, form_data) {
+        setCoachFeedback((prev) => ({...prev, [project_id]: form_data}));
+    }
+
     function getCoachFeedback(project_id) {
-        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${props.project_id}`)
+        // console.log("Getting Coach Feedback", project_id)
+        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`)
             .then((response) => response.json())
-            .then((data)=>{
-                let forms = data.map(s =>JSON.parse(s.form_data));
-                setCoachFeedback(forms);
-                console.log("id", props.project_id);
-                if(CoachFeedback.length !==0){
-                    setIsCoachSub(true);
-                }
+            .then((data) => {
+                let forms = data.map(s => {
+                    let form_data = JSON.parse(s.form_data);
+                    form_data['ActionData'] = {
+                        title: s.title,
+                        completion_date: s.date,
+                        id: s.action_id
+                    }
+                    return form_data;
+                });
+                updateCoachFeedback(project_id, forms);
             }).catch((error) => {
             alert("Failed to get Coach's Feedback" + error);
         });
@@ -41,10 +49,7 @@ export default function StudentsTab(props) {
         SecureFetch(config.url.API_GET_SEMESTER_STUDENTS)
             .then((response) => response.json())
             .then((studentsData) => {
-
                 setStudentsData(studentsData);
-                //console.log("Students Data", studentsData)
-
             })
             .catch((error) => {
                 alert("Failed to get students data" + error);
@@ -58,7 +63,7 @@ export default function StudentsTab(props) {
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                console.log("Semesters Data", semestersData)
+                // console.log("Semesters Data", semestersData)
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
@@ -70,6 +75,10 @@ export default function StudentsTab(props) {
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
+                const project_ids = projectsData.map(project => project.project_id);
+                project_ids.forEach(project_id => {
+                    getCoachFeedback(project_id);
+                });
             })
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
@@ -102,14 +111,14 @@ export default function StudentsTab(props) {
             semesterMap[semester.semester_id] = semester;
         });
 
-        let mappedData = { [unassignedStudentsStr]: { students: [], name: unassignedStudentsStr, projects: {} } }
+        let mappedData = {[unassignedStudentsStr]: {students: [], name: unassignedStudentsStr, projects: {}}}
 
 
         studentData.forEach(student => {
             if (student.semester_group) {
                 if (!mappedData[student.semester_group]) {
                     mappedData[student.semester_group] = {
-                        projects: { "noProject": { students: [], name: "No Project" } },
+                        projects: {"noProject": {students: [], name: "No Project"}},
                         name: semesterMap[student.semester_group]?.name,
                         start_date: semesterMap[student.semester_group]?.start_date,
                         end_date: semesterMap[student.semester_group]?.end_date,
@@ -155,12 +164,10 @@ export default function StudentsTab(props) {
     if (students.length > 0 && semesters.length > 0) {
 
         let semesterMap = generateMappedData(students, semesters, projects);
-        console.warn("SEMESTER MAP", semesterMap)
         let projectMap = generateMappedProjects(myProjects);
         semesterMap = _.sortBy(semesterMap, ["end_date", "start_date", "name"]);
 
         let activeProjects = [];
-
 
         semesterMap.forEach(semester => {
             if (semester.name !== unassignedStudentsStr) {
@@ -185,7 +192,10 @@ export default function StudentsTab(props) {
                                     fluid
                                     styled
                                     onTitleClick={() => {
-                                        setActiveProjectIds({ ...activeProjectIds, [projectKey]: !activeProjectIds[projectKey] })
+                                        setActiveProjectIds({
+                                            ...activeProjectIds,
+                                            [projectKey]: !activeProjectIds[projectKey]
+                                        })
                                     }}
                                     panels={[{
                                         key: projectKey,
@@ -215,7 +225,7 @@ export default function StudentsTab(props) {
                                         target="_blank"
                                         rel="noreferrer"
                                     >
-                                        <Icon name="mail" />
+                                        <Icon name="mail"/>
                                     </a>
                                 </div>
                             </div>
@@ -227,35 +237,16 @@ export default function StudentsTab(props) {
                 activeProjects.reverse()
 
                 semesterPanels.push(
-                    <div>
-                        <h3>My PeerEvaluations</h3>
-                        <Accordion
-                            key={semester.semester_id}
-                            fluid
-                            styled
-                            panels={[
-                                {
-                                    key: 'eval',
-                                    title: semester.name,
-                                    content: {content: <EvalReview
-                                        user={userContext.user}
-                                        forms={coachFeedback}
-                                        isSub={isCoachSub}
-                                        />}
-                                }
-                            ]}
-                        />
-                    </div>
-                )
-
-                semesterPanels.push(
                     <div className="accordion-button-group">
                         <Accordion
                             key={semester.semester_id}
                             fluid
                             styled
                             onTitleClick={() => {
-                                setActiveSemesters({ ...activeSemesters, [semester.semester_id]: !activeSemesters[semester.semester_id] })
+                                setActiveSemesters({
+                                    ...activeSemesters,
+                                    [semester.semester_id]: !activeSemesters[semester.semester_id]
+                                })
                             }}
                             panels={[{
                                 key: semester.semester_id,
@@ -284,7 +275,7 @@ export default function StudentsTab(props) {
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                <Icon name="mail" />
+                                <Icon name="mail"/>
                             </a>
                         </div>
                     </div>
@@ -292,20 +283,71 @@ export default function StudentsTab(props) {
             }
         })
 
+
         semesterPanels.push(
             <h3>All Students</h3>
-
         )
         if (userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0) {
             semesterPanels.push(
                 activeProjects,
                 <h3>My Teams</h3>
-
             )
         }
 
-    }
+        semesterPanels.unshift(<h3>Peer Evaluations</h3>)
 
+        semesterMap.forEach(semester => {
+            Object.keys(semester.projects).map(projectKey => {
+                const project = semester.projects[projectKey];
+                const submissions = coachFeedback[projectKey];
+                if (!submissions) return true;
+
+                const subAccordion = (submission) => (
+                    <Accordion
+                        key={"Peer-Eval" + projectKey + submission.ActionData.id}
+                        fluid
+                        styled
+                        panels={[
+                            {
+                                key: `${projectKey}eval${submission.ActionData.id}`,
+                                title: `${submission.ActionData.title} - ${submission.ActionData.completion_date}`,
+                                content: {
+                                    content: <EvalReview
+                                        user={userContext.user}
+                                        forms={submission}
+                                        isSub={submission?.Submitter === 'COACH'}
+                                        id={projectKey + semester.name}
+                                    />
+                                }
+                            }
+                        ]}
+                    />
+                )
+
+                // console.warn("PROJECT KEY", projectKey, semester.projects[projectKey], coachFeedback[projectKey])
+                // console.log("Has Submission", hasSubmission)
+                semesterPanels.unshift(
+                    <div key={"PeerEval" + projectKey}>
+                        <Accordion
+                            key={"PEEREVAL" + projectKey}
+                            fluid
+                            styled
+                            panels={[
+                                {
+                                    key: 'eval',
+                                    title: project.name + " - " + semester.name,
+                                    content: {
+                                        content: coachFeedback[projectKey].map(submission => subAccordion(submission))
+                                    }
+                                }
+                            ]}
+                        />
+                    </div>
+                )
+            })
+        })
+
+    }
 
 
     return semesterPanels.reverse();

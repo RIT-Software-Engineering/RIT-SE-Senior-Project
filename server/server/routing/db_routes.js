@@ -1636,9 +1636,10 @@ module.exports = (db) => {
 
     db_router.get("/getCoachFeedback",[UserAuth.isSignedIn],async(req,res)=>{
         const getFeedbackQuery = `
-            SELECT form_data 
+            SELECT form_data, a.action_title as title, action_log.submission_datetime as date, a.action_id
             FROM action_log
             JOIN main.users u on action_log.system_id = u.system_id
+            JOIN main.actions a on action_log.action_template = a.action_id
             WHERE action_log.project = ?  AND u.type = 'coach'
         `;
 

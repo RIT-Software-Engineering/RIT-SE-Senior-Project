@@ -1,68 +1,87 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {SecureFetch} from "../functions/secureFetch";
 import {config, USERTYPES} from "../functions/constants";
-import {Card, Divider, Message, Rating, Table, TextArea} from "semantic-ui-react";
+import {Card, Divider, Header, Icon, Message, Rating, Table, TextArea} from "semantic-ui-react";
 
-export default function EvalReview (props){
-    const [isSubmissions, setSubmissions] = useState(false);
+export default function EvalReview(props) {
     const [userFeedback, setUserFeedback] = useState([]);
+    const [studentExpanded, setStudentExpanded] = useState({});
     const coachFeedback = props.forms;
     const userName = `${props.user.fname} ${props.user.lname}`
+    const userIsStudent = props.user.role === USERTYPES.STUDENT;
 
-    useEffect(()=>{
-        console.log(coachFeedback);
+    useEffect(() => {
+        // console.info("COACH FEEDBACK", coachFeedback);
         sortFeedback();
-    },[]);
+    }, []);
 
-    const sortFeedback =() => {
-       let list = [];
-       coachFeedback.forEach((feedback)=> {
-           list.push(
-               Object.fromEntries(
-                   Object.entries(feedback.Students)
-                       .filter(([student, _]) => props.user.role === USERTYPES.COACH || userName === student))
-           );
-       })
-        console.log("filtered", list);
-        setUserFeedback(list);
-        userFeedback.map(() => {});
+    const updateExpanded = (student_name, value) => {
+        const new_value = !!value ? value : !studentExpanded[student_name];
+        setStudentExpanded({...studentExpanded, [student_name]: new_value});
     }
 
-    const generateFeedbackCards = (student,index) => {
-        console.log("STUEDNT INFO", student, index)
+    const sortFeedback = () => {
+        let list = [];
+
+        list.push(
+            Object.fromEntries(
+                Object.entries(coachFeedback.Students)
+                    .filter(([student, _]) => !userIsStudent || userName === student))
+        );
+
+        // console.log("filtered", list);
+        setUserFeedback(list);
+    }
+
+    const generateFeedbackCards = (student, index) => {
+        // console.log("STUEDNT INFO", student, index)
 
         return (
-            <div>
+            <div key={"EvalReview" + props.id}>
                 {
                     Object.entries(student).map(([student_name, data]) => {
                             console.log(student_name, data)
-                            return <Card fluid>
-                                <Card.Content>
-                                    <Card.Header > {student_name}'s Feedback Summary #{index + 1}</Card.Header>
+                            return <Card key={props.id + student_name + "Card" + index} fluid>
+                                <Card.Content style={{marginTop: "8px", marginBottom: "-8px"}}>
+                                    <Header size='tiny' onClick={() => {
+                                        updateExpanded(student_name)
+                                    }}>
+                                        {
+                                            !userIsStudent &&
+                                            <Icon size='tiny'
+                                                  name={studentExpanded[student_name] ? 'caret up' : 'caret down'}/>
+                                        }
+                                        {userIsStudent ? "Your" : `${student_name}'s`} Feedback Summary
+                                    </Header>
                                 </Card.Content>
-                                <Card.Content>
-                                    <Table striped bordered >
-                                    <Table.Header>
-                                        <Table.HeaderCell>Category</Table.HeaderCell>
-                                        <Table.HeaderCell>Rating</Table.HeaderCell>
-                                    </Table.Header>
-                                        <Table.Body>
-                                            {Object.entries(data.AverageRatings).map(([category, rating]) => (
-                                                <Table.Row key={category}>
-                                                    <Table.Cell>{category}</Table.Cell>
-                                                    <Table.Cell><Rating defaultRating={rating} disabled maxRating={5}/> ({rating})
-                                                    </Table.Cell>
-                                                </Table.Row>
-                                            ))}
+                                {
+                                    (studentExpanded[student_name] || userIsStudent) && <Card.Content>
+                                        <Table striped>
+                                            <Table.Header>
+                                                <Table.HeaderCell>Category</Table.HeaderCell>
+                                                <Table.HeaderCell>Rating</Table.HeaderCell>
+                                            </Table.Header>
+                                            <Table.Body>
+                                                {Object.entries(data.AverageRatings).map(([category, rating]) => (
+                                                    <Table.Row key={props.id + student_name + category + "Rating"}>
+                                                        <Table.Cell>{category}</Table.Cell>
+                                                        <Table.Cell>
+                                                            <Rating defaultRating={rating} disabled
+                                                                    maxRating={5}/> ({rating})
+                                                        </Table.Cell>
+                                                    </Table.Row>
+                                                ))}
 
-                                        </Table.Body>
-                                    </Table>
-                                    <Message fluid color={'grey'}>
-                                        <Message.Header content={"Coach Feedback"}/>
-                                        <Divider />
-                                        <Message.Content content={data.Feedback}/>
-                                    </Message>
-                                </Card.Content>
+                                            </Table.Body>
+                                        </Table>
+                                        <Message fluid color={'grey'}>
+                                            <Message.Header content={"Coach Feedback"}/>
+                                            <Divider/>
+                                            <Message.Content content={data.Feedback}/>
+                                        </Message>
+                                    </Card.Content>
+
+                                }
                             </Card>;
                         }
                     )
@@ -72,14 +91,12 @@ export default function EvalReview (props){
     }
 
     return (
-        <>
-            {props.isSub ? (
-                <>
-                {userFeedback.map((feedback,index)=> generateFeedbackCards(feedback,index))}
-                </>
-                    ) : (
-                <h2>No Feedback Available</h2>
-            )}
-        </>
+        <div>
+            {
+                props.isSub ?
+                    userFeedback.map((feedback, index) => generateFeedbackCards(feedback, index)) :
+                    <h5>No Submission</h5>
+            }
+        </div>
     )
 }
