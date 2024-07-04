@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
+import React, {useContext, useState} from 'react'
+import {ACTION_TARGETS, config} from "../../../../util/functions/constants";
 import {Button, Divider, Header, Icon, Message, MessageHeader, Modal, Rating, Segment} from 'semantic-ui-react';
-import { formatDate } from '../../../../util/functions/utils';
-import { SecureFetch } from '../../../../util/functions/secureFetch';
+import {formatDate} from '../../../../util/functions/utils';
+import {SecureFetch} from '../../../../util/functions/secureFetch';
+import EvalReview from "../../../../util/components/EvalReview";
 
 export default function SubmissionViewerModal(props) {
-
     const [open, setOpen] = useState(false);
     const [submission, setSubmission] = useState({});
     const [files, setFiles] = useState([]);
@@ -37,7 +37,7 @@ export default function SubmissionViewerModal(props) {
                 setDue(dueDateTime);
                 let submitDate = new Date(props.action.submission_datetime.split(' ')[0].toString());
                 setLate(dueDateTime < submitDate);
-                if(dueDateTime < submitDate){
+                if (dueDateTime < submitDate) {
                     daysLate(dueDateTime, submitDate)
                 }
             })
@@ -71,8 +71,7 @@ export default function SubmissionViewerModal(props) {
 
     const IS_PEER_EVALUATION = props.target === ACTION_TARGETS.peer_evaluation;
 
-    return (
-        <Modal
+    return (<Modal
             className={"sticky"}
             onClose={() => {
                 setOpen(false);
@@ -83,15 +82,13 @@ export default function SubmissionViewerModal(props) {
                 props?.isOpenCallback(true);
             }}
             open={open}
-            trigger={
-                <div onClick={loadSubmission}>
-                    {props.trigger || <Button icon>
-                        <Icon name="eye" />
-                    </Button>}
-                </div>
-            }
+            trigger={<div onClick={loadSubmission}>
+                {props.trigger || <Button icon>
+                    <Icon name="eye"/>
+                </Button>}
+            </div>}
             header={`Submission for ${props.action.action_title} (${props.target[0]?.toUpperCase()}${props.target?.substring(1)} Action)`}
-            actions={[{ content: "Close", key: 0 }]}
+            actions={[{content: "Close", key: 0}]}
             content={{
                 content: <div>
                     <p><b>Semester/Project:</b> {props.semesterName} - {props.projectName}</p>
@@ -102,20 +99,19 @@ export default function SubmissionViewerModal(props) {
                         {` (Due ${formatDate(due)})`}
                         {late && ` ${day} days' late`}
                     </p>
-                    <Divider />
+                    <Divider/>
                     <h3>Submission</h3>
                     {(props.noSubmission || noSubmission) && <p>{noSubmissionText(props.target)}</p>}
+
                     {/* Normal Submissions */}
                     {(!noSubmission && !IS_PEER_EVALUATION) && <>
                         {Object.keys(submission)?.map((key) => {
                             if (submission[key].includes("fakepath")) {
                                 return false;
                             }
-                            return (
-                                <div key={key}>
+                            return (<div key={key}>
                                     <p><b>{key}:</b> {submission[key]}</p>
-                                </div>
-                            );
+                                </div>);
                         })}
                         {files?.map((file) => {
                             return <div key={file}>
@@ -130,46 +126,39 @@ export default function SubmissionViewerModal(props) {
                             </div>;
                         })}
                     </>}
+
                     {/* Peer Evaluations */}
-                    {(!noSubmission && IS_PEER_EVALUATION) && <>
+                    {(!noSubmission && IS_PEER_EVALUATION && submission.Submitter !== 'COACH') && <>
                         <h2>Coach Feedback</h2>
                         <Segment secondary={false}>
                             {Object.keys(submission.CoachFeedback ?? {})?.map(key => (
                                 <div style={{marginBottom: '35px'}}>
                                     <Header as={'h3'} dividing content={key}/>
                                     <p> {submission.CoachFeedback[key] || <i>No Feedback Provided</i>}</p>
-                                </div>
-                            ))}
+                                </div>))}
                         </Segment>
-
                         <h2>Peer Feedback</h2>
-                        {Object.keys(submission.Students ?? {})?.map(key => (
-                            <div>
+                        {Object.keys(submission.Students ?? {})?.map(key => (<div>
                                 <Header as={'h2'} dividing content={key}/>
-                                <Segment >
+                                <Segment>
                                     {/* Peer Qualative Feedback */}
                                     {Object.keys(submission.Students[key].Feedback)?.map(feedback_key => (
                                         <div style={{marginBottom: '25px'}}>
                                             <Header as={'h3'} dividing content={feedback_key}/>
 
                                             {/* Showing quantative feedback with written feedback */}
-                                            {submission.Students[key].Ratings.hasOwnProperty(feedback_key) && (
-                                                <Rating
+                                            {submission.Students[key].Ratings.hasOwnProperty(feedback_key) && (<Rating
                                                     rating={submission.Students[key].Ratings[feedback_key]}
                                                     maxRating={5}
                                                     disabled
-                                                />
-                                            )}
-
+                                                />)}
                                             {submission.Students[key].Feedback[feedback_key] === "" ?
                                                 <p style={{marginTop: '5px'}}><i>No Feedback Provided</i></p> :
                                                 <Message>
                                                     <MessageHeader>Feedback:</MessageHeader>
                                                     <p> {submission.Students[key].Feedback[feedback_key]}</p>
-                                                </Message>
-                                            }
-                                        </div>
-                                    ))}
+                                                </Message>}
+                                        </div>))}
 
                                     {/* Peer Quantative Feedback */}
                                     {Object.keys(submission.Students[key].Ratings)?.map(rating_key => {
@@ -187,12 +176,18 @@ export default function SubmissionViewerModal(props) {
                                     })}
                                 </Segment>
                                 <br/>
-                            </div>
-                        ))}
+                            </div>))}
+                    </>}
 
+                    {/* Peer Evaluations Coach View */}
+                    {(!noSubmission && IS_PEER_EVALUATION && submission.Submitter === 'COACH') && <>
+                        <EvalReview
+                            forms={submission}
+                            isSub={submission?.Submitter === 'COACH'}
+                            id={props.projectName + props.semesterName}
+                        />
                     </>}
                 </div>
             }}
-        />
-    );
+        />);
 }

@@ -2,16 +2,18 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {SecureFetch} from "../functions/secureFetch";
 import {config, USERTYPES} from "../functions/constants";
 import {Card, Divider, Header, Icon, Message, Rating, Table, TextArea} from "semantic-ui-react";
+import {UserContext} from "../functions/UserContext";
 
 export default function EvalReview(props) {
     const [userFeedback, setUserFeedback] = useState([]);
     const [studentExpanded, setStudentExpanded] = useState({});
     const coachFeedback = props.forms;
-    const userName = `${props.user.fname} ${props.user.lname}`
-    const userIsStudent = props.user.role === USERTYPES.STUDENT;
+    const userContext = useContext(UserContext);
+    const userName = `${userContext.user.fname} ${userContext.user.lname}`
+    const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
 
     useEffect(() => {
-        // console.info("COACH FEEDBACK", coachFeedback);
+        console.info("COACH FEEDBACK", coachFeedback);
         sortFeedback();
     }, []);
 
@@ -42,7 +44,7 @@ export default function EvalReview(props) {
                     Object.entries(student).map(([student_name, data]) => {
                             console.log(student_name, data)
                             return <Card key={props.id + student_name + "Card" + index} fluid>
-                                <Card.Content style={{marginTop: "8px", marginBottom: "-8px"}}>
+                                <Card.Content>
                                     <Header size='tiny' onClick={() => {
                                         updateExpanded(student_name)
                                     }}>
@@ -74,7 +76,7 @@ export default function EvalReview(props) {
 
                                             </Table.Body>
                                         </Table>
-                                        <Message fluid color={'grey'}>
+                                        <Message color={'grey'}>
                                             <Message.Header content={"Coach Feedback"}/>
                                             <Divider/>
                                             <Message.Content content={data.Feedback}/>

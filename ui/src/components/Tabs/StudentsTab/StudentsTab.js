@@ -313,7 +313,6 @@ export default function StudentsTab(props) {
                                 title: `${submission.ActionData.title} - ${submission.ActionData.completion_date}`,
                                 content: {
                                     content: <EvalReview
-                                        user={userContext.user}
                                         forms={submission}
                                         isSub={submission?.Submitter === 'COACH'}
                                         id={projectKey + semester.name}
