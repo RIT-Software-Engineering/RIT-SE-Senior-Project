@@ -11,8 +11,11 @@ export default function Timeline(props) {
 
     const [actions, setActions] = useState([]);
     const userContext = useContext(UserContext);
-    const [milestoneVisible, setMilestoneVisible] = useState(false);
-    const [ganttVisible, setGanttVisible] = useState(true);
+
+    const storedMilestoneView = sessionStorage.getItem(props.elementData?.project_id + ' milestone');
+    const storedGanttView = sessionStorage.getItem(props.elementData?.project_id + ' gantt');
+    const [milestoneVisible, setMilestoneVisible] = useState(storedMilestoneView ? storedMilestoneView === 'true' : true);
+    const [ganttVisible, setGanttVisible] = useState(storedGanttView ? storedGanttView === 'true' : (userContext.user?.role == USERTYPES.ADMIN ? false : true));
 
     const loadTimelineActions = (project_id) => {
         SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`)
@@ -46,6 +49,8 @@ export default function Timeline(props) {
             <div className="checkbox-container">
                 <h3>All Actions</h3>
                 <TimelineCheckboxes 
+                        projectId={props.elementData.project_id}
+                        role={userContext.user?.role}
                         setMilestoneVisible={setMilestoneVisible}
                         setGanttVisible={setGanttVisible}
                         milestoneVisible={milestoneVisible}
