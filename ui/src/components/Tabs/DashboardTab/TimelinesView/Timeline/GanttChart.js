@@ -26,7 +26,7 @@ export default function GanttChart(props) {
 
     useEffect(()=> {
         document.documentElement.style.setProperty('--gantt-maximum-columns', semesterLength + 1);
-        document.documentElement.style.setProperty('--gantt-maximum-rows', sortedActions.length + 4);
+        // document.documentElement.style.setProperty('--gantt-maximum-rows', sortedActions.length + 4); //this appears to crunch rows. why???
 
         if (semesterActive && firstAction) {
             try {
