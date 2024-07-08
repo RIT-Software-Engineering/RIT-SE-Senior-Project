@@ -72,7 +72,7 @@ const QuestionBuilder = (props) => {
             isSelfRating: false,
             ratingScale: globalSettings.ratingScale,
             hasFeedback: false,
-            feedbackPrompt: '',
+            feedbackPrompt: "",
             questions: ["Question 1"],
             levels: ['Extremely Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Extremely Satisfied'],
         };
@@ -98,112 +98,173 @@ const QuestionBuilder = (props) => {
         setGlobalSettings({...globalSettings, [field]: value});
     };
 
-    const setQuestionEditing = (index, value) => {
-        setIsEditingTitle({...isEditingTitle, [index]: value});
-    }
-    const copyHtmlToClipboard = () => {
+    function copyHtmlToClipboard() {
         let html = "";
         questions.map((question, index) => {
             if (question.addHeader) {
                 html += `<h2>${question.title}</h2>\n`;
             }
-            html += '<div>\n'
-            if (question.type === 'QuestionFeedback') {
-                html += `<QuestionFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' ordered='${question.ordered}' required='${question.isRequired}' includeStudents='${question.isForStudents}' selfFeedback='${globalSettings.selfRating}' />`
-            } else if (question.type === 'QuestionPeerFeedback') {
-                html += `<QuestionPeerFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
-            } else if (question.type === 'QuestionTable') {
-                html += `<QuestionTable questions='${JSON.stringify(question.questions)}' scale='${globalSettings.ratingScale}' required='${question.isRequired}' icon='${question.icon}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
-            } else if (question.type === 'QuestionMoodRating') {
-                const levels = globalSettings.ratingScale === 3
-                    ? question.levels.slice(1, 4)
-                    : [...question.levels]
+            html += "<div>\n";
+
+            if (question.type === "QuestionFeedback") {
+                html += `\t<QuestionFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' ordered='${question.ordered}' required='${question.isRequired}' includeStudents='${question.isForStudents}' selfFeedback='${globalSettings.selfRating}' />`;
+            } else if (question.type === "QuestionPeerFeedback") {
+                html += `\t<QuestionPeerFeedback title="${question.title}" questions='${JSON.stringify(question.questions)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`;
+            } else if (question.type === "QuestionTable") {
+                html += `\t<QuestionTable questions='${JSON.stringify(question.questions)}' scale='${globalSettings.ratingScale}' required='${question.isRequired}' icon='${question.icon}' selfFeedback='${globalSettings.selfRating}'  feedback='${globalSettings.attachFeedback && question.hasFeedback}' includeStudents='true'/>`;
+            } else if (question.type === "QuestionMoodRating") {
+                const levels =
+                    globalSettings.ratingScale === 3
+                        ? question.levels.slice(1, 4)
+                        : [...question.levels];
                 question.questions.map((question_title, _) => {
-                    html += `<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`
-                })
+                    html += `\t<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' feedback='${globalSettings.attachFeedback && question.hasFeedback}' includeStudents='true'/>`;
+                });
             }
-            html += '\n</div>\n<br/>\n'
-        })
+            html += "\n</div>\n<br/>\n";
 
-        navigator.clipboard.writeText(html).then(() => {
-            alert('HTML copied to clipboard');
-        }, (err) => {
-            alert('Failed to copy HTML to clipboard');
-        })
+            if (question.hasFeedback && !globalSettings.attachFeedback) {
+                html += "<div>\n";
+                html += `\t<QuestionPeerFeedback title="${question.title + " Feedback"}" questions='${JSON.stringify(question.questions)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' includeStudents='true'/>`;
+                html += "\n</div>\n<br/>\n";
+            }
+        });
 
-        return html
-    };
+        navigator.clipboard.writeText(html).then(
+            () => {
+                alert("HTML copied to clipboard");
+            },
+            (err) => {
+                alert("Failed to copy HTML to clipboard");
+            },
+        );
 
+        return html;
+    }
 
-    const renderQuestionForm = (question, index) => {
+    function renderQuestionForm(question, index) {
         const settingsFields = [];
-        const needsOrdered = ['QuestionFeedback', 'QuestionPeerFeedback'];
-        const needsHeader = ['QuestionTable', 'QuestionMoodRating'];
+        const needsOrdered = ["QuestionFeedback", "QuestionPeerFeedback"];
+        const needsHeader = ["QuestionTable", "QuestionMoodRating"];
+        const needsFeedback = ["QuestionMoodRating", "QuestionTable"];
 
         if (needsOrdered.includes(question.type)) {
             if (!question.ordered) question.ordered = false;
             settingsFields.push(
-                <Form.Field key={'ordered' + index}>
-
-                    <Popup content={'This will order the questions with numbers.'} trigger={
-                        <Checkbox
-                            label="Ordered"
-                            checked={question.ordered}
-                            onChange={(e, data) => updateQuestion(index, 'ordered', data.checked)}
-                        />
-                    }/>
-                </Form.Field>
+                <Form.Field key={"ordered" + index}>
+                    <Popup
+                        content={"This will order the questions with numbers."}
+                        trigger={
+                            <Checkbox
+                                label="Ordered"
+                                checked={question.ordered}
+                                onChange={(e, data) =>
+                                    updateQuestion(
+                                        index,
+                                        "ordered",
+                                        data.checked,
+                                    )
+                                }
+                            />
+                        }
+                    />
+                </Form.Field>,
             );
         }
 
         if (needsHeader.includes(question.type)) {
             if (!question.addHeader) question.addHeader = false;
             settingsFields.push(
-                <Form.Field key={'add-header' + index}>
+                <Form.Field key={"add-header" + index}>
                     <Popup
-                        content={'This will add a Header element on top of the question with the Question Title as its value'}
+                        content={
+                            "This will add a Header element on top of the question with the Question Title as its value"
+                        }
                         trigger={
                             <Checkbox
                                 label="Add Header"
                                 checked={question.addHeader}
-                                onChange={(e, data) => updateQuestion(index, 'addHeader', data.checked)}
+                                onChange={(e, data) =>
+                                    updateQuestion(
+                                        index,
+                                        "addHeader",
+                                        data.checked,
+                                    )
+                                }
                             />
-                        }/>
-                </Form.Field>
+                        }
+                    />
+                </Form.Field>,
             );
         }
 
-        if (question.type === 'QuestionTable') {
-            if (!question.icon) question.icon = 'default';
+        if (needsFeedback.includes(question.type)) {
+            if (!question.hasFeedback) question.hasFeedback = false;
             settingsFields.push(
-                <Form.Field key={'icon' + index}>
-                    {'Icon '}
-                    <Rating clearable icon={question.icon === 'default' ? false : question.icon} defaultRating={2}
-                            maxRating={globalSettings.ratingScale}/>
+                <Form.Field key={"has-feedback" + index}>
+                    <Popup
+                        content={
+                            "This will add a student feedback input field for each student for each question."
+                        }
+                        trigger={
+                            <Checkbox
+                                label="Attach Feedback"
+                                checked={question.hasFeedback}
+                                onChange={(e, data) =>
+                                    updateQuestion(
+                                        index,
+                                        "hasFeedback",
+                                        data.checked,
+                                    )
+                                }
+                            />
+                        }
+                    />
+                </Form.Field>,
+            );
+        }
+
+        if (question.type === "QuestionTable") {
+            if (!question.icon) question.icon = "default";
+            settingsFields.push(
+                <Form.Field key={"icon" + index}>
+                    {"Icon "}
+                    <Rating
+                        clearable
+                        icon={
+                            question.icon === "default" ? false : question.icon
+                        }
+                        defaultRating={2}
+                        maxRating={globalSettings.ratingScale}
+                    />
                     <Dropdown
                         selection
                         options={[
-                            {key: 'default' + index, text: 'Default', value: 'default'},
-                            {key: 'heart' + index, text: 'Heart', value: 'heart'},
-                            {key: 'star' + index, text: 'Star', value: 'star'},
+                            { key: "default" + index, text: "Default", value: "default" },
+                            { key: "heart" + index, text: "Heart", value: "heart" },
+                            { key: "star" + index, text: "Star", value: "star" },
                         ]}
                         value={question.icon}
-                        onChange={(e, data) => updateQuestion(index, 'icon', data.value)}
+                        onChange={(e, data) => updateQuestion(index, "icon", data.value) }
                     />
-                </Form.Field>
+                </Form.Field>,
             );
         }
 
-        if (question.type === 'QuestionFeedback') {
+        if (question.type === "QuestionFeedback") {
             settingsFields.push(
-                <Form.Field key={'include-students' + index}>
-                    <Popup content={'This will make the student have to answer each question for each peer'} trigger={
-                        <Checkbox
-                            label="Include Students"
-                            checked={question.isForStudents}
-                            onChange={(e, data) => updateQuestion(index, 'isForStudents', data.checked)}/>
-                    }/>
-                </Form.Field>
+                <Form.Field key={"include-students" + index}>
+                    <Popup
+                        content={ "This will make the student have to answer each question for each peer" }
+                        trigger={
+                            <Checkbox
+                                label="Include Students"
+                                checked={question.isForStudents}
+                                onChange={(e, data) => updateQuestion( index, "isForStudents", data.checked ) }
+                            />
+                        }
+                    />
+                </Form.Field>,
             );
         }
 
@@ -345,60 +406,96 @@ const QuestionBuilder = (props) => {
         </Segment>)
     };
 
-    const renderPreviewForm = () => (
-        <Form>
-            {questions.map((question, index) => {
-                const students = [...mockStudents];
-                if (globalSettings.selfRating) students.push("Student (SELF)");
-                return (<div key={question.title + index}>
-                        {question.addHeader && <Header as="h2" dividing>{question.title}</Header>}
-                        {question.type === 'QuestionFeedback' &&
-                            <QuestionFeedback
-                                title={question.title}
-                                questions={question.questions}
-                                ordered={question.ordered}
-                                required={question.isRequired}
-                                includeStudents={question.isForStudents}
-                                selfFeedback={globalSettings.selfRating}
-                                students={question.isForStudents ? students : [""]}
-                            />}
-                        {question.type === 'QuestionPeerFeedback' &&
-                            <QuestionPeerFeedback
-                                title={question.title}
-                                questions={question.questions}
-                                required={question.isRequired}
-                                selfFeedback={globalSettings.selfRating}
-                                students={students}
-                            />}
-                        {question.type === 'QuestionTable' &&
-                            <QuestionTable
-                                questions={question.questions}
-                                scale={globalSettings.ratingScale}
-                                required={question.isRequired}
-                                icon={question.icon}
-                                selfFeedback={globalSettings.selfRating}
-                                students={students}
-                            />}
-                        {question.type === 'QuestionMoodRating' &&
-                            question.questions.map((question_title, i) => (
-                                <QuestionMoodRating
-                                    key={question_title + i}
-                                    question={question_title}
-                                    levels={globalSettings.ratingScale === 3
-                                        ? question.levels.slice(1, 4)
-                                        : [...question.levels]}
+    function renderPreviewForm() {
+        return (
+            <Form>
+                {questions.map((question, index) => {
+                    const students = [...mockStudents];
+                    if (globalSettings.selfRating)
+                        students.push("Student (SELF)");
+                    return (
+                        <div key={question.title + index}>
+                            {question.addHeader && (
+                                <Header as="h2" dividing>
+                                    {question.title}
+                                </Header>
+                            )}
+                            {question.type === "QuestionTable" && (
+                                <QuestionTable
+                                    feedback={
+                                        question.hasFeedback &&
+                                        globalSettings.attachFeedback
+                                    }
+                                    questions={question.questions}
+                                    scale={globalSettings.ratingScale}
+                                    required={question.isRequired}
+                                    icon={question.icon}
+                                    selfFeedback={globalSettings.selfRating}
+                                    students={students}
+                                />
+                            )}
+                            {question.type === "QuestionMoodRating" &&
+                                question.questions.map((question_title, i) => (
+                                    <QuestionMoodRating
+                                        key={question_title + i}
+                                        feedback={
+                                            question.hasFeedback &&
+                                            globalSettings.attachFeedback
+                                        }
+                                        question={question_title}
+                                        levels={
+                                            globalSettings.ratingScale === 3
+                                                ? question.levels.slice(1, 4)
+                                                : [...question.levels]
+                                        }
+                                        required={question.isRequired}
+                                        selfFeedback={globalSettings.selfRating}
+                                        students={students}
+                                    />
+                                ))}
+                            {question.type === "QuestionFeedback" && (
+                                <QuestionFeedback
+                                    title={question.title}
+                                    questions={question.questions}
+                                    ordered={question.ordered}
+                                    required={question.isRequired}
+                                    includeStudents={question.isForStudents}
+                                    selfFeedback={globalSettings.selfRating}
+                                    students={
+                                        question.isForStudents ? students : [""]
+                                    }
+                                />
+                            )}
+                            {question.type === "QuestionPeerFeedback" && (
+                                <QuestionPeerFeedback
+                                    title={question.title}
+                                    questions={question.questions}
                                     required={question.isRequired}
                                     selfFeedback={globalSettings.selfRating}
                                     students={students}
                                 />
-                            ))
-                        }
-                    </div>
-                )
-            })
-            }
-        </Form>
-    );
+                            )}
+                            {question.hasFeedback &&
+                                !globalSettings.attachFeedback && (
+                                    <>
+                                        <br/>
+                                        <QuestionPeerFeedback
+                                            title={question.title + " Feedback"}
+                                            questions={question.questions}
+                                            required={question.isRequired}
+                                            selfFeedback={
+                                                globalSettings.selfRating
+                                            }
+                                            students={students}
+                                        />
+                                    </>
+                                )}
+                        </div>
+                    );
+                })}
+            </Form>
+        );
+    }
 
     return (
         <div>
@@ -444,13 +541,20 @@ const QuestionBuilder = (props) => {
                                     <Form.Field>
                                         <label>
                                             <Popup
-                                                content="If enabled, feedback will be attached to the question."
-                                                trigger={<Icon name='question circle outline'/>}/>
+                                                content="If enabled, attached feedback will be attached to the question inline instead of in a different section."
+                                                trigger={
+                                                    <Icon name="question circle outline"/>
+                                                }
+                                            />
                                             Attach Feedback Inline
                                         </label>
                                         <Form.Checkbox
-                                            checked={globalSettings.attachFeedback}
-                                            onChange={(e, data) => updateGlobalSetting('attachFeedback', data.checked)}
+                                            checked={
+                                                globalSettings.attachFeedback
+                                            }
+                                            onChange={(e, data) =>
+                                                updateGlobalSetting("attachFeedback", data.checked,)
+                                            }
                                         />
                                     </Form.Field>
                                     <Divider/>
