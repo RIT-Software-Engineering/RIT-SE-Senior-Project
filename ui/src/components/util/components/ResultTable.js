@@ -52,7 +52,7 @@ export default function ResultTable(props) {
                                     <TableCell colSpan="3">
                                         <Card fluid>
                                             <CardContent>
-                                                <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback"}</CardHeader>
+                                                <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback (Not Visible to Evaluated Student)"}</CardHeader>
                                                 <Card.Description>
                                                     <List>
                                                         {props.OthersFeedback.map((student, otherIndex) => (

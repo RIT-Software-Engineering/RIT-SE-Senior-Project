@@ -138,7 +138,7 @@ export default function CoachFeedback(props) {
                         <Divider section/>
                         <Header size={"large"} block>{student}</Header>
 
-                    <div><Header as="h3">Coach Feedback</Header>
+                    <div><Header as="h3">Coach Feedback (Not Visible to Evaulated Students)</Header>
                     <Grid>
                         {Object.keys(CoachFeedback).map((category, index) => {
                             if (index % 2 === 0) {
@@ -166,7 +166,7 @@ export default function CoachFeedback(props) {
                     </Grid>
                     <Divider section/>
                     </div>
-                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members</Header>
+                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members (Visible to Evaluated Students)</Header>
                         {/*NOTE: This can probably be deleted since we have the ability to just view the full submissions on SubmissionView model*/}
 
                         {/*NOTE: AVERAGE RATINGS VIEW*/}
@@ -187,8 +187,8 @@ export default function CoachFeedback(props) {
 
                         <Divider section/>
                         <FormField>
-                            <Header as={'h3'}>Coach Feedback</Header>
-                            <textarea name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4}/>
+                            <Header as={'h3'}>Coach Summarization + Feedback (Visible to Evaluated Student) </Header>
+                    <textarea placeholder={ "Future instruction text / The entire team will see this"} name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4}/>
                             <Button attached='bottom' content='Generate AI Summarization'/>
                         </FormField>
 
