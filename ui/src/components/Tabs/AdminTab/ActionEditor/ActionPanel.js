@@ -154,6 +154,7 @@ export default function ActionPanel(props) {
       header={props.header}
       create={!!props.create}
       button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+      trigger={props.trigger}
       preChange={preChange}
       preSubmit={(data) => {
         if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {

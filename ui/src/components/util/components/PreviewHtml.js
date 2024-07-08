@@ -59,7 +59,8 @@ export default function PreviewHtml(props){
     return (
         <Modal
             className={"sticky"}
-            trigger={<Button icon={<Icon name="eye" />} />}
+            trigger={
+                props.trigger || (<Button icon={<Icon name="eye" />}/>)}
             header={props.header}
             content={{
                 content:

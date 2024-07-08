@@ -3,6 +3,7 @@ import { ACTION_STATES } from '../../../../util/functions/constants';
 import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
+import ActionToolTip from '../../../AdminTab/ActionEditor/ActionToolTip';
 
 export default function GanttChart(props) {
     const containerRef = useRef(null);
@@ -150,6 +151,11 @@ export default function GanttChart(props) {
         const barStart = Math.round(dateDiff(startCol, startDate)) + 1; 
         const barSpan = Math.round(dateDiff(startDate, dueDate)) + 1;
 
+        let admin = false;
+        if(props.admin && props.admin == "true") {
+            admin = true
+        }
+
         const ganttRowButton = <button
             ref={(action == firstAction) ? firstActionRef : null}
             className={`action-bar ${color}`}
@@ -157,31 +163,63 @@ export default function GanttChart(props) {
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
             ><p style={{'left' : sidebarWidth}}>{action.action_title}</p></button>
-        const ganttBar = <ToolTip
-            autoLoadSubmissions={props.autoLoadSubmissions}
-            color={color} noPopup={props.noPopup}
-            trigger={ganttRowButton}
-            action={action} projectId={props.projectId}
-            semesterName={props.semesterName}
-            projectName={props.projectName}
-            key={`tooltip-${action.action_title}-${idx}`}
-            reloadTimelineActions={props.reloadTimelineActions}
-        />
+        let ganttBar;
+        if(admin) {
+            ganttBar = <ActionToolTip
+                autoLoadSubmissions={props.autoLoadSubmissions}
+                color={color} noPopup={props.noPopup}
+                trigger={ganttRowButton}
+                action={action} projectId={props.projectId}
+                semesterData={props.semesterData}
+                semesterName={props.semesterName}
+                projectName={props.projectName}
+                key={`tooltip-${action.action_title}-${idx}`}
+                index={idx}
+                reloadTimelineActions={props.reloadTimelineActions}
+            />
+        } else {
+            ganttBar = <ToolTip
+                autoLoadSubmissions={props.autoLoadSubmissions}
+                color={color} noPopup={props.noPopup}
+                trigger={ganttRowButton}
+                action={action} projectId={props.projectId}
+                semesterName={props.semesterName}
+                projectName={props.projectName}
+                key={`tooltip-${action.action_title}-${idx}`}
+                reloadTimelineActions={props.reloadTimelineActions}
+            />
+        }
         ganttBars.push(ganttBar)
 
         const leftRowButton = <button
             className="sidebar"
             style={{'gridRow' : gridrow}}>{action.action_title}</button>
-        const leftRow = <ToolTip
-            autoLoadSubmissions={props.autoLoadSubmissions}
-            color={color} noPopup={props.noPopup}
-            trigger={leftRowButton}
-            action={action} projectId={props.projectId}
-            semesterName={props.semesterName}
-            projectName={props.projectName}
-            key={`tooltip-${action.action_title}-${idx}`}
-            reloadTimelineActions={props.reloadTimelineActions}
-        />
+        let leftRow;
+        if(admin) {
+            leftRow = <ActionToolTip
+                autoLoadSubmissions={props.autoLoadSubmissions}
+                color={color} noPopup={props.noPopup}
+                trigger={leftRowButton}
+                action={action} projectId={props.projectId}
+                semesterData={props.semesterData}
+                semesterName={props.semesterName}
+                projectName={props.projectName}
+                key={`tooltip-${action.action_title}-${idx}`}
+                index={idx}
+                reloadTimelineActions={props.reloadTimelineActions}
+            />
+        } else {
+            leftRow = <ToolTip
+                autoLoadSubmissions={props.autoLoadSubmissions}
+                color={color} noPopup={props.noPopup}
+                trigger={leftRowButton}
+                action={action} projectId={props.projectId}
+                semesterName={props.semesterName}
+                projectName={props.projectName}
+                key={`tooltip-${action.action_title}-${idx}`}
+                reloadTimelineActions={props.reloadTimelineActions}
+            />
+        }
         leftSideRows.push(leftRow)
     })
 

@@ -68,9 +68,6 @@ export default function ActionTable(props) {
         title = semesterName;
     }
 
-    console.log("start:" + semesterStart);
-    console.log("end:" + semesterEnd);
-
     return (
         <>
             <Accordion
@@ -122,6 +119,8 @@ export default function ActionTable(props) {
                                         <TableBody>{renderActions()}</TableBody>
                                     </Table>
                                     <GanttChart
+                                        admin="true"
+                                        semesterData={props.semesterData}
                                         semesterName={semesterName}
                                         semesterStart={semesterStart} 
                                         semesterEnd={semesterEnd} 
