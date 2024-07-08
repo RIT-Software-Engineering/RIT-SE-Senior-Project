@@ -1,9 +1,8 @@
-import React, { act, useEffect, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import { numDaysLeftInYear, isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
 import _ from "lodash";
 
-export default function GanttChartBackdrop(props) {
-    const todayRef = useRef(null);
+export default forwardRef(function GanttChartBackdrop(props, todayRef) {
     const semesterStartDate = props.semesterStart;
     const semesterEndDate = props.semesterEnd;
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
@@ -12,20 +11,6 @@ export default function GanttChartBackdrop(props) {
     if (!(semesterActive)) {
         today = new Date(semesterStartDate);
     }
-
-    useEffect(()=> {
-        // if (semesterActive && firstAction) {
-        //     try {
-        //         let header = todayRef.current.offsetParent;
-        //         let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
-        //         let viewLeft = todayRef.current.offsetLeft;
-        //         containerRef.current.scrollTo(viewLeft, viewTop);    
-        //     } catch (e) {
-        //         console.log('issue with snapping to current day (x), first action (y)', e);
-        //     }
-        // }
-
-    }, [props.timeSpan, today]);
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const weekNames = ["Mon", "Tues", "Weds", "Thurs", "Fri", "Sat", "Sun"];
@@ -43,7 +28,6 @@ export default function GanttChartBackdrop(props) {
 
     // sticky text left - 200px is fixed sidebar width
     let sidebarWidth = props.isMobile ? 0 : '200px';
-
     let isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
 
     if (props.timeSpan == 'week') {
@@ -77,6 +61,7 @@ export default function GanttChartBackdrop(props) {
 
     // columns
     for (let i = 1; i < cols; i++) {
+        isToday = semesterActive ? (today.getUTCDate() == currDate && today.getUTCMonth() == currMonth && today.getUTCFullYear() == currYear) : false;
 
         if (props.timeSpan == 'week') {
             // if new month
@@ -101,6 +86,7 @@ export default function GanttChartBackdrop(props) {
             // per day (header names)
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
+                // ref={isToday ? todayRef : null}
                 className="gantt-header second"
                 style={{'gridColumn' : i, 'left' : sidebarWidth}}
                 >{weekNames[(startCol.getDay() + i)%7]}</div>); // days of week
@@ -129,6 +115,7 @@ export default function GanttChartBackdrop(props) {
             // per day (header names)
             ganttHeader.push(<div
                 key={props.timeSpan + 'second' + i}
+                // ref={isToday ? todayRef : null}
                 className="gantt-header second"
                 style={{'gridColumn' : i, 'left' : sidebarWidth}}
                 >{currDate}</div>); // date
@@ -161,6 +148,8 @@ export default function GanttChartBackdrop(props) {
                     style={{'gridColumn' : i + '/ span ' + monthLength, 'left' : sidebarWidth}}
                     >{monthNames[currMonth]}</div>); // month
                 }
+
+            
         }
 
         // per day (column colors)
@@ -179,4 +168,4 @@ export default function GanttChartBackdrop(props) {
         <div className="gantt-header">{ganttHeader}</div>
         <div className='gantt-background'>{ganttCols}</div>
     </>);
-}
+});

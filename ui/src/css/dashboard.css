@@ -72,7 +72,7 @@
 }
 
 .gantt-col {
-    grid-row: 1/var(--gantt-maximum-rows);
+    grid-row: 3/var(--gantt-maximum-rows);
 }
 
 .gantt-col.weekday {
@@ -84,7 +84,6 @@
 }
 
 .gantt-col.today {
-    /* border: rebeccapurple 1px; */
     background-color: #f76902;
 }
 

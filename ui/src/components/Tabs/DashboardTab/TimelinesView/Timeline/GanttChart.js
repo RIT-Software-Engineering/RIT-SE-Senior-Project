@@ -1,6 +1,6 @@
 import React, { act, createElement, useEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
-import { isSemesterActive, dateDiff, daysInMonth } from "../../../../util/functions/utils";
+import { isSemesterActive, dateDiff } from "../../../../util/functions/utils";
 import GanttChartBackdrop from './GanttChartBackdrop';
 import _ from "lodash";
 import ToolTip from "./ToolTip";
@@ -15,23 +15,23 @@ export default function GanttChart(props) {
     const semesterLength = dateDiff(semesterStartDate, semesterEndDate) + 2;
     const semesterActive = isSemesterActive(semesterStartDate, semesterEndDate);
     const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let today = new Date(); // eventually set it to current date (no param). this is for dev
+    let today = new Date();
     if (!(semesterActive)) {
         today = new Date(semesterStartDate);
     }
     let firstAction = sortedActions.find((action) => {return new Date(action?.due_date) >= today}); // make this work
     const timeSpans = {'week' : 14, 'month' : 31, 'project' : semesterLength};
     const [selectedTimeSpan, setSelectedTimeSpan] = React.useState("week");
+    let sidebarWidth = isMobile() ? 0 : 200;    // sticky text left - 200px is fixed sidebar width
 
     useEffect(()=> {
-        document.documentElement.style.setProperty('--gantt-maximum-columns', semesterLength);
+        document.documentElement.style.setProperty('--gantt-maximum-columns', semesterLength + 1);
         document.documentElement.style.setProperty('--gantt-maximum-rows', sortedActions.length + 4);
 
         if (semesterActive && firstAction) {
             try {
-                let header = todayRef.current.offsetParent;
-                let viewTop = firstActionRef.current.offsetTop - (header?.offsetHeight ?? 0);
-                let viewLeft = todayRef.current.offsetLeft;
+                let viewTop = firstActionRef.current.offsetTop - todayRef.current.offsetTop;
+                let viewLeft = todayRef.current.offsetLeft - sidebarWidth;
                 containerRef.current.scrollTo(viewLeft, viewTop);    
             } catch (e) {
                 console.log('issue with snapping to current day (x), first action (y)', e);
@@ -58,7 +58,6 @@ export default function GanttChart(props) {
     let ganttBars = [];
     let leftSideRows = [];
     let startCol = new Date(semesterStartDate);
-    let sidebarWidth = isMobile() ? 0 : '200px';    // sticky text left - 200px is fixed sidebar width
     leftSideRows.push(<div className="sidebar header">Name</div>);
 
     sortedActions.forEach((action, idx) => {
@@ -100,7 +99,7 @@ export default function GanttChart(props) {
             style={{'gridRow' : gridrow, 'gridColumn' : barStart + ' / span ' + barSpan,
                     'textWrap' : 'nowrap', 'overflow' : 'visible'}}
             key={idx}
-            ><p style={{'left' : sidebarWidth}}>{action.action_title}</p></button>
+            ><p style={{'left' : sidebarWidth + 'px'}}>{action.action_title}</p></button>
         let ganttBar;
         if(admin) {
             ganttBar = <ActionToolTip
@@ -170,6 +169,7 @@ export default function GanttChart(props) {
         className='gantt-container'
         style={{'gridAutoColumns' : 100/timeSpans[selectedTimeSpan] + '%'}}>
         <GanttChartBackdrop
+            ref={todayRef}
             semesterStart={semesterStartDate}
             semesterEnd={semesterEndDate}
             timeSpan={selectedTimeSpan}
