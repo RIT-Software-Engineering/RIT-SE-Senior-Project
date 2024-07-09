@@ -9,6 +9,8 @@ const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
 const he = require('he');
+const {provide_summary} = require("../SummerizationAI");
+
 
 function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
@@ -2141,6 +2143,41 @@ module.exports = (db) => {
                 res.status(500).send(err);
             });
     });
+
+    db_router.get("/GenerateSummary",(req,res)=>{
+        const test_john_smith = `{"Student":"John Smith","Ratings":[{"From":"Dude Bro","Feedback":{"Cooperation And Attitude":"John SmiCooperation and Attitudeth","Quantity Of Work":"Quantity1","Initiative":"Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity Quantity"}},{"From":"Jack James","Feedback":{"Cooperation And Attitude":"Cooperation and AttitudeCooperation and AttitudeCooperation and AttitudeCooperation and AttitudeCooperation and AttitudeCooperation and AttitudeCooperation and Attitude","Quantity Of Work":"Lots of work done","Initiative":"I hate u"}}]}`;
+        const test_dude_bro = `{"Student":"Dude Bro","Ratings":[{"From":"John Smith","Feedback":{"Cooperation And Attitude":"Dude bro sucks","Quantity Of Work":"Dude bro sucks again","Initiative":"Dude bro sucks initiative"}},{"From":"Jack James","Feedback":{"Cooperation And Attitude":"NOT COOPORATIVE","Quantity Of Work":"None","Initiative":"Ily"}}]}`;
+        const test_jack_james = `{"Student":"Jack James","Ratings":[{"From":"John Smith","Feedback":{"Cooperation And Attitude":"jack james coop","Quantity Of Work":"jack james quantity","Initiative":"jack james initiative"}},{"From":"Dude Bro","Feedback":{"Cooperation And Attitude":"Cooperation and Attitudejackjames","Quantity Of Work":"Quantity2","Initiative":"asdasd"}}]}`;
+
+        // const test_completion_1 = "Your team members appreciate your hard work and the quantity of contributions you made to the project.  However, there were some concerns raised about your overall at";
+        // const test_completion_2 = "Your team members appreciate your hard work and the quantity of contributions you made to the project.  However, there were some concerns raised about your overall attitude and cooperation.   The feeedback suggests you could have been more proactive in working collaboratively with the team and being m";
+        // const test_completion_3 = "";
+
+        // const testFeedback = (context, name) => {
+        //     provide_summary(context).then((response) => {
+        //         console.warn('Test for', name);
+        //         console.log(response);
+        //     })
+        // }
+        //
+        //
+        //
+        // testFeedback(test_john_smith, "John Smith");
+        // testFeedback(test_dude_bro, "Dude Bro");
+        // testFeedback(test_jack_james, "Jack James");
+
+        // res.send();
+
+        provide_summary(test_john_smith).then((response) => {
+            console.warn('Test for', "John Smith");
+            console.log(response);
+            res.status(200).send(response);
+        }).catch((err) => {
+            console.error(err);
+            res.status(500).send(err);
+        });
+    });
+
 
     db_router.post("/createSponsor", [UserAuth.isCoachOrAdmin, body("page_html").unescape()], (req, res) => {
 

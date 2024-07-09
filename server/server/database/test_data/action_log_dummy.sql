@@ -1,5 +1,4 @@
-INSERT INTO action_log(
-    action_template,
+INSERT INTO action_log(    action_template,
     system_id,
     mocK_id,
     project,
