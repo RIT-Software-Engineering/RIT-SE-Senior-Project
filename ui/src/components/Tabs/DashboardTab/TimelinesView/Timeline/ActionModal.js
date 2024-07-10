@@ -105,6 +105,7 @@ export default function ActionModal(props) {
 
             for (const key in formData) {
                 let [category, header, student] = key.split("-")
+
                 if(student===undefined) {
                     console.error( `Incorrect Name Formatting ${key}. Not Parsable`)
                     continue
@@ -126,7 +127,7 @@ export default function ActionModal(props) {
                         StudentData.AverageRatings[header] = value
                         break;
                     case "UsedAI":
-                        StudentData.UsedAI = value
+                        StudentData.UsedAI = value==="1"
                         break;
                     case "SelfFeedback":
                         StudentData.SelfRating[header] = value
@@ -288,6 +289,7 @@ export default function ActionModal(props) {
 
             // TODO: If the action is a peer evaluation, we need to translate the form data
             if (isPeerEval) {
+                console.log("pre translation:", formData)
                 formData = translatePeerEvalData(formData);
                 console.warn("post translation:", formData);
             }

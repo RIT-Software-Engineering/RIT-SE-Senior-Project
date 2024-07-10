@@ -1,8 +1,10 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {SecureFetch} from "../functions/secureFetch";
 import {config, USERTYPES} from "../functions/constants";
-import {Card, Divider, Header, Icon, Message, Rating, Table, TextArea} from "semantic-ui-react";
+import {Card, Divider, Header, Icon, Message, Rating, Table, Label, Popup} from "semantic-ui-react";
 import {UserContext} from "../functions/UserContext";
+import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip";
+
 
 export default function EvalReview(props) {
     const [userFeedback, setUserFeedback] = useState([]);
@@ -37,7 +39,7 @@ export default function EvalReview(props) {
 
     const generateFeedbackCards = (student, index) => {
         // console.log("STUEDNT INFO", student, index)
-
+        console.log(student);
         return (
             <div key={"EvalReview" + props.id}>
                 {
@@ -78,9 +80,25 @@ export default function EvalReview(props) {
                                         </Table>
                                         <Message color={'grey'}>
                                             <Message.Header content={"Coach Feedback"}/>
+                                            <Popup
+                                                content={
+                                                    <Label basic color={'blue'} as={'a'} image >
+                                                        <img  src='Gemini_language_model_logo.png' alt='Google Gemini  logo' color='white' />
+                                                        <p style={ {margin: "-12px 0 0 70px", fontSize: "medium", color:'#086EFF'}}>was used for Summarization of your Feedback</p>
+                                                </Label >
+                                            }
+                                                // wide={"very"}
+                                                flowing
+                                                trigger={
+                                                    <Label corner={'right'} icon={"google"} color={'blue'}/>
+                                                }
+                                            />
                                             <Divider/>
                                             <Message.Content content={data.Feedback}/>
                                         </Message>
+
+
+
                                     </Card.Content>
 
                                 }
