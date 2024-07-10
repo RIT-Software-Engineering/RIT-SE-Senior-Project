@@ -80,19 +80,21 @@ export default function EvalReview(props) {
                                         </Table>
                                         <Message color={'grey'}>
                                             <Message.Header content={"Coach Feedback"}/>
-                                            <Popup
-                                                content={
-                                                    <Label basic color={'blue'} as={'a'} image >
-                                                        <img  src='Gemini_language_model_logo.png' alt='Google Gemini  logo' color='white' />
-                                                        <p style={ {margin: "-12px 0 0 70px", fontSize: "medium", color:'#086EFF'}}>was used for Summarization of your Feedback</p>
-                                                </Label >
+                                            {
+                                                data.UsedAI &&
+                                                <Popup
+                                                    content={
+                                                        <Label basic color={'blue'} as={'a'} image >
+                                                            <img  src='Gemini_language_model_logo.png' alt='Google Gemini  logo' color='white' style={{marginLeft: "5px"}} />
+                                                            <p style={ {margin: "-12px 0 0 77px", fontSize: "medium", color:'#086EFF'}}>was used for Summarization of your Feedback</p>
+                                                        </Label>
+                                                    }
+                                                    flowing
+                                                    trigger={
+                                                        <Label corner={'right'} icon={"google"} color={'blue'}/>
+                                                    }
+                                                />
                                             }
-                                                // wide={"very"}
-                                                flowing
-                                                trigger={
-                                                    <Label corner={'right'} icon={"google"} color={'blue'}/>
-                                                }
-                                            />
                                             <Divider/>
                                             <Message.Content content={data.Feedback}/>
                                         </Message>

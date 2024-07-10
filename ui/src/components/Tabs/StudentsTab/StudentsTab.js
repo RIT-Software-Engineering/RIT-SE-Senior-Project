@@ -34,7 +34,7 @@ export default function StudentsTab(props) {
                     let form_data = JSON.parse(s.form_data);
                     form_data['ActionData'] = {
                         title: s.title,
-                        completion_date: s.date,
+                        start_date: s.date,
                         id: s.action_id
                     }
                     return form_data;
@@ -307,10 +307,11 @@ export default function StudentsTab(props) {
                         key={"Peer-Eval" + projectKey + submission.ActionData.id}
                         fluid
                         styled
+                        activeIndex={0}
                         panels={[
                             {
                                 key: `${projectKey}eval${submission.ActionData.id}`,
-                                title: `${submission.ActionData.title} - ${submission.ActionData.completion_date}`,
+                                title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
                                 content: {
                                     content: <EvalReview
                                         forms={submission}
