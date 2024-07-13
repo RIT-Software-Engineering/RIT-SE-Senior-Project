@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Container,
     Rating,
@@ -18,18 +18,24 @@ import {
     Card,
     Popup
 } from 'semantic-ui-react';
+
 export default function ResultTable(props) {
-    const [expandedRow, setExpandedRow] = useState(null);
+    const [expandedRows, setExpandedRows] = useState([]);
 
     const camelCaseToSentence = (string = '') =>
         string.replace(/([A-Z])/g, (word) => ` ${word}`).trimStart();
 
     const handleRowClick = (index) => {
-        setExpandedRow(expandedRow === index ? null : index);
+        setExpandedRows(expandedRows.includes(index)
+            ? expandedRows.filter(row => row !== index)
+            : [...expandedRows, index]
+        );
     };
-    useEffect( ()=>{
+
+    useEffect(() => {
         // console.log(props.OthersFeedback);
-    },[]);
+    }, []);
+
     return (
         <Container fluid>
             <Table collapsing celled striped>
@@ -46,7 +52,7 @@ export default function ResultTable(props) {
                         <React.Fragment key={index}>
                             <TableRow onClick={() => handleRowClick(index)}>
                                 <TableCell>
-                                    <Icon name={expandedRow === index ? 'chevron up' : 'chevron down'} />
+                                    <Icon name={expandedRows.includes(index) ? 'chevron up' : 'chevron down'} />
                                 </TableCell>
                                 <TableCell>
                                     <label>{camelCaseToSentence(category)}</label>
@@ -65,7 +71,7 @@ export default function ResultTable(props) {
                                     />
                                 </TableCell>
                             </TableRow>
-                            {expandedRow === index && (
+                            {expandedRows.includes(index) && (
                                 <TableRow>
                                     <TableCell colSpan="3">
                                         <Card fluid>
