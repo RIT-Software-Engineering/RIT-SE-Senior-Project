@@ -162,7 +162,7 @@ export default function CoachFeedback(props) {
         // TODO: Implement max rating based on the form
         // console.warn("CURRENT STUDENT", student, studentData)
         const maxRating = 5
-        const showAverage = true;
+        //let showAverage = true;
 
          console.log(student)
         // console.log("Students", studentList);
@@ -211,8 +211,12 @@ export default function CoachFeedback(props) {
             }),
         };
 
-        // console.log("OthersFeedbackAvg", OthersFeedbackAvg);
-        // console.log("OthersFeedback", OthersFeedback);
+        const showAverage = Object.keys(OthersFeedbackAvg).length > 0;
+
+
+        console.log("OthersFeedbackAvg", OthersFeedbackAvg);
+        console.log(showAverage)
+         // console.log("OthersFeedback", OthersFeedback);
         // console.log("CoachFeedback", CoachFeedback);
         console.log("SelfFeedback", SelfFeedback);
         return (
@@ -247,26 +251,33 @@ export default function CoachFeedback(props) {
                         })}
                     </Grid>
                     <Divider section/>
+
                     </div>
-                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
-
-                        {/*NOTE: AVERAGE RATINGS VIEW*/}
-                        {showAverage && (
-                            <div>
-                                <ResultTable
-                                    OthersFeedbackAvg={OthersFeedbackAvg}
-                                    maxRating={maxRating}
-                                    OthersFeedback={OthersFeedback}
-                                    student={student}
-                                />
-
-                                <Divider section/>
-
-
-                            </div>
-                        )}
-
+                {showAverage ? (
+                    <div>
+                        <Header as="h3">
+                            Average Ratings from Team Members
+                            <Popup
+                                icon={"eye"}
+                                content="Visible to Evaluated Student"
+                                trigger={<Icon name={"eye"} />}
+                            />
+                        </Header>
+                        <div>
+                            <ResultTable
+                                OthersFeedbackAvg={OthersFeedbackAvg}
+                                maxRating={maxRating}
+                                OthersFeedback={OthersFeedback}
+                                student={student}
+                            />
+                            <Divider section />
+                        </div>
                         <Divider section/>
+                    </div>
+
+                ):(<div></div>)}
+
+
                         <FormField>
                             <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"} content={"Visible to  Evaluated Student"}/> </Header>
                     <Dimmer.Dimmable dimmed={loadingStates[student]}>
