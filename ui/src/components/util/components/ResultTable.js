@@ -1,5 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {Container,Rating,List,Icon,ListItem,Table,TableRow,TableCell,TableHeaderCell,TableHeader,TextArea,TableBody,CardHeader,CardContent,Label,Card} from 'semantic-ui-react';
+import {
+    Container,
+    Rating,
+    List,
+    Icon,
+    ListItem,
+    Table,
+    TableRow,
+    TableCell,
+    TableHeaderCell,
+    TableHeader,
+    TextArea,
+    TableBody,
+    CardHeader,
+    CardContent,
+    Label,
+    Card,
+    Popup
+} from 'semantic-ui-react';
 export default function ResultTable(props) {
     const [expandedRow, setExpandedRow] = useState(null);
 
@@ -52,7 +70,7 @@ export default function ResultTable(props) {
                                     <TableCell colSpan="3">
                                         <Card fluid>
                                             <CardContent>
-                                                <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback (Not Visible to Evaluated Student)"}</CardHeader>
+                                                <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback"} <Popup trigger={<Icon name={"eye slash"}></Icon>} content={"NOT visible to Evaluated Student"}/></CardHeader>
                                                 <Card.Description>
                                                     <List>
                                                         {props.OthersFeedback.map((student, otherIndex) => (

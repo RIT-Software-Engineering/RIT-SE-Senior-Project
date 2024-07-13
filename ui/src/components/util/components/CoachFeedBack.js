@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
     Button, Dimmer, Loader, Divider, Form, FormField, Grid, Header, Label, List, ListItem, Rating, FormInput,
-    Confirm, Checkbox, Radio
+    Confirm, Checkbox, Radio, Popup, Icon
 } from "semantic-ui-react";
 import {SecureFetch} from "../functions/secureFetch";
 import {config, USERTYPES} from "../functions/constants";
@@ -145,6 +145,7 @@ export default function CoachFeedback(props) {
     };
 
 
+
     useEffect(() => {
         fetchStudentList();
         fetchSubmissions();
@@ -219,7 +220,7 @@ export default function CoachFeedback(props) {
                         <Divider section/>
                         <Header size={"large"} block>{student}</Header>
 
-                    <div><Header as="h3">Coach Feedback (Not Visible to Evaluated Students)</Header>
+                <div><Header as="h3">Coach Feedback <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
                     <Grid>
                         {Object.keys(CoachFeedback).map((category, index) => {
                             if (index % 2 === 0) {
@@ -247,7 +248,7 @@ export default function CoachFeedback(props) {
                     </Grid>
                     <Divider section/>
                     </div>
-                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members (Visible to Evaluated Students)</Header>
+                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
 
                         {/*NOTE: AVERAGE RATINGS VIEW*/}
                         {showAverage && (
@@ -267,20 +268,21 @@ export default function CoachFeedback(props) {
 
                         <Divider section/>
                         <FormField>
-                            <Header as={'h3'}>Coach Summarization + Feedback (Visible to Evaluated Student) </Header>
+                            <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"} content={"Visible to  Evaluated Student"}/> </Header>
                     <Dimmer.Dimmable dimmed={loadingStates[student]}>
                         <Dimmer active={loadingStates[student]} inverted>
                             <Loader active={loadingStates[student]}  content="Generating Summerization from AI"/>
                         </Dimmer>
                             <textarea  placeholder={ "Future instruction text / The entire team will see this"} name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4} value={coachSummaryText[student]} onChange={(e) => updateCoachSummaryText(student, e.target.value)}/>
                         <Radio name={`UsedAI--${student}`} style={{visibility: "hidden"}} checked={usedAI[student]} value={usedAI[student]?1:0}/>
-                        </Dimmer.Dimmable>
+
                         <Button attached='bottom' onClick={(event) => {OpenPopup(student)}} content='Generate AI Summarization'/>
                             <Confirm
                                 content={"Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "}
                                 open={confirmedStates[student]}
                                 onCancel={() => ClosePopup(student)}
                                 onConfirm={() => handleGenerateSummarization(student, AIContext)}/>
+                    </Dimmer.Dimmable>
                         </FormField>
 
             </div>
