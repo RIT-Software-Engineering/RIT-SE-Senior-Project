@@ -9,7 +9,6 @@ import ResultTable from "./ResultTable";
 import {UserContext} from "../functions/UserContext";
 
 
-
 export default function CoachFeedback(props) {
     const {user} = useContext(UserContext);
     const [studentList, setStudentList] = useState([]);
@@ -23,7 +22,7 @@ export default function CoachFeedback(props) {
     const [confirmedStates, setConfirmedStates] = useState(false);
     const [loadingStates, setLoadingStates] = useState(false);
     const [coachSummaryText, setCoachSummaryText] = useState({});
-    const [usedAI,setUsedAI] = useState([]);
+    const [usedAI, setUsedAI] = useState([]);
     const getFullName = (student) => `${student.fname} ${student.lname}`
 
     const camelCaseToSentence = (string = "") =>
@@ -72,23 +71,23 @@ export default function CoachFeedback(props) {
         setAllSubmissionsMade(missing.length === 0);
     };
 
-    const handleFeedbackChange=(studentName,currFeedback)=>{
+    const handleFeedbackChange = (studentName, currFeedback) => {
         setFeedback(prevFeedback => ({
             ...prevFeedback,
             [studentName]: currFeedback
         }));
     }
-    const OpenPopup=(s)=>{
-        setConfirmedStates(prev =>({
+    const OpenPopup = (s) => {
+        setConfirmedStates(prev => ({
             ...prev,
-            [s]:true
+            [s]: true
         }))
     }
 
-    const ClosePopup=(s)=>{
-        setConfirmedStates(prev =>({
+    const ClosePopup = (s) => {
+        setConfirmedStates(prev => ({
             ...prev,
-            [s]:false
+            [s]: false
         }))
     }
 
@@ -98,19 +97,20 @@ export default function CoachFeedback(props) {
 
         updateLoadingState(id, true)
 
-        SecureFetch(`${config.url.API_GENERATE_SUMMARY}`,{
+        SecureFetch(`${config.url.API_GENERATE_SUMMARY}`, {
             method: "post",
             body: body
         })
             .then(response => response.text())
-            .then((data)=>{
+            .then((data) => {
                 console.log("COMPLETED", data)
                 updateCoachSummaryText(id, data);
             })
-            .catch(error => {console.log(error);
+            .catch(error => {
+                console.log(error);
                 console.error("OOPSIES", error)
             })
-            .finally(()=> {
+            .finally(() => {
                 updateLoadingState(id, false)
             })
     }
@@ -118,7 +118,7 @@ export default function CoachFeedback(props) {
     const updateLoadingState = (id, value) => {
         setLoadingStates(prevState => ({
             ...prevState,
-            [id]:value
+            [id]: value
         }));
     }
 
@@ -126,21 +126,21 @@ export default function CoachFeedback(props) {
         if (newText === "") {
             setUsedAI(prevState => ({
                 ...prevState,
-                [id]:false
+                [id]: false
             }))
         }
         setCoachSummaryText(prevState => ({
             ...prevState,
-            [id]:newText
+            [id]: newText
         }))
     }
 
-     const handleGenerateSummarization = (s, context) => {
+    const handleGenerateSummarization = (s, context) => {
         ClosePopup(s);
         getSummarization(s, context);
-        setUsedAI((prev)=>({
+        setUsedAI((prev) => ({
             ...prev,
-                [s]:true
+            [s]: true
         }));
     };
 
@@ -160,9 +160,9 @@ export default function CoachFeedback(props) {
         // TODO: Implement max rating based on the form
         // console.warn("CURRENT STUDENT", student, studentData)
         const maxRating = 5
-        const showAverage = true;
+        //let showAverage = true;
 
-         console.log(student)
+        console.log(student)
         // console.log("Students", studentList);
         // console.log("Submissions", submissionList);
         // console.log("Student Data", studentData);
@@ -213,16 +213,21 @@ export default function CoachFeedback(props) {
             }),
         };
 
+        const showAverage = Object.keys(OthersFeedbackAvg).length > 0;
+
+
         // console.log("OthersFeedbackAvg", OthersFeedbackAvg);
+        // console.log(showAverage)
         // console.log("OthersFeedback", OthersFeedback);
         // console.log("CoachFeedback", CoachFeedback);
         console.log("SelfFeedback", SelfFeedback);
         return (
             <div key={index}>
-                        <Divider section/>
-                    <Header size={"huge"} block inverted>{student}</Header>
+                <Divider section/>
+                <Header size={"huge"} block inverted>{student}</Header>
 
-                <div><Header as="h3">Coach Feedback <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
+                <div><Header as="h3">Coach Feedback <Popup icon={"eye"} content="Visible to  Evaluated Student "
+                                                           trigger={<Icon name={"eye"}></Icon>}/></Header>
                     <Grid>
                         {Object.keys(CoachFeedback).map((category, index) => {
                             if (index % 2 === 0) {
@@ -249,52 +254,71 @@ export default function CoachFeedback(props) {
                         })}
                     </Grid>
                     <Divider section/>
-                    </div>
-                        <Header as="h3">{showAverage && "Average "} Ratings from Team Members <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
 
-                        {/*NOTE: AVERAGE RATINGS VIEW*/}
-                        {showAverage && (
-                            <div>
-                                <ResultTable
-                                    OthersFeedbackAvg={OthersFeedbackAvg}
-                                    maxRating={maxRating}
-                                    SelfFeedback={SelfFeedback}
-                                    OthersFeedback={OthersFeedback}
-                                    student={student}
-                                />
-                                <Divider section/>
-
-
-                            </div>
-                        )}
+                </div>
+                {/*NOTE: AVERAGE RATINGS VIEW*/}
+                {showAverage ? (
+                    <div>
+                        <Header as="h3">
+                            Average Ratings from Team Members
+                            <Popup
+                                icon={"eye"}
+                                content="Visible to Evaluated Student"
+                                trigger={<Icon name={"eye"}/>}
+                            />
+                        </Header>
+                        <div>
+                            <ResultTable
+                                OthersFeedbackAvg={OthersFeedbackAvg}
+                                maxRating={maxRating}
+                                SelfFeedback={SelfFeedback}
+                                OthersFeedback={OthersFeedback}
+                                student={student}
+                            />
+                            <Divider section/>
+                        </div>
                         <Divider section/>
-                        <FormField>
-                            <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"} content={"Visible to  Evaluated Student"}/> </Header>
+                    </div>
+
+                ) : (<div></div>)}
+
+
+                <FormField>
+                    <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"}
+                                                                            content={"Visible to  Evaluated Student"}/>
+                    </Header>
                     <Dimmer.Dimmable dimmed={loadingStates[student]}>
                         <Dimmer active={loadingStates[student]} inverted>
-                            <Loader active={loadingStates[student]}  content="Generating Summerization from AI"/>
+                            <Loader active={loadingStates[student]} content="Generating Summerization from AI"/>
                         </Dimmer>
-                            <textarea  placeholder={`Enter your feedback to ${student} here based from the other students' feedback or click Generate AI Summary`} name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4} value={coachSummaryText[student]} onChange={(e) => updateCoachSummaryText(student, e.target.value)}/>
+                        <textarea
+                            placeholder={`Enter your feedback to ${student} here based from the other students' feedback or click Generate AI Summary`}
+                            name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4}
+                            value={coachSummaryText[student]}
+                            onChange={(e) => updateCoachSummaryText(student, e.target.value)}/>
 
-                        <Button attached='bottom' onClick={(event) => {OpenPopup(student)}} content='Generate AI Summarization'/>
-                            <Confirm
-                                style={{
-                                    position: "fixed",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                }}
-                                content={"Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "}
-                                open={confirmedStates[student]}
-                                onCancel={() => ClosePopup(student)}
-                                onConfirm={() => handleGenerateSummarization(student, AIContext)}/>
+                        <Button attached='bottom' onClick={(event) => {
+                            OpenPopup(student)
+                        }} content='Generate AI Summarization'/>
+                        <Confirm
+                            style={{
+                                position: "fixed",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
+                            content={"Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "}
+                            open={confirmedStates[student]}
+                            onCancel={() => ClosePopup(student)}
+                            onConfirm={() => handleGenerateSummarization(student, AIContext)}/>
 
-                        <Radio name={`UsedAI--${student}`} style={{visibility: "hidden"}} checked={usedAI[student]} value={usedAI[student]?1:0}/>
+                        <Radio name={`UsedAI--${student}`} style={{visibility: "hidden"}} checked={usedAI[student]}
+                               value={usedAI[student] ? 1 : 0}/>
                     </Dimmer.Dimmable>
-                        </FormField>
+                </FormField>
 
             </div>
-    );
+        );
     }
 
     // Render the component only if both studentList and submissionList are populated
@@ -323,9 +347,9 @@ export default function CoachFeedback(props) {
             )}
 
             <Form>
-            {studentList
-                // .filter(student => user.role === USERTYPES.COACH || getFullName(user) === student )
-                .map((student, index) => generateFeedbackForm(student, index))}
+                {studentList
+                    // .filter(student => user.role === USERTYPES.COACH || getFullName(user) === student )
+                    .map((student, index) => generateFeedbackForm(student, index))}
             </Form>
         </>
     );
