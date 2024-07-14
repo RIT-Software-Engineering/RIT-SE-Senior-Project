@@ -45,7 +45,7 @@ export default function EvalReview(props) {
                 {
                     Object.entries(student).map(([student_name, data]) => {
                             // console.log(student_name, data)
-                            // const hasSelfRating = data.SelfRating && Object.keys(data.SelfRating).length > 0;
+                            const hasSelfRating = data.SelfRating && Object.keys(data.SelfRating).length > 0;
                             // console.log(student_name, data)
                             return <Card key={props.id + student_name + "Card" + index} fluid>
                                 <Card.Content>
