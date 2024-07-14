@@ -231,6 +231,7 @@ export default function StudentsTab(props) {
 
         let activeProjects = [];
 
+        // All Students
         semesterMap.forEach((semester) => {
             if (semester.name !== unassignedStudentsStr) {
                 let studentsData = [];
@@ -386,17 +387,10 @@ export default function StudentsTab(props) {
         });
 
         semesterPanels.push(<h3>All Students</h3>);
-        if (
-            userContext.user.role !== USERTYPES.ADMIN &&
-            activeProjects.length !== 0
-        ) {
-            semesterPanels.push(activeProjects, <h3>My Teams</h3>);
-        }
 
-        semesterPanels.unshift(<h3>Peer Evaluations</h3>);
-
+        // Peer Evaluations
         semesterMap.forEach((semester) => {
-            Object.keys(semester.projects).map((projectKey) => {
+            Object.keys(semester.projects).forEach((projectKey) => {
                 const project = semester.projects[projectKey];
                 const submissions = coachFeedback[projectKey];
                 if (!submissions) return true;
@@ -429,10 +423,7 @@ export default function StudentsTab(props) {
                         ]}
                     />
                 );
-
-                // console.warn("PROJECT KEY", projectKey, semester.projects[projectKey], coachFeedback[projectKey])
-                // console.log("Has Submission", hasSubmission)
-                semesterPanels.unshift(
+                semesterPanels.push(
                     <div key={"PeerEval" + projectKey}>
                         <Accordion
                             key={"PEEREVAL" + projectKey}
@@ -455,6 +446,17 @@ export default function StudentsTab(props) {
                 );
             });
         });
+
+        semesterPanels.push(<h3>Peer Evaluations</h3>);
+
+        // My Teams
+        if (
+            userContext.user.role !== USERTYPES.ADMIN &&
+            activeProjects.length !== 0
+        ) {
+            semesterPanels.push(activeProjects, <h3>My Teams</h3>);
+        }
+
     }
 
     return semesterPanels.reverse();

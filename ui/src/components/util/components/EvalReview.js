@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {SecureFetch} from "../functions/secureFetch";
 import {config, USERTYPES} from "../functions/constants";
-import {Card, Divider, Header, Icon, Message, Rating, Table, Label, Popup} from "semantic-ui-react";
+import {Card, Divider, Header, Icon, Message, Rating, Table, Label, Popup, Accordion} from "semantic-ui-react";
 import {UserContext} from "../functions/UserContext";
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip";
 
@@ -47,21 +47,17 @@ export default function EvalReview(props) {
                             // console.log(student_name, data)
                             const hasSelfRating = data.SelfRating && Object.keys(data.SelfRating).length > 0;
                             // console.log(student_name, data)
-                            return <Card key={props.id + student_name + "Card" + index} fluid>
-                                <Card.Content>
-                                    <Header size='tiny' onClick={() => {
-                                        updateExpanded(student_name)
-                                    }}>
-                                        {
-                                            !userIsStudent &&
-                                            <Icon size='tiny'
-                                                  name={studentExpanded[student_name] ? 'caret up' : 'caret down'}/>
-                                        }
-                                        {userIsStudent ? "Your" : `${student_name}'s`} Feedback Summary
-                                    </Header>
-                                </Card.Content>
+                            // return <Card ke={props.id + student_name + "Card" + index} fluid>
+                            return <Accordion fluid styled key={props.id + student_name + "Card" + index}>
+                                <Accordion.Title active={studentExpanded[student_name]} index={index} onClick={() => {
+                                    updateExpanded(student_name)
+                                }}>
+                                    <Icon name='dropdown'/>
+                                    {userIsStudent ? "Your" : `${student_name}'s`} Feedback Summary
+                                </Accordion.Title>
                                 {
-                                    (studentExpanded[student_name] || userIsStudent) && <Card.Content>
+                                    (studentExpanded[student_name] || userIsStudent) &&
+                                    <Accordion.Content active={studentExpanded[student_name]}>
                                         <Table striped>
                                             <Table.Header>
                                                 <Table.HeaderCell>Category</Table.HeaderCell>
@@ -79,18 +75,21 @@ export default function EvalReview(props) {
                                                             <Rating defaultRating={rating} disabled
                                                                     maxRating={5}/> ({Math.round(rating * 100) / 100})
                                                         </Table.Cell>
+                                                        {hasSelfRating &&
                                                             <Table.Cell>
-                                                            {
-                                                                hasSelfRating && data.SelfRating[category] &&
-                                                                <>
-                                                                    <Rating defaultRating={data.SelfRating[category]} disabled
-                                                                            maxRating={5}/>
-                                                                    <span>
-                                                                        ({Math.round(data.SelfRating[category] * 100) / 100})
-                                                                    </span>
-                                                                </>
-                                                            }
+                                                                {
+                                                                    data.SelfRating[category] &&
+                                                                    <>
+                                                                        <Rating defaultRating={data.SelfRating[category]}
+                                                                                disabled
+                                                                                maxRating={5}/>
+                                                                        <span>
+                                                                            ({Math.round(data.SelfRating[category] * 100) / 100})
+                                                                        </span>
+                                                                    </>
+                                                                }
                                                             </Table.Cell>
+                                                        }
                                                     </Table.Row>
                                                 ))}
                                             </Table.Body>
@@ -101,9 +100,15 @@ export default function EvalReview(props) {
                                                 data.UsedAI &&
                                                 <Popup
                                                     content={
-                                                        <Label basic color={'blue'} as={'a'} image >
-                                                            <img  src='Gemini_language_model_logo.png' alt='Google Gemini  logo' color='white' style={{marginLeft: "5px"}} />
-                                                            <p style={ {margin: "-12px 0 0 79px", fontSize: "medium", color:'#086EFF'}}>  was used for Summarization of your Feedback</p>
+                                                        <Label basic color={'blue'} as={'a'} image>
+                                                            <img src='Gemini_language_model_logo.png'
+                                                                 alt='Google Gemini  logo' color='white'
+                                                                 style={{marginLeft: "5px"}}/>
+                                                            <p style={{
+                                                                margin: "-12px 0 0 79px",
+                                                                fontSize: "medium",
+                                                                color: '#086EFF'
+                                                            }}> was used for Summarization of your Feedback</p>
                                                         </Label>
                                                     }
                                                     flowing
@@ -115,13 +120,9 @@ export default function EvalReview(props) {
                                             <Divider/>
                                             <Message.Content content={data.Feedback}/>
                                         </Message>
-
-
-
-                                    </Card.Content>
-
+                                    </Accordion.Content>
                                 }
-                            </Card>;
+                            </Accordion>;
                         }
                     )
                 }
