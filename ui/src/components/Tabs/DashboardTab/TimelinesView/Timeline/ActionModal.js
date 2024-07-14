@@ -51,70 +51,75 @@ export default function ActionModal(props) {
     // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
     function translatePeerEvalData(formData) {
         let translation = null;
-        if(user.role === USERTYPES.STUDENT) {
+        if (user.role === USERTYPES.STUDENT) {
             translation = {
                 CoachFeedback: {},
                 Students: {},
                 Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`,
-                Settings: {
-                    Scale: 5,
-                    includesSelf: false
-                }
             }
 
             for (const key in formData) {
-                let [category, header, student] = key.split("-")
-                let value = formData[key]
-                const isFeedback = category === "Feedback"
+                let [category, header, student] = key.split("-");
+                let value = formData[key];
+                const isFeedback = category === "Feedback";
+                const isSwitch = category === "Scale";
+                const scale = 5 / 3;
 
                 header = camelCaseToSentence(header)
                 value = isFeedback ? value.trim() : parseInt(value)
 
                 if (isFeedback && student === "Anon") {
-                    translation.CoachFeedback[header] = value
+                    translation.CoachFeedback[header] = value;
                     continue
                 }
 
                 if (!translation.Students[student]) {
-                    translation.Students[student] = {Feedback: {}, Ratings: {}}
+                    translation.Students[student] = {Feedback: {}, Ratings: {}};
                 }
 
+                const hasRatings = translation.Students[student].Ratings[header] !== undefined;
+
                 if (isFeedback) {
-                    translation.Students[student].Feedback[header] = value
+                    translation.Students[student].Feedback[header] = value;
+                } else if (isSwitch) {
+                    if (!hasRatings) {
+                        translation.Students[student].Ratings[header] = scale;
+                    } else {
+                        const old = translation.Students[student].Ratings[header];
+                        translation.Students[student].Ratings[header] = Math.floor(old * (scale))
+                    }
                 } else {
-                    translation.Students[student].Ratings[header] = value
+                    if (hasRatings && translation.Students[student].Ratings[header] === scale) {
+                        translation.Students[student].Ratings[header] *= value;
+                    } else {
+                        translation.Students[student].Ratings[header] = value;
+                    }
                 }
 
             }
         } else if (user.role === USERTYPES.COACH) {
-           translation = {
-               Submitter: "COACH",
-               Students: {
-                   // Student: {
-                   //     usedAI: boolean,
-                   //     Feedback: "",
-                   //     AverageRatings: {
-                   //          Category: value
-                   //     }
-                   //     SelfRating: {
-                   //          Category: value
-                   //     }
-                   // }
-               }
+            translation = {
+                Submitter: "COACH",
+                Students: {}
             }
 
             for (const key in formData) {
                 let [category, header, student] = key.split("-")
 
-                if(student===undefined) {
-                    console.error( `Incorrect Name Formatting ${key}. Not Parsable`)
+                if (student === undefined) {
+                    console.error(`Incorrect Name Formatting ${key}. Not Parsable`)
                     continue
                 }
 
                 let value = formData[key]
 
                 if (!translation.Students[student]) {
-                    translation.Students[student] = {Feedback: "", UsedAI:false, AverageRatings: {}, SelfRating: {}}
+                    translation.Students[student] = {
+                        Feedback: "",
+                        UsedAI: false,
+                        AverageRatings: {},
+                        SelfRating: {},
+                    }
                 }
 
                 const StudentData = translation.Students[student]
@@ -127,7 +132,7 @@ export default function ActionModal(props) {
                         StudentData.AverageRatings[header] = value
                         break;
                     case "UsedAI":
-                        StudentData.UsedAI = value==="1"
+                        StudentData.UsedAI = value === "1"
                         break;
                     case "SelfFeedback":
                         StudentData.SelfRating[header] = value
@@ -218,7 +223,7 @@ export default function ActionModal(props) {
                         inputType = formDataInputs[x].type
 
                     formData[inputName] = inputType === "radio" ?
-                        formDataInputs[inputName]?.value
+                        String(parseInt(formDataInputs[inputName]?.value) + 1)
                         : String(input?.value);
 
                     // Error Handling
@@ -238,6 +243,8 @@ export default function ActionModal(props) {
                         case "Table":
                             errorFields.add(questionName)
                             break;
+                        default:
+                            break
                     }
 
                     if (hasDoneError) continue;

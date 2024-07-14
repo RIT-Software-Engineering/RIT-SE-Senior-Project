@@ -256,6 +256,15 @@ export function QuestionTable({
                                             }
                                             required={required}
                                         />
+                                        {
+                                            scale === 3 &&
+                                            <input
+                                                type="hidden"
+                                                name={`Scale-${sentenceToCamelCase(question)}-${student}`}
+                                                value={1}
+                                                required={required}
+                                            />
+                                        }
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -370,6 +379,15 @@ export function QuestionMoodRating({
                                             }
                                             required={required}
                                         />
+                                        {
+                                            levels.length === 3 &&
+                                            <input
+                                                type="hidden"
+                                                name={`Scale-${sentenceToCamelCase(question)}-${student}`}
+                                                value={1}
+                                                required={required}
+                                            />
+                                        }
                                         {level}
                                     </GridColumn>
                                 ))}
