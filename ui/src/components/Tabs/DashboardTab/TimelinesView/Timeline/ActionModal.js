@@ -132,7 +132,7 @@ export default function ActionModal(props) {
                         StudentData.AverageRatings[header] = value
                         break;
                     case "UsedAI":
-                        StudentData.UsedAI = value === "1"
+                        StudentData.UsedAI = value === "2"
                         break;
                     case "SelfFeedback":
                         StudentData.SelfRating[header] = value

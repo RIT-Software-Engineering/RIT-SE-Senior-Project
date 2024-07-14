@@ -204,7 +204,9 @@ const QuestionBuilder = (props) => {
                         ? question.levels.slice(1, 4)
                         : [...question.levels];
                 question.questions.map((question_title, _) => {
-                    html += `\t<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' feedback='${globalSettings.attachFeedback && question.hasFeedback}' includeStudents='true'/>`;
+                    html += "\t<div>\n"
+                    html += `\t\t<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(levels)}' required='${question.isRequired}' selfFeedback='${globalSettings.selfRating}' feedback='${globalSettings.attachFeedback && question.hasFeedback}' includeStudents='true'/>`;
+                    html+= "\n\t</div>\n";
                 });
             }
             html += "\n</div>\n<br/>\n";
