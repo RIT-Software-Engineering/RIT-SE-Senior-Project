@@ -395,14 +395,12 @@ export default function StudentsTab(props) {
                 const submissions = coachFeedback[projectKey];
                 if (!submissions) return true;
 
-                const subAccordion = (submission) => (
+                const subAccordion = (submission, index) => (
                     <Accordion
-                        key={
-                            "Peer-Eval" + projectKey + submission.ActionData.id
-                        }
+                        key={"Peer-Eval" + projectKey + submission.ActionData.id}
                         fluid
                         styled
-                        activeIndex={0}
+                        defaultActiveIndex={index === submissions.length - 1 ? 0 : -1}
                         panels={[
                             {
                                 key: `${projectKey}eval${submission.ActionData.id}`,
@@ -411,10 +409,7 @@ export default function StudentsTab(props) {
                                     content: (
                                         <EvalReview
                                             forms={submission}
-                                            isSub={
-                                                submission?.Submitter ===
-                                                "COACH"
-                                            }
+                                            isSub={submission?.Submitter === "COACH"}
                                             id={projectKey + semester.name}
                                         />
                                     ),
@@ -423,11 +418,13 @@ export default function StudentsTab(props) {
                         ]}
                     />
                 );
+
                 semesterPanels.push(
                     <div key={"PeerEval" + projectKey}>
                         <Accordion
                             key={"PEEREVAL" + projectKey}
                             fluid
+                            defaultActiveIndex={activeProjectIds[projectKey]?0:-1}
                             styled
                             panels={[
                                 {
@@ -435,8 +432,8 @@ export default function StudentsTab(props) {
                                     title: project.name + " - " + semester.name,
                                     content: {
                                         content: coachFeedback[projectKey].map(
-                                            (submission) =>
-                                                subAccordion(submission),
+                                            (submission, index) =>
+                                                subAccordion(submission, index),
                                         ),
                                     },
                                 },
