@@ -14,8 +14,8 @@ export default function StudentsTab(props) {
     const [semesters, setSemestersData] = useState([]);
     const [projects, setProjectsData] = useState([]);
     const [myProjects, setMyProjectsData] = useState([]);
-    const [activeSemesters, setActiveSemesters] = useState({})
-    const [activeProjectIds, setActiveProjectIds] = useState({})
+    const [activeSemesters, setActiveSemesters] = useState({});
+    const [activeProjectIds, setActiveProjectIds] = useState({});
     const [coachFeedback, setCoachFeedback] = useState({});
 
     const userContext = useContext(UserContext);
@@ -27,22 +27,44 @@ export default function StudentsTab(props) {
 
     function getCoachFeedback(project_id) {
         // console.log("Getting Coach Feedback", project_id)
-        SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`)
+        SecureFetch(
+            `${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`,
+        )
             .then((response) => response.json())
             .then((data) => {
-                let forms = data.map(s => {
+                // let forms = data
+                //     .map((s) => {
+                //         let form_data = JSON.parse(s.form_data);
+                //         form_data["ActionData"] = {
+                //             title: s.title,
+                //             start_date: s.date,
+                //             id: s.action_id,
+                //         };
+                //         return form_data;
+                //     })
+
+                const submissions = {}
+                data.forEach((s) => {
+                    if (submissions[s.action_id] === undefined || submissions[s.action_id].submission_datetime < s.submission_datetime) {
+                        submissions[s.action_id] = s;
+                    }
+                });
+
+                const forms = Object.values(submissions).map((s) => {
                     let form_data = JSON.parse(s.form_data);
-                    form_data['ActionData'] = {
+                    form_data["ActionData"] = {
                         title: s.title,
                         start_date: s.date,
-                        id: s.action_id
-                    }
+                        id: s.action_id,
+                    };
                     return form_data;
                 });
+
                 updateCoachFeedback(project_id, forms);
-            }).catch((error) => {
-            alert("Failed to get Coach's Feedback" + error);
-        });
+            })
+            .catch((error) => {
+                alert("Failed to get Coach's Feedback" + error);
+            });
     }
 
     useEffect(() => {
@@ -56,7 +78,7 @@ export default function StudentsTab(props) {
             });
 
         if (props.project_id !== null) {
-            getCoachFeedback(props.project_id)
+            getCoachFeedback(props.project_id);
         }
 
         SecureFetch(config.url.API_GET_SEMESTERS)
@@ -69,14 +91,18 @@ export default function StudentsTab(props) {
                 alert("Failed to get semestersData data" + error);
             });
 
-
-        const getProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_SEMESTER_PROJECTS;
+        const getProjects =
+            userContext.user.role === USERTYPES.ADMIN
+                ? config.url.API_GET_PROJECTS
+                : config.url.API_GET_SEMESTER_PROJECTS;
         SecureFetch(getProjects)
             .then((response) => response.json())
             .then((projectsData) => {
                 setProjectsData(projectsData);
-                const project_ids = projectsData.map(project => project.project_id);
-                project_ids.forEach(project_id => {
+                const project_ids = projectsData.map(
+                    (project) => project.project_id,
+                );
+                project_ids.forEach((project_id) => {
                     getCoachFeedback(project_id);
                 });
             })
@@ -84,7 +110,10 @@ export default function StudentsTab(props) {
                 alert("Failed to get projectsData" + error);
             });
 
-        const getMyProjects = userContext.user.role === USERTYPES.ADMIN ? config.url.API_GET_PROJECTS : config.url.API_GET_MY_PROJECTS;
+        const getMyProjects =
+            userContext.user.role === USERTYPES.ADMIN
+                ? config.url.API_GET_PROJECTS
+                : config.url.API_GET_MY_PROJECTS;
         SecureFetch(getMyProjects)
             .then((response) => response.json())
             .then((projectsData) => {
@@ -100,43 +129,71 @@ export default function StudentsTab(props) {
     let initialActiveProjects = {};
 
     function generateMappedData(studentData, semesterData, projectData) {
-
         let projectMap = {};
-        projectData.forEach(project => {
+        projectData.forEach((project) => {
             projectMap[project.project_id] = project;
         });
 
-        let semesterMap = {}
-        semesterData.forEach(semester => {
+        let semesterMap = {};
+        semesterData.forEach((semester) => {
             semesterMap[semester.semester_id] = semester;
         });
 
-        let mappedData = {[unassignedStudentsStr]: {students: [], name: unassignedStudentsStr, projects: {}}}
+        let mappedData = {
+            [unassignedStudentsStr]: {
+                students: [],
+                name: unassignedStudentsStr,
+                projects: {},
+            },
+        };
 
-
-        studentData.forEach(student => {
+        studentData.forEach((student) => {
             if (student.semester_group) {
                 if (!mappedData[student.semester_group]) {
                     mappedData[student.semester_group] = {
-                        projects: {"noProject": {students: [], name: "No Project"}},
+                        projects: {
+                            noProject: {students: [], name: "No Project"},
+                        },
                         name: semesterMap[student.semester_group]?.name,
-                        start_date: semesterMap[student.semester_group]?.start_date,
+                        start_date:
+                        semesterMap[student.semester_group]?.start_date,
                         end_date: semesterMap[student.semester_group]?.end_date,
-                        semester_id: semesterMap[student.semester_group]?.semester_id,
+                        semester_id:
+                        semesterMap[student.semester_group]?.semester_id,
                     };
-                    initialActive[semesterMap[student.semester_group]?.semester_id] = isSemesterActive(semesterMap[student.semester_group]?.start_date, semesterMap[student.semester_group]?.end_date);
+                    initialActive[
+                        semesterMap[student.semester_group]?.semester_id
+                        ] = isSemesterActive(
+                        semesterMap[student.semester_group]?.start_date,
+                        semesterMap[student.semester_group]?.end_date,
+                    );
                 }
                 if (student.project) {
-                    if (!mappedData[student.semester_group]["projects"][student.project]) {
-                        mappedData[student.semester_group]["projects"][student.project] = {
+                    if (
+                        !mappedData[student.semester_group]["projects"][
+                            student.project
+                            ]
+                    ) {
+                        mappedData[student.semester_group]["projects"][
+                            student.project
+                            ] = {
                             students: [],
-                            name: projectMap[student.project]?.display_name || projectMap[student.project]?.title,
+                            name:
+                                projectMap[student.project]?.display_name ||
+                                projectMap[student.project]?.title,
                         };
                     }
-                    mappedData[student.semester_group]["projects"][student.project]['students'].push(student);
-                    initialActiveProjects[student.project] = isSemesterActive(semesterMap[student.semester_group]?.start_date, semesterMap[student.semester_group]?.end_date);
+                    mappedData[student.semester_group]["projects"][
+                        student.project
+                        ]["students"].push(student);
+                    initialActiveProjects[student.project] = isSemesterActive(
+                        semesterMap[student.semester_group]?.start_date,
+                        semesterMap[student.semester_group]?.end_date,
+                    );
                 } else {
-                    mappedData[student.semester_group]["projects"]["noProject"]["students"].push(student);
+                    mappedData[student.semester_group]["projects"]["noProject"][
+                        "students"
+                        ].push(student);
                 }
             } else {
                 mappedData[unassignedStudentsStr]["students"].push(student);
@@ -144,47 +201,64 @@ export default function StudentsTab(props) {
         });
 
         // Check if activeSemesters has already been set so that we don't run into issues with infinite re-renders
-        if (Object.keys(activeSemesters).length === 0 && !_.isEqual(activeSemesters, initialActive)) {
+        if (
+            Object.keys(activeSemesters).length === 0 &&
+            !_.isEqual(activeSemesters, initialActive)
+        ) {
             setActiveSemesters(initialActive);
         }
-        if (Object.keys(activeProjectIds).length === 0 && !_.isEqual(activeProjectIds, initialActiveProjects)) {
+        if (
+            Object.keys(activeProjectIds).length === 0 &&
+            !_.isEqual(activeProjectIds, initialActiveProjects)
+        ) {
             setActiveProjectIds(initialActiveProjects);
         }
         return mappedData;
     }
 
     function generateMappedProjects(projectData) {
-        let projectMap = {}
-        projectData.forEach(project => {
+        let projectMap = {};
+        projectData.forEach((project) => {
             projectMap[project.project_id] = project;
         });
         return projectMap;
     }
 
     if (students.length > 0 && semesters.length > 0) {
-
         let semesterMap = generateMappedData(students, semesters, projects);
         let projectMap = generateMappedProjects(myProjects);
         semesterMap = _.sortBy(semesterMap, ["end_date", "start_date", "name"]);
 
         let activeProjects = [];
 
-        semesterMap.forEach(semester => {
+        semesterMap.forEach((semester) => {
             if (semester.name !== unassignedStudentsStr) {
                 let studentsData = [];
-                Object.keys(semester.projects).map(projectKey => {
+                Object.keys(semester.projects).map((projectKey) => {
                     let studentsList = semester.projects[projectKey].students;
-                    studentsList.forEach(student => {
+                    studentsList.forEach((student) => {
                         studentsData.push(student);
-                    })
+                    });
                     return true;
                 });
 
-                studentsData = _.sortBy(studentsData || [], ["fname", "lname", "email"])
+                studentsData = _.sortBy(studentsData || [], [
+                    "fname",
+                    "lname",
+                    "email",
+                ]);
 
-                Object.keys(semester.projects).map(projectKey => {
-                    if (semester.projects[projectKey].students.length > 0 && projectKey !== "noProject" && semester.projects[projectKey].name !== undefined && projectMap.hasOwnProperty(projectKey)) {
-                        let sortedStudents = _.sortBy(semester.projects[projectKey].students || [], ["fname", "lname", "email"])
+                Object.keys(semester.projects).map((projectKey) => {
+                    if (
+                        semester.projects[projectKey].students.length > 0 &&
+                        projectKey !== "noProject" &&
+                        semester.projects[projectKey].name !== undefined &&
+                        projectMap.hasOwnProperty(projectKey)
+                    ) {
+                        let sortedStudents = _.sortBy(
+                            semester.projects[projectKey].students || [],
+                            ["fname", "lname", "email"],
+                        );
                         activeProjects.push(
                             <div className="accordion-button-group">
                                 <Accordion
@@ -194,33 +268,52 @@ export default function StudentsTab(props) {
                                     onTitleClick={() => {
                                         setActiveProjectIds({
                                             ...activeProjectIds,
-                                            [projectKey]: !activeProjectIds[projectKey]
-                                        })
+                                            [projectKey]:
+                                                !activeProjectIds[projectKey],
+                                        });
                                     }}
-                                    panels={[{
-                                        key: projectKey,
-                                        title: `${semester.projects[projectKey].name} - ${semester.name} (${semester.projects[projectKey]?.students?.length})`,
-                                        active: activeProjectIds[projectKey],
-                                        content: {
-                                            content:
-                                                <StudentTeamTable
-                                                    key={projectKey + "-team"}
-                                                    childKey={projectKey + "-team-child"}
-                                                    students={sortedStudents}
-                                                    semesterData={semesters}
-                                                    projectsData={semester.projects}
-                                                    viewOnly
-                                                    noAccordion={true}
-                                                    studentsTab={true}
-                                                    firstTable
-                                                    isStudent={userContext.user.role === USERTYPES.STUDENT}
-                                                />
-                                        }
-                                    }]}
+                                    panels={[
+                                        {
+                                            key: projectKey,
+                                            title: `${semester.projects[projectKey].name} - ${semester.name} (${semester.projects[projectKey]?.students?.length})`,
+                                            active: activeProjectIds[
+                                                projectKey
+                                                ],
+                                            content: {
+                                                content: (
+                                                    <StudentTeamTable
+                                                        key={
+                                                            projectKey + "-team"
+                                                        }
+                                                        childKey={
+                                                            projectKey +
+                                                            "-team-child"
+                                                        }
+                                                        students={
+                                                            sortedStudents
+                                                        }
+                                                        semesterData={semesters}
+                                                        projectsData={
+                                                            semester.projects
+                                                        }
+                                                        viewOnly
+                                                        noAccordion={true}
+                                                        studentsTab={true}
+                                                        firstTable
+                                                        isStudent={
+                                                            userContext.user
+                                                                .role ===
+                                                            USERTYPES.STUDENT
+                                                        }
+                                                    />
+                                                ),
+                                            },
+                                        },
+                                    ]}
                                 />
                                 <div className="accordion-buttons-container">
                                     <a
-                                        href={`mailTo:${semester.projects[projectKey].students?.map(student => student.email).join(",")}`}
+                                        href={`mailTo:${semester.projects[projectKey].students?.map((student) => student.email).join(",")}`}
                                         className="ui icon button"
                                         target="_blank"
                                         rel="noreferrer"
@@ -228,13 +321,13 @@ export default function StudentsTab(props) {
                                         <Icon name="mail"/>
                                     </a>
                                 </div>
-                            </div>
-                        )
+                            </div>,
+                        );
                     }
                     return true;
-                })
+                });
 
-                activeProjects.reverse()
+                activeProjects.reverse();
 
                 semesterPanels.push(
                     <div className="accordion-button-group">
@@ -245,32 +338,41 @@ export default function StudentsTab(props) {
                             onTitleClick={() => {
                                 setActiveSemesters({
                                     ...activeSemesters,
-                                    [semester.semester_id]: !activeSemesters[semester.semester_id]
-                                })
+                                    [semester.semester_id]:
+                                        !activeSemesters[semester.semester_id],
+                                });
                             }}
-                            panels={[{
-                                key: semester.semester_id,
-                                title: `${semester.name} (${studentsData?.length})`,
-                                active: activeSemesters[semester.semester_id],
-                                content: {
-                                    content:
-                                        <StudentTeamTable
-                                            key={semester.semester_id}
-                                            childKey={semester.semester_id}
-                                            students={studentsData}
-                                            semesterData={semesters}
-                                            noAccordion={true}
-                                            viewOnly
-                                            studentsTab={true}
-                                            projectsData={semester.projects}
-                                            isStudent={userContext.user.role === USERTYPES.STUDENT}
-                                        />
-                                }
-                            }]}
+                            panels={[
+                                {
+                                    key: semester.semester_id,
+                                    title: `${semester.name} (${studentsData?.length})`,
+                                    active: activeSemesters[
+                                        semester.semester_id
+                                        ],
+                                    content: {
+                                        content: (
+                                            <StudentTeamTable
+                                                key={semester.semester_id}
+                                                childKey={semester.semester_id}
+                                                students={studentsData}
+                                                semesterData={semesters}
+                                                noAccordion={true}
+                                                viewOnly
+                                                studentsTab={true}
+                                                projectsData={semester.projects}
+                                                isStudent={
+                                                    userContext.user.role ===
+                                                    USERTYPES.STUDENT
+                                                }
+                                            />
+                                        ),
+                                    },
+                                },
+                            ]}
                         />
                         <div className="accordion-buttons-container">
                             <a
-                                href={`mailTo:${studentsData?.map(student => student.email).join(",")}`}
+                                href={`mailTo:${studentsData?.map((student) => student.email).join(",")}`}
                                 className="ui icon button"
                                 target="_blank"
                                 rel="noreferrer"
@@ -278,33 +380,32 @@ export default function StudentsTab(props) {
                                 <Icon name="mail"/>
                             </a>
                         </div>
-                    </div>
-                )
+                    </div>,
+                );
             }
-        })
+        });
 
-
-        semesterPanels.push(
-            <h3>All Students</h3>
-        )
-        if (userContext.user.role !== USERTYPES.ADMIN && activeProjects.length !== 0) {
-            semesterPanels.push(
-                activeProjects,
-                <h3>My Teams</h3>
-            )
+        semesterPanels.push(<h3>All Students</h3>);
+        if (
+            userContext.user.role !== USERTYPES.ADMIN &&
+            activeProjects.length !== 0
+        ) {
+            semesterPanels.push(activeProjects, <h3>My Teams</h3>);
         }
 
-        semesterPanels.unshift(<h3>Peer Evaluations</h3>)
+        semesterPanels.unshift(<h3>Peer Evaluations</h3>);
 
-        semesterMap.forEach(semester => {
-            Object.keys(semester.projects).map(projectKey => {
+        semesterMap.forEach((semester) => {
+            Object.keys(semester.projects).map((projectKey) => {
                 const project = semester.projects[projectKey];
                 const submissions = coachFeedback[projectKey];
                 if (!submissions) return true;
 
                 const subAccordion = (submission) => (
                     <Accordion
-                        key={"Peer-Eval" + projectKey + submission.ActionData.id}
+                        key={
+                            "Peer-Eval" + projectKey + submission.ActionData.id
+                        }
                         fluid
                         styled
                         activeIndex={0}
@@ -313,16 +414,21 @@ export default function StudentsTab(props) {
                                 key: `${projectKey}eval${submission.ActionData.id}`,
                                 title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
                                 content: {
-                                    content: <EvalReview
-                                        forms={submission}
-                                        isSub={submission?.Submitter === 'COACH'}
-                                        id={projectKey + semester.name}
-                                    />
-                                }
-                            }
+                                    content: (
+                                        <EvalReview
+                                            forms={submission}
+                                            isSub={
+                                                submission?.Submitter ===
+                                                "COACH"
+                                            }
+                                            id={projectKey + semester.name}
+                                        />
+                                    ),
+                                },
+                            },
                         ]}
                     />
-                )
+                );
 
                 // console.warn("PROJECT KEY", projectKey, semester.projects[projectKey], coachFeedback[projectKey])
                 // console.log("Has Submission", hasSubmission)
@@ -334,21 +440,22 @@ export default function StudentsTab(props) {
                             styled
                             panels={[
                                 {
-                                    key: 'eval',
+                                    key: "eval",
                                     title: project.name + " - " + semester.name,
                                     content: {
-                                        content: coachFeedback[projectKey].map(submission => subAccordion(submission))
-                                    }
-                                }
+                                        content: coachFeedback[projectKey].map(
+                                            (submission) =>
+                                                subAccordion(submission),
+                                        ),
+                                    },
+                                },
                             ]}
                         />
-                    </div>
-                )
-            })
-        })
-
+                    </div>,
+                );
+            });
+        });
     }
-
 
     return semesterPanels.reverse();
 }

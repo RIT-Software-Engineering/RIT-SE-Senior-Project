@@ -58,7 +58,7 @@ module.exports = (db) => {
 
     /**
      * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
-     * 
+     *
      * THIS IS USED BY THE DEVELOPMENT LOGIN AND SHOULD NOT BE USED FOR ANYTHING ELSE
      */
     if (process.env.NODE_ENV !== 'production') {
@@ -1638,7 +1638,7 @@ module.exports = (db) => {
 
     db_router.get("/getCoachFeedback",[UserAuth.isSignedIn],async(req,res)=>{
         const getFeedbackQuery = `
-            SELECT form_data, a.action_title as title, a.start_date as date, a.action_id
+            SELECT form_data, a.action_title as title, a.start_date as date, a.action_id, submission_datetime
             FROM action_log
             JOIN main.users u on action_log.system_id = u.system_id
             JOIN main.actions a on action_log.action_template = a.action_id
