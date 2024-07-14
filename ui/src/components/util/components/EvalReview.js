@@ -45,6 +45,8 @@ export default function EvalReview(props) {
                 {
                     Object.entries(student).map(([student_name, data]) => {
                             // console.log(student_name, data)
+                            // const hasSelfRating = data.SelfRating && Object.keys(data.SelfRating).length > 0;
+                            // console.log(student_name, data)
                             return <Card key={props.id + student_name + "Card" + index} fluid>
                                 <Card.Content>
                                     <Header size='tiny' onClick={() => {
@@ -64,6 +66,10 @@ export default function EvalReview(props) {
                                             <Table.Header>
                                                 <Table.HeaderCell>Category</Table.HeaderCell>
                                                 <Table.HeaderCell>Rating</Table.HeaderCell>
+                                                {
+                                                    hasSelfRating &&
+                                                    <Table.HeaderCell>Self Rating</Table.HeaderCell>
+                                                }
                                             </Table.Header>
                                             <Table.Body>
                                                 {Object.entries(data.AverageRatings).map(([category, rating]) => (
@@ -71,11 +77,22 @@ export default function EvalReview(props) {
                                                         <Table.Cell>{category}</Table.Cell>
                                                         <Table.Cell>
                                                             <Rating defaultRating={rating} disabled
-                                                                    maxRating={5}/> ({rating})
+                                                                    maxRating={5}/> ({Math.round(rating * 100) / 100})
                                                         </Table.Cell>
+                                                            <Table.Cell>
+                                                            {
+                                                                hasSelfRating && data.SelfRating[category] &&
+                                                                <>
+                                                                    <Rating defaultRating={data.SelfRating[category]} disabled
+                                                                            maxRating={5}/>
+                                                                    <span>
+                                                                        ({Math.round(data.SelfRating[category] * 100) / 100})
+                                                                    </span>
+                                                                </>
+                                                            }
+                                                            </Table.Cell>
                                                     </Table.Row>
                                                 ))}
-
                                             </Table.Body>
                                         </Table>
                                         <Message color={'grey'}>
@@ -86,7 +103,7 @@ export default function EvalReview(props) {
                                                     content={
                                                         <Label basic color={'blue'} as={'a'} image >
                                                             <img  src='Gemini_language_model_logo.png' alt='Google Gemini  logo' color='white' style={{marginLeft: "5px"}} />
-                                                            <p style={ {margin: "-12px 0 0 77px", fontSize: "medium", color:'#086EFF'}}>was used for Summarization of your Feedback</p>
+                                                            <p style={ {margin: "-12px 0 0 79px", fontSize: "medium", color:'#086EFF'}}>  was used for Summarization of your Feedback</p>
                                                         </Label>
                                                     }
                                                     flowing

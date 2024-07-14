@@ -144,8 +144,6 @@ export default function CoachFeedback(props) {
         }));
     };
 
-
-
     useEffect(() => {
         fetchStudentList();
         fetchSubmissions();
@@ -218,7 +216,7 @@ export default function CoachFeedback(props) {
         return (
             <div key={index}>
                         <Divider section/>
-                        <Header size={"large"} block>{student}</Header>
+                    <Header size={"huge"} block inverted>{student}</Header>
 
                 <div><Header as="h3">Coach Feedback <Popup icon={"eye"} content="Visible to  Evaluated Student " trigger={<Icon name={"eye"}></Icon>}/></Header>
                     <Grid>
@@ -256,16 +254,15 @@ export default function CoachFeedback(props) {
                                 <ResultTable
                                     OthersFeedbackAvg={OthersFeedbackAvg}
                                     maxRating={maxRating}
+                                    SelfFeedback={SelfFeedback}
                                     OthersFeedback={OthersFeedback}
                                     student={student}
                                 />
-
                                 <Divider section/>
 
 
                             </div>
                         )}
-
                         <Divider section/>
                         <FormField>
                             <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"} content={"Visible to  Evaluated Student"}/> </Header>
@@ -273,15 +270,22 @@ export default function CoachFeedback(props) {
                         <Dimmer active={loadingStates[student]} inverted>
                             <Loader active={loadingStates[student]}  content="Generating Summerization from AI"/>
                         </Dimmer>
-                            <textarea  placeholder={ "Future instruction text / The entire team will see this"} name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4} value={coachSummaryText[student]} onChange={(e) => updateCoachSummaryText(student, e.target.value)}/>
-                        <Radio name={`UsedAI--${student}`} style={{visibility: "hidden"}} checked={usedAI[student]} value={usedAI[student]?1:0}/>
+                            <textarea  placeholder={`Enter your feedback to ${student} here based from the other students' feedback or click Generate AI Summary`} name={"CoachFeedback-Final-" + student} key={"coach-feedback" + index} rows={4} value={coachSummaryText[student]} onChange={(e) => updateCoachSummaryText(student, e.target.value)}/>
 
                         <Button attached='bottom' onClick={(event) => {OpenPopup(student)}} content='Generate AI Summarization'/>
                             <Confirm
+                                style={{
+                                    position: "fixed",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                }}
                                 content={"Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "}
                                 open={confirmedStates[student]}
                                 onCancel={() => ClosePopup(student)}
                                 onConfirm={() => handleGenerateSummarization(student, AIContext)}/>
+
+                        <Radio name={`UsedAI--${student}`} style={{visibility: "hidden"}} checked={usedAI[student]} value={usedAI[student]?1:0}/>
                     </Dimmer.Dimmable>
                         </FormField>
 
