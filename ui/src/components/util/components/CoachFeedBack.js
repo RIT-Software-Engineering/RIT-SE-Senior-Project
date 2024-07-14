@@ -169,12 +169,16 @@ export default function CoachFeedback(props) {
 
         // NOTE: You can use the formdata.Submitter to differentiate Coach and Student as well somehow on submission
         // e.g. could just set it to "Coach" since we don't actually care about whom the coach is
-        const studentSubmission = studentData.find(formData => formData.Submitter === student)
+        const studentSubmission = studentData.findLast(formData => formData.Submitter === student)
         if (!studentSubmission) return null;
 
         // NOTE: Get other student ratings separate from self ratings for average
         const otherStudentRatings = studentData
+            // Filter out the current student and the coach
             .filter(formData => formData.Submitter !== student && formData.Submitter !== "COACH" && formData.Students[student])
+            // Filter out previous submissions
+            .filter((formData, i, arr) => arr.findLastIndex(f => f.Submitter === formData.Submitter) === i)
+            // Map to the relevant data
             .map(formData => ({
                 From: formData.Submitter,
                 Ratings: formData.Students[student].Ratings,
