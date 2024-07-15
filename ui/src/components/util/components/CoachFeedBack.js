@@ -214,6 +214,7 @@ export default function CoachFeedback(props) {
         };
 
         const showAverage = Object.keys(OthersFeedbackAvg).length > 0;
+        const CoachFeedbackAval = Object.keys(CoachFeedback).length >0;
 
 
         // console.log("OthersFeedbackAvg", OthersFeedbackAvg);
@@ -226,8 +227,9 @@ export default function CoachFeedback(props) {
                 <Divider section/>
                 <Header size={"huge"} block inverted>{student}</Header>
 
-                <div><Header as="h3">Coach Feedback <Popup icon={"eye"} content="Visible to  Evaluated Student "
+                <div><Header as="h3">Feedback for Coach <Popup icon={"eye"} content="Visible to  Evaluated Student "
                                                            trigger={<Icon name={"eye"}></Icon>}/></Header>
+                    {CoachFeedbackAval? (
                     <Grid>
                         {Object.keys(CoachFeedback).map((category, index) => {
                             if (index % 2 === 0) {
@@ -252,21 +254,23 @@ export default function CoachFeedback(props) {
                             }
                             return null;
                         })}
-                    </Grid>
+                    </Grid>):(<p>No Feedback Available</p>)
+                    }
                     <Divider section/>
 
                 </div>
                 {/*NOTE: AVERAGE RATINGS VIEW*/}
+                <div>
+                    <Header as="h3">
+                        Average Ratings from Team Members
+                        <Popup
+                            icon={"eye"}
+                            content="Visible to Evaluated Student"
+                            trigger={<Icon name={"eye"}/>}
+                        />
+                    </Header>
                 {showAverage ? (
                     <div>
-                        <Header as="h3">
-                            Average Ratings from Team Members
-                            <Popup
-                                icon={"eye"}
-                                content="Visible to Evaluated Student"
-                                trigger={<Icon name={"eye"}/>}
-                            />
-                        </Header>
                         <div>
                             <ResultTable
                                 OthersFeedbackAvg={OthersFeedbackAvg}
@@ -278,10 +282,14 @@ export default function CoachFeedback(props) {
                             <Divider section/>
                         </div>
                         <Divider section/>
-                    </div>
-
-                ) : (<div></div>)}
-
+                        </div>
+                ) : (
+                    <>
+                    <p>No Ratings Available</p>
+                    <Divider section/>
+                    </>
+                )}
+                </div>
 
                 <FormField>
                     <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"}
