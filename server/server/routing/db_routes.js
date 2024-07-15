@@ -9,8 +9,6 @@ const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require('filesize-parser');
 const he = require('he');
-const {provide_summary} = require("../SummerizationAI");
-
 
 function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
