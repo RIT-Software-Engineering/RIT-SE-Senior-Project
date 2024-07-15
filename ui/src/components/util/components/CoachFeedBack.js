@@ -23,6 +23,8 @@ export default function CoachFeedback(props) {
     const [loadingStates, setLoadingStates] = useState(false);
     const [coachSummaryText, setCoachSummaryText] = useState({});
     const [usedAI, setUsedAI] = useState([]);
+    const [expandedFeedback, setExpandedFeedback] = useState({});
+
     const getFullName = (student) => `${student.fname} ${student.lname}`
 
     const camelCaseToSentence = (string = "") =>
@@ -30,6 +32,14 @@ export default function CoachFeedback(props) {
             /([A-Z])/g,
             word => ` ${word}`
         ).trimStart();
+
+
+    const expandFeedback = (category) => {
+        setExpandedFeedback({
+            ...expandedFeedback,
+            [category]: !expandedFeedback[category]
+        });
+    }
 
     // Function to fetch submissions and set submissionList state
     const fetchSubmissions = () => {
@@ -203,6 +213,23 @@ export default function CoachFeedback(props) {
             OthersFeedbackAvg[category] = ratings.reduce((prev, curr, _, {length}) => prev + curr / length, 0)
         })
 
+        // NOTE: Qualative Feedback
+        const QualativeFeedback = {}
+        const appendQualativeFeedback = (feedbackObject, from) => {
+            Object.entries(feedbackObject).forEach(([category, feedback]) => {
+                if (!OthersFeedbackAvg[category]) {
+                    if (!QualativeFeedback[category]) QualativeFeedback[category] = []
+                    QualativeFeedback[category].push({
+                        From: from,
+                        Feedback: feedback
+                    })
+                }
+            })
+        }
+
+        OthersFeedback.forEach(({From, Feedback}) => appendQualativeFeedback(Feedback, From))
+        appendQualativeFeedback(SelfFeedback.Feedback, student)
+
         const AIContext = {
             Student: student,
             Ratings: OthersFeedback.map((feedback) => {
@@ -213,13 +240,13 @@ export default function CoachFeedback(props) {
             }),
         };
 
-        const showAverage = Object.keys(OthersFeedbackAvg).length > 0;
-        const CoachFeedbackAval = Object.keys(CoachFeedback).length >0;
-
+        const hasAverageFeedback = Object.keys(OthersFeedbackAvg).length > 0;
+        const hasCoachFeedback = Object.keys(CoachFeedback).length > 0;
+        const hasQualativeFeedback = Object.keys(QualativeFeedback).length > 0;
 
         // console.log("OthersFeedbackAvg", OthersFeedbackAvg);
         // console.log(showAverage)
-        // console.log("OthersFeedback", OthersFeedback);
+        console.log("OthersFeedback", QualativeFeedback);
         // console.log("CoachFeedback", CoachFeedback);
         console.log("SelfFeedback", SelfFeedback);
         return (
@@ -258,8 +285,45 @@ export default function CoachFeedback(props) {
                         </Grid>) : (<p>No Feedback Available</p>)
                     }
                     <Divider section/>
-
                 </div>
+
+                {/*NOTE: Student Qualative Feedback View*/}
+                <div>
+                    <Header as="h3">Feedback for {student}
+                        <Popup content="NOT Visible to  Evaluated Student "
+                               trigger={<Icon name={"eye slash"}
+                                              style={{marginLeft: "5px"}}></Icon>}/>
+                    </Header>
+
+                    {hasQualativeFeedback ?
+                        Object.entries(QualativeFeedback).map(([category, feedbacks], index) => {
+                            return (
+                                <div key={index}>
+                                    <Label as="h2" style={{marginBottom: '2px'}}
+                                           onClick={() => {
+                                               expandFeedback(category)
+                                           }}>
+                                        <Icon name={!expandedFeedback[category] ? "chevron down" : "chevron up"}/>
+                                        {category}
+                                    </Label>
+                                    {!expandedFeedback[category] && feedbacks.map(({From, Feedback}, index) => {
+                                        return (
+                                            <div key={index} style={{marginBottom: '5px'}}>
+                                                <Label ribbon color={From === student ? 'black' : 'grey'}
+                                                       as="h3">{From}</Label>
+                                                <textarea rows={4} value={Feedback} readOnly={true}/>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })
+                        : (
+                            <p>No Feedback Available</p>
+                        )}
+                    <Divider section/>
+                </div>
+
                 {/*NOTE: AVERAGE RATINGS VIEW*/}
                 <div>
                     <Header as="h3">
@@ -270,27 +334,25 @@ export default function CoachFeedback(props) {
                             trigger={<Icon name={"eye"} style={{marginLeft: "5px"}}/>}
                         />
                     </Header>
-                {showAverage ? (
-                    <div>
+                    {hasAverageFeedback ? (
                         <div>
-                            <ResultTable
-                                OthersFeedbackAvg={OthersFeedbackAvg}
-                                maxRating={maxRating}
-                                SelfFeedback={SelfFeedback}
-                                OthersFeedback={OthersFeedback}
-                                student={student}
-                            />
-                            <Divider section/>
+                            <div>
+                                <ResultTable
+                                    OthersFeedback={OthersFeedback}
+                                    OthersFeedbackAvg={OthersFeedbackAvg}
+                                    SelfFeedback={SelfFeedback}
+                                    maxRating={maxRating}
+                                    student={student}
+                                />
+                            </div>
                         </div>
-                        <Divider section/>
-                        </div>
-                ) : (
-                    <>
-                    <p>No Ratings Available</p>
-                    <Divider section/>
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <p>No Ratings Available</p>
+                        </>
+                    )}
                 </div>
+                <Divider section/>
 
                 <FormField>
                     <Header as={'h3'}>
