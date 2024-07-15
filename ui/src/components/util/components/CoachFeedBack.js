@@ -227,34 +227,35 @@ export default function CoachFeedback(props) {
                 <Divider section/>
                 <Header size={"huge"} block inverted>{student}</Header>
 
-                <div><Header as="h3">Feedback for Coach <Popup icon={"eye"} content="Visible to  Evaluated Student "
-                                                           trigger={<Icon name={"eye"}></Icon>}/></Header>
-                    {CoachFeedbackAval? (
-                    <Grid>
-                        {Object.keys(CoachFeedback).map((category, index) => {
-                            if (index % 2 === 0) {
-                                return (
-                                    <Grid.Row columns={2} key={index}>
-                                        <Grid.Column>
-                                            <Label as='h2'>{Object.keys(CoachFeedback)[index]}</Label>
-                                            <textarea rows={4}
-                                                      value={CoachFeedback[Object.keys(CoachFeedback)[index]] || "No Feedback Given"}
-                                                      readOnly={true}/>
-                                        </Grid.Column>
-                                        {Object.keys(CoachFeedback)[index + 1] && (
+                {/*NOTE: Coach Feedback View*/}
+                <div><Header as="h3">Feedback for Coach <Popup content="NOT Visible to  Evaluated Student "
+                                                               trigger={<Icon name={"eye slash"}></Icon>}/></Header>
+                    {hasCoachFeedback ? (
+                        <Grid>
+                            {Object.keys(CoachFeedback).map((category, index) => {
+                                if (index % 2 === 0) {
+                                    return (
+                                        <Grid.Row columns={2} key={index}>
                                             <Grid.Column>
-                                                <Label as='h2'>{Object.keys(CoachFeedback)[index + 1]}</Label>
+                                                <Label as='h2'>{Object.keys(CoachFeedback)[index]}</Label>
                                                 <textarea rows={4}
-                                                          value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]] || "No Feedback Given"}
+                                                          value={CoachFeedback[Object.keys(CoachFeedback)[index]] || "No Feedback Given"}
                                                           readOnly={true}/>
                                             </Grid.Column>
-                                        )}
-                                    </Grid.Row>
-                                );
-                            }
-                            return null;
-                        })}
-                    </Grid>):(<p>No Feedback Available</p>)
+                                            {Object.keys(CoachFeedback)[index + 1] && (
+                                                <Grid.Column>
+                                                    <Label as='h2'>{Object.keys(CoachFeedback)[index + 1]}</Label>
+                                                    <textarea rows={4}
+                                                              value={CoachFeedback[Object.keys(CoachFeedback)[index + 1]] || "No Feedback Given"}
+                                                              readOnly={true}/>
+                                                </Grid.Column>
+                                            )}
+                                        </Grid.Row>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </Grid>) : (<p>No Feedback Available</p>)
                     }
                     <Divider section/>
 
@@ -266,7 +267,7 @@ export default function CoachFeedback(props) {
                         <Popup
                             icon={"eye"}
                             content="Visible to Evaluated Student"
-                            trigger={<Icon name={"eye"}/>}
+                            trigger={<Icon name={"eye"} style={{marginLeft: "5px"}}/>}
                         />
                     </Header>
                 {showAverage ? (
@@ -292,8 +293,11 @@ export default function CoachFeedback(props) {
                 </div>
 
                 <FormField>
-                    <Header as={'h3'}>Coach Summarization + Feedback <Popup icon={"eye"}
-                                                                            content={"Visible to  Evaluated Student"}/>
+                    <Header as={'h3'}>
+                        Coach Summarization + Feedback
+                        <Popup
+                            trigger={<Icon name={"eye"} style={{marginLeft: "5px"}}/>}
+                            content={"Visible to  Evaluated Student"}/>
                     </Header>
                     <Dimmer.Dimmable dimmed={loadingStates[student]}>
                         <Dimmer active={loadingStates[student]} inverted>

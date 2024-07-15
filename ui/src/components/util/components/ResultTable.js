@@ -121,8 +121,12 @@ export default function ResultTable(props) {
                                             <Card fluid>
                                                 <CardContent>
                                                     <CardHeader>{camelCaseToSentence(category) + " Breakdown & Feedback"}
-                                                        <Popup trigger={<Icon name={"eye slash"}></Icon>}
-                                                               content={"NOT visible to Evaluated Student"}/></CardHeader>
+                                                        <Popup
+                                                            content="NOT visible to Evaluated Student"
+                                                            trigger={<Icon name={"eye slash"}
+                                                                           style={{marginLeft: "5px"}}/>}
+                                                        />
+                                                    </CardHeader>
                                                     <Card.Description>
                                                         <List>
                                                             {props.OthersFeedback.map((student, otherIndex) => (
