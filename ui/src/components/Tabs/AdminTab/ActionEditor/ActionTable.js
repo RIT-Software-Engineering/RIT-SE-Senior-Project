@@ -122,8 +122,8 @@ export default function ActionTable(props) {
                                         admin="true"
                                         semesterData={props.semesterData}
                                         semesterName={semesterName}
-                                        semesterStart={semesterStart} 
-                                        semesterEnd={semesterEnd} 
+                                        projectStart={semesterStart} 
+                                        projectEnd={semesterEnd} 
                                         actions={props.actions}
                                     />
                                 </div>

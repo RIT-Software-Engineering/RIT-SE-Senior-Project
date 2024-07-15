@@ -15,14 +15,14 @@ const submissionTypeMap = {
 };
 
 function ActionToolTip(props) {
-  // const [closeOnDocClick, setCloseOnDocClick] = useState(true);
-  // const [open, setOpen] = React.useState(false);
+  const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+  //const [open, setOpen] = React.useState(false);
 
-  // // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
-  // // clicking elements on the modal
-  // function isOpenCallback(isOpen) {
-  //   setCloseOnDocClick(!isOpen);
-  // };
+  // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
+  // clicking elements on the modal
+  function isOpenCallback(isOpen) {
+    setCloseOnDocClick(!isOpen);
+  };
 
   const metadata = () => {
     return (
@@ -48,6 +48,7 @@ function ActionToolTip(props) {
         <div className="accordion-buttons-container" style={{ position: 'initial' }}>
           <ActionPanel
             trigger={<Button fluid className="view-action-button">Edit Action</Button>}
+            isOpenCallback={isOpenCallback}
             actionData={props.action}
             semesterData={props.semesterData}
             header={`Currently Editing "${props.action.action_title}"`}
@@ -55,6 +56,7 @@ function ActionToolTip(props) {
           />
           <PreviewHtml
             trigger={<Button fluid className="view-action-button">View Action</Button>}
+            isOpenCallback={isOpenCallback}
             action={props.action}
             semesterName={props.semesterName}
             header={`Currently Viewing "${props.action.action_title}"`}
@@ -78,6 +80,7 @@ function ActionToolTip(props) {
     <Popup
       header={props.action?.action_title}
       content={content()}
+      closeOnDocumentClick={closeOnDocClick}
       style={{ zIndex: 100 }}
       trigger={props.trigger}
       on="click"

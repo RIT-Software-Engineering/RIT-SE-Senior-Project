@@ -17,6 +17,8 @@ const action_target = "action_target";
 const file_size = "file_size";
 
 export default function ActionPanel(props) {
+  const [open, setOpen] = React.useState(false);
+
   let initialState = {
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
@@ -155,6 +157,16 @@ export default function ActionPanel(props) {
       create={!!props.create}
       button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
       trigger={props.trigger}
+      isOpenCallback={props.isOpenCallback}
+      onClose={() => {
+        setOpen(false);
+        props.isOpenCallback(false);
+        }}
+      onOpen={() => {
+        setOpen(true);
+        props.isOpenCallback(true);
+        }}
+      open={open}
       preChange={preChange}
       preSubmit={(data) => {
         if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {

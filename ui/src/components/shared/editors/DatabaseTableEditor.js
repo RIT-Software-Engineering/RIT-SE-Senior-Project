@@ -19,6 +19,7 @@ export default function DatabaseTableEditor(props) {
     MODAL_STATUS.CLOSED
   );
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = React.useState(false);
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -388,6 +389,15 @@ export default function DatabaseTableEditor(props) {
       <Modal
         className={"sticky"}
         trigger={trigger}
+        onClose={() => {
+          setOpen(false);
+          props.isOpenCallback(false);
+          }}
+        onOpen={() => {
+            setOpen(true);
+            props.isOpenCallback(true);
+            }}
+        open={open}
         header={props.header}
         content={{
           content: (

@@ -6,6 +6,8 @@ import {ACTION_TARGETS, DEFAULT_UPLOAD_LIMIT} from "../functions/constants";
 import Announcements from "../../Tabs/DashboardTab/TimelinesView/Announcements";
 export default function PreviewHtml(props){
 
+    const [open, setOpen] = React.useState(false);
+
     const submissionTypeMap = {
         [ACTION_TARGETS.individual]: "Individual",
         [ACTION_TARGETS.team]: "Team",
@@ -61,6 +63,15 @@ export default function PreviewHtml(props){
             className={"sticky"}
             trigger={
                 props.trigger || (<Button icon={<Icon name="eye" />}/>)}
+            onClose={() => {
+                setOpen(false);
+                props.isOpenCallback(false);
+                }}
+            onOpen={() => {
+                setOpen(true);
+                props.isOpenCallback(true);
+                }}
+            open={open}
             header={props.header}
             content={{
                 content:
