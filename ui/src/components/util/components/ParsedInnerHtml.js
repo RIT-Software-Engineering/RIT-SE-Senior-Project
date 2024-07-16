@@ -1,4 +1,4 @@
-import React, {createContext} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import parse from 'html-react-parser';
 
@@ -29,9 +29,7 @@ const parseHTML = (html, components,studentList, errorFields, submitter) => {
             const componentKey = componentsLowerCase[node.name.toLowerCase()];
             if (!componentKey) return;
 
-            // Note: Normal question feedbacks are for coach not particularly for adding students
-            // Only QuestionStudentFeedback should be used for student ones.
-            // QuestionStudentFeedback could be made to also allow anonymous questions.
+            // NOTE: This injects the student names and "SELF" name into the Question Components.
             if (studentList && node.attribs['includestudents'] && node.attribs['includestudents'] === "true") {
                 if (node.attribs['selffeedback'] && node.attribs['selffeedback'] === "true") {
                     node.attribs['students'] = [...studentList, submitter]
@@ -40,7 +38,7 @@ const parseHTML = (html, components,studentList, errorFields, submitter) => {
                     node.attribs['students'] = studentList;
                 }
             }
-            console.log(node.attribs['students'])
+
             node.attribs['errorFields'] = errorFields
 
             const Component = components[componentKey];

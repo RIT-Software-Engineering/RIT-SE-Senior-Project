@@ -21,7 +21,7 @@ const QuestionSettings = {
 
 const QuestionBuilder = (props) => {
     const field = props.field;
-    const [formHtml, setFormHtml] = useState(props.value);
+    const [_formHtml, setFormHtml] = useState(props.value);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
     const [questions, setQuestions] = useState([]);
@@ -113,7 +113,7 @@ const QuestionBuilder = (props) => {
         // If question is used by 2 questions, check if they are of the same type
         const keys = Array.from(questionSet.keys());
         const questionIDs = keys.map((key) => key.split("-"));
-        const questionTypes = questionIDs.map(([i, index]) => questions[i]?.type);
+        const questionTypes = questionIDs.map(([i, _]) => questions[i]?.type);
 
         const typeA = new Set(["QuestionFeedback", "QuestionPeerFeedback"]);
         const typeB = new Set(["QuestionTable", "QuestionMoodRating"]);
@@ -128,7 +128,6 @@ const QuestionBuilder = (props) => {
     }
 
     function updateMapCount(map, key, index) {
-        console.log(typeof map, map);
         if (map.has(key)) {
             map.set(key, map.get(key).add(index));
         } else {
@@ -140,7 +139,6 @@ const QuestionBuilder = (props) => {
         questions.forEach(({questions}, i) => {
             if (except === i) return;
             questions.forEach((question, index) => {
-                console.log("Resetting", newMap, question, `${i}-${index}`);
                 updateMapCount(newMap, question, `${i}-${index}`);
             });
         });
@@ -150,7 +148,6 @@ const QuestionBuilder = (props) => {
     function updateUsedQuestionNames(question_list, i) {
         const newMap = new Map();
         question_list.forEach((question, index) => {
-            console.log("Resetting 2", newMap, question, i, `${i}-${index}`);
             updateMapCount(newMap, question, `${i}-${index}`);
         });
 
@@ -186,7 +183,7 @@ const QuestionBuilder = (props) => {
 
     function copyHtmlToClipboard() {
         let html = "";
-        questions.map((question, index) => {
+        questions.map((question, _) => {
             if (question.addHeader) {
                 html += `<h2>${question.title}</h2>\n`;
             }
@@ -223,7 +220,7 @@ const QuestionBuilder = (props) => {
                 alert("HTML copied to clipboard");
             },
             (err) => {
-                alert("Failed to copy HTML to clipboard");
+                alert(`Failed to copy HTML to clipboard: ${err}`);
             },
         );
 

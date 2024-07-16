@@ -1,8 +1,14 @@
 const router = require("express").Router();
 const {GoogleGenerativeAI} = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+let key = process.env.GOOGLE_API_KEY;
 
+// Windows for some reason adds a double quote around Environment Variables
+if (key.startsWith('"')) {
+    key = key.slice(1, -1);
+}
+
+const genAI = new GoogleGenerativeAI(key);
 
 const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
 Summarize and anonymize the following peer review feedback from a student project. 
@@ -77,23 +83,14 @@ async function provide_summary(studentFeedback) {
     }
 }
 
-async function complete_next_sentence(studentFeedback, currentText) {
-    try {
-        const context = `Student Feedback:\n${studentFeedback}\n\nCurrent Coach Feedback:\n${currentText}`
-        const result = await completionModel.generateContent(context);
-        return result.response.text()
-    } catch (error) {
-        console.error("Error generating content:", error)
-    }
-}
+
 
 module.exports = () => {
     router.post("/GenerateSummary",(req,res)=>{
         const context = req.body.context;
-        // console.log("GenerateSummaryBodyData", context);
+
 
         provide_summary(context).then((response) => {
-            // console.log(response);
             res.type('text/plain');
             res.status(200).send(response);
         }).catch((err) => {

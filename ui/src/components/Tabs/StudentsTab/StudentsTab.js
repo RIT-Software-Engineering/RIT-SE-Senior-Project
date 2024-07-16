@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from "react";
-import {Accordion, Card, Icon, Table} from "semantic-ui-react";
+import {Accordion, Icon} from "semantic-ui-react";
 import {config, USERTYPES} from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import {SecureFetch} from "../../util/functions/secureFetch";
@@ -7,7 +7,6 @@ import {UserContext} from "../../util/functions/UserContext";
 import {isSemesterActive} from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
 import _ from "lodash";
-import SubmissionViewerModal from "../DashboardTab/TimelinesView/Timeline/SubmissionViewerModal";
 
 export default function StudentsTab(props) {
     const [students, setStudentsData] = useState([]);
@@ -26,23 +25,11 @@ export default function StudentsTab(props) {
     }
 
     function getCoachFeedback(project_id) {
-        // console.log("Getting Coach Feedback", project_id)
         SecureFetch(
             `${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`,
         )
             .then((response) => response.json())
             .then((data) => {
-                // let forms = data
-                //     .map((s) => {
-                //         let form_data = JSON.parse(s.form_data);
-                //         form_data["ActionData"] = {
-                //             title: s.title,
-                //             start_date: s.date,
-                //             id: s.action_id,
-                //         };
-                //         return form_data;
-                //     })
-
                 const submissions = {}
                 data.forEach((s) => {
                     if (submissions[s.action_id] === undefined || submissions[s.action_id].submission_datetime < s.submission_datetime) {
@@ -85,7 +72,6 @@ export default function StudentsTab(props) {
             .then((response) => response.json())
             .then((semestersData) => {
                 setSemestersData(semestersData);
-                // console.log("Semesters Data", semestersData)
             })
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);

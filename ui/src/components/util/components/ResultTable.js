@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     Container,
     Rating,
@@ -37,16 +37,10 @@ export default function ResultTable(props) {
     };
 
     const hasSelfRating = !!props.SelfFeedback && Object.keys(props.SelfFeedback).length > 0;
-    console.warn("SELF", props.SelfFeedback, hasSelfRating)
     const categories = Array.from(new Set([
         ...Object.keys(props.OthersFeedbackAvg),
         ...(hasSelfRating ? Object.keys(props.SelfFeedback.Ratings) : []),
     ]))
-
-    console.warn("Categories", categories)
-    useEffect(() => {
-        // console.log(props.OthersFeedback);
-    }, []);
 
     return (
         <Container fluid>

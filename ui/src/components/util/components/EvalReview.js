@@ -1,9 +1,16 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {SecureFetch} from "../functions/secureFetch";
-import {config, USERTYPES} from "../functions/constants";
-import {Card, Divider, Header, Icon, Message, Rating, Table, Label, Popup, Accordion} from "semantic-ui-react";
+import React, {useContext, useEffect, useState} from 'react';
+import {USERTYPES} from "../functions/constants";
+import {
+    Divider,
+    Icon,
+    Message,
+    Rating,
+    Table,
+    Label,
+    Popup,
+    Accordion
+} from "semantic-ui-react";
 import {UserContext} from "../functions/UserContext";
-import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip";
 
 
 export default function EvalReview(props) {
@@ -15,9 +22,8 @@ export default function EvalReview(props) {
     const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
 
     useEffect(() => {
-        // console.info("COACH FEEDBACK", coachFeedback);
         sortFeedback();
-    }, []);
+    }, [setUserFeedback, coachFeedback]);
 
     const updateExpanded = (student_name, value) => {
         const new_value = !!value ? value : !studentExpanded[student_name];
@@ -30,7 +36,6 @@ export default function EvalReview(props) {
         list.push(Object.fromEntries(Object.entries(coachFeedback.Students)
             .filter(([student, _]) => !userIsStudent || userName === student)));
 
-        // console.log("filtered", list);
         setUserFeedback(list);
     }
 
@@ -38,17 +43,12 @@ export default function EvalReview(props) {
         if (userIsStudent) {
             updateExpanded(userName, true);
         }
-    }, []);
+    });
 
     const generateFeedbackCards = (student, index) => {
-        // console.log("STUEDNT INFO", student, index)
-        console.log(student);
         return (<div key={"EvalReview" + props.id}>
             {Object.entries(student).map(([student_name, data]) => {
-                // console.log(student_name, data)
                 const hasSelfRating = data.SelfRating && Object.keys(data.SelfRating).length > 0;
-                // console.log(student_name, data)
-                // return <Card ke={props.id + student_name + "Card" + index} fluid>
                 return <Accordion fluid styled key={props.id + student_name + "Card" + index} >
                     <Accordion.Title active={studentExpanded[student_name]}
                                      index={index}
@@ -86,15 +86,15 @@ export default function EvalReview(props) {
                                 </Table.Body>
                             </Table>
                             <Message color={'grey'}>
-                                <Message.Header content={"Coach Feedback"}/>
+                                <Message.Header >{"Coach Feedback"} <p>(AI Is available for coach to use)</p> </Message.Header>
                                 {data.UsedAI && <Popup
                                     content={<Label basic color={'blue'} as={'a'} image>
-                                        <img src='Gemini_language_model_logo.png'
+                                        <img src={'Gemini_language_model_logo.png'}
                                              alt='Google Gemini  logo' color='white'
                                              style={{marginLeft: "5px"}}/>
                                         <p style={{
                                             margin: "-12px 0 0 79px", fontSize: "medium", color: '#086EFF'
-                                        }}> was used for Summarization of your Feedback</p>
+                                        }}> was used to aid the coach in your feedback.</p>
                                     </Label>}
                                     flowing
                                     trigger={<Label corner={'right'} icon={"google"} color={'blue'}/>}

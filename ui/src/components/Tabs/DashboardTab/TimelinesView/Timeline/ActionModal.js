@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useRef, useState} from "react";
 import {Button, Form, Icon, Input, Loader, Message, MessageHeader, MessageList, Modal} from "semantic-ui-react";
 import {ACTION_TARGETS, config, DEFAULT_UPLOAD_LIMIT, USERTYPES} from "../../../../util/functions/constants";
 import {SecureFetch} from "../../../../util/functions/secureFetch";
@@ -48,100 +48,100 @@ export default function ActionModal(props) {
         }
     };
 
-    // TODO: Add way to parse Peer Evaluation Data Cleanly to be used
-    function translatePeerEvalData(formData) {
-        let translation = null;
-        if (user.role === USERTYPES.STUDENT) {
-            translation = {
-                CoachFeedback: {},
-                Students: {},
-                Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`,
+
+    function translateStudentPeerEvalData(formData) {
+        const translation = {
+            CoachFeedback: {},
+            Students: {},
+            Submitter: user.isMock ? `${user.mockUser.fname} ${user.mockUser.lname}` : `${user.fname} ${user.lname}`,
+        }
+
+        for (const key in formData) {
+            let [category, header, student] = key.split("-");
+            let value = formData[key];
+            const isFeedback = category === "Feedback";
+            const isSwitch = category === "Scale";
+            const scale = 5 / 3;
+
+            header = camelCaseToSentence(header)
+            value = isFeedback ? value.trim() : parseInt(value)
+
+            if (isFeedback && student === "Anon") {
+                translation.CoachFeedback[header] = value;
+                continue
             }
 
-            for (const key in formData) {
-                let [category, header, student] = key.split("-");
-                let value = formData[key];
-                const isFeedback = category === "Feedback";
-                const isSwitch = category === "Scale";
-                const scale = 5 / 3;
+            if (!translation.Students[student]) {
+                translation.Students[student] = {Feedback: {}, Ratings: {}};
+            }
 
-                header = camelCaseToSentence(header)
-                value = isFeedback ? value.trim() : parseInt(value)
+            const hasRatings = translation.Students[student].Ratings[header] !== undefined;
 
-                if (isFeedback && student === "Anon") {
-                    translation.CoachFeedback[header] = value;
-                    continue
-                }
-
-                if (!translation.Students[student]) {
-                    translation.Students[student] = {Feedback: {}, Ratings: {}};
-                }
-
-                const hasRatings = translation.Students[student].Ratings[header] !== undefined;
-
-                if (isFeedback) {
-                    translation.Students[student].Feedback[header] = value;
-                } else if (isSwitch) {
-                    if (!hasRatings) {
-                        translation.Students[student].Ratings[header] = scale;
-                    } else {
-                        const old = translation.Students[student].Ratings[header];
-                        translation.Students[student].Ratings[header] = Math.floor(old * (scale))
-                    }
+            if (isFeedback) {
+                translation.Students[student].Feedback[header] = value;
+            } else if (isSwitch) {
+                if (!hasRatings) {
+                    translation.Students[student].Ratings[header] = scale;
                 } else {
-                    if (hasRatings && translation.Students[student].Ratings[header] === scale) {
-                        translation.Students[student].Ratings[header] *= value;
-                    } else {
-                        translation.Students[student].Ratings[header] = value;
-                    }
+                    const old = translation.Students[student].Ratings[header];
+                    translation.Students[student].Ratings[header] = Math.floor(old * (scale))
                 }
-
-            }
-        } else if (user.role === USERTYPES.COACH) {
-            translation = {
-                Submitter: "COACH",
-                Students: {}
-            }
-
-            for (const key in formData) {
-                let [category, header, student] = key.split("-")
-
-                if (student === undefined) {
-                    console.error(`Incorrect Name Formatting ${key}. Not Parsable`)
-                    continue
-                }
-
-                let value = formData[key]
-
-                if (!translation.Students[student]) {
-                    translation.Students[student] = {
-                        Feedback: "",
-                        UsedAI: false,
-                        AverageRatings: {},
-                        SelfRating: {},
-                    }
-                }
-
-                const StudentData = translation.Students[student]
-
-                switch (category) {
-                    case "CoachFeedback":
-                        StudentData.Feedback = value
-                        break;
-                    case "AverageFeedback":
-                        StudentData.AverageRatings[header] = value
-                        break;
-                    case "UsedAI":
-                        StudentData.UsedAI = value === "2"
-                        break;
-                    case "SelfFeedback":
-                        StudentData.SelfRating[header] = value
-                        break;
-                    default:
-                        console.warn(`Feedback Type ${key} not valid`)
+            } else {
+                if (hasRatings && translation.Students[student].Ratings[header] === scale) {
+                    translation.Students[student].Ratings[header] *= value;
+                } else {
+                    translation.Students[student].Ratings[header] = value;
                 }
             }
 
+        }
+
+        return translation;
+    }
+
+    function translateCoachPeerEvalFeedbackData(formData) {
+        const translation = {
+            Submitter: "COACH",
+            Students: {}
+        }
+
+        for (const key in formData) {
+            let [category, header, student] = key.split("-")
+
+            if (student === undefined) {
+                console.error(`Incorrect Name Formatting ${key}. Not Parsable`)
+                continue
+            }
+
+            let value = formData[key]
+
+            if (!translation.Students[student]) {
+                translation.Students[student] = {
+                    Feedback: "",
+                    UsedAI: false,
+                    AverageRatings: {},
+                    SelfRating: {},
+                }
+            }
+
+            const StudentData = translation.Students[student]
+
+            switch (category) {
+                case "CoachFeedback":
+                    StudentData.Feedback = value
+                    break;
+                case "AverageFeedback":
+                    StudentData.AverageRatings[header] = value
+                    break;
+                case "UsedAI":
+                    StudentData.UsedAI = value === "2"
+                    break;
+                case "SelfFeedback":
+                    StudentData.SelfRating[header] = value
+                    break;
+                default:
+                    break;
+            }
         }
 
         return translation;
@@ -234,7 +234,7 @@ export default function ActionModal(props) {
 
                     if (!isEmpty) continue;
 
-                    // Push errors to the actual components
+                    // Push errors to the question components
                     switch (questionType) {
                         case "Feedback":
                         case "Mood":
@@ -247,6 +247,7 @@ export default function ActionModal(props) {
                             break
                     }
 
+                    // Stops repeat errors from appearing
                     if (hasDoneError) continue;
 
                     // Push errors to the error list at bottom of page
@@ -294,11 +295,13 @@ export default function ActionModal(props) {
                 return;
             }
 
-            // TODO: If the action is a peer evaluation, we need to translate the form data
+            // NOTE: Translates form data into Object structure for future usage
             if (isPeerEval) {
-                console.log("pre translation:", formData)
-                formData = translatePeerEvalData(formData);
-                console.warn("post translation:", formData);
+                if (user.role === USERTYPES.STUDENT) {
+                    formData = translateStudentPeerEvalData(formData);
+                } else if(user.role === USERTYPES.COACH) {
+                    formData = translateCoachPeerEvalFeedbackData(formData);
+                }
             }
 
             body.append("form_data", JSON.stringify(formData));
@@ -309,7 +312,7 @@ export default function ActionModal(props) {
 
             setSubmissionModalResponse(
                 <div className={"content"}>
-                    <Loader className={"workaround"} indeterminate active inverted inline={'centered'}>Uploading
+                    <Loader className={"workaround"}  indeterminate active inverted inline={'centered'}>Uploading
                         Files</Loader>
                 </div>
             );
@@ -423,7 +426,9 @@ export default function ActionModal(props) {
                             </div>}
                         </div>
                     </Modal.Description>
-                    <Modal open={!!submissionModalOpen} {...generateModalFields()}
+                    <Modal
+                        style={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
+                        open={!!submissionModalOpen} {...generateModalFields()}
                            onClose={() => closeSubmissionModal()}/>
                 </Modal.Content>
                 <Modal.Actions>
@@ -490,7 +495,9 @@ export default function ActionModal(props) {
                             </Message>
                         </div>}
                     </Modal.Description>
-                    <Modal open={!!submissionModalOpen} {...generateModalFields()}
+                    <Modal
+                        style={{position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
+                        open={!!submissionModalOpen} {...generateModalFields()}
                            onClose={() => closeSubmissionModal()}/>
                 </Modal.Content>
                 <Modal.Actions>

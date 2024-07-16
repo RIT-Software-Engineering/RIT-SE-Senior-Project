@@ -15,7 +15,14 @@ const sentenceToCamelCase = (string = "") =>
         (word) => word.charAt(0).toUpperCase() + word.slice(1).trim(),
     );
 
-// TODO: Add propagation of onChange handler
+export const QuestionComponentsMap = {
+    QuestionFeedback: QuestionFeedback,
+    QuestionTable: QuestionTable,
+    QuestionMoodRating: QuestionMoodRating,
+    QuestionPeerFeedback: QuestionPeerFeedback,
+};
+
+// noinspection JSUnusedLocalSymbols
 export function QuestionFeedback({
     title = "Feedback",
     questions = [""],
@@ -140,7 +147,7 @@ export function QuestionPeerFeedback({
     );
 }
 
-// TODO: Add propagation of onChange handler
+// noinspection JSUnusedLocalSymbols
 export function QuestionTable({
     questions,
     students,
@@ -297,7 +304,7 @@ export function QuestionTable({
     );
 }
 
-// TODO: Add propagation of onChange handler
+// noinspection JSUnusedLocalSymbols
 export function QuestionMoodRating({
     question,
     students,
@@ -408,10 +415,3 @@ export function QuestionMoodRating({
         </div>
     );
 }
-
-export const QuestionComponentsMap = {
-    QuestionFeedback: QuestionFeedback,
-    QuestionTable: QuestionTable,
-    QuestionMoodRating: QuestionMoodRating,
-    QuestionPeerFeedback: QuestionPeerFeedback,
-};
