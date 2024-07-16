@@ -1635,7 +1635,7 @@ module.exports = (db) => {
             });
     });
 
-    db_router.get("/getCoachFeedback",[UserAuth.isSignedIn,UserAuth.isCoachOrAdmin],async(req,res)=>{
+    db_router.get("/getCoachFeedback",[UserAuth.isSignedIn],async(req,res)=>{
         const getFeedbackQuery = `
             SELECT form_data, a.action_title as title, a.start_date as date, a.action_id, submission_datetime
             FROM action_log
