@@ -1,5 +1,6 @@
 import React, { act, createElement, useEffect, useRef } from 'react'
 import { ACTION_STATES } from '../../../../util/functions/constants';
+// import "./../../../../../css/gantt.css";
 import { isSemesterActive, dateDiff } from "../../../../util/functions/utils";
 import GanttChartBackdrop from './GanttChartBackdrop';
 import _ from "lodash";
@@ -34,8 +35,6 @@ export default function GanttChart(props) {
     let sidebarWidth = isMobile() ? 0 : 200;    // sticky text left - 200px is fixed sidebar width
 
     useEffect(()=> {
-        document.documentElement.style.setProperty('--gantt-maximum-columns', ganttLength + 1);
-
         if (semesterActive && firstAction) {
             try {
                 let viewTop = firstActionRef.current.offsetTop - todayRef.current.offsetTop;
@@ -169,12 +168,16 @@ export default function GanttChart(props) {
     })
 
     const ganttChartContainer = (<div
-        className="gantt-chart">
+        className="gantt-chart"
+        style={{'gridColumn' : '2/' + (ganttLength+1)}}>
             {ganttBars}
         </div>);
 
     const ganttContainer = (<div
-        className='gantt-container'>
+        className='gantt-container'
+        // style would be in dashboard.css, but gantt length changes between
+        // different projects, so must be specified here
+        style={{'gridColumn' : '1/' + (ganttLength+1)}}>
         <GanttChartBackdrop
             ref={todayRef}
             ganttStart={ganttStartDate}

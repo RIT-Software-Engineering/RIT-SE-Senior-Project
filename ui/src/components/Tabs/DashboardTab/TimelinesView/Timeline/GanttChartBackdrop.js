@@ -130,7 +130,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                     ganttHeader.push(<div
                     key={props.timeSpan + 'first' + i}
                     className="gantt-header first"
-                        style={{'gridColumn' : i + ' / span ' + (((currYear % 4 === 0 && currYear % 100 > 0) || currYear %400 == 0) ? 366 : 365), 'left' : sidebarWidth}} // change to days in year
+                        style={{'gridColumn' : i + ' / span ' + (((currYear % 4 === 0 && currYear % 100 > 0) || currYear %400 == 0) ? 366 : 365), 'left' : sidebarWidth}}
                         >{currYear}</div>);
                 }
                 monthLength = daysInMonth(currMonth, currYear);
@@ -163,7 +163,9 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
     
     // ---------------- RENDER ------------------
     return (<>
-        <div className="gantt-header">{ganttHeader}</div>
-        <div className='gantt-background'>{ganttCols}</div>
+        <div className="gantt-header" style={{'gridColumn' : '2/' + (props.ganttLength+1)}}>
+            {ganttHeader}</div>
+        <div className='gantt-background' style={{'gridColumn' : '2/' + (props.ganttLength+1)}}>
+            {ganttCols}</div>
     </>);
 });
