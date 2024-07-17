@@ -73,7 +73,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                 monthLength = daysInMonth(currMonth, currYear);
             }
 
-            if ((startCol.getDay() + i)%7 == 0) {
+            if ((startCol.getDay() + i - 1)%7 == 0) {
                 ganttHeader.push(<div
                 key={props.timeSpan + 'first' + i}
                 className="gantt-header first"
@@ -153,7 +153,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         ganttCols.push(<div
             key={props.timeSpan + i}
             className={isToday ? 'gantt-col today' : isProjectStart ? 'gantt-col projectStart' : isProjectEnd ? 'gantt-col projectEnd' 
-                : ((startCol.getUTCDay() + i)%7 == 0 || ((startCol.getUTCDay() + i)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
+                : ((startCol.getUTCDay() + i - 1)%7 == 0 || ((startCol.getUTCDay() + i - 1)%7) == 6 ? 'gantt-col weekend' : 'gantt-col weekday')}
             ref={isToday ? todayRef : null}
             style={{'gridColumn' : i, 'left' : sidebarWidth}}
             ></div>);
