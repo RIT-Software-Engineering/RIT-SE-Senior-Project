@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Accordion, Icon } from "semantic-ui-react";
+import { Accordion, Icon, Message } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import { SecureFetch } from "../../util/functions/secureFetch";
@@ -234,8 +234,8 @@ export default function StudentsTab(props) {
             projectKey !== "noProject" &&
             semester.projects[projectKey].name !== undefined &&
             projectMap.hasOwnProperty(projectKey)
-
-          ) {  let sortedStudents = _.sortBy(
+          ) {
+            let sortedStudents = _.sortBy(
               semester.projects[projectKey].students || [],
               ["fname", "lname", "email"]
             );
@@ -358,8 +358,9 @@ export default function StudentsTab(props) {
         const project = semester.projects[projectKey];
         const submissions = coachFeedback[projectKey];
         if (!submissions) return true;
+        const hasSubmissions = submissions.length > 0;
 
-    const subAccordion = (submission, index) => (
+        const subAccordion = (submission, index) => (
           <Accordion
             key={"Peer-Eval" + projectKey + submission.ActionData.id}
             fluid
@@ -388,15 +389,27 @@ export default function StudentsTab(props) {
             <Accordion
               key={"PEEREVAL" + projectKey}
               fluid
-              defaultActiveIndex={activeProjectIds[projectKey] ? 0 : -1}
+              defaultActiveIndex={
+                activeProjectIds[projectKey] && hasSubmissions ? 0 : -1
+              }
               styled
               panels={[
                 {
                   key: "eval",
                   title: project.name + " - " + semester.name,
                   content: {
-                    content: coachFeedback[projectKey].map(
-                      (submission, index) => subAccordion(submission, index)
+                    content: hasSubmissions ? (
+                      submissions.map((submission, index) =>
+                        subAccordion(submission, index)
+                      )
+                    ) : (
+                      <Message>
+                        <Icon name="info circle" />
+                        <b>
+                          No coach feedback for peer-evaluations given at this
+                          time.
+                        </b>
+                      </Message>
                     ),
                   },
                 },
