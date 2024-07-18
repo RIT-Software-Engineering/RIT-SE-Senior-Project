@@ -145,7 +145,6 @@ export default function ActionPanel(props) {
       return formData;
     }
   };
-
   return (
     <DatabaseTableEditor
       initialState={initialState}

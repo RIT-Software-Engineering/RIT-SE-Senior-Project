@@ -53,6 +53,8 @@ export const config = {
     API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
     API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
+    API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
+    API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
     API_GET_SUBMISSION: `${BASE_API_URL}/db/getSubmission`,
     API_GET_PROJECT_STUDENT_NAMES: `${BASE_API_URL}/db/getProjectStudentNames`,
     API_GET_SUBMISSION_FILE: `${BASE_API_URL}/db/getSubmissionFile`,
@@ -83,6 +85,7 @@ export const config = {
     API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,
     API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
     API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
+    API_POST_CREATE_TIME_LOG: `${BASE_API_URL}/db/createTimeLog`,
     API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
     API_POST_CREATE_SEMESTER: `${BASE_API_URL}/db/createSemester`,
     API_POST_EDIT_USER: `${BASE_API_URL}/db/editUser`,
@@ -101,6 +104,7 @@ export const config = {
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
     API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
+    API_DELETE_TIME_LOG: `${BASE_API_URL}/db/deleteTimeLog`,
 
     // PATCH - Auth needed
     API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,

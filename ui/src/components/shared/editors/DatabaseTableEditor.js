@@ -23,6 +23,7 @@ export default function DatabaseTableEditor(props) {
   let submissionModalMessages = props.submissionModalMessages;
   let submitRoute = props.submitRoute;
   let formFieldArray = props.formFieldArray;
+  let date = new Date();
 
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED
@@ -66,6 +67,9 @@ export default function DatabaseTableEditor(props) {
     switch (submissionModalOpen) {
       case MODAL_STATUS.SUCCESS:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+        if (props.reload) {
+          props.reloadData();
+        }
         break;
       case MODAL_STATUS.FAIL:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
@@ -74,6 +78,10 @@ export default function DatabaseTableEditor(props) {
         console.error(`MODAL_STATUS of '${submissionModalOpen}' not handled`);
     }
   };
+
+  function handleCancel() {
+    setFormData(initialState);
+  }
 
   const handleSubmit = async function (e) {
     const dataToSubmit = !!props.preSubmit
@@ -90,6 +98,9 @@ export default function DatabaseTableEditor(props) {
       }
     }
     Object.keys(dataToSubmit).forEach((key) => {
+      if (key === "dataOnSubmit") {
+        dataToSubmit[key] = dataToSubmit[key] + date.toLocaleDateString();
+      }
       body.append(key, dataToSubmit[key]);
     });
 
@@ -154,6 +165,7 @@ export default function DatabaseTableEditor(props) {
   let fieldComponents = [];
   for (let i = 0; i < formFieldArray.length; i++) {
     let field = formFieldArray[i];
+
     if (!field.hidden) {
       switch (field.type) {
         case "input":
@@ -166,6 +178,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                required
               />
             </Form.Field>
           );
@@ -187,7 +200,7 @@ export default function DatabaseTableEditor(props) {
           break;
         case "date":
           fieldComponents.push(
-            <Form.Field key={field.name}>
+            <Form.Field key={field.name} required>
               <Form.Input
                 label={field.label}
                 type="date"
@@ -196,6 +209,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                required
               />
             </Form.Field>
           );
@@ -212,7 +226,7 @@ export default function DatabaseTableEditor(props) {
             );
           } else {
             fieldComponents.push(
-              <Form.Field key={field.name}>
+              <Form.Field key={field.name}required>
                 <label>{field.label}</label>
                 <Form.TextArea
                   label={field.label}
@@ -366,6 +380,13 @@ export default function DatabaseTableEditor(props) {
   }
 
   const modalActions = () => {
+    let mock = false;
+
+    if (props.initialState.hasOwnProperty("mockUser")) {
+      if (Object.entries(props.initialState.mockUser).length !== 0) {
+        mock = true;
+      }
+    }
     if (props.viewOnly) {
       return [
         {
@@ -376,14 +397,24 @@ export default function DatabaseTableEditor(props) {
     }
     return [
       {
+        key: "cancel",
+        content: "Cancel",
+        onClick: (event) => handleCancel(event),
+        positive: true,
+        style: { backgroundColor: "grey" },
+      },
+      {
         key: "submit",
-        content: "Submit",
+
+        content: mock
+          ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
+          : "Submit",
         onClick: (event) => handleSubmit(event),
         positive: true,
       },
     ];
   };
-  let trigger = <Button icon={props.button} />;
+  let trigger = <Button content={props.content} icon={props.button} />;
   if (props.trigger) {
     trigger = props.trigger;
   }
@@ -399,6 +430,7 @@ export default function DatabaseTableEditor(props) {
             <>
               <Form>{fieldComponents}</Form>
               {props.childComponents}
+              {props.body}
             </>
           ),
         }}

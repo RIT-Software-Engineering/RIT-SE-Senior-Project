@@ -191,6 +191,7 @@ export default function StudentsTab(props) {
     ) {
       setActiveProjectIds(initialActiveProjects);
     }
+
     return mappedData;
   }
 
@@ -233,8 +234,8 @@ export default function StudentsTab(props) {
             projectKey !== "noProject" &&
             semester.projects[projectKey].name !== undefined &&
             projectMap.hasOwnProperty(projectKey)
-          ) {
-            let sortedStudents = _.sortBy(
+
+          ) {  let sortedStudents = _.sortBy(
               semester.projects[projectKey].students || [],
               ["fname", "lname", "email"]
             );
@@ -358,7 +359,7 @@ export default function StudentsTab(props) {
         const submissions = coachFeedback[projectKey];
         if (!submissions) return true;
 
-        const subAccordion = (submission, index) => (
+    const subAccordion = (submission, index) => (
           <Accordion
             key={"Peer-Eval" + projectKey + submission.ActionData.id}
             fluid

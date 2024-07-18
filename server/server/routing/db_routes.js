@@ -39,6 +39,7 @@ const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
 const { ROLES } = require("../consts");
+const { off } = require("process");
 const USERAuth = require("./user_auth");
 
 const ACTION_TARGETS = {
@@ -53,8 +54,6 @@ const ACTION_TARGETS = {
 
 // Routes
 module.exports = (db) => {
-  // TODO: Add Route for Get Templates
-
   /**
    * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
    *
@@ -124,15 +123,7 @@ module.exports = (db) => {
     switch (req.user.type) {
       //Retrieves all users from a semester group that is similar to the student that is making the query.
       case ROLES.STUDENT:
-        query = `
-                    SELECT users.* FROM users
-                        LEFT JOIN semester_group
-                            ON users.semester_group = semester_group.semester_id
-                        WHERE users.semester_group = (
-                            SELECT semester_group FROM users
-                            WHERE users.system_id = ?
-                        )
-                `;
+        query = `SELECT users.* FROM users WHERE users.system_id = ?`;
         params = [req.user.system_id];
         break;
       case ROLES.COACH:
@@ -372,6 +363,104 @@ module.exports = (db) => {
         return res.status(500).send(err);
       });
   });
+
+  db_router.post("/deleteTimeLog", [], (req, res) => {
+    let result = validationResult(req);
+
+    if (result.errors.length !== 0) {
+      return res.status(400).send(result);
+    }
+
+    let body = req.body;
+
+    const sql = `UPDATE time_log
+      SET active = ?
+      WHERE time_log_id = ?`;
+
+    let params = [body.dataOnSubmit, body.time_log_id];
+
+    db.query(sql, params)
+      .then(() => {
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).send(err);
+      });
+  });
+
+  db_router.post(
+    "/createTimeLog",
+
+    [
+      //todo: un-hardcode
+
+      body("date")
+        .not()
+        .isEmpty()
+        .trim()
+        .escape()
+        .withMessage("Cannot be empty")
+        .isLength({ max: 50 }),
+      body("time_amount")
+        .not()
+        .isEmpty()
+        .trim()
+        .escape()
+        .withMessage("Cannot be empty")
+        .isLength({ max: 50 }),
+      body("comment")
+        .not()
+        .isEmpty()
+        .trim()
+        .escape()
+        .withMessage("Cannot be empty")
+        .isLength({ max: 120 }),
+    ],
+    (req, res) => {
+      let result = validationResult(req);
+
+      if (result.errors.length !== 0) {
+        return res.status(400).send(result);
+      }
+
+      let body = req.body;
+
+      const currentDate = new Date();
+      const pastWeekDate = new Date();
+      pastWeekDate.setDate(currentDate.getDate() - 8);
+      const timelogDate = new Date(body.date);
+
+      if (pastWeekDate > timelogDate || timelogDate > currentDate) {
+        return res
+          .status(400)
+          .send(
+            "Can not submit time log before last week date or after current date."
+          );
+      }
+
+      const sql = `INSERT INTO time_log
+                  ( system_id, project, mock_id, work_date, time_amount, work_comment,active)
+                  VALUES (?,?,?,?,?,?,?)`;
+
+      let params = [
+        body.userId,
+        body.project,
+        body.mockId,
+        body.date,
+        body.time_amount,
+        body.comment,
+      ];
+      db.query(sql, params)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
+          console.error(err);
+          return res.status(500).send(err);
+        });
+    }
+  );
 
   db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
     let getProjectsQuery = `
@@ -1970,6 +2059,110 @@ module.exports = (db) => {
             actionLogCount: actionLogCount[Object.keys(actionLogCount)[0]],
             actionLogs: projects,
           });
+        })
+        .catch((error) => {
+          res.status(500).send(error);
+        });
+    }
+  );
+
+  db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+    let getTimeLogQuery = "";
+    let params = [];
+
+    switch (req.user.type) {
+      case ROLES.STUDENT:
+        // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
+        //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
+        getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        WHERE time_log.project = ?`;
+        params = [req.user.project];
+        break;
+      case ROLES.COACH:
+      case ROLES.ADMIN:
+        getTimeLogQuery = `SELECT time_log.*,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) AS name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) AS mock_name
+                    FROM time_log
+                    WHERE time_log.project = ?`;
+        params = [req.query.project_id];
+        break;
+
+      default:
+        res.status(401).send("Unknown role");
+        return;
+    }
+    db.query(getTimeLogQuery, params)
+      .then((values) => {
+        res.send(values);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(err);
+      });
+  });
+
+  db_router.get("/getAllTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+    const { resultLimit, offset } = req.query;
+
+    let getTimeLogQuery = "";
+    let queryParams = [];
+    let getTimeLogCount = "";
+    let countParams = [];
+
+    switch (req.user.type) {
+      case ROLES.STUDENT:
+        getTimeLogQuery = `SELECT time_log.*,
+                        projects.display_name, projects.title,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        JOIN projects ON projects.project_id = time_log.project
+                        WHERE time_log.project = ? `;
+        queryParams = [req.user.project];
+        getTimeLogCount = `SELECT COUNT(*) FROM time_log
+                    WHERE time_log.project = ?
+                    AND time_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+        countParams = [req.user.project, req.user.project];
+        break;
+      case ROLES.COACH:
+        getTimeLogQuery = `SELECT time_log.*,
+                    projects.display_name, projects.title,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                    FROM time_log
+                        JOIN projects ON projects.project_id = time_log.project
+                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?) `;
+        queryParams = [req.user.system_id];
+        getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+        countParams = [req.user.system_id];
+        break;
+      case ROLES.ADMIN:
+        getTimeLogQuery = `SELECT time_log.*,
+                projects.display_name, projects.title,
+                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
+                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                FROM time_log
+                    JOIN projects ON projects.project_id = time_log.project `;
+        queryParams = [];
+        getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
+        break;
+      default:
+        res.status(401).send("Unknown role");
+        return;
+    }
+
+    const timeLogsPromise = db.query(getTimeLogQuery, queryParams);
+    const timeLogsCountPromise = db.query(getTimeLogCount, countParams);
+    Promise.all([timeLogsCountPromise, timeLogsPromise])
+      .then(([[timeLogCount], projects]) => {
+        res.send({
+          timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]],
+          timeLogs: projects,
+        });
         })
         .catch((error) => {
           res.status(500).send(error);

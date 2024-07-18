@@ -33,6 +33,7 @@ const MODAL_STATUS = {
   SUBMITTING: "submitting",
   CLOSED: false,
 };
+
 const camelCaseToSentence = (string = "") =>
   string.replaceAll(/([A-Z])/g, (word) => ` ${word}`).trimStart();
 

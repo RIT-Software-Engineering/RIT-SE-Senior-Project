@@ -5,6 +5,7 @@
 .read test_data/project_dummy.sql
 .read test_data/semester_dummy.sql
 .read test_data/sponsor_dummy.sql
+.read test_data/time_log_dummy.sql
 .read test_data/user_dummy.sql
 .read test_data/sponsor_notes_dummy.sql
 .read test_data/page_html_dummy.sql
