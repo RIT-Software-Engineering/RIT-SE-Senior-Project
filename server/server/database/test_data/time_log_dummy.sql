@@ -15,7 +15,8 @@ VALUES
         NULL,
         '2021-03-06',
         3,
-        'Coded Widget'
+        'Coded Widget',
+        NULL
     ),
     (
         'tuv123',
@@ -23,7 +24,8 @@ VALUES
         NULL,
         '2021-03-05',
         2,
-        'Debugged Feature'
+        'Debugged Feature',
+        NULL
     ),
     (
         'abc123',
@@ -31,7 +33,8 @@ VALUES
         NULL,
         '2021-03-07',
         4,
-        'Designed Architecture'
+        'Designed Architecture',
+        NULL
     ),
     (
         'nop123',
@@ -39,7 +42,8 @@ VALUES
         NULL,
         '2021-03-06',
         1,
-        'Applied Code Standards'
+        'Applied Code Standards',
+        NULL
     ),
     (
         'def123',
@@ -47,7 +51,8 @@ VALUES
         NULL,
         '2021-03-06',
         2,
-        'Documented Progress'
+        'Documented Progress',
+        NULL
     ),
     (
         'tuv123',
@@ -55,7 +60,8 @@ VALUES
         NULL,
         '2021-03-07',
         3,
-        'Resolved Merge Request'
+        'Resolved Merge Request',
+        NULL
     ),
     (
         'nop123',
@@ -63,7 +69,8 @@ VALUES
         NULL,
         '2021-03-05',
         2,
-        'Ate Spaghetti Code'
+        'Ate Spaghetti Code',
+        NULL
     ),
     (
         'wxy123',
@@ -71,7 +78,8 @@ VALUES
         NULL,
         '2023-06-14',
         2,
-        'Vama added'
+        'Vama added',
+        NULL
     ),
     (
         'wxy123',
@@ -79,7 +87,8 @@ VALUES
         NULL,
         '2023-06-19',
         2,
-        'Vama added 1'
+        'Vama added 1',
+        NULL
     ),
     (
         'wxy123',
@@ -87,7 +96,8 @@ VALUES
         NULL,
         '2023-06-18',
         2,
-        'Vama added 2'
+        'Vama added 2',
+        NULL
     ),
     (
         'wxy123',
@@ -95,7 +105,8 @@ VALUES
         NULL,
         '2023-06-19',
         4,
-        'Vama added 3'
+        'Vama added 3',
+        NULL
     ),
     (
         'wxy123',
@@ -103,7 +114,8 @@ VALUES
         NULL,
         '2023-06-17',
         1,
-        'Vama added 4'
+        'Vama added 4',
+        NULL
     ),
     (
         'wxy123',
@@ -111,7 +123,8 @@ VALUES
         NULL,
         '2023-06-18',
         1,
-        'Vama added 5'
+        'Vama added 5',
+         NULL
     ),
     (
         'qrs123',
