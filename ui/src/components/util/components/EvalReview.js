@@ -21,18 +21,9 @@ export default function EvalReview(props) {
   const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
 
   useEffect(() => {
-    sortFeedback();
-  }, [setUserFeedback, coachFeedback]);
+    let sortedFeedback = [];
 
-  const updateExpanded = (student_name, value) => {
-    const new_value = !!value ? value : !studentExpanded[student_name];
-    setStudentExpanded({ ...studentExpanded, [student_name]: new_value });
-  };
-
-  const sortFeedback = () => {
-    let list = [];
-
-    list.push(
+    sortedFeedback.push(
       Object.fromEntries(
         Object.entries(coachFeedback.Students).filter(
           ([student, _]) => !userIsStudent || userName === student
@@ -40,14 +31,14 @@ export default function EvalReview(props) {
       )
     );
 
-    setUserFeedback(list);
-  };
+    setUserFeedback(sortedFeedback);
+  }, [setUserFeedback, coachFeedback, userIsStudent, userName]);
 
   useEffect(() => {
     if (userIsStudent) {
-      updateExpanded(userName, true);
+      setStudentExpanded((prev) => ({ ...prev, [userName]: true }));
     }
-  });
+  }, [userIsStudent, userName]);
 
   const generateFeedbackCards = (student, index) => {
     return (
@@ -65,7 +56,10 @@ export default function EvalReview(props) {
                 active={studentExpanded[student_name]}
                 index={index}
                 onClick={() => {
-                  updateExpanded(student_name);
+                  setStudentExpanded((prev) => ({
+                    ...prev,
+                    [student_name]: !studentExpanded[student_name],
+                  }));
                 }}
               >
                 <Icon name="dropdown" />
@@ -75,11 +69,13 @@ export default function EvalReview(props) {
                 <Accordion.Content active={studentExpanded[student_name]}>
                   <Table striped>
                     <Table.Header>
-                      <Table.HeaderCell>Category</Table.HeaderCell>
-                      <Table.HeaderCell>Rating</Table.HeaderCell>
-                      {hasSelfRating && (
-                        <Table.HeaderCell>Self Rating</Table.HeaderCell>
-                      )}
+                      <Table.Row>
+                        <Table.HeaderCell>Category</Table.HeaderCell>
+                        <Table.HeaderCell>Rating</Table.HeaderCell>
+                        {hasSelfRating && (
+                          <Table.HeaderCell>Self Rating</Table.HeaderCell>
+                        )}
+                      </Table.Row>
                     </Table.Header>
                     <Table.Body>
                       {Object.entries(data.AverageRatings).map(
