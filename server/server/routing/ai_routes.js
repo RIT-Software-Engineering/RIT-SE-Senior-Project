@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const {GoogleGenerativeAI} = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 let key = process.env.GOOGLE_API_KEY;
 
 // Windows for some reason adds a double quote around Environment Variables
 if (key.startsWith('"')) {
-    key = key.slice(1, -1);
+  key = key.slice(1, -1);
 }
 
 const genAI = new GoogleGenerativeAI(key);
@@ -33,7 +33,7 @@ Output Specification:
     3. The summary should be concise, typically 3-5 sentences, highlighting strengths and areas for improvement. 
     4. Output should be in paragraph form.   
     5. Speak in the POV as the team coach talking to the student
-`
+`;
 
 const PROMPT_GENERATE_FEEDBACK_COMPLETION = `You are a writing assistant providing a student their project performance based upon their peer's feedback. Summarize and anonymize the following peer review feedback from a student project. 
 In JSON format, you'll be given categorized feedback for a student from their team members. Create an anonymized paragraph that captures the key points and overall sentiment of the feedback.
@@ -63,41 +63,39 @@ Output Specification:
 `;
 
 const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-latest",
-    systemInstruction: PROMPT_GENERATE_FEEDBACK_SUMMARY
+  model: "gemini-1.5-flash-latest",
+  systemInstruction: PROMPT_GENERATE_FEEDBACK_SUMMARY,
 });
 
 const completionModel = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-latest",
-    systemInstruction: PROMPT_GENERATE_FEEDBACK_COMPLETION
+  model: "gemini-1.5-flash-latest",
+  systemInstruction: PROMPT_GENERATE_FEEDBACK_COMPLETION,
 });
 
 async function provide_summary(studentFeedback) {
-    try {
-
-        const context = `${studentFeedback}`
-        const result = await model.generateContent(context);
-        return result.response.text()
-    } catch (error) {
-        console.error("Error generating content:", error)
-    }
+  try {
+    const context = `${studentFeedback}`;
+    const result = await model.generateContent(context);
+    return result.response.text();
+  } catch (error) {
+    console.error("Error generating content:", error);
+  }
 }
-
-
 
 module.exports = () => {
-    router.post("/GenerateSummary",(req,res)=>{
-        const context = req.body.context;
+  router.post("/GenerateSummary", (req, res) => {
+    const context = req.body.context;
 
+    provide_summary(context)
+      .then((response) => {
+        res.type("text/plain");
+        res.status(200).send(response);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(err);
+      });
+  });
 
-        provide_summary(context).then((response) => {
-            res.type('text/plain');
-            res.status(200).send(response);
-        }).catch((err) => {
-            console.error(err);
-            res.status(500).send(err);
-        });
-    });
-
-    return router;
-}
+  return router;
+};
