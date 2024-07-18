@@ -21,6 +21,7 @@ export default function ActionTable(props) {
     const semesterStart = semester.start_date
     const semesterEnd = semester.end_date
     // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
+    const [open, setOpen] = React.useState('false');
 
     const renderActions = () => {
         let actions = _.sortBy(props.actions, ["due_date", "start_date"])
@@ -125,12 +126,14 @@ export default function ActionTable(props) {
                                         projectStart={semesterStart} 
                                         projectEnd={semesterEnd} 
                                         actions={props.actions}
+                                        isOpen={open}
                                     />
                                 </div>
                             ),
                         },
                     },
                 ]}
+                onTitleClick={(e, data)=>setOpen(data.active)}
             />
         </>
     );

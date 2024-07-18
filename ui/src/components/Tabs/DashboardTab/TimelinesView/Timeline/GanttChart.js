@@ -44,7 +44,7 @@ export default function GanttChart(props) {
                 console.log('issue with snapping to current day (x), first action (y)', e);
             }
         }
-    }, [projectStartDate, projectEndDate, firstAction, today]);
+    }, [props.actions, selectedTimeSpan, props.isOpen]);
 
     function onTimeSpanChange(e) {
         setSelectedTimeSpan(e.target.value);
