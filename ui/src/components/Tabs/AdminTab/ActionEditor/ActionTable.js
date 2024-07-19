@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
     Table, 
     TableBody, 
@@ -22,6 +22,11 @@ export default function ActionTable(props) {
     const semesterEnd = semester.end_date
     // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
     const [open, setOpen] = React.useState('false');
+    const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+
+    function isOpenCallback(isOpen) {
+        setCloseOnDocClick(!isOpen);
+      };
 
     const renderActions = () => {
         let actions = _.sortBy(props.actions, ["due_date", "start_date"])
@@ -38,12 +43,14 @@ export default function ActionTable(props) {
                             <ActionPanel
                                 actionData={action}
                                 semesterData={props.semesterData}
+                                isOpenCallback={isOpenCallback}
                                 header={`Currently Editing "${action.action_title}"`}
                                 key={"editAction-" + i}
                             />
                             <ActionPanel
                                 actionData={action}
                                 semesterData={props.semesterData}
+                                isOpenCallback={isOpenCallback}
                                 header={`Currently Copying "${action.action_title}"`}
                                 create={true}
                                 buttonIcon={"clone outline"}
@@ -52,6 +59,7 @@ export default function ActionTable(props) {
                             <PreviewHtml
                                 action={action}
                                 semesterName={semesterName}
+                                isOpenCallback={isOpenCallback}
                                 header={`Currently Viewing "${action.action_title}"`}
                                 key={"viewHtml-" + i}
                             />
