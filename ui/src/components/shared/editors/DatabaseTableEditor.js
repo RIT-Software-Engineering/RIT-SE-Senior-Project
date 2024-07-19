@@ -384,39 +384,68 @@ export default function DatabaseTableEditor(props) {
     trigger = props.trigger;
   }
 
-  return (
-    <>
-      <Modal
-        className={"sticky"}
-        trigger={trigger}
-        onClose={() => {
-          setOpen(false);
-          props.isOpenCallback(false);
-          }}
-        onOpen={() => {
-            setOpen(true);
-            props.isOpenCallback(true);
+  if (props.isOpenCallback) {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          onClose={() => {
+            setOpen(false);
+            props.isOpenCallback(false);
             }}
-        open={open}
-        header={props.header}
-        content={{
-          content: (
-            <>
-              <Form>{fieldComponents}</Form>
-              {props.childComponents}
-              {props.body}
-            </>
-          ),
-        }}
-        actions={modalActions()}
-      />
-      <Modal
-        className={"sticky"}
-        size="tiny"
-        open={!!submissionModalOpen}
-        {...generateModalFields()}
-        onClose={() => closeSubmissionModal()}
-      />
-    </>
-  );
+          onOpen={() => {
+              setOpen(true);
+              props.isOpenCallback(true);
+              }}
+          open={open}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  }
 }

@@ -58,31 +58,52 @@ export default function PreviewHtml(props){
         </Form>;
     }
 
-    return (
-        <Modal
-            className={"sticky"}
-            trigger={
-                props.trigger || (<Button icon={<Icon name="eye" />}/>)}
-            onClose={() => {
-                setOpen(false);
-                props.isOpenCallback(false);
+    if (props.isOpenCallback) {
+        return (
+            <Modal
+                className={"sticky"}
+                trigger={
+                    props.trigger || (<Button icon={<Icon name="eye" />}/>)}
+                onClose={() => {
+                    setOpen(false);
+                    props.isOpenCallback(false);
+                    }}
+                onOpen={() => {
+                    setOpen(true);
+                    props.isOpenCallback(true);
+                    }}
+                open={open}
+                header={props.header}
+                content={{
+                    content:
+                        modalContent(props)
                 }}
-            onOpen={() => {
-                setOpen(true);
-                props.isOpenCallback(true);
+                actions={[
+                    {
+                        key: "Close",
+                        content: "Close",
+                    }
+                ]}
+            />
+        )
+    } else {
+        return (
+            <Modal
+                className={"sticky"}
+                trigger={
+                    props.trigger || (<Button icon={<Icon name="eye" />}/>)}
+                header={props.header}
+                content={{
+                    content:
+                        modalContent(props)
                 }}
-            open={open}
-            header={props.header}
-            content={{
-                content:
-                    modalContent(props)
-            }}
-            actions={[
-                {
-                    key: "Close",
-                    content: "Close",
-                }
-            ]}
-        />
-    )
+                actions={[
+                    {
+                        key: "Close",
+                        content: "Close",
+                    }
+                ]}
+            />
+        )
+    }
 }

@@ -43,14 +43,12 @@ export default function ActionTable(props) {
                             <ActionPanel
                                 actionData={action}
                                 semesterData={props.semesterData}
-                                isOpenCallback={isOpenCallback}
                                 header={`Currently Editing "${action.action_title}"`}
                                 key={"editAction-" + i}
                             />
                             <ActionPanel
                                 actionData={action}
                                 semesterData={props.semesterData}
-                                isOpenCallback={isOpenCallback}
                                 header={`Currently Copying "${action.action_title}"`}
                                 create={true}
                                 buttonIcon={"clone outline"}
@@ -59,7 +57,6 @@ export default function ActionTable(props) {
                             <PreviewHtml
                                 action={action}
                                 semesterName={semesterName}
-                                isOpenCallback={isOpenCallback}
                                 header={`Currently Viewing "${action.action_title}"`}
                                 key={"viewHtml-" + i}
                             />

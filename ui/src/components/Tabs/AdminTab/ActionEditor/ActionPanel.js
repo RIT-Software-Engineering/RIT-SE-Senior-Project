@@ -146,34 +146,58 @@ export default function ActionPanel(props) {
       return formData;
     }
   };
-  return (
-    <DatabaseTableEditor
-      initialState={initialState}
-      submissionModalMessages={submissionModalMessages}
-      submitRoute={submitRoute}
-      formFieldArray={formFieldArray}
-      semesterData={props.semesterData}
-      header={props.header}
-      create={!!props.create}
-      button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
-      trigger={props.trigger}
-      isOpenCallback={props.isOpenCallback}
-      onClose={() => {
-        setOpen(false);
-        props.isOpenCallback(false);
+
+  if (props.isOpenCallback) {
+    return (
+      <DatabaseTableEditor
+        initialState={initialState}
+        submissionModalMessages={submissionModalMessages}
+        submitRoute={submitRoute}
+        formFieldArray={formFieldArray}
+        semesterData={props.semesterData}
+        header={props.header}
+        create={!!props.create}
+        button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+        trigger={props.trigger}
+        isOpenCallback={props.isOpenCallback}
+        onClose={() => {
+          setOpen(false);
+          props.isOpenCallback(false);
+          }}
+        onOpen={() => {
+          setOpen(true);
+          props.isOpenCallback(true);
+          }}
+        open={open}
+        preChange={preChange}
+        preSubmit={(data) => {
+          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+            data.semester = "";
+          }
+          return data;
         }}
-      onOpen={() => {
-        setOpen(true);
-        props.isOpenCallback(true);
+      />
+    );
+  } else {
+    return (
+      <DatabaseTableEditor
+        initialState={initialState}
+        submissionModalMessages={submissionModalMessages}
+        submitRoute={submitRoute}
+        formFieldArray={formFieldArray}
+        semesterData={props.semesterData}
+        header={props.header}
+        create={!!props.create}
+        button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+        trigger={props.trigger}
+        preChange={preChange}
+        preSubmit={(data) => {
+          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+            data.semester = "";
+          }
+          return data;
         }}
-      open={open}
-      preChange={preChange}
-      preSubmit={(data) => {
-        if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
-          data.semester = "";
-        }
-        return data;
-      }}
-    />
-  );
+      />
+    );
+  }
 }
