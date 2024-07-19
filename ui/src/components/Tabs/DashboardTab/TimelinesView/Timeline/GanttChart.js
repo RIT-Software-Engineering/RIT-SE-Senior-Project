@@ -50,15 +50,16 @@ export default function GanttChart(props) {
         setSelectedTimeSpan(e.target.value);
     }
 
-    // Function to check if a user a on a mobile device in multiple ways, 
-    // also limits the sidebar to a small screen of 768px.
+    // Function to check if a user a on a mobile device.
+    // *** Uncomment commented lines if you want to limit sidebar 
+    // to a certain screen size, but this will only happen on initial load. 
+    // You need to refresh to get sidebar back if resizing to bigger screen. ***
     function isMobile() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-        const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;
-        const hasOrientation = typeof window.orientation !== "undefined";
+        // const isSmallScreen = window.matchMedia("(max-width: 768px)").matches;;
 
-        return isMobileDevice || isSmallScreen || hasOrientation;
+        return isMobileDevice; //|| isSmallScreen;
     }
 
     // ----------------- ROWS -------------------
