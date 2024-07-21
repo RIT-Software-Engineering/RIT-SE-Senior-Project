@@ -9,6 +9,7 @@ import {
   humanFileSize,
   SEMESTER_DROPDOWN_NULL_VALUE,
 } from "../../../util/functions/utils";
+import { useState } from "react";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -16,7 +17,7 @@ const action_target = "action_target";
 const file_size = "file_size";
 
 export default function ActionPanel(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
