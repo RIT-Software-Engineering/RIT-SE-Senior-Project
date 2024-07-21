@@ -364,60 +364,34 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/deleteTimeLog", [], (req, res) => {
-    let result = validationResult(req);
+    db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
+       console.log(req.body.id)
+        const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?"
 
-    if (result.errors.length !== 0) {
-      return res.status(400).send(result);
-    }
+        db.query(sql,[req.body.id])
+    });
 
-    let body = req.body;
+    db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
+        const sql = "SELECT ROUND(AVG(time_amount),2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+        console.log(req.query.project_id)
 
-    const sql = `UPDATE time_log
-      SET active = ?
-      WHERE time_log_id = ?`;
+         db.query(sql, [req.query.project_id])
+            .then((time) => {
+                console.log(time)
+                res.send(time)
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+    })
 
-    let params = [body.dataOnSubmit, body.time_log_id];
 
-    db.query(sql, params)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        console.error(err);
-        return res.status(500).send(err);
-      });
-  });
+    db_router.post("/createTimeLog", [
 
-  db_router.post(
-    "/createTimeLog",
-
-    [
-      //todo: un-hardcode
-
-      body("date")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 50 }),
-      body("time_amount")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 50 }),
-      body("comment")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 120 }),
     ],
     (req, res) => {
+
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
@@ -443,13 +417,14 @@ module.exports = (db) => {
                   ( system_id, project, mock_id, work_date, time_amount, work_comment,active)
                   VALUES (?,?,?,?,?,?,?)`;
 
-      let params = [
-        body.userId,
-        body.project,
-        body.mockId,
-        body.date,
-        body.time_amount,
-        body.comment,
+            const params = [
+                req.user.semester_group,
+                req.user.system_id,
+                req.user.project,
+                "",
+                req.body.date,
+                req.body.time_amount,
+                req.body.comment,
       ];
       db.query(sql, params)
         .then(() => {
@@ -1357,6 +1332,7 @@ module.exports = (db) => {
     }
   });
 
+
   db_router.post(
     "/submitProposal",
     [
@@ -2074,11 +2050,13 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-        getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,
+                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
-                        WHERE time_log.project = ?`;
+                        WHERE time_log.project = ?
+                        ORDER BY
+                        time_log.work_date DESC`;
         params = [req.user.project];
         break;
       case ROLES.COACH:
@@ -2121,7 +2099,9 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project = ? `;
+                        WHERE time_log.project = ?
+                          ORDER BY
+                        time_log.work_date DESC`;
         queryParams = [req.user.project];
         getTimeLogCount = `SELECT COUNT(*) FROM time_log
                     WHERE time_log.project = ?

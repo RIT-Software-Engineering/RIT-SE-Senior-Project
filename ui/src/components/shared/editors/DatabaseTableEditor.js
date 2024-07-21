@@ -89,7 +89,7 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     let body = new FormData();
-
+         console.log(submitRoute)
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -103,7 +103,6 @@ export default function DatabaseTableEditor(props) {
       }
       body.append(key, dataToSubmit[key]);
     });
-
     SecureFetch(submitRoute, {
       method: "post",
       body: body,

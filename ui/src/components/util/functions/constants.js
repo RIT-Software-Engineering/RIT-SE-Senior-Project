@@ -55,6 +55,7 @@ export const config = {
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
+        API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
     API_GET_SUBMISSION: `${BASE_API_URL}/db/getSubmission`,
     API_GET_PROJECT_STUDENT_NAMES: `${BASE_API_URL}/db/getProjectStudentNames`,
     API_GET_SUBMISSION_FILE: `${BASE_API_URL}/db/getSubmissionFile`,

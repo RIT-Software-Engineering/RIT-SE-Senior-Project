@@ -18,6 +18,7 @@ import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
+import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
@@ -132,13 +133,14 @@ export default function DashboardPage() {
         },
         {
           menuItem: {
-            key: "Action-Submissions-Tab",
+            key: "Logging-Tab",
             content: "Logging",
             href: "#",
           },
           render: () => (
             <Tab.Pane>
-              <LoggingTab semesterData={semesterData} />
+                <TimeLog semesterData={semesterData} />
+                <ActionLogs semesterData={semesterData} />
             </Tab.Pane>
           ),
         },
