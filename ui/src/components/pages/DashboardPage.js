@@ -150,7 +150,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <TimeLinesView />
+              <TimeLinesView semesterData={semesterData}/>
             </Tab.Pane>
           ),
         }

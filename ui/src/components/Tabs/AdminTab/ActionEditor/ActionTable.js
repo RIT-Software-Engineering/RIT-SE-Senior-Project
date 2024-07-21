@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
     Table, 
     TableBody, 
@@ -12,10 +12,21 @@ import _ from "lodash";
 import ActionPanel from "./ActionPanel";
 import {formatDateNoOffset} from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
+import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
 
 export default function ActionTable(props) {
     // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
-    const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
+    const semester = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)
+    const semesterName = semester.name
+    const semesterStart = semester.start_date
+    const semesterEnd = semester.end_date
+    // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
+    const [open, setOpen] = React.useState('false');
+    const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+
+    function isOpenCallback(isOpen) {
+        setCloseOnDocClick(!isOpen);
+      };
 
     const renderActions = () => {
         let actions = _.sortBy(props.actions, ["due_date", "start_date"])
@@ -74,48 +85,60 @@ export default function ActionTable(props) {
                         title: title || "No Semester",
                         content: {
                             content: (
-                                <Table sortable>
-                                    <TableHeader>
-                                        <TableRow key={"actionEditorTableHeaders"}>
-                                            <TableHeaderCell
-                                            // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
-                                            // onClick={() => changeSort(COLUMNS.DATE)}
-                                            >
-                                                Action Title
-                                            </TableHeaderCell>
+                                <div>
+                                    <Table sortable>
+                                        <TableHeader>
+                                            <TableRow key={"actionEditorTableHeaders"}>
+                                                <TableHeaderCell
+                                                // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
+                                                // onClick={() => changeSort(COLUMNS.DATE)}
+                                                >
+                                                    Action Title
+                                                </TableHeaderCell>
 
-                                            <TableHeaderCell
-                                            // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
-                                            // onClick={() => changeSort(COLUMNS.ACTION)}
-                                            >
-                                                Action Target
-                                            </TableHeaderCell>
-                                            <TableHeaderCell
-                                            // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
-                                            // onClick={() => changeSort(COLUMNS.TITLE)}
-                                            >
-                                                Start Date
-                                            </TableHeaderCell>
-                                            <TableHeaderCell
-                                            // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
-                                            // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
-                                            >
-                                                Due Date
-                                            </TableHeaderCell>
-                                            <TableHeaderCell
-                                            // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
-                                            // onClick={() => changeSort(COLUMNS.EDIT)}
-                                            >
-                                                Edit
-                                            </TableHeaderCell>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>{renderActions()}</TableBody>
-                                </Table>
+                                                <TableHeaderCell
+                                                // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
+                                                // onClick={() => changeSort(COLUMNS.ACTION)}
+                                                >
+                                                    Action Target
+                                                </TableHeaderCell>
+                                                <TableHeaderCell
+                                                // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
+                                                // onClick={() => changeSort(COLUMNS.TITLE)}
+                                                >
+                                                    Start Date
+                                                </TableHeaderCell>
+                                                <TableHeaderCell
+                                                // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
+                                                // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
+                                                >
+                                                    Due Date
+                                                </TableHeaderCell>
+                                                <TableHeaderCell
+                                                // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
+                                                // onClick={() => changeSort(COLUMNS.EDIT)}
+                                                >
+                                                    Edit
+                                                </TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>{renderActions()}</TableBody>
+                                    </Table>
+                                    <GanttChart
+                                        admin="true"
+                                        semesterData={props.semesterData}
+                                        semesterName={semesterName}
+                                        projectStart={semesterStart} 
+                                        projectEnd={semesterEnd} 
+                                        actions={props.actions}
+                                        isOpen={open}
+                                    />
+                                </div>
                             ),
                         },
                     },
                 ]}
+                onTitleClick={(e, data)=>setOpen(data.active)}
             />
         </>
     );

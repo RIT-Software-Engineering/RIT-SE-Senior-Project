@@ -29,7 +29,7 @@ export default function DatabaseTableEditor(props) {
     MODAL_STATUS.CLOSED
   );
   const [formData, setFormData] = useState(initialState);
-
+  const [open, setOpen] = React.useState(false);
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -419,30 +419,68 @@ export default function DatabaseTableEditor(props) {
     trigger = props.trigger;
   }
 
-  return (
-    <>
-      <Modal
-        className={"sticky"}
-        trigger={trigger}
-        header={props.header}
-        content={{
-          content: (
-            <>
-              <Form>{fieldComponents}</Form>
-              {props.childComponents}
-              {props.body}
-            </>
-          ),
-        }}
-        actions={modalActions()}
-      />
-      <Modal
-        className={"sticky"}
-        size="tiny"
-        open={!!submissionModalOpen}
-        {...generateModalFields()}
-        onClose={() => closeSubmissionModal()}
-      />
-    </>
-  );
+  if (props.isOpenCallback) {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          onClose={() => {
+            setOpen(false);
+            props.isOpenCallback(false);
+            }}
+          onOpen={() => {
+              setOpen(true);
+              props.isOpenCallback(true);
+              }}
+          open={open}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  }
 }

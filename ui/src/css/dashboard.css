@@ -1,9 +1,163 @@
 :root {
     --timeline-element-height: 4.6em;
+    --gantt-maximum-rows: 300;
+    /* --gantt-maximum-columns: 365; */
 }
 
 .admin-menu {
     width: 100%;
+}
+
+.gantt {
+    display: grid;
+    position: relative;
+    border: #000000 1px solid;
+    width: 100%;
+    grid-auto-flow: column;
+    grid-template-columns: 200px;
+    max-height: 400px;
+    overflow: auto;
+    overflow-y: scroll;
+}
+
+.gantt.no-sidebar {
+    grid-template-columns: minmax(0px, min-content);
+}
+
+.gantt-container {
+    display: grid;
+    grid-template-columns: subgrid;
+    /* grid-column: 1/var(--gantt-maximum-columns); */
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+    height: 100%;
+}
+
+.gantt-header > p {
+    position: sticky;
+    padding-left: 5px;
+}
+
+.gantt-header {
+    display: grid;
+    grid-template-columns: subgrid;
+    /* grid-column: 2/var(--gantt-maximum-columns); */
+    grid-template-rows: subgrid;
+    grid-row: 1/3;
+    position: sticky;
+    top: 0;
+    border: none;
+    border-left: #000000 solid 1px;
+    border-bottom: #000000 solid 1px;
+    background-color: white;
+    z-index: 99;
+}
+
+.gantt-header.first {
+    grid-row: 1;
+    position: sticky;
+    left: 200px;
+    text-wrap: nowrap;
+}
+
+.gantt-header.second {
+    grid-row: 2;
+    position: sticky;
+    left: 200px;
+}
+
+.gantt-background {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+    grid-template-columns: subgrid;
+    /* grid-column: 2/var(--gantt-maximum-columns); */
+}
+
+.gantt-col {
+    grid-row: 3/var(--gantt-maximum-rows);
+}
+
+.gantt-col.weekday {
+    background-color: white;
+}
+
+.gantt-col.weekend {
+    background-color: rgb(238, 238, 238);
+}
+
+.gantt-col.today {
+    background-color: #f76902;
+}
+
+.gantt-col.projectStart {
+    background-color: #000000;
+}
+
+.gantt-col.projectEnd {
+    background-color: #000000;
+}
+
+.sidebar-container {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+    grid-template-columns: subgrid;
+    grid-column: 1;
+    position: sticky;
+    left: 0;
+    border: none;
+    z-index: 100;
+}
+
+.sidebar-container.empty {
+    width: 0px;
+}
+
+.sidebar {
+    width: 100%;
+    background: rgb(255, 255, 255);
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: none;
+    border-top: #000000 1px solid;
+    border-right: #000000 1px solid;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar.header {
+    grid-row: 1/3;
+    grid-column-start: 1;
+    padding-left: 6px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    cursor: default;
+    text-align: left;
+    border: none;
+    border-right: #000000 1px solid;
+    border-bottom: #000000 2px solid;
+    position: sticky;
+    top: 0;
+}
+
+.gantt-chart {
+    display: grid;
+    text-wrap: nowrap;
+    text-align: left;
+    width: 100%;
+    grid-template-rows: subgrid;
+    grid-row: 1/var(--gantt-maximum-rows);
+    grid-template-columns: subgrid;
+    /* grid-column: 2/var(--gantt-maximum-columns); */
+    overflow-x: clip;
+}
+
+.action-bar > p {
+    padding-left: 5px;
+    position: sticky;
+    left: 200px;
 }
 
 .action-bar {
@@ -11,7 +165,7 @@
     align-items: center;
     border-radius: 1em;
     padding: 6px;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     cursor: pointer;
 }
@@ -30,14 +184,12 @@
 
 .action-bar.proposal-row-green {
     border: 2px #2c662d solid;
-    font-size: 0.85rem;
     color: black;
     grid-column: span 2 / auto;
 }
 
 .action-bar.proposal-row-gray {
     border: 2px #484848 solid;
-    font-size: 0.85rem;
     color: #000000;
     grid-column: span 2 / auto;
 }
@@ -146,4 +298,32 @@
     background-color: white;
     padding: 10px;
     border-radius: 5px;
+}
+
+.project-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkbox-container {
+    display: flex;
+    margin-top: 15px;
+    position: relative;
+    justify-content: space-between;
+    right: 0;
+}
+
+.timeline-action-block {
+    margin-top: 15px;
+}
+
+.timeline-checkbox {
+    padding-left: 10px;
+    margin-bottom: 14px;
+}
+
+.hidden {
+    visibility: collapse;
 }
