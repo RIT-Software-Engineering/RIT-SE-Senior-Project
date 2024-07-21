@@ -1,6 +1,7 @@
 import React from "react";
 import { config } from "../../util/functions/constants";
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
+import TimeTableEditor from "./TimeTableEditor";
 
 export default function TimeLogPanel(props) {
     let initialState = {
@@ -39,7 +40,8 @@ export default function TimeLogPanel(props) {
     ];
 
     return (
-        <DatabaseTableEditor
+        <TimeTableEditor
+            callback={props.callback}
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
             header={props.header}
@@ -47,6 +49,7 @@ export default function TimeLogPanel(props) {
             formFieldArray={formFieldArray}
             create={initialState.time_log_id === ""}
             button="calendar plus"
+
         />
     );
 }

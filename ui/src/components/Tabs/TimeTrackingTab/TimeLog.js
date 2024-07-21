@@ -1,33 +1,25 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Accordion,
-    Button,
-    Divider,
-    Header, Modal,
-    ModalActions,
-    ModalContent,
-    ModalDescription,
-    ModalHeader
-} from "semantic-ui-react";
-import { formatDateTime, formatDate } from "../../util/functions/utils";
-import {
+    Icon,
     Pagination,
     Table,
     TableBody,
     TableCell,
     TableHeader,
     TableHeaderCell,
-    TableRow,
-    Icon,
+    TableRow
 } from "semantic-ui-react";
-import SubmissionViewerModal from "../DashboardTab/TimelinesView/Timeline/SubmissionViewerModal";
-import { SecureFetch } from '../../util/functions/secureFetch';
-import { config, USERTYPES } from '../../util/functions/constants';
-import { UserContext } from "../../util/functions/UserContext";
+import {formatDate, formatDateTime} from "../../util/functions/utils";
+import {SecureFetch} from '../../util/functions/secureFetch';
+import {config} from '../../util/functions/constants';
+import {UserContext} from "../../util/functions/UserContext";
 import TimeLogPanel from "./TimeLogPanel";
-import TimeLogDelete from "./TimeLogDelete";
-import { FaRegTrashCan } from "react-icons/fa6";
 import IndividualTimeModal from "./IndividualTimeModal";
+import WeeklyHoursViewer from "./WeeklyHourViewer";
+import moment from "moment-timezone";
+
+import ProjectTime from "./ProjectTIme";
 
 const LOGS_PER_PAGE = 50;
 
@@ -43,23 +35,52 @@ export default function TimeLog(props) {
     const [timeStats, setTimeStats] = useState([]);
     const userContext = useContext(UserContext)
     const prevLogin = new Date(userContext.user.prev_login);
+    const [projects, setProjects] = useState([]);
     const [currProj, setCurrProject] = useState({});
     const [currSem, setCurrSem] = useState({});
     const [avgTime, setAvgTime] = useState({});
     const [isOpen, setOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [postsPerPage, setPostsPerPage] = useState(7)
+    const [totalEntries, setTotalEntries] = useState(0)
+    const [weeks,setWeeks] = useState([])
+    const [semesters,setSemesters] = useState([])
+    const [key, setKey] = useState(Math.random());
+
+    const [students, setStudentsData] = useState([]);
+    const { eachWeekOfInterval } = require("date-fns");
     useEffect(() => {
-        // TODO: Do pagination
+        console.log(userContext)
         setActionLogs([]);
         SecureFetch(config.url.API_GET_MY_PROJECTS)
             .then((response) => response.json())
             .then((project) => {
-                console.log(props.semesterData)
-
                 if(project.length !== 0) {
-                    setCurrProject(project[0])
-                    setCurrSem(props.semesterData[project[0].semester_group-1])
+                    console.log(project)
+                    //Get list of semesters
+                    const tracker = []
+                    for (let x of project) {
+                        if(!tracker.includes(x.semester)){
+                            tracker.push(x.semester)
 
-
+                        }
+                    }
+                    const tracker2 = []
+                    const tracker3 = []
+                    for(let x of props.semesterData){
+                        if(tracker.includes(x.semester_id)){
+                            tracker2.push(x)
+                            tracker3.push(setWeeks(eachWeekOfInterval({
+                                start: new Date(props.semesterData[x.semester_id].start_date),
+                                end: new Date(props.semesterData[x.semester_id].end_date)
+                            })))
+                        }
+                    }
+                    console.log(tracker2)
+                    setSemesters(tracker2)
+                    setWeeks(tracker3)
+                    //Get projects
+                    setProjects(project)
                 }
             })
             .catch((error) => {
@@ -68,44 +89,14 @@ export default function TimeLog(props) {
 
     }, [userContext]);
 
-    useEffect(() => {
-        let isMounted = true;
-        if(currProj){
-            handleAvg().then(data =>{if (isMounted) setAvgTime(data);    // add conditional check
-             })
-         return () => { isMounted = false }
-        }
-
-    }, [currProj])
-
-
-
-    const getPaginationData = (page) => {
-        SecureFetch(`${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`)
-            .then((response) => response.json())
-            .then((action_logs) => {
-                setActionLogs(action_logs.actionLogs);
-                setActionLogCount(action_logs.actionLogCount);
-            })
-            .catch((error) => {
-                alert("Failed to get action log data " + error);
-            });
+    const resetKey = () => {
+        console.log("hi")
+        setKey(Math.random());
     }
-
-
-    const handleAvg = async function  () {
-        SecureFetch(`${config.url.API_GET_TIME_AVG}?project_id=${currProj.project_id}`)
-            .then((response) => response.json()).then((time) => {
-            return setAvgTime(time)
-        }).catch((error) => {
-            alert("Failed to get action log data " + error);
-        });
-    }
-    const getTimeData = (page) => {
+    const getTimeData = () => {
         SecureFetch(`${config.url.API_GET_ALL_TIME_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=0`)
             .then((response) => response.json())
             .then((time_logs) => {
-
                 setTimeLogs(time_logs.timeLogs);
                 setTimeLogCount(time_logs.timeLogCount);
                 var users = [];
@@ -131,140 +122,52 @@ export default function TimeLog(props) {
     }
 
 
+
+
+    function getPaginationData(number) {
+
+    }
+
     useEffect(() => {
         getPaginationData(0);
     }, [])
     useEffect(() => {
+        console.log("changed")
         getTimeData(0);
-    }, [])
+    }, [key])
+
     return (
-        //TODO FULLY INTEGRATE DATABASE
         <>
-            <h3>Time Logs</h3>
-                <div className="accordion-button-group">
-                    <Accordion
-                        fluid
-                        styled
-                        defaultActiveIndex={0}
-                        panels={[
-                            {
-                                key: "Semester Here",
-                                title: currSem.name,
-                                content: {
-                                    content: <div className="accordion-button-group">
-                                        <Accordion
-                                            fluid
-                                            styled
-                                            defaultActiveIndex={0}
-                                            panels={[
-                                                {
-                                                    key: "Project Here",
-                                                    title: currProj.title,
-                                                    content: {
-                                                        content: <div><Table>
-                                                            <TableHeader>
-                                                                <TableRow>
-                                                                    {/*Headers for the table */}
-                                                                    <TableHeaderCell>Name</TableHeaderCell>
-                                                                    <TableHeaderCell>Date of Work</TableHeaderCell>
-                                                                    <TableHeaderCell>Time(hrs)</TableHeaderCell>
-                                                                    <TableHeaderCell>Comment</TableHeaderCell>
-                                                                    <TableHeaderCell>Submission Date</TableHeaderCell>
-                                                                    <TableHeaderCell>View</TableHeaderCell>
-                                                                </TableRow>
-                                                            </TableHeader>
-                                                            <TableBody>
-                                                                {timeLogs?.filter(log => log.project == currProj.project_id).map((timeLog, idx) => {
-                                                                    let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
-                                                                    if (timeLog.mock_id) {
-                                                                        submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`
-                                                                    }
-                                                                    let showNewSubmissionHighlight = new Date(timeLog.submission_datetime) > prevLogin;
-                                                                    return (
+            <h3>Time Log</h3>
+            {
+                semesters.map((sem) =>  {
+                    return (<>
+                        <div className="accordion-button-group">
+                            <Accordion
+                                fluid
+                                styled
+                                panels={[
+                                    {
+                                        key: "Semester Here",
+                                        title: sem.name,
+                                        content: {
+                                            content:
+                                                <>
+                                                    {projects.filter(log => log.semester === sem.semester_id).map((proj,counter) => {
+                                                        return(
+                                                            <ProjectTime reset ={resetKey} semester = {sem} proj= {proj} studentData = {students} timeStats = {timeStats} timeLogs = {timeLogs}></ProjectTime>
+                                                        );
+                                                    })}
+                                                </>
 
-                                                                        <TableRow style={{
-                                                                            background: showNewSubmissionHighlight ? '#fffaf3' : 'none',
-                                                                            fontWeight: showNewSubmissionHighlight ? 'bold' : 'none'
-                                                                        }} key={idx}>
+                                        },
+                                    }, {}
+                                ]}
+                            />
+                        </div>
 
-                                                                            <TableCell>{submittedBy}</TableCell>
-                                                                            <TableCell>{formatDate(timeLog.work_date)}</TableCell>
-                                                                            <TableCell>{timeLog.time_amount}</TableCell>
-                                                                            <TableCell>{timeLog.work_comment}</TableCell>
-                                                                            <TableCell>{formatDateTime(timeLog.submission_datetime)}</TableCell>
-                                                                            <TableCell>
-                                                                                 <IndividualTimeModal
-
-                                                                                        projectName={currProj.title}
-                                                                                        semesterName={currSem.name}
-                                                                                        user = {submittedBy}
-                                                                                        timeLog={timeLog}
-                                                                                        id = {timeLog.time_log_id}
-                                                                                        isOpenCallback={()=>{}}
-                                                                                    />
-                                                                            </TableCell>
-                                                                        </TableRow>
-                                                                    );
-                                                                })}
-                                                            </TableBody>
-                                                        </Table>
-                                                            <div className="pagination-container">
-                                                                <Pagination
-                                                                    defaultActivePage={1}
-                                                                    ellipsisItem={null}
-                                                                    firstItem={null}
-                                                                    lastItem={null}
-                                                                    prevItem={{
-                                                                        content: <Icon name="angle left"/>,
-                                                                        icon: true
-                                                                    }}
-                                                                    nextItem={{
-                                                                        content: <Icon name="angle right"/>,
-                                                                        icon: true
-                                                                    }}
-                                                                    totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
-                                                                    onPageChange={(event, data) => {
-                                                                        getPaginationData(data.activePage - 1);
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            <Table>
-                                                                <TableHeader>
-                                                                    <TableRow>
-                                                                        {/*Headers for the table */}
-                                                                        <TableHeaderCell>Name</TableHeaderCell>
-                                                                        <TableHeaderCell>Average(hrs)</TableHeaderCell>
-                                                                        <TableHeaderCell>Total(hrs)</TableHeaderCell>
-                                                                    </TableRow>
-                                                                </TableHeader>
-                                                                <TableBody>
-                                                                    {timeStats?.filter(log => log.project == currProj.project_id).map((timeStat, idx) => {
-                                                                        return (
-                                                                            <TableRow key={idx}>
-                                                                                <TableCell>{timeStat.name}</TableCell>
-                                                                                <TableCell>{avgTime[idx] !== undefined ? Math.floor(avgTime[idx].avgTime) : 0}</TableCell>
-                                                                                <TableCell>{timeStat.total}</TableCell>
-                                                                            </TableRow>
-                                                                        );
-                                                                    })}
-                                                                </TableBody>
-                                                            </Table>
-                                                        </div>
-                                                    },
-                                                },
-                                            ]
-                                            }
-                                        />
-                                        <div className="accordion-buttons-container">
-                                            <TimeLogPanel header="Log Time"/>
-                                        </div>
-                                    </div>
-                                },
-                            }, {}
-                        ]}
-                    />
-                </div>
-
+                    </>)})
+            }
 
         </>
     )

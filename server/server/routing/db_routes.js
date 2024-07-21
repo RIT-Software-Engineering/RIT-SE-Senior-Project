@@ -314,13 +314,13 @@ module.exports = (db) => {
 
     db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
        console.log(req.body.id)
-        const sql = "DELETE FROM time_log WHERE time_log_id = ?"
+        const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?"
 
         db.query(sql,[req.body.id])
     });
 
     db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
-        const sql = "SELECT AVG(time_amount)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+        const sql = "SELECT ROUND(AVG(time_amount),2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
         console.log(req.query.project_id)
 
          db.query(sql, [req.query.project_id])
@@ -1663,11 +1663,13 @@ module.exports = (db) => {
             case ROLES.STUDENT:
                 // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
                 //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,
+                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
-                        WHERE time_log.project = ?`;
+                        WHERE time_log.project = ?
+                        ORDER BY
+                        time_log.work_date DESC`;
                 params = [req.user.project];
                 break;
             case ROLES.COACH:
@@ -1711,7 +1713,9 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project = ?`;
+                        WHERE time_log.project = ?
+                          ORDER BY
+                        time_log.work_date DESC`;
                 queryParams = [req.user.project];
                 getTimeLogCount = `SELECT COUNT(*) FROM time_log
                     WHERE time_log.project = ?
