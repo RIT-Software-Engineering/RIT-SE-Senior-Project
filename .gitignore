@@ -7,3 +7,4 @@
 /RIT-SE-Senior-Project.iml
 .idea/
 .DS_Store
+*.node_modules
