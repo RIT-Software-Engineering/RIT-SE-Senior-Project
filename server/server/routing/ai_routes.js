@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 let key = process.env.GOOGLE_API_KEY;
 
 // Windows for some reason adds a double quote around Environment Variables
-if (key.startsWith('"')) {
+if (key?.startsWith('"')) {
   key = key.slice(1, -1);
 }
 
