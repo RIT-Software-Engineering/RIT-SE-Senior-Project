@@ -5,7 +5,6 @@
   "homepage": "https://seniorproject.se.rit.edu",
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",
-    "@matthamlin/react-preview-editor": "^1.0.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

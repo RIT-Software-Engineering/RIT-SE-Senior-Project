@@ -140,7 +140,7 @@ export default function ActionModal(props) {
 
     for (const key in formData) {
       let [category, header, student] = key.split("-");
-
+      console.log(student)
       if (student === undefined) {
         console.error(`Incorrect Name Formatting ${key}. Not Parsable`);
         continue;
@@ -226,13 +226,16 @@ export default function ActionModal(props) {
       case MODAL_STATUS.SUCCESS:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+
         break;
       case MODAL_STATUS.FAIL:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+
         break;
       case MODAL_STATUS.SUBMITTING:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+
         break;
       default:
         console.error(`MODAL_STATUS of '${submissionModalOpen}' not handled`);
@@ -241,7 +244,7 @@ export default function ActionModal(props) {
     props.isOpenCallback(false);
   };
 
-  function onActionSubmit(id, file_types) {
+  async function onActionSubmit(id, file_types) {
     let form = document.forms.item(0);
     if (form !== null && form !== undefined) {
       let body = new FormData();
@@ -254,11 +257,11 @@ export default function ActionModal(props) {
       const formDataInputs = document.forms[0].elements;
 
       const isRequiredAndEmpty = (input) =>
-        formDataInputs[input]?.required &
-        (!formDataInputs[input]?.value ||
-          !formDataInputs[formDataInputs[input].name]?.value ||
-          (formDataInputs[input]?.name.startsWith("Table") &&
-            formDataInputs[input]?.value === "0"));
+          formDataInputs[input]?.required &
+          (!formDataInputs[input]?.value ||
+              !formDataInputs[formDataInputs[input].name]?.value ||
+              (formDataInputs[input]?.name.startsWith("Table") &&
+                  formDataInputs[input]?.value === "0"));
 
       let errors = [];
       let errorsSet = new Set();
@@ -267,17 +270,17 @@ export default function ActionModal(props) {
       for (let x = 0; x < formDataInputs.length; x++) {
         if (isPeerEval) {
           const input = formDataInputs[x],
-            inputName = formDataInputs[x].name,
-            inputType = formDataInputs[x].type;
+              inputName = formDataInputs[x].name,
+              inputType = formDataInputs[x].type;
 
           formData[inputName] =
-            inputType === "radio"
-              ? String(parseInt(formDataInputs[inputName]?.value) + 1)
-              : String(input?.value);
+              inputType === "radio"
+                  ? String(parseInt(formDataInputs[inputName]?.value) + 1)
+                  : String(input?.value);
 
           // Error Handling
           const [questionType, questionName, studentName] =
-            inputName.split("-");
+              inputName.split("-");
           const questionSetKey = questionType + questionName;
           const isEmpty = isRequiredAndEmpty(x);
           const hasDoneError = errorsSet.has(questionSetKey);
@@ -303,29 +306,29 @@ export default function ActionModal(props) {
           // Push errors to the error list at bottom of page
           if (questionType === "Table") {
             errors.push(
-              `'${camelCaseToSentence(
-                questionName
-              )}' column is required to be filled out.`
+                `'${camelCaseToSentence(
+                    questionName
+                )}' column is required to be filled out.`
             );
             errorsSet.add(questionSetKey);
           } else if (questionType === "Feedback") {
             if (studentName === "Anon") {
               errors.push(
-                `'${camelCaseToSentence(questionName)}' feedback is required.`
+                  `'${camelCaseToSentence(questionName)}' feedback is required.`
               );
             } else {
               errors.push(
-                `'${camelCaseToSentence(
-                  questionName
-                )}' feedback is required for all students.`
+                  `'${camelCaseToSentence(
+                      questionName
+                  )}' feedback is required for all students.`
               );
               errorsSet.add(questionSetKey);
             }
           } else if (questionType === "Mood") {
             errors.push(
-              `'${camelCaseToSentence(
-                questionName
-              )}' question is required to be answered.`
+                `'${camelCaseToSentence(
+                    questionName
+                )}' question is required to be answered.`
             );
             errorsSet.add(questionSetKey);
           }
@@ -336,12 +339,12 @@ export default function ActionModal(props) {
         if (formDataInputs[x].type === "radio") {
           if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
             errors.push(
-              `radio option selection "${formDataInputs[x].name}" is required`
+                `radio option selection "${formDataInputs[x].name}" is required`
             );
             errorsSet.add(formDataInputs[x].name);
           }
           formData[formDataInputs[x].name] =
-            formDataInputs[formDataInputs[x].name]?.value;
+              formDataInputs[formDataInputs[x].name]?.value;
         } else {
           if (isRequiredAndEmpty(x)) {
             errors.push(`'${formDataInputs[x].name}' can not be empty`);
@@ -378,17 +381,17 @@ export default function ActionModal(props) {
       }
 
       setSubmissionModalResponse(
-        <div className={"content"}>
-          <Loader
-            className={"workaround"}
-            indeterminate
-            active
-            inverted
-            inline={"centered"}
-          >
-            Uploading Files
-          </Loader>
-        </div>
+          <div className={"content"}>
+            <Loader
+                className={"workaround"}
+                indeterminate
+                active
+                inverted
+                inline={"centered"}
+            >
+              Uploading Files
+            </Loader>
+          </div>
       );
       setSubmissionModalOpen(MODAL_STATUS.SUBMITTING);
 
@@ -396,25 +399,25 @@ export default function ActionModal(props) {
         method: "post",
         body: body,
       })
-        .then((response) => {
-          if (response.status === 200) {
-            setSubmissionModalResponse("Your submission has been received.");
-            setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-            props.isOpenCallback(false);
-          } else {
-            response.text().then((data) => {
-              setSubmissionModalResponse(
-                data || "We were unable to receive your submission."
-              );
-            });
-            setSubmissionModalOpen(MODAL_STATUS.FAIL);
-          }
-          props.reloadTimelineActions();
-        })
-        .catch((error) => {
-          // TODO: Redirect to failed page or handle errors
-          console.error(error);
-        });
+          .then((response) => {
+            if (response.status === 200) {
+              setSubmissionModalResponse("Your submission has been received.");
+              setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+              props.isOpenCallback(false);
+            } else {
+              response.text().then((data) => {
+                setSubmissionModalResponse(
+                    data || "We were unable to receive your submission."
+                );
+              });
+              setSubmissionModalOpen(MODAL_STATUS.FAIL);
+            }
+            props.reloadTimelineActions();
+          })
+          .catch((error) => {
+            // TODO: Redirect to failed page or handle errors
+            console.error(error);
+          });
     }
   }
 
