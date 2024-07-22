@@ -439,6 +439,7 @@ export default function CoachFeedback(props) {
             name={"CoachFeedback-Final-" + student}
             key={"coach-feedback" + index}
             rows={5}
+            required
             value={coachSummaryText[student]}
             onChange={(e) => updateCoachSummaryText(student, e.target.value)}
           />
