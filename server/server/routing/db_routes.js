@@ -364,77 +364,65 @@ module.exports = (db) => {
       });
   });
 
-    db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
-       console.log(req.body.id)
-        const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?"
+  db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
+    console.log(req.body.id)
+    const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?"
 
-        db.query(sql,[req.body.id])
-    });
+    db.query(sql,[req.body.id])
+  });
 
-    db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
-        const sql = "SELECT ROUND(AVG(time_amount),2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
-        console.log(req.query.project_id)
+  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
+    const sql = "SELECT ROUND(AVG(time_amount),2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+    console.log(req.query.project_id)
 
-         db.query(sql, [req.query.project_id])
-            .then((time) => {
-                console.log(time)
-                res.send(time)
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).send(error);
-            });
-    })
-
-
-    db_router.post("/createTimeLog", [
-
-    ],
-    (req, res) => {
-
-      let result = validationResult(req);
-
-      if (result.errors.length !== 0) {
-        return res.status(400).send(result);
-      }
-
-      let body = req.body;
-
-      const currentDate = new Date();
-      const pastWeekDate = new Date();
-      pastWeekDate.setDate(currentDate.getDate() - 8);
-      const timelogDate = new Date(body.date);
-
-      if (pastWeekDate > timelogDate || timelogDate > currentDate) {
-        return res
-          .status(400)
-          .send(
-            "Can not submit time log before last week date or after current date."
-          );
-      }
-
-      const sql = `INSERT INTO time_log
-                  ( system_id, project, mock_id, work_date, time_amount, work_comment,active)
-                  VALUES (?,?,?,?,?,?,?)`;
-
-            const params = [
-                req.user.semester_group,
-                req.user.system_id,
-                req.user.project,
-                "",
-                req.body.date,
-                req.body.time_amount,
-                req.body.comment,
-      ];
-      db.query(sql, params)
-        .then(() => {
-          return res.status(200).send();
+    db.query(sql, [req.query.project_id])
+        .then((time) => {
+          console.log(time)
+          res.send(time)
         })
-        .catch((err) => {
-          console.error(err);
-          return res.status(500).send(err);
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send(error);
         });
-    }
+  })
+
+
+  db_router.post("/createTimeLog", [
+
+      ],
+      async (req, res) => {
+
+
+        let result = validationResult(req);
+
+        if (result.errors.length !== 0) {
+          return res.status(400).send(result);
+        }
+
+        let body = req.body;
+
+        const sql = `INSERT INTO time_log
+                (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
+                VALUES (?,?,?,?,?,?,?)`;
+
+        const params = [
+          req.user.semester_group,
+          req.user.system_id,
+          req.user.project,
+          "",
+          req.body.date,
+          req.body.time_amount,
+          req.body.comment,
+        ];
+        db.query(sql, params)
+            .then(() => {
+              return res.status(200).send();
+            })
+            .catch((err) => {
+              console.error(err);
+              return res.status(500).send(err);
+            });
+      }
   );
 
   db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {

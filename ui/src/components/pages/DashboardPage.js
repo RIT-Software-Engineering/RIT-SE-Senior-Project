@@ -140,6 +140,7 @@ export default function DashboardPage() {
           render: () => (
             <Tab.Pane>
                 <TimeLog semesterData={semesterData} />
+                <ActionLogs semesterData={semesterData} />
 
             </Tab.Pane>
           ),
