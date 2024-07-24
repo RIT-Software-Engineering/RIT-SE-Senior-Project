@@ -72,6 +72,13 @@ export default function TimeTableEditor(props) {
             invalid = true
         }
 
+        if (isNaN(dataToSubmit["time_amount"])) {
+            if (!error1.includes('You must enter a valid Time.')) {
+                setError1([...error1, 'You must enter a valid Time.'])
+            }
+            invalid = true
+        }
+
         if(dataToSubmit["time_amount"] < 1 || dataToSubmit["time_amount"] > 10  ){
             if (!error1.includes('You need to enter a Time ranging from 1-10 hours.')) {
                 setError1([...error1, 'You need to enter a Time ranging from 1-10 hours.'])
@@ -85,6 +92,14 @@ export default function TimeTableEditor(props) {
             }
             invalid = true
         }
+
+        if (dataToSubmit["comment"].length === 0) {
+            if (!error1.includes('You must enter a comment.')){
+                setError1([ ...error1,'You must enter a comment.'])
+            }
+            invalid = true
+        }
+
 
        if (!invalid) {
            setOpen(false);
