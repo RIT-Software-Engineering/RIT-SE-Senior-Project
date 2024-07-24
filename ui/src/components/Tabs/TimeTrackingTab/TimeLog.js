@@ -76,7 +76,6 @@ export default function TimeLog(props) {
                             })))
                         }
                     }
-                    console.log(tracker2)
                     setSemesters(tracker2)
                     setWeeks(tracker3)
                     //Get projects
@@ -138,7 +137,8 @@ export default function TimeLog(props) {
 
     return (
         <>
-            <h3>Time Log</h3>
+
+        {semesters.length > 0 && <h3>Time Log</h3>}
             {
                 semesters.map((sem) =>  {
                     return (<>
