@@ -42,14 +42,17 @@ export default function WeeklyHourViewer(props) {
         setOpen(false)
     }
 
-    const getTotalTime = (week, name ) =>{
-        let total = 0;
-        //implement merge sort later
-        for (let i = 0; i < props.timeLog.length; i++) {
-            if(name === props.timeLog[i].name && isSameWeek(week, new Date(props.timeLog[i].work_date))){
-                total += props.timeLog[i].time_amount
-            }
-        }
+    const getTotalTime = (week, name) =>{
+        let filteredTimeLogs = props.timeLog
+            // Is not deleted
+            .filter((timeLog) => timeLog.active !== 0)
+            // Is from User
+            .filter((timeLog) => name === timeLog.name)
+            // Is in week range
+            .filter((timeLog) => isSameWeek(week, new Date(timeLog.work_date)))
+
+        let total = filteredTimeLogs.reduce((total, log) => total + log.time_amount, 0);
+
         return total
     }
 
