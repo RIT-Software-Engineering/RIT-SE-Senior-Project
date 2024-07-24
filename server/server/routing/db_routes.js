@@ -252,8 +252,8 @@ module.exports = (db) => {
 
       let body = req.body;
 
-      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
-                (system_id, fname, lname, email, type, semester_group, project, active) 
+      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users}
+                (system_id, fname, lname, email, type, semester_group, project, active)
                 VALUES (?,?,?,?,?,?,?,?)`;
 
       const active =
@@ -364,11 +364,21 @@ module.exports = (db) => {
       });
   });
 
-  db_router.delete("/removeTime", UserAuth.isSignedIn, (req, res) => {
-    console.log(req.body.id)
-    const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?"
+  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res) => {
+    if (!req.body.id) {
+       res.status(400).send("No id provided");
+    }
 
-    db.query(sql,[req.body.id])
+    const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
+
+    db.query(sql, [req.body.id])
+      .then(() => {
+        res.status(200).send();
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send;
+      });
   });
 
   db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
@@ -429,7 +439,7 @@ module.exports = (db) => {
     let getProjectsQuery = `
             SELECT *
             FROM projects
-            LEFT JOIN semester_group 
+            LEFT JOIN semester_group
             ON projects.semester = semester_group.semester_id
             WHERE projects.semester IS NOT NULL
         `;
@@ -456,7 +466,7 @@ module.exports = (db) => {
   });
 
   db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
-    const getProjectCoaches = `SELECT users.* FROM users 
+    const getProjectCoaches = `SELECT users.* FROM users
             LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
             WHERE project_coaches.project_id = ?`;
 
@@ -552,14 +562,14 @@ module.exports = (db) => {
     let rowCountQuery;
     if (featured === "true") {
       // home page - randomized order of projects
-      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? ) 
+      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? )
             AND inactive = '' AND featured = 1 ORDER BY random() LIMIT ?`;
       rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
     } else {
       // projects page - all archived projects data regardless if they are archived or not
-      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? )
             AND inactive = '' ORDER BY archive_id LIMIT ?`;
       rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
     }
@@ -581,8 +591,8 @@ module.exports = (db) => {
   db_router.get("/getArchiveProjects", (req, res) => {
     const { resultLimit, offset } = req.query;
     let skipNum = offset * resultLimit;
-    let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?) 
+    let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?)
             ORDER BY archive_id LIMIT ?`;
     let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
 
@@ -669,9 +679,9 @@ module.exports = (db) => {
       switch (req.user.type) {
         case ROLES.COACH:
           query = `
-                SELECT projects.* 
+                SELECT projects.*
                 FROM projects
-                WHERE projects.semester IN 
+                WHERE projects.semester IN
                     (SELECT projects.semester
                     FROM projects
                     INNER JOIN project_coaches
@@ -708,7 +718,7 @@ module.exports = (db) => {
     let body = req.body;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
-                                        title=?, project_id=?, team_name=?, 
+                                        title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
@@ -785,9 +795,9 @@ module.exports = (db) => {
           ? moment().format(CONSTANTS.datetime_format)
           : "";
 
-      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
+      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
                                     keywords, url_slug, inactive)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
@@ -1025,9 +1035,9 @@ module.exports = (db) => {
 
       const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
             SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
-            background_info=?, project_description=?, project_scope=?, project_challenges=?, 
+            background_info=?, project_description=?, project_scope=?, project_challenges=?,
             sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
-            proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?, 
+            proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?,
             team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
             WHERE project_id = ?`;
 
@@ -1502,9 +1512,9 @@ module.exports = (db) => {
       }
       const sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects}
                 (project_id, status, title, organization, primary_contact, contact_email, contact_phone, attachments,
-                background_info, project_description, project_scope, project_challenges, 
+                background_info, project_description, project_scope, project_challenges,
                 sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
-                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
+                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       const params = [
@@ -1860,7 +1870,7 @@ module.exports = (db) => {
                         WHEN date('now') < start_date THEN 'grey'
                     ELSE 'UNHANDLED-CASE'
                 END AS 'state'
-            FROM actions 
+            FROM actions
             LEFT JOIN action_log
                 ON action_log.action_template = actions.action_id AND action_log.project = ?
                 WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
@@ -2280,7 +2290,7 @@ module.exports = (db) => {
       case ROLES.COACH:
         getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                     FROM action_log
-                    JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                    JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
@@ -2324,7 +2334,7 @@ module.exports = (db) => {
           getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
-                    JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                    JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
           params = [req.query.log_id, req.user.system_id];
           break;
@@ -2441,18 +2451,18 @@ module.exports = (db) => {
                     SELECT *
                     FROM sponsors
                     WHERE sponsors.OID NOT IN (
-                        SELECT OID 
+                        SELECT OID
                         FROM sponsors
-                        WHERE 
+                        WHERE
                               company LIKE ?
                             OR division LIKE ?
                             OR fname LIKE ?
                         OR lname LIKE ?
-                        ORDER BY 
+                        ORDER BY
                             company,
                             division,
                             fname,
-                            lname 
+                            lname
                         LIMIT ?
                         ) AND (
                                 sponsors.company LIKE ?
@@ -2464,10 +2474,10 @@ module.exports = (db) => {
                         sponsors.company,
                         sponsors.division,
                         sponsors.fname,
-                        sponsors.lname 
+                        sponsors.lname
                     LIMIT ?
                 `;
-          getSponsorsCount = `SELECT COUNT(*) 
+          getSponsorsCount = `SELECT COUNT(*)
                                     FROM sponsors
                                     WHERE
                                         company LIKE ?
@@ -2529,7 +2539,7 @@ module.exports = (db) => {
 
     // allow inactive projects in search
     if (inactive === "true") {
-      getProjectsQuery = `SELECT * FROM  archive WHERE 
+      getProjectsQuery = `SELECT * FROM  archive WHERE
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
@@ -2543,7 +2553,7 @@ module.exports = (db) => {
                 ORDER BY title,
                          sponsor,
                          members,
-                         coach, 
+                         coach,
                          keywords,
                          synopsis,
                          url_slug
@@ -2569,7 +2579,7 @@ module.exports = (db) => {
 
       getProjectsCount = `SELECT COUNT(*)
                             FROM archive
-                            WHERE 
+                            WHERE
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
@@ -2579,7 +2589,7 @@ module.exports = (db) => {
                                 OR url_slug like ?
                                 `;
     } else {
-      getProjectsQuery = `SELECT * FROM  archive WHERE 
+      getProjectsQuery = `SELECT * FROM  archive WHERE
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
@@ -2594,7 +2604,7 @@ module.exports = (db) => {
                 ORDER BY title,
                          sponsor,
                          members,
-                         coach, 
+                         coach,
                          keywords,
                          synopsis,
                          url_slug
@@ -2621,7 +2631,7 @@ module.exports = (db) => {
 
       getProjectsCount = `SELECT COUNT(*)
                             FROM archive
-                            WHERE 
+                            WHERE
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
@@ -2970,7 +2980,7 @@ module.exports = (db) => {
 
   db_router.get("/getArchive", [UserAuth.isAdmin], (req, res) => {
     let getArchiveQuery = `
-            SELECT * 
+            SELECT *
             FROM archive`;
     db.query(getArchiveQuery)
       .then((values) => {
@@ -3155,7 +3165,7 @@ module.exports = (db) => {
                             WHERE projects.project_id = project_coaches.project_id
                         ) coach
                 FROM projects
-                LEFT JOIN semester_group 
+                LEFT JOIN semester_group
                     ON projects.semester = semester_group.semester_id
                     ${projectFilter}
                 ORDER BY projects.semester DESC

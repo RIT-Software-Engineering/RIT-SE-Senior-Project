@@ -5,6 +5,7 @@ import {formatDate, formatDateTime} from "../../util/functions/utils";
 import {SecureFetch} from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import {UserContext} from "../../util/functions/UserContext";
+import { config } from "../../util/functions/constants";
 
 
 export default function IndividualTimeModal(props) {
@@ -18,18 +19,19 @@ export default function IndividualTimeModal(props) {
     const [day, setDay] = useState(0)
     const { user } = useContext(UserContext);
 
-    const handleDelete = async function (e) {
+    const handleDelete = function (e) {
         let body = new FormData();
-
         body.append("id", e);
-        props.resetKey()
-        onClose()
-        await SecureFetch("http://localhost:3001/db/removeTime", {
-            method: "delete",
+
+        SecureFetch(config.url.API_DELETE_TIME_LOG, {
+            method: "POST",
             body: body,
-        }).then()
-
-
+        }).catch((e) => {
+          alert("There was an error deleting the time log.")
+        }).finally((_) => {
+          props.resetKey()
+          onClose()
+        })
     };
 
     const deleteButton =  <Button
@@ -94,4 +96,3 @@ export default function IndividualTimeModal(props) {
         </Modal>
 );
 }
-

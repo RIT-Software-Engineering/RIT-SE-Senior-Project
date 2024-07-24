@@ -15,6 +15,8 @@ import {formatDate, formatDateTime} from "../../util/functions/utils";
 import {SecureFetch} from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import {UserContext} from "../../util/functions/UserContext";
+import { config } from "../../util/functions/constants";
+
 const { isSameWeek,addDays  } = require("date-fns");
 
 export default function WeeklyHourViewer(props) {
@@ -23,16 +25,15 @@ export default function WeeklyHourViewer(props) {
     const[index,setIndex] = useState(0)
     const handleDelete = async function (e) {
         let body = new FormData();
-
         body.append("id", e);
 
-        SecureFetch("http://localhost:3001/db/removeTime", {
-            method: "delete",
+        SecureFetch(config.url.API_DELETE_TIME_LOG, {
+            method: "POST",
             body: body,
         })
-            .then((response) => {
-                console.log(response)
-            })
+          .then((response) => {
+              console.log(response)
+          })
         setOpen(false)
     };
 

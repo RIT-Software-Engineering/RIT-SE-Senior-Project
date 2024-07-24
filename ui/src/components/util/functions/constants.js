@@ -55,7 +55,7 @@ export const config = {
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
-        API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
+    API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
     API_GET_SUBMISSION: `${BASE_API_URL}/db/getSubmission`,
     API_GET_PROJECT_STUDENT_NAMES: `${BASE_API_URL}/db/getProjectStudentNames`,
     API_GET_SUBMISSION_FILE: `${BASE_API_URL}/db/getSubmissionFile`,
@@ -101,11 +101,11 @@ export const config = {
     API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
+    API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
     API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
-    API_DELETE_TIME_LOG: `${BASE_API_URL}/db/deleteTimeLog`,
 
     // PATCH - Auth needed
     API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
