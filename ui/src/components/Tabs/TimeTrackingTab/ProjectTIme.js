@@ -143,7 +143,7 @@ export default function ProjectTime(props) {
                                             return (
                                                 <TableRow key={idx}>
                                                     <TableCell>{timeStat.name}</TableCell>
-                                                    <TableCell>{avgTime[idx]?.avgTime}</TableCell>
+                                                    <TableCell>{avgTime[idx]?.avgTime ?? 0}</TableCell>
                                                     <TableCell>{Math.round(timeStat.total)}</TableCell>
                                                 </TableRow>
                                             );

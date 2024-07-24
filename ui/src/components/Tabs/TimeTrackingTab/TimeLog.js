@@ -107,10 +107,11 @@ export default function TimeLog(props) {
                 }
 
                 var userStats = [];
-                for (var i = 0; i < users.length; i++){
-                    var userTotal = time_logs.timeLogs.filter(log => log.name == users[i]).map(log=>log.time_amount).reduce((a,b)=>a+b);
-                    var uProject = time_logs.timeLogs.filter(log => log.name == users[i])[0].project;
-                    var sysid = time_logs.timeLogs.filter(log => log.name == users[i])[0].system_id;
+                for (let i = 0; i < users.length; i++){
+                    let userTimeLogs = time_logs.timeLogs.filter(log => log.name === users[i])
+                    let userTotal = userTimeLogs.filter(log => log.active !== 0).map(log => log.time_amount).reduce((a, b) => a + b, 0);
+                    let uProject = userTimeLogs[0].project;
+                    let sysid = userTimeLogs[0].system_id;
                     userStats.push({name: users[i], total: userTotal, lastWeek: 4, thisWeek: 2, project: uProject, system_id: sysid});
                 }
                 setTimeStats(userStats);

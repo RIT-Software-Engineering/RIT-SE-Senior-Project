@@ -382,7 +382,7 @@ module.exports = (db) => {
   });
 
   db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
-    const sql = "SELECT ROUND(AVG(time_amount),2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+    const sql = "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
     console.log(req.query.project_id)
 
     db.query(sql, [req.query.project_id])
