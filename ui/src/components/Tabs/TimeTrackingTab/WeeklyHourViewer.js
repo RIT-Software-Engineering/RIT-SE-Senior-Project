@@ -88,7 +88,7 @@ export default function WeeklyHourViewer(props) {
                                 {props.students.map(stu =>(
                                         <TableRow>
                                             <TableCell>{stu.name} </TableCell>
-                                            { props.weeks != undefined &&  props.weeks.map(week =>   <TableCell  >{getTotalTime(week, stu.fname + " " + stu.lname)}</TableCell>)}
+                                            { props.weeks != undefined &&  props.weeks.map(week =>   <TableCell  >{getTotalTime(week, stu.name)}</TableCell>)}
                                         </TableRow>
 
                                 ))}
