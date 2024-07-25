@@ -6,7 +6,7 @@ import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
 import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
 import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
 import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
-import LoggingTab from "../Tabs/LoggingTab/LoggingTab";
+import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
 import AdminView from "../util/components/AdminView";
 import { UserContext } from "../util/functions/UserContext";
@@ -18,6 +18,7 @@ import FileEditor from "../Tabs/AdminTab/ContentEditor/FileEditor";
 import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
+import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
@@ -34,6 +35,7 @@ export default function DashboardPage() {
           fname: responseUser.fname,
           lname: responseUser.lname,
           semester_group: responseUser.semester_group,
+          project: responseUser.project,
           isMock: Object.keys(responseUser.mock).length !== 0,
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
@@ -113,7 +115,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <StudentsTab />
+              <StudentsTab project_id={user.project} />
             </Tab.Pane>
           ),
         },
@@ -131,13 +133,15 @@ export default function DashboardPage() {
         },
         {
           menuItem: {
-            key: "Action-Submissions-Tab",
+            key: "Logging-Tab",
             content: "Logging",
             href: "#",
           },
           render: () => (
             <Tab.Pane>
-              <LoggingTab semesterData={semesterData} />
+                <TimeLog semesterData={semesterData} />
+                <ActionLogs semesterData={semesterData} />
+
             </Tab.Pane>
           ),
         },
@@ -149,7 +153,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <TimeLinesView />
+              <TimeLinesView semesterData={semesterData}/>
             </Tab.Pane>
           ),
         }

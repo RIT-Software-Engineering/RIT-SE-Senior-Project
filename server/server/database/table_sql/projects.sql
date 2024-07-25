@@ -1,5 +1,5 @@
 CREATE TABLE projects (
-    project_id              TEXT primary key,
+    project_id
     submission_datetime     DATETIME DEFAULT CURRENT_TIMESTAMP,
     status                  text,   -- Submitted, Needs Revision, Future Project, Candidate, In Progress, Completed, Archived (not related to archive table)
     display_name            text,

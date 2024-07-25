@@ -13,7 +13,7 @@ INSERT INTO page_html (name, html) VALUES
                                        Over the course of two terms, each team works with a project sponsor, applying the software
                                        engineering skills that the students learned in class and on co-op. They carry the project from
                                        inception through an entire software development lifecycle. The end result is a functional software
-                                       tool ready for use by the sponsor\'s organization.
+                                       tool ready for use by the sponsor''s organization.
                                    </p>
                                </div>'),
 ('sponsor', '<div class="row">
@@ -34,7 +34,7 @@ INSERT INTO page_html (name, html) VALUES
                              </button>
                              <script>
                               function clickHandler() {
-                                     window.location.href = window.location.origin + '/proposal-form';
+                                     window.location.href = window.location.origin + "/proposal-form";
                               }
                             </script>
                          </div>
@@ -53,7 +53,7 @@ INSERT INTO page_html (name, html) VALUES
                              <div class="ui styled fluid accordion">
                <div class="title">
              <script>
-             $(\'.ui.accordion\').accordion();
+             $(".ui.accordion").accordion();
              </script>
                  <i class="dropdown icon"></i>
                  How will my organization benefit from sponsoring a Senior Project?
@@ -84,7 +84,7 @@ INSERT INTO page_html (name, html) VALUES
                                      </li>
                                      <li>
                                          Project scope should be determined with this level of effort in mind. Also remember that it
-                                         is unlikely that students will have detailed knowledge of the sponsor\'s domain. Time for
+                                         is unlikely that students will have detailed knowledge of the sponsor''s domain. Time for
                                          acquiring this knowledge must be factored into the project’s scope.
                                      </li>
                                      <li>
@@ -167,7 +167,7 @@ INSERT INTO page_html (name, html) VALUES
                                          <li>
                                              Ensure the accessibility of personnel throughout the project to help the team understand
                                              both the domain and the problem being addressed - such accessibility is particularly
-                                             critical during the initial phases and will require that the sponsor\'s personnel
+                                             critical during the initial phases and will require that the sponsor''s personnel
                                              participate in meetings at RIT, or remotely with the student team.
                                          </li>
                                          <li>Participate in team, product, and process presentations and reviews.</li>
@@ -188,7 +188,7 @@ INSERT INTO page_html (name, html) VALUES
                                      <li>
                                          Any comments and editing suggested by the Senior Project Coordinator is the first review.
                                          The Coordinator rarely removes a proposal at this point, and passes all proposals to the
-                                         next review stage. You should, however, address the Coordinator\'s comments because they
+                                         next review stage. You should, however, address the Coordinator''s comments because they
                                          typically track the comments made in the second review stage.
                                      </li>
                                      <li>

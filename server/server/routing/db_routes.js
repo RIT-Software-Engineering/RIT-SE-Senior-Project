@@ -40,6 +40,7 @@ const { nanoid } = require("nanoid");
 const CONSTANTS = require("../consts");
 const { ROLES } = require("../consts");
 const { off } = require("process");
+const USERAuth = require("./user_auth");
 
 const ACTION_TARGETS = {
   ADMIN: "admin",
@@ -48,6 +49,7 @@ const ACTION_TARGETS = {
   INDIVIDUAL: "individual",
   COACH_ANNOUNCEMENT: "coach_announcement",
   STUDENT_ANNOUNCEMENT: "student_announcement",
+  PEER_EVALUATION: "peer_evaluation",
 };
 
 // Routes
@@ -250,8 +252,8 @@ module.exports = (db) => {
 
       let body = req.body;
 
-      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
-                (system_id, fname, lname, email, type, semester_group, project, active) 
+      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users}
+                (system_id, fname, lname, email, type, semester_group, project, active)
                 VALUES (?,?,?,?,?,?,?,?)`;
 
       const active =
@@ -362,109 +364,82 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/deleteTimeLog", [], (req, res) => {
-    let result = validationResult(req);
-
-    if (result.errors.length !== 0) {
-      return res.status(400).send(result);
+  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res) => {
+    if (!req.body.id) {
+       res.status(400).send("No id provided");
     }
 
-    let body = req.body;
+    const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
 
-    const sql = `UPDATE time_log
-      SET active = ?
-      WHERE time_log_id = ?`;
-
-    let params = [body.dataOnSubmit, body.time_log_id];
-
-    db.query(sql, params)
+    db.query(sql, [req.body.id])
       .then(() => {
-        return res.status(200).send();
+        res.status(200).send();
       })
-      .catch((err) => {
-        console.error(err);
-        return res.status(500).send(err);
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send;
       });
   });
 
-  db_router.post(
-    "/createTimeLog",
+  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
+    const sql = "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
+    console.log(req.query.project_id)
 
-    [
-      //todo: un-hardcode
-
-      body("date")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 50 }),
-      body("time_amount")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 50 }),
-      body("comment")
-        .not()
-        .isEmpty()
-        .trim()
-        .escape()
-        .withMessage("Cannot be empty")
-        .isLength({ max: 120 }),
-    ],
-    (req, res) => {
-      let result = validationResult(req);
-
-      if (result.errors.length !== 0) {
-        return res.status(400).send(result);
-      }
-
-      let body = req.body;
-
-      const currentDate = new Date();
-      const pastWeekDate = new Date();
-      pastWeekDate.setDate(currentDate.getDate() - 8);
-      const timelogDate = new Date(body.date);
-
-      if (pastWeekDate > timelogDate || timelogDate > currentDate) {
-        return res
-          .status(400)
-          .send(
-            "Can not submit time log before last week date or after current date."
-          );
-      }
-
-      const sql = `INSERT INTO time_log
-                  ( system_id, project, mock_id, work_date, time_amount, work_comment,active)
-                  VALUES (?,?,?,?,?,?,?)`;
-
-      let params = [
-        body.userId,
-        body.project,
-        body.mockId,
-        body.date,
-        body.time_amount,
-        body.comment,
-      ];
-      db.query(sql, params)
-        .then(() => {
-          return res.status(200).send();
+    db.query(sql, [req.query.project_id])
+        .then((time) => {
+          console.log(time)
+          res.send(time)
         })
-        .catch((err) => {
-          console.error(err);
-          return res.status(500).send(err);
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send(error);
         });
-    }
+  })
+
+
+  db_router.post("/createTimeLog", [
+
+      ],
+      async (req, res) => {
+
+
+        let result = validationResult(req);
+
+        if (result.errors.length !== 0) {
+          return res.status(400).send(result);
+        }
+
+        let body = req.body;
+
+        const sql = `INSERT INTO time_log
+                (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
+                VALUES (?,?,?,?,?,?,?)`;
+
+        const params = [
+          req.user.semester_group,
+          req.user.system_id,
+          req.user.project,
+          "",
+          req.body.date,
+          req.body.time_amount,
+          req.body.comment,
+        ];
+        db.query(sql, params)
+            .then(() => {
+              return res.status(200).send();
+            })
+            .catch((err) => {
+              console.error(err);
+              return res.status(500).send(err);
+            });
+      }
   );
 
   db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
     let getProjectsQuery = `
             SELECT *
             FROM projects
-            LEFT JOIN semester_group 
+            LEFT JOIN semester_group
             ON projects.semester = semester_group.semester_id
             WHERE projects.semester IS NOT NULL
         `;
@@ -491,7 +466,7 @@ module.exports = (db) => {
   });
 
   db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
-    const getProjectCoaches = `SELECT users.* FROM users 
+    const getProjectCoaches = `SELECT users.* FROM users
             LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
             WHERE project_coaches.project_id = ?`;
 
@@ -512,6 +487,24 @@ module.exports = (db) => {
       const getProjectStudents = "SELECT * FROM users WHERE users.project = ?";
 
       db.query(getProjectStudents, [req.query.project_id])
+        .then((students) => {
+          res.send(students);
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send(error);
+        });
+    }
+  );
+
+  db_router.get(
+    "/getProjectStudentNames",
+    [UserAuth.isSignedIn],
+    (req, res) => {
+      const getProjectStudents =
+        "SELECT fname,lname FROM users WHERE users.project = ? and users.system_id!=?";
+
+      db.query(getProjectStudents, [req.query.project_id, req.user.system_id])
         .then((students) => {
           res.send(students);
         })
@@ -569,14 +562,14 @@ module.exports = (db) => {
     let rowCountQuery;
     if (featured === "true") {
       // home page - randomized order of projects
-      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? ) 
+      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY random() LIMIT ? )
             AND inactive = '' AND featured = 1 ORDER BY random() LIMIT ?`;
       rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
     } else {
       // projects page - all archived projects data regardless if they are archived or not
-      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN 
-            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? ) 
+      projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE oid NOT IN
+            ( SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ? )
             AND inactive = '' ORDER BY archive_id LIMIT ?`;
       rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive} WHERE inactive = ''`;
     }
@@ -598,8 +591,8 @@ module.exports = (db) => {
   db_router.get("/getArchiveProjects", (req, res) => {
     const { resultLimit, offset } = req.query;
     let skipNum = offset * resultLimit;
-    let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE 
-            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?) 
+    let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE
+            oid NOT IN (SELECT oid FROM ${DB_CONFIG.tableNames.archive} ORDER BY archive_id LIMIT ?)
             ORDER BY archive_id LIMIT ?`;
     let rowCountQuery = `SELECT COUNT(*) FROM ${DB_CONFIG.tableNames.archive}`;
 
@@ -686,9 +679,9 @@ module.exports = (db) => {
       switch (req.user.type) {
         case ROLES.COACH:
           query = `
-                SELECT projects.* 
+                SELECT projects.*
                 FROM projects
-                WHERE projects.semester IN 
+                WHERE projects.semester IN
                     (SELECT projects.semester
                     FROM projects
                     INNER JOIN project_coaches
@@ -725,7 +718,7 @@ module.exports = (db) => {
     let body = req.body;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
-                                        title=?, project_id=?, team_name=?, 
+                                        title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
@@ -802,9 +795,9 @@ module.exports = (db) => {
           ? moment().format(CONSTANTS.datetime_format)
           : "";
 
-      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative, 
+      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
-                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date, 
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
                                     keywords, url_slug, inactive)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?,
@@ -1042,9 +1035,9 @@ module.exports = (db) => {
 
       const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
             SET status=?, title=?, display_name=?, organization=?, primary_contact=?, contact_email=?, contact_phone=?,
-            background_info=?, project_description=?, project_scope=?, project_challenges=?, 
+            background_info=?, project_description=?, project_scope=?, project_challenges=?,
             sponsor_provided_resources=?, project_search_keywords=?, constraints_assumptions=?, sponsor_deliverables=?,
-            proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?, 
+            proprietary_info=?, sponsor_alternate_time=?, sponsor_avail_checked=?, project_agreements_checked=?, assignment_of_rights=?,
             team_name=?, poster=?, video=?, website=?, synopsis=?, sponsor=?, semester=?
             WHERE project_id = ?`;
 
@@ -1337,6 +1330,7 @@ module.exports = (db) => {
     }
   });
 
+
   db_router.post(
     "/submitProposal",
     [
@@ -1518,9 +1512,9 @@ module.exports = (db) => {
       }
       const sql = `INSERT INTO ${DB_CONFIG.tableNames.senior_projects}
                 (project_id, status, title, organization, primary_contact, contact_email, contact_phone, attachments,
-                background_info, project_description, project_scope, project_challenges, 
+                background_info, project_description, project_scope, project_challenges,
                 sponsor_provided_resources, constraints_assumptions, sponsor_deliverables,
-                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights) 
+                proprietary_info, sponsor_alternate_time, sponsor_avail_checked, project_agreements_checked, assignment_of_rights)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
       const params = [
@@ -1663,12 +1657,29 @@ module.exports = (db) => {
               .send("Only students can submit individual actions.");
           }
           break;
+        //TODO: Add case for PEER_EVALUATION
+        case ACTION_TARGETS.PEER_EVALUATION:
+          if (
+            req.user.type !== ROLES.COACH &&
+            req.user.type !== ROLES.STUDENT
+          ) {
+            return res
+              .status(401)
+              .send("Only coaches and students can submit peer evaluations.");
+          }
+          break;
         case ACTION_TARGETS.COACH_ANNOUNCEMENT:
         case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
           return res.status(401).send("You can not submit an announcement");
-          break;
         case ACTION_TARGETS.TEAM:
           // Anyone can submit team actions
+          break;
+        case ACTION_TARGETS.PEER_EVALUATION:
+          if (req.user.type !== ROLES.STUDENT) {
+            return res
+              .status(401)
+              .send("Only students can submit peer evaluations.");
+          }
           break;
         default:
           return res.status(500).send("Invalid action target.");
@@ -1844,16 +1855,19 @@ module.exports = (db) => {
           .send("Trying to access project that is not your own");
       }
 
+      // Add a case for when the action target is 'peer_evaluation'
+      // The action is not done unless compelted by all students, AND the coach has passed it through
       let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
-                CASE
-                    WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
-                    WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
-                    WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                    WHEN action_target IS 'individual' AND COUNT(distinct system_id) IS (SELECT DISTINCT COUNT(*) FROM users WHERE users.project=?) THEN 'green'
-                    WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
-                    WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
-                    WHEN date('now') > due_date AND action_target IS 'individual' AND COUNT(distinct system_id) IS NOT (SELECT DISTINCT COUNT(*) FROM users WHERE users.project=?) THEN 'red'
-                    WHEN date('now') < start_date THEN 'grey'
+                    CASE
+                        WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
+                        WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
+                        WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) + 1 THEN 'green'
+                        WHEN action_target IS 'individual' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'green'
+                        WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
+                        WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
+                        WHEN date('now') > due_date AND action_target IS 'individual' AND COUNT(DISTINCT system_id) != (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'red'
+                        WHEN date('now') < start_date THEN 'grey'
                     ELSE 'UNHANDLED-CASE'
                 END AS 'state'
             FROM actions
@@ -1864,6 +1878,7 @@ module.exports = (db) => {
             GROUP BY actions.action_id`;
 
       db.query(getTimelineActions, [
+        req.query.project_id,
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,
@@ -2033,11 +2048,13 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-        getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,
+                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
-                        WHERE time_log.project = ?`;
+                        WHERE time_log.project = ?
+                        ORDER BY
+                        time_log.work_date DESC`;
         params = [req.user.project];
         break;
       case ROLES.COACH:
@@ -2080,7 +2097,9 @@ module.exports = (db) => {
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project = ? `;
+                        WHERE time_log.project = ?
+                          ORDER BY
+                        time_log.work_date DESC`;
         queryParams = [req.user.project];
         getTimeLogCount = `SELECT COUNT(*) FROM time_log
                     WHERE time_log.project = ?
@@ -2122,11 +2141,35 @@ module.exports = (db) => {
           timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]],
           timeLogs: projects,
         });
-      })
-      .catch((error) => {
-        res.status(500).send(error);
-      });
-  });
+        })
+        .catch((error) => {
+          res.status(500).send(error);
+        });
+    }
+  );
+
+  db_router.get(
+    "/getCoachFeedback",
+    [UserAuth.isSignedIn],
+    async (req, res) => {
+      const getFeedbackQuery = `
+            SELECT form_data, a.action_title as title, a.start_date as date, a.action_id, submission_datetime
+            FROM action_log
+            JOIN main.users u on action_log.system_id = u.system_id
+            JOIN main.actions a on action_log.action_template = a.action_id
+            WHERE action_log.project = ?  AND u.type = 'coach'
+        `;
+
+      db.query(getFeedbackQuery, req.query.project_id)
+        .then((feedback) => {
+          res.send(feedback);
+        })
+        .catch((e) => {
+          console.error(e);
+          res.status(500).send(e);
+        });
+    }
+  );
 
   db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
     const { resultLimit, offset } = req.query;
@@ -2247,7 +2290,7 @@ module.exports = (db) => {
       case ROLES.COACH:
         getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                     FROM action_log
-                    JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                    JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
@@ -2291,7 +2334,7 @@ module.exports = (db) => {
           getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
-                    JOIN project_coaches ON project_coaches.project_id = action_log.project 
+                    JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
           params = [req.query.log_id, req.user.system_id];
           break;
@@ -2408,18 +2451,18 @@ module.exports = (db) => {
                     SELECT *
                     FROM sponsors
                     WHERE sponsors.OID NOT IN (
-                        SELECT OID 
+                        SELECT OID
                         FROM sponsors
-                        WHERE 
+                        WHERE
                               company LIKE ?
                             OR division LIKE ?
                             OR fname LIKE ?
                         OR lname LIKE ?
-                        ORDER BY 
+                        ORDER BY
                             company,
                             division,
                             fname,
-                            lname 
+                            lname
                         LIMIT ?
                         ) AND (
                                 sponsors.company LIKE ?
@@ -2431,10 +2474,10 @@ module.exports = (db) => {
                         sponsors.company,
                         sponsors.division,
                         sponsors.fname,
-                        sponsors.lname 
+                        sponsors.lname
                     LIMIT ?
                 `;
-          getSponsorsCount = `SELECT COUNT(*) 
+          getSponsorsCount = `SELECT COUNT(*)
                                     FROM sponsors
                                     WHERE
                                         company LIKE ?
@@ -2496,7 +2539,7 @@ module.exports = (db) => {
 
     // allow inactive projects in search
     if (inactive === "true") {
-      getProjectsQuery = `SELECT * FROM  archive WHERE 
+      getProjectsQuery = `SELECT * FROM  archive WHERE
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
@@ -2510,7 +2553,7 @@ module.exports = (db) => {
                 ORDER BY title,
                          sponsor,
                          members,
-                         coach, 
+                         coach,
                          keywords,
                          synopsis,
                          url_slug
@@ -2536,7 +2579,7 @@ module.exports = (db) => {
 
       getProjectsCount = `SELECT COUNT(*)
                             FROM archive
-                            WHERE 
+                            WHERE
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
@@ -2546,7 +2589,7 @@ module.exports = (db) => {
                                 OR url_slug like ?
                                 `;
     } else {
-      getProjectsQuery = `SELECT * FROM  archive WHERE 
+      getProjectsQuery = `SELECT * FROM  archive WHERE
                             archive.OID NOT IN (
                 SELECT OID
                 FROM archive
@@ -2561,7 +2604,7 @@ module.exports = (db) => {
                 ORDER BY title,
                          sponsor,
                          members,
-                         coach, 
+                         coach,
                          keywords,
                          synopsis,
                          url_slug
@@ -2588,7 +2631,7 @@ module.exports = (db) => {
 
       getProjectsCount = `SELECT COUNT(*)
                             FROM archive
-                            WHERE 
+                            WHERE
                                 title like ?
                                 OR sponsor like ?
                                 OR members like ?
@@ -2937,7 +2980,7 @@ module.exports = (db) => {
 
   db_router.get("/getArchive", [UserAuth.isAdmin], (req, res) => {
     let getArchiveQuery = `
-            SELECT * 
+            SELECT *
             FROM archive`;
     db.query(getArchiveQuery)
       .then((values) => {
@@ -3122,7 +3165,7 @@ module.exports = (db) => {
                             WHERE projects.project_id = project_coaches.project_id
                         ) coach
                 FROM projects
-                LEFT JOIN semester_group 
+                LEFT JOIN semester_group
                     ON projects.semester = semester_group.semester_id
                     ${projectFilter}
                 ORDER BY projects.semester DESC

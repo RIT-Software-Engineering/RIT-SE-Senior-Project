@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Label, Modal } from "semantic-ui-react";
+import { Dropdown, Header, Label, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
+import { Dropdown as SemanticDropdown } from "semantic-ui-react";
+import ReactCodeMirror, {
+  oneDark,
+  oneDarkHighlightStyle,
+} from "@uiw/react-codemirror";
+import { html } from "@codemirror/lang-html";
+import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
+import QuestionBuilder from "./QuestionBuilder";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+
+const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
 export default function DatabaseTableEditor(props) {
   let initialState = props.initialState;
@@ -19,6 +29,7 @@ export default function DatabaseTableEditor(props) {
     MODAL_STATUS.CLOSED
   );
   const [formData, setFormData] = useState(initialState);
+  const [open, setOpen] = React.useState(false);
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -78,7 +89,7 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     let body = new FormData();
-
+         console.log(submitRoute)
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -92,7 +103,6 @@ export default function DatabaseTableEditor(props) {
       }
       body.append(key, dataToSubmit[key]);
     });
-
     SecureFetch(submitRoute, {
       method: "post",
       body: body,
@@ -112,6 +122,8 @@ export default function DatabaseTableEditor(props) {
       });
   };
 
+  // PLANNING: Replicate this idea in the student view of editing
+  // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
     if (props.viewOnly) {
       return;
@@ -129,7 +141,6 @@ export default function DatabaseTableEditor(props) {
     const newFormData =
       props.preChange &&
       props.preChange(formData, name, value, checked, isActiveField, e);
-
     if (newFormData) {
       setFormData(newFormData);
     } else {
@@ -203,21 +214,41 @@ export default function DatabaseTableEditor(props) {
           );
           break;
         case "textArea":
-          fieldComponents.push(
-            <Form.Field key={field.name} required>
-              <Form.TextArea
-                placeholder={field.placeholder}
-                label={field.label}
-                name={field.name}
-                value={formData[field.name]}
-                style={{ minHeight: 200 }}
+          if (formData.action_target === "peer_evaluation") {
+            fieldComponents.push(
+              <QuestionBuilder
+                field={field}
+                data={formData}
                 onChange={handleChange}
-                disabled={field.disabled}
-                required
+                value={formData[field.name]}
               />
-            </Form.Field>
-          );
+            );
+          } else {
+            fieldComponents.push(
+              <Form.Field key={field.name}required>
+                <label>{field.label}</label>
+                <Form.TextArea
+                  label={field.label}
+                  as={ReactCodeMirror}
+                  theme={modifiedEclipse}
+                  onChange={(value) =>
+                    handleChange(null, { name: field.name, value: value })
+                  }
+                  value={formData[field.name]}
+                  maxHeight={"700px"}
+                  extensions={[html({ autoCloseTags: true })]}
+                  style={{
+                    border: "1px solid #d4d4d5",
+                    borderRadius: "5px",
+                    padding: "10px",
+                    minHeight: "200px",
+                  }}
+                />
+              </Form.Field>
+            );
+          }
           break;
+        // TODO: Add a new type for the forum builder
         case "dropdown":
           fieldComponents.push(
             <Form.Field
@@ -328,7 +359,12 @@ export default function DatabaseTableEditor(props) {
                 checked={formData[field["name"]] === ""}
                 name={field["name"]}
                 onChange={(e, { name, value, checked }) =>
-                  handleChange(e, { name, value, checked, isActiveField: true })
+                  handleChange(e, {
+                    name,
+                    value,
+                    checked,
+                    isActiveField: true,
+                  })
                 }
                 disabled={field.disabled}
               />
@@ -378,35 +414,72 @@ export default function DatabaseTableEditor(props) {
     ];
   };
   let trigger = <Button content={props.content} icon={props.button} />;
-
   if (props.trigger) {
     trigger = props.trigger;
   }
 
-  return (
-    <>
-      <Modal
-        className={"sticky"}
-        trigger={trigger}
-        header={props.header}
-        content={{
-          content: (
-            <>
-              <Form>{fieldComponents}</Form>
-              {props.childComponents}
-              {props.body}
-            </>
-          ),
-        }}
-        actions={modalActions()}
-      />
-      <Modal
-        className={"sticky"}
-        size="tiny"
-        open={!!submissionModalOpen}
-        {...generateModalFields()}
-        onClose={() => closeSubmissionModal()}
-      />
-    </>
-  );
+  if (props.isOpenCallback) {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          onClose={() => {
+            setOpen(false);
+            props.isOpenCallback(false);
+            }}
+          onOpen={() => {
+              setOpen(true);
+              props.isOpenCallback(true);
+              }}
+          open={open}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Modal
+          className={"sticky"}
+          trigger={trigger}
+          header={props.header}
+          content={{
+            content: (
+              <>
+                <Form>{fieldComponents}</Form>
+                {props.childComponents}
+                {props.body}
+              </>
+            ),
+          }}
+          actions={modalActions()}
+        />
+        <Modal
+          className={"sticky"}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => closeSubmissionModal()}
+        />
+      </>
+    );
+  }
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import {
   ACTION_TARGETS,
@@ -10,6 +9,7 @@ import {
   humanFileSize,
   SEMESTER_DROPDOWN_NULL_VALUE,
 } from "../../../util/functions/utils";
+import { useState } from "react";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -17,6 +17,8 @@ const action_target = "action_target";
 const file_size = "file_size";
 
 export default function ActionPanel(props) {
+  const [open, setOpen] = useState(false);
+
   let initialState = {
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
@@ -94,6 +96,8 @@ export default function ActionPanel(props) {
       placeHolder: "Due Date / Announcement End Date",
       name: "due_date",
     },
+    // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
+    // Or add a taggle to switch bettwen the html and the form builder
     {
       type: "textArea",
       label: "Page Html",
@@ -144,23 +148,58 @@ export default function ActionPanel(props) {
       return formData;
     }
   };
-  return (
-    <DatabaseTableEditor
-      initialState={initialState}
-      submissionModalMessages={submissionModalMessages}
-      submitRoute={submitRoute}
-      formFieldArray={formFieldArray}
-      semesterData={props.semesterData}
-      header={props.header}
-      create={!!props.create}
-      button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
-      preChange={preChange}
-      preSubmit={(data) => {
-        if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
-          data.semester = "";
-        }
-        return data;
-      }}
-    />
-  );
+
+  if (props.isOpenCallback) {
+    return (
+      <DatabaseTableEditor
+        initialState={initialState}
+        submissionModalMessages={submissionModalMessages}
+        submitRoute={submitRoute}
+        formFieldArray={formFieldArray}
+        semesterData={props.semesterData}
+        header={props.header}
+        create={!!props.create}
+        button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+        trigger={props.trigger}
+        isOpenCallback={props.isOpenCallback}
+        onClose={() => {
+          setOpen(false);
+          props.isOpenCallback(false);
+          }}
+        onOpen={() => {
+          setOpen(true);
+          props.isOpenCallback(true);
+          }}
+        open={open}
+        preChange={preChange}
+        preSubmit={(data) => {
+          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+            data.semester = "";
+          }
+          return data;
+        }}
+      />
+    );
+  } else {
+    return (
+      <DatabaseTableEditor
+        initialState={initialState}
+        submissionModalMessages={submissionModalMessages}
+        submitRoute={submitRoute}
+        formFieldArray={formFieldArray}
+        semesterData={props.semesterData}
+        header={props.header}
+        create={!!props.create}
+        button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
+        trigger={props.trigger}
+        preChange={preChange}
+        preSubmit={(data) => {
+          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+            data.semester = "";
+          }
+          return data;
+        }}
+      />
+    );
+  }
 }

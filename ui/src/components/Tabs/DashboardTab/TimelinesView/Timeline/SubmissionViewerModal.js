@@ -1,8 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
-import { Button, Divider, Icon, Modal } from "semantic-ui-react";
+import {
+  Button,
+  Divider,
+  Header,
+  Icon,
+  Message, MessageHeader,
+  Modal,
+  Rating,
+  Segment,
+} from "semantic-ui-react";
 import { formatDate } from "../../../../util/functions/utils";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
+import EvalReview from "../../../../util/components/EvalReview";
 
 export default function SubmissionViewerModal(props) {
   const [open, setOpen] = useState(false);
@@ -55,6 +65,8 @@ export default function SubmissionViewerModal(props) {
     switch (target) {
       case ACTION_TARGETS.individual:
         return "Individual Submissions are Not Viewable by Team Members";
+      case ACTION_TARGETS.peer_evaluation:
+        return "Peer Evaluation Submissions are Not Viewable by Team Members";
       case ACTION_TARGETS.coach:
         return "Coach Submissions are Not Viewable by Team Members";
       case ACTION_TARGETS.admin:
@@ -72,8 +84,11 @@ export default function SubmissionViewerModal(props) {
     setDay(diffInDays);
   };
 
+  const IS_PEER_EVALUATION = props.target === ACTION_TARGETS.peer_evaluation;
+
   return (
     <Modal
+
       className={"sticky"}
       onClose={() => {
         setOpen(false);
@@ -120,7 +135,9 @@ export default function SubmissionViewerModal(props) {
             {(props.noSubmission || noSubmission) && (
               <p>{noSubmissionText(props.target)}</p>
             )}
-            {!props.noSubmission && (
+
+            {/* Normal Submissions */}
+            {!noSubmission && !IS_PEER_EVALUATION && (
               <>
                 {Object.keys(submission)?.map((key) => {
                   if (submission[key].includes("fakepath")) {
@@ -150,6 +167,125 @@ export default function SubmissionViewerModal(props) {
                 })}
               </>
             )}
+
+            {/* Peer Evaluations */}
+            {!noSubmission &&
+              IS_PEER_EVALUATION &&
+              submission.Submitter !== "COACH" && (
+                <>
+                  <h2>Coach Feedback</h2>
+                  <Segment secondary={false}>
+                    {Object.keys(submission.CoachFeedback ?? {})?.map((key) => (
+                      <div style={{ marginBottom: "35px" }}>
+                        <Header as={"h3"} dividing content={key} />
+                        <p>
+                          {" "}
+                          {submission.CoachFeedback[key] || (
+                            <i>No Feedback Provided</i>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </Segment>
+                  <h2>Peer Feedback</h2>
+                  {Object.keys(submission.Students ?? {})?.map((key) => (
+                    <div>
+                      <Header as={"h2"} dividing content={key} />
+                      <Segment>
+                        {/* Peer Qualative Feedback */}
+                        {Object.keys(submission.Students[key].Feedback)?.map(
+                          (feedback_key) => (
+                            <div style={{ marginBottom: "25px" }}>
+                              <Header
+                                as={"h3"}
+                                dividing
+                                content={feedback_key}
+                              />
+
+                              {/* Showing quantative feedback with written feedback */}
+                              {submission.Students[key].Ratings.hasOwnProperty(
+                                feedback_key
+                              ) && (
+                                <Rating
+                                  rating={
+                                    submission.Students[key].Ratings[
+                                      feedback_key
+                                    ]
+                                  }
+                                  maxRating={5}
+                                  disabled
+                                />
+                              )}
+                              {submission.Students[key].Feedback[
+                                feedback_key
+                              ] === "" ? (
+                                <p style={{ marginTop: "5px" }}>
+                                  <i>No Feedback Provided</i>
+                                </p>
+                              ) : (
+                                <Message>
+                                  <MessageHeader>Feedback:</MessageHeader>
+                                  <p>
+                                    {" "}
+                                    {
+                                      submission.Students[key].Feedback[
+                                        feedback_key
+                                      ]
+                                    }
+                                  </p>
+                                </Message>
+                              )}
+                            </div>
+                          )
+                        )}
+
+                        {/* Peer Quantative Feedback */}
+                        {Object.keys(submission.Students[key].Ratings)?.map(
+                          (rating_key) => {
+                            if (
+                              submission.Students[key].Feedback.hasOwnProperty(
+                                rating_key
+                              )
+                            ) {
+                              return false;
+                            }
+                            return (
+                              <div style={{ marginBottom: "25px" }}>
+                                <Header
+                                  as={"h3"}
+                                  dividing
+                                  content={rating_key}
+                                />
+                                <Rating
+                                  rating={
+                                    submission.Students[key].Ratings[rating_key]
+                                  }
+                                  maxRating={5}
+                                  disabled
+                                />
+                              </div>
+                            );
+                          }
+                        )}
+                      </Segment>
+                      <br />
+                    </div>
+                  ))}
+                </>
+              )}
+
+            {/* Peer Evaluations Coach View */}
+            {!noSubmission &&
+              IS_PEER_EVALUATION &&
+              submission.Submitter === "COACH" && (
+                <>
+                  <EvalReview
+                    forms={submission}
+                    isSub={submission?.Submitter === "COACH"}
+                    id={props.projectName + props.semesterName}
+                  />
+                </>
+              )}
           </div>
         ),
       }}

@@ -4,17 +4,22 @@
   "private": true,
   "homepage": "https://seniorproject.se.rit.edu",
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.9",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "@uiw/codemirror-theme-eclipse": "^4.22.2",
+    "@uiw/react-codemirror": "^4.22.2",
     "caniuse-lite": "^1.0.30001430",
     "comma-separated-values": "^3.6.4",
     "dangerously-set-html-content": "^1.0.9",
     "dayjs": "^1.11.2",
     "he": "^1.2.0",
     "html-entities": "^2.3.3",
+    "html-react-parser": "^1.2.9",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.35",
+    "prop-types": "^15.8.1",
     "react": "^17.0.1",
     "react-csv": "^2.2.2",
     "react-dom": "^17.0.1",
@@ -27,7 +32,7 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

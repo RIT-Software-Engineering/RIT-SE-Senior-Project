@@ -1,6 +1,8 @@
 INSERT INTO users (system_id, fname, lname, email, type, semester_group, project, active) 
 VALUES
     ('abc123', 'John', 'Smith', 'abc123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
+    ('coachC', '2019Spring', 'Coach', 'coachC@rit.edu', 'coach', NULL, NULL, ''),
+    ('mwahaha', 'SUPER DUPER', 'ADMIN', 'adminB@rit.edu', 'admin', NULL, NULL, ''),
     ('def123', 'Dude', 'Bro', 'def123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('hij123', 'Jack', 'James', 'hij123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('klm123', 'Gal', 'Girl', 'klm123@rit.edu', 'student', 3, NULL, ''),
@@ -11,7 +13,6 @@ VALUES
     ('adminA', 'Samuel', 'Sangsong', 'adminA@rit.edu', 'admin', NULL, NULL, ''),
     ('coachA', 'SomeCoach', 'AAA', 'coachA@rit.edu', 'coach', NULL, NULL, ''),
     ('coachB', 'SomeCoach', 'BBB', 'coachB@rit.edu', 'coach', NULL, NULL, ''),
-    ('coachC', 'SomeCoach', 'NoProject', 'coachC@rit.edu', 'coach', NULL, NULL, ''),
     ('cds123', 'Cameron', 'Smith', 'cds123@rit.edu', 'coach', NULL, NULL, ''),
     ('mlg123', 'Marianna', 'Gardner', 'mlg123@rit.edu', 'coach', NULL, NULL, ''),
 

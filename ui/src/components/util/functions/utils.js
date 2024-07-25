@@ -29,6 +29,23 @@ export const formatDateNoOffset = (date) => {
     return `${parseDateNoOffset(date).format('L')}`;
 }
 
+// Month+1 in Date constructor to account for how it determines month from numbers
+export const daysInMonth = (month, year) => {
+    return new Date(year, month+1, 0).getDate();
+}
+
+// magic number 86400000 is milli * sec * min * hr
+// difference in days
+export const dateDiff = (firstDateTime, secondDateTime) => {
+    return Math.floor((secondDateTime - firstDateTime) / 86400000);
+}
+
+export const numDaysLeftInYear = (dateTime) => {
+    let nextYear = new Date(dateTime.getFullYear() + 1, 0, 1);
+
+    return Math.floor((nextYear - dateTime) / 86400000);
+}
+
 /**
  * Format bytes as human-readable text.
  *

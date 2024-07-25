@@ -364,52 +364,6 @@ export default function ActionLogs(props) {
 
     semesterPanels = [];
 
-    semesterPanels.push(<h3>Time Logs</h3>);
-    semesterMap.forEach((semester) => {
-      if (
-        semester.name !== unassignedStudentsStr &&
-        Object.keys(semester.projects).length > 0
-      ) {
-        semesterPanels.push(
-          <div className="accordion-button-group">
-            <Accordion
-              fluid
-              styled
-              onTitleClick={() => {
-                setActiveSemesters({
-                  ...activeSemesters,
-                  [semester.semester_id]:
-                    !activeSemesters[semester.semester_id],
-                });
-              }}
-              panels={[
-                {
-                  key: semester.semester_id,
-                  title: `${semester.name}`,
-                  active: activeSemesters[semester.semester_id],
-                  content: {
-                    content: (
-                      <TimeLogProjects
-                        semesters={semester}
-                        prevLogin={prevLogin}
-                        user={userContext.user}
-                        userLogs={timeStats}
-                        pastWeek={pastWeek}
-                        currentWeek={currentWeek}
-                        timelogPagination={getTimeData}
-                        timeLogCount={timeLogCount}
-                        reloadData={getTimeData}
-                      />
-                    ),
-                  },
-                },
-              ]}
-            />
-          </div>
-        );
-      }
-    });
-
     semesterPanels.push(<h3>Action Submissions</h3>);
     semesterPanels.push(
       <div>

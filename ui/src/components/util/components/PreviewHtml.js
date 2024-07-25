@@ -4,18 +4,29 @@ import {Form, Icon, Input, Modal} from "semantic-ui-react";
 import {formatDateNoOffset, humanFileSize} from "../functions/utils";
 import {ACTION_TARGETS, DEFAULT_UPLOAD_LIMIT} from "../functions/constants";
 import Announcements from "../../Tabs/DashboardTab/TimelinesView/Announcements";
+
+import {
+    QuestionComponentsMap,
+
+} from "./PeerEvalComponents";
+import ParsedInnerHTML from "./ParsedInnerHtml";
 export default function PreviewHtml(props){
+
+    const [open, setOpen] = React.useState(false);
 
     const submissionTypeMap = {
         [ACTION_TARGETS.individual]: "Individual",
+        [ACTION_TARGETS.peer_evaluation]: "Individual",
         [ACTION_TARGETS.team]: "Team",
         [ACTION_TARGETS.coach]: "Coach",
         [ACTION_TARGETS.admin]: "Admin",
     }
 
+
     function modalContent(props) {
         const isStudentAnnouncement = props.action.action_target === ACTION_TARGETS.student_announcement;
         const isCoachAnnouncement = props.action.action_target === ACTION_TARGETS.coach_announcement;
+        const isPeerEvaluation = props.action.action_target === ACTION_TARGETS.peer_evaluation;
 
         if(isStudentAnnouncement || isCoachAnnouncement){
             return (
@@ -27,7 +38,11 @@ export default function PreviewHtml(props){
             <div>
                 {preActionContent()}
                 <br/>
-                <div className="content" dangerouslySetInnerHTML={{__html: props.action.page_html}}/>
+                {
+                    isPeerEvaluation ?
+                        <ParsedInnerHTML html={props.action.page_html} components={QuestionComponentsMap} />:
+                        <div className="content" dangerouslySetInnerHTML={{__html: props.action.page_html}}/>
+                }
                 <br/>
                 {fileUpload(props.action.file_types, props.action.file_size)}
             </div>
@@ -56,21 +71,52 @@ export default function PreviewHtml(props){
         </Form>;
     }
 
-    return (
-        <Modal
-            className={"sticky"}
-            trigger={<Button icon={<Icon name="eye" />} />}
-            header={props.header}
-            content={{
-                content:
-                    modalContent(props)
-            }}
-            actions={[
-                {
-                    key: "Close",
-                    content: "Close",
-                }
-            ]}
-        />
-    )
+    if (props.isOpenCallback) {
+        return (
+            <Modal
+                className={"sticky"}
+                trigger={
+                    props.trigger || (<Button icon={<Icon name="eye" />}/>)}
+                onClose={() => {
+                    setOpen(false);
+                    props.isOpenCallback(false);
+                    }}
+                onOpen={() => {
+                    setOpen(true);
+                    props.isOpenCallback(true);
+                    }}
+                open={open}
+                header={props.header}
+                content={{
+                    content:
+                        modalContent(props)
+                }}
+                actions={[
+                    {
+                        key: "Close",
+                        content: "Close",
+                    }
+                ]}
+            />
+        )
+    } else {
+        return (
+            <Modal
+                className={"sticky"}
+                trigger={
+                    props.trigger || (<Button icon={<Icon name="eye" />}/>)}
+                header={props.header}
+                content={{
+                    content:
+                        modalContent(props)
+                }}
+                actions={[
+                    {
+                        key: "Close",
+                        content: "Close",
+                    }
+                ]}
+            />
+        )
+    }
 }

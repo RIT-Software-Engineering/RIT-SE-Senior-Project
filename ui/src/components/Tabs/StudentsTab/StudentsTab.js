@@ -1,22 +1,59 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Accordion, Icon } from "semantic-ui-react";
+import { Accordion, Icon, Message } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
-import _ from "lodash";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
+import EvalReview from "../../util/components/EvalReview";
+import _ from "lodash";
 
-export default function StudentsTab() {
+export default function StudentsTab(props) {
   const [students, setStudentsData] = useState([]);
   const [semesters, setSemestersData] = useState([]);
   const [projects, setProjectsData] = useState([]);
   const [myProjects, setMyProjectsData] = useState([]);
   const [activeSemesters, setActiveSemesters] = useState({});
   const [activeProjectIds, setActiveProjectIds] = useState({});
-  const userContext = useContext(UserContext);
+  const [coachFeedback, setCoachFeedback] = useState({});
 
+  const userContext = useContext(UserContext);
   const unassignedStudentsStr = "Unassigned students";
+
+  function updateCoachFeedback(project_id, form_data) {
+    setCoachFeedback((prev) => ({ ...prev, [project_id]: form_data }));
+  }
+
+  function getCoachFeedback(project_id) {
+    SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const submissions = {};
+        data.forEach((s) => {
+          if (
+            submissions[s.action_id] === undefined ||
+            submissions[s.action_id].submission_datetime < s.submission_datetime
+          ) {
+            submissions[s.action_id] = s;
+          }
+        });
+
+        const forms = Object.values(submissions).map((s) => {
+          let form_data = JSON.parse(s.form_data);
+          form_data["ActionData"] = {
+            title: s.title,
+            start_date: s.date,
+            id: s.action_id,
+          };
+          return form_data;
+        });
+
+        updateCoachFeedback(project_id, forms);
+      })
+      .catch((error) => {
+        alert("Failed to get Coach's Feedback" + error);
+      });
+  }
 
   useEffect(() => {
     SecureFetch(config.url.API_GET_SEMESTER_STUDENTS)
@@ -27,6 +64,11 @@ export default function StudentsTab() {
       .catch((error) => {
         alert("Failed to get students data" + error);
       });
+
+    if (props.project_id !== null) {
+      getCoachFeedback(props.project_id);
+    }
+
     SecureFetch(config.url.API_GET_SEMESTERS)
       .then((response) => response.json())
       .then((semestersData) => {
@@ -35,6 +77,7 @@ export default function StudentsTab() {
       .catch((error) => {
         alert("Failed to get semestersData data" + error);
       });
+
     const getProjects =
       userContext.user.role === USERTYPES.ADMIN
         ? config.url.API_GET_PROJECTS
@@ -43,10 +86,15 @@ export default function StudentsTab() {
       .then((response) => response.json())
       .then((projectsData) => {
         setProjectsData(projectsData);
+        const project_ids = projectsData.map((project) => project.project_id);
+        project_ids.forEach((project_id) => {
+          getCoachFeedback(project_id);
+        });
       })
       .catch((error) => {
         alert("Failed to get projectsData" + error);
       });
+
     const getMyProjects =
       userContext.user.role === USERTYPES.ADMIN
         ? config.url.API_GET_PROJECTS
@@ -88,7 +136,9 @@ export default function StudentsTab() {
       if (student.semester_group) {
         if (!mappedData[student.semester_group]) {
           mappedData[student.semester_group] = {
-            projects: { noProject: { students: [], name: "No Project" } },
+            projects: {
+              noProject: { students: [], name: "No Project" },
+            },
             name: semesterMap[student.semester_group]?.name,
             start_date: semesterMap[student.semester_group]?.start_date,
             end_date: semesterMap[student.semester_group]?.end_date,
@@ -160,6 +210,7 @@ export default function StudentsTab() {
 
     let activeProjects = [];
 
+    // All Students
     semesterMap.forEach((semester) => {
       if (semester.name !== unassignedStudentsStr) {
         let studentsData = [];
@@ -188,7 +239,6 @@ export default function StudentsTab() {
               semester.projects[projectKey].students || [],
               ["fname", "lname", "email"]
             );
-
             activeProjects.push(
               <div className="accordion-button-group">
                 <Accordion
@@ -302,6 +352,77 @@ export default function StudentsTab() {
 
     semesterPanels.push(<h3>All Students</h3>);
 
+    // Peer Evaluations
+    semesterMap.forEach((semester) => {
+      Object.keys(semester.projects).forEach((projectKey) => {
+        const project = semester.projects[projectKey];
+        const submissions = coachFeedback[projectKey];
+        if (!submissions) return true;
+        const hasSubmissions = submissions.length > 0;
+
+        const subAccordion = (submission, index) => (
+          <Accordion
+            key={"Peer-Eval" + projectKey + submission.ActionData.id}
+            fluid
+            styled
+            defaultActiveIndex={index === submissions.length - 1 ? 0 : -1}
+            panels={[
+              {
+                key: `${projectKey}eval${submission.ActionData.id}`,
+                title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
+                content: {
+                  content: (
+                    <EvalReview
+                      forms={submission}
+                      isSub={submission?.Submitter === "COACH"}
+                      id={projectKey + semester.name}
+                    />
+                  ),
+                },
+              },
+            ]}
+          />
+        );
+
+        semesterPanels.push(
+          <div key={"PeerEval" + projectKey}>
+            <Accordion
+              key={"PEEREVAL" + projectKey}
+              fluid
+              defaultActiveIndex={
+                activeProjectIds[projectKey] && hasSubmissions ? 0 : -1
+              }
+              styled
+              panels={[
+                {
+                  key: "eval",
+                  title: project.name + " - " + semester.name,
+                  content: {
+                    content: hasSubmissions ? (
+                      submissions.map((submission, index) =>
+                        subAccordion(submission, index)
+                      )
+                    ) : (
+                      <Message>
+                        <Icon name="info circle" />
+                        <b>
+                          No coach feedback for peer-evaluations given at this
+                          time.
+                        </b>
+                      </Message>
+                    ),
+                  },
+                },
+              ]}
+            />
+          </div>
+        );
+      });
+    });
+
+    semesterPanels.push(<h3>Peer Evaluations</h3>);
+
+    // My Teams
     if (
       userContext.user.role !== USERTYPES.ADMIN &&
       activeProjects.length !== 0

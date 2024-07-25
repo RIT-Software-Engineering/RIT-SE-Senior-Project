@@ -1,9 +1,12 @@
 .env
 *.code-workspace
 *.vscode
+*.nvim.lua
 .eslintcache
 *.pem
 *.ignore
 /RIT-SE-Senior-Project.iml
 .idea/
 .DS_Store
+*.node_modules
+node_modules/

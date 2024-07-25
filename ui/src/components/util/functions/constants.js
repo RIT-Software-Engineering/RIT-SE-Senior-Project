@@ -1,11 +1,11 @@
 const BASE_API_URL =
   process.env.NODE_ENV === "development"
-    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 const BASE_URL =
   process.env.NODE_ENV === "development"
-    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
 export const config = {
   url: {
@@ -55,7 +55,9 @@ export const config = {
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
+    API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
     API_GET_SUBMISSION: `${BASE_API_URL}/db/getSubmission`,
+    API_GET_PROJECT_STUDENT_NAMES: `${BASE_API_URL}/db/getProjectStudentNames`,
     API_GET_SUBMISSION_FILE: `${BASE_API_URL}/db/getSubmissionFile`,
     API_GET_ALL_COACH_INFO: `${BASE_API_URL}/db/selectAllCoachInfo`,
     API_GET_PROJECT_COACHES: `${BASE_API_URL}/db/getProjectCoaches`,
@@ -74,9 +76,11 @@ export const config = {
     API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
     API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
+    //AI API calls
+    API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
-
+    API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
     // POST - Auth needed
     API_POST_EDIT_PROJECT: `${BASE_API_URL}/db/editProject`,
     API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,
@@ -97,11 +101,11 @@ export const config = {
     API_POST_EDIT_PAGE: `${BASE_API_URL}/db/editPage`,
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
+    API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
     API_DELETE_DIRECTORY: `${BASE_API_URL}/db/removeDirectory`,
-    API_DELETE_TIME_LOG: `${BASE_API_URL}/db/deleteTimeLog`,
 
     // PATCH - Auth needed
     API_PATCH_EDIT_PROPOSAL_STATUS: `${BASE_API_URL}/db/updateProposalStatus`,
@@ -125,6 +129,7 @@ export const ACTION_TARGETS = {
   admin: "admin",
   student_announcement: "student_announcement",
   coach_announcement: "coach_announcement",
+  peer_evaluation: "peer_evaluation",
 };
 
 export const DROPDOWN_ITEMS = {
@@ -158,6 +163,12 @@ export const DROPDOWN_ITEMS = {
       key: "coach_announcement",
       text: "Coach Announcement",
       value: "coach_announcement",
+    },
+    // TODO: This is where we would add action targets
+    {
+      key: "peer_evaluation",
+      text: "Peer Evaluation",
+      value: "peer_evaluation",
     },
   ],
 

@@ -8,7 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const DBHandler = require("./server/database/db");
 let db = new DBHandler();
-const Logger = require("./server/logger")
+const Logger = require("./server/logger");
 
 const table_sql_path = "./server/database/table_sql";
 const dummy_data_path = "./server/database/test_data";
@@ -51,13 +51,15 @@ function createAllTables() {
                 return;
             }
 
-            for (file of files) {
-                fs.readFile(path.join(table_sql_path, file), "utf8", (err, sql) => {
-                    Promise.resolve(db.query(sql).catch((err) => {
-                        reject(`${file} : ${err}`);
-                    }));
+            files
+                .filter((file) => file.toString() != "create_all_tables.sql")
+                .forEach((file) => {
+                    fs.readFile(path.join(table_sql_path, file), "utf8", (_err, sql) => {
+                        Promise.resolve(db.query(sql).catch((err) => {
+                            reject(`${file} : ${err}`);
+                        }));
+                    });
                 });
-            }
             setTimeout(() => {
                 resolve();
             }, 1000);
@@ -72,13 +74,15 @@ function populateDummyData() {
                 reject(err);
             }
 
-            for (file of files) {
-                fs.readFile(path.join(dummy_data_path, file), "utf8", (err, sql) => {
-                    Promise.resolve(db.query(sql).catch((err) => {
-                        reject(`${file} : ${err}`);
-                    }));
+            files
+                .filter((file) => file.toString() != "fill_test_data.sql")
+                .forEach((file) => {
+                    fs.readFile(path.join(dummy_data_path, file), "utf8", (_err, sql) => {
+                        Promise.resolve(db.query(sql).catch((err) => {
+                            reject(`${file} : ${err}`);
+                        }));
+                    });
                 });
-            }
             setTimeout(() => {
                 resolve();
             }, 3000);
@@ -92,9 +96,9 @@ async function redeployDatabase() {
         if (process.env.NODE_ENV === 'production') {
             throw new Error("TRYING TO RESET DATABASE ON THE PRODUCTION SERVER, COMMENT OUT THIS CHECK TO RESET DATABASE ON PRODUCTION");
         }
-        await dropAllTables()
-        await createAllTables()
-        await populateDummyData()
+        await dropAllTables();
+        await createAllTables();
+        await populateDummyData();
         Logger.log("Done redeploying database");
     } catch (error) {
         console.error(error);
