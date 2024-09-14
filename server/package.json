@@ -34,6 +34,7 @@
     "passport": "^0.4.1",
     "passport-saml": "^2.0.5",
     "pdfkit": "^0.11.0",
+    "rit-se-senior-project-website": "file:",
     "sqlite3": "^5.0.3"
   }
 }
