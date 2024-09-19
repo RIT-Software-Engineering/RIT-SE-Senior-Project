@@ -5,4 +5,5 @@ cp ./server/server/config/seniorproject-key.pem.sample ./server/server/config/se
 cd server
 npm install
 cd ../ui
-npm install
+npm install --legacy-peer-deps
+
