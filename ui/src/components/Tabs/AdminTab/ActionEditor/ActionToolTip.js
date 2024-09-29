@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Popup, Button, Modal } from "semantic-ui-react";
 import { ACTION_TARGETS } from "../../../util/functions/constants";
-import {
-  formatDateNoOffset,
-} from "../../../util/functions/utils" ;
+import { formatDateNoOffset } from "../../../util/functions/utils";
 import ActionPanel from "./ActionPanel";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 
@@ -23,7 +21,7 @@ function ActionToolTip(props) {
   // clicking elements on the modal
   function isOpenCallback(isOpen) {
     setCloseOnDocClick(!isOpen);
-  };
+  }
 
   const metadata = () => {
     return (
@@ -46,9 +44,20 @@ function ActionToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-        <div className="accordion-buttons-container" style={{ position: 'initial' }}>
+        <div
+          className="accordion-buttons-container"
+          style={{ position: "initial" }}
+        >
+          {/* Edit ActionPanel called from ActionTable saves changes when clicked-off of but this one doesn't. 
+          The only different props being passed are the trigger and isOpenCallback. 
+          Most likely due to isOpenCallback if I had to guess?  
+          Will work on fixing this*/}
           <ActionPanel
-            trigger={<Button fluid className="view-action-button">Edit Action</Button>}
+            trigger={
+              <Button fluid className="view-action-button">
+                Edit Action
+              </Button>
+            }
             isOpenCallback={isOpenCallback}
             actionData={props.action}
             semesterData={props.semesterData}
@@ -56,7 +65,11 @@ function ActionToolTip(props) {
             key={"editAction-" + props.index}
           />
           <PreviewHtml
-            trigger={<Button fluid className="view-action-button">View Action</Button>}
+            trigger={
+              <Button fluid className="view-action-button">
+                View Action
+              </Button>
+            }
             isOpenCallback={isOpenCallback}
             action={props.action}
             semesterName={props.semesterName}
@@ -92,10 +105,12 @@ function ActionToolTip(props) {
             // purpose is to get the mouse's position relative to the start of the bar
             let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
             let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
-            let mouseXWithinContainer = event.clientX - props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+            let mouseXWithinContainer =
+              event.clientX -
+              props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
             setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
           } catch (e) {
-            console.log('tooltip positioning', e);
+            console.log("tooltip positioning", e);
           }
         }
       }}
