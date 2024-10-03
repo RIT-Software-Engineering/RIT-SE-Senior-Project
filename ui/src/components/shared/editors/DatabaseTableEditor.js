@@ -89,7 +89,7 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     let body = new FormData();
-         console.log(submitRoute)
+    console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -225,7 +225,7 @@ export default function DatabaseTableEditor(props) {
             );
           } else {
             fieldComponents.push(
-              <Form.Field key={field.name}required>
+              <Form.Field key={field.name} required>
                 <label>{field.label}</label>
                 <Form.TextArea
                   label={field.label}
@@ -418,22 +418,34 @@ export default function DatabaseTableEditor(props) {
     trigger = props.trigger;
   }
 
+  {
+    /*
+     * Working with the modal called from ActionToolTip
+     * for data changes to be saved on close
+     */
+  }
   if (props.isOpenCallback) {
     return (
       <>
         <Modal
           className={"sticky"}
           trigger={trigger}
+          header={"isOpenCallback header"}
           onClose={() => {
+            console.log("DatabaseTableEditor Closed");
             setOpen(false);
             props.isOpenCallback(false);
-            }}
+          }}
           onOpen={() => {
-              setOpen(true);
-              props.isOpenCallback(true);
-              }}
+            console.log("DatabaseTableEditor Opened");
+            setOpen(true);
+            props.isOpenCallback(true);
+          }}
+          onChange={
+            (e) => console.log(e.target.value)
+            // handleChange(null, { name: "test name", value: value })
+          }
           open={open}
-          header={props.header}
           content={{
             content: (
               <>
@@ -460,7 +472,7 @@ export default function DatabaseTableEditor(props) {
         <Modal
           className={"sticky"}
           trigger={trigger}
-          header={props.header}
+          header={"NON isOpenCallback header"}
           content={{
             content: (
               <>
