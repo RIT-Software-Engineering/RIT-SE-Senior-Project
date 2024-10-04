@@ -48,10 +48,6 @@ function ActionToolTip(props) {
           className="accordion-buttons-container"
           style={{ position: "initial" }}
         >
-          {/* Edit ActionPanel called from ActionTable saves changes when clicked-off of but this one doesn't. 
-          The only different props being passed are the trigger and isOpenCallback. 
-          Most likely due to isOpenCallback if I had to guess?  
-          Will work on fixing this*/}
           <ActionPanel
             trigger={
               <Button fluid className="view-action-button">

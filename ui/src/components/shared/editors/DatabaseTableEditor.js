@@ -30,9 +30,20 @@ export default function DatabaseTableEditor(props) {
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
+
   // Update initial state if provided initial state is changed
+
+  {
+    /*
+      formData check to make sure useEffect is only called for initial load.
+      This makes sure formData changes persist, on close, for editors opened through the Gantt chart
+      since their modal open/close controls are external.
+    */
+  }
   useEffect(() => {
-    setFormData(initialState);
+    if (!formData || Object.keys(formData).length === 0) {
+      setFormData(initialState);
+    }
   }, [initialState]);
 
   const generateModalFields = () => {
@@ -418,33 +429,21 @@ export default function DatabaseTableEditor(props) {
     trigger = props.trigger;
   }
 
-  {
-    /*
-     * Working with the modal called from ActionToolTip
-     * for data changes to be saved on close
-     */
-  }
   if (props.isOpenCallback) {
     return (
       <>
         <Modal
           className={"sticky"}
           trigger={trigger}
-          header={"isOpenCallback header"}
+          header={props.header}
           onClose={() => {
-            console.log("DatabaseTableEditor Closed");
             setOpen(false);
             props.isOpenCallback(false);
           }}
           onOpen={() => {
-            console.log("DatabaseTableEditor Opened");
             setOpen(true);
             props.isOpenCallback(true);
           }}
-          onChange={
-            (e) => console.log(e.target.value)
-            // handleChange(null, { name: "test name", value: value })
-          }
           open={open}
           content={{
             content: (
@@ -472,7 +471,7 @@ export default function DatabaseTableEditor(props) {
         <Modal
           className={"sticky"}
           trigger={trigger}
-          header={"NON isOpenCallback header"}
+          header={props.header}
           content={{
             content: (
               <>
