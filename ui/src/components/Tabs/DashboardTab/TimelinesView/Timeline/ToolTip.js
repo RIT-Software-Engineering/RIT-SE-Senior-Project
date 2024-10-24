@@ -76,6 +76,7 @@ export default function ToolTip(props) {
         )}
         {submissions?.map((submission) => {
           return (
+            // Nested Modal causes parent modal to close on 2nd cancel/close
             <SubmissionViewerModal
               key={submission.action_log_id}
               action={submission}
@@ -155,10 +156,12 @@ export default function ToolTip(props) {
             // purpose is to get the mouse's position relative to the start of the bar
             let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
             let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
-            let mouseXWithinContainer = event.clientX - props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+            let mouseXWithinContainer =
+              event.clientX -
+              props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
             setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
-            } catch (e) {
-              console.log('tooltip positioning', e);
+          } catch (e) {
+            console.log("tooltip positioning", e);
           }
         }
         loadSubmission(props.projectId, props.action?.action_id);
