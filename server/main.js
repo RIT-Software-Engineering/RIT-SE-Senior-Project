@@ -7,15 +7,6 @@
 // Leave importing dotenv as the topmost thing
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
-/**
- *
- * FOR DEVELOPMENT USE ONLY
- *
- * UNCOMMENT THIS TO RESET DATABASE
- */
-const redeployDatabase = require("./db_setup");
-redeployDatabase();
-
 // Imports
 const express = require("express");
 const cors = require("cors");

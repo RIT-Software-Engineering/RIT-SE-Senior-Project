@@ -37,6 +37,11 @@ _**On first login, new user must change password by using the ``passwd`` command
 
 Run ``install.bat`` to get dependencies set up locally
 
+## Setup / Reset the database
+
+1. `cd` into `/server` folder
+2. run `npm reset-database`
+
 ## Run locally
 
 In order to get things running locally, you'll need to run ``npm start`` in both the ``./server`` and ``./ui`` folders
