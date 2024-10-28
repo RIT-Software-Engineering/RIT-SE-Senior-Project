@@ -93,8 +93,8 @@ function populateDummyData() {
 async function redeployDatabase() {
     try {
         Logger.log("Starting database redeploy");
-        if (process.env.NODE_ENV === 'production') {
-            throw new Error("TRYING TO RESET DATABASE ON THE PRODUCTION SERVER, COMMENT OUT THIS CHECK TO RESET DATABASE ON PRODUCTION");
+        if (process.env.NODE_ENV === 'production' && !process.argv.includes("RESET_PRODUCTION_DATABASE")) {
+            throw new Error("TRYING TO RESET DATABASE ON THE PRODUCTION SERVER, IF THIS INTENTIONAL USE THIS COMMAND: npm run reset-database -- RESET_PRODUCTION_DATABASE");
         }
         await dropAllTables();
         await createAllTables();
@@ -105,4 +105,4 @@ async function redeployDatabase() {
     }
 }
 
-module.exports = redeployDatabase;
+redeployDatabase();
