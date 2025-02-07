@@ -329,7 +329,8 @@ export default function TimeTableEditor(props) {
     }
 
 
-    let trigger = <Button> <Icon name={props.button}  />Log Project Time</Button>;
+    // let trigger = <Button icon style={{width: "175px",align: "right"}}> <Icon name={props.button}  />Log Project Time</Button>;
+    let trigger = <Button > <Icon name={props.button}  />Log Project Time</Button>;
     if(props.trigger){
         trigger = props.trigger
     }

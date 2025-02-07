@@ -74,6 +74,18 @@
   border-bottom-right-radius: 0.28571429rem !important; */
 }
 
+.container-side-by-side { 
+	display: flex; 
+	flex-direction: row; 
+	flex-wrap: wrap; 
+  align-items: center;
+  justify-content: space-between;
+}
+
+.log-project-title {
+  font-size: 16px;
+}
+
 .fake-a {
   color: #1e70bf;
   text-decoration: none;

@@ -45,8 +45,18 @@ export default function ProjectTime(props) {
         props.reset()
     }
     return(
-        <div className="accordion-button-group">
-            <Accordion
+        <div>
+            <div className="container-side-by-side">
+                <div className='log-project-title'>
+                    <b>
+                        {props.proj.title}
+                    </b>
+                </div>
+                <div>
+                    <TimeLogPanel callback = {resetKey} header="Log Time"/>
+                </div>
+            </div>
+            {/* <Accordion
 
                 fluid
                 styled
@@ -55,7 +65,9 @@ export default function ProjectTime(props) {
                         key: "Project Here",
                         title: props.proj.title,
                         content: {
-                            content: <div><Table>
+                            content: <div><Table> */}
+                            {/* <div> */}
+                            <Table>
                                 <TableHeader>
                                     <TableRow>
                                         {/*Headers for the table */}
@@ -159,16 +171,13 @@ export default function ProjectTime(props) {
                                         students={props.timeStats}
                                     />
                                 </div>
-                            </div>
-                        },
-                    },
-                ]
-                }
+                            {/* </div> */}
+                {/* //         },
+                //     },
+                // ]
+                // } */}
 
-            />
-            <div className="accordion-buttons-container">
-                <TimeLogPanel callback = {resetKey} header="Log Time"/>
-            </div>
+            {/* /> */}
         </div>
 
     )
