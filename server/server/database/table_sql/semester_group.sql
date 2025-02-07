@@ -1,4 +1,4 @@
-CREATE TABLE semester_group (
+CREATE TABLE IF NOT EXISTS semester_group (
     semester_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT UNIQUE NOT NULL,
     dept        TEXT,

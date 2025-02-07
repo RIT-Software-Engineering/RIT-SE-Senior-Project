@@ -41,6 +41,7 @@ const CONSTANTS = require("../consts");
 const { ROLES } = require("../consts");
 const { off } = require("process");
 const USERAuth = require("./user_auth");
+const redeployDatabase = require("../../db_setup");
 
 const ACTION_TARGETS = {
   ADMIN: "admin",
@@ -65,6 +66,11 @@ module.exports = (db) => {
       db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then(
         (users) => res.send(users)
       );
+    });
+
+    //Redeploy database
+    db_router.put("/DevOnlyRedeployDatabase", (req, res) => {
+      redeployDatabase();
     });
   }
 

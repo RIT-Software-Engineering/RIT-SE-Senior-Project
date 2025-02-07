@@ -1,4 +1,4 @@
-CREATE TABLE action_log (
+CREATE TABLE IF NOT EXISTS action_log (
     action_log_id       INTEGER PRIMARY KEY AUTOINCREMENT, -- internal id for this row
     submission_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
     action_template INTEGER NOT NULL,                      -- the id of the template action this is formatted on

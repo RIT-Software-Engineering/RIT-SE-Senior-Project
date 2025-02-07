@@ -1,4 +1,4 @@
-CREATE TABLE sponsor_notes (
+CREATE TABLE IF NOT EXISTS sponsor_notes (
     sponsor_note_id INTEGER PRIMARY KEY AUTOINCREMENT,
     creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     note_content TEXT,

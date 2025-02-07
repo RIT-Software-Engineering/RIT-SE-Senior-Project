@@ -1,4 +1,4 @@
-CREATE TABLE sponsors (
+CREATE TABLE IF NOT EXISTS sponsors (
     sponsor_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     fname       TEXT,
     lname       TEXT,

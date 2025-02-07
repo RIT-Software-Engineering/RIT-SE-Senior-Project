@@ -1,4 +1,4 @@
-CREATE TABLE time_log
+CREATE TABLE IF NOT EXISTS time_log
 (
     time_log_id         INTEGER PRIMARY KEY AUTOINCREMENT,
     semester            INTEGER NOT NULL,

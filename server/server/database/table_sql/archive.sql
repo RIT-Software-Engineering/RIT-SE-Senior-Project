@@ -1,4 +1,4 @@
-CREATE TABLE archive (
+CREATE TABLE IF NOT EXISTS archive (
     archive_id      INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id      INTEGER,
     priority        INTEGER DEFAULT 0, -- how high a project should be displayed on client side

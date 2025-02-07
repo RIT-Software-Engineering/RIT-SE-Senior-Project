@@ -28,6 +28,7 @@ function dropAllTables() {
             .then((values) => {
                 let delString = "";
                 for (let obj of values) {
+                    Logger.log(obj)
                     delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`;
                     Promise.resolve(db.query(delString).catch((err) => {
                         reject(`${obj["name"]} : ${err}`);

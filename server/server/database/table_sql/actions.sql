@@ -1,4 +1,4 @@
-CREATE TABLE actions (
+CREATE TABLE IF NOT EXISTS actions (
     action_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     semester        INTEGER NOT NULL, 
     action_title    TEXT,   -- The title of the action

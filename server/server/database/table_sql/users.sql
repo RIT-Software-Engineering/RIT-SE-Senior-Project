@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     system_id   TEXT PRIMARY KEY NOT NULL UNIQUE,
     fname       TEXT,
     lname       TEXT,

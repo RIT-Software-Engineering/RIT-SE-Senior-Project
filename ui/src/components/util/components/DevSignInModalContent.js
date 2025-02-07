@@ -82,6 +82,27 @@ export default function DevSignInModalContent() {
       >
         Sign Out
       </button>
+      <button
+        onClick={() => {
+          
+          // Delete all cookies
+          let cookies = document.cookie.split(";");
+          cookies.forEach(
+            (cookie) => (document.cookie = cookie + ";max-age=0")
+          );
+          //Reset the database and repopulate with test data
+          SecureFetch(config.url.DEV_ONLY_REDEPLOY_DATABASE, {
+            method: "put",
+          });
+          
+          // Simulate redirect from Shibboleth
+          history.push("/");
+          setTimeout(500).then(
+          window.location.reload())
+        }}
+      >
+        Reset Database
+      </button>
     </div>
   );
 }
