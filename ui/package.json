@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://seniorproject.se.rit.edu",
   "dependencies": {
+    "@semantic-ui-react/css-patch": "^1.1.3",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
@@ -21,7 +22,7 @@
     "react-keyed-file-browser": "^1.14.0",
     "react-phone-number-input": "^3.1.45",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
     "web-vitals": "^0.2.4"
@@ -30,7 +31,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "semantic-ui-css-patch"
   },
   "eslintConfig": {
     "extends": [
