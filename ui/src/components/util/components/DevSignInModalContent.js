@@ -97,8 +97,9 @@ export default function DevSignInModalContent() {
           
           // Simulate redirect from Shibboleth
           history.push("/");
-          setTimeout(500).then(
-          window.location.reload())
+          setTimeout(() => {
+            window.location.reload();
+          }, 5000);
         }}
       >
         Reset Database
