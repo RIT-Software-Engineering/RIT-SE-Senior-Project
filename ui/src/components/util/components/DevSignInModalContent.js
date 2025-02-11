@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { config } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
 
+
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
  */
@@ -10,6 +11,8 @@ export default function DevSignInModalContent() {
   const history = useHistory();
   const [users, setUsers] = useState([]);
   const selectedUserIdx = useRef(null);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (process.env.REACT_APP_NODE_ENV === "development") {
@@ -84,25 +87,28 @@ export default function DevSignInModalContent() {
       </button>
       <button
         onClick={() => {
-          
+          // Show process has started
+          setLoading(true); 
+
           // Delete all cookies
           let cookies = document.cookie.split(";");
-          cookies.forEach(
-            (cookie) => (document.cookie = cookie + ";max-age=0")
-          );
-          //Reset the database and repopulate with test data
+          cookies.forEach((cookie) => (document.cookie = cookie + ";max-age=0"));
+
+          // Reset database
           SecureFetch(config.url.DEV_ONLY_REDEPLOY_DATABASE, {
             method: "put",
           });
-          
-          // Simulate redirect from Shibboleth
+
+          // Simulate redirect
           history.push("/");
           setTimeout(() => {
             window.location.reload();
           }, 5000);
         }}
+        // Disable button while processing
+        disabled={loading} 
       >
-        Reset Database
+        {loading ? "Resetting..." : "Reset Database"}
       </button>
     </div>
   );
