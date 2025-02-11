@@ -27,8 +27,8 @@ export default function TimeLogPanel(props) {
         },
         {
             type: "input",
-            label: "Time Spent",
-            placeHolder: "Time Spent",
+            label: "Time Spent (hrs)",
+            placeHolder: "Time Spent (hrs)",
             name: "time_amount",
         },
         {

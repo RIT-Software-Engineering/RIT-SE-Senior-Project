@@ -73,8 +73,8 @@ export default function TimeTableEditor(props) {
         }
 
         if (isNaN(dataToSubmit["time_amount"])) {
-            if (!error1.includes('You must enter a valid Time.')) {
-                setError1([...error1, 'You must enter a valid Time.'])
+            if (!error1.includes('You must enter a valid Time in hours.')) {
+                setError1([...error1, 'You must enter a valid Time in hours.'])
             }
             invalid = true
         }
