@@ -27,9 +27,11 @@ export default function SponsorsTab(props) {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [sponsorData, setSponsorData] = useState([]);
-    const [activePage, setActivePage] = useState(0)
-    const [pageChange, setPageChange] = useState(0)
-    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0)
+    const [activePage, setActivePage] = useState(0);
+    const [pageChange, setPageChange] = useState(0);
+    const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
+    const [semesterData, setSemestersData] = useState([]);
+    const [sponsorProjectData, setSponsorProjectData] = useState([]);
 
     //If summary view, then it is inside of the admin tab.
     let summaryView = props?.notSummaryView ? "" : "summaryView";
@@ -187,7 +189,8 @@ export default function SponsorsTab(props) {
                     totalPages={Math.ceil(sponsorsCount / LOGS_PER_PAGE)}
                     onPageChange={(event, data) => {
                         setActivePage(data.activePage - 1);
-                        setPageChange(data.activePage - 1)
+                        setPageChange(data.activePage - 1);
+                        setSponsors(data.API_GET_ALL_SPONSORS)
                     }}
                 />
             </div>
