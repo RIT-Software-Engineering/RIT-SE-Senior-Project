@@ -12,10 +12,12 @@ import Footer from "./components/shared/allPages/Footer";
 import {UserContextProvider} from "./components/util/functions/UserContext";
 import "./App.css";
 import {Container} from "semantic-ui-react";
+import ErrorBoundary from "./components/shared/allPages/ErrorBoundary";
 
 function App() {
     return (
         <UserContextProvider>
+            <ErrorBoundary> 
             <Header />
             <div id="page">
                 <Container>
@@ -31,6 +33,7 @@ function App() {
                 </Container>
             </div>
             <Footer/>
+            </ErrorBoundary>
         </UserContextProvider>
     );
 }
