@@ -13,6 +13,7 @@ import {UserContextProvider} from "./components/util/functions/UserContext";
 import "./App.css";
 import {Container} from "semantic-ui-react";
 import ErrorBoundary from "./components/shared/allPages/ErrorBoundary";
+import StackTraceErrorPage from "./components/pages/StackTraceErrorPage";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                         <Route path="/sponsor" component={SponsorPage} />
                         <Route path="/proposal-form" component={ProposalPage} />
                         <Route path="/dashboard" component={DashboardPage} />
+                        <Route path="/error" component={StackTraceErrorPage} />
                         <Route component={ErrorPage} />
                     </Switch>
                 </Container>
