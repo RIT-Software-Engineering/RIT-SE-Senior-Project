@@ -81,7 +81,7 @@ module.exports = (db) => {
   db_router.get(
     "/selectAllStudentInfo",
     [UserAuth.isCoachOrAdmin],
-    (req, res) => {
+    (req, res, next) => {
       let getStudentsQuery = `
             SELECT *
             FROM users
@@ -95,12 +95,14 @@ module.exports = (db) => {
           res.send(values);
         })
         .catch((err) => {
-          res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res) => {
+  db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res, next) => {
     let getUsersQuery = `
             SELECT *
             FROM users
@@ -113,11 +115,13 @@ module.exports = (db) => {
         res.send(values);
       })
       .catch((err) => {
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res, next) => {
     let query = "";
     let params = [];
     switch (req.user.type) {
@@ -176,7 +180,9 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
@@ -242,12 +248,14 @@ module.exports = (db) => {
       body("project").isLength({ max: 50 }),
       body("active").trim().escape().isLength({ max: 50 }),
     ],
-    async (req, res) => {
+    async (req, res, next) => {
       let result = validationResult(req);
       console.log(result);
 
       if (result.errors.length !== 0) {
-        return res.status(400).send(result);
+        const error = new Error("Validation Error");
+          error.statusCode = 400;
+          return next(error);
       }
 
       let body = req.body;
@@ -277,7 +285,9 @@ module.exports = (db) => {
         })
         .catch((err) => {
           console.error(err);
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -288,11 +298,13 @@ module.exports = (db) => {
       UserAuth.isAdmin,
       // TODO: Add more validation
     ],
-    async (req, res) => {
+    async (req, res, next) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
-        return res.status(400).send(result);
+        const error = new Error("Validation Error");
+          error.statusCode = 400;
+          return next(error);
       }
 
       let users = JSON.parse(req.body.users);
@@ -320,12 +332,14 @@ module.exports = (db) => {
           return res.status(200).send(values);
         })
         .catch((err) => {
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
+  db_router.post("/editUser", [UserAuth.isAdmin], (req, res, next) => {
     let body = req.body;
 
     let updateQuery = `
@@ -360,13 +374,17 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res) => {
+  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res, next) => {
     if (!req.body.id) {
-       res.status(400).send("No id provided");
+      const error = new Error("No Id Provided");
+      error.statusCode = 400;
+      return next(error);
     }
 
     const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
@@ -375,13 +393,15 @@ module.exports = (db) => {
       .then(() => {
         res.status(200).send();
       })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send;
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
+  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res, next) => {
     const sql = "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
     console.log(req.query.project_id)
 
@@ -390,12 +410,13 @@ module.exports = (db) => {
           console.log(time)
           res.send(time)
         })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send(error);
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
   })
-
 
   db_router.post("/createTimeLog", [
 
@@ -406,7 +427,9 @@ module.exports = (db) => {
         let result = validationResult(req);
 
         if (result.errors.length !== 0) {
-          return res.status(400).send(result);
+          const error = new Error("Validation Error");
+          error.statusCode = 400;
+          return next(error);
         }
 
         let body = req.body;
@@ -430,12 +453,14 @@ module.exports = (db) => {
             })
             .catch((err) => {
               console.error(err);
-              return res.status(500).send(err);
+              let error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
             });
       }
   );
 
-  db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res, next) => {
     let getProjectsQuery = `
             SELECT *
             FROM projects
@@ -448,24 +473,28 @@ module.exports = (db) => {
         res.send(values);
       })
       .catch((err) => {
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
+  db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     const sql = `SELECT * FROM users WHERE type = '${ROLES.COACH}' AND active = ''`;
 
     db.query(sql)
       .then((coaches) => {
         res.send(coaches);
       })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send(error);
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res) => {
+  db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     const getProjectCoaches = `SELECT users.* FROM users
             LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
             WHERE project_coaches.project_id = ?`;
@@ -474,25 +503,29 @@ module.exports = (db) => {
       .then((coaches) => {
         res.send(coaches);
       })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send(error);
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.get(
     "/getProjectStudents",
     [UserAuth.isCoachOrAdmin],
-    (req, res) => {
+    (req, res, next) => {
       const getProjectStudents = "SELECT * FROM users WHERE users.project = ?";
 
       db.query(getProjectStudents, [req.query.project_id])
         .then((students) => {
           res.send(students);
         })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send(error);
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -500,7 +533,7 @@ module.exports = (db) => {
   db_router.get(
     "/getProjectStudentNames",
     [UserAuth.isSignedIn],
-    (req, res) => {
+    (req, res, next) => {
       const getProjectStudents =
         "SELECT fname,lname FROM users WHERE users.project = ? and users.system_id!=?";
 
@@ -508,9 +541,11 @@ module.exports = (db) => {
         .then((students) => {
           res.send(students);
         })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send(error);
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -518,7 +553,7 @@ module.exports = (db) => {
   db_router.get(
     "/selectAllCoachInfo",
     [UserAuth.isCoachOrAdmin],
-    (req, res) => {
+    (req, res, next) => {
       const getCoachInfoQuery = `
             SELECT users.system_id,
             users.fname,
@@ -547,15 +582,17 @@ module.exports = (db) => {
         .then((coaches) => {
           res.send(coaches);
         })
-        .catch((error) => {
+        .catch((err) => {
           console.error(error);
-          res.status(500).send(error);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
   // used in the /projects page and home page if featured
-  db_router.get("/getActiveArchiveProjects", (req, res) => {
+  db_router.get("/getActiveArchiveProjects", (req, res, next) => {
     const { resultLimit, page, featured } = req.query;
     let skipNum = page * resultLimit;
     let projectsQuery;
@@ -582,13 +619,15 @@ module.exports = (db) => {
           projects: projects,
         });
       })
-      .catch((error) => {
-        res.status(500).send(error);
+      .catch((err) => {
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   // endpoint for getting ALL archive data to view within admin view/editor
-  db_router.get("/getArchiveProjects", (req, res) => {
+  db_router.get("/getArchiveProjects", (req, res, next) => {
     const { resultLimit, offset } = req.query;
     let skipNum = offset * resultLimit;
     let projectsQuery = `SELECT * FROM ${DB_CONFIG.tableNames.archive} WHERE
@@ -606,8 +645,10 @@ module.exports = (db) => {
           projects: projects,
         });
       })
-      .catch((error) => {
-        res.status(500).send(error);
+      .catch((err) => {
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
@@ -616,26 +657,34 @@ module.exports = (db) => {
    *
    * TODO: Add pagination
    */
-  db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res) => {
+  db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
     const query = "SELECT * from projects";
     db.query(query)
       .then((projects) => res.send(projects))
-      .catch((err) => res.status(500).send(err));
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
   });
 
   db_router.get(
     "/getCandidateProjects",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       const query =
         "SELECT * from projects WHERE projects.status = 'candidate';";
       db.query(query)
         .then((projects) => res.send(projects))
-        .catch((err) => res.status(500).send(err));
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
     }
   );
 
-  db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
+  db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res, next) => {
     let query;
     let params;
     switch (req.user.type) {
@@ -659,10 +708,9 @@ module.exports = (db) => {
         params = [];
         break;
       default:
-        res
-          .status(500)
-          .send("Invalid user type...something must be very very broken...");
-        return;
+        const error = new Error("Invalid user type...something must be very very broken...");
+        error.statusCode = 500;
+        return next(error);
     }
 
     db.query(query, params)
@@ -673,7 +721,7 @@ module.exports = (db) => {
   db_router.get(
     "/getSemesterProjects",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       let query;
       let params;
       switch (req.user.type) {
@@ -702,19 +750,23 @@ module.exports = (db) => {
           params = [];
           break;
         default:
-          res
-            .status(500)
-            .send("Invalid user type...something must be very very broken...");
-          return;
+          const error = new Error("Invalid user type...something must be very very broken...");
+          error.statusCode = 500;
+          return next(error);
+          
       }
 
       db.query(query, params)
         .then((projects) => res.send(projects))
-        .catch((err) => res.status(500).send(err));
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
     }
   );
 
-  db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res) => {
+  db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res, next) => {
     let body = req.body;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
@@ -775,7 +827,9 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
@@ -788,7 +842,7 @@ module.exports = (db) => {
       .trim()
       .escape()
       .withMessage("Cannot be empty"),
-    async (req, res) => {
+    async (req, res, next) => {
       let body = req.body;
       const inactive =
         body.inactive === "true"
@@ -853,26 +907,34 @@ module.exports = (db) => {
           res.status(200).send(response);
           db.query(updateProjectQuery, updateProjectParams)
             .then((response) => res.status(200).send(response))
-            .catch((err) => res.status(500).send(err));
+            .catch((err) => {
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
+            });
         })
         .catch((err) => {
           console.error(err);
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
   //Gets the start and end dates of a project based on the semester that it is associated with.
-  db_router.get("/getProjectDates", UserAuth.isAdmin, (req, res) => {
+  db_router.get("/getProjectDates", UserAuth.isAdmin, (req, res, next) => {
     const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
     const getDatesParams = [req.query.semester];
     db.query(getDatesQuery, getDatesParams)
       .then((dates) => {
         res.send(dates);
       })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send(error);
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
@@ -1030,7 +1092,7 @@ module.exports = (db) => {
       // body("date").not().isEmpty().trim().escape().withMessage("Cannot be empty"),
       body("projectCoaches").trim().escape().isLength({ max: 5000 }),
     ],
-    async (req, res) => {
+    async (req, res, next) => {
       let body = req.body;
 
       const updateProjectSql = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
@@ -1093,7 +1155,9 @@ module.exports = (db) => {
         })
         .catch((err) => {
           console.error(err);
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -1104,15 +1168,17 @@ module.exports = (db) => {
   db_router.patch(
     "/updateProposalStatus",
     [UserAuth.isAdmin, body("*").trim().escape().isJSON().isAlphanumeric()],
-    (req, res) => {
+    (req, res, next) => {
       const query = `UPDATE ${DB_CONFIG.tableNames.senior_projects} SET status = ? WHERE project_id = ?`;
       db.query(query, [req.body.status, req.body.project_id])
         .then(() => {
           res.sendStatus(200);
         })
-        .catch((error) => {
-          console.error(error);
-          res.sendStatus(500);
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -1122,7 +1188,7 @@ module.exports = (db) => {
    *
    * NOTE: This route is unused and untested.
    */
-  db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res) => {
+  db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res, next) => {
     fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
       if (err) {
         res.status(500).send(err);
@@ -1186,7 +1252,7 @@ module.exports = (db) => {
    * Route to get sponsor data, particularly for getting all sponsor
    * emails for messaging. Sent to admin sponsor tab for building a csv
    */
-  db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res) => {
+  db_router.get("/getSponsorData", UserAuth.isAdmin, (req, res, next) => {
     let query = `SELECT * FROM sponsors WHERE inActive = 0 AND doNotEmail = 0`;
     let params = [];
     db.query(query, params)
@@ -1195,14 +1261,16 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   /**
    * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
    */
-  db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res) => {
+  db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res, next) => {
     let filesUploaded = [];
 
     // Attachment Handling
@@ -1223,7 +1291,9 @@ module.exports = (db) => {
           function (err) {
             if (err) {
               console.error(err);
-              return res.status(500).send(err);
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
             }
           }
         );
@@ -1235,7 +1305,7 @@ module.exports = (db) => {
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 
-  db_router.post("/createDirectory", UserAuth.isAdmin, (req, res) => {
+  db_router.post("/createDirectory", UserAuth.isAdmin, (req, res, next) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
@@ -1243,11 +1313,13 @@ module.exports = (db) => {
       fs.mkdirSync(baseURL, { recursive: true });
       res.send({ msg: "Success!" });
     } else {
-      res.send({ msg: "Fail!" });
+      const error = new Error("Directory already exists");
+          error.statusCode = 500;
+          return next(error);
     }
   });
 
-  db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res) => {
+  db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res, next) => {
     const { oldPath, newPath } = req.query;
     const formattedOldPath =
       oldPath === "" ? `resource/` : `resource/${oldPath}`;
@@ -1258,7 +1330,9 @@ module.exports = (db) => {
 
     // New path already exists, so we can't rename
     if (fs.existsSync(baseURLNew)) {
-      return res.status(500);
+      const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
     }
     // Copy all files from old directory to new directory
     if (fs.lstatSync(baseURLOld).isDirectory()) {
@@ -1272,7 +1346,7 @@ module.exports = (db) => {
     }
   });
 
-  db_router.get("/getFiles", UserAuth.isAdmin, (req, res) => {
+  db_router.get("/getFiles", UserAuth.isAdmin, (req, res, next) => {
     let fileData = [];
     // This is the path with the specified directory we want to find files in.
     const formattedPath =
@@ -1283,7 +1357,9 @@ module.exports = (db) => {
     fs.readdir(baseURL, function (err, files) {
       if (err) {
         console.error(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       }
       const info = fs.statSync(baseURL);
       files.forEach(function (file) {
@@ -1307,26 +1383,30 @@ module.exports = (db) => {
     });
   });
 
-  db_router.delete("/removeFile", UserAuth.isAdmin, (req, res) => {
+  db_router.delete("/removeFile", UserAuth.isAdmin, (req, res, next) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     fs.unlink(baseURL, (err) => {
       if (err) {
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       } else {
         res.send({ msg: "Success!" });
       }
     });
   });
 
-  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res) => {
+  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res, next ) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     if (fs.existsSync(baseURL)) {
       fs.rmdirSync(baseURL, { recursive: true });
       return res.status(200).send({ msg: "Success!" });
     } else {
-      return res.status(500).send({ msg: "Fail!" });
+      const error = new Error("Directory does not exist, cannot delete");
+          error.statusCode = 500;
+          return next(error);
     }
   });
 
@@ -1439,11 +1519,13 @@ module.exports = (db) => {
         .withMessage("Cannot be empty")
         .isLength({ max: 5000 }),
     ],
-    async (req, res) => {
+    async (req, res, next) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
-        return res.status(400).send(result);
+        const error = new Error(result.errors);
+          error.statusCode = 400;
+          return next(error);
       }
 
       // Insert into the database
@@ -1463,9 +1545,9 @@ module.exports = (db) => {
 
         if (req.files.attachments.length > 5) {
           // Don't allow more than 5 files
-          return res.status(400).send({
-            errors: [{ param: "files", msg: "Maximum of 5 files allowed" }],
-          });
+          const error = new Error("Maximum of 5 files allowed");
+          error.statusCode = 400;
+          return next(error);
         }
 
         const baseURL = path.join(
@@ -1478,9 +1560,9 @@ module.exports = (db) => {
         for (let x = 0; x < req.files.attachments.length; x++) {
           if (req.files.attachments[x].size > 15 * 1024 * 1024) {
             // 15mb limit exceeded
-            return res
-              .status(400)
-              .send({ errors: [{ param: "files", msg: "File too large" }] });
+            const error = new Error("File size limit exceeded");
+            error.statusCode = 400;
+            return next(error);
           }
           if (
             !CONFIG.accepted_file_types.includes(
@@ -1488,9 +1570,9 @@ module.exports = (db) => {
             )
           ) {
             // send an error if the file is not an accepted type
-            return res.status(400).send({
-              errors: [{ param: "files", msg: "Filetype not accepted" }],
-            });
+            const error = new Error("file type not accepted");
+            error.statusCode = 400;
+            return next(error);
           }
 
           // Append the file name to the CSV string, begin with a comma if x is not 0
@@ -1504,7 +1586,9 @@ module.exports = (db) => {
             function (err) {
               if (err) {
                 console.error(err);
-                return res.status(500).send(err);
+                const error = new Error(err);
+                error.statusCode = 500;
+                return next(error);
               }
             }
           );
@@ -1578,7 +1662,9 @@ module.exports = (db) => {
         })
         .catch((err) => {
           console.error(err);
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -1604,21 +1690,23 @@ module.exports = (db) => {
     );
   });
 
-  db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res, next) => {
     calculateActiveTimelines(req.user)
       .then((timelines) => {
         res.send(timelines);
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send();
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.post(
     "/submitAction",
     [UserAuth.isSignedIn, body("*").trim()],
-    async (req, res) => {
+    async (req, res, next) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
@@ -1632,29 +1720,31 @@ module.exports = (db) => {
 
       const startDate = new Date(action.start_date);
       if (startDate > Date.now()) {
-        return res.status(400).send("Can not submit action before start date.");
+        const error = new Error("Action start date is in the future");
+        error.statusCode = 400;
+        return next(error);
       }
 
       switch (action.action_target) {
         case ACTION_TARGETS.ADMIN:
           if (req.user.type !== ROLES.ADMIN) {
-            return res
-              .status(401)
-              .send("Only admins can submit admin actions.");
+            const error = new Error("Only admins can submit admin actions");
+            error.statusCode = 401;
+            return next(error);
           }
           break;
         case ACTION_TARGETS.COACH:
           if (req.user.type !== ROLES.COACH && req.user.type !== ROLES.ADMIN) {
-            return res
-              .status(401)
-              .send("Only admins and coaches can submit coach actions.");
+            const error = new Error("Only coaches can submit coach actions");
+            error.statusCode = 401;
+            return next(error);
           }
           break;
         case ACTION_TARGETS.INDIVIDUAL:
           if (req.user.type !== ROLES.STUDENT) {
-            return res
-              .status(401)
-              .send("Only students can submit individual actions.");
+            const error = new Error("Only students can submit individual actions");
+            error.statusCode = 401;
+            return next(error);
           }
           break;
         //TODO: Add case for PEER_EVALUATION
@@ -1663,26 +1753,30 @@ module.exports = (db) => {
             req.user.type !== ROLES.COACH &&
             req.user.type !== ROLES.STUDENT
           ) {
-            return res
-              .status(401)
-              .send("Only coaches and students can submit peer evaluations.");
+            const error = new Error("Only coaches and students can submit peer evaluations");
+            error.statusCode = 401;
+            return next(error);
           }
           break;
         case ACTION_TARGETS.COACH_ANNOUNCEMENT:
         case ACTION_TARGETS.STUDENT_ANNOUNCEMENT:
-          return res.status(401).send("You can not submit an announcement");
+          const error = new Error("You cannot submit an announcement");
+          error.statusCode = 401;
+          return next(error);
         case ACTION_TARGETS.TEAM:
           // Anyone can submit team actions
           break;
         case ACTION_TARGETS.PEER_EVALUATION:
           if (req.user.type !== ROLES.STUDENT) {
-            return res
-              .status(401)
-              .send("Only students can submit peer evaluations.");
+            const error = new Error("Only students can submit peer evaluations.");
+            error.statusCode = 401;
+            return next(error);
           }
           break;
         default:
-          return res.status(500).send("Invalid action target.");
+          error = new Error("Invalid action target");
+          error.statusCode = 400;
+          return next(error);
       }
 
       let date = new Date();
@@ -1704,7 +1798,9 @@ module.exports = (db) => {
 
         if (req.files.attachments.length > 5) {
           // Don't allow more than 5 files
-          return res.status(400).send("Maximum of 5 files allowed");
+          const error = new Error("Maximum of 5 files allowed");
+          error.statusCode = 400;
+          return next(error);
         }
 
         fs.mkdirSync(baseURL, { recursive: true });
@@ -1718,7 +1814,9 @@ module.exports = (db) => {
             const responseText =
               "File exceeded submission size limit of: " +
               humanFileSize(action.file_size || defaultFileSizeLimit, false, 0);
-            return res.status(400).send(responseText);
+            const error = new Error(responseText);
+            error.statusCode = 400;
+            return next(error);
           }
           if (
             !action.file_types
@@ -1728,7 +1826,9 @@ module.exports = (db) => {
               )
           ) {
             // send an error if the file is not an accepted type
-            return res.status(400).send("Filetype not accepted");
+            const error = new Error("file type not accepted");
+          error.statusCode = 400;
+          return next(error);
           }
 
           // Append the file name to the CSV string, begin with a comma if x is not 0
@@ -1742,7 +1842,9 @@ module.exports = (db) => {
             function (err) {
               if (err) {
                 console.error(err);
-                return res.status(500).send(err);
+                const error = new Error(err);
+                error.statusCode = 500;
+                return next(error);
               }
             }
           );
@@ -1778,12 +1880,14 @@ module.exports = (db) => {
         })
         .catch((err) => {
           console.error(err);
-          res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.get("/getHtml", (req, res) => {
+  db_router.get("/getHtml", (req, res, next) => {
     let getHtmlQuery = `SELECT * FROM page_html`;
     let queryParams = [];
     //If there is a query parameter, then select html from specified table.
@@ -1797,11 +1901,13 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.post("/editPage", [UserAuth.isAdmin], (req, res) => {
+  db_router.post("/editPage", [UserAuth.isAdmin], (req, res, next) => {
     let editPageQuery = `UPDATE page_html
         SET html = ?
         WHERE name = ?
@@ -1818,7 +1924,9 @@ module.exports = (db) => {
           })
           .catch((err) => {
             console.error(err);
-            res.send({ error: err });
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
           })
       );
     });
@@ -1827,7 +1935,7 @@ module.exports = (db) => {
     });
   });
 
-  db_router.get("/getActions", [UserAuth.isAdmin], (req, res) => {
+  db_router.get("/getActions", [UserAuth.isAdmin], (req, res, next) => {
     let getActionsQuery = `
             SELECT *
             FROM actions
@@ -1838,21 +1946,23 @@ module.exports = (db) => {
         res.send(values);
       })
       .catch((err) => {
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.get(
     "/getTimelineActions",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       if (
         req.user.type === ROLES.STUDENT &&
         req.query.project_id !== req.user.project
       ) {
-        return res
-          .status(401)
-          .send("Trying to access project that is not your own");
+        const error = new Error("trying to acces project that is not yours");
+          error.statusCode = 401;
+          return next(error);
       }
 
       // Add a case for when the action target is 'peer_evaluation'
@@ -1889,7 +1999,9 @@ module.exports = (db) => {
         })
         .catch((err) => {
           console.error(err);
-          res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -1898,7 +2010,7 @@ module.exports = (db) => {
    * This will join between the action and action_log tables. It returns the due date from
    * a specific log_id's action_template # = action_id.
    */
-  db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res, next) => {
     let getLateSubmissionQuery = `SELECT actions.due_date
                                       FROM action_log
                                       JOIN actions ON actions.action_id = action_log.action_template
@@ -1910,11 +2022,13 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res, next) => {
     let getActionLogQuery = "";
     let params = [];
 
@@ -1943,8 +2057,9 @@ module.exports = (db) => {
         break;
 
       default:
-        res.status(401).send("Unknown role");
-        return;
+        const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
     }
     db.query(getActionLogQuery, params)
       .then((values) => {
@@ -1952,14 +2067,16 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.get(
     "/getAllActionLogs",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       const { resultLimit, offset } = req.query;
 
       let getActionLogQuery = "";
@@ -2021,8 +2138,9 @@ module.exports = (db) => {
           getActionLogCount = `SELECT COUNT(*) FROM action_log`;
           break;
         default:
-          res.status(401).send("Unknown role");
-          return;
+          const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
       }
 
       const actionLogsPromise = db.query(getActionLogQuery, queryParams);
@@ -2034,13 +2152,15 @@ module.exports = (db) => {
             actionLogs: projects,
           });
         })
-        .catch((error) => {
-          res.status(500).send(error);
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+  db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res, next) => {
     let getTimeLogQuery = "";
     let params = [];
 
@@ -2068,8 +2188,9 @@ module.exports = (db) => {
         break;
 
       default:
-        res.status(401).send("Unknown role");
-        return;
+        const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
     }
     db.query(getTimeLogQuery, params)
       .then((values) => {
@@ -2077,11 +2198,13 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
-  db_router.get("/getAllTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
+  db_router.get("/getAllTimeLogs", [UserAuth.isSignedIn], async (req, res, next) => {
     const { resultLimit, offset } = req.query;
 
     let getTimeLogQuery = "";
@@ -2129,8 +2252,9 @@ module.exports = (db) => {
         getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
         break;
       default:
-        res.status(401).send("Unknown role");
-        return;
+        const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
     }
 
     const timeLogsPromise = db.query(getTimeLogQuery, queryParams);
@@ -2142,8 +2266,10 @@ module.exports = (db) => {
           timeLogs: projects,
         });
         })
-        .catch((error) => {
-          res.status(500).send(error);
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -2151,7 +2277,7 @@ module.exports = (db) => {
   db_router.get(
     "/getCoachFeedback",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       const getFeedbackQuery = `
             SELECT form_data, a.action_title as title, a.start_date as date, a.action_id, submission_datetime
             FROM action_log
@@ -2164,14 +2290,16 @@ module.exports = (db) => {
         .then((feedback) => {
           res.send(feedback);
         })
-        .catch((e) => {
-          console.error(e);
-          res.status(500).send(e);
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
+  db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res, next) => {
     const { resultLimit, offset } = req.query;
 
     let getSponsorsQuery = "";
@@ -2198,8 +2326,9 @@ module.exports = (db) => {
         getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
         break;
       default:
-        res.status(401).send("Unknown role");
-        return;
+        const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
     }
 
     const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
@@ -2211,8 +2340,10 @@ module.exports = (db) => {
           sponsors: sponsorsRows,
         });
       })
-      .catch((error) => {
-        res.status(500).send(error);
+      .catch((err) => {
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
@@ -2253,7 +2384,7 @@ module.exports = (db) => {
     }
   );
 
-  db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
+  db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     let getSponsorNotesQuery = `
             SELECT * , users.fname, users.lname, users.email
             FROM sponsor_notes
@@ -2271,11 +2402,13 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res, next) => {
     let getSubmissionQuery = "";
     let params = [];
 
@@ -2301,8 +2434,9 @@ module.exports = (db) => {
         params = [req.query.log_id];
         break;
       default:
-        res.status(401).send("Unknown role");
-        return;
+        const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
     }
 
     db.query(getSubmissionQuery, params)
@@ -2311,14 +2445,16 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.get(
     "/getSubmissionFile",
     [UserAuth.isSignedIn],
-    async (req, res) => {
+    async (req, res, next) => {
       let getSubmissionQuery = "";
       let params = [];
 
@@ -2346,8 +2482,9 @@ module.exports = (db) => {
           params = [req.query.log_id];
           break;
         default:
-          res.status(401).send("Unknown role");
-          return;
+          const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
       }
 
       const { files, project, action_target, system_id, action_id } =
@@ -2372,16 +2509,16 @@ module.exports = (db) => {
           )
         );
       }
-      res
-        .status(404)
-        .send("File not found or you are unauthorized to view file");
+      const error = new Error("File not found or you are unauthorized to view file");
+          error.statusCode = 404;
+          return next(error);
     }
   );
 
   db_router.post(
     "/editAction",
     [UserAuth.isAdmin, body("page_html").unescape()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       let updateQuery = `
@@ -2426,7 +2563,9 @@ module.exports = (db) => {
           return res.status(200).send();
         })
         .catch((err) => {
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -2434,7 +2573,7 @@ module.exports = (db) => {
   db_router.get(
     "/searchForSponsor",
     [UserAuth.isCoachOrAdmin, body("page_html").escape()],
-    (req, res) => {
+    (req, res, next) => {
       const { resultLimit, offset, searchQuery } = req.query;
 
       let getSponsorsQuery = "";
@@ -2507,8 +2646,9 @@ module.exports = (db) => {
 
           break;
         default:
-          res.status(401).send("Unknown role");
-          return;
+          const error = new Error("Unknown Role");
+          error.statusCode = 401;
+          return next(error);
       }
 
       const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
@@ -2529,7 +2669,7 @@ module.exports = (db) => {
     }
   );
 
-  db_router.get("/searchForArchive", (req, res) => {
+  db_router.get("/searchForArchive", (req, res, next) => {
     const { resultLimit, offset, searchQuery, inactive } = req.query;
     let skipNum = offset * resultLimit;
     let getProjectsQuery = "";
@@ -2682,12 +2822,14 @@ module.exports = (db) => {
           projects: projectRows,
         });
       })
-      .catch((error) => {
-        res.status(500).send(error);
+      .catch((err) => {
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getArchiveFromSlug", (req, res) => {
+  db_router.get("/getArchiveFromSlug", (req, res, next) => {
     let query = `SELECT * FROM archive WHERE url_slug=?`;
     let params = [req.query.url_slug];
     db.query(query, params)
@@ -2696,14 +2838,16 @@ module.exports = (db) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.post(
     "/createSponsor",
     [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       let createSponsorQuery = `
@@ -2737,7 +2881,9 @@ module.exports = (db) => {
           return [200, null];
         })
         .catch((err) => {
-          return [500, err];
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
 
       let note_content = "Sponsor created by " + req.user.system_id;
@@ -2761,11 +2907,9 @@ module.exports = (db) => {
           } else if (createNoteError) {
             res.status(createNoteStatusCode).send(createNoteError);
           } else if (createSponsorQueryStatusCode !== createNoteStatusCode) {
-            res
-              .status(500)
-              .send(
-                "status code mismatch in editing sponsor, please contact an admin to investigate"
-              );
+            const error = new Error("status code mismatch in editing sponsor, please contact an admin to investigate");
+            error.statusCode = 500;
+            return next(error);
           } else {
             res.status(createSponsorQueryStatusCode).send();
           }
@@ -2777,7 +2921,7 @@ module.exports = (db) => {
   db_router.post(
     "/editSponsor",
     [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       let updateSponsorQuery = `
@@ -2822,7 +2966,9 @@ module.exports = (db) => {
           return [200, null];
         })
         .catch((err) => {
-          return [500, err];
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
 
       let changedFieldsMessageFirstPart = [];
@@ -2864,11 +3010,9 @@ module.exports = (db) => {
           } else if (createNoteError) {
             res.status(createNoteStatusCode).send(createNoteError);
           } else if (updateQueryStatusCode !== createNoteStatusCode) {
-            res
-              .status(500)
-              .send(
-                "status code mismatch in editing sponsor, please contact an admin to investigate"
-              );
+            const error = new Error("status code mismatch in editing sponsor, please contact an admin to investigate");
+            error.statusCode = 500;
+            return next(error);
           } else {
             res.status(updateQueryStatusCode).send();
           }
@@ -2901,7 +3045,7 @@ module.exports = (db) => {
   db_router.post(
     "/createSponsorNote",
     [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       params = [
@@ -2911,9 +3055,11 @@ module.exports = (db) => {
         body.previous_note,
       ];
 
-      createSponsorNote(params).then(([status, error]) => {
-        if (error) {
-          res.status(status).send(error);
+      createSponsorNote(params).then(([status, err]) => {
+        if (err) {
+          const error = new Error(err);
+          error.statusCode = status;
+          return next(error);
         } else {
           res.status(status).send();
         }
@@ -2924,7 +3070,7 @@ module.exports = (db) => {
   db_router.post(
     "/createAction",
     [UserAuth.isAdmin, body("page_html").unescape()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       let updateQuery = `
@@ -2958,12 +3104,14 @@ module.exports = (db) => {
           return res.status(200).send();
         })
         .catch((err) => {
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
 
-  db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
+  db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res, next) => {
     let getSemestersQuery = `
             SELECT *
             FROM semester_group
@@ -2974,11 +3122,13 @@ module.exports = (db) => {
         res.send(values);
       })
       .catch((err) => {
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
-  db_router.get("/getArchive", [UserAuth.isAdmin], (req, res) => {
+  db_router.get("/getArchive", [UserAuth.isAdmin], (req, res, next) => {
     let getArchiveQuery = `
             SELECT *
             FROM archive`;
@@ -2987,23 +3137,23 @@ module.exports = (db) => {
         res.send(values);
       })
       .catch((err) => {
-        res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   });
 
   db_router.get(
     "/getSemesterAnnouncements",
     [UserAuth.isSignedIn],
-    (req, res) => {
+    (req, res, next) => {
       let filter = "";
       if (req.user.type === ROLES.STUDENT) {
         // req.query.semester comes in as a string and req.user.semester_group is a number so convert both to strings to compare them.
         if (`${req.query.semester}` !== `${req.user.semester_group}`) {
-          return res
-            .status(401)
-            .send(
-              "Students can not access announcements that are not for your project"
-            );
+          const error = new Error("Students can not access announcements that are not for your project");
+          error.statusCode = 401;
+          return next(error);
         }
 
         filter = `AND actions.action_target IS NOT '${ACTION_TARGETS.COACH_ANNOUNCEMENT}'`;
@@ -3027,8 +3177,9 @@ module.exports = (db) => {
           res.send(values);
         })
         .catch((err) => {
-          console.error(err);
-          res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -3036,7 +3187,7 @@ module.exports = (db) => {
   db_router.post(
     "/editSemester",
     [UserAuth.isAdmin, body("*").trim()],
-    (req, res) => {
+    (req, res, next) => {
       let body = req.body;
 
       let updateQuery = `
@@ -3061,7 +3212,9 @@ module.exports = (db) => {
           return res.status(200).send();
         })
         .catch((err) => {
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );
@@ -3099,12 +3252,13 @@ module.exports = (db) => {
         .withMessage("Cannot be empty")
         .isLength({ max: 50 }),
     ],
-    (req, res) => {
+    (req, res, next) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
-        res.status(400).send(result);
-        return;
+        const error = new Error(result.errors);
+          error.statusCode = 400;
+          return next(error);
       }
 
       let body = req.body;
@@ -3122,7 +3276,9 @@ module.exports = (db) => {
           return res.status(200).send();
         })
         .catch((err) => {
-          return res.status(500).send(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
         });
     }
   );

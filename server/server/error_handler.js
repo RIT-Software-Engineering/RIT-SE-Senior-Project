@@ -3,8 +3,13 @@
 
 // TODO reroute to error page, display error message, link to github issues?
 function errorHandler(err, req, res, next) {
-    console.error(err);
-    res.status(500).send("Internal Server Error");
+    console.error("\n CAUGHT ERROR: ", err, "\n");
+    // Send the error to the client so that error can be displayed on error page
+    res.status(err.statusCode).json({  
+        error: err.message || "Internal Server Error",
+        componentStack: err.stack ? err.stack : undefined // Normally sending the stack trace to the frontend is not goog practice
+    });
 }
 
 module.exports = errorHandler;
+ 
