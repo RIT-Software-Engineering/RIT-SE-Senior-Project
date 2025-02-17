@@ -2,7 +2,7 @@ import { config } from "./constants";
 
 export const SecureFetch = async (url, options) => {
     const response = await fetch(url, { credentials: "include", ...options });
-    if (!response.ok && response.status === 401) {// If response is not ok
+    if (!response.ok && response.status === 401) {// auth error, warrants redirect
         const data = await response.json(); // Parse JSON
         window.location.replace(`/error`); // Redirect to error page
         console.log("\n ERROR 401 RESPONSE: ", data);
@@ -17,7 +17,7 @@ export const SecureFetch = async (url, options) => {
     } else if (!response.ok && response.status !== 401) { // not an auth error, doesn't warrant redirect
         console.log("\n ERROR {" + response.status + "} RESPONSE: ", response);
         return response;
-    }else {
+    } else {
         console.log("\n RESPONSE: ", response);
         return response;
     }
