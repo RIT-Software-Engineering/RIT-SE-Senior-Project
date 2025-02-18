@@ -53,7 +53,10 @@ export default function WeeklyHourViewer(props) {
 
         let total = filteredTimeLogs.reduce((total, log) => total + log.time_amount, 0);
 
-        return total
+        if(total == 0 || parseFloat(total) / parseInt(total) == 1) {
+            return total;
+        }
+        return total.toFixed(2);
     }
 
 

@@ -140,11 +140,18 @@ export default function ProjectTime(props) {
                                     </TableHeader>
                                     <TableBody>
                                         {props.timeStats?.filter(log => log.project == props.proj.project_id).map((timeStat, idx) => {
+                                            let totalHours;
+                                            if(timeStat.total == 0 || parseFloat(timeStat.total) / parseInt(timeStat.total) == 1) {
+                                                totalHours = timeStat.total;
+                                            }
+                                            else {
+                                                totalHours = timeStat.total.toFixed(2);
+                                            }
                                             return (
                                                 <TableRow key={idx}>
                                                     <TableCell>{timeStat.name}</TableCell>
                                                     <TableCell>{avgTime[idx]?.avgTime ?? 0}</TableCell>
-                                                    <TableCell>{timeStat.total.toFixed(2)}</TableCell>
+                                                    <TableCell>{totalHours}</TableCell>
                                                 </TableRow>
                                             );
                                         })}
