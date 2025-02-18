@@ -29,6 +29,10 @@ export default function WebsiteViewerModal(props) {
     };
 
     useEffect(() => {
+        updateData();
+    }, [props.project?.project_id])
+
+    const updateData = () =>{
         SecureFetch(`${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`)
             .then(response => response.json())
             .then(archives => {
@@ -36,7 +40,7 @@ export default function WebsiteViewerModal(props) {
                     setArchive(archives[0]);
                 }
             });
-    }, [props.project?.project_id])
+    }
 
     const generateModalContent = () => {
         return <>
@@ -140,6 +144,7 @@ export default function WebsiteViewerModal(props) {
         <Modal className={"sticky"}
             trigger={<Button icon="archive" />}
             header={`Viewing "${props.project.display_name || props.project.title}"`}
+            onOpen={updateData}
             content={{ content: generateModalContent() }}
             actions={[{ key: "Close", content: "Close" }]}
         />
