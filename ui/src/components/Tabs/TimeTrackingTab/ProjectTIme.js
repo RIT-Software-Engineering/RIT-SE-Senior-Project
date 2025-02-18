@@ -87,7 +87,7 @@ export default function ProjectTime(props) {
 
                                                     <TableCell>{submittedBy}</TableCell>
                                                     <TableCell>{formatDate(timeLog.work_date)}</TableCell>
-                                                    <TableCell>{Math.round(timeLog.time_amount)}</TableCell>
+                                                    <TableCell>{timeLog.time_amount}</TableCell>
                                                     <TableCell>{timeLog.work_comment.length < 10 ? timeLog.work_comment : timeLog.work_comment.slice(0, 10) + "...."}</TableCell>
                                                     <TableCell>{formatDateTime(timeLog.submission_datetime)}</TableCell>
                                                     <TableCell>
@@ -144,7 +144,7 @@ export default function ProjectTime(props) {
                                                 <TableRow key={idx}>
                                                     <TableCell>{timeStat.name}</TableCell>
                                                     <TableCell>{avgTime[idx]?.avgTime ?? 0}</TableCell>
-                                                    <TableCell>{Math.round(timeStat.total)}</TableCell>
+                                                    <TableCell>{timeStat.total.toFixed(2)}</TableCell>
                                                 </TableRow>
                                             );
                                         })}

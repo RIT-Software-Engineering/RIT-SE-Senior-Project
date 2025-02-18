@@ -72,16 +72,30 @@ export default function TimeTableEditor(props) {
             invalid = true
         }
 
-        if (isNaN(dataToSubmit["time_amount"])) {
+        if (isNaN(dataToSubmit["time_amount_hours"])) {
             if (!error1.includes('You must enter a valid Time in hours.')) {
                 setError1([...error1, 'You must enter a valid Time in hours.'])
             }
             invalid = true
         }
 
-        if(dataToSubmit["time_amount"] < 1 || dataToSubmit["time_amount"] > 10  ){
+        if (isNaN(dataToSubmit["time_amount_mins"])) {
+            if (!error1.includes('You must enter a valid Time in minutes.')) {
+                setError1([...error1, 'You must enter a valid Time in minutes.'])
+            }
+            invalid = true
+        }
+
+        if(dataToSubmit["time_amount_hours"] < 1 || dataToSubmit["time_amount_hours"] > 10  ){
             if (!error1.includes('You need to enter a Time ranging from 1-10 hours.')) {
                 setError1([...error1, 'You need to enter a Time ranging from 1-10 hours.'])
+            }
+            invalid = true
+        }
+
+        if(dataToSubmit["time_amount_mins"] < 0 || dataToSubmit["time_amount_mins"] > 59  ){
+            if (!error1.includes('You need to enter a Time ranging from 0-59 minutes.')) {
+                setError1([...error1, 'You need to enter a Time ranging from 0-59 minutes.'])
             }
             invalid = true
         }
@@ -103,6 +117,9 @@ export default function TimeTableEditor(props) {
 
        if (!invalid) {
            setOpen(false);
+           //calculate combined hours and minutes to one field
+           let time_float = (parseFloat(dataToSubmit["time_amount_hours"]) + parseFloat(dataToSubmit["time_amount_mins"]) / 60).toFixed(2);
+           dataToSubmit["time_amount"] = String(time_float);
 
            Object.keys(dataToSubmit).forEach((key) => {
 
@@ -180,6 +197,40 @@ export default function TimeTableEditor(props) {
                                 onChange={handleChange}
                                 disabled={field.disabled}
                             />
+                        </Form.Field>
+                    );
+                    break;
+                case "hoursInput":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Group>
+                                <Form.Input
+                                    label={field.label}
+                                    placeholder={field.placeholder}
+                                    name={field.name}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                    disabled={field.disabled}
+                                />
+                                <p><br></br><br></br>Hours</p>
+                            </Form.Group>
+                        </Form.Field>
+                    );
+                    break;
+                case "minutesInput":
+                    fieldComponents.push(
+                        <Form.Field key={field.name}>
+                            <Form.Group>
+                                <Form.Input
+                                    label={field.label}
+                                    placeholder={field.placeholder}
+                                    name={field.name}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                    disabled={field.disabled}
+                                />
+                                <p><br></br>Minutes</p>
+                            </Form.Group>
                         </Form.Field>
                     );
                     break;
