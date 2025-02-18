@@ -24,7 +24,7 @@ export default function OverviewEditor(){
     //Send changed html inside the text area to the respective file or database.
     const uploadHtml = (event) => {
         event.preventDefault();
-        if(html === {}){
+        if(html == {}){
             alert("Must contain data to submit")
             return
         }
@@ -76,7 +76,7 @@ export default function OverviewEditor(){
     const Overview = () => {
         return (
             <>
-                {html !== {} &&
+                {html != {} &&
                     renderTables()
                 }
                 <Form.Field>
