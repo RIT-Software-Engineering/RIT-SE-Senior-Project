@@ -52,7 +52,7 @@ export default function ArchiveEditor() {
                     project={"null"}
                     create={true}
                     newArchive
-                    header={"Create Archive"}
+                    header={"Create Website"}
                 />
             </div>
         </div>
