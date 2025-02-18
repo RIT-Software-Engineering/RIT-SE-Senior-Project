@@ -29,7 +29,7 @@ export default function UserEditorUserGroups() {
     let projectMap = {};
     let semesterAccordions = [];
 
-    useEffect(() => {
+    const getUsers = () =>{
         SecureFetch(config.url.API_GET_STUDENT_INFO)
             .then((response) => response.json())
             .then((studentsData) => {
@@ -62,6 +62,12 @@ export default function UserEditorUserGroups() {
             .catch((error) => {
                 alert("Failed to get projectsData" + error);
             });
+
+        console.log("PLEASE");
+    }
+
+    useEffect(() => {
+        getUsers();
     }, []);
 
     function groupUsers(studentData, userData, projectMap) {
@@ -200,6 +206,7 @@ export default function UserEditorUserGroups() {
     })
 
     semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
+    console.log(semesterAccordions);
 
     return (
         <>

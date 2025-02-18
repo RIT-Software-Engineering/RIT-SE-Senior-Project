@@ -45,6 +45,7 @@ export default function ActionTable(props) {
                                 semesterData={props.semesterData}
                                 header={`Currently Editing "${action.action_title}"`}
                                 key={"editAction-" + i}
+                                callback = {props.callback}
                             />
                             <ActionPanel
                                 actionData={action}
@@ -53,6 +54,7 @@ export default function ActionTable(props) {
                                 create={true}
                                 buttonIcon={"clone outline"}
                                 key={"copyAction-" + i}
+                                callback = {props.callback}
                             />
                             <PreviewHtml
                                 action={action}

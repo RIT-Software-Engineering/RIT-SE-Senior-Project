@@ -93,6 +93,7 @@ export default function UserPanel(props) {
             header={props.header}
             create={initialState.system_id === ""}
             button="plus"
+            callback={props.callback}
         />
     );
 }

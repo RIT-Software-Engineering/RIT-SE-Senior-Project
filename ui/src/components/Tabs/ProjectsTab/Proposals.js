@@ -126,6 +126,7 @@ export default function Proposals(props) {
                     semesterData={props.semesterData}
                     activeCoaches={props.activeCoaches}
                     activeSponsors={props.activeSponsors}
+                    callback={props.callback}
                   />
                   {proposal.status === "archive" ? (
                     <></>

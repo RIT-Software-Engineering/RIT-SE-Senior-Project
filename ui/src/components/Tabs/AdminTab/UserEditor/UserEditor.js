@@ -17,8 +17,11 @@ import BatchUserPanel from "./BatchUserPanel";
  */
 export default function UserEditor(props) {
     const [semesters, setSemestersData] = useState([]);
+    let userGroups = <UserEditorUserGroups/>;
 
-    useEffect(() => {
+
+    const getSemesters = () =>{
+        //console.log("hihi");                    
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
@@ -27,6 +30,12 @@ export default function UserEditor(props) {
             .catch((error) => {
                 alert("Failed to get semestersData data" + error);
             });
+        
+        userGroups = <UserEditorUserGroups/>;
+    }
+
+    useEffect(() => {
+        getSemesters();
     }, []);
 
     //the empty user panel should trigger user creation
@@ -39,12 +48,12 @@ export default function UserEditor(props) {
                     {
                         key: "userEditor",
                         title: "Users",
-                        content: { content: <UserEditorUserGroups /> },
+                        content: { content: userGroups },
                     },
                 ]}
             />
             <div className="accordion-buttons-container">
-                <UserPanel userData={{}} semesterData={semesters} header={`Create user`} />
+                <UserPanel userData={{}} semesterData={semesters} header={`Create user`} callback={getSemesters}/>
                 <BatchUserPanel />
             </div>
         </div>
