@@ -1,7 +1,6 @@
 // This is a general purpose error handler for the backend, 
 // when the backend encounters errors this handler redirects to an error page where necessary next steps can be taken.
 
-// TODO reroute to error page, display error message, link to github issues?
 function errorHandler(err, req, res, next) {
     console.error("\n CAUGHT ERROR: ", err, "\n");
     // Send the error to the client so that error can be displayed on error page
