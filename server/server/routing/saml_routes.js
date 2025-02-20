@@ -8,7 +8,7 @@ const MemoryStore = require("memorystore")(session);
 const passport = require("passport");
 
 module.exports = (app, db) => {
-  const adjustLoginTimes = (req, res) => {
+  const adjustLoginTimes = (req, res, next) => {
     let queryParams = [req.user.system_id];
     let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
                                     WHERE system_id = ?;`;
@@ -18,7 +18,9 @@ module.exports = (app, db) => {
       })
       .catch((err) => {
         console.log(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       });
   };
 
