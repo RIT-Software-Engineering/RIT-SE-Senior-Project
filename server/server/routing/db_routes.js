@@ -1857,7 +1857,7 @@ module.exports = (db) => {
 
       // Add a case for when the action target is 'peer_evaluation'
       // The action is not done unless compelted by all students, AND the coach has passed it through
-      //   - For better UI/UX, if the coach has not passed it through and the students have; the student's side should show green and coach side will be yellow INSTEAD of directly falling onto the UNHANDLED-CASE
+      //   - For better UI/UX, if the coach has not passed it through and the students have; the peer evaluation visual on the dashboard should be yellow INSTEAD of directly falling onto the UNHANDLED-CASE
       let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
                     CASE
                         WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
