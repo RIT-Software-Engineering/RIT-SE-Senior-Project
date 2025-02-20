@@ -5,3 +5,4 @@ node_modules/
 */sponsor_proposal_files
 *.db
 resource
+data/

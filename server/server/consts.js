@@ -1,5 +1,6 @@
 module.exports = {
     datetime_format: "YYYY-MM-DD HH:mm:ss",
+    DATA_ROOT: __dirname + "/../data", 
     ROLES: {
         ADMIN: 'admin',
         COACH: 'coach',

@@ -1493,7 +1493,7 @@ module.exports = (db) => {
    * NOTE: This route is unused and untested.
    */
   db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res, next) => {
-    fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
+    fs.readdir(path.join(CONSTANTS.DATA_ROOT, "/proposal_docs"), function (err, files) {
       if (err) {
         const error = new Error(err);
           error.statusCode = 500;
@@ -1511,7 +1511,7 @@ module.exports = (db) => {
   db_router.get("/getProposalPdf", UserAuth.isSignedIn, (req, res) => {
     if (req.query.project_id) {
       let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
-      res.sendFile(path.join(__dirname, `../proposal_docs/${projectId}.pdf`));
+      res.sendFile(path.join(CONSTANTS.DATA_ROOT, `/proposal_docs/${projectId}.pdf`));
     } else res.send("File not found");
   });
 
@@ -1523,7 +1523,7 @@ module.exports = (db) => {
       if (req.query.project_id) {
         let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues, get the name with no extension
         fs.readdir(
-          path.join(__dirname, `./server/sponsor_proposal_files/${projectId}`),
+          path.join(CONSTANTS.DATA_ROOT, `/sponsor_proposal_files/${projectId}`),
           function (err, files) {
             if (err) {
               const error = new Error(err);
@@ -1549,7 +1549,7 @@ module.exports = (db) => {
       let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       res.sendFile(
-        path.join(__dirname, `../sponsor_proposal_files/${projectId}/${name}`)
+        path.join(CONSTANTS.DATA_ROOT, `/sponsor_proposal_files/${projectId}/${name}`)
       );
     } else res.send("File not found");
   });
@@ -1983,8 +1983,8 @@ module.exports = (db) => {
         }
 
         const baseURL = path.join(
-          __dirname,
-          `../sponsor_proposal_files/${projectId}`
+          CONSTANTS.DATA_ROOT,
+          `/sponsor_proposal_files/${projectId}`
         );
 
         fs.mkdirSync(baseURL, { recursive: true });
@@ -2059,7 +2059,7 @@ module.exports = (db) => {
       db.query(sql, params)
         .then(() => {
           let doc = new PDFDoc();
-          const baseURL = path.join(__dirname, `../proposal_docs/`);
+          const baseURL = path.join(CONSTANTS.DATA_ROOT, `/proposal_docs/`);
           fs.mkdirSync(baseURL, { recursive: true });
           doc.pipe(fs.createWriteStream(`${baseURL}/${projectId}.pdf`));
 
@@ -2216,8 +2216,8 @@ module.exports = (db) => {
       const submission = `${timeString}_${nanoid()}`;
 
       let baseURL = path.join(
-        __dirname,
-        `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`
+        CONSTANTS.DATA_ROOT,
+        `/project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`
       );
 
       // Attachment Handling
@@ -2938,8 +2938,8 @@ module.exports = (db) => {
       ) {
         return res.sendFile(
           path.join(
-            __dirname,
-            `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`
+            CONSTANTS.DATA_ROOT,
+            `/project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`
           )
         );
       }
