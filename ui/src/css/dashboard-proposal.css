@@ -28,6 +28,11 @@
     color: black;
 }
 
+.proposal-row-blue {
+    background: #fcfff5;
+    color: black;
+}
+
 .proposal-status-action {
     display: flex;
     justify-content: space-between;

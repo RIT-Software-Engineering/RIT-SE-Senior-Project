@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
+import BuggyButton from "./BuggyButton";
 
 function Footer() {
   const { user } = useContext(UserContext);
@@ -70,6 +71,7 @@ function Footer() {
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
+              <BuggyButton />
             </h5>
           </div>
         </div>

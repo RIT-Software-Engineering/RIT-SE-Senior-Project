@@ -35,22 +35,36 @@ const StackTraceErrorPage = () => {
   };
 
   const handleReportOnGitHub = () => {
-    try{
-        const title = encodeURIComponent(
-        `Bug Report: ${errorInfo ? errorInfo.error : "Unknown error"}`
-        );
+    try {
+        const version = "V 1.6.0";
+        const timestamp = new Date().toISOString();
+        const error = errorInfo?.error || "Unknown error";
+        const statusCode = errorInfo?.statusCode ? `\n### Status Code\n${errorInfo.statusCode}\n` : "";
+        const userRole = errorInfo?.user_role ? `\n### User Role\n${errorInfo.user_role}\n` : "";
+        const url = errorInfo?.url ? `\n### URL\n${errorInfo.url}\n` : "";
+        const componentStack = errorInfo?.componentStack ? `\n### Stack Trace\n\`\`\`\n${errorInfo.componentStack}\n\`\`\`\n` : "No stack trace available.";
+
+        const title = encodeURIComponent(`Bug Report: ${error}`);
         const body = encodeURIComponent(
-        `**Error Details:**\n\n${errorInfo ? errorInfo.componentStack : "No stack trace available."}`
+            `### Version\n${version}\n\n` +
+            `### Timestamp\n${timestamp}\n\n` +
+            statusCode +
+            userRole +
+            url +
+            componentStack +
+            '### Additional Info: \n'
         );
-        const url = `https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project/issues/new?title=${title}&body=${body}`;
-        window.open(url, "_blank");
-        setUserFeedback("✅ Thank You!");
-    } catch(err) {
+
+        const githubUrl = `https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project/issues/new?title=${title}&body=${body}`;
+        window.open(githubUrl, "_blank");
+        setUserFeedback("✅ Thank You! Issue report opened on GitHub.");
+    } catch (err) {
         console.error("Failed to redirect:", err);
         setUserFeedback("❌ Failed to redirect.");
         setTimeout(() => setUserFeedback(""), 3000);
     }
-  };
+};
+
 
   return (
     <div style={{ maxWidth: "600px", margin: "50px auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
@@ -70,10 +84,14 @@ const StackTraceErrorPage = () => {
       )}
       
       <div style={{ marginTop: "20px" }}>
+        <p style={{ fontSize: "14px", color: "#D32F2F" }}>
+            ⚠️ A GitHub account is required to report an issue.
+        </p>
         <button onClick={handleGoBack} style={buttonStyle}>🔙 Go Back</button>
         <button onClick={handleCopyStackTrace} style={buttonStyle}>📋 Copy Stack Trace</button>
         <button onClick={handleReportOnGitHub} style={buttonStyle}>🐞 Report on GitHub</button>
-      </div>
+    </div>
+
 
       {userFeedback && <p style={{ marginTop: "10px", color: "#388E3C" }}>{userFeedback}</p>}
     </div>
