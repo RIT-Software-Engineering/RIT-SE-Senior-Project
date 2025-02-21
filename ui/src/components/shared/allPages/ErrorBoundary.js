@@ -12,25 +12,37 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Update state with error info and log to console.
+    // Capture error details
     this.setState({ errorInfo });
+
     console.error("Error caught by ErrorBoundary:", error, errorInfo);
 
-    // Save error details in sessionStorage so they persist after redirect.
+    // Gather additional details
+    const statusCode = 500; // Assuming a generic server error (update dynamically if possible)
+    const user_role = sessionStorage.getItem("userRole") || "Unknown"; // If stored elsewhere, adjust accordingly
+    const url = window.location.href; // Capture current URL
+    const timestamp = new Date().toISOString(); // ISO timestamp for accuracy
+
+    // Save error details in sessionStorage for persistence
     sessionStorage.setItem(
       "errorDetails",
       JSON.stringify({
         error: error.toString(),
+        statusCode,
+        user_role,
+        url,
+        timestamp,
         componentStack: errorInfo.componentStack,
       })
     );
+
+    // Redirect to the error page
+    window.location.href = "/error";
   }
 
   render() {
     if (this.state.hasError) {
-      // Redirect to the error page.
-      window.location.href = "/error"; 
-      return null;
+      return null; // Render nothing since we are redirecting
     }
 
     return this.props.children;
