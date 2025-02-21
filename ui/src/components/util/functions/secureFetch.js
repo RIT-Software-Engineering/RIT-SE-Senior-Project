@@ -11,9 +11,9 @@ export const SecureFetch = async (url, options) => {
             JSON.stringify({
                 error: data.error,
                 statusCode: data.statusCode,
-                user_role: data.user.type,
+                user_role: data.user_role,
                 url: data.url,
-                timestamp: Date(Date.now()).toString(),
+                timestamp: data.timestamp,
                 componentStack: data.componentStack,
             })
           );
