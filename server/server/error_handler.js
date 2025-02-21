@@ -6,6 +6,10 @@ function errorHandler(err, req, res, next) {
     // Send the error to the client so that error can be displayed on error page
     res.status(err.statusCode).json({  
         error: err.message || "Internal Server Error",
+        statusCode: err.statusCode,
+        user_role: req.user.type,
+        url: req.url,
+        timestamp: Date(Date.now()).toString(),
         componentStack: err.stack ? err.stack : undefined // Normally sending the stack trace to the frontend is not goog practice
     });
 }
