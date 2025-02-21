@@ -42,7 +42,7 @@ const StackTraceErrorPage = () => {
         const statusCode = errorInfo?.statusCode ? `\n### Status Code\n${errorInfo.statusCode}\n` : "";
         const userRole = errorInfo?.user_role ? `\n### User Role\n${errorInfo.user_role}\n` : "";
         const url = errorInfo?.url ? `\n### URL\n${errorInfo.url}\n` : "";
-        const componentStack = errorInfo?.componentStack ? `\n### Stack Trace\n\`\`\`\n${errorInfo.componentStack}\n\`\`\`\n` : "No stack trace available.";
+        const componentStack = errorInfo?.componentStack ? `\n### Stack Trace\n\`\`\`\n${errorInfo.componentStack}\n\`\`\`\n` : "No stack trace available.\n\n";
 
         const title = encodeURIComponent(`Bug Report: ${error}`);
         const body = encodeURIComponent(
