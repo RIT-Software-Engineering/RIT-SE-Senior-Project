@@ -6,6 +6,7 @@ import "../../../css/header.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg"
 
 function Header() {
     const history = useHistory();
@@ -164,10 +165,13 @@ function Header() {
         <div id="header">
             <div className="ui container">
                 <h1 className="ui header">
+                <img src={SELogo} alt="Department of Software Engineering" style={{
+                  maxWidth: "150px", 
+                  height: "auto",
+                  marginRight: "15px",
+                }} />
                     Senior Project
-                    <div id="subHeader" className="sub header">
-                        Department of Software Engineering, RIT
-                    </div>
+                    
                 </h1>
                 {renderNavButtons()}
             </div>
