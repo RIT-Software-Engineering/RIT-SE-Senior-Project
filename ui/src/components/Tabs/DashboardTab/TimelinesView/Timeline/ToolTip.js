@@ -8,6 +8,7 @@ import {
 } from "../../../../util/functions/utils";
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
+import DOMpurify from 'dompurify';
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -53,7 +54,7 @@ export default function ToolTip(props) {
   const metadata = (longSubmissionTitle) => {
     return (
       <>
-        <p>{props.action?.short_desc}</p>
+        <p dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(props.action?.short_desc)}}></p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
         <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
         <p>Project: {props.projectName}</p>
