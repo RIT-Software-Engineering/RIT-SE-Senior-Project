@@ -9,136 +9,196 @@ import { config } from "../../util/functions/constants";
 dayjs.extend(utc);
 
 export default function StudentRow(props) {
-    let student_cells = [];
+  let student_cells = [];
 
-    const [openModal, setOpenModal] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(null);
-    const [peerReviews, setPeerReviews] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [peerReviews, setPeerReviews] = useState([]);
 
-    const handleAccordionClick = (index) => {
-        setActiveIndex(activeIndex === index ? null : index);
-    };
+  const handleAccordionClick = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
 
-    const fetchPeerReviews = async () => {
+  const fetchPeerReviews = async () => {
+    try {
+      const url = `${config.url.API_GET_ACTION_LOGS}?project_id=${props.student.project}&action_id=2`;
+      console.log("Fetching peer reviews from:", url);
+      const response = await SecureFetch(url);
+      const data = await response.json();
+      console.log("Parsed JSON data:", data);
+
+      const allReviews = Array.isArray(data) ? data : [];
+      const studentName = `${props.student.fname} ${props.student.lname}`;
+      const filteredReviews = allReviews.filter((review) => {
         try {
-            let response = await SecureFetch(
-                `${config.url.API_GET_ACTION_LOGS}?project_id=${props.student.project}&action_id=${props.action_id}`
-            );
-            
-            // Ensure response.data is valid before updating state
-            if (response && response.data) {
-                setPeerReviews(response.data);
-            } else {
-                setPeerReviews([]); // Default to an empty array if data is undefined
-            }
+          const form = JSON.parse(review.form_data);
+          return form.Students && form.Students.hasOwnProperty(studentName);
         } catch (error) {
-            console.error("Error fetching peer reviews:", error);
-            setPeerReviews([]); // Ensure the state is always an array
+          console.error("Error parsing form_data:", error);
+          return false;
         }
-    };
-    
-
-    useEffect(() => {
-        if (openModal) {
-            fetchPeerReviews();
-        }
-    }, [openModal]);
-    if (!props.studentsTab){
-        student_cells.push(
-            <TableCell key={'student-id-'+props.student.system_id}>{props.student.system_id}</TableCell>
-        )
-        student_cells.push(
-            <TableCell key={'student-name-'+props.student.fname}>{props.student.fname} {props.student.lname}</TableCell>
-        )
-        student_cells.push(
-            <TableCell key={'student-email-'+props.student.email}><a href={`mailto:${props.student.email}`}>{props.student.email}</a></TableCell>
-        )
-        student_cells.push(
-            <TableCell key={'student-login-'+props.student.last_login}>{props.student.last_login? dayjs(props.student.last_login).utc(true).local().format('DD/MM/YYYY HH:mm:ss') : "Never Logged in"}</TableCell>
-        )
-
-        return (
-            <TableRow key={props.student.system_id}>
-    
-                {
-                    student_cells
-                }
-    
-                {!props.viewOnly && <TableCell>
-                    <StudentEditPanel
-                        studentData={props.student}
-                        semesterData={props.semesterData}
-                        header={`Currently Editing "${props.student.system_id}"`}
-                        key={"editStudent-" + props.student.system_id}
-                        projectsData={props.projectsData}
-                    />
-                </TableCell>}
-            </TableRow>
-        );
+      });
+      console.log("Filtered peer reviews:", filteredReviews);
+      setPeerReviews(filteredReviews);
+    } catch (error) {
+      console.error("Error fetching peer reviews:", error);
+      setPeerReviews([]);
     }
+  };
 
-    else{
-        let project = props.projectsData?.[props.student.project]?.name || "No Project";
-        console.log(props)
-        return (
-            <>
-                <TableRow key={props.student.system_id}>
-                    <TableCell 
-                        style={{ 
-                            cursor: !props.isStudent ? "pointer" : "default", 
-                            color: !props.isStudent ? "blue" : "black",
-                            textDecoration: !props.isStudent ? "underline" : "none"
-                        }}
-                        onClick={() => !props.isStudent && setOpenModal(true)}
-                    >
-                        {props.student.fname} {props.student.lname}
-                    </TableCell>
-                    <TableCell>{project}</TableCell>
-                    <TableCell>
-                        <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
-                    </TableCell>
-                    <TableCell>
-                        {props.student.last_login ? dayjs(props.student.last_login).utc(true).local().format('DD/MM/YYYY HH:mm:ss') : "Never Logged in"}
-                    </TableCell>
-                </TableRow>
+  useEffect(() => {
+    if (openModal) {
+      fetchPeerReviews();
+    }
+  }, [openModal]);
 
-                {/* Student Details Modal with Accordion */}
-                <Modal open={openModal} onClose={() => setOpenModal(false)} size="small">
-                    <Modal.Header>Student Details</Modal.Header>
-                    <Modal.Content>
-                        <p><strong>Name:</strong> {props.student.fname} {props.student.lname}</p>
-                        <p><strong>Email:</strong> {props.student.email}</p>
-                        <p><strong>Last Login:</strong> {props.student.last_login ? dayjs(props.student.last_login).utc(true).local().format('DD/MM/YYYY HH:mm:ss') : "Never Logged in"}</p>
+  if (!props.studentsTab) {
+    student_cells.push(
+      <TableCell key={"student-id-" + props.student.system_id}>{props.student.system_id}</TableCell>
+    );
+    student_cells.push(
+      <TableCell key={"student-name-" + props.student.fname}>
+        {props.student.fname} {props.student.lname}
+      </TableCell>
+    );
+    student_cells.push(
+      <TableCell key={"student-email-" + props.student.email}>
+        <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
+      </TableCell>
+    );
+    student_cells.push(
+      <TableCell key={"student-login-" + props.student.last_login}>
+        {props.student.last_login
+          ? dayjs(props.student.last_login).utc(true).local().format("DD/MM/YYYY HH:mm:ss")
+          : "Never Logged in"}
+      </TableCell>
+    );
 
-                        {/* Accordion for Peer Reviews */}
-                        <Accordion styled fluid>
-                            {peerReviews.length > 0 ? (
-                                peerReviews.map((review, index) => (
-                                    <div key={index}>
-                                        <Accordion.Title
-                                            active={activeIndex === index}
-                                            index={index}
-                                            onClick={() => handleAccordionClick(index)}
-                                        >
-                                            <Icon name='dropdown' />
-                                            Review by {review.reviewer}
-                                        </Accordion.Title>
-                                        <Accordion.Content active={activeIndex === index}>
-                                            <p><strong>Feedback:</strong> {review.feedback}</p>
-                                            <p><strong>Rating:</strong> {review.rating}/5</p>
-                                        </Accordion.Content>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No peer reviews available.</p>
+    return (
+      <TableRow key={props.student.system_id}>
+        {student_cells}
+        {!props.viewOnly && (
+          <TableCell>
+            <StudentEditPanel
+              studentData={props.student}
+              semesterData={props.semesterData}
+              header={`Currently Editing "${props.student.system_id}"`}
+              key={"editStudent-" + props.student.system_id}
+              projectsData={props.projectsData}
+            />
+          </TableCell>
+        )}
+      </TableRow>
+    );
+  } else {
+    let project = props.projectsData?.[props.student.project]?.name || "No Project";
+    return (
+      <>
+        <TableRow key={props.student.system_id}>
+          <TableCell
+            style={{
+              cursor: !props.isStudent ? "pointer" : "default",
+              color: !props.isStudent ? "blue" : "black",
+              textDecoration: !props.isStudent ? "underline" : "none",
+            }}
+            onClick={() => !props.isStudent && setOpenModal(true)}
+          >
+            {props.student.fname} {props.student.lname}
+          </TableCell>
+          <TableCell>{project}</TableCell>
+          <TableCell>
+            <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
+          </TableCell>
+          <TableCell>
+            {props.student.last_login
+              ? dayjs(props.student.last_login).utc(true).local().format("DD/MM/YYYY HH:mm:ss")
+              : "Never Logged in"}
+          </TableCell>
+        </TableRow>
+
+        {/* Student Details Modal with Accordion for Peer Reviews */}
+        <Modal open={openModal} onClose={() => setOpenModal(false)} size="small" centered scrollable style={{ top: '10%' }}>
+          <Modal.Header>Student Details</Modal.Header>
+          <Modal.Content>
+            <p>
+              <strong>Name:</strong> {props.student.fname} {props.student.lname}
+            </p>
+            <p>
+              <strong>Email:</strong> {props.student.email}
+            </p>
+            <p>
+              <strong>Last Login:</strong>{" "}
+              {props.student.last_login
+                ? dayjs(props.student.last_login).utc(true).local().format("DD/MM/YYYY HH:mm:ss")
+                : "Never Logged in"}
+            </p>
+
+            <Accordion styled fluid>
+              {peerReviews.length > 0 ? (
+                peerReviews.map((review, index) => {
+                  let studentReview = {};
+                  try {
+                    const form = JSON.parse(review.form_data);
+                    const studentName = `${props.student.fname} ${props.student.lname}`;
+                    studentReview = form.Students ? form.Students[studentName] || {} : {};
+                  } catch (e) {
+                    console.error("Error parsing review form_data:", e);
+                  }
+                  return (
+                    <div key={index}>
+                      <Accordion.Title
+                        active={activeIndex === index}
+                        index={index}
+                        onClick={() => handleAccordionClick(index)}
+                      >
+                        <Icon name="dropdown" />
+                        Review by {review.name || review.Submitter}
+                      </Accordion.Title>
+                      <Accordion.Content active={activeIndex === index}>
+                        {studentReview.Feedback || studentReview.Ratings ? (
+                          <div>
+                            {studentReview.Feedback && (
+                              <div>
+                                <p>
+                                  <strong>Feedback:</strong>
+                                </p>
+                                {Object.entries(studentReview.Feedback).map(([question, answer]) => (
+                                  <p key={question}>
+                                    <strong>{question}:</strong> {answer}
+                                  </p>
+                                ))}
+                              </div>
                             )}
-                        </Accordion>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button onClick={() => setOpenModal(false)}>Close</Button>
-                    </Modal.Actions>
-                </Modal>
-            </>
-        );
-    }
+                            {studentReview.Ratings && (
+                              <div>
+                                <p>
+                                  <strong>Ratings:</strong>
+                                </p>
+                                {Object.entries(studentReview.Ratings).map(([question, rating]) => (
+                                  <p key={question}>
+                                    <strong>{question}:</strong> {rating}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <p>No review details available.</p>
+                        )}
+                      </Accordion.Content>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No peer reviews available.</p>
+              )}
+            </Accordion>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button onClick={() => setOpenModal(false)}>Close</Button>
+          </Modal.Actions>
+        </Modal>
+      </>
+    );
+  }
 }
