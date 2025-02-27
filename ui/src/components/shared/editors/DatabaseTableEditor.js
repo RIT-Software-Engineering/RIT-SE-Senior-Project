@@ -265,23 +265,25 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          fieldComponents.push(
-            <Form.Field
-              key={field.name}
-              disabled={field.loading || field.disabled}
-            >
-              <label>{field.label}</label>
-              <Dropdown
-                selection
-                options={field.options}
-                loading={field.loading}
+          if (formData.type === "student"){ // Only show the dropdowns for student forms
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
                 disabled={field.loading || field.disabled}
-                value={formData[field.name] || field.nullValue}
-                name={field.name}
-                onChange={handleChange}
-              />
-            </Form.Field>
-          );
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] || field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>
+            );
+          }
           break;
         case "checkbox":
           if (field.disabled){
