@@ -373,7 +373,6 @@ module.exports = (db) => {
         return res.status(200).send();
       })
       .catch((err) => {
-        console.error(err);
         const error = new Error(err);
           error.statusCode = 500;
           return next(error);
@@ -421,7 +420,7 @@ module.exports = (db) => {
   db_router.post("/createTimeLog", [
 
       ],
-      async (req, res) => {
+      async (req, res, next) => {
 
 
         let result = validationResult(req);
@@ -774,11 +773,16 @@ module.exports = (db) => {
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
-                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
     const inactive =
       body.inactive === "true"
         ? moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const locked =
+      body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
         : "";
 
     const checkBox = (data) => {
@@ -818,6 +822,7 @@ module.exports = (db) => {
       body.keywords,
       body.url_slug,
       inactive,
+      locked,
       body.archive_id,
     ];
 
@@ -848,13 +853,17 @@ module.exports = (db) => {
         body.inactive === "true"
           ? moment().format(CONSTANTS.datetime_format)
           : "";
+      const locked =
+        body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
                                     priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
                                     poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
-                                    keywords, url_slug, inactive)
+                                    keywords, url_slug, inactive, locked)
                                     VALUES(?, ?, ?, ?, ?, ?, ?, ?,
-                                           ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?, ?,
                                            ?, ?, ?, ?, ?, ?, ?);`;
 
       const checkBox = (data) => {
@@ -883,10 +892,10 @@ module.exports = (db) => {
         body.sponsor,
         body.coach,
         body.poster_thumb,
-        body.poster_full,
-        body.archive_image,
+        poster_full,
+        archive_image,
         body.synopsis,
-        body.video,
+        video,
         body.name,
         body.dept,
         body.start_date,
@@ -894,24 +903,12 @@ module.exports = (db) => {
         body.keywords,
         body.url_slug,
         inactive,
+        locked,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          // Setting project to archive, May also be changed to remove a project from project table
-          // if not wanted.
-          const updateProjectQuery = `UPDATE ${DB_CONFIG.tableNames.senior_projects}
-                                    SET status = 'archive'
-                                    WHERE project_id = ?`;
-          const updateProjectParams = [body.project_id];
-          res.status(200).send(response);
-          db.query(updateProjectQuery, updateProjectParams)
-            .then((response) => res.status(200).send(response))
-            .catch((err) => {
-              const error = new Error(err);
-              error.statusCode = 500;
-              return next(error);
-            });
+          return res.status(200).send(response);
         })
         .catch((err) => {
           console.error(err);
@@ -922,8 +919,315 @@ module.exports = (db) => {
     }
   );
 
+  db_router.post("/editArchiveStudent", UserAuth.isSignedIn, async (req, res, next) => {
+    let body = req.body;
+    let files = req.files;
+    const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+                                    SET featured=?, outstanding=?, creative=?, priority=?,
+                                        title=?, project_id=?, team_name=?,
+                                        members=?, sponsor=?, coach=?,
+                                        poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
+                                        video=?, name=?, dept=?,
+                                        start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
+                                    WHERE archive_id = ?`;
+    const inactive =
+      body.inactive === "true"
+        ? moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    const locked =
+      body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+        : "";
+
+    let files_uploaded = [];
+
+    let poster_full = ``;
+    let poster_thumb = ``;
+    let archive_image = ``;
+    let video = ``;
+    if (!(files === undefined || files === null)){
+      if (files.poster_full === undefined){
+        poster_full = body.poster_full;
+        poster_thumb = body.poster_thumb;
+      }else{
+        if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
+          files.poster_full.name = body.url_slug+"-poster"
+          poster_full = `${files.poster_full.name}`;
+          poster_thumb = poster_full;
+          let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
+          files_uploaded.push([files.poster_full, poster_URL]);
+        }else{
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        }
+      }
+
+      if (files.archive_image === undefined){
+        archive_image = body.archive_image;
+      }else{
+        if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
+          files.archive_image.name = body.url_slug+"-image"
+          archive_image = `${files.archive_image.name}`;
+          let image_URL = path.join(__dirname, `../../resource/archiveImages`);
+          files_uploaded.push([files.archive_image, image_URL]);
+        }else{
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        }
+      }
+
+      if (files.video === undefined){
+        video = body.video;
+      }else{
+        if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
+          files.video.name = body.url_slug+"-video"
+          video = `${files.video.name}`;
+          let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
+          files_uploaded.push([files.video, video_URL]);
+        }else{
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        }
+      }
+
+      for (let i = 0; i<files_uploaded.length; i++) {
+        fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+        files_uploaded[i][0].mv(
+          `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+          function (err) {
+            if (err) {
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
+            }
+          }
+        );
+      }
+    }else{
+      poster_full = body.poster_full;
+      poster_thumb = body.poster_thumb;
+      archive_image = body.archive_image;
+      video = body.video;
+    }
+
+    const checkBox = (data) => {
+      if (data === "true" || data === "1") {
+        return 1;
+      }
+      return 0;
+    };
+
+    const strToInt = (data) => {
+      if (typeof data === "string") {
+        return parseInt(data);
+      }
+      return 0;
+    };
+
+    let updateArchiveParams = [
+      checkBox(body.featured),
+      checkBox(body.outstanding),
+      checkBox(body.creative),
+      strToInt(body.priority),
+      body.title,
+      body.project_id,
+      body.team_name,
+      body.members,
+      body.sponsor,
+      body.coach,
+      poster_thumb,
+      poster_full,
+      archive_image,
+      body.synopsis,
+      video,
+      body.name,
+      body.dept,
+      body.start_date,
+      body.end_date,
+      body.keywords,
+      body.url_slug,
+      inactive,
+      locked,
+      body.archive_id,
+    ];
+
+    db.query(updateArchiveQuery, updateArchiveParams)
+      .then(() => {
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.post(
+    "/createArchiveStudent",
+    UserAuth.isSignedIn,
+    body("featured")
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .withMessage("Cannot be empty"),
+    async (req, res, next) => {
+      let body = req.body;
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
+      const locked =
+        body.locked === "true"
+        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          : "";
+
+      const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
+
+      let files = req.files;
+      let files_uploaded = [];
+
+      let poster_full = ``;
+      let poster_thumb = ``;
+      let archive_image = ``;
+      let video = ``;
+      if (!(files === undefined || files === null)){
+        if (files.poster_full === undefined){
+          poster_full = body.poster_full;
+          poster_thumb = body.poster_thumb;
+        }else{
+          if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
+            files.poster_full.name = body.url_slug+"-poster"
+            poster_full = `${files.poster_full.name}`;
+            poster_thumb = poster_full;
+            let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
+            files_uploaded.push([files.poster_full, poster_URL]);
+          }else{
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        if (files.archive_image === undefined){
+          archive_image = body.archive_image;
+        }else{
+          if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
+            files.archive_image.name = body.url_slug+"-image"
+            archive_image = `${files.archive_image.name}`;
+            let image_URL = path.join(__dirname, `../../resource/archiveImages`);
+            files_uploaded.push([files.archive_image, image_URL]);
+          }else{
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        if (files.video === undefined){
+          video = body.video;
+        }else{
+          if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
+            files.video.name = body.url_slug+"-video"
+            video = `${files.video.name}`;
+            let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
+            files_uploaded.push([files.video, video_URL]);
+          }else{
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        for (let i = 0; i<files_uploaded.length; i++) {
+          fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+          if (fs.existsSync(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`)){
+            fs.unlink(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`);
+          }
+          files_uploaded[i][0].mv(
+            `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            function (err) {
+              if (err) {
+                const error = new Error(err);
+                error.statusCode = 500;
+                return next(error);
+              }
+            }
+          );
+        }
+      }else{
+        poster_full = body.poster_full;
+        poster_thumb = body.poster_thumb;
+        archive_image = body.archive_image;
+        video = body.video;
+      }
+
+      const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
+                                    priority, title, project_id, team_name, members, sponsor, coach, poster_thumb,
+                                    poster_full, archive_image, synopsis, video, name, dept, start_date, end_date,
+                                    keywords, url_slug, inactive, locked)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?, ?,
+                                           ?, ?, ?, ?, ?, ?, ?);`;
+
+      const checkBox = (data) => {
+        if (data === "true" || data === "1") {
+          return 1;
+        }
+        return 0;
+      };
+
+      const strToInt = (data) => {
+        if (typeof data === "string") {
+          return parseInt(data);
+        }
+        return 0;
+      };
+
+      const updateArchiveParams = [
+        checkBox(body.featured),
+        checkBox(body.outstanding),
+        checkBox(body.creative),
+        strToInt(body.priority),
+        body.title,
+        body.project_id,
+        body.team_name,
+        body.members,
+        body.sponsor,
+        body.coach,
+        poster_thumb,
+        poster_full,
+        archive_image,
+        body.synopsis,
+        video,
+        name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.keywords,
+        body.url_slug,
+        inactive,
+        locked,
+      ];
+
+      db.query(updateArchiveQuery, updateArchiveParams)
+        .then((response) => {
+          return res.status(200).send(response);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    }
+  );
+
   //Gets the start and end dates of a project based on the semester that it is associated with.
-  db_router.get("/getProjectDates", UserAuth.isAdmin, (req, res, next) => {
+  db_router.get("/getProjectDates", UserAuth.isSignedIn, (req, res, next) => {
     const getDatesQuery = `SELECT start_date, end_date FROM semester_group WHERE semester_id = ?`;
     const getDatesParams = [req.query.semester];
     db.query(getDatesQuery, getDatesParams)
@@ -1191,8 +1495,9 @@ module.exports = (db) => {
   db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res, next) => {
     fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
       if (err) {
-        res.status(500).send(err);
-        return;
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
       }
       let fileLinks = [];
       files.forEach(function (file) {
@@ -1214,15 +1519,16 @@ module.exports = (db) => {
   db_router.get(
     "/getProposalAttachmentNames",
     UserAuth.isSignedIn,
-    (req, res) => {
+    (req, res, next) => {
       if (req.query.project_id) {
         let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues, get the name with no extension
         fs.readdir(
           path.join(__dirname, `./server/sponsor_proposal_files/${projectId}`),
           function (err, files) {
             if (err) {
-              res.status(500).send(err);
-              return;
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
             }
             let fileLinks = [];
             files.forEach(function (file) {
@@ -1305,6 +1611,57 @@ module.exports = (db) => {
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 
+  /**
+   * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
+   */
+  db_router.post("/uploadFilesStudent", (req, res, next) => {
+    let filesUploaded = [];
+
+    // Attachment Handling
+    if (req.files && req.files.files) {
+      // If there is only one attachment, then it does not come as a list
+      if (req.files.files.length === undefined) {
+        req.files.files = [req.files.files];
+      }
+
+      const formattedPath = `resource/${req.body.path}`;
+      const baseURL = path.join(__dirname, `../../${formattedPath}`);
+
+      //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
+      fs.mkdirSync(baseURL, { recursive: true });
+      for (let x = 0; x < req.files.files.length; x++) {
+        req.files.files[x].mv(
+          `${baseURL}/${req.files.files[x].name}`,
+          function (err) {
+            if (err) {
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
+            }
+          }
+        );
+        filesUploaded.push(
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+        );
+        let fileName = req.files.files[x].name;
+        let pathString = req.body.path;
+        pathString = pathString.split("/");
+        pathString.shift();
+        pathString = '"' + pathString.join("/") + "/" + fileName + '"';
+        let query = `UPDATE ${DB_CONFIG.tableNames.archive}
+                     SET ${req.body.column} = ${pathString}
+                     WHERE archive_id = ${req.body.archive}`
+        db.query(query)
+          .catch((err) => {
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          });
+      }
+    }
+    res.send({ msg: "Success!", filesUploaded: filesUploaded });
+  });
+
   db_router.post("/createDirectory", UserAuth.isAdmin, (req, res, next) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
@@ -1360,6 +1717,77 @@ module.exports = (db) => {
         const error = new Error(err);
           error.statusCode = 500;
           return next(error);
+      }
+      const info = fs.statSync(baseURL);
+      files.forEach(function (file) {
+        // Only files have sizes, directories do not. Send file size if it is a file
+        const fileInfo = fs.statSync(baseURL + file);
+        if (fileInfo.isFile()) {
+          fileData.push({
+            file: file,
+            size: fileInfo.size,
+            lastModified: fileInfo.ctime,
+          });
+        } else {
+          fileData.push({
+            file: file,
+            size: 0,
+            lastModified: info.ctime,
+          });
+        }
+      });
+      res.send(fileData);
+    });
+  });
+
+  db_router.get("/getProjectFiles", (req, res, next) => {
+    let fileData = [];
+    // This is the path with the specified directory we want to find files in.
+    const formattedPath = `resource/`;
+    const baseURL = path.join(__dirname, `../../${formattedPath}`);
+    fs.mkdirSync(baseURL, { recursive: true });
+    // Get the files in the directory
+    fs.readdir(baseURL, function (err, files) {
+      if (err) {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+      }
+      const info = fs.statSync(baseURL);
+      files.forEach(function (file) {
+        // Only files have sizes, directories do not. Send file size if it is a file
+        const fileInfo = fs.statSync(baseURL + file);
+        if (fileInfo.isFile()) {
+          fileData.push({
+            file: file,
+            size: fileInfo.size,
+            lastModified: fileInfo.ctime,
+          });
+        } else {
+          fileData.push({
+            file: file,
+            size: 0,
+            lastModified: info.ctime,
+          });
+        }
+      });
+      res.send(fileData);
+    });
+  });
+
+  db_router.get("/getProjectFiles", (req, res, next) => {
+    let fileData = [];
+    // This is the path with the specified directory we want to find files in.
+    const formattedPath = `resource/`;
+    const baseURL = path.join(__dirname, `../../${formattedPath}`);
+    fs.mkdirSync(baseURL, { recursive: true });
+    // Get the files in the directory
+    fs.readdir(baseURL, function (err, files) {
+      if (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
       }
       const info = fs.statSync(baseURL);
       files.forEach(function (file) {
@@ -2841,6 +3269,34 @@ module.exports = (db) => {
         const error = new Error(err);
           error.statusCode = 500;
           return next(error);
+      });
+  });
+
+  db_router.get("/getArchiveFromProject", (req, res) => {
+    let query = `SELECT * FROM archive WHERE archive.project_id=?`;
+    let params = [req.query.project_id];
+    db.query(query, params)
+      .then((values) => {
+        res.status(200).send(values);
+      })
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+      });
+  });
+
+  db_router.get("/getArchiveFromProject", (req, res) => {
+    let query = `SELECT * FROM archive WHERE archive.project_id=?`;
+    let params = [req.query.project_id];
+    db.query(query, params)
+      .then((values) => {
+        res.status(200).send(values);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(err);
       });
   });
 
