@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
+import { formatDateTime } from "../../util/functions/utils";
 
 dayjs.extend(utc);
 
@@ -14,6 +15,7 @@ export default function StudentRow(props) {
   const [openModal, setOpenModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const [peerReviews, setPeerReviews] = useState([]);
+  const [aiSummary, setAiSummary] = useState("No Summary Generated");
 
   const handleAccordionClick = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -45,6 +47,71 @@ export default function StudentRow(props) {
       setPeerReviews([]);
     }
   };
+
+const sanitizeReview = (review, selectedStudentName) => {
+  const {
+    action_log_id,
+    action_template,
+    system_id,
+    mock_id,
+    files,
+    action_title,
+    mock_name,
+    project,
+    name,
+    ...rest
+  } = review;
+
+  if (rest.form_data) {
+    try {
+      const form = JSON.parse(rest.form_data);
+
+      if (form.CoachFeedback) {
+        delete form.CoachFeedback;
+      }
+      
+      if (form.Students) {
+        if (form.Students.hasOwnProperty(selectedStudentName)) {
+          form.Students = { [selectedStudentName]: form.Students[selectedStudentName] };
+        } else {
+          delete form.Students;
+        }
+      }
+      
+      rest.form_data = JSON.stringify(form);
+    } catch (e) {
+      console.error("Error sanitizing form_data:", e);
+      rest.form_data = "";
+    }
+  }
+  return rest;
+};
+
+
+  
+const handleGenerateAISummary = async () => {
+  try {
+    const selectedStudentName = `${props.student.fname} ${props.student.lname}`;
+    const sanitizedReviews = peerReviews.map(review => sanitizeReview(review, selectedStudentName));
+    const body = new FormData();
+    body.append("context", JSON.stringify(sanitizedReviews));
+    console.log("Generating AI Summary from sanitized reviews:", sanitizedReviews);
+    
+    const response = await SecureFetch(`${config.url.API_GENERATE_HISTORIC_SUMMARY}`, {
+      method: "post",
+      body: body,
+    });
+    
+    const textData = await response.text();
+    console.log("AI Summary response:", textData);
+    setAiSummary(textData || "No Summary Generated");
+  } catch (error) {
+    console.error("Error generating AI Summary:", error);
+    setAiSummary("Error generating summary");
+  }
+};
+
+  
 
   useEffect(() => {
     if (openModal) {
@@ -116,8 +183,12 @@ export default function StudentRow(props) {
           </TableCell>
         </TableRow>
 
-        {/* Student Details Modal with Accordion for Peer Reviews */}
-        <Modal open={openModal} onClose={() => setOpenModal(false)} size="small" centered scrollable style={{ top: '10%' }}>
+        <Modal open={openModal} onClose={() => setOpenModal(false)} size="small" centered scrollable  style={{
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)"}}
+ >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
             <p>
@@ -152,7 +223,7 @@ export default function StudentRow(props) {
                         onClick={() => handleAccordionClick(index)}
                       >
                         <Icon name="dropdown" />
-                        Review by {review.name || review.Submitter}
+                        Review by {review.name} on {formatDateTime(review.submission_datetime)}
                       </Accordion.Title>
                       <Accordion.Content active={activeIndex === index}>
                         {studentReview.Feedback || studentReview.Ratings ? (
@@ -193,6 +264,15 @@ export default function StudentRow(props) {
                 <p>No peer reviews available.</p>
               )}
             </Accordion>
+            <div style={{ marginTop: "1em" }}>
+              <textarea
+                readOnly
+                value={aiSummary}
+                rows={4}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <Button onClick={handleGenerateAISummary}>Generate AI Summary</Button>
           </Modal.Content>
           <Modal.Actions>
             <Button onClick={() => setOpenModal(false)}>Close</Button>
