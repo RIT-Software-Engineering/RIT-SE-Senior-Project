@@ -10,12 +10,13 @@ import {
   Accordion,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
+import ProjectArchivePanel from "./ProjectArchivePanel";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
 import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
+import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
-import ArchivePanel from "../AdminTab/ArchiveEditor/ArchivePanel";
 
 const COLUMNS = {
   SEMESTER: "semester",
@@ -114,10 +115,18 @@ export default function Proposals(props) {
           <TableCell>
             <div className="accordion-buttons-container">
               {props.viewOnly ? (
-                <ProjectViewerModal
-                  project={proposal}
-                  semesterMap={semesterMap}
-                />
+                <>
+                  <ProjectViewerModal
+                    project={proposal}
+                    semesterMap={semesterMap}
+                  />
+                  <ProjectArchivePanel
+                    project={proposal}
+                  />
+                  <WebsiteViewerModal
+                    project={proposal}
+                  />
+                </>
               ) : (
                 <>
                   <ProjectEditorModal
@@ -127,19 +136,6 @@ export default function Proposals(props) {
                     activeCoaches={props.activeCoaches}
                     activeSponsors={props.activeSponsors}
                   />
-                  {proposal.status === "archive" ? (
-                    <></>
-                  ) : (
-                    <ArchivePanel
-                      project={proposal}
-                      semesterData={props.semesterData}
-                      newArchive
-                      activeCoaches={props.activeCoaches}
-                      activeSponsors={props.activeSponsors}
-                      header={"Archive Project"}
-                      buttonIcon={"bullhorn"}
-                    />
-                  )}
                 </>
               )}
               <a
