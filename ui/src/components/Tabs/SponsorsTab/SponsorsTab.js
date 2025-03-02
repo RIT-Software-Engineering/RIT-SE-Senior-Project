@@ -30,8 +30,6 @@ export default function SponsorsTab(props) {
     const [activePage, setActivePage] = useState(0);
     const [pageChange, setPageChange] = useState(0);
     const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
-    const [semesterData, setSemestersData] = useState([]);
-    const [sponsorProjectData, setSponsorProjectData] = useState([]);
 
     //If summary view, then it is inside of the admin tab.
     let summaryView = props?.notSummaryView ? "" : "summaryView";

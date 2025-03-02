@@ -65,7 +65,6 @@ export default function IndividualTimeModal(props) {
                 </div>
             }
 
-            // {background: timeLog.active === 0 ? '#FF999C' : 'none'}
         >
         <Modal.Header>Time Submission For {props.user}</Modal.Header>
             <Modal.Content>
