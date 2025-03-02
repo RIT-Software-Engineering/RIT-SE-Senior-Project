@@ -45,12 +45,12 @@ export default function CoachFeedback(props) {
   // Function to fetch submissions and set submissionList state
   const fetchSubmissions = () => {
     SecureFetch(
-      `${config.url.API_GET_ACTION_LOGS}?project_id=${props.team}&action_id=${props.action_id}`
+      `${config.url.API_GET_ACTION_LOGS}?project_id=${props.team}&action_id=${props.action_id}`,
     )
       .then((response) => response.json())
       .then((actionLogs) => {
         const formatedLogs = actionLogs.map((submission) =>
-          JSON.parse(submission.form_data)
+          JSON.parse(submission.form_data),
         );
         setSubmissionList(actionLogs);
         setStudentData(formatedLogs);
@@ -65,12 +65,12 @@ export default function CoachFeedback(props) {
   // Function to fetch student list based on project ID and set studentList state
   const fetchStudentList = () => {
     SecureFetch(
-      `${config.url.API_GET_PROJECT_STUDENT_NAMES}?project_id=${props.team}`
+      `${config.url.API_GET_PROJECT_STUDENT_NAMES}?project_id=${props.team}`,
     )
       .then((response) => response.json())
       .then((data) => {
         const combinedNames = data.map(
-          (student) => `${student.fname} ${student.lname}`
+          (student) => `${student.fname} ${student.lname}`,
         );
         setStudentList(combinedNames);
         setStudentListFetched(true);
@@ -85,7 +85,7 @@ export default function CoachFeedback(props) {
   const checkAllSubmissionsMade = () => {
     const submittedStudents = studentData.map((log) => log.Submitter);
     const missing = studentList.filter(
-      (student) => !submittedStudents.includes(student)
+      (student) => !submittedStudents.includes(student),
     );
     setMissingStudents(missing);
     setAllSubmissionsMade(missing.length === 0);
@@ -188,7 +188,7 @@ export default function CoachFeedback(props) {
     // NOTE: You can use the formdata.Submitter to differentiate Coach and Student as well somehow on submission
     // e.g. could just set it to "Coach" since we don't actually care about whom the coach is
     const studentSubmission = studentData.findLast(
-      (formData) => formData.Submitter === student
+      (formData) => formData.Submitter === student,
     );
     if (!studentSubmission) return null;
 
@@ -199,12 +199,12 @@ export default function CoachFeedback(props) {
         (formData) =>
           formData.Submitter !== student &&
           formData.Submitter !== "COACH" &&
-          formData.Students[student]
+          formData.Students[student],
       )
       // Filter out previous submissions
       .filter(
         (formData, i, arr) =>
-          arr.findLastIndex((f) => f.Submitter === formData.Submitter) === i
+          arr.findLastIndex((f) => f.Submitter === formData.Submitter) === i,
       )
       // Map to the relevant data
       .map((formData) => ({
@@ -231,7 +231,7 @@ export default function CoachFeedback(props) {
     Object.entries(OthersFeedbackAvg).forEach(([category, ratings]) => {
       OthersFeedbackAvg[category] = ratings.reduce(
         (prev, curr, _, { length }) => prev + curr / length,
-        0
+        0,
       );
     });
 
@@ -251,7 +251,7 @@ export default function CoachFeedback(props) {
     };
 
     OthersFeedback.forEach(({ From, Feedback }) =>
-      appendQualitativeFeedback(Feedback, From)
+      appendQualitativeFeedback(Feedback, From),
     );
     if (SelfFeedback.Feedback) {
       appendQualitativeFeedback(SelfFeedback.Feedback, student);
@@ -388,7 +388,7 @@ export default function CoachFeedback(props) {
                       })}
                   </div>
                 );
-              }
+              },
             )
           ) : (
             <p>No Feedback Available</p>
@@ -531,7 +531,7 @@ export default function CoachFeedback(props) {
 
       <Form>
         {studentList.map((student, index) =>
-          generateFeedbackForm(student, index)
+          generateFeedbackForm(student, index),
         )}
       </Form>
     </>

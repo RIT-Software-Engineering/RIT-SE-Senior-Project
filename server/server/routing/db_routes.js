@@ -63,7 +63,7 @@ module.exports = (db) => {
     // gets all users
     db_router.get("/DevOnlyGetAllUsersForLogin", (req, res) => {
       db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then(
-        (users) => res.send(users)
+        (users) => res.send(users),
       );
     });
   }
@@ -75,7 +75,7 @@ module.exports = (db) => {
       db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         res.send(value);
       });
-    }
+    },
   );
 
   db_router.get(
@@ -97,7 +97,7 @@ module.exports = (db) => {
         .catch((err) => {
           res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res) => {
@@ -279,7 +279,7 @@ module.exports = (db) => {
           console.error(err);
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -312,7 +312,7 @@ module.exports = (db) => {
       const sql = `INSERT INTO ${
         DB_CONFIG.tableNames.users
       } (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(
-        ","
+        ",",
       )}`;
 
       db.query(sql)
@@ -322,7 +322,7 @@ module.exports = (db) => {
         .catch((err) => {
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.post("/editUser", [UserAuth.isAdmin], (req, res) => {
@@ -366,7 +366,7 @@ module.exports = (db) => {
 
   db_router.post("/removeTime", UserAuth.isSignedIn, (req, res) => {
     if (!req.body.id) {
-       res.status(400).send("No id provided");
+      res.status(400).send("No id provided");
     }
 
     const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
@@ -381,59 +381,53 @@ module.exports = (db) => {
       });
   });
 
-  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res) => {
-    const sql = "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
-    console.log(req.query.project_id)
+  db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res) => {
+    const sql =
+      "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id";
+    console.log(req.query.project_id);
 
     db.query(sql, [req.query.project_id])
-        .then((time) => {
-          console.log(time)
-          res.send(time)
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send(error);
-        });
-  })
+      .then((time) => {
+        console.log(time);
+        res.send(time);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send(error);
+      });
+  });
 
+  db_router.post("/createTimeLog", [], async (req, res) => {
+    let result = validationResult(req);
 
-  db_router.post("/createTimeLog", [
+    if (result.errors.length !== 0) {
+      return res.status(400).send(result);
+    }
 
-      ],
-      async (req, res) => {
+    let body = req.body;
 
-
-        let result = validationResult(req);
-
-        if (result.errors.length !== 0) {
-          return res.status(400).send(result);
-        }
-
-        let body = req.body;
-
-        const sql = `INSERT INTO time_log
+    const sql = `INSERT INTO time_log
                 (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
                 VALUES (?,?,?,?,?,?,?)`;
 
-        const params = [
-          req.user.semester_group,
-          req.user.system_id,
-          req.user.project,
-          "",
-          req.body.date,
-          req.body.time_amount,
-          req.body.comment,
-        ];
-        db.query(sql, params)
-            .then(() => {
-              return res.status(200).send();
-            })
-            .catch((err) => {
-              console.error(err);
-              return res.status(500).send(err);
-            });
-      }
-  );
+    const params = [
+      req.user.semester_group,
+      req.user.system_id,
+      req.user.project,
+      "",
+      req.body.date,
+      req.body.time_amount,
+      req.body.comment,
+    ];
+    db.query(sql, params)
+      .then(() => {
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).send(err);
+      });
+  });
 
   db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res) => {
     let getProjectsQuery = `
@@ -494,7 +488,7 @@ module.exports = (db) => {
           console.error(error);
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -512,7 +506,7 @@ module.exports = (db) => {
           console.error(error);
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -551,7 +545,7 @@ module.exports = (db) => {
           console.error(error);
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   // used in the /projects page and home page if featured
@@ -632,7 +626,7 @@ module.exports = (db) => {
       db.query(query)
         .then((projects) => res.send(projects))
         .catch((err) => res.status(500).send(err));
-    }
+    },
   );
 
   db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res) => {
@@ -711,7 +705,7 @@ module.exports = (db) => {
       db.query(query, params)
         .then((projects) => res.send(projects))
         .catch((err) => res.status(500).send(err));
-    }
+    },
   );
 
   db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res) => {
@@ -731,7 +725,11 @@ module.exports = (db) => {
 
     const locked =
       body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+        ? req.user.fname +
+          " " +
+          req.user.lname +
+          " locked at " +
+          moment().format(CONSTANTS.datetime_format)
         : "";
 
     const checkBox = (data) => {
@@ -802,7 +800,11 @@ module.exports = (db) => {
           : "";
       const locked =
         body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
           : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
@@ -861,13 +863,16 @@ module.exports = (db) => {
           console.error(err);
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
-  db_router.post("/editArchiveStudent", UserAuth.isSignedIn, async (req, res) => {
-    let body = req.body;
-    let files = req.files;
-    const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+  db_router.post(
+    "/editArchiveStudent",
+    UserAuth.isSignedIn,
+    async (req, res) => {
+      let body = req.body;
+      let files = req.files;
+      const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
@@ -875,127 +880,156 @@ module.exports = (db) => {
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
-    const inactive =
-      body.inactive === "true"
-        ? moment().format(CONSTANTS.datetime_format)
-        : "";
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    const locked =
-      body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
-        : "";
+      const locked =
+        body.locked === "true"
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    let files_uploaded = [];
+      let files_uploaded = [];
 
-    let poster_full = ``;
-    let poster_thumb = ``;
-    let archive_image = ``;
-    let video = ``;
-    if (!(files === undefined || files === null)){
-      if (files.poster_full === undefined){
+      let poster_full = ``;
+      let poster_thumb = ``;
+      let archive_image = ``;
+      let video = ``;
+      if (!(files === undefined || files === null)) {
+        if (files.poster_full === undefined) {
+          poster_full = body.poster_full;
+          poster_thumb = body.poster_thumb;
+        } else {
+          if (
+            files.poster_full.mimetype == "image/png" &&
+            files.poster_full.size <= 30000000
+          ) {
+            files.poster_full.name = body.url_slug + "-poster";
+            poster_full = `${files.poster_full.name}`;
+            poster_thumb = poster_full;
+            let poster_URL = path.join(
+              __dirname,
+              `../../resource/archivePosters`,
+            );
+            files_uploaded.push([files.poster_full, poster_URL]);
+          } else {
+            res.status(500).send();
+          }
+        }
+
+        if (files.archive_image === undefined) {
+          archive_image = body.archive_image;
+        } else {
+          if (
+            files.archive_image.mimetype == "image/png" &&
+            files.archive_image.size <= 30000000
+          ) {
+            files.archive_image.name = body.url_slug + "-image";
+            archive_image = `${files.archive_image.name}`;
+            let image_URL = path.join(
+              __dirname,
+              `../../resource/archiveImages`,
+            );
+            files_uploaded.push([files.archive_image, image_URL]);
+          } else {
+            res.status(500).send();
+          }
+        }
+
+        if (files.video === undefined) {
+          video = body.video;
+        } else {
+          if (
+            files.video.mimetype == "video/mp4" &&
+            files.video.size <= 300000000
+          ) {
+            files.video.name = body.url_slug + "-video";
+            video = `${files.video.name}`;
+            let video_URL = path.join(
+              __dirname,
+              `../../resource/archiveVideos`,
+            );
+            files_uploaded.push([files.video, video_URL]);
+          } else {
+            res.status(500).send();
+          }
+        }
+
+        for (let i = 0; i < files_uploaded.length; i++) {
+          fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+          files_uploaded[i][0].mv(
+            `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            function (err) {
+              if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+              }
+            },
+          );
+        }
+      } else {
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
-      }else{
-        if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-          files.poster_full.name = body.url_slug+"-poster"
-          poster_full = `${files.poster_full.name}`;
-          poster_thumb = poster_full;
-          let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
-          files_uploaded.push([files.poster_full, poster_URL]);
-        }else{res.status(500).send();}
-      }
-
-      if (files.archive_image === undefined){
         archive_image = body.archive_image;
-      }else{
-        if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-          files.archive_image.name = body.url_slug+"-image"
-          archive_image = `${files.archive_image.name}`;
-          let image_URL = path.join(__dirname, `../../resource/archiveImages`);
-          files_uploaded.push([files.archive_image, image_URL]);
-        }else{res.status(500).send();}
-      }
-
-      if (files.video === undefined){
         video = body.video;
-      }else{
-        if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-          files.video.name = body.url_slug+"-video"
-          video = `${files.video.name}`;
-          let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
-          files_uploaded.push([files.video, video_URL]);
-        }else{res.status(500).send();}
       }
 
-      for (let i = 0; i<files_uploaded.length; i++) {
-        fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-        files_uploaded[i][0].mv(
-          `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
-          function (err) {
-            if (err) {
-              console.error(err);
-              return res.status(500).send(err);
-            }
-          }
-        );
-      }
-    }else{
-      poster_full = body.poster_full;
-      poster_thumb = body.poster_thumb;
-      archive_image = body.archive_image;
-      video = body.video;
-    }
+      const checkBox = (data) => {
+        if (data === "true" || data === "1") {
+          return 1;
+        }
+        return 0;
+      };
 
-    const checkBox = (data) => {
-      if (data === "true" || data === "1") {
-        return 1;
-      }
-      return 0;
-    };
+      const strToInt = (data) => {
+        if (typeof data === "string") {
+          return parseInt(data);
+        }
+        return 0;
+      };
 
-    const strToInt = (data) => {
-      if (typeof data === "string") {
-        return parseInt(data);
-      }
-      return 0;
-    };
+      let updateArchiveParams = [
+        checkBox(body.featured),
+        checkBox(body.outstanding),
+        checkBox(body.creative),
+        strToInt(body.priority),
+        body.title,
+        body.project_id,
+        body.team_name,
+        body.members,
+        body.sponsor,
+        body.coach,
+        poster_thumb,
+        poster_full,
+        archive_image,
+        body.synopsis,
+        video,
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.keywords,
+        body.url_slug,
+        inactive,
+        locked,
+        body.archive_id,
+      ];
 
-    let updateArchiveParams = [
-      checkBox(body.featured),
-      checkBox(body.outstanding),
-      checkBox(body.creative),
-      strToInt(body.priority),
-      body.title,
-      body.project_id,
-      body.team_name,
-      body.members,
-      body.sponsor,
-      body.coach,
-      poster_thumb,
-      poster_full,
-      archive_image,
-      body.synopsis,
-      video,
-      body.name,
-      body.dept,
-      body.start_date,
-      body.end_date,
-      body.keywords,
-      body.url_slug,
-      inactive,
-      locked,
-      body.archive_id,
-    ];
-
-    db.query(updateArchiveQuery, updateArchiveParams)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        console.error(err);
-        return res.status(500).send(err);
-      });
-  });
+      db.query(updateArchiveQuery, updateArchiveParams)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
+          console.error(err);
+          return res.status(500).send(err);
+        });
+    },
+  );
 
   db_router.post(
     "/createArchiveStudent",
@@ -1014,7 +1048,11 @@ module.exports = (db) => {
           : "";
       const locked =
         body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
           : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
@@ -1026,45 +1064,73 @@ module.exports = (db) => {
       let poster_thumb = ``;
       let archive_image = ``;
       let video = ``;
-      if (!(files === undefined || files === null)){
-        if (files.poster_full === undefined){
+      if (!(files === undefined || files === null)) {
+        if (files.poster_full === undefined) {
           poster_full = body.poster_full;
           poster_thumb = body.poster_thumb;
-        }else{
-          if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-            files.poster_full.name = body.url_slug+"-poster"
+        } else {
+          if (
+            files.poster_full.mimetype == "image/png" &&
+            files.poster_full.size <= 30000000
+          ) {
+            files.poster_full.name = body.url_slug + "-poster";
             poster_full = `${files.poster_full.name}`;
             poster_thumb = poster_full;
-            let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
+            let poster_URL = path.join(
+              __dirname,
+              `../../resource/archivePosters`,
+            );
             files_uploaded.push([files.poster_full, poster_URL]);
-          }else{res.status(500).send();}
+          } else {
+            res.status(500).send();
+          }
         }
 
-        if (files.archive_image === undefined){
+        if (files.archive_image === undefined) {
           archive_image = body.archive_image;
-        }else{
-          if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-            files.archive_image.name = body.url_slug+"-image"
+        } else {
+          if (
+            files.archive_image.mimetype == "image/png" &&
+            files.archive_image.size <= 30000000
+          ) {
+            files.archive_image.name = body.url_slug + "-image";
             archive_image = `${files.archive_image.name}`;
-            let image_URL = path.join(__dirname, `../../resource/archiveImages`);
+            let image_URL = path.join(
+              __dirname,
+              `../../resource/archiveImages`,
+            );
             files_uploaded.push([files.archive_image, image_URL]);
-          }else{res.status(500).send();}
+          } else {
+            res.status(500).send();
+          }
         }
 
-        if (files.video === undefined){
+        if (files.video === undefined) {
           video = body.video;
-        }else{
-          if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-            files.video.name = body.url_slug+"-video"
+        } else {
+          if (
+            files.video.mimetype == "video/mp4" &&
+            files.video.size <= 300000000
+          ) {
+            files.video.name = body.url_slug + "-video";
             video = `${files.video.name}`;
-            let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
+            let video_URL = path.join(
+              __dirname,
+              `../../resource/archiveVideos`,
+            );
             files_uploaded.push([files.video, video_URL]);
-          }else{res.status(500).send();}
+          } else {
+            res.status(500).send();
+          }
         }
 
-        for (let i = 0; i<files_uploaded.length; i++) {
+        for (let i = 0; i < files_uploaded.length; i++) {
           fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-          if (fs.existsSync(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`)){
+          if (
+            fs.existsSync(
+              `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            )
+          ) {
             fs.unlink(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`);
           }
           files_uploaded[i][0].mv(
@@ -1074,10 +1140,10 @@ module.exports = (db) => {
                 console.error(err);
                 return res.status(500).send(err);
               }
-            }
+            },
           );
         }
-      }else{
+      } else {
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
         archive_image = body.archive_image;
@@ -1140,7 +1206,7 @@ module.exports = (db) => {
           console.error(err);
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   //Gets the start and end dates of a project based on the semester that it is associated with.
@@ -1376,7 +1442,7 @@ module.exports = (db) => {
           console.error(err);
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   /**
@@ -1395,7 +1461,7 @@ module.exports = (db) => {
           console.error(error);
           res.sendStatus(500);
         });
-    }
+    },
   );
 
   /**
@@ -1445,12 +1511,12 @@ module.exports = (db) => {
             });
 
             res.send(fileLinks);
-          }
+          },
         );
       } else {
         res.status(404).send("Bad request");
       }
-    }
+    },
   );
 
   db_router.get("/getProposalAttachment", UserAuth.isSignedIn, (req, res) => {
@@ -1458,7 +1524,7 @@ module.exports = (db) => {
       let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       res.sendFile(
-        path.join(__dirname, `../sponsor_proposal_files/${projectId}/${name}`)
+        path.join(__dirname, `../sponsor_proposal_files/${projectId}/${name}`),
       );
     } else res.send("File not found");
   });
@@ -1506,10 +1572,10 @@ module.exports = (db) => {
               console.error(err);
               return res.status(500).send(err);
             }
-          }
+          },
         );
         filesUploaded.push(
-          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
         );
       }
     }
@@ -1542,10 +1608,10 @@ module.exports = (db) => {
               console.error(err);
               return res.status(500).send(err);
             }
-          }
+          },
         );
         filesUploaded.push(
-          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
         );
         let fileName = req.files.files[x].name;
         let pathString = req.body.path;
@@ -1554,12 +1620,11 @@ module.exports = (db) => {
         pathString = '"' + pathString.join("/") + "/" + fileName + '"';
         let query = `UPDATE ${DB_CONFIG.tableNames.archive}
                      SET ${req.body.column} = ${pathString}
-                     WHERE archive_id = ${req.body.archive}`
-        db.query(query)
-          .catch((err) => {
-            console.error(err);
-            return res.status(500).send(err);
-          });
+                     WHERE archive_id = ${req.body.archive}`;
+        db.query(query).catch((err) => {
+          console.error(err);
+          return res.status(500).send(err);
+        });
       }
     }
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
@@ -1693,7 +1758,6 @@ module.exports = (db) => {
       return res.status(500).send({ msg: "Fail!" });
     }
   });
-
 
   db_router.post(
     "/submitProposal",
@@ -1834,7 +1898,7 @@ module.exports = (db) => {
 
         const baseURL = path.join(
           __dirname,
-          `../sponsor_proposal_files/${projectId}`
+          `../sponsor_proposal_files/${projectId}`,
         );
 
         fs.mkdirSync(baseURL, { recursive: true });
@@ -1848,7 +1912,7 @@ module.exports = (db) => {
           }
           if (
             !CONFIG.accepted_file_types.includes(
-              path.extname(req.files.attachments[x].name)
+              path.extname(req.files.attachments[x].name),
             )
           ) {
             // send an error if the file is not an accepted type
@@ -1870,7 +1934,7 @@ module.exports = (db) => {
                 console.error(err);
                 return res.status(500).send(err);
               }
-            }
+            },
           );
         }
       }
@@ -1944,27 +2008,33 @@ module.exports = (db) => {
           console.error(err);
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.get("/getArchivePoster", (req, res) => {
     res.sendFile(
       path.join(
         __dirname,
-        "../../resource/archivePosters/" + req.query.fileName
-      )
+        "../../resource/archivePosters/" + req.query.fileName,
+      ),
     );
   });
 
   db_router.get("/getArchiveVideo", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "../../resource/archiveVideos/" + req.query.fileName)
+      path.join(
+        __dirname,
+        "../../resource/archiveVideos/" + req.query.fileName,
+      ),
     );
   });
 
   db_router.get("/getArchiveImage", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "../../resource/archiveImages/" + req.query.fileName)
+      path.join(
+        __dirname,
+        "../../resource/archiveImages/" + req.query.fileName,
+      ),
     );
   });
 
@@ -2055,7 +2125,7 @@ module.exports = (db) => {
 
       let baseURL = path.join(
         __dirname,
-        `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`
+        `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`,
       );
 
       // Attachment Handling
@@ -2088,7 +2158,7 @@ module.exports = (db) => {
             !action.file_types
               .split(",")
               .includes(
-                path.extname(req.files.attachments[x].name).toLocaleLowerCase()
+                path.extname(req.files.attachments[x].name).toLocaleLowerCase(),
               )
           ) {
             // send an error if the file is not an accepted type
@@ -2108,7 +2178,7 @@ module.exports = (db) => {
                 console.error(err);
                 return res.status(500).send(err);
               }
-            }
+            },
           );
         }
       }
@@ -2144,7 +2214,7 @@ module.exports = (db) => {
           console.error(err);
           res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.get("/getHtml", (req, res) => {
@@ -2183,7 +2253,7 @@ module.exports = (db) => {
           .catch((err) => {
             console.error(err);
             res.send({ error: err });
-          })
+          }),
       );
     });
     Promise.all(promises).then(() => {
@@ -2255,7 +2325,7 @@ module.exports = (db) => {
           console.error(err);
           res.status(500).send(err);
         });
-    }
+    },
   );
 
   /*
@@ -2401,7 +2471,7 @@ module.exports = (db) => {
         .catch((error) => {
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res) => {
@@ -2412,7 +2482,7 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
+        getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
@@ -2505,12 +2575,11 @@ module.exports = (db) => {
           timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]],
           timeLogs: projects,
         });
-        })
-        .catch((error) => {
-          res.status(500).send(error);
-        });
-    }
-  );
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      });
+  });
 
   db_router.get(
     "/getCoachFeedback",
@@ -2532,7 +2601,7 @@ module.exports = (db) => {
           console.error(e);
           res.status(500).send(e);
         });
-    }
+    },
   );
 
   db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res) => {
@@ -2614,7 +2683,7 @@ module.exports = (db) => {
 
       const params = [req.query.sponsor_id];
       db.query(query, params).then((projects) => res.send(projects));
-    }
+    },
   );
 
   db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res) => {
@@ -2732,14 +2801,14 @@ module.exports = (db) => {
         return res.sendFile(
           path.join(
             __dirname,
-            `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`
-          )
+            `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`,
+          ),
         );
       }
       res
         .status(404)
         .send("File not found or you are unauthorized to view file");
-    }
+    },
   );
 
   db_router.post(
@@ -2792,7 +2861,7 @@ module.exports = (db) => {
         .catch((err) => {
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -2878,7 +2947,7 @@ module.exports = (db) => {
       const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
       const SponsorsCountPromise = db.query(
         getSponsorsCount,
-        sponsorCountParams
+        sponsorCountParams,
       );
       Promise.all([SponsorsCountPromise, sponsorsPromise])
         .then(([[sponsorsCount], sponsorsRows]) => {
@@ -2890,7 +2959,7 @@ module.exports = (db) => {
         .catch((error) => {
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   db_router.get("/searchForArchive", (req, res) => {
@@ -3141,14 +3210,14 @@ module.exports = (db) => {
             res
               .status(500)
               .send(
-                "status code mismatch in editing sponsor, please contact an admin to investigate"
+                "status code mismatch in editing sponsor, please contact an admin to investigate",
               );
           } else {
             res.status(createSponsorQueryStatusCode).send();
           }
-        }
+        },
       );
-    }
+    },
   );
 
   db_router.post(
@@ -3244,14 +3313,14 @@ module.exports = (db) => {
             res
               .status(500)
               .send(
-                "status code mismatch in editing sponsor, please contact an admin to investigate"
+                "status code mismatch in editing sponsor, please contact an admin to investigate",
               );
           } else {
             res.status(updateQueryStatusCode).send();
           }
-        }
+        },
       );
-    }
+    },
   );
 
   async function createSponsorNote(queryParams) {
@@ -3295,7 +3364,7 @@ module.exports = (db) => {
           res.status(status).send();
         }
       });
-    }
+    },
   );
 
   db_router.post(
@@ -3337,7 +3406,7 @@ module.exports = (db) => {
         .catch((err) => {
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res) => {
@@ -3379,7 +3448,7 @@ module.exports = (db) => {
           return res
             .status(401)
             .send(
-              "Students can not access announcements that are not for your project"
+              "Students can not access announcements that are not for your project",
             );
         }
 
@@ -3407,7 +3476,7 @@ module.exports = (db) => {
           console.error(err);
           res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -3440,7 +3509,7 @@ module.exports = (db) => {
         .catch((err) => {
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -3501,7 +3570,7 @@ module.exports = (db) => {
         .catch((err) => {
           return res.status(500).send(err);
         });
-    }
+    },
   );
 
   function calculateActiveTimelines(user) {

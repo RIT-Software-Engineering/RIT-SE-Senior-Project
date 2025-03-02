@@ -165,11 +165,11 @@ export default function ActionPanel(props) {
         onClose={() => {
           setOpen(false);
           props.isOpenCallback(false);
-          }}
+        }}
         onOpen={() => {
           setOpen(true);
           props.isOpenCallback(true);
-          }}
+        }}
         open={open}
         preChange={preChange}
         preSubmit={(data) => {

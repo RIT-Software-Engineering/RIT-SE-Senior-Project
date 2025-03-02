@@ -33,7 +33,7 @@ const DESCENDING = "descending";
 export default function Proposals(props) {
   const [proposalData, setProposalData] = useState({});
   const [active, setActive] = useState(
-    isSemesterActive(props.semester?.start_date, props.semester?.end_date)
+    isSemesterActive(props.semester?.start_date, props.semester?.end_date),
   );
 
   let semesterMap = { undefined: "No semester", null: "No semester" };
@@ -120,12 +120,8 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
-                  <ProjectArchivePanel
-                    project={proposal}
-                  />
-                  <WebsiteViewerModal
-                    project={proposal}
-                  />
+                  <ProjectArchivePanel project={proposal} />
+                  <WebsiteViewerModal project={proposal} />
                 </>
               ) : (
                 <>

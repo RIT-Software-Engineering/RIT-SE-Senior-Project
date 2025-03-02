@@ -29,7 +29,7 @@ module.exports = (app, db) => {
         checkPeriod: CONFIG.maxSessionLength,
       }),
       ...CONFIG.session,
-    })
+    }),
   );
   app.use(passport.initialize());
   app.use(passport.session());
@@ -39,13 +39,13 @@ module.exports = (app, db) => {
   app.get("/saml/whoami", [UserAuth.isSignedIn], async (req, res) => {
     const userPromise = db.query(
       `SELECT * FROM ${DB_CONFIG.tableNames.users} WHERE users.system_id = ?`,
-      [req.user.system_id]
+      [req.user.system_id],
     );
     let mockPromise;
     if (req.user.mock) {
       mockPromise = db.query(
         `SELECT * FROM ${DB_CONFIG.tableNames.users} WHERE users.system_id = ?`,
-        [req.user.mock.system_id]
+        [req.user.mock.system_id],
       );
     }
 
@@ -66,7 +66,7 @@ module.exports = (app, db) => {
       return res
         .status(400)
         .send(
-          `${req.user.mock.system_id} does not exist and therefore can not be mocked.`
+          `${req.user.mock.system_id} does not exist and therefore can not be mocked.`,
         );
     }
 
@@ -101,7 +101,7 @@ module.exports = (app, db) => {
 
   app.post(
     "/saml/acs/consume",
-    passport.authenticate("saml", CONFIG.saml.options)
+    passport.authenticate("saml", CONFIG.saml.options),
   );
 
   /**

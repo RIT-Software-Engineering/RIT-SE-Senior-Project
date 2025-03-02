@@ -47,7 +47,7 @@ export default function TimeLogProjects(props) {
         semesters.projects[projectKey].name !== undefined
       ) {
         semesters.projects[projectKey].timelogs.sort(
-          (a, b) => b.time_log_id - a.time_log_id
+          (a, b) => b.time_log_id - a.time_log_id,
         );
 
         semesterprojects.push(
@@ -121,7 +121,7 @@ export default function TimeLogProjects(props) {
                                       </TableCell>
                                       <TableCell>
                                         {formatDateTime(
-                                          timeLog.submission_datetime
+                                          timeLog.submission_datetime,
                                         )}
                                       </TableCell>
                                       <TableCell>
@@ -185,7 +185,7 @@ export default function TimeLogProjects(props) {
                                       </TableCell>
                                     </TableRow>
                                   );
-                                }
+                                },
                               )}
                             </TableBody>
                           </Table>
@@ -234,7 +234,7 @@ export default function TimeLogProjects(props) {
                                   props.userLogs[student.system_id]?.totalHours;
                                 const avg = getAverageHours(
                                   sum,
-                                  semesters.projects[projectKey].hoursPerWeek
+                                  semesters.projects[projectKey].hoursPerWeek,
                                 );
 
                                 return (
@@ -254,7 +254,7 @@ export default function TimeLogProjects(props) {
                                     </TableCell>
                                   </TableRow>
                                 );
-                              }
+                              },
                             )}
                           </TableBody>
                         </Table>
@@ -293,7 +293,7 @@ export default function TimeLogProjects(props) {
                 />
               </div>
             )}
-          </div>
+          </div>,
         );
       }
     });

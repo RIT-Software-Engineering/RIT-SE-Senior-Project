@@ -16,7 +16,7 @@ export default function ProjectEditor(props) {
   if (!!props.semesterData) {
     semesters = {};
     props.semesterData.forEach(
-      (semester) => (semesters[semester.semester_id] = semester)
+      (semester) => (semesters[semester.semester_id] = semester),
     );
   }
 

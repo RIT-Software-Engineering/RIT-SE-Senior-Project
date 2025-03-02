@@ -73,7 +73,7 @@ export default function DevSignInModalContent() {
           // Delete all cookies
           let cookies = document.cookie.split(";");
           cookies.forEach(
-            (cookie) => (document.cookie = cookie + ";max-age=0")
+            (cookie) => (document.cookie = cookie + ";max-age=0"),
           );
           // Simulate redirect from Shibboleth
           history.push("/");
