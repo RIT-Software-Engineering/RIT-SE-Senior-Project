@@ -78,7 +78,7 @@ const mockUser = (req, res, next) => {
 }
 
 const testIsAdmin = (req) => {
-    return req.user && req.user.type === ROLES.ADMIN;
+    return req.user && req.user.type === ROLES.ADMIN || req.user && req.user.type === ROLES.VIEWONLYADMIN;
 }
 
 const testIsCoach = (req) => {
