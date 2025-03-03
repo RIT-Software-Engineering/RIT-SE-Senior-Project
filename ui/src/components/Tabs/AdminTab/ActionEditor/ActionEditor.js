@@ -15,7 +15,8 @@ export default function ActionEditor(props) {
                 setActionsData(actionsData);
             })
             .catch((error) => {
-                alert("Failed to get actions data" + error);
+                setActionsData([]); //unable to get actions, semester is null
+                alert("Failed to get actions data " + error + " \n No actions will be displayed");
             });
     }, []);
 
