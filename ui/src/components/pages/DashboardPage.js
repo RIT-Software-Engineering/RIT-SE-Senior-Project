@@ -79,6 +79,7 @@ export default function DashboardPage() {
       }
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
+    case "ViewOnlyAdmin":
     case "coach":
       panes.push(
         {
