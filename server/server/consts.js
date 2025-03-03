@@ -4,6 +4,7 @@ module.exports = {
     ADMIN: "admin",
     COACH: "coach",
     STUDENT: "student",
+    VIEWONLYADMIN: "ViewOnlyAdmin",
   },
   SAML_ATTRIBUTES: {
     uid: "urn:oid:0.9.2342.19200300.100.1.1",

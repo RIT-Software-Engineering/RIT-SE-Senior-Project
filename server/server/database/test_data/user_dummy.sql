@@ -3,6 +3,7 @@ VALUES
     ('abc123', 'John', 'Smith', 'abc123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('coachC', '2019Spring', 'Coach', 'coachC@rit.edu', 'coach', NULL, NULL, ''),
     ('mwahaha', 'SUPER DUPER', 'ADMIN', 'adminB@rit.edu', 'admin', NULL, NULL, ''),
+    ('ViewOnly', 'ViewOnly', 'Admin', 'viewonly@admin.edu', 'ViewOnlyAdmin', NULL, NULL, ''),
     ('def123', 'Dude', 'Bro', 'def123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('hij123', 'Jack', 'James', 'hij123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('klm123', 'Gal', 'Girl', 'klm123@rit.edu', 'student', 3, '2021-5-14__GGA7ysLaY3WsZ-3Fffa6', ''),
