@@ -180,6 +180,14 @@
     grid-column: span 3 / auto;
 }
 
+.action-bar.proposal-row-blue {
+    border: 2px #0000ff solid;
+    color: black;
+    grid-column: span 2 / auto;
+    font-weight: bold;
+    text-decoration: line-through;
+}
+
 .action-bar.proposal-row-green {
     border: 2px #2c662d solid;
     color: black;
