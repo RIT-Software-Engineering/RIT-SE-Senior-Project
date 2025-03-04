@@ -36,8 +36,8 @@ const StackTraceErrorPage = () => {
 
   const handleReportOnGitHub = () => {
     try {
-        const version = "V 1.6.0";
-        const timestamp = new Date().toISOString();
+        const version = "V 1.7.0";
+        const timestamp = errorInfo?.timestamp || "No timestamp saved";
         const error = errorInfo?.error || "Unknown error";
         const statusCode = errorInfo?.statusCode ? `\n### Status Code\n${errorInfo.statusCode}\n` : "";
         const userRole = errorInfo?.user_role ? `\n### User Role\n${errorInfo.user_role}\n` : "";
@@ -57,7 +57,7 @@ const StackTraceErrorPage = () => {
 
         const githubUrl = `https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project/issues/new?title=${title}&body=${body}`;
         window.open(githubUrl, "_blank");
-        setUserFeedback("✅ Thank You! Issue report opened on GitHub.");
+        setUserFeedback("✅ Thank You!");
     } catch (err) {
         console.error("Failed to redirect:", err);
         setUserFeedback("❌ Failed to redirect.");

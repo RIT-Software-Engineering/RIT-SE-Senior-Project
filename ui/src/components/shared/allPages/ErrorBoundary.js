@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+//Wraps the entire app to catch all errors and stores details in the session storage
+
+
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -7,7 +10,7 @@ class ErrorBoundary extends Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state to indicate an error occurred.
+    // Update state to indicate an error occurred
     return { hasError: true, error };
   }
 
@@ -18,10 +21,10 @@ class ErrorBoundary extends Component {
     console.error("Error caught by ErrorBoundary:", error, errorInfo);
 
     // Gather additional details
-    const statusCode = 500; // Assuming a generic server error (update dynamically if possible)
-    const user_role = sessionStorage.getItem("userRole") || "Unknown"; // If stored elsewhere, adjust accordingly
-    const url = window.location.href; // Capture current URL
-    const timestamp = new Date().toISOString(); // ISO timestamp for accuracy
+    const statusCode = 500; 
+    const user_role = sessionStorage.getItem("userRole") || "Unknown";
+    const url = window.location.href; 
+    const timestamp = Date(Date.now()).toString(); 
 
     // Save error details in sessionStorage for persistence
     sessionStorage.setItem(
@@ -36,7 +39,6 @@ class ErrorBoundary extends Component {
       })
     );
 
-    // Redirect to the error page
     window.location.href = "/error";
   }
 
