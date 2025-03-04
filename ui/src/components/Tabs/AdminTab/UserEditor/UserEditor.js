@@ -20,8 +20,9 @@ export default function UserEditor(props) {
     let userGroups = <UserEditorUserGroups/>;
 
 
+    //user upload wont refresh bc no new user data is given
     const getSemesters = () =>{
-        //console.log("hihi");                    
+        console.log("hihi");                    
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {

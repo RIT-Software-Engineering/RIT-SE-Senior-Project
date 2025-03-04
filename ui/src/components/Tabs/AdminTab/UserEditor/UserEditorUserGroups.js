@@ -13,7 +13,7 @@ import { SecureFetch } from "../../../util/functions/secureFetch";
  * nearly 200 users per semester. Overall, the design of this component
  * could be less complex.
  */
-export default function UserEditorUserGroups() {
+export default function UserEditorUserGroups(props) {
     const [students, setStudentsData] = useState([]);
     const [semesters, setSemestersData] = useState();
     const [projects, setProjectsData] = useState([]);
@@ -153,6 +153,7 @@ export default function UserEditorUserGroups() {
                 projectsData={projects}
                 semesterData={semesters}
                 students={grouping[unassignedStudentsStr]}
+                callback={callback}
             />)
         }
 
@@ -167,12 +168,50 @@ export default function UserEditorUserGroups() {
                     projectsData={projects}
                     semesterData={semesters}
                     students={project["students"]}
+                    callback={callback}
                 />
             }));
         }
         return panels
     }
 
+    function callback(){
+        getUsers();
+        if (!students || !semesters || !Object.keys(projects).length) {
+            return <>loading...</>
+        }
+    
+        semesters.forEach(semester => {
+            semesterMap[semester.semester_id] = semester;
+        })
+        projects.forEach(project => {
+            projectMap[project.project_id] = project;
+        })
+    
+        groupings = groupUsers(students, users, projectMap);
+    
+        semesterAccordions = Object.keys(groupings["semesters"]).map(semesterId => {
+            return {
+                endDate: semesterMap[semesterId]?.end_date,
+                startDate: semesterMap[semesterId]?.start_date,
+                accordion: <Accordion
+                    key={semesterId}
+                    fluid
+                    styled
+                    panels={[
+                        {
+                            key: "StudentsTab-semester-selector-" + semesterId,
+                            title: `${semesterMap[semesterId]["name"]} (${Object.keys(groupings["semesters"][semesterId])?.length})`,
+                            content: { content: createSemesterAccordion(groupings["semesters"][semesterId]) },
+                        },
+                    ]}
+                />,
+            }
+        })
+    
+        semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
+    }
+    //callback();
     if (!students || !semesters || !Object.keys(projects).length) {
         return <>loading...</>
     }
@@ -206,7 +245,7 @@ export default function UserEditorUserGroups() {
     })
 
     semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
-    console.log(semesterAccordions);
+    //console.log(semesterAccordions);
 
     return (
         <>
@@ -217,6 +256,7 @@ export default function UserEditorUserGroups() {
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[unassignedStudentsStr]}
+                callback={callback}
             />
             <StudentTeamTable
                 title="Admins"
@@ -225,6 +265,7 @@ export default function UserEditorUserGroups() {
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[admins]}
+                callback={callback}
             />
             <StudentTeamTable
                 title="Coaches"
@@ -233,6 +274,7 @@ export default function UserEditorUserGroups() {
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[coaches]}
+                callback={callback}
             />
             {semesterAccordions?.map(semesterAccordion => {
                 return semesterAccordion.accordion
@@ -244,6 +286,7 @@ export default function UserEditorUserGroups() {
                 projectsData={projects}
                 semesterData={semesters}
                 students={groupings[inactive]}
+                callback={callback}
             />
         </>
     );
