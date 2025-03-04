@@ -10,7 +10,7 @@ function errorHandler(err, req, res, next) {
         user_role: req.user.type,
         url: req.url,
         timestamp: Date(Date.now()).toString(),
-        componentStack: err.stack ? err.stack : undefined // Normally sending the stack trace to the frontend is not goog practice
+        componentStack: err.stack ? err.stack : undefined // Normally sending the stack trace to the frontend is not good practice
     });
 }
 
