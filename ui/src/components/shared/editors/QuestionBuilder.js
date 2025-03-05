@@ -650,10 +650,7 @@ const QuestionBuilder = (props) => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          position: "fixed"
         }}
         size="large"
       >
