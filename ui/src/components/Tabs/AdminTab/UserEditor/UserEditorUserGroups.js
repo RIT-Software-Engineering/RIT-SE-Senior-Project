@@ -14,10 +14,6 @@ import { SecureFetch } from "../../../util/functions/secureFetch";
  * could be less complex.
  */
 export default function UserEditorUserGroups(props) {
-    const [students, setStudentsData] = useState([]);
-    const [semesters, setSemestersData] = useState();
-    const [projects, setProjectsData] = useState([]);
-    const [users, setUserData] = useState([]);
 
     const unassignedStudentsStr = "Unassigned students";
     const coaches = "Coaches";
@@ -28,47 +24,6 @@ export default function UserEditorUserGroups(props) {
     let semesterMap = {};
     let projectMap = {};
     let semesterAccordions = [];
-
-    const getUsers = () =>{
-        SecureFetch(config.url.API_GET_STUDENT_INFO)
-            .then((response) => response.json())
-            .then((studentsData) => {
-                setStudentsData(studentsData);
-            })
-            .catch((error) => {
-                alert("Failed to get students data" + error);
-            });
-        SecureFetch(config.url.API_GET_NON_STUDENT_INFO)
-            .then((response) => response.json())
-            .then((userData) => {
-                setUserData(userData);
-            })
-            .catch((error) => {
-                alert("Failed to get non student data" + error);
-            });
-        SecureFetch(config.url.API_GET_SEMESTERS)
-            .then((response) => response.json())
-            .then((semestersData) => {
-                setSemestersData(semestersData);
-            })
-            .catch((error) => {
-                alert("Failed to get semestersData data" + error);
-            });
-        SecureFetch(config.url.API_GET_ACTIVE_PROJECTS)
-            .then((response) => response.json())
-            .then((projectsData) => {
-                setProjectsData(projectsData);
-            })
-            .catch((error) => {
-                alert("Failed to get projectsData" + error);
-            });
-
-        console.log("PLEASE");
-    }
-
-    useEffect(() => {
-        getUsers();
-    }, []);
 
     function groupUsers(studentData, userData, projectMap) {
         let semesterMap = { semesters: [] }
@@ -150,10 +105,10 @@ export default function UserEditorUserGroups(props) {
                 key={unassignedStudentsStr}
                 childKey={unassignedStudentsStr}
                 title={`Unassigned Students (${grouping[unassignedStudentsStr].length})`}
-                projectsData={projects}
-                semesterData={semesters}
+                projectsData={props.projectData}
+                semesterData={props.semesterData}
                 students={grouping[unassignedStudentsStr]}
-                callback={callback}
+                callback={props.callback}
             />)
         }
 
@@ -165,30 +120,27 @@ export default function UserEditorUserGroups(props) {
                     key={`project-${project.project_id}`}
                     childKey={`project-${project.project_id}`}
                     title={`${project["name"]} (${project["students"].length})`}
-                    projectsData={projects}
-                    semesterData={semesters}
+                    projectsData={props.projectData}
+                    semesterData={props.semesterData}
                     students={project["students"]}
-                    callback={callback}
+                    callback={props.callback}
                 />
             }));
         }
         return panels
     }
 
-    function callback(){
-        getUsers();
-        if (!students || !semesters || !Object.keys(projects).length) {
-            return <>loading...</>
-        }
+    /*function callback(){
+        //getUsers();
     
-        semesters.forEach(semester => {
+        props.semesterData.forEach(semester => {
             semesterMap[semester.semester_id] = semester;
         })
-        projects.forEach(project => {
+        props.projectData.forEach(project => {
             projectMap[project.project_id] = project;
         })
     
-        groupings = groupUsers(students, users, projectMap);
+        groupings = groupUsers(props.studentData, props.userData, projectMap);
     
         semesterAccordions = Object.keys(groupings["semesters"]).map(semesterId => {
             return {
@@ -210,20 +162,20 @@ export default function UserEditorUserGroups(props) {
         })
     
         semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
-    }
-    //callback();
-    if (!students || !semesters || !Object.keys(projects).length) {
+    }*/
+    
+    if (!props.studentData || !props.semesterData || !Object.keys(props.projectData).length) {
         return <>loading...</>
     }
 
-    semesters.forEach(semester => {
+    props.semesterData.forEach(semester => {
         semesterMap[semester.semester_id] = semester;
     })
-    projects.forEach(project => {
+    props.projectData.forEach(project => {
         projectMap[project.project_id] = project;
     })
 
-    groupings = groupUsers(students, users, projectMap);
+    groupings = groupUsers(props.studentData, props.userData, projectMap);
 
     semesterAccordions = Object.keys(groupings["semesters"]).map(semesterId => {
         return {
@@ -253,28 +205,28 @@ export default function UserEditorUserGroups(props) {
                 title="Unassigned Students"
                 key="Unassigned Students Key"
                 childKey="Unassigned Students Key"
-                projectsData={projects}
-                semesterData={semesters}
+                projectsData={props.projectData}
+                semesterData={props.semesterData}
                 students={groupings[unassignedStudentsStr]}
-                callback={callback}
+                callback={props.callback}
             />
             <StudentTeamTable
                 title="Admins"
                 key="Admins"
                 childKey="Admins"
-                projectsData={projects}
-                semesterData={semesters}
+                projectsData={props.projectData}
+                semesterData={props.semesterData}
                 students={groupings[admins]}
-                callback={callback}
+                callback={props.callback}
             />
             <StudentTeamTable
                 title="Coaches"
                 key="Coaches"
                 childKey="Coaches"
-                projectsData={projects}
-                semesterData={semesters}
+                projectsData={props.projectData}
+                semesterData={props.semesterData}
                 students={groupings[coaches]}
-                callback={callback}
+                callback={props.callback}
             />
             {semesterAccordions?.map(semesterAccordion => {
                 return semesterAccordion.accordion
@@ -283,10 +235,10 @@ export default function UserEditorUserGroups(props) {
                 title="Inactive Students"
                 key="Inactive Students"
                 childKey="Inactive Students"
-                projectsData={projects}
-                semesterData={semesters}
+                projectsData={props.projectData}
+                semesterData={props.semesterData}
                 students={groupings[inactive]}
-                callback={callback}
+                callback={props.callback}
             />
         </>
     );
