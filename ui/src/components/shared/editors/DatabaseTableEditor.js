@@ -265,8 +265,11 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          console.log("props", props);
-          if (formData.type !== "admin" && formData.type !== "coach" ){ // if editing admin or coach, no dropdown
+          if (
+            (formData.type === "coach" || formData.type === "admin") &&
+            (field.label === "Semester/Project" || field.label === "Semester")
+          ){}
+          else {
             fieldComponents.push(
               <Form.Field
                 key={field.name}
