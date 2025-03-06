@@ -57,7 +57,7 @@ export default function ArchiveEditor() {
                     create={true}
                     newArchive
                     header={"Create Archive"}
-                    callback = {getArchiveData}
+                    callback = {getArchiveData
                 />
             </div>
         </div>

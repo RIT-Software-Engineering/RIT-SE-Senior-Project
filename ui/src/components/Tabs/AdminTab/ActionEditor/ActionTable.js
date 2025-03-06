@@ -16,10 +16,11 @@ import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
 
 export default function ActionTable(props) {
     // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
-    const semester = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)
-    const semesterName = semester.name
-    const semesterStart = semester.start_date
-    const semesterEnd = semester.end_date
+    const semester = props.semesterData.find(s => s.semester_id === props.actions[0]?.semester);
+    // if there is no semester, then there are no actions
+    const semesterName = semester?.name || "No Semester";
+    const semesterStart = semester?.start_date || "No Start Date";
+    const semesterEnd = semester?.end_date || "No End Date";
     // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
     const [open, setOpen] = React.useState('false');
     const [closeOnDocClick, setCloseOnDocClick] = useState(true);

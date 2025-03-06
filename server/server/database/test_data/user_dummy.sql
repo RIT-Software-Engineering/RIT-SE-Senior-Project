@@ -5,7 +5,7 @@ VALUES
     ('mwahaha', 'SUPER DUPER', 'ADMIN', 'adminB@rit.edu', 'admin', NULL, NULL, ''),
     ('def123', 'Dude', 'Bro', 'def123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
     ('hij123', 'Jack', 'James', 'hij123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', ''),
-    ('klm123', 'Gal', 'Girl', 'klm123@rit.edu', 'student', 3, NULL, ''),
+    ('klm123', 'Gal', 'Girl', 'klm123@rit.edu', 'student', 3, '2021-5-14__GGA7ysLaY3WsZ-3Fffa6', ''),
     ('nop123', 'Tom', 'Amaral', 'bp123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
     ('qrs123', 'Jeffery', 'Beril', 'qrs123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
     ('tuv123', 'Steven', 'Jobe', 'tuv123@rit.edu', 'student', 4, '2021-5-14_RUM5kpFxW_doOsiZpkdri', ''),
