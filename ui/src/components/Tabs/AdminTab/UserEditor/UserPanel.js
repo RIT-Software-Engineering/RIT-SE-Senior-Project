@@ -84,6 +84,7 @@ export default function UserPanel(props) {
     ];
 
     return (
+        console.log(initialState),
         <DatabaseTableEditor
             initialState={initialState}
             submissionModalMessages={submissionModalMessages}
