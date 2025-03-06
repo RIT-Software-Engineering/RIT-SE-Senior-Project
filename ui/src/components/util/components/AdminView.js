@@ -5,7 +5,8 @@ import { SecureFetch } from "../functions/secureFetch";
 import { UserContext } from "../functions/UserContext";
 import _ from "lodash";
 
-export default function AdminView() {
+export default function AdminView(props) {
+
   const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState([]);
   const { user } = useContext(UserContext);
@@ -85,7 +86,7 @@ export default function AdminView() {
     );
   };
 
-  if (user?.isMock || user?.role === "admin") {
+  if ((user?.isMock || user?.role === "admin") && (user?.view_only == "FALSE")) {
     return (
       <>
         <div

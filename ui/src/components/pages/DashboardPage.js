@@ -29,6 +29,7 @@ export default function DashboardPage() {
     SecureFetch(config.url.API_WHO_AM_I)
       .then((response) => response.json())
       .then((responseUser) => {
+        console.log(responseUser)
         setUser({
           user: responseUser.system_id,
           role: responseUser.type,
@@ -40,6 +41,7 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
+          view_only: responseUser.view_only,
         });
       });
     SecureFetch(config.url.API_GET_SEMESTERS)
@@ -56,25 +58,26 @@ export default function DashboardPage() {
 
   switch (user.role) {
     case "admin":
-      
-      panes.push({
-        menuItem: {
-          key: "Admin-Tab",
-          content: "Admin",
-          href: "#",
-        },
-        render: () => (
-          <Tab.Pane>
-            <SemesterEditor />
-            <ActionEditor semesterData={semesterData} />
-            <ProjectEditor semesterData={semesterData} />
-            <ArchiveEditor />
-            <UserEditor />
-            <SponsorEditorAccordion />
-            <FileEditor />
-          </Tab.Pane>
-        ),
-      });
+      if(user.view_only == "FALSE"){
+        panes.push({
+          menuItem: {
+            key: "Admin-Tab",
+            content: "Admin",
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <SemesterEditor />
+              <ActionEditor semesterData={semesterData} />
+              <ProjectEditor semesterData={semesterData} />
+              <ArchiveEditor />
+              <UserEditor />
+              <SponsorEditorAccordion />
+              <FileEditor />
+            </Tab.Pane>
+          ),
+        });
+      }
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
     case "coach":
