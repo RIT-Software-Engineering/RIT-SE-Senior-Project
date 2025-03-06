@@ -650,7 +650,9 @@ const QuestionBuilder = (props) => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{
-          position: "fixed"
+          position: "sticky",
+          top: "5%",
+          left: "0%"
         }}
         size="large"
       >
@@ -812,10 +814,9 @@ const QuestionBuilder = (props) => {
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
         style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          position: "sticky",
+          top: "35%",
+          left: "0%"
         }}
       >
         <Modal.Header>Form Preview</Modal.Header>
