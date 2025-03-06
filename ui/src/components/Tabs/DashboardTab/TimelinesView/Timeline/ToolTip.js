@@ -54,7 +54,7 @@ export default function ToolTip(props) {
   const metadata = (longSubmissionTitle) => {
     return (
       <>
-        <p dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(props.action?.short_desc, {ALLOWED_TAGS: ['b', 'i', 'strong']})}}></p>
+        <p dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(props.action?.short_desc, {ALLOWED_TAGS: ['b', 'i', 'strong', 'em']})}}></p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
         <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
         <p>Project: {props.projectName}</p>
