@@ -2310,7 +2310,6 @@ module.exports = (db) => {
         params = [req.query.action_id, req.user.project];
         break;
       case ROLES.COACH:
-      case ROLES.VIEWONLYADMIN:
       case ROLES.ADMIN:
         getActionLogQuery = `SELECT action_log.*, actions.action_title,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) AS name,
@@ -2384,7 +2383,6 @@ module.exports = (db) => {
           getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
           countParams = [req.user.system_id];
           break;
-        case ROLES.VIEWONLYADMIN:
         case ROLES.ADMIN:
           getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
                 actions.action_target, actions.action_title, actions.semester,
@@ -3524,9 +3522,6 @@ module.exports = (db) => {
     let projectFilter;
     switch (user.type) {
       case ROLES.ADMIN:
-        projectFilter = "";
-        break;
-      case ROLES.VIEWONLYADMIN:
         projectFilter = "";
         break;
       case ROLES.STUDENT:
