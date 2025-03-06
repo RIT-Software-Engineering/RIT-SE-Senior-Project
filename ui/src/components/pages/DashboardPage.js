@@ -29,6 +29,7 @@ export default function DashboardPage() {
     SecureFetch(config.url.API_WHO_AM_I)
       .then((response) => response.json())
       .then((responseUser) => {
+        console.log(responseUser)
         setUser({
           user: responseUser.system_id,
           role: responseUser.type,
