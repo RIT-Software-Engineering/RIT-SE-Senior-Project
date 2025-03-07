@@ -2395,12 +2395,14 @@ module.exports = (db) => {
 
       // Add a case for when the action target is 'peer_evaluation'
       // The action is not done unless compelted by all students, AND the coach has passed it through
+      //   - For better UI/UX, if the coach has not passed it through and the students have; the peer evaluation visual on the dashboard should be red INSTEAD of directly falling onto the UNHANDLED-CASE
       let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
                     CASE
                         WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target = 'peer_evaluation' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) + 1 THEN 'green'
+                        WHEN action_target = 'peer_evaluation' THEN 'red'
                         WHEN action_target IS 'individual' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'green'
                         WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
                         WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
@@ -2420,7 +2422,7 @@ module.exports = (db) => {
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,
-        req.query.project_id,
+        req.query.project_id
       ])
         .then((values) => {
           res.send(values);
