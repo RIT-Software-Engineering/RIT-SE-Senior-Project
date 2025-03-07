@@ -80,7 +80,7 @@ export default function GanttChart(props) {
                 color += "proposal-row-red";
                 break;
             case ACTION_STATES.GREEN:
-                color += "proposal-row-green";
+                color += "proposal-row-blue";
                 break;
             case ACTION_STATES.GREY:
                 color += "proposal-row-gray";
