@@ -53,7 +53,7 @@ export default function Proposals(props) {
     setProposalData(newProposalData);
   }, [props.proposalData]);
 
-  const changeSort = (column) => {
+  /*const changeSort = (column) => {
     if (proposalData.column === column) {
       setProposalData({
         column: column,
@@ -69,7 +69,7 @@ export default function Proposals(props) {
       column: column,
       proposals: _.sortBy(proposalData.proposals, [column]),
     });
-  };
+  };*/
 
   const renderProposals = () => {
     if (!proposalData.proposals) {
@@ -135,6 +135,7 @@ export default function Proposals(props) {
                     semesterData={props.semesterData}
                     activeCoaches={props.activeCoaches}
                     activeSponsors={props.activeSponsors}
+                    callback={props.callback}
                   />
                 </>
               )}
@@ -167,32 +168,32 @@ export default function Proposals(props) {
         <TableHeader>
           <TableRow>
             <TableHeaderCell
-              sorted={
+              /*sorted={
                 proposalData.column === COLUMNS.SEMESTER
                   ? proposalData.direction
                   : null
               }
-              onClick={() => changeSort(COLUMNS.SEMESTER)}
+              //onClick={() => changeSort(COLUMNS.SEMESTER)}*/
             >
               Semester
             </TableHeaderCell>
             <TableHeaderCell
-              sorted={
+              /*sorted={
                 proposalData.column === COLUMNS.TITLE
                   ? proposalData.direction
                   : null
               }
-              onClick={() => changeSort(COLUMNS.TITLE)}
+              //onClick={() => changeSort(COLUMNS.TITLE)}*/
             >
               Name
             </TableHeaderCell>
             <TableHeaderCell
-              sorted={
+              /*sorted={
                 proposalData.column === COLUMNS.STATUS
                   ? proposalData.direction
                   : null
               }
-              onClick={() => changeSort(COLUMNS.STATUS)}
+              //onClick={() => changeSort(COLUMNS.STATUS)}*/
             >
               Status
             </TableHeaderCell>

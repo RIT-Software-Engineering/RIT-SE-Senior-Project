@@ -19,6 +19,7 @@ export default function SemesterTable(props) {
                             semesterData={props.semesterData}
                             header={`Currently Editing "${semester.name} (${semester.semester_id})"`}
                             key={"editSemester-" + i}
+                            callback={props.callback}
                         />
                     </TableCell>
                 </TableRow>

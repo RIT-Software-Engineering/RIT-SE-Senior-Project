@@ -329,6 +329,7 @@ export default function ArchivePanel(props) {
       formFieldArray={formFieldArray}
       header={props.header}
       button={props.buttonIcon || (props.create ? "plus" : "edit")}
+      callback={props.callback}
     />
   );
 }

@@ -120,6 +120,7 @@ export default function StudentEditPanel(props) {
             semesterData={props.semesterData}
             header={props.header}
             button="edit"
+            callback={props.callback}
             preChange={(formData, name, value) => {
                 if (name === "type" && [USERTYPES.ADMIN, USERTYPES.COACH].includes(value)) {
                     formData["semesterProject"] = NULL_VALUE;
