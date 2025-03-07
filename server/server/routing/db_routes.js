@@ -1739,6 +1739,8 @@ module.exports = (db) => {
         });
         res.send(fileData);
       });
+    } else {
+      res.send(fileData);
     }
   });
 
