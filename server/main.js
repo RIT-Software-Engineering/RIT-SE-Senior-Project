@@ -22,6 +22,7 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./server/error_handler");
 // Constants
 const port = process.env.PORT;
 
@@ -60,4 +61,5 @@ app.use(
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
+app.use(errorHandler) // Handles all backend errors, MUST BE IMPLEMENTED LAST
 app.listen(port);

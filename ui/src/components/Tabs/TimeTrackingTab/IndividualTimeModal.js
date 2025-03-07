@@ -64,6 +64,7 @@ export default function IndividualTimeModal(props) {
                     </Button>}
                 </div>
             }
+
         >
         <Modal.Header>Time Submission For {props.user}</Modal.Header>
             <Modal.Content>
@@ -83,6 +84,13 @@ export default function IndividualTimeModal(props) {
                     {/*{avgTime[idx] !== undefined ? Math.floor(avgTime[idx].avgTime) : 0}*/}
                     <p>
                         <b>Submission Date:</b> {formatDateTime(props.timeLog.submission_datetime)}
+                    </p>
+                    <p style={{background: props.timeLog.active === 0? '#FF999C': 'none'}}>
+                        <b>
+                            <i>
+                                {props.timeLog.active === 0? "DELETED": ""}
+                            </i>
+                        </b>
                     </p>
                 </Modal.Description>
             </Modal.Content>
