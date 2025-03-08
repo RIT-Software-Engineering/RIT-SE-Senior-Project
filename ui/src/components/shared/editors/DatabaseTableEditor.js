@@ -128,7 +128,6 @@ export default function DatabaseTableEditor(props) {
     if (props.viewOnly) {
       return;
     }
-
     if (checked !== undefined) {
       if (isActiveField) {
         // The active field either stores an empty string or a datetime.
@@ -155,6 +154,22 @@ export default function DatabaseTableEditor(props) {
       });
     }
   };
+
+  function handleUpload(event, name) {
+    let value = event.target.files[0];
+    const newFormData =
+      props.preChange &&
+      props.preChange(formData, name, value);
+
+    if (newFormData) {
+      setFormData(newFormData);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  }
 
   /**
    * This is how the edit table for any form of editing is made and filled with the initial state.
@@ -250,25 +265,46 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          fieldComponents.push(
-            <Form.Field
-              key={field.name}
-              disabled={field.loading || field.disabled}
-            >
-              <label>{field.label}</label>
-              <Dropdown
-                selection
-                options={field.options}
-                loading={field.loading}
+          if (
+            (formData.type === "coach" || formData.type === "admin") &&
+            (field.label === "Semester/Project" || field.label === "Semester")
+          ){}
+          else {
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
                 disabled={field.loading || field.disabled}
-                value={formData[field.name] || field.nullValue}
-                name={field.name}
-                onChange={handleChange}
-              />
-            </Form.Field>
-          );
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] || field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>
+            );
+          }
           break;
         case "checkbox":
+          if (field.disabled){
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label style={{color: "lightgray"}}>{field.label}</label>
+                <Form.Checkbox
+                  label={field["label"]}
+                  checked={!!formData[field["name"]]}
+                  name={field["name"]}
+                  onChange={handleChange}
+                  disabled={true}
+                />
+              </Form.Field>
+            );
+            break;
+          }
           fieldComponents.push(
             <Form.Field key={field["name"]}>
               <label>{field.label}</label>
@@ -277,7 +313,7 @@ export default function DatabaseTableEditor(props) {
                 checked={!!formData[field["name"]]}
                 name={field["name"]}
                 onChange={handleChange}
-                disabled={field.disabled}
+                disabled={false}
               />
             </Form.Field>
           );
@@ -302,6 +338,33 @@ export default function DatabaseTableEditor(props) {
               )}
             </Form.Field>
           );
+          break;
+        case "upload":
+          if(field.disabled){
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label style={{color: "lightgray"}}>{field.label}</label>
+                <input
+                  type="file"
+                  onChange={event => handleUpload(event, field.name)}
+                  accept={field.accept}
+                  disabled={true}
+                />
+              </Form.Field>
+           );
+          }else{
+            fieldComponents.push(
+              <Form.Field key={field["name"]}>
+                <label>{field.label}</label>
+                <input
+                  type="file"
+                  onChange={event => handleUpload(event, field.name)}
+                  accept={field.accept}
+                  disabled={false}
+                />
+              </Form.Field>
+           );
+          }
           break;
         case "multiSelectDropdown":
           fieldComponents.push(

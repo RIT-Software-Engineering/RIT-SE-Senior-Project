@@ -80,7 +80,7 @@ export default function ActionPanel(props) {
     },
     {
       type: "input",
-      label: "Short Desc (Not used for announcements)",
+      label: "Short Desc (allows HTML styling for bold and italics (<b>,<i>,<strong>,<em>) (Not used for announcements);",
       placeHolder: "Short Desc",
       name: short_desc,
     },

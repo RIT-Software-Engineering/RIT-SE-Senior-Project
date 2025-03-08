@@ -37,7 +37,7 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
         '2021-5-14__GGA7ysLaY3WsZ-3Fffa6','completed', 'Completed project', 'Completion Solutions', 'Completer person', 'completer@completion.com', '565 565 5656', NULL,
         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        2, NULL, NULL, NULL, NULL, NULL
+        2, NULL, NULL, NULL, NULL, 4
     ),
 
     (

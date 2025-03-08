@@ -22,19 +22,25 @@ export default function TimeLogPanel(props) {
         {
             type: "date",
             label: "Date of Work",
-            placeHolder: "Date of Work",
+            placeholder: "Date of Work",
             name: "date",
         },
         {
-            type: "input",
+            type: "hoursInput",
             label: "Time Spent",
-            placeHolder: "Time Spent",
-            name: "time_amount",
+            placeholder: "Hours",
+            name: "time_amount_hours",
+        },
+        {
+            type: "minutesInput",
+            label: "",
+            placeholder: "Minutes",
+            name: "time_amount_mins",
         },
         {
             type: "textArea",
             label: "Comment",
-            placeHolder: "Comment",
+            placeholder: "Comment",
             name: "comment",
         },
     ];
