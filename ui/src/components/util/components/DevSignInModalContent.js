@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { config } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
+import { Button, Container } from "semantic-ui-react";
 
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
@@ -22,14 +23,9 @@ export default function DevSignInModalContent() {
   }, []);
 
   return (
-    <div>
-      <h1 style={{ color: "red" }}>FOR DEVELOPMENT PURPOSES ONLY</h1>
-      <p>
-        <b>Note:</b> If you see an alert when signing in, this is fine and can
-        be ignored. It only happens in dev because we don't have RIT's login.
-      </p>
-      Sign in as{" "}
-      <select ref={selectedUserIdx}>
+    <Container textAlign='center'>
+      <h3>Sign in as</h3>
+      <select className="ui dropdown labeled" ref={selectedUserIdx}>
         {users.map((user, idx) => (
           <option
             value={idx}
@@ -37,10 +33,9 @@ export default function DevSignInModalContent() {
           >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
         ))}
       </select>
-      <br />
-      <br />
-      <br />
-      <button
+      <br/>
+      <Button
+        color="orange"
         onClick={() => {
           const user = users[selectedUserIdx.current.value];
 
@@ -67,8 +62,9 @@ export default function DevSignInModalContent() {
         }}
       >
         Sign In
-      </button>{" "}
-      <button
+      </Button>{" "}
+      <Button
+        secondary
         onClick={() => {
           // Delete all cookies
           let cookies = document.cookie.split(";");
@@ -81,7 +77,7 @@ export default function DevSignInModalContent() {
         }}
       >
         Sign Out
-      </button>
-    </div>
+      </Button>
+    </Container>
   );
 }
