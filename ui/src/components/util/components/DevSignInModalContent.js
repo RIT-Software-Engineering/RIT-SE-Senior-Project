@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { config } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
-import { Button } from "semantic-ui-react";
+import { Button, Container } from "semantic-ui-react";
 
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
@@ -23,8 +23,8 @@ export default function DevSignInModalContent() {
   }, []);
 
   return (
-    <div>
-      <h5>Sign in as:</h5>
+    <Container textAlign='center'>
+      <h3>Sign in as</h3>
       <select className="ui dropdown labeled" ref={selectedUserIdx}>
         {users.map((user, idx) => (
           <option
@@ -35,6 +35,7 @@ export default function DevSignInModalContent() {
       </select>
       <br/>
       <Button
+        color="orange"
         onClick={() => {
           const user = users[selectedUserIdx.current.value];
 
@@ -63,6 +64,7 @@ export default function DevSignInModalContent() {
         Sign In
       </Button>{" "}
       <Button
+        secondary
         onClick={() => {
           // Delete all cookies
           let cookies = document.cookie.split(";");
@@ -76,6 +78,6 @@ export default function DevSignInModalContent() {
       >
         Sign Out
       </Button>
-    </div>
+    </Container>
   );
 }
