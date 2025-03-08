@@ -12,7 +12,7 @@ export default function ArchiveEditor() {
     const [projectCount, setProjectCount] = useState(projectsPerPage)
     const [activePage, setActivePage] = useState(0)
 
-    useEffect(() => {
+    const getArchiveData = () => {
         SecureFetch(
             `${config.url.API_GET_ARCHIVES}?resultLimit=${projectsPerPage}&offset=${activePage}`
         )
@@ -30,9 +30,13 @@ export default function ArchiveEditor() {
             .catch((error) => {
                 console.error(error);
             });
+    }
+
+    useEffect(() => {
+        getArchiveData();
     }, []);
 
-    let archivesToEdit = <ArchiveTable projects={projects} archiveData={projects}/>;
+    let archivesToEdit = <ArchiveTable projects={projects} archiveData={projects} callback={getArchiveData}/>;
 
     return (
         <div className="accordion-button-group">
@@ -53,6 +57,7 @@ export default function ArchiveEditor() {
                     create={true}
                     newArchive
                     header={"Create Archive"}
+                    callback = {getArchiveData}
                 />
             </div>
         </div>

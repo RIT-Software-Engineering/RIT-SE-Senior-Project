@@ -115,6 +115,16 @@ export default function ProjectEditorModal(props) {
         FAIL: "We were unable to receive your update to the project.",
     };
 
+    let sortedActiveCoaches = props.activeCoaches?.sort(function (coachA, coachB) {
+        if (coachA.lname < coachB.lname) {
+          return -1;
+        }
+        if (coachA.lname > coachB.lname) {
+          return 1;
+        }
+        return 0;
+      })
+
     const options = Object.keys(PROJECT_STATUSES).map((status, idx) => {
         return {
             key: idx,
@@ -154,7 +164,7 @@ export default function ProjectEditorModal(props) {
         {
             type: "multiSelectDropdown",
             label: "Coaches",
-            options: props.viewOnly ? projectMembers.coaches : props.activeCoaches?.map(coach => { return { key: coach.system_id, text: `${coach.lname}, ${coach.fname}`, value: coach.system_id } }),
+            options: props.viewOnly ? projectMembers.coaches : sortedActiveCoaches?.map(coach => { return { key: coach.system_id, text: `${coach.lname}, ${coach.fname}`, value: coach.system_id } }),
             name: "projectCoaches",
             disabled: props.viewOnly
         },
@@ -345,6 +355,7 @@ export default function ProjectEditorModal(props) {
             fetchOptions={fetchOptions}
             button={props.viewOnly ? "eye" : "edit"}
             viewOnly={props.viewOnly}
+            callback={props.callback}
         />
     );
 }

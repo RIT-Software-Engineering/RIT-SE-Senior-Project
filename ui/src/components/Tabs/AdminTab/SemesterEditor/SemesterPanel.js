@@ -54,6 +54,7 @@ export default function SemesterPanel(props) {
             formFieldArray={formFieldArray}
             create={initialState.semester_id === ""}
             button={initialState.semester_id === "" ? "plus" : "edit"}
+            callback={props.callback}
         />
     );
 }

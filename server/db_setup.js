@@ -105,4 +105,4 @@ async function redeployDatabase() {
     }
 }
 
-redeployDatabase();
+module.exports = redeployDatabase;

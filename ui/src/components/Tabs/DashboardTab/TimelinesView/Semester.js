@@ -9,11 +9,18 @@ export default function Semester(props) {
 
     const [announcements, setAnnouncements] = useState([])
 
+
+    // if this use effect fails, make sure the announcements will be empty
     useEffect(() => {
+
+        //! check if project id and semester match otherwise they will be logged out
         SecureFetch(`${config.url.API_GET_SEMESTER_ANNOUNCEMENTS}?semester=${props.projects[0]?.semester_id}`)
             .then(response => response.json())
             .then(announcements => {
                 setAnnouncements(announcements);
+            }).catch(error => {
+                    setAnnouncements([]);
+                    console.error(error);
             })
     }, [props.projects])
 

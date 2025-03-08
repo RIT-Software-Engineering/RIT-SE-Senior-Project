@@ -3,8 +3,9 @@ const Logger = require("../logger");
 
 const isSignedIn = (req, res, next) => {
     if (!req.user || req.user.system_id === undefined || req.user.system_id === null) {
-        res.sendStatus(401);
-        return;
+        const error = new Error(err);
+        error.statusCode = 401;
+        return next(error);
     }
 
     next();
@@ -27,7 +28,9 @@ const isCoachOrAdmin = (req, res, next) => {
         return true;
     }
 
-    res.sendStatus(401);
+    const error = new Error(err);
+    error.statusCode = 401;
+    return next(error);
 }
 
 if (process.env.NODE_ENV === 'development') {
