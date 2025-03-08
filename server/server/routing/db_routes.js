@@ -1720,35 +1720,39 @@ module.exports = (db) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    fs.mkdirSync(baseURL, { recursive: true });
-    // Get the files in the directory
-    fs.readdir(baseURL, function (err, files) {
-      if (err) {
-        console.error(err);
-        const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-      }
-      const info = fs.statSync(baseURL);
-      files.forEach(function (file) {
-        // Only files have sizes, directories do not. Send file size if it is a file
-        const fileInfo = fs.statSync(baseURL + file);
-        if (fileInfo.isFile()) {
-          fileData.push({
-            file: file,
-            size: fileInfo.size,
-            lastModified: fileInfo.ctime,
-          });
-        } else {
-          fileData.push({
-            file: file,
-            size: 0,
-            lastModified: info.ctime,
-          });
+    if(!fs.existsSync(baseURL)) {
+      fs.mkdirSync(baseURL, { recursive: true });
+      // Get the files in the directory
+      fs.readdir(baseURL, function (err, files) {
+        if (err) {
+          console.error(err);
+          const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
         }
+        const info = fs.statSync(baseURL);
+        files.forEach(function (file) {
+          // Only files have sizes, directories do not. Send file size if it is a file
+          const fileInfo = fs.statSync(baseURL + file);
+          if (fileInfo.isFile()) {
+            fileData.push({
+              file: file,
+              size: fileInfo.size,
+              lastModified: fileInfo.ctime,
+            });
+          } else {
+            fileData.push({
+              file: file,
+              size: 0,
+              lastModified: info.ctime,
+            });
+          }
+        });
+        res.send(fileData);
       });
+    } else {
       res.send(fileData);
-    });
+    }
   });
 
   db_router.get("/getProjectFiles", (req, res, next) => {

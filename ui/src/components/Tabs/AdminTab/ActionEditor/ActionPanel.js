@@ -178,6 +178,7 @@ export default function ActionPanel(props) {
           }
           return data;
         }}
+        callback = {props.callback}
       />
     );
   } else {
@@ -199,6 +200,7 @@ export default function ActionPanel(props) {
           }
           return data;
         }}
+        callback = {props.callback}
       />
     );
   }

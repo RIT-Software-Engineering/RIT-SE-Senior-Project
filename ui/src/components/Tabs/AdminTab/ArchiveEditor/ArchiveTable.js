@@ -126,6 +126,7 @@ export default function ArchiveTable() {
                                         project={project}
                                         header={"Edit Archive"}
                                         buttonIcon={"edit"}
+                                        callback={getPaginationData}
                                     />
                                 </TableCell>
                             </TableRow>

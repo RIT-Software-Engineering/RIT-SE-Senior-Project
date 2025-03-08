@@ -81,12 +81,12 @@ function Header() {
                     </button>
                         : <Modal
                             className={"sticky"}
-                            trigger={<Button>Dev Sign in/Sign Out</Button>}
-                            header="Sign in/Sign Out"
+                            trigger={<Button>Dev Sign in/out</Button>}
+                            header="Dev Sign in/out"
                             content={{
                                 content: <DevSignInModalContent />
                             }}
-                            actions={["Nevermind..."]}
+                            actions={["Cancel"]}
                         />}
                 </div>
                 <div id="hamburger-menu">
@@ -147,12 +147,12 @@ function Header() {
                         : <Menu.Item as="a" href={void (0)}>
                             <Modal
                                 className={"sticky"}
-                                trigger={<div>Dev Sign in/Sign Out</div>}
+                                trigger={<div>Dev Sign in/out</div>}
                                 header="Sign in/Sign Out"
                                 content={{
                                     content: <DevSignInModalContent />
                                 }}
-                                actions={["Nevermind..."]}
+                                actions={["Cancel"]}
                             />
                         </Menu.Item>}
                 </Sidebar>

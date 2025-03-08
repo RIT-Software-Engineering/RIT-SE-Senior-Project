@@ -355,6 +355,7 @@ export default function ProjectEditorModal(props) {
             fetchOptions={fetchOptions}
             button={props.viewOnly ? "eye" : "edit"}
             viewOnly={props.viewOnly}
+            callback={props.callback}
         />
     );
 }

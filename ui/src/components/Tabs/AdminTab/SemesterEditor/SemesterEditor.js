@@ -8,7 +8,7 @@ import SemesterTable from "./SemesterTable";
 export default function SemesterEditor() {
     const [semesters, setSemestersData] = useState([]);
 
-    useEffect(() => {
+    const getSemesters = () =>{
         SecureFetch(config.url.API_GET_SEMESTERS)
             .then((response) => response.json())
             .then((semestersData) => {
@@ -17,9 +17,13 @@ export default function SemesterEditor() {
             .catch((error) => {
                 alert("Failed to get semesters data" + error);
             });
+    }
+    
+    useEffect(() => {
+        getSemesters()
     }, []);
 
-    let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters}/>;
+    let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters} callback={getSemesters}/>;
 
     return (
         <div className="accordion-button-group">
@@ -35,7 +39,7 @@ export default function SemesterEditor() {
                 ]}
             />
             <div className="accordion-buttons-container">
-                <SemesterPanel header="Create Semester" />
+                <SemesterPanel header="Create Semester" callback={getSemesters}/>
             </div>
         </div>
     );

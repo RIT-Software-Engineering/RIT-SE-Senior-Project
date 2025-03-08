@@ -34,12 +34,47 @@ export default function ProjectEditor(props) {
             viewOnly={props.viewOnly}
             activeCoaches={activeCoaches}
             activeSponsors={activeSponsors}
+            callback = {getProjectInformation}
           />
         );
       });
   };
 
+  const getProjectInformation = () => {
+    SecureFetch(config.url.API_GET_PROJECTS)
+      .then((response) => response.json())
+      .then((proposals) => {
+        const groupedProposalData = {};
+        proposals.forEach((proposal) => {
+          if (groupedProposalData[proposal.semester]) {
+            groupedProposalData[proposal.semester].push(proposal);
+          } else {
+            groupedProposalData[proposal.semester] = [proposal];
+          }
+        });
+        setProposalData(groupedProposalData);
+      })
+      .catch((error) => {
+        alert("Failed to get proposal data " + error);
+      });
+
+    SecureFetch(config.url.API_GET_ACTIVE_COACHES)
+      .then((response) => response.json())
+      .then((coaches) => {
+        setActiveCoaches(coaches);
+      });
+
+    SecureFetch(config.url.API_GET_ALL_SPONSORS)
+      .then((response) => response.json())
+      .then((sponsors) => {
+        setActiveSponsors(sponsors.sponsors);
+      });
+  }
+
   useEffect(() => {
+    getProjectInformation();
+  }, []);
+  /*useEffect(() => {
     // TODO: Do pagination
     SecureFetch(config.url.API_GET_PROJECTS)
       .then((response) => response.json())
@@ -69,7 +104,7 @@ export default function ProjectEditor(props) {
       .then((sponsors) => {
         setActiveSponsors(sponsors.sponsors);
       });
-  }, []);
+  }, []);*/
 
   return props.noAccordion ? (
     content()
