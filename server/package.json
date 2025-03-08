@@ -7,7 +7,7 @@
     "start": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-ai": "node server/SummerizationAI.js",
-    "reset-database": "node db_setup.js"
+    "reset-database": "node reset-database.js"
   },
   "repository": {
     "type": "git",
