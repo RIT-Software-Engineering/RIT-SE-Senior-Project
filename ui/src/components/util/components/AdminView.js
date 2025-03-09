@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Button, Dropdown, Label } from "semantic-ui-react";
+import { Accordion, Button, Dropdown, Label } from "semantic-ui-react";
 import { config, USERTYPES } from '../functions/constants';
 import { SecureFetch } from '../functions/secureFetch';
 import { UserContext } from "../functions/UserContext";
@@ -18,7 +18,7 @@ export default function AdminView() {
         .then(users => {
           let userMap = {};
           users.forEach(dbUser => {
-            if (dbUser.system_id !== user.user) {
+            if (dbUser.system_id !== user.user && dbUser.type !== "admin") {
               userMap[dbUser.system_id] = dbUser;
             }
           });
@@ -90,7 +90,9 @@ export default function AdminView() {
           button
           value={selectedUser}
           options={_.sortBy(Object.values(users), ["type", "fname", "lname"]).map((user) => { return { text: `${user.fname} ${user.lname} (${user.system_id}): ${user.type}`, value: user.system_id, key: user.system_id } })}
-          onChange={(e, target) => setSelectedUser(target.value)} />
+          onChange={(e, target) => setSelectedUser(target.value)}
+          >
+        </Dropdown>
         {renderButton()}
       </>
     )
