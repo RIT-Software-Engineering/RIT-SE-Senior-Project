@@ -187,119 +187,121 @@ export function QuestionTable({
                     name={"asterisk"}
                 />
             )}
-            <Table basic="very" celled collapsing unstackable>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell />
-                        {questions.map((question) => {
-                            const name = `${sentenceToCamelCase(question)}`;
-                            const isErrored = errorFields.has(name);
-                            return (
-                                <TableHeaderCell
-                                    collapsing
-                                    style={{
-                                        width: pixelWidth + "px",
-                                        wordWrap: "break-word",
-                                        textAlign: "center",
-                                        verticalAlign: "bottom",
-                                    }}
-                                    key={question}
-                                >
-                                    <Header as={"h4"}>
-                                        <HeaderContent
-                                            as={isErrored ? "i" : null}
-                                        >
-                                            {isErrored && (
-                                                <Icon
-                                                    fitted
-                                                    name={"warning circle"}
-                                                    color={"red"}
-                                                />
-                                            )}{" "}
-                                            {question}
-                                        </HeaderContent>
-                                    </Header>
-                                </TableHeaderCell>
-                            );
-                        })}
-                    </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                    {students.map((student) => (
-                        <>
-                            <TableRow key={student}>
-                                <TableCell>
-                                    <Header as="h4"> {student} </Header>
-                                    {/* <Label size='large' basic>{student}</Label> */}
-                                </TableCell>
-                                {questions.map((question) => (
-                                    <TableCell
-                                        key={student + question}
-                                        textAlign="center"
+            <div style={{ overflowX: "auto" }}>
+                <Table basic="very" celled collapsing unstackable>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell />
+                            {questions.map((question) => {
+                                const name = `${sentenceToCamelCase(question)}`;
+                                const isErrored = errorFields.has(name);
+                                return (
+                                    <TableHeaderCell
+                                        collapsing
+                                        style={{
+                                            width: pixelWidth + "px",
+                                            wordWrap: "break-word",
+                                            textAlign: "center",
+                                            verticalAlign: "bottom",
+                                        }}
+                                        key={question}
                                     >
-                                        <Rating
-                                            maxRating={scale}
-                                            defaultRating={
-                                                selections[question][student] ||
-                                                ""
-                                            }
-                                            clearable
-                                            icon={icon}
-                                            onRate={(_, data) =>
-                                                handleRate(
-                                                    student,
-                                                    question,
-                                                    data.rating,
-                                                )
-                                            }
-                                        />
-                                        <input
-                                            type="hidden"
-                                            name={`Table-${sentenceToCamelCase(question)}-${student}`}
-                                            value={
-                                                selections[question][student] ||
-                                                0
-                                            }
-                                            required={required}
-                                        />
-                                        {
-                                            scale === 3 &&
-                                            <input
-                                                type="hidden"
-                                                name={`Scale-${sentenceToCamelCase(question)}-${student}`}
-                                                value={1}
-                                                required={required}
-                                            />
-                                        }
+                                        <Header as={"h4"}>
+                                            <HeaderContent
+                                                as={isErrored ? "i" : null}
+                                            >
+                                                {isErrored && (
+                                                    <Icon
+                                                        fitted
+                                                        name={"warning circle"}
+                                                        color={"red"}
+                                                    />
+                                                )}{" "}
+                                                {question}
+                                            </HeaderContent>
+                                        </Header>
+                                    </TableHeaderCell>
+                                );
+                            })}
+                        </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                        {students.map((student) => (
+                            <>
+                                <TableRow key={student}>
+                                    <TableCell>
+                                        <Header as="h4"> {student} </Header>
+                                        {/* <Label size='large' basic>{student}</Label> */}
                                     </TableCell>
-                                ))}
-                            </TableRow>
-                            {feedback && (
-                                <TableRow key={student + "feedback"}>
-                                    <TableCell />
                                     {questions.map((question) => (
                                         <TableCell
-                                            key={
-                                                student + question + "feedback"
-                                            }
+                                            key={student + question}
                                             textAlign="center"
                                         >
-                                            <QuestionPeerFeedback
-                                                isInline={true}
-                                                questions={[question]}
-                                                required={required}
-                                                errorFields={errorFields}
-                                                students={[student]}
+                                            <Rating
+                                                maxRating={scale}
+                                                defaultRating={
+                                                    selections[question][student] ||
+                                                    ""
+                                                }
+                                                clearable
+                                                icon={icon}
+                                                onRate={(_, data) =>
+                                                    handleRate(
+                                                        student,
+                                                        question,
+                                                        data.rating,
+                                                    )
+                                                }
                                             />
+                                            <input
+                                                type="hidden"
+                                                name={`Table-${sentenceToCamelCase(question)}-${student}`}
+                                                value={
+                                                    selections[question][student] ||
+                                                    0
+                                                }
+                                                required={required}
+                                            />
+                                            {
+                                                scale === 3 &&
+                                                <input
+                                                    type="hidden"
+                                                    name={`Scale-${sentenceToCamelCase(question)}-${student}`}
+                                                    value={1}
+                                                    required={required}
+                                                />
+                                            }
                                         </TableCell>
                                     ))}
                                 </TableRow>
-                            )}
-                        </>
-                    ))}
-                </TableBody>
-            </Table>
+                                {feedback && (
+                                    <TableRow key={student + "feedback"}>
+                                        <TableCell />
+                                        {questions.map((question) => (
+                                            <TableCell
+                                                key={
+                                                    student + question + "feedback"
+                                                }
+                                                textAlign="center"
+                                            >
+                                                <QuestionPeerFeedback
+                                                    isInline={true}
+                                                    questions={[question]}
+                                                    required={required}
+                                                    errorFields={errorFields}
+                                                    students={[student]}
+                                                />
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                )}
+                            </>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 }
@@ -329,10 +331,9 @@ export function QuestionMoodRating({
             [student]: rating,
         });
     };
-    const numColumns = levels.length + 1;
 
     return (
-        <div>
+        <div style={{ width: "100%"}}>
             <Header as="h2" content={question} textAlign="left" dividing>
                 {question + " "}
                 {required && (
@@ -345,70 +346,90 @@ export function QuestionMoodRating({
                     const name = `Mood-${sentenceToCamelCase(question)}-${student}`;
                     const isErrored = errorFields.has(name);
                     return (
-                        <>
-                            <GridRow key={student} columns={numColumns}>
-                                <GridColumn
-                                    key={`col-${student}`}
-                                    style={{ textAlign: "left" }}
-                                >
-                                    <Header as={"h3"}>
-                                        {isErrored && (
-                                            <Icon
-                                                size="tiny"
-                                                name={"exclamation circle"}
-                                                color={"red"}
-                                            />
-                                        )}
-                                        <HeaderContent
-                                            as={isErrored ? "i" : null}
-                                            content={student}
+                        <div
+                            key={student}
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                border: "1px solid #ddd",
+                                borderRadius: "10px",
+                                padding: "10px",
+                                marginBottom: "10px",
+                                overflowX: "auto",
+                            }}
+                        >
+                            {/* Student Name */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    paddingBottom: "8px",
+                                }}
+                            >
+                                <Header as={"h3"} style={{ fontSize: "1.2rem" }}>
+                                    {isErrored && (
+                                        <Icon
+                                            size="tiny"
+                                            name={"exclamation circle"}
+                                            color={"red"}
                                         />
-                                    </Header>
-                                </GridColumn>
+                                    )}
+                                    <Header.Content
+                                        as={isErrored ? "i" : null}
+                                        content={student}
+                                    />
+                                </Header>
+                            </div>
+
+                            {/* Rating Levels */}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                    justifyContent: "center",
+                                }}
+                            >
                                 {levels.map((level, index) => (
-                                    <GridColumn
+                                    <div
                                         key={`col-${student}-${index}`}
                                         style={{
                                             textAlign: "center",
                                             display: "flex",
                                             flexDirection: "column",
+                                            alignItems: "center",
+                                            minWidth: "80px",
                                         }}
                                     >
                                         <Radio
                                             style={{ margin: "8px auto" }}
                                             name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                                             value={index}
-                                            checked={
-                                                selections[student] === index
-                                            }
+                                            checked={selections[student] === index}
                                             onChange={() =>
                                                 handleSelection(student, index)
                                             }
                                             required={required}
                                         />
-                                        {
-                                            levels.length === 3 &&
-                                            <input
-                                                type="hidden"
-                                                name={`Scale-${sentenceToCamelCase(question)}-${student}`}
-                                                value={1}
-                                                required={required}
-                                            />
-                                        }
                                         {level}
-                                    </GridColumn>
+                                    </div>
                                 ))}
-                            </GridRow>
+                            </div>
+
+                            {/* Feedback Section */}
                             {feedback && (
-                                <QuestionPeerFeedback
-                                    isInline={true}
-                                    questions={[question]}
-                                    required={required}
-                                    students={[student]}
-                                    errorFields={errorFields}
-                                />
+                                <div style={{ marginTop: "10px" }}>
+                                    <QuestionPeerFeedback
+                                        isInline={true}
+                                        questions={[question]}
+                                        required={required}
+                                        students={[student]}
+                                        errorFields={errorFields}
+                                    />
+                                </div>
                             )}
-                        </>
+                        </div>
                     );
                 })}
             </Grid>

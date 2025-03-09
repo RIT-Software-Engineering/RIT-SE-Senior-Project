@@ -8,7 +8,7 @@ import ActionTable from "./ActionTable";
 export default function ActionEditor(props) {
     const [actions, setActionsData] = useState([]);
 
-    useEffect(() => {
+    const getActionData = () =>{
         SecureFetch(config.url.API_GET_ACTIONS)
             .then((response) => response.json())
             .then((actionsData) => {
@@ -18,6 +18,10 @@ export default function ActionEditor(props) {
                 setActionsData([]); //unable to get actions, semester is null
                 alert("Failed to get actions data " + error + " \n No actions will be displayed");
             });
+    }
+
+    useEffect(() => {
+        getActionData();
     }, []);
 
     let semesterPanels = [];
@@ -31,7 +35,7 @@ export default function ActionEditor(props) {
             semesterMap[actionData.semester].push(actionData);
         }
         for (const [key, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(<ActionTable key={key} actions={value} semesterData={props.semesterData} />);
+            semesterPanels.push(<ActionTable key={key} actions={value} semesterData={props.semesterData} callback={getActionData}/>);
         }
     }
 
@@ -54,6 +58,7 @@ export default function ActionEditor(props) {
                     header={"Create Action/Announcement"}
                     create={true}
                     key={"createAction"}
+                    callback={getActionData}
                 />
             </div>
         </div>
