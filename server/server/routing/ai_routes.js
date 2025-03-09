@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const UserAuth = require("./user_auth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 let key = process.env.GOOGLE_API_KEY;
@@ -83,7 +84,7 @@ async function provide_summary(studentFeedback) {
 }
 
 module.exports = () => {
-  router.post("/GenerateSummary", (req, res, next) => {
+  router.post("/GenerateSummary", [UserAuth.isSignedIn], (req, res, next) => {
     const context = req.body.context;
 
     provide_summary(context)
