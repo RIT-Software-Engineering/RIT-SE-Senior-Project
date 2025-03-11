@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Accordion, Button, Dropdown, Input, DropdownMenu, DropdownItem, DropdownDivider, DropdownHeader, DropdownSearchInput, Label } from "semantic-ui-react";
+import { Button, Dropdown, Input, DropdownMenu, DropdownItem, DropdownDivider, DropdownHeader, Label } from "semantic-ui-react";
 import { config, USERTYPES } from '../functions/constants';
 import { SecureFetch } from '../functions/secureFetch';
 import { UserContext } from "../functions/UserContext";
@@ -102,12 +102,12 @@ export default function AdminView() {
     setSearchCoaches(Object.values(coaches).filter((coach) => {
       if (coach.fname.toLowerCase().includes(searchVal.toLowerCase()) 
         || coach.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return coach; }
+        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return coach; } return null;
     }))
     setSearchStudents(Object.values(students).filter((student) => {
       if (student.fname.toLowerCase().includes(searchVal.toLowerCase())
         || student.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return student; }
+        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return student; } return null;
     }))
   }
 
