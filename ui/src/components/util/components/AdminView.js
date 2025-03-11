@@ -142,7 +142,7 @@ export default function AdminView() {
             <DropdownDivider />
             <DropdownHeader content='Coaches' />
             <DropdownMenu scrolling>
-              {_.sortBy(Object.values(searchCoaches), ["type", "fname", "lname"]).map((coach) => (
+              {_.sortBy(Object.values(searchCoaches), ["fname", "lname"]).map((coach) => (
                 <DropdownItem 
                   key={coach.system_id}
                   text={`${coach.fname} ${coach.lname} (${coach.system_id})`}
@@ -154,7 +154,7 @@ export default function AdminView() {
             <DropdownDivider />
             <DropdownHeader content='Students' />
             <DropdownMenu scrolling>
-              {_.sortBy(Object.values(searchStudents), ["type", "fname", "lname"]).map((student) => (
+              {_.sortBy(Object.values(searchStudents), ["fname", "lname"]).map((student) => (
                 <DropdownItem 
                   key={student.system_id}
                   text={`${student.fname} ${student.lname} (${student.system_id})`}
