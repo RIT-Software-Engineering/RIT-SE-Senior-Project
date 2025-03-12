@@ -32,9 +32,11 @@ _**On first login, new user must change password by using the `passwd` command**
 5. Add user to pm2 group: `usermod -aG pm2 USERNAME`
 6. Paste `alias pm2='env HOME=/home/website/RIT-SE-Senior-Project/server pm2'` into the bottom of `~/.bashrc`
 
-## Install locally
+## Install/Develop locally
 
 Run `install.bat` to get dependencies set up locally
+
+Please install the Prettier extension on your IDE ([VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) ([Intelij](https://plugins.jetbrains.com/plugin/10456-prettier)).
 
 ## Run locally
 
