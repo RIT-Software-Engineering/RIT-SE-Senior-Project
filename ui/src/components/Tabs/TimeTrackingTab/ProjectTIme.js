@@ -44,6 +44,7 @@ export default function ProjectTime(props) {
     const resetKey = () => {
         props.reset()
     }
+    console.log(props);
     return(
         <div className="accordion-button-group">
             <Accordion
@@ -167,7 +168,7 @@ export default function ProjectTime(props) {
 
             />
             <div className="accordion-buttons-container">
-                <TimeLogPanel callback = {resetKey} header="Log Time"/>
+                <TimeLogPanel callback = {resetKey} header="Log Time" viewOnly={props.viewOnly}/>
             </div>
         </div>
 

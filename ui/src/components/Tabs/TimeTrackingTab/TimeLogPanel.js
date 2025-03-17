@@ -49,7 +49,7 @@ export default function TimeLogPanel(props) {
             formFieldArray={formFieldArray}
             create={initialState.time_log_id === ""}
             button="calendar plus"
-
+            viewOnly={props.viewOnly}
         />
     );
 }

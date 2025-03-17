@@ -156,7 +156,7 @@ export default function TimeLog(props) {
                                                 <>
                                                     {projects.filter(log => log.semester === sem.semester_id).map((proj,counter) => {
                                                         return(
-                                                            <ProjectTime reset ={resetKey} semester = {sem} proj= {proj} studentData = {students} timeStats = {timeStats} timeLogs = {timeLogs}></ProjectTime>
+                                                            <ProjectTime reset ={resetKey} semester = {sem} proj= {proj} studentData = {students} timeStats = {timeStats} timeLogs = {timeLogs} viewOnly={props.viewOnly}></ProjectTime>
                                                         );
                                                     })}
                                                 </>

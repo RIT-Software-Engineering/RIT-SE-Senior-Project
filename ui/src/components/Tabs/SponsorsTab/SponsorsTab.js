@@ -168,7 +168,7 @@ export default function SponsorsTab(props) {
                                 <TableCell>{sponsor.type}</TableCell>
                                 <TableCell>{status}</TableCell>
                                 <TableCell>
-                                    <SponsorEditor summaryView={summaryView} sponsor={sponsor} callback={getPaginationData}/>
+                                    <SponsorEditor summaryView={summaryView} sponsor={sponsor} callback={getPaginationData} viewOnly = {props.viewOnly}/>
                                 </TableCell>
                             </TableRow>
                         );

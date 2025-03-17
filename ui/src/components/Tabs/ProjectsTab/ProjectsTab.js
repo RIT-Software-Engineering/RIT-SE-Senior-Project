@@ -70,6 +70,7 @@ export default function ProjectsTab(props) {
             noAccordion
             semesterData={props.semesterData}
             viewOnly
+            viewOnlyArchive={props.viewOnly}
           />
         </>
       )}

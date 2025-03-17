@@ -360,13 +360,14 @@ export default function TimeTableEditor(props) {
                 </Modal.Content>
 
                 <Modal.Actions>
-                    <Button
+                    {props.viewOnly ? (<Button content={"View Only Role"}/>):(<Button
                         content={ "Submit"}
                         labelPosition="right"
                         icon="check"
                         positive
                         onClick={() => handleSubmit()}
-                    />
+                    />)
+                    }
                     <Button onClick={() => setOpen(false)}>Close</Button>
 
                 </Modal.Actions>
