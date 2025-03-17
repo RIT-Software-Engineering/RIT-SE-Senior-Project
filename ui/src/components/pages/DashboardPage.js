@@ -29,7 +29,6 @@ export default function DashboardPage() {
     SecureFetch(config.url.API_WHO_AM_I)
       .then((response) => response.json())
       .then((responseUser) => {
-        console.log(responseUser)
         setUser({
           user: responseUser.system_id,
           role: responseUser.type,
@@ -41,7 +40,7 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
-          view_only: responseUser.view_only,
+          view_only: responseUser.view_only=="TRUE" ? true: false,
         });
       });
     SecureFetch(config.url.API_GET_SEMESTERS)
@@ -55,10 +54,10 @@ export default function DashboardPage() {
   }, []);
 
   let panes = [];
-
+  console.log(user)
   switch (user.role) {
     case "admin":
-      if(user.view_only == "FALSE"){
+      if(!user.view_only){
         panes.push({
           menuItem: {
             key: "Admin-Tab",
@@ -131,7 +130,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} />
+              <ProjectsTab semesterData={semesterData} viewOnly={user.view_only}/>
             </Tab.Pane>
           ),
         },
