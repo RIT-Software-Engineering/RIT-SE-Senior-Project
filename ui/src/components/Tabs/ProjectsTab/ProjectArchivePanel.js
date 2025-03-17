@@ -269,6 +269,7 @@ export default function ProjectArchivePanel(props) {
       header={(newArchive ? "Create Website" : "Edit Website")}
       button={(newArchive ? "plus" : "edit")}
       callback={() => { loadArchiveData(props.project) }}
+      viewOnly={props.viewOnly}
     />
   );
 }

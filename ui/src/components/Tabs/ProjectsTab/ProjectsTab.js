@@ -57,6 +57,7 @@ export default function ProjectsTab(props) {
       <Proposals
         noAccordion
         viewOnly
+        viewOnlyArchive={props.viewOnly}
         proposalData={myProposalData}
         semesterData={props.semesterData}
         reloadSemesters={props.reloadSemesters}
