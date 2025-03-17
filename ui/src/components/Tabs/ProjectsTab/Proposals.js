@@ -121,6 +121,7 @@ export default function Proposals(props) {
                     semesterMap={semesterMap}
                   />
                   <ProjectArchivePanel
+                    viewOnly={props.viewOnlyArchive}
                     project={proposal}
                   />
                   <WebsiteViewerModal

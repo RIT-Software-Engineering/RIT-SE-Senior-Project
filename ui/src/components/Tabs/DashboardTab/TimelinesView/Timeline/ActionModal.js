@@ -478,7 +478,7 @@ export default function ActionModal(props) {
       );
 
   const renderSubmitButton = () => {
-    if(user.view_only == 'TRUE'){
+    if(user.view_only){
       return "View Only Role"
     }
     switch (props.action_target) {
