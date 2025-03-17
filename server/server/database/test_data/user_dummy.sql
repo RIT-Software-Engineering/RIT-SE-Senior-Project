@@ -4,6 +4,8 @@ VALUES
     ('coachC', '2019Spring', 'Coach', 'coachC@rit.edu', 'coach', NULL, NULL, '', 'FALSE'),
     ('mwahaha', 'SUPER DUPER', 'ADMIN', 'adminB@rit.edu', 'admin', NULL, NULL, '', 'FALSE'),
     ('ViewOnly', 'ViewOnly', 'Admin', 'viewonly@admin.edu', 'admin', NULL, NULL, '', 'TRUE'),
+    ('ViewOnlyCoach', 'ViewOnly', 'Coach', 'viewonly@Coach.edu', 'coach', NULL, NULL, '', 'TRUE'),
+    ('ViewOnlyStu', 'ViewOnly', 'Student', 'viewonly@Student.edu', 'student', NULL, NULL, '', 'TRUE'),
     ('def123', 'Dude', 'Bro', 'def123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', '', 'FALSE'),
     ('hij123', 'Jack', 'James', 'hij123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB', '', 'FALSE'),
     ('klm123', 'Gal', 'Girl', 'klm123@rit.edu', 'student', 3, NULL, '', 'FALSE'),
