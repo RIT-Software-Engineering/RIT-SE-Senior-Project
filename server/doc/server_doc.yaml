@@ -4,7 +4,12 @@ info:
   version: '1.7.0'
 
 servers:
+  - url: https://seniorproject.se.rit.edu/
+    description: Production
+  - url: https://seniorproject-sandbox.se.rit.edu/
+    description: Sandbox (Runs most recent dev branch release)
   - url: http://localhost:3000
+    description: Local
 
 components:
   schemas:
@@ -318,7 +323,7 @@ components:
           type: string
           format: date-time
 
-
+# TODO: hook up schemas to paths
 paths:
   /saml/whoami:
     get:
