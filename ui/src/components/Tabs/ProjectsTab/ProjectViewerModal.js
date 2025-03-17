@@ -60,20 +60,20 @@ export default function ProjectViewerModal(props) {
             <b>Phone:</b> {decode(props.project.contact_phone||'')} <br />
 
             <h3>Project Info</h3>
-            <b>Original Submission Date:</b> {decode(props.project.submission_datetime||'')} <br />
-            <b>Background info:</b> {decode(props.project.background_info||'')} <br />
-            <b>Description:</b> {decode(props.project.project_description||'')} <br />
-            <b>Scope:</b> {decode(props.project.project_scope||'')} <br />
-            <b>Challenges:</b> {decode(props.project.project_challenges||'')} <br />
-            <b>Constraints & Assumptions:</b> {decode(props.project.constraints_assumptions||'')} <br />
-            <b>Provided Resources:</b> {decode(props.project.sponsor_provided_resources||'')} <br />
-            <b>Search keywords:</b> {decode(props.project.project_search_keywords||'')} <br />
-            <b>Deliverables:</b> {decode(props.project.sponsor_deliverables||'')} <br />
-            <b>Proprietary Info:</b> {decode(props.project.proprietary_info||'')} <br />
-            <b>Sponsor Available:</b> {decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"} <br />
-            <b>Assignment of Rights:</b> {decode(props.project.assignment_of_rights||'')} <br />
-            <b>Semester:</b> {decode(props.semesterMap[props.project.semester]||'')} <br />
-            <b>Status:</b> {decode(props.project.status||'')} <br />
+            <b>Original Submission Date:</b><pre>{decode(props.project.submission_datetime||'')}</pre>
+            <b>Background info:</b><pre>{decode(props.project.background_info||'')}</pre>
+            <b>Description:</b><pre>{decode(props.project.project_description||'')}</pre>
+            <b>Scope:</b><pre>{decode(props.project.project_scope||'')}</pre>
+            <b>Challenges:</b><pre>{decode(props.project.project_challenges||'')}</pre>
+            <b>Constraints & Assumptions:</b><pre>{decode(props.project.constraints_assumptions||'')}</pre>
+            <b>Provided Resources:</b><pre>{decode(props.project.sponsor_provided_resources||'')}</pre>
+            <b>Search keywords:</b><pre>{decode(props.project.project_search_keywords||'')}</pre>
+            <b>Deliverables:</b><pre>{decode(props.project.sponsor_deliverables||'')}</pre>
+            <b>Proprietary Info:</b><pre>{decode(props.project.proprietary_info||'')}</pre>
+            <b>Sponsor Available: </b>{decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"}<br />
+            <b>Assignment of Rights: </b>{decode(props.project.assignment_of_rights||'')}<br />
+            <b>Semester: </b>{decode(props.semesterMap[props.project.semester]||'')}<br />
+            <b>Status: </b>{decode(props.project.status||'')}<br />
 
             <h3>Attachments</h3>
             {props.project.attachments ? formattedAttachments(props.project)?.map(file => {
