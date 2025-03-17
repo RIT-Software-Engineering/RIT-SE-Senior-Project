@@ -1,0 +1,116 @@
+paths:
+  /saml/whoami:
+    get:
+      summary: Get user info
+      description: Get user info based on their system_id
+      tags: 
+        - SAML
+      operationId: whoami
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  system_id:
+                    type: string
+                    description: Unique system ID of the user
+                  type:
+                    type: string
+                    description: Type of user (e.g., admin, coach, student)
+                  fname:
+                    type: string
+                    description: First name of the user
+                  lname:
+                    type: string
+                    description: Last name of the user
+                  semester_group:
+                    type: string
+                    description: Semester group of the user
+                  project:
+                    type: string
+                    description: Project of the user
+                  last_login:
+                    type: string
+                    description: Last login of the user
+                  prev_login:
+                    type: string
+                    description: Previous login of the user  
+        '401':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: user does not exist
+
+  /saml/DevOnlyLastLogin:
+    post:
+      summary: Updates last login
+      description: Updates the last login of dev users when in development
+      tags: 
+        - SAML
+      operationId: DevOnlyLastLogin
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /saml/login:
+    get:
+      summary: Get user info
+      description: Get user info
+      tags: 
+        - SAML
+      operationId: login
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /saml/acs/consume:
+    post:
+      summary: Get user info
+      description: Get user info
+      tags: 
+        - SAML
+      operationId: consume
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                
+  /saml/logout:
+    get:
+      summary: Logs out user
+      description: Logs our user
+      tags: 
+        - SAML
+      operationId: logout
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object

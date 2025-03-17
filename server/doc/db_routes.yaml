@@ -1,0 +1,798 @@
+paths:
+  # User Management
+  /db/createUser:
+    post:
+      summary: Create a user
+      description: Create a user
+      tags:
+        - DB
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Users'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/Users'
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/batchCreateUser:
+    post:
+      summary: Create multiple users
+      description: Create multiple users
+      tags:
+        - DB
+      operationId: batchCreateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schemas.yaml#/components/schemas/Users'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/editUser:
+    post:
+      summary: Edit a user
+      description: Edit a user
+      tags:
+        - DB
+      operationId: editUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Users'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  
+
+  /db/getActiveUsers:
+    get:
+      summary: Get all active users
+      description: Get all active users
+      tags:
+        - DB
+      operationId: getActiveUsers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+
+  /db/DevOnlyGetAllUsersForLogin:
+    get:
+      summary: Get all users for login
+      description: Get all users for login **ONLY IN DEVELOPMENT**
+      tags:
+        - DB
+      operationId: DevOnlyGetAllUsersForLogin
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+
+  # Sponsor and Coach Information
+  /db/selectAllSponsorInfo:
+    get:
+      summary: Get all sponsor information
+      description: Get all sponsor information
+      tags:
+        - DB
+      operationId: selectAllSponsorInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Sponsors'
+
+  /db/selectAllCoachInfo:
+    get:
+      summary: Get all coach info
+      description: Get all coach info
+      tags:
+        - DB
+      operationId: selectAllCoachInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getActiveCoaches:
+    get:
+      summary: Get active coaches
+      description: Get active coaches
+      tags:
+        - DB
+      operationId: getActiveCoaches
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getProjectCoaches:
+    get:
+      summary: Get project coaches
+      description: Get project coaches
+      tags:
+        - DB
+      operationId: getProjectCoaches
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # Student Information
+  /db/selectAllStudentInfo:
+    get:
+      summary: Get all student information
+      description: Get all student information
+      tags:
+        - DB
+      operationId: selectAllStudentInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+
+  /db/selectAllNonStudentInfo:
+    get:
+      summary: Get all non-student info
+      description: Get all non-student info
+      tags:
+        - DB
+      operationId: selectAllNonStudentInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getSemesterStudents:
+    get:
+      summary: Get all semester students
+      description: Get all semester students
+      tags:
+        - DB
+      operationId: getSemesterStudents
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getProjectStudents:
+    get:
+      summary: Get project students
+      description: Get project students
+      tags:
+        - DB
+      operationId: getProjcectStudents
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getProjectStudentNames:
+    get:
+      summary: Get project student names
+      description: Get project student names
+      tags:
+        - DB
+      operationId: getProjectStudentNames
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # Project Management
+  /db/getActiveProjects:
+    get:
+      summary: Get active projects
+      description: Get active projects
+      tags:
+        - DB
+      operationId: getActiveProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getArchiveProjects:
+    get:
+      summary: Get archived projects
+      description: Get archived projects
+      tags:
+        - DB
+      operationId: getArchiveProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Archive'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getCandidateProjects:
+    get:
+      summary: Get candidate projects
+      description: Get candidate projects
+      tags:
+        - DB
+      operationId: getCandidateProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getMyProjects:
+    get:
+      summary: Get my projects
+      description: Get my projects
+      tags:
+        - DB
+      operationId: getMyProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Invalid user type
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getSemesterProjects:
+    get:
+      summary: Get semester projects
+      description: Get semester projects
+      tags:
+        - DB
+      operationId: getSemesterProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Invalid user type
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getProjects:
+    get:
+      summary: Get projects
+      description: Get projects
+      tags:
+        - DB
+      operationId: getProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/editProject:
+    post:
+      summary: Edit project
+      description: Edit project
+      tags:
+        - DB
+      operationId: editProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Projects'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/Projects'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/updateProposalStatus:
+    post:
+      summary: Update proposal status
+      description: Update proposal status
+      tags:
+        - DB
+      operationId: updateProposalStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # Archive Management
+  /db/getActiveArchiveProjects:
+    get:
+      summary: Get active archived projects
+      description: Get active archived projects
+      tags:
+        - DB
+      operationId: getActiveArchivedProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Archive'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/editArchive:
+    post:
+      summary: Edit archive
+      description: Edit archive
+      tags:
+        - DB
+      operationId: editArchive
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Archive'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/Archive'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/createArchive:
+    post:
+      summary: Create archive
+      description: Create archive
+      tags:
+        - DB
+      operationId: createArchive
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/Archive'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/Archive'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/editArchiveStudent:
+    post:
+      summary: Edit archive student
+      description: Edit archive student
+      tags:
+        - DB
+      operationId: editArchiveStudent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/createArchiveStudent:
+    post:
+      summary: Create archive student
+      description: Create archive student
+      tags:
+        - DB
+      operationId: createArchiveStudent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # Time Logging
+  /db/createTimeLog:
+    post:
+      summary: Create time log
+      description: Create time log
+      tags:
+        - DB
+      operationId: createTimeLog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas.yaml#/components/schemas/TimeLog'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/TimeLog'
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/removeTime:
+    post:
+      summary: Remove time
+      description: Remove time
+      tags:
+        - DB
+      operationId: removeTime
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time_log_id:
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: No Id Provided
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/avgTime:
+    get:
+      summary: Get average time
+      description: Get average time
+      tags:
+        - DB
+      operationId: avgTime
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: number
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # Miscellaneous
+  /db/getProjectMembers:
+    get:
+      summary: Get all project members
+      description: Get all project members
+      tags:
+        - DB
+      operationId: getProjectMembers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/components/schemas/Users'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db/getProjectDates:
+    get:
+      summary: Get project dates
+      description: Get project dates
+      tags:
+        - DB
+      operationId: getProjectDates
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
