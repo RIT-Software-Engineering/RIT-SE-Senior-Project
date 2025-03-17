@@ -110,6 +110,7 @@ export default function SponsorNoteEditor(props){
             data.sponsor_id = props.sponsor_id;
             return data;
         }}
+        viewOnly={props.viewOnly}
         callback={getSponsorNotesData}
     />
 

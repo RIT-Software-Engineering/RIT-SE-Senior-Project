@@ -129,7 +129,7 @@ export default function SponsorEditor(props){
         }
     ]
 
-    let noteEditor = (<SponsorNoteEditor sponsor_id={props?.sponsor?.sponsor_id || ""}/>);
+    let noteEditor = (<SponsorNoteEditor sponsor_id={props?.sponsor?.sponsor_id || ""} viewOnly={props.viewOnly}/>);
 
     let trigger = <Button icon={"edit"} />;
 

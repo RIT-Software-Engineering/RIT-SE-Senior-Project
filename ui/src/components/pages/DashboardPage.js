@@ -89,7 +89,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SponsorsTab />
+              <SponsorsTab viewOnly ={user.view_only}/>
             </Tab.Pane>
           ),
         },
@@ -142,7 +142,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-                <TimeLog semesterData={semesterData} />
+                <TimeLog semesterData={semesterData} viewOnly={user.view_only}/>
                 <ActionLogs semesterData={semesterData} />
 
             </Tab.Pane>
