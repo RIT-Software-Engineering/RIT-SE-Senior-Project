@@ -2,7 +2,8 @@
     height: var(--header-height);
     padding-top: 2em;
     padding-bottom: 1em;
-    background-color: #f76902;
+    background-color: #f76902;  /* Light mode header background */
+    transition: background-color 0.3s ease;
 }
 
 #header .container {
@@ -10,12 +11,25 @@
     justify-content: space-between;
     align-items: center;
     height: 100%;
+    transition: color 0.3s ease;
 }
 
 #subHeader {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+/* Dark mode styles */
+.dark-mode #header {
+    background-color: #333;  /* Dark mode header background */
+}
+
+.dark-mode #header .container,
+.dark-mode #subHeader {
+    color: #e0e0e0;
+}
+
+/* Media queries remain unchanged */
 
 @media only screen and (max-width: 768px) {
     #nav-buttons {

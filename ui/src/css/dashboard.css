@@ -257,7 +257,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.25em
+    gap: 0.25em;
 }
 
 .announcement {
@@ -333,3 +333,61 @@
 .hidden {
     visibility: collapse;
 }
+
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-mode a {
+  color: #90caf9 !important;
+}
+
+.dark-mode .gantt {
+  border-color: #444 !important;
+  background-color: #1e1e1e !important;
+}
+
+.dark-mode .gantt-container {
+  background-color: #1e1e1e !important;
+}
+
+.dark-mode .gantt-header {
+  background-color: #1e1e1e !important;
+  border-left-color: #444 !important;
+  border-bottom-color: #444 !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-mode .sidebar {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-top-color: #444 !important;
+  border-right-color: #444 !important;
+}
+
+.dark-mode .action-bar {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.dark-mode .announcement {
+  background-color: #333 !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.dark-mode .announcement-container-wrapper {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #444 !important;
+}
+
+/* Ensure pagination container spacing remains consistent */
+.pagination-container {
+  padding-top: 1em;
+}
+
+

@@ -1,9 +1,10 @@
 #footer {
     min-height: var(--footer-height);
-    background-color: black;
-    color: white;
+    background-color: white;  /* Light mode background */
+    color: black;             /* Light mode text */
     padding-top: 2em;
     padding-bottom: 1em;
+    text-align: left;
 }
 
 #bringMeDown {
@@ -22,10 +23,12 @@
     text-align: right;
 }
 
-#footer {
+#copyright {
     text-align: left;
 }
 
-#copyright {
-    text-align: left;
+/* Dark Mode Overrides */
+.dark-mode #footer {
+    background-color: #1e1e1e; /* Dark background for dark mode */
+    color: #e0e0e0;            /* Lighter text for dark mode */
 }

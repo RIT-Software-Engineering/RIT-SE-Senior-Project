@@ -1,105 +1,160 @@
-:root {
-  --header-height: 7em;
-  --footer-height: 7em;
-  --page-padding: 1.5em;
-  --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
-#page {
-  min-height: calc(
-    100vh - var(--header-height) - var(--footer-height) - var(--page-padding) -
-      var(--page-padding)
-  );
-  margin: var(--page-padding) 0 3em 0;
+.dark-mode a {
+  color: #90caf9;
 }
 
-.overviewText {
-  font-size: 16pt;
+.dark-mode #footer {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
 }
 
-.pagination-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.dark-mode .ui.button {
+  background-color: #424242;
+  color: #fff;
+  border: 1px solid #fff;
 }
 
-.accordion-button-group {
-  display: flex;
-  flex-direction: column;
+.dark-mode .ui.button:hover {
+  background-color: #333;
 }
 
-.accordion {
-  height: auto !important;
-  margin-top: 0 !important;
-  margin-bottom: 1em !important;
+body.dark-mode .ui.header {
+  color: #ffffff !important;
 }
 
-.accordion-button-group .accordion-buttons-container {
-  position: absolute;
-  right: 1em;
-  margin: 2px 1em !important;
+.dark-mode .ui.segment,
+.dark-mode .ui.tab {
+    background-color: #222 !important; /* Dark background */
+    color: #fff !important; /* Light text */
 }
 
-/* For nested accordion with depth of 1 */
-.accordion .accordion-button-group .accordion-buttons-container {
-  position: absolute;
-  right: 1em;
-  margin: 2px 2em !important;
+.dark-mode .ui.menu {
+    background-color: #333 !important;
+    color: white !important;
 }
 
-/* 
- * For nested accordion with depth of 2 
- * (please for the love of all that is holy, do not have accordions nested more than 2 deep) 
- */
-.accordion .accordion .accordion-button-group .accordion-buttons-container {
-  position: absolute;
-  /* right: 1em;
-  margin: 2px 3em !important; */
+.dark-mode .ui.tabular.menu .item {
+    color: #bbb !important; /* Light text */
 }
 
-.accordion-buttons-container > * {
-  margin: 0 0 0 0 !important;
-  border-radius: 0 !important;
+.dark-mode .ui.tabular.menu .active.item {
+    background-color: #444 !important; /* Darker background */
+    color: white !important;
 }
 
-.accordion-buttons-container :first-child {
-  margin: 0 0 0 0 !important;
-  /* border-top-left-radius: 0.28571429rem !important;
-  border-bottom-left-radius: 0.28571429rem !important; */
+.dark-mode .ui.pane {
+    background-color: #222 !important;
+    color: #ddd !important;
+}
+.dark-mode .semester-editor {
+  background-color: #222 !important;
+  color: white !important;
 }
 
-.accordion-buttons-container :last-child {
-  margin: 0 0 0 0 !important;
-  /* border-top-right-radius: 0.28571429rem !important;
-  border-bottom-right-radius: 0.28571429rem !important; */
+.dark-mode .ui.segment,
+.dark-mode .ui.menu,
+.dark-mode .ui.modal {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
 }
 
-.fake-a {
-  color: #1e70bf;
-  text-decoration: none;
-  cursor: pointer;
+.dark-mode .ui.table {
+    background-color: #282828 !important;
+    color: white !important;
 }
 
-.spacer {
-  flex-grow: 1;
+.dark-mode .ui.button {
+    background-color: #444 !important;
+    color: white !important;
 }
 
-button.ui.button,
-.ui.icon.button,
-.ui.icon.buttons,
-.button,
-a.ui.button {
-  background-color: #f8f9fa;
-  color: #212529;
-  padding: 10px 20px;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+.dark-mode .ui.input > input {
+    background-color: #333 !important;
+    color: white !important;
 }
 
-*:not(i) {
-  font-family: var(--fonts) !important;
+
+/* Ensure modals rendered in a portal follow dark mode */
+body.dark-mode .ui.modal {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border: none !important;
 }
 
-.pagination-container {
-  padding-top: 1em;
+body.dark-mode .ui.modal .header,
+body.dark-mode .ui.modal .content,
+body.dark-mode .ui.modal .actions {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
 }
+
+body.dark-mode .ui.modal .button {
+  background-color: #424242 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+body.dark-mode .ui.modal .button:hover {
+  background-color: #333 !important;
+}
+
+body.dark-mode .ui.segment.stackable.padded.grid {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: #333 !important;
+}
+
+body.dark-mode .ui.container.stackable.grid {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.modal {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.modal .header {
+  background-color: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .ui.modal .content {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.modal .actions {
+  background-color: #1e1e1e !important;
+  border-top: 1px solid #333 !important;
+}
+
+body.dark-mode .ui.segment {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.segment .column {
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.segment .ui.small.header {
+  color: #ffffff !important;
+}
+
+body.dark-mode .ui.segment p {
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.segment .column h3,
+body.dark-mode .ui.segment .column h4,
+body.dark-mode .ui.segment .column h5,
+body.dark-mode .ui.segment .column p {
+  color: #e0e0e0 !important;
+}
+
