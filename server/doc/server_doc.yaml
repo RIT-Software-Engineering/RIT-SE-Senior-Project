@@ -1,0 +1,123 @@
+openapi: '3.0.3'
+info:
+  title: API Title
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /saml/whoami:
+    get:
+      summary: Get user info
+      description: Get user info
+      tags: 
+        - SAML
+      operationId: whoami
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  system_id:
+                    type: string
+                  type:
+                    type: string
+                  fname:
+                    type: string
+                  lname:
+                    type: string
+                  semester_group:
+                    type: string
+                  project:
+                    type: string
+                  last_login:
+                    type: string
+                  prev_login:
+                    type: string
+        '401':
+          description: Unauthorized
+  /saml/DevOnlyLastLogin:
+    post:
+      summary: Updates last login
+      description: Updates the last login of dev users when in development
+      tags: 
+        - SAML
+      operationId: DevOnlyLastLogin
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+  /saml/login:
+    get:
+      summary: Get user info
+      description: Get user info
+      tags: 
+        - SAML
+      operationId: login
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /saml/acs/consume:
+    post:
+      summary: Get user info
+      description: Get user info
+      tags: 
+        - SAML
+      operationId: consume
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /saml/logout:
+    get:
+      summary: Logs out user
+      description: Logs our user
+      tags: 
+        - SAML
+      operationId: logout
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /ai/GenerateSummary:
+    post:
+      summary: Generate a summary
+      description: Generate a summary of inputed text
+      tags: 
+        - AI
+      operationId: GenerateSummary
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /db:
+
+  
