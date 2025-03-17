@@ -1,9 +1,324 @@
 openapi: '3.0.3'
 info:
-  title: API Title
-  version: '1.0'
+  title: SE Senior Project Backend Documentation
+  version: '1.7.0'
+
 servers:
-  - url: https://api.server.test/v1
+  - url: http://localhost:3000
+
+components:
+  schemas:
+    ActionLog:
+      type: object
+      properties:
+        action_log_id:
+          type: integer
+        submission_datetime:
+          type: string
+          format: date-time
+        action_template:
+          type: integer
+        system_id:
+          type: string
+        mock_id:
+          type: string
+          nullable: true
+        project:
+          type: integer
+        form_data:
+          type: string
+          nullable: true
+        files:
+          type: string
+          nullable: true
+
+    Actions:
+      type: object
+      properties:
+        action_id:
+          type: integer
+        semester:
+          type: integer
+        action_title:
+          type: string
+        action_target:
+          type: string
+        date_deleted:
+          type: string
+          nullable: true
+        short_desc:
+          type: string
+        start_date:
+          type: string
+        due_date:
+          type: string
+        page_html:
+          type: string
+        file_types:
+          type: string
+          nullable: true
+        file_size:
+          type: integer
+
+    Archive:
+      type: object
+      properties:
+        archive_id:
+          type: integer
+        project_id:
+          type: integer
+        priority:
+          type: integer
+          default: 0
+        csv:
+          type: string
+        name:
+          type: string
+        dept:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+        featured:
+          type: integer
+          default: 0
+        outstanding:
+          type: integer
+          default: 0
+        creative:
+          type: integer
+          default: 0
+        title:
+          type: string
+        team_name:
+          type: string
+        members:
+          type: string
+        sponsor:
+          type: string
+        coach:
+          type: string
+        poster_thumb:
+          type: string
+        poster_full:
+          type: string
+        archive_image:
+          type: string
+        synopsis:
+          type: string
+        keywords:
+          type: string
+        url_slug:
+          type: string
+        video:
+          type: string
+        inactive:
+          type: string
+          default: ""
+        locked:
+          type: string
+          default: ""
+
+    PageHtml:
+      type: object
+      properties:
+        html_id:
+          type: integer
+        name:
+          type: string
+        html:
+          type: string
+
+    ProjectCoaches:
+      type: object
+      properties:
+        project_id:
+          type: string
+        coach_id:
+          type: string
+
+    Projects:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        submission_datetime:
+          type: string
+          format: date-time
+        status:
+          type: string
+        display_name:
+          type: string
+        title:
+          type: string
+        organization:
+          type: string
+        primary_contact:
+          type: string
+        contact_email:
+          type: string
+        contact_phone:
+          type: string
+        attachments:
+          type: string
+        background_info:
+          type: string
+        project_description:
+          type: string
+        project_scope:
+          type: string
+        project_challenges:
+          type: string
+        constraints_assumptions:
+          type: string
+        sponsor_provided_resources:
+          type: string
+        project_search_keywords:
+          type: string
+        sponsor_deliverables:
+          type: string
+        proprietary_info:
+          type: string
+        sponsor_avail_checked:
+          type: integer
+        sponsor_alternate_time:
+          type: string
+        project_agreements_checked:
+          type: integer
+        assignment_of_rights:
+          type: string
+        team_name:
+          type: string
+        poster:
+          type: string
+        video:
+          type: string
+        website:
+          type: string
+        synopsis:
+          type: string
+        sponsor:
+          type: integer
+        semester:
+          type: integer
+
+    SemesterGroup:
+      type: object
+      properties:
+        semester_id:
+          type: integer
+        name:
+          type: string
+        dept:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+
+    SponsorNotes:
+      type: object
+      properties:
+        sponsor_note_id:
+          type: integer
+        creation_date:
+          type: string
+          format: date-time
+        note_content:
+          type: string
+        sponsor:
+          type: integer
+        author:
+          type: string
+        previous_note:
+          type: integer
+          nullable: true
+
+    Sponsors:
+      type: object
+      properties:
+        sponsor_id:
+          type: integer
+        fname:
+          type: string
+        lname:
+          type: string
+        company:
+          type: string
+        division:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        association:
+          type: string
+        type:
+          type: string
+        notes:
+          type: string
+        inActive:
+          type: integer
+          default: 0
+        doNotEmail:
+          type: integer
+          default: 0
+
+    TimeLog:
+      type: object
+      properties:
+        time_log_id:
+          type: integer
+        semester:
+          type: integer
+        submission_datetime:
+          type: string
+          format: date-time
+        system_id:
+          type: string
+        project:
+          type: string
+        mock_id:
+          type: string
+          nullable: true
+        work_date:
+          type: string
+        time_amount:
+          type: integer
+        work_comment:
+          type: string
+        active:
+          type: integer
+          default: 1
+
+    Users:
+      type: object
+      properties:
+        system_id:
+          type: string
+        fname:
+          type: string
+        lname:
+          type: string
+        email:
+          type: string
+        type:
+          type: string
+        semester_group:
+          type: integer
+        project:
+          type: string
+        active:
+          type: string
+        last_login:
+          type: string
+          format: date-time
+        prev_login:
+          type: string
+          format: date-time
+
+
 paths:
   /saml/whoami:
     get:
@@ -22,22 +337,20 @@ paths:
                 properties:
                   system_id:
                     type: string
+                    description: Unique system ID of the user
                   type:
                     type: string
+                    description: Type of user (e.g., admin, coach, student)
                   fname:
                     type: string
+                    description: First name of the user
                   lname:
                     type: string
+                    description: Last name of the user
                   semester_group:
                     type: string
-                  project:
-                    type: string
-                  last_login:
-                    type: string
-                  prev_login:
-                    type: string
-        '401':
-          description: Unauthorized
+                    description: Semester group of the user
+
   /saml/DevOnlyLastLogin:
     post:
       summary: Updates last login
@@ -99,11 +412,89 @@ paths:
 
   /ai/GenerateSummary:
     post:
-      summary: Generate a summary
-      description: Generate a summary of inputed text
+      summary: Generate summary
+      description: Generate summary
       tags: 
         - AI
       operationId: GenerateSummary
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Generated summary
+
+  /db/DevOnlyGetAllUsersForLogin:
+    get:
+      summary: Get all users for login
+      description: Get all users for login **ONLY IN DEVELOPMENT**
+      tags: 
+        - DB
+      operationId: DevOnlyGetAllUsersForLogin
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/selectAllSponsorInfo:
+    get:
+      summary: Get all sponsor information
+      description: Get all sponsor information
+      tags: 
+        - DB
+      operationId: selectAllSponsorInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sponsors'
+
+  /db/selectAllStudentInfo:
+    get:
+      summary: Get all student information
+      description: Get all student information
+      tags: 
+        - DB
+      operationId: selectAllStudentInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Users'
+
+  /db/selectAllNonStudentInfo:
+    get:
+      summary: Get all non-student info
+      description: Get all non-student info
+      tags: 
+        - DB
+      operationId: selectAllNonStudentInfo
       responses:
         '200':
           description: Success
@@ -117,7 +508,1685 @@ paths:
             application/json:
               schema:
                 type: object
-
-  /db:
-
-  
+  /db/getSemesterStudents:
+    get:
+      summary: Get all semester students
+      description: Get all semester students
+      tags: 
+        - DB
+      operationId: getSemesterStudents
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectMembers:
+    get:
+      summary: Get all project members
+      description: Get all project members
+      tags: 
+        - DB
+      operationId: getProjectMembers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:  
+            application/json:
+              schema:
+                type: object
+  /db/getActiveUsers:
+    get:
+      summary: Get all active users
+      description: Get all active users
+      tags: 
+        - DB
+      operationId: getActiveUsers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createUser:
+    post:
+      summary: Create a user
+      description: Create a user
+      tags: 
+        - DB
+      operationId: createUser
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/batchCreateUser:
+    post:
+      summary: Create multiple users
+      description: Create multiple users
+      tags: 
+        - DB
+      operationId: batchCreateUser
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editUser:
+    post:
+      summary: Edit a user
+      description: Edit a user
+      tags: 
+        - DB
+      operationId: editUser
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object  
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/removeTime:
+    post:
+      summary: Remove time
+      description: Remove time
+      tags: 
+        - DB
+      operationId: removeTime
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400': 
+          description: No Id Provided
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/avgTime:
+    get:
+      summary: Get average time
+      description: Get average time
+      tags: 
+        - DB
+      operationId: avgTime
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createTimeLog:
+    post:
+      summary: Create time log
+      description: Create time log
+      tags: 
+        - DB
+      operationId: createTimeLog
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActiveProjects:
+    get:
+      summary: Get active projects
+      description: Get active projects
+      tags: 
+        - DB
+      operationId: getActiveProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActiveCoaches:
+    get:
+      summary: Get active coaches
+      description: Get active coaches
+      tags: 
+        - DB
+      operationId: getActiveCoaches
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectCoaches:
+    get:
+      summary: Get project coaches
+      description: Get project coaches
+      tags: 
+        - DB
+      operationId: getProjectCoaches
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjcectStudents:
+    get:
+      summary: Get project students
+      description: Get project students
+      tags: 
+        - DB
+      operationId: getProjcectStudents
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectStudentNames:
+    get:
+      summary: Get project student names
+      description: Get project student names
+      tags: 
+        - DB
+      operationId: getProjectStudentNames
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/selectAlCoachInfo:
+    get:
+      summary: Get all coach info
+      description: Get all coach info
+      tags: 
+        - DB
+      operationId: selectAllCoachInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActiveArchiveProjects:
+    get:
+      summary: Get active archived projects
+      description: Get active archived projects
+      tags: 
+        - DB
+      operationId: getActiveArchivedProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveProjects:
+    get:
+      summary: Get archived projects
+      description: Get archived projects
+      tags: 
+        - DB
+      operationId: getArchiveProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjects:
+    get:
+      summary: Get projects
+      description: Get projects
+      tags: 
+        - DB
+      operationId: getProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getCandidateProjects:
+    get:
+      summary: Get candidate projects
+      description: Get candidate projects
+      tags: 
+        - DB
+      operationId: getCandidateProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getMyProjects:
+    get:
+      summary: Get my projects
+      description: Get my projects
+      tags: 
+        - DB
+      operationId: getMyProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Invalid user type
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSemesterProjects:
+    get:
+      summary: Get semester projects
+      description: Get semester projects
+      tags: 
+        - DB
+      operationId: getSemesterProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Invalid user type
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editArchive: 
+    post:
+      summary: Edit archive
+      description: Edit archive
+      tags: 
+        - DB
+      operationId: editArchive
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createArchive:
+    post:
+      summary: Create archive
+      description: Create archive
+      tags: 
+        - DB
+      operationId: createArchive
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editArchiveStudent:
+    post:
+      summary: Edit archive student
+      description: Edit archive student
+      tags: 
+        - DB
+      operationId: editArchiveStudent
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createArchiveStudent:
+    post:
+      summary: Create archive student
+      description: Create archive student
+      tags: 
+        - DB
+      operationId: createArchiveStudent
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectDates:
+    get:
+      summary: Get project dates
+      description: Get project dates
+      tags: 
+        - DB
+      operationId: getProjectDates
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editProject:
+    post:
+      summary: Edit project
+      description: Edit project
+      tags: 
+        - DB
+      operationId: editProject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/updateProposalStatus:
+    post:
+      summary: Update proposal status
+      description: Update proposal status
+      tags: 
+        - DB
+      operationId: updateProposalStatus
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getPropodalPdfNames:
+    get:
+      summary: Get proposal pdf names
+      description: Get proposal pdf names
+      tags: 
+        - DB
+      operationId: getPropodalPdfNames
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getPropodalPdf:
+    get:
+      summary: Get proposal pdf
+      description: Get proposal pdf
+      tags: 
+        - DB
+      operationId: getPropodalPdf
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: File not found
+          content:
+            text/plain:
+              schema:
+                type: string
+  /db/getPropsalAttachmentNames:
+    get:
+      summary: Get proposal attachment names
+      description: Get proposal attachment names
+      tags: 
+        - DB
+      operationId: getPropsalAttachmentNames
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getPropsalAttachment:
+    get:
+      summary: Get proposal attachment
+      description: Get proposal attachment
+      tags: 
+        - DB
+      operationId: getPropsalAttachment
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: File not found
+          content:
+            text/plain:
+              schema:
+                type: string
+  /db/getSponsorData:
+    get:
+      summary: Get sponsor data
+      description: Get sponsor data
+      tags: 
+        - DB
+      operationId: getSponsorData
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/uploadFiles:
+    post:
+      summary: Upload files
+      description: Upload files
+      tags: 
+        - DB
+      operationId: uploadFiles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/uploadFilesStudent:
+    post:
+      summary: Upload files student
+      description: Upload files student
+      tags: 
+        - DB
+      operationId: uploadFilesStudent
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createDirectory:
+    post:
+      summary: Create directory
+      description: Create directory
+      tags: 
+        - DB
+      operationId: createDirectory
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/renameDirectoryOrFile:
+    post:
+      summary: Rename directory or file
+      description: Rename directory or file
+      tags: 
+        - DB
+      operationId: renameDirectoryOrFile
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getFiles:
+    get:
+      summary: Get files
+      description: Get files
+      tags: 
+        - DB
+      operationId: getFiles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectFiles:
+    get:
+      summary: Get project files
+      description: Get project files
+      tags: 
+        - DB
+      operationId: getProjectFiles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/removeFile:
+    post:
+      summary: Remove file
+      description: Remove file
+      tags: 
+        - DB
+      operationId: removeFile
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/removeDirectory:
+    post:
+      summary: Remove directory
+      description: Remove directory
+      tags: 
+        - DB
+      operationId: removeDirectory
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Directory does not exist, cannot delete
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/submitProposal:
+    post:
+      summary: Submit proposal
+      description: Submit proposal
+      tags: 
+        - DB
+      operationId: submitProposal
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - Maximum of 5 files allowed
+                      - Internal Server Error
+                      - File size too large
+                      - File type not allowed
+        '500': 
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchivePoster:
+    get:
+      summary: Get archive poster
+      description: Get archive poster
+      tags: 
+        - DB
+      operationId: getArchivePoster
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveVideo:
+    get:
+      summary: Get archive video
+      description: Get archive video
+      tags: 
+        - DB
+      operationId: getArchiveVideo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveImage:
+    get:
+      summary: Get archive image
+      description: Get archive image
+      tags: 
+        - DB
+      operationId: getArchiveImage
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActiveTimelines:
+    get:
+      summary: Get active timelines
+      description: Get active timelines
+      tags: 
+        - DB
+      operationId: getActiveTimelines
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/submitAction:
+    post:
+      summary: Submit action
+      description: Submit action
+      tags: 
+        - DB
+      operationId: submitAction
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - Action start date is in the future
+                      - Invalid action target
+                      - File type not allowed
+        '401':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - Input is Invalid
+                      - Only admins can submit admin actions
+                      - Only coaches can submit coach actions
+                      - Only students can submit individual actions
+                      - Only coaches and students can submit peer evaluations
+                      - You cannot submit an announcement
+                      - Only students can submit peer evaluations
+                      - Internal Server Error
+                      - Maximum of 5 files allowed
+                      - File size too large
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getHtml:
+    get:
+      summary: Get html
+      description: Get html
+      tags: 
+        - DB
+      operationId: getHtml
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editPage:
+    post:
+      summary: Edit page
+      description: Edit page
+      tags: 
+        - DB
+      operationId: editPage
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActions:
+    get:
+      summary: Get actions
+      description: Get actions
+      tags: 
+        - DB
+      operationId: getActions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getTimelineActions:
+    get:
+      summary: Get timeline actions
+      description: Get timeline actions
+      tags: 
+        - DB
+      operationId: getTimelineActions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Trying to acces project that is not yours
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getLateSubmission:
+    get:
+      summary: Get late submission
+      description: Get late submission
+      tags: 
+        - DB
+      operationId: getLateSubmission
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getActionLogs:
+    get:
+      summary: Get action logs
+      description: Get action logs
+      tags: 
+        - DB
+      operationId: getActionLogs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getAllActionLogs:
+    get:
+      summary: Get all action logs
+      description: Get all action logs
+      tags: 
+        - DB
+      operationId: getAllActionLogs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getTimeLogs:
+    get:
+      summary: Get time logs
+      description: Get time logs
+      tags: 
+        - DB
+      operationId: getTimeLogs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getAllTimeLogs:
+    get:
+      summary: Get all time logs
+      description: Get all time logs
+      tags: 
+        - DB
+      operationId: getAllTimeLogs
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getCoachFeedback:
+    get:
+      summary: Get coach feedback
+      description: Get coach feedback
+      tags: 
+        - DB
+      operationId: getCoachFeedback
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getAllSponsors:
+    get:
+      summary: Get all sponsors
+      description: Get all sponsors
+      tags: 
+        - DB
+      operationId: getAllSponsors
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getProjectSponsor:
+    get:
+      summary: Get project sponsor
+      description: Get project sponsor
+      tags: 
+        - DB
+      operationId: getProjectSponsor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveProject:
+    get:
+      summary: Get archive project
+      description: Get archive project
+      tags: 
+        - DB
+      operationId: getArchiveProject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSponsorProjects:
+    get:
+      summary: Get sponsor projects
+      description: Get sponsor projects
+      tags: 
+        - DB
+      operationId: getSponsorProjects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSponsorNotes:
+    get:
+      summary: Get sponsor notes
+      description: Get sponsor notes
+      tags: 
+        - DB
+      operationId: getSponsorNotes
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSubmission:
+    get:
+      summary: Get submission
+      description: Get submission
+      tags: 
+        - DB
+      operationId: getSubmission
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unknown Role
+          content: 
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSubmissionFile:
+    get:
+      summary: Get submission file
+      description: Get submission file
+      tags: 
+        - DB
+      operationId: getSubmissionFile
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':  
+          description: Unknown Role
+          content:
+            application/json:
+              schema: 
+                type: object
+        '404':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - File not found
+                      - Unauthorized to access file
+  /db/editAction:
+    post:
+      summary: Edit action
+      description: Edit action
+      tags: 
+        - DB
+      operationId: editAction
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/searchForSponsor:
+    get:
+      summary: Search for sponsor
+      description: Search for sponsor
+      tags: 
+        - DB
+      operationId: searchForSponsor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':  
+          description: Unknown Role
+          content:
+            application/json:
+              schema: 
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/searchForArchive:
+    get:
+      summary: Search for archive
+      description: Search for archive
+      tags: 
+        - DB
+      operationId: searchForArchive
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveFromSlug:
+    get:
+      summary: Get archive from url_slug
+      description: Get archive from url_slug
+      tags: 
+        - DB
+      operationId: getArchiveFromSlug
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchiveFromProject:
+    get:
+      summary: Get archive from project
+      description: Get archive from project
+      tags: 
+        - DB
+      operationId: getArchiveFromProject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createSponsor:
+    post:
+      summary: Create sponsor
+      description: Create sponsor
+      tags: 
+        - DB
+      operationId: createSponsor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - status code mismatch in editing sponsor
+  /db/editSponsor:
+    post:
+      summary: Edit sponsor
+      description: Edit sponsor
+      tags: 
+        - DB
+      operationId: editSponsor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - status code mismatch in editing sponsor
+  /db/createSponsorNote:
+    post:
+      summary: Create sponsor note
+      description: Create sponsor note
+      tags: 
+        - DB
+      operationId: createSponsorNote
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createAction:
+    post:
+      summary: Create action
+      description: Create action
+      tags: 
+        - DB
+      operationId: createAction
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSemesters:
+    get:
+      summary: Get semesters
+      description: Get semesters
+      tags: 
+        - DB
+      operationId: getSemesters
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getArchive:
+    get:
+      summary: Get archive
+      description: Get archive
+      tags: 
+        - DB
+      operationId: getArchive
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/getSemesterAnnouncements:
+    get:
+      summary: Get semester announcements
+      description: Get semester announcements
+      tags: 
+        - DB
+      operationId: getSemesterAnnouncements
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - Students can not access announcements that are not for your project
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/editSemester:
+    post:
+      summary: Edit semester
+      description: Edit semester
+      tags: 
+        - DB
+      operationId: editSemester
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+  /db/createSemester:
+    post:
+      summary: Create semester
+      description: Create semester
+      tags: 
+        - DB
+      operationId: createSemester
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object

@@ -1755,41 +1755,6 @@ module.exports = (db) => {
       if (err) {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-      }
-      const info = fs.statSync(baseURL);
-      files.forEach(function (file) {
-        // Only files have sizes, directories do not. Send file size if it is a file
-        const fileInfo = fs.statSync(baseURL + file);
-        if (fileInfo.isFile()) {
-          fileData.push({
-            file: file,
-            size: fileInfo.size,
-            lastModified: fileInfo.ctime,
-          });
-        } else {
-          fileData.push({
-            file: file,
-            size: 0,
-            lastModified: info.ctime,
-          });
-        }
-      });
-      res.send(fileData);
-    });
-  });
-
-  db_router.get("/getProjectFiles", (req, res, next) => {
-    let fileData = [];
-    // This is the path with the specified directory we want to find files in.
-    const formattedPath = `resource/`;
-    const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    fs.mkdirSync(baseURL, { recursive: true });
-    // Get the files in the directory
-    fs.readdir(baseURL, function (err, files) {
-      if (err) {
-        const error = new Error(err);
         error.statusCode = 500;
         return next(error);
       }
@@ -3290,19 +3255,6 @@ module.exports = (db) => {
         const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
-
-  db_router.get("/getArchiveFromProject", (req, res) => {
-    let query = `SELECT * FROM archive WHERE archive.project_id=?`;
-    let params = [req.query.project_id];
-    db.query(query, params)
-      .then((values) => {
-        res.status(200).send(values);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send(err);
       });
   });
 
