@@ -334,60 +334,97 @@
     visibility: collapse;
 }
 
-/* Dark Mode Styles */
-.dark-mode {
-  background-color: #121212 !important;
-  color: #e0e0e0 !important;
+/* Dark Mode - General */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-.dark-mode a {
-  color: #90caf9 !important;
+/* Gantt Chart Dark Mode Fixes */
+body.dark-mode .gantt {
+    border-color: #444 !important;
 }
 
-.dark-mode .gantt {
-  border-color: #444 !important;
-  background-color: #1e1e1e !important;
+body.dark-mode .gantt-header {
+    background-color: #222 !important;
+    border-left-color: #555 !important;
+    border-bottom-color: #555 !important;
+    color: #e0e0e0 !important;
 }
 
-.dark-mode .gantt-container {
-  background-color: #1e1e1e !important;
+body.dark-mode .gantt-col.weekday {
+    background-color: #1e1e1e !important;
 }
 
-.dark-mode .gantt-header {
-  background-color: #1e1e1e !important;
-  border-left-color: #444 !important;
-  border-bottom-color: #444 !important;
-  color: #e0e0e0 !important;
+body.dark-mode .gantt-col.weekend {
+    background-color: #292929 !important;
 }
 
-.dark-mode .sidebar {
-  background-color: #1e1e1e !important;
-  color: #e0e0e0 !important;
-  border-top-color: #444 !important;
-  border-right-color: #444 !important;
+body.dark-mode .gantt-col.today {
+    background-color: #ff9800 !important;
 }
 
-.dark-mode .action-bar {
-  background-color: #1e1e1e !important;
-  color: #e0e0e0 !important;
-  border-color: #444 !important;
+body.dark-mode .sidebar {
+    background-color: #222 !important;
+    color: #e0e0e0 !important;
+    border-right-color: #555 !important;
 }
 
-.dark-mode .announcement {
-  background-color: #333 !important;
-  color: #e0e0e0 !important;
-  border-color: #444 !important;
+body.dark-mode .sidebar.header {
+    background-color: #1e1e1e !important;
+    border-right-color: #777 !important;
+    border-bottom-color: #777 !important;
+    color: #ffffff !important;
 }
 
-.dark-mode .announcement-container-wrapper {
-  background-color: #1e1e1e !important;
-  color: #e0e0e0 !important;
-  border: 1px solid #444 !important;
+/* Action Bar Dark Mode */
+body.dark-mode .action-bar {
+    background-color: #222 !important;
+    color: #e0e0e0 !important;
 }
 
-/* Ensure pagination container spacing remains consistent */
-.pagination-container {
-  padding-top: 1em;
+body.dark-mode .action-bar.proposal-row-yellow {
+    border-color: #ffc107 !important;
+    color: #e0e0e0 !important;
 }
 
+body.dark-mode .action-bar.proposal-row-red {
+    border-color: #f44336 !important;
+    color: #e0e0e0 !important;
+}
 
+body.dark-mode .action-bar.proposal-row-blue {
+    border-color: #2196f3 !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .action-bar.proposal-row-green {
+    border-color: #4caf50 !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .action-bar.proposal-row-gray {
+    border-color: #888 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Announcement Dark Mode */
+body.dark-mode .announcement-container-wrapper {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .announcement {
+    background-color: #333 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Checkbox Dark Mode */
+body.dark-mode .timeline-checkbox {
+    color: #e0e0e0 !important;
+}
+
+/* Submission Errors */
+body.dark-mode .submission-errors {
+    color: #ff4444 !important;
+}

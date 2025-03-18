@@ -1,3 +1,109 @@
+:root {
+  --header-height: 7em;
+  --footer-height: 7em;
+  --page-padding: 1.5em;
+  --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
+}
+
+#page {
+  min-height: calc(
+    100vh - var(--header-height) - var(--footer-height) - var(--page-padding) -
+      var(--page-padding)
+  );
+  margin: var(--page-padding) 0 3em 0;
+}
+
+.overviewText {
+  font-size: 16pt;
+}
+
+.pagination-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.accordion-button-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion {
+  height: auto !important;
+  margin-top: 0 !important;
+  margin-bottom: 1em !important;
+}
+
+.accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  right: 1em;
+  margin: 2px 1em !important;
+}
+
+/* For nested accordion with depth of 1 */
+.accordion .accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  right: 1em;
+  margin: 2px 2em !important;
+}
+
+/* 
+ * For nested accordion with depth of 2 
+ * (please for the love of all that is holy, do not have accordions nested more than 2 deep) 
+ */
+.accordion .accordion .accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  /* right: 1em;
+  margin: 2px 3em !important; */
+}
+
+.accordion-buttons-container > * {
+  margin: 0 0 0 0 !important;
+  border-radius: 0 !important;
+}
+
+.accordion-buttons-container :first-child {
+  margin: 0 0 0 0 !important;
+  /* border-top-left-radius: 0.28571429rem !important;
+  border-bottom-left-radius: 0.28571429rem !important; */
+}
+
+.accordion-buttons-container :last-child {
+  margin: 0 0 0 0 !important;
+  /* border-top-right-radius: 0.28571429rem !important;
+  border-bottom-right-radius: 0.28571429rem !important; */
+}
+
+.fake-a {
+  color: #1e70bf;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+button.ui.button,
+.ui.icon.button,
+.ui.icon.buttons,
+.button,
+a.ui.button {
+  background-color: #f8f9fa;
+  color: #212529;
+  padding: 10px 20px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+*:not(i) {
+  font-family: var(--fonts) !important;
+}
+
+.pagination-container {
+  padding-top: 1em;
+}
+
 /* Dark Mode Styles */
 .dark-mode {
   background-color: #121212;
@@ -157,4 +263,37 @@ body.dark-mode .ui.segment .column h5,
 body.dark-mode .ui.segment .column p {
   color: #e0e0e0 !important;
 }
+
+body.dark-mode .ui.modal label,
+body.dark-mode .ui.form .field > label {
+    color: #e0e0e0 !important; 
+}
+
+
+/* Dark mode styles for accordion */
+body.dark-mode .ui.accordion {
+  background-color: #1e1e1e !important;  /* Dark background */
+  color: #e0e0e0 !important;  /* Light text */
+  border: 1px solid #333 !important;
+}
+
+body.dark-mode .ui.accordion .title {
+  background-color: #222 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .ui.accordion .title:hover {
+  background-color: #333 !important;
+}
+
+body.dark-mode .ui.accordion .content {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.accordion .active.title {
+  background-color: #333 !important;
+  color: #ffffff !important;
+}
+
 
