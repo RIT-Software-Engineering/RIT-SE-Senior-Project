@@ -61,5 +61,5 @@ app.use(
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
-app.use(errorHandler) // Handles all backend errors, MUST BE IMPLEMENTED LAST
+app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
 app.listen(port);
