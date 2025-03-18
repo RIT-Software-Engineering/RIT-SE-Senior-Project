@@ -21,7 +21,7 @@ export default function ArchivePanel(props) {
     //finds the sponsor name inside the list of sponsor objects.
     if (props.activeSponsors !== undefined) {
       let sponsorName = props?.activeSponsors.find(
-        (sponsyBoi) => sponsyBoi.sponsor_id === props?.project?.sponsor
+        (sponsyBoi) => sponsyBoi.sponsor_id === props?.project?.sponsor,
       );
       if (sponsorName !== undefined) {
         setInitialState((prevInitialState) => {
@@ -45,7 +45,7 @@ export default function ArchivePanel(props) {
     //todo: create if for project.status. If it's already archived, find a way to guard from rearchiving.
     if (props.newArchive) {
       SecureFetch(
-        `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`
+        `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`,
       )
         .then((response) => response.json())
         .then((members) => {
@@ -60,7 +60,7 @@ export default function ArchivePanel(props) {
                   value: member.system_id,
                 });
                 projectGroupedValues.students.push(
-                  ` ${member.fname} ${member.lname}`
+                  ` ${member.fname} ${member.lname}`,
                 );
                 break;
               case USERTYPES.COACH:
@@ -72,13 +72,13 @@ export default function ArchivePanel(props) {
                   });
                 }
                 projectGroupedValues.coaches.push(
-                  `${member.fname} ${member.lname}`
+                  `${member.fname} ${member.lname}`,
                 );
                 break;
               default:
                 console.error(
                   `Project editor error - invalid project member type "${member.type}" for member: `,
-                  member
+                  member,
                 );
                 break;
             }
@@ -99,7 +99,7 @@ export default function ArchivePanel(props) {
     //this is for getting the start and end date of a project.
     if (props?.project?.semester) {
       SecureFetch(
-        `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project.semester}`
+        `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project.semester}`,
       )
         .then((response) => response.json())
         .then((dates) => {
@@ -114,7 +114,7 @@ export default function ArchivePanel(props) {
         })
         .catch((error) => {
           alert(
-            "An issue occurred while searching for archive content " + error
+            "An issue occurred while searching for archive content " + error,
           );
         });
     }

@@ -1,55 +1,69 @@
-import React from 'react';
+import React from "react";
 import ToolTip from "./ToolTip";
-import { ACTION_STATES } from '../../../../util/functions/constants';
+import { ACTION_STATES } from "../../../../util/functions/constants";
 import _ from "lodash";
 
 export default function ActionElements(props) {
-    const sortedActions = _.sortBy(props.actions || [], ["due_date", "start_date", "action_title"]);
-    let actionsComponents = [];
+  const sortedActions = _.sortBy(props.actions || [], [
+    "due_date",
+    "start_date",
+    "action_title",
+  ]);
+  let actionsComponents = [];
 
-    sortedActions.forEach((action, idx) => {
+  sortedActions.forEach((action, idx) => {
+    let color = "";
 
-        let color = "";
+    switch (action.state) {
+      case ACTION_STATES.YELLOW:
+        color += "proposal-row-yellow";
+        break;
+      case ACTION_STATES.RED:
+        color += "proposal-row-red";
+        break;
+      case ACTION_STATES.GREEN:
+        color += "proposal-row-blue";
+        break;
+      case ACTION_STATES.GREY:
+        color += "proposal-row-gray";
+        break;
+      default:
+        color += `proposal-row-${action.state}`;
+        break;
+    }
 
-        switch (action.state) {
-            case ACTION_STATES.YELLOW:
-                color += "proposal-row-yellow";
-                break;
-            case ACTION_STATES.RED:
-                color += "proposal-row-red";
-                break;
-            case ACTION_STATES.GREEN:
-                color += "proposal-row-blue";
-                break;
-            case ACTION_STATES.GREY:
-                color += "proposal-row-gray";
-                break;
-            default:
-                color += `proposal-row-${action.state}`;
-                break;
+    const trigger = (
+      <button className={`action-bar ${color}`} key={idx}>
+        {
+          <div className="action-bar-text" title={action.action_title}>
+            {action.action_title}
+          </div>
         }
+      </button>
+    );
+    actionsComponents.push(
+      <ToolTip
+        autoLoadSubmissions={props.autoLoadSubmissions}
+        color={color}
+        noPopup={props.noPopup}
+        trigger={trigger}
+        action={action}
+        projectId={props.projectId}
+        semesterName={props.semesterName}
+        projectName={props.projectName}
+        key={`tooltip-${action.action_title}-${idx}`}
+        reloadTimelineActions={props.reloadTimelineActions}
+      />,
+    );
+  });
 
-        const trigger = <button
-            className={`action-bar ${color}`}
-            key={idx}
-        >
-            {<div className="action-bar-text" title={action.action_title}>{action.action_title}</div>}
-        </button>
-        actionsComponents.push(
-            <ToolTip
-                autoLoadSubmissions={props.autoLoadSubmissions}
-                color={color} noPopup={props.noPopup}
-                trigger={trigger}
-                action={action} projectId={props.projectId}
-                semesterName={props.semesterName}
-                projectName={props.projectName}
-                key={`tooltip-${action.action_title}-${idx}`}
-                reloadTimelineActions={props.reloadTimelineActions}
-            />
-        )
-    })
-
-    return <div className={props.noPopup ? "relevant-actions-container" : "actions-container"}>
-        {actionsComponents}
+  return (
+    <div
+      className={
+        props.noPopup ? "relevant-actions-container" : "actions-container"
+      }
+    >
+      {actionsComponents}
     </div>
+  );
 }
