@@ -35,6 +35,8 @@ components:
       $ref: '#/components/schemas/TimeLog'
     Users:
       $ref: '#/components/schemas/Users'
+    Error:
+      $ref: '#/components/schemas/Error'
 
 # TODO: fill out descriptions and responses for db routes
 paths:
