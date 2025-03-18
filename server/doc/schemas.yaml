@@ -303,9 +303,3 @@ components:
           type: string
         active:
           type: string
-        last_login:
-          type: string
-          format: date-time
-        prev_login:
-          type: string
-          format: date-time

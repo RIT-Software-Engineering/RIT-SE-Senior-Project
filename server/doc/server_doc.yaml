@@ -36,7 +36,7 @@ components:
     Users:
       $ref: '#/components/schemas/Users'
 
-# TODO: fill out descriptions and responses for ai, saml, and db routes
+# TODO: fill out descriptions and responses for db routes
 paths:
 
   /ai/GenerateSummary:
