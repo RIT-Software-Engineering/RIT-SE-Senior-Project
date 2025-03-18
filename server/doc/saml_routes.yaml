@@ -43,11 +43,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: user does not exist
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /saml/DevOnlyLastLogin:
     post:
@@ -68,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /saml/login:
     get:

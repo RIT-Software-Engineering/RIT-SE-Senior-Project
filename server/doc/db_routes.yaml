@@ -25,13 +25,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/batchCreateUser:
     post:
@@ -62,13 +62,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/editUser:
     post:
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
   
 
   /db/getActiveUsers:
@@ -173,7 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getActiveCoaches:
     get:
@@ -196,7 +196,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getProjectCoaches:
     get:
@@ -219,7 +219,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   # Student Information
   /db/selectAllStudentInfo:
@@ -262,7 +262,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getSemesterStudents:
     get:
@@ -285,7 +285,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getProjectStudents:
     get:
@@ -308,7 +308,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getProjectStudentNames:
     get:
@@ -331,7 +331,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   # Project Management
   /db/getActiveProjects:
@@ -355,7 +355,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getArchiveProjects:
     get:
@@ -378,7 +378,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getCandidateProjects:
     get:
@@ -401,7 +401,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getMyProjects:
     get:
@@ -424,7 +424,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getSemesterProjects:
     get:
@@ -447,7 +447,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getProjects:
     get:
@@ -470,8 +470,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-
+                $ref: './schemas.yaml#/components/schemas/Error'
   /db/editProject:
     post:
       summary: Edit project
@@ -497,7 +496,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/updateProposalStatus:
     post:
@@ -524,7 +523,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   # Archive Management
   /db/getActiveArchiveProjects:
@@ -548,7 +547,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/editArchive:
     post:
@@ -575,7 +574,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/createArchive:
     post:
@@ -602,7 +601,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/editArchiveStudent:
     post:
@@ -629,7 +628,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/createArchiveStudent:
     post:
@@ -656,7 +655,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   # Time Logging
   /db/createTimeLog:
@@ -684,13 +683,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/removeTime:
     post:
@@ -720,13 +719,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/avgTime:
     get:
@@ -747,7 +746,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   # Miscellaneous
   /db/getProjectMembers:
@@ -771,7 +770,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
   /db/getProjectDates:
     get:
@@ -794,5 +793,5 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: './schemas.yaml#/components/schemas/Error'
 
