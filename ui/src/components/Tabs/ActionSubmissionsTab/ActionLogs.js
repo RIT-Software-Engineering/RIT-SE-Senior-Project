@@ -28,7 +28,7 @@ const TIME_LOGS_PER_PAGE = 5;
 export default function ActionLogs(props) {
   const onlySemesters = {};
   props.semesterData.forEach(
-    (semester) => (onlySemesters[semester.semester_id] = semester)
+    (semester) => (onlySemesters[semester.semester_id] = semester),
   );
 
   const [actionLogs, setActionLogs] = useState([]);
@@ -52,7 +52,7 @@ export default function ActionLogs(props) {
     SecureFetch(
       `${
         config.url.API_GET_ALL_ACTION_LOGS
-      }/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`
+      }/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`,
     )
       .then((response) => response.json())
       .then((action_logs) => {
@@ -66,7 +66,7 @@ export default function ActionLogs(props) {
 
   const getTimeData = (page) => {
     SecureFetch(
-      config.url.API_GET_ALL_TIME_LOGS
+      config.url.API_GET_ALL_TIME_LOGS,
       // `${
       //   config.url.API_GET_ALL_TIME_LOGS
       // }/?resultLimit=${TIME_LOGS_PER_PAGE}&offset=${TIME_LOGS_PER_PAGE * page}`
@@ -79,11 +79,11 @@ export default function ActionLogs(props) {
 
         const today = new Date();
         const currentWeekStart = new Date(
-          today.setDate(today.getDate() - today.getDay())
+          today.setDate(today.getDate() - today.getDay()),
         );
         const currentWeekEnd = new Date(today.setDate(today.getDate() + 6));
         setCurrentWeek(
-          formatDate(currentWeekStart) + " - " + formatDate(currentWeekEnd)
+          formatDate(currentWeekStart) + " - " + formatDate(currentWeekEnd),
         );
 
         // Calculate the start and end dates for the past week
@@ -92,7 +92,7 @@ export default function ActionLogs(props) {
         const pastWeekEnd = new Date(pastWeekStart);
         pastWeekEnd.setDate(pastWeekEnd.getDate() + 6);
         setPastWeek(
-          formatDate(pastWeekStart) + " - " + formatDate(pastWeekEnd)
+          formatDate(pastWeekStart) + " - " + formatDate(pastWeekEnd),
         );
 
         const logs = {};
@@ -184,7 +184,7 @@ export default function ActionLogs(props) {
     const weeks = [];
     const currentDate = new Date(startDate);
     currentDate.setDate(
-      currentDate.getDate() + ((7 - currentDate.getDay()) % 7)
+      currentDate.getDate() + ((7 - currentDate.getDay()) % 7),
     ); // Move to the next Sunday
     endDate = new Date(endDate);
 
@@ -211,7 +211,7 @@ export default function ActionLogs(props) {
           0,
           0,
           0,
-          0
+          0,
         );
         const endDate = new Date(weeksArray[i].endDate).setHours(0, 0, 0, 0);
         if (
@@ -271,7 +271,7 @@ export default function ActionLogs(props) {
           initialActive[semesterMap[student.semester_group]?.semester_id] =
             isSemesterActive(
               semesterMap[student.semester_group]?.start_date,
-              semesterMap[student.semester_group]?.end_date
+              semesterMap[student.semester_group]?.end_date,
             );
         }
         if (student.project) {
@@ -287,7 +287,7 @@ export default function ActionLogs(props) {
                     projectMap[student.project]?.title,
                   timelogs: [],
                   hoursPerWeek: Array(
-                    mappedData[student.semester_group].weeks.length
+                    mappedData[student.semester_group].weeks.length,
                   ).fill(0),
                 };
             }
@@ -303,7 +303,7 @@ export default function ActionLogs(props) {
                 thisWeek: 0,
                 project: "",
                 weeklyHours: Array(
-                  mappedData[student.semester_group].weeks.length
+                  mappedData[student.semester_group].weeks.length,
                 ).fill(0),
               };
             }
@@ -321,7 +321,7 @@ export default function ActionLogs(props) {
                 currlogs.timelogs,
                 mappedData[student.semester_group].weeks,
                 mappedData[student.semester_group]["projects"][student.project]
-                  .hoursPerWeek
+                  .hoursPerWeek,
               );
               for (const log of currlogs.timelogs) {
                 mappedData[student.semester_group]["projects"][student.project][
@@ -357,7 +357,7 @@ export default function ActionLogs(props) {
     semesterMap = _.orderBy(
       semesterMap,
       ["end_date", "start_date", "name"],
-      "desc"
+      "desc",
     );
 
     console.log("semester map ", semesterMap);
@@ -437,7 +437,7 @@ export default function ActionLogs(props) {
             }}
           />
         </div>
-      </div>
+      </div>,
     );
   }
 
