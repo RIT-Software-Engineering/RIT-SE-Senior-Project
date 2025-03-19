@@ -96,7 +96,7 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div className="centered row">
+          <div className="centered row" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
