@@ -24,13 +24,14 @@ export default function DatabaseTableEditor(props) {
   let submitRoute = props.submitRoute;
   let formFieldArray = props.formFieldArray;
   let date = new Date();
-  let errors = props.errors; // errors for action form validation
 
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
+  const [errors, setErrors] = useState(new Set());
+
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -82,24 +83,49 @@ export default function DatabaseTableEditor(props) {
 
   function handleCancel() {
     setFormData(initialState);
+    setOpen(false);
+  }
+
+  const isInputValid = () => {
+    const validationErrors = new Set();
+
+    if (formData.short_desc.trim() === ""){
+      // validationErrors.add("Short Description is empty");
+      validationErrors.add('short_desc');
+    }
+    if (formData.page_html.trim() === ""){
+      // validationErrors.add("Page HTML is empty");
+      validationErrors.add('page_html');
+    }
+    if (new Date(formData.start_date) > new Date(formData.due_date)){
+      // validationErrors.add("Due date must come after start_date");
+      validationErrors.add('start_date')
+      validationErrors.add('due_date');
+    }
+    
+    setErrors(validationErrors);
+    return validationErrors.size === 0;
+
   }
 
   const handleSubmit = async function (e) {
-    // const dataToSubmit = !!props.preSubmit
-    //   ? props.preSubmit(formData)
-    //   : formData;
 
-    console.log("handleSubmit called"); // Debugging
-    const dataToSubmit = props.preSubmit ? props.preSubmit(formData) : formData;
-    console.log("Data to submit:", dataToSubmit); // Debugging
+    e.preventDefault();
 
-    if (dataToSubmit === null){
-      console.log("Validation failed. Modal should be open."); // Debugging
-      return; // stop submission
+    if (!isInputValid()){
+      console.log("Validation failed");
+      setOpen(true); 
+      // setSubmissionModalOpen(MODAL_STATUS.FAIL);
+      return;
     }
+    const dataToSubmit = !!props.preSubmit
+      ? props.preSubmit(formData)
+      : formData;
+
+    console.log("Data to submit:", dataToSubmit); 
 
     let body = new FormData();
-    console.log(submitRoute);
+    //console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -120,21 +146,14 @@ export default function DatabaseTableEditor(props) {
       .then((response) => {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-          setOpen(false); // close Modal
-          if (props.callback){
-            props.callback();
-          }
-        }
-        else{
+          setOpen(false);
+        } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
         }
-        // } else {
-        //   setSubmissionModalOpen(MODAL_STATUS.FAIL);
-        // }
-        // if (props.callback) {
-        //   props.callback();
-        // }
-    })
+        if (props.callback) {
+          props.callback();
+        }
+      })
       .catch((error) => {
         setSubmissionModalOpen(MODAL_STATUS.FAIL);
       });
@@ -209,7 +228,9 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                // error={errors[field.name]} // Highlight invalid fields
+                style={{
+                  borderColor: errors.has(field.name) ? 'red' : 'intial'
+                }}
                 required
               />
             </Form.Field>,
@@ -241,6 +262,9 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                style={{
+                  borderColor: errors.has(field.name) ? 'red' : 'intial'
+                }}
                 required
               />
             </Form.Field>,
@@ -254,6 +278,9 @@ export default function DatabaseTableEditor(props) {
                 data={formData}
                 onChange={handleChange}
                 value={formData[field.name]}
+                style={{
+                  borderColor: errors.has(field.name) ? 'red' : 'intial'
+                }}
               />,
             );
           } else {
@@ -541,6 +568,9 @@ export default function DatabaseTableEditor(props) {
         <Modal
           className={"sticky"}
           trigger={trigger}
+          // open={open}
+          // onClose={() => {setOpen(false)}}
+          // onOpen={() => setOpen(true)}
           header={props.header}
           content={{
             content: (
