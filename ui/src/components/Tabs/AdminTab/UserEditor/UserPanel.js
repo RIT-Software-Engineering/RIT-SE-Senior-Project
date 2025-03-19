@@ -80,10 +80,10 @@ export default function UserPanel(props) {
       name: "active",
     },
     {
-        type: "checkbox",
-        label: "View Only",
-        placeHOlder:"View Only",
-        name: "view Only"
+      type: "checkbox",
+      label: "View Only",
+      placeHOlder:"View Only",
+      name: "view Only"
     },
   ];
 
