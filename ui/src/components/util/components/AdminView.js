@@ -56,6 +56,10 @@ export default function AdminView() {
       alert("Can't change view - No user selected");
       return;
     }
+    if (users[selectedUser]?.type === "admin") {
+      alert("Can't change view - Admin cannot mock another admin");
+      return;
+    }
 
     //cookie stuff
     document.cookie = `mock_system_id=${users[selectedUser].system_id}`;
@@ -70,62 +74,29 @@ export default function AdminView() {
     window.location.reload();
   }
 
-  const renderButton = () => {
-    if (user?.isMock) {
-      return <Button
-        secondary
-        content="Sign out of mock user"
-        onClick={() => {
-          document.cookie = `mock_system_id=;max-age=0`;
-          document.cookie = `mock_fname=;max-age=0`;
-          document.cookie = `mock_lname=;max-age=0`;
-          document.cookie = `mock_email=;max-age=0`;
-          document.cookie = `mock_type=;max-age=0`;
-          document.cookie = `mock_semester_group=;max-age=0`;
-          document.cookie = `mock_project=;max-age=0`;
-          document.cookie = `mock_active=;max-age=0`;
-          window.location.reload();
-        }}
-      />
-    }
+  const renderSignOutButton = () => {
     return <Button
-      primary
-      content="Change View"
+      style={{margin: '-7px', float: 'right'}}
+      secondary
+      content="Sign out of mock user"
       onClick={() => {
-        changeView();
+        document.cookie = `mock_system_id=;max-age=0`;
+        document.cookie = `mock_fname=;max-age=0`;
+        document.cookie = `mock_lname=;max-age=0`;
+        document.cookie = `mock_email=;max-age=0`;
+        document.cookie = `mock_type=;max-age=0`;
+        document.cookie = `mock_semester_group=;max-age=0`;
+        document.cookie = `mock_project=;max-age=0`;
+        document.cookie = `mock_active=;max-age=0`;
+        window.location.reload();
       }}
     />
   }
 
-  function handleSearch(searchVal) {
-    if (searchVal === "") { setSearchCoaches(coaches); setSearchStudents(students); return; }
-    setSearchCoaches(Object.values(coaches).filter((coach) => {
-      if (coach.fname.toLowerCase().includes(searchVal.toLowerCase()) 
-        || coach.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return coach; } return null;
-    }))
-    setSearchStudents(Object.values(students).filter((student) => {
-      if (student.fname.toLowerCase().includes(searchVal.toLowerCase())
-        || student.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return student; } return null;
-    }))
-  }
-
-  if (user?.isMock || user?.role === "admin") {
+  const renderChangeView = () => {
     return (
       <>
-        <div className={`ui ${user?.isMock ? "warning message" : "info message"}`}>
-          Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
-        </div>
         <Label pointing='right'>To view this page as a different user</Label>
-        {/* <Dropdown
-          search
-          button
-          value={selectedUser}
-          options={_.sortBy(Object.values(users), ["type", "fname", "lname"]).map((user) => { return { text: `${user.fname} ${user.lname} (${user.system_id}): ${user.type}`, value: user.system_id, key: user.system_id } })}
-          onChange={(e, target) => setSelectedUser(target.value)}
-          >
-        </Dropdown> */}
         <Dropdown
           floating
           button
@@ -135,7 +106,7 @@ export default function AdminView() {
             <Input
               icon="search"
               iconPosition="left"
-              placeholder="Search User"
+              placeholder="Search User..."
               input={{autocomplete: 'off', onClick: (e) => e.stopPropagation()}}
               onChange={e => {handleSearch(e.target.value)}}
             />
@@ -165,12 +136,52 @@ export default function AdminView() {
             </DropdownMenu>
           </DropdownMenu>
         </Dropdown>
-
-        {renderButton()}
+        <Button
+          primary
+          content="Change View"
+          onClick={() => {
+            changeView();
+          }}
+        />
       </>
     )
   }
 
+  function handleSearch(searchVal) {
+    if (searchVal === "") { setSearchCoaches(coaches); setSearchStudents(students); return; }
+    setSearchCoaches(Object.values(coaches).filter((coach) => {
+      if (coach.fname.toLowerCase().includes(searchVal.toLowerCase()) 
+        || coach.lname.toLowerCase().includes(searchVal.toLowerCase())
+        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return coach; } return null;
+    }))
+    setSearchStudents(Object.values(students).filter((student) => {
+      if (student.fname.toLowerCase().includes(searchVal.toLowerCase())
+        || student.lname.toLowerCase().includes(searchVal.toLowerCase())
+        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return student; } return null;
+    }))
+  }
+
+  if (user?.isMock || user?.role === "admin") {
+    if (user?.isMock) {
+      return (
+        <>
+          <div className="ui error message">
+            Currently mocking: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
+            {renderSignOutButton()}
+          </div>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <div className="ui positive message">
+            Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
+          </div>
+          {renderChangeView()}
+        </>
+      )
+    }
+  }
   return <></>
 
 }
