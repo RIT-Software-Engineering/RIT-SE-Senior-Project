@@ -19,9 +19,6 @@ const file_size = "file_size";
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(false);
 
-  // track validation errors
-  const [validationErrors, setValidationErrors] = useState({});
-
   let initialState = {
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
@@ -129,44 +126,13 @@ export default function ActionPanel(props) {
       name: "date_deleted",
     },
   ];
-
-  const validateForm = (formData) => {
-    const errors = {};
-
-    // if (new Date(formData.start_date) > new Date(formData.due_date)){
-    //   errors.due_date = "Due date must come after start_date";
-    // }
-
-    if (formData.short_desc.trim() === ""){
-      errors.short_desc = "Short Description must be provided";
-    }
-
-    return {
-      isValid: Object.keys(errors).length === 0, // form is valid
-      errors
-    }
-  };
-
    
   const preSubmit = (data) => {
-    console.log("preSubmit called with data:", data); // Debugging
-    const { isValid, errors } = validateForm(data);
-    console.log("Validation result:", isValid, errors); // Debugging
-
-    if (!isValid){
-      setValidationErrors(errors);
-      return null;
-    }
-
-    setValidationErrors({});
-
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
     return data;
-
   };
-  // console.log("Validation errors:", validationErrors); // Debugging
 
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
@@ -197,9 +163,7 @@ export default function ActionPanel(props) {
         initialState={initialState}
         submissionModalMessages={submissionModalMessages}
         submitRoute={submitRoute}
-        formFieldArray={formFieldArray.map((field) => ({
-          ...field, error: validationErrors[field.name],
-        }))}
+        formFieldArray={formFieldArray}
         semesterData={props.semesterData}
         header={props.header}
         create={!!props.create}
@@ -209,7 +173,6 @@ export default function ActionPanel(props) {
         onClose={() => {
           console.log("Modal explicitly closed by user"); // Debugging
           setOpen(false);
-          setValidationErrors({});
           props.isOpenCallback(false);
         }}
         onOpen={() => {
@@ -220,7 +183,6 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
-        errors={validationErrors}
       />
     );
   } else {
@@ -235,7 +197,6 @@ export default function ActionPanel(props) {
         create={!!props.create}
         button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
         trigger={props.trigger}
-        open={open}
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
