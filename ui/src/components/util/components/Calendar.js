@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react"
 
+// TODO: add actions support, multiple actions per day (pop up if multiple? with option for completed/uncompleted/all?)
+
+
 export function Calendar({ initialDate = new Date(), onDateSelect }) {
   const [currentDate, setCurrentDate] = useState(initialDate)
   const [selectedDate, setSelectedDate] = useState(null)

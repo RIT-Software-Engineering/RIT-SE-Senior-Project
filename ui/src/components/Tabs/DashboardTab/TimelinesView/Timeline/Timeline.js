@@ -8,6 +8,7 @@ import { UserContext } from "../../../../util/functions/UserContext";
 import TimelineCheckboxes from "./TimelineCheckboxes";
 import { Dropdown } from "semantic-ui-react";
 import { Calendar } from "../../../../util/components/Calendar";
+import { element } from "prop-types";
 
 export default function Timeline(props) {
   const [actions, setActions] = useState([]);
@@ -96,26 +97,25 @@ export default function Timeline(props) {
           }}
         />
       </div>
+      <label htmlFor="time-line-view">Time Line Style </label>
+          <select
+          name="time-line-view"
+          defaultValue={'gantt'}
+          onChange={(e) => {
+            if (e.target.value === 'gantt') {
+              setActionView('Gantt');
+            } else {
+              setActionView('Calendar');
+            }
+          }}
+        >
+          <option value="gantt">Gantt</option>
+          <option value="calendar">Calendar</option>
+        </select>
       <div
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
       >
-        <div style={{ position: 'relative', zIndex: 101 }}>
-          <Dropdown
-            options={[
-              { key: 'gantt', text: <h3><strong>Gantt</strong></h3>, value: 'gantt' },
-              { key: 'calendar', text: <h3><strong>Calendar</strong></h3>, value: 'calendar' },
-            ]}
-            defaultValue={ganttVisible ? 'gantt' : 'calendar'}
-            onChange={(e, data) => {
-              if (data.value === 'gantt') {
-                setActionView('Gantt');
-              } else {
-                setActionView('Calendar');
-              }
-            }}
-          />
-        </div>
         { actionView === 'Calendar' ? <Calendar
           projectName={
             props.elementData.display_name || props.elementData.title
