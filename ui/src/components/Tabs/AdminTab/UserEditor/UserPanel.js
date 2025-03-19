@@ -11,6 +11,7 @@ export default function UserPanel(props) {
     type: props.userData?.type || "",
     semester_group: props.userData?.semester_group || "",
     active: props.userData?.active || "",
+    viewOnly: props.userData?.viewOnly || "",
   };
 
   let submissionModalMessages = {
@@ -77,6 +78,12 @@ export default function UserPanel(props) {
       label: "Active",
       placeHolder: "Active",
       name: "active",
+    },
+    {
+        type: "checkbox",
+        label: "View Only",
+        placeHOlder:"View Only",
+        name: "view Only"
     },
   ];
 

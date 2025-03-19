@@ -54,6 +54,7 @@ export default function StudentEditPanel(props) {
     email: props.studentData.email || "",
     type: props.studentData.type || "",
     active: props.studentData.active || "",
+    viewOnly: props.studentData.viewOnly || "",
     semesterProject: _.findIndex(semesterProjectDropdownMap, {
       semester: props.studentData.semester_group || "",
       project: props.studentData.project || "",
@@ -122,6 +123,12 @@ export default function StudentEditPanel(props) {
       label: "Active",
       placeHolder: "Active",
       name: "active",
+    },
+    {
+        type: "checkbox",
+        label: "View Only",
+        placeHOlder:"View Only",
+        name: "view Only"
     },
   ];
 

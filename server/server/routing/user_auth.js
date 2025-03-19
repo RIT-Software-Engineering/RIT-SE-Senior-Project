@@ -24,6 +24,16 @@ const isAdmin = (req, res, next) => {
   res.sendStatus(401);
 };
 
+const isWriteAdmin = (req, res, next) => {
+
+    if (testIsAdmin(req) && testCanWrite) {
+        next();
+        return;
+    }
+
+    res.sendStatus(401);
+}
+
 const isCoachOrAdmin = (req, res, next) => {
   if (testIsAdmin(req) || testIsCoach(req)) {
     next();
@@ -97,13 +107,19 @@ const testIsAdmin = (req) => {
   return req.user && req.user.type === ROLES.ADMIN;
 };
 
+const testCanWrite = (req) => {
+    console.log(req.user.type)
+    return req.user && !req.user.view_only;
+}
+
 const testIsCoach = (req) => {
   return req.user && req.user.type === ROLES.COACH;
 };
 
 module.exports = {
-  isSignedIn,
-  isAdmin,
-  isCoachOrAdmin,
-  mockUser,
-};
+    isSignedIn,
+    isAdmin,
+    isWriteAdmin,
+    isCoachOrAdmin,
+    mockUser,
+}

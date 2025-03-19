@@ -54,7 +54,7 @@ export default function DashboardPage() {
   }, []);
 
   let panes = [];
-  console.log(user)
+  //console.log(user)
   switch (user.role) {
     case "admin":
       if(!user.view_only){
