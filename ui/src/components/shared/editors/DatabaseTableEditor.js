@@ -24,6 +24,7 @@ export default function DatabaseTableEditor(props) {
   let submitRoute = props.submitRoute;
   let formFieldArray = props.formFieldArray;
   let date = new Date();
+  let errors = props.errors; // errors for action form validation
 
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
@@ -84,9 +85,18 @@ export default function DatabaseTableEditor(props) {
   }
 
   const handleSubmit = async function (e) {
-    const dataToSubmit = !!props.preSubmit
-      ? props.preSubmit(formData)
-      : formData;
+    // const dataToSubmit = !!props.preSubmit
+    //   ? props.preSubmit(formData)
+    //   : formData;
+
+    console.log("handleSubmit called"); // Debugging
+    const dataToSubmit = props.preSubmit ? props.preSubmit(formData) : formData;
+    console.log("Data to submit:", dataToSubmit); // Debugging
+
+    if (dataToSubmit === null){
+      console.log("Validation failed. Modal should be open."); // Debugging
+      return; // stop submission
+    }
 
     let body = new FormData();
     console.log(submitRoute);
@@ -110,13 +120,21 @@ export default function DatabaseTableEditor(props) {
       .then((response) => {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-        } else {
+          setOpen(false); // close Modal
+          if (props.callback){
+            props.callback();
+          }
+        }
+        else{
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
         }
-        if (props.callback) {
-          props.callback();
-        }
-      })
+        // } else {
+        //   setSubmissionModalOpen(MODAL_STATUS.FAIL);
+        // }
+        // if (props.callback) {
+        //   props.callback();
+        // }
+    })
       .catch((error) => {
         setSubmissionModalOpen(MODAL_STATUS.FAIL);
       });
@@ -191,6 +209,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                // error={errors[field.name]} // Highlight invalid fields
                 required
               />
             </Form.Field>,
