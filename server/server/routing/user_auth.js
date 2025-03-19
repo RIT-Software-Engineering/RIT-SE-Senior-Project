@@ -31,17 +31,7 @@ const isWriteAdmin = (req, res, next) => {
         return;
     }
 
-    res.sendStatus(401);
-}
-
-const isWriteAdmin = (req, res, next) => {
-
-    if (testIsAdmin(req) && testCanWrite) {
-        next();
-        return;
-    }
-
-    res.sendStatus(401);
+    next();
 }
 
 const isCoachOrAdmin = (req, res, next) => {
@@ -114,12 +104,7 @@ const mockUser = (req, res, next) => {
 };
 
 const testIsAdmin = (req) => {
-  return req.user && req.user.type === ROLES.ADMIN;
-};
-
-const testCanWrite = (req) => {
-    console.log(req.user.type)
-    return req.user && !req.user.view_only;
+    return req.user && req.user.type === ROLES.ADMIN;
 }
 
 const testCanWrite = (req) => {
