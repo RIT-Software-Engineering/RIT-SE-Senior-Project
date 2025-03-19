@@ -334,13 +334,13 @@
     visibility: collapse;
 }
 
-/* Dark Mode - General */
+/* Dark Mode Styles */
 body.dark-mode {
     background-color: #121212;
     color: #e0e0e0;
 }
 
-/* Gantt Chart Dark Mode Fixes */
+/* Dark mode styles for gantt chart */
 body.dark-mode .gantt {
     border-color: #444 !important;
 }
@@ -377,7 +377,7 @@ body.dark-mode .sidebar.header {
     color: #ffffff !important;
 }
 
-/* Action Bar Dark Mode */
+/* Dark mode styles for action bar */
 body.dark-mode .action-bar {
     background-color: #222 !important;
     color: #e0e0e0 !important;
@@ -408,7 +408,7 @@ body.dark-mode .action-bar.proposal-row-gray {
     color: #e0e0e0 !important;
 }
 
-/* Announcement Dark Mode */
+/* Dark mode styles for Announcement */
 body.dark-mode .announcement-container-wrapper {
     background-color: #1e1e1e !important;
     color: #e0e0e0 !important;
@@ -419,12 +419,20 @@ body.dark-mode .announcement {
     color: #e0e0e0 !important;
 }
 
-/* Checkbox Dark Mode */
+/* Dark mode styles for checkbox */
 body.dark-mode .timeline-checkbox {
     color: #e0e0e0 !important;
 }
 
-/* Submission Errors */
+body.dark-mode .ui.checkbox label {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
+    color: #e0e0e0 !important; 
+}
+
+/* Dark mode styles for submission errors */
 body.dark-mode .submission-errors {
     color: #ff4444 !important;
 }

@@ -49,10 +49,10 @@ td.attachments {
     text-overflow: ellipsis;
 }
 
-/* --- Dark Mode Overrides --- */
+/* Dark Mode Styles */
 .dark-mode .proposal-row-UNHANDLED-CASE {
-    background: darkblue !important;       /* Darker blue */
-    color: #ff8080 !important;             /* Softer red */
+    background: darkblue !important;       
+    color: #ff8080 !important;             
 }
 
 .dark-mode .proposal-row-UNHANDLED-CASE::before {
@@ -60,26 +60,26 @@ td.attachments {
 }
 
 .dark-mode .proposal-row-gray {
-    background: #444444 !important;         /* Dark gray */
-    color: #cccccc !important;             /* Lighter gray */
+    background: #444444 !important;      
+    color: #cccccc !important;            
 }
 
 .dark-mode .proposal-row-red {
-    background: #4d1c1c !important;         /* Dark red background */
-    color: #ffffff !important;             /* White text */
+    background: #4d1c1c !important;        
+    color: #ffffff !important;             
 }
 
 .dark-mode .proposal-row-yellow {
-    background: #665c40 !important;         /* Muted brownish-yellow */
-    color: #ffffff !important;             /* White text */
+    background: #665c40 !important;        
+    color: #ffffff !important;            
 }
 
 .dark-mode .proposal-row-green {
-    background: #2c3e2c !important;         /* Dark green */
-    color: #e0f0e0 !important;             /* Light greenish text */
+    background: #2c3e2c !important;         
+    color: #e0f0e0 !important;            
 }
 
 .dark-mode .proposal-row-blue {
-    background: #2d3a50 !important;         /* Dark blue-gray */
-    color: #d0e0f0 !important;             /* Light blue text */
+    background: #2d3a50 !important;       
+    color: #d0e0f0 !important;            
 }

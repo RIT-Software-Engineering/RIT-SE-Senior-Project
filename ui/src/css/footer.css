@@ -27,8 +27,8 @@
     text-align: left;
 }
 
-/* Dark Mode Overrides */
+/* Dark Mode Styles */
 .dark-mode #footer {
-    background-color: #1e1e1e; /* Dark background for dark mode */
-    color: #e0e0e0;            /* Lighter text for dark mode */
+    background-color: #1e1e1e; 
+    color: #e0e0e0;          
 }

@@ -135,8 +135,8 @@ body.dark-mode .ui.header {
 
 .dark-mode .ui.segment,
 .dark-mode .ui.tab {
-    background-color: #222 !important; /* Dark background */
-    color: #fff !important; /* Light text */
+    background-color: #222 !important; 
+    color: #fff !important; 
 }
 
 .dark-mode .ui.menu {
@@ -145,11 +145,11 @@ body.dark-mode .ui.header {
 }
 
 .dark-mode .ui.tabular.menu .item {
-    color: #bbb !important; /* Light text */
+    color: #bbb !important; 
 }
 
 .dark-mode .ui.tabular.menu .active.item {
-    background-color: #444 !important; /* Darker background */
+    background-color: #444 !important; 
     color: white !important;
 }
 
@@ -185,7 +185,7 @@ body.dark-mode .ui.header {
 }
 
 
-/* Ensure modals rendered in a portal follow dark mode */
+/*Dark mode styles for modals*/
 body.dark-mode .ui.modal {
   background-color: #1e1e1e !important;
   color: #e0e0e0 !important;
@@ -272,8 +272,8 @@ body.dark-mode .ui.form .field > label {
 
 /* Dark mode styles for accordion */
 body.dark-mode .ui.accordion {
-  background-color: #1e1e1e !important;  /* Dark background */
-  color: #e0e0e0 !important;  /* Light text */
+  background-color: #1e1e1e !important;  
+  color: #e0e0e0 !important; 
   border: 1px solid #333 !important;
 }
 

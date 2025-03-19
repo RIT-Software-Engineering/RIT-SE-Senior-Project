@@ -19,17 +19,15 @@
     text-transform: uppercase;
 }
 
-/* Dark mode styles */
+/* Dark Mode Styles */
 .dark-mode #header {
-    background-color: #333;  /* Dark mode header background */
+    background-color: #333; 
 }
 
 .dark-mode #header .container,
 .dark-mode #subHeader {
     color: #e0e0e0;
 }
-
-/* Media queries remain unchanged */
 
 @media only screen and (max-width: 768px) {
     #nav-buttons {

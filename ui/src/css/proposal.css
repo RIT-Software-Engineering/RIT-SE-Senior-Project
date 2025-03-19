@@ -9,14 +9,13 @@
     flex-direction: column;
 }
 
-/* Default (light mode) styles */
 .edited-input input,
 .edited-input.dropdown {
     background-color: #fffaf3 !important;
     color: #573a08 !important;
 }
 
-/* Dark mode overrides */
+/* Dark Mode Styles */
 .dark-mode .edited-input input,
 .dark-mode .edited-input.dropdown {
     background-color: #333 !important;
