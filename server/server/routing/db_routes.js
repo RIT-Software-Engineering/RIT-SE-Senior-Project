@@ -202,7 +202,7 @@ module.exports = (db) => {
   db_router.post(
     "/createUser",
     [
-      UserAuth.isAdmin,
+      UserAuth.isWriteAdmin,
       body("system_id")
         .not()
         .isEmpty()
@@ -241,6 +241,7 @@ module.exports = (db) => {
       body("semester_group").isLength({ max: 50 }),
       body("project").isLength({ max: 50 }),
       body("active").trim().escape().isLength({ max: 50 }),
+      body("viewOnly").trim().escape().isLength({ max: 50 }),
     ],
     async (req, res) => {
       let result = validationResult(req);
@@ -253,14 +254,19 @@ module.exports = (db) => {
       let body = req.body;
 
       const sql = `INSERT INTO ${DB_CONFIG.tableNames.users}
-                (system_id, fname, lname, email, type, semester_group, project, active)
-                VALUES (?,?,?,?,?,?,?,?)`;
+                (system_id, fname, lname, email, type, semester_group, project, active, view_only)
+                VALUES (?,?,?,?,?,?,?,?,?)`;
 
       const active =
         body.active === "false"
           ? moment().format(CONSTANTS.datetime_format)
           : "";
 
+      const viewOnly = 
+        body.viewOnly === "false"
+          ? "FALSE"
+          : "TRUE";
+      
       const params = [
         body.system_id,
         body.fname,
@@ -270,6 +276,7 @@ module.exports = (db) => {
         body.semester_group,
         body.project,
         active,
+        viewOnly,
       ];
       db.query(sql, params)
         .then(() => {
@@ -336,12 +343,18 @@ module.exports = (db) => {
                 type = ?,
                 semester_group = ?,
                 project = ?,
-                active = ?
+                active = ?,
+                view_only = ?
             WHERE system_id = ?
         `;
 
     const active =
       body.active === "false" ? moment().format(CONSTANTS.datetime_format) : "";
+
+    const viewOnly = 
+      body.viewOnly === "false"
+        ? "FALSE"
+        : "TRUE";
 
     let params = [
       body.fname,
@@ -351,6 +364,7 @@ module.exports = (db) => {
       body.semester_group || null,
       body.project || null,
       active,
+      viewOnly,
       body.system_id,
     ];
 
