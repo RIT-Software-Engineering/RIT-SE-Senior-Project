@@ -78,7 +78,7 @@ export default function AdminView(props) {
     />
   }
 
-  if ((user?.isMock || user?.role === "admin") && !user?.view_only) {
+  if ((user?.isMock || user?.role === "admin")) {
     return (
       <>
         <div className={`ui ${user?.isMock ? "warning message" : "info message"}`}>
