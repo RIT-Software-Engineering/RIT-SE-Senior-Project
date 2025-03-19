@@ -62,6 +62,16 @@ Output Specification:
     6. Speak in the POV as the team coach talking to the student.
 `;
 
+const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
+Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
+Input Specification:
+    The input will be a JSON array of review objects (with extraneous metadata removed) representing the student's past evaluations.
+Output Specification:
+    1. Do not include any names or identifying information.
+    2. Focus on trends and changes over time.
+    3. The summary should be a comprehensive paragraph summarizing the historical performance in a coach's voice.
+`;
+
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
   systemInstruction: PROMPT_GENERATE_FEEDBACK_SUMMARY,
@@ -72,6 +82,11 @@ const completionModel = genAI.getGenerativeModel({
   systemInstruction: PROMPT_GENERATE_FEEDBACK_COMPLETION,
 });
 
+const historicModel = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash-latest",
+  systemInstruction: PROMPT_GENERATE_HISTORIC_SUMMARY,
+});
+
 async function provide_summary(studentFeedback) {
   try {
     const context = `${studentFeedback}`;
@@ -79,6 +94,16 @@ async function provide_summary(studentFeedback) {
     return result.response.text();
   } catch (error) {
     console.error("Error generating content:", error);
+  }
+}
+
+async function provide_historic_summary(studentFeedback) {
+  try {
+    const context = `${studentFeedback}`;
+    const result = await historicModel.generateContent(context);
+    return result.response.text();
+  } catch (error) {
+    console.error("Error generating historic content:", error);
   }
 }
 
@@ -97,6 +122,20 @@ module.exports = () => {
           error.statusCode = 500;
           error.message = "Error generating summary with gemini-1.5-flash-latest";
           return next(error);
+      });
+  });
+
+  router.post("/GenerateHistoricSummary", (req, res, next) => {
+    const context = req.body.context;
+
+    provide_historic_summary(context)
+      .then((response) => {
+        res.type("text/plain");
+        res.status(200).send(response);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send(err);
       });
   });
 

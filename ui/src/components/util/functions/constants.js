@@ -82,6 +82,7 @@ export const config = {
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
+    API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
