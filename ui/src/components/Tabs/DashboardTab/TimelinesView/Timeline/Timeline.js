@@ -6,6 +6,8 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
 import TimelineCheckboxes from "./TimelineCheckboxes";
+import { Dropdown } from "semantic-ui-react";
+import { Calendar } from "../../../../util/components/Calendar";
 
 export default function Timeline(props) {
   const [actions, setActions] = useState([]);
@@ -27,6 +29,7 @@ export default function Timeline(props) {
         ? false
         : true,
   );
+  const [actionView, setActionView] = useState('Gantt')
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -97,8 +100,33 @@ export default function Timeline(props) {
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
       >
-        <h3>Gantt</h3>
-        <GanttChart
+        <div style={{ position: 'relative', zIndex: 101 }}>
+          <Dropdown
+            options={[
+              { key: 'gantt', text: <h3><strong>Gantt</strong></h3>, value: 'gantt' },
+              { key: 'calendar', text: <h3><strong>Calendar</strong></h3>, value: 'calendar' },
+            ]}
+            defaultValue={ganttVisible ? 'gantt' : 'calendar'}
+            onChange={(e, data) => {
+              if (data.value === 'gantt') {
+                setActionView('Gantt');
+              } else {
+                setActionView('Calendar');
+              }
+            }}
+          />
+        </div>
+        { actionView === 'Calendar' ? <Calendar
+          projectName={
+            props.elementData.display_name || props.elementData.title
+          }
+          projectId={props.elementData.project_id}
+          semesterName={props.elementData.semester_name}
+          projectStart={props.elementData.start_date}
+          projectEnd={props.elementData.end_date}
+          actions={actions}
+          />
+          : <GanttChart
           projectName={
             props.elementData.display_name || props.elementData.title
           }
@@ -111,7 +139,7 @@ export default function Timeline(props) {
           reloadTimelineActions={() => {
             loadTimelineActions(props.elementData?.project_id);
           }}
-        />
+        />}
       </div>
     </div>
   );
