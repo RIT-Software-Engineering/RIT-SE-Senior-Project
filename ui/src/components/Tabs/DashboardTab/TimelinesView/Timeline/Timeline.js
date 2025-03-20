@@ -97,7 +97,7 @@ export default function Timeline(props) {
           }}
         />
       </div>
-      <label htmlFor="time-line-view">Time Line Style </label>
+      <label htmlFor="time-line-view"><h3>Time Line Style </h3></label>
           <select
           name="time-line-view"
           defaultValue={'gantt'}
@@ -122,9 +122,11 @@ export default function Timeline(props) {
           }
           projectId={props.elementData.project_id}
           semesterName={props.elementData.semester_name}
-          projectStart={props.elementData.start_date}
-          projectEnd={props.elementData.end_date}
-          actions={actions}
+          reloadTimelineActions={() => {
+            loadTimelineActions(props.elementData?.project_id);
+          }}
+          events={actions}
+          initialDate={new Date(2024, 2, 15)}
           />
           : <GanttChart
           projectName={

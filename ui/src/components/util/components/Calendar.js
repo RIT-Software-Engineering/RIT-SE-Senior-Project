@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react"
+import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
 
-// TODO: add actions support, multiple actions per day (pop up if multiple? with option for completed/uncompleted/all?)
+// TODO: get date selecting color changes working, get Tooltip date select working
 
-
-export function Calendar({ initialDate = new Date(), onDateSelect }) {
-  const [currentDate, setCurrentDate] = useState(initialDate)
+export function Calendar(props) {
+  const [currentDate, setCurrentDate] = useState(props.initialDate)
   const [selectedDate, setSelectedDate] = useState(null)
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1000)
   const [hoveredDay, setHoveredDay] = useState(null)
+
+  let events = props.events.map((event) => {
+    return {
+      id: event.action_id,
+      title: event.action_title,
+      start: new Date(event.start_date),
+      end: new Date(event.due_date),
+      color: event.state === "green" ? "#0000ff" : "#fd2723"
+    }
+  })
 
   // Handle window resize for responsive design
   useEffect(() => {
@@ -78,15 +88,6 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
   }
 
-  // Handle date selection
-  const handleDateClick = (day) => {
-    const selectedDate = new Date(currentYear, currentMonth, day)
-    setSelectedDate(selectedDate)
-    if (onDateSelect) {
-      onDateSelect(selectedDate)
-    }
-  }
-
   // Check if a date is today
   const isToday = (day) => {
     const today = new Date()
@@ -102,11 +103,66 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
     )
   }
 
+  // Get events for a specific day
+  const getEventsForDay = (day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    return events.filter((event) => {
+      const eventStart = new Date(event.start)
+      const eventEnd = new Date(event.end)
+      return date >= new Date(eventStart.setHours(0, 0, 0, 0)) && date <= new Date(eventEnd.setHours(23, 59, 59, 999))
+    })
+  }
+
+  // Check if an event starts on a specific day
+  const eventStartsOnDay = (event, day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    const eventStart = new Date(event.start)
+    return (
+      date.getDate() === eventStart.getDate() &&
+      date.getMonth() === eventStart.getMonth() &&
+      date.getFullYear() === eventStart.getFullYear()
+    )
+  }
+
+  // Calculate event display position (for overlapping events)
+  const calculateEventPosition = (event, eventsForDay) => {
+    if (!eventStartsOnDay(event, new Date(event.start).getDate())) {
+      return { top: 0, isStart: false }
+    }
+
+    const overlappingEvents = eventsForDay.filter((e) => {
+      const eStart = new Date(e.start)
+      const eEnd = new Date(e.end)
+      const eventStart = new Date(event.start)
+      const eventEnd = new Date(event.end)
+
+      return (
+        eventStart <= eEnd &&
+        eventEnd >= eStart && // Overlaps
+        e.id !== event.id // Not the same event
+      )
+    })
+
+    // Sort by start time
+    overlappingEvents.sort((a, b) => new Date(a.start) - new Date(b.start))
+
+    // Find position in overlapping events
+    const position = overlappingEvents.findIndex((e) => new Date(e.start) > new Date(event.start))
+
+    // If not found in the middle, add to the end
+    const index = position === -1 ? overlappingEvents.length : position
+
+    return {
+      top: index * 20, // 20px per event
+      isStart: true,
+    }
+  }
+
   // Style objects
   const styles = {
     calendar: {
       width: "100%",
-      maxWidth: windowWidth <= 480 ? "100%" : "400px",
+      maxWidth: "100%",
       border: "1px solid #e0e0e0",
       borderRadius: "8px",
       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -139,7 +195,7 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
       justifyContent: "center",
       borderRadius: "50%",
       backgroundColor: isHovered ? "#f0f0f0" : "transparent",
-      touchAction: "manipulation", // Improves touch experience
+      touchAction: "manipulation",
     }),
     calendarDaysHeader: {
       display: "grid",
@@ -165,33 +221,71 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
       const isDaySelected = isSelected(day)
 
       return {
-        aspectRatio: "1",
+        position: "relative",
+        height: windowWidth <= 360 ? "60px" : windowWidth <= 768 ? "80px" : "100px",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         cursor: "pointer",
-        borderRadius: "50%",
+        borderRadius: "4px",
         margin: windowWidth <= 360 ? "1px" : "2px",
-        fontSize: windowWidth <= 360 ? "0.7rem" : windowWidth <= 480 ? "0.8rem" : "0.9rem",
-        padding: windowWidth <= 360 ? "0" : "2px",
+        padding: "2px",
         backgroundColor: isDaySelected
           ? isHovered
-            ? "#0052a3"
-            : "#0066cc"
+            ? "#e6f0fa"
+            : "#f0f7ff"
           : isCurrentDay
-            ? "#e6f7ff"
+            ? "#f5f9ff"
             : isHovered
-              ? "#f0f0f0"
-              : "transparent",
-        color: isDaySelected ? "white" : isCurrentDay ? "#0066cc" : "inherit",
-        fontWeight: isCurrentDay || isDaySelected ? "bold" : "normal",
-        touchAction: "manipulation", // Improves touch experience
+              ? "#f9f9f9"
+              : "white",
+        border: isCurrentDay ? "1px solid #0066cc" : "1px solid #e0e0e0",
+        overflow: "hidden",
+        touchAction: "manipulation",
       }
     },
+    dayNumber: {
+      fontSize: windowWidth <= 360 ? "0.7rem" : windowWidth <= 480 ? "0.8rem" : "0.9rem",
+      marginBottom: "2px",
+      alignSelf: "flex-start",
+    },
+    eventContainer: {
+      width: "100%",
+      position: "relative",
+      flex: 1,
+      overflow: "hidden",
+    },
+    event: (event, position) => ({
+      position: "absolute",
+      top: `${position.top}px`,
+      left: position.isStart ? "0" : "-4px",
+      right: "0",
+      height: "18px",
+      backgroundColor: event.color || "#4285f4",
+      color: "white",
+      fontSize: "0.65rem",
+      padding: "1px 4px",
+      borderRadius: "2px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      zIndex: 1,
+      marginRight: "1px",
+      boxSizing: "border-box",
+      borderLeft: position.isStart ? "none" : "4px solid transparent",
+    }),
+    moreEvents: {
+      fontSize: "0.65rem",
+      color: "#666",
+      marginTop: "2px",
+    },
     emptyDay: {
-      aspectRatio: "1",
+      height: windowWidth <= 360 ? "60px" : windowWidth <= 768 ? "80px" : "100px",
       margin: windowWidth <= 360 ? "1px" : "2px",
-      cursor: "default",
+      border: "1px solid #f0f0f0",
+      borderRadius: "4px",
+      backgroundColor: "#fafafa",
     },
   }
 
@@ -210,15 +304,70 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
+      const isCurrentDay = isToday(day)
+      const eventsForDay = getEventsForDay(day)
+      const maxVisibleEvents = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
+      const hasMoreEvents = eventsForDay.length > maxVisibleEvents
+
       days.push(
         <div
           key={day}
           style={styles.calendarDay(day, hoveredDay === day)}
-          onClick={() => handleDateClick(day)}
           onMouseEnter={() => setHoveredDay(day)}
           onMouseLeave={() => setHoveredDay(null)}
+          onClick={() => { setSelectedDate(new Date(currentYear, currentMonth, day));}}
         >
-          {day}
+          <div
+            style={{
+              ...styles.dayNumber,
+              fontWeight: isCurrentDay ? "bold" : "normal",
+              color: isCurrentDay ? "#0066cc" : "#333",
+            }}
+            
+          >
+            {day}
+          </div>
+          <div style={styles.eventContainer}>
+            {eventsForDay.slice(0, maxVisibleEvents).map((event) => {
+              const position = calculateEventPosition(event, eventsForDay)
+              const start = `${new Date(event.start).getMonth()}/${new Date(event.start).getDate()}` 
+              const end = `${new Date(event.end).getMonth()}/${new Date(event.end).getDate()}`
+
+              const trigger = (
+                <button className={`action-bar ${event.color}`} key={event.id}>
+                  {
+                    <div className="action-bar-text" title={event.title}>
+                      {event.title}
+                    </div>
+                  }
+                </button>
+              );
+
+              return (
+                <div
+                  key={event.id}
+                  style={styles.event(event, position)}
+                  title={`${event.title} ( ${start} - ${end} )`}
+                  onClick={(e) => console.log("clicked", day)}
+                >
+                  {event.color === "#0000ff" ? <s>{event.title}</s> : event.title}
+                  <ToolTip
+                          autoLoadSubmissions={props.autoLoadSubmissions}
+                          color={event.color}
+                          noPopup={props.noPopup}
+                          trigger={trigger}
+                          action={event}
+                          projectId={props.projectId}
+                          semesterName={props.semesterName}
+                          projectName={props.projectName}
+                          key={`tooltip-${event.title}-${event.id}`}
+                          reloadTimelineActions={props.reloadTimelineActions}
+                        />
+                </div>
+              )
+            })}
+            {hasMoreEvents && <div style={styles.moreEvents}>+{eventsForDay.length - maxVisibleEvents} more</div>}
+          </div>
         </div>,
       )
     }
@@ -235,7 +384,7 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
           onMouseEnter={() => setPrevHovered(true)}
           onMouseLeave={() => setPrevHovered(false)}
         >
-          &lt; {/* < */}
+          &lt;
         </button>
         <div style={styles.currentMonth}>
           {monthNames[currentMonth]} {currentYear}
@@ -246,13 +395,13 @@ export function Calendar({ initialDate = new Date(), onDateSelect }) {
           onMouseEnter={() => setNextHovered(true)}
           onMouseLeave={() => setNextHovered(false)}
         >
-          &gt; {/* > */}
+          &gt;
         </button>
       </div>
 
       <div style={styles.calendarDaysHeader}>
         {dayNames.map((day) => (
-          <div key={day} style={styles.dayName}>
+          <div key={day} style={styles.dayName} >
             {day}
           </div>
         ))}
