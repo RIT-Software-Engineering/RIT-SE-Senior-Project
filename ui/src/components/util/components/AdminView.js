@@ -13,6 +13,7 @@ export default function AdminView() {
   const [students, setStudents] = useState([]);
   const [searchCoaches, setSearchCoaches] = useState([]);
   const [searchStudents, setSearchStudents] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -99,44 +100,49 @@ export default function AdminView() {
         <div style={{margin: '-14px', float: 'right'}}>
           <Label pointing='right'>To view this page as a different user</Label>
           <Dropdown
+            onClick={handleOpen}
             floating
             button
             text={selectedUser}
             direction='left'
+            open={isOpen}
             >
-            <DropdownMenu>
-              <Input
-                icon="search"
-                iconPosition="left"
-                placeholder="Search User..."
-                input={{autocomplete: 'off', onClick: (e) => e.stopPropagation()}}
-                onChange={e => {handleSearch(e.target.value)}}
-              />
-              <DropdownDivider />
-              <DropdownHeader content='Coaches' />
-              <DropdownMenu scrolling>
-                {_.sortBy(Object.values(searchCoaches), ["fname", "lname"]).map((coach) => (
-                  <DropdownItem
-                    key={coach.system_id}
-                    text={`${coach.fname} ${coach.lname} (${coach.system_id})`}
-                    value={coach.system_id}
-                    onClick={(e, target) => setSelectedUser(target.value)}
-                  />
-                ))}
+            {isOpen ? (
+              <DropdownMenu>
+                <Input
+                  icon="search"
+                  iconPosition="left"
+                  placeholder="Search User..."
+                  input={{onClick: (e) => e.stopPropagation()}}
+                  onChange={e => {handleSearch(e.target.value)}}
+                  autoFocus
+                />
+                <DropdownDivider />
+                <DropdownHeader content='Coaches' />
+                <DropdownMenu scrolling>
+                  {_.sortBy(Object.values(searchCoaches), ["fname", "lname"]).map((coach) => (
+                    <DropdownItem
+                      key={coach.system_id}
+                      text={`${coach.fname} ${coach.lname} (${coach.system_id})`}
+                      value={coach.system_id}
+                      onClick={(e, target) => handleSelectUser(target.value)}
+                    />
+                  ))}
+                </DropdownMenu>
+                <DropdownDivider />
+                <DropdownHeader content='Students' />
+                <DropdownMenu scrolling>
+                  {_.sortBy(Object.values(searchStudents), ["fname", "lname"]).map((student) => (
+                    <DropdownItem 
+                      key={student.system_id}
+                      text={`${student.fname} ${student.lname} (${student.system_id})`}
+                      value={student.system_id}
+                      onClick={(e, target) => handleSelectUser(target.value)}
+                    />
+                  ))}
+                </DropdownMenu>
               </DropdownMenu>
-              <DropdownDivider />
-              <DropdownHeader content='Students' />
-              <DropdownMenu scrolling>
-                {_.sortBy(Object.values(searchStudents), ["fname", "lname"]).map((student) => (
-                  <DropdownItem 
-                    key={student.system_id}
-                    text={`${student.fname} ${student.lname} (${student.system_id})`}
-                    value={student.system_id}
-                    onClick={(e, target) => setSelectedUser(target.value)}
-                  />
-                ))}
-              </DropdownMenu>
-            </DropdownMenu>
+            ) : null}
           </Dropdown>
           <Button
             primary
@@ -149,6 +155,10 @@ export default function AdminView() {
       </>
     )
   }
+
+  const handleOpen = () => {setIsOpen(!isOpen); handleSearch("")}
+
+  const handleSelectUser = (user) => {setSelectedUser(user); setIsOpen(false);}
 
   function handleSearch(searchVal) {
     if (searchVal === "") { setSearchCoaches(coaches); setSearchStudents(students); return; }
