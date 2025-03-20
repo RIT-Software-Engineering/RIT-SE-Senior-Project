@@ -25,7 +25,7 @@ export default function CoachesTab() {
         sortedSemesterData.forEach((semester) => {
           initialActive[semester.semester_id] = isSemesterActive(
             semester.start_date,
-            semester.end_date
+            semester.end_date,
           );
         });
         setActive(initialActive);
@@ -119,7 +119,7 @@ export default function CoachesTab() {
               {console.log(
                 `****** + ${
                   mappedCoachData && mappedCoachData[semester.semester_id]
-                }`
+                }`,
               )}
               <Accordion
                 fluid
@@ -153,7 +153,7 @@ export default function CoachesTab() {
               <div className="accordion-buttons-container">
                 <a
                   href={`mailTo:${mappedEmailData[semester.semester_id].join(
-                    ","
+                    ",",
                   )}`}
                   className="ui icon button"
                   target="_blank"

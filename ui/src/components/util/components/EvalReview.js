@@ -26,9 +26,9 @@ export default function EvalReview(props) {
     sortedFeedback.push(
       Object.fromEntries(
         Object.entries(coachFeedback.Students).filter(
-          ([student, _]) => !userIsStudent || userName === student
-        )
-      )
+          ([student, _]) => !userIsStudent || userName === student,
+        ),
+      ),
     );
 
     setUserFeedback(sortedFeedback);
@@ -104,7 +104,7 @@ export default function EvalReview(props) {
                                     <span>
                                       (
                                       {Math.round(
-                                        data.SelfRating[category] * 100
+                                        data.SelfRating[category] * 100,
                                       ) / 100}
                                       )
                                     </span>
@@ -113,7 +113,7 @@ export default function EvalReview(props) {
                               </Table.Cell>
                             )}
                           </Table.Row>
-                        )
+                        ),
                       )}
                     </Table.Body>
                   </Table>
@@ -170,7 +170,7 @@ export default function EvalReview(props) {
     <div>
       {props.isSub ? (
         userFeedback.map((feedback, index) =>
-          generateFeedbackCards(feedback, index)
+          generateFeedbackCards(feedback, index),
         )
       ) : (
         <h5>No Submission</h5>

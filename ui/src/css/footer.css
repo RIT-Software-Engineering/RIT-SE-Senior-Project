@@ -1,31 +1,31 @@
 #footer {
-    min-height: var(--footer-height);
-    background-color: black;
-    color: white;
-    padding-top: 2em;
-    padding-bottom: 1em;
+  min-height: var(--footer-height);
+  background-color: black;
+  color: white;
+  padding-top: 2em;
+  padding-bottom: 1em;
 }
 
 #bringMeDown {
-    margin-bottom: 0px;
-    padding-top: 1.5em;
+  margin-bottom: 0px;
+  padding-top: 1.5em;
 }
 
 #bringMeDownSignedIn {
-    margin-bottom: 0px;
-    margin-right: 0px;
-    margin-left: 0px;
-    padding-top: 0px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  padding-top: 0px;
 }
 
 #version {
-    text-align: right;
+  text-align: right;
 }
 
 #footer {
-    text-align: left;
+  text-align: left;
 }
 
 #copyright {
-    text-align: left;
+  text-align: left;
 }
