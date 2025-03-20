@@ -1,0 +1,27 @@
+paths:
+  # AI
+  /ai/GenerateSummary:
+    post:
+      summary: Generate summary
+      description: Generates anonymous feedback for the given user or a summary of their peer's feedback
+      tags:
+        - AI
+      operationId: GenerateSummary
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Generated summary
