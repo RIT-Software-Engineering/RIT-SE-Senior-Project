@@ -16,6 +16,10 @@ export default function StudentRow(props) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [peerReviews, setPeerReviews] = useState([]);
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+
 
   const handleAccordionClick = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -111,13 +115,59 @@ const handleGenerateAISummary = async () => {
   }
 };
 
+const fetchAdditionalInfo = async () => {
+  try {
+    const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
+    console.log("Fetching additional info from:", url);
+    const response = await SecureFetch(url);
+    const data = await response.json();
+
+    if (data && data.additional_info) {
+      setAdditionalInfo(data.additional_info);
+    } else {
+      setAdditionalInfo("No additional information available.");
+    }
+  } catch (error) {
+    console.error("Error fetching additional info:", error);
+    setAdditionalInfo("Error loading additional information.");
+  }
+};
+
+const handleSaveAdditionalInfo = async () => {
+  try {
+    const url = `${config.url.API_UPDATE_ADDITIONAL_INFO}`;
+    console.log("Updating additional info at:", url);
+
+    const response = await SecureFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        system_id: props.student.system_id,
+        additional_info: additionalInfo,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update additional info");
+
+    console.log("Additional info updated successfully");
+    setIsEditing(false); // Exit edit mode
+  } catch (error) {
+    console.error("Error updating additional info:", error);
+  }
+};
+
 
 
   useEffect(() => {
     if (openModal) {
       fetchPeerReviews();
+      fetchAdditionalInfo();
     }
   }, [openModal]);
+
+  
 
   if (!props.studentsTab) {
     student_cells.push(
@@ -164,11 +214,11 @@ const handleGenerateAISummary = async () => {
         <TableRow key={props.student.system_id}>
           <TableCell
             style={{
-              cursor: !props.isStudent ? "pointer" : "default",
-              color: !props.isStudent ? "blue" : "black",
-              textDecoration: !props.isStudent ? "underline" : "none",
+              cursor: "pointer",
+              color:"blue",
+              textDecoration:"underline",
             }}
-            onClick={() => !props.isStudent && setOpenModal(true)}
+            onClick={() => setOpenModal(true)}
           >
             {props.student.fname} {props.student.lname}
           </TableCell>
@@ -203,7 +253,43 @@ const handleGenerateAISummary = async () => {
                 ? dayjs(props.student.last_login).utc(true).local().format("DD/MM/YYYY HH:mm:ss")
                 : "Never Logged in"}
             </p>
+            <p>
+                <strong>Additional Info:</strong>
+                {props.isStudent ? (
+                  <>
+                    {isEditing ? (
+                      <>
+                        <textarea
+                          value={additionalInfo}
+                          onChange={(e) => setAdditionalInfo(e.target.value)}
+                          rows={4}
+                          style={{ width: "100%" }}
+                        />
+                        <Button onClick={handleSaveAdditionalInfo} primary size="small" style={{ marginTop: "0.5em" }}>
+                          Save
+                        </Button>
+                        <Button onClick={() => setIsEditing(false)} size="small" style={{ marginTop: "0.5em", marginLeft: "0.5em" }}>
+                          Cancel
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ marginLeft: "0.5em" }}>{additionalInfo || "No additional info available"}</span>
+                        <Button onClick={() => setIsEditing(true)} size="small" style={{ marginLeft: "0.5em" }}>
+                          Edit
+                        </Button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <span style={{ marginLeft: "0.5em" }}>{additionalInfo || "No additional info available"}</span>
+                )}
+              </p>
 
+
+
+            {!props.isStudent && (
+              <>
             <Accordion styled fluid>
               {peerReviews.length > 0 ? (
                 peerReviews.map((review, index) => {
@@ -271,8 +357,10 @@ const handleGenerateAISummary = async () => {
                 rows={4}
                 style={{ width: "100%" }}
               />
-            </div>
+            </div>           
             <Button onClick={handleGenerateAISummary}>Generate AI Summary</Button>
+            </>
+            )}
           </Modal.Content>
           <Modal.Actions>
             <Button onClick={() => setOpenModal(false)}>Close</Button>

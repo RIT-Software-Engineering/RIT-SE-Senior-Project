@@ -80,6 +80,7 @@ export const config = {
     API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
     API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
+    API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
@@ -107,6 +108,7 @@ export const config = {
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
+    API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

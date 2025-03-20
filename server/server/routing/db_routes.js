@@ -3798,5 +3798,46 @@ module.exports = (db) => {
     });
   }
 
+      db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], (req, res, next) => {
+        const userId = req.user.system_id || req.query.system_id;
+
+        if (!userId) {
+            return res.status(400).send({ error: "User ID is required" });
+        }
+
+        db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [userId])
+          .then((result) => {
+            if (result.length === 0) {
+              return res.status(404).send({ error: "User not found" });
+            }
+            res.send(result[0]);
+          })
+          .catch((err) => {
+            next(new Error("Database query failed: " + err.message));
+          });
+    });
+
+    db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], (req, res, next) => {
+      const { system_id, additional_info } = req.body;
+
+      if (!system_id || additional_info === undefined) {
+          return res.status(400).send({ error: "system_id and additional_info are required" });
+      }
+
+      const updateQuery = `
+          UPDATE users
+          SET additional_info = ?
+          WHERE system_id = ?
+      `;
+
+      db.query(updateQuery, [additional_info, system_id])
+        .then(() => res.status(200).send({ message: "Additional info updated successfully" }))
+        .catch((err) => {
+          next(new Error("Database update failed: " + err.message));
+        });
+    });
+
+
+
   return db_router;
 };
