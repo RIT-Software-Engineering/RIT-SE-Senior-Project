@@ -115,11 +115,14 @@ export default function DatabaseTableEditor(props) {
     e.preventDefault();
 
     if (!isInputValid()){
-      console.log("Validation failed", errors);
       setOpen(true); 
+      console.log("Validation failed", errors);
       // setSubmissionModalOpen(MODAL_STATUS.FAIL);
       return;
     }
+
+    setErrors(new Set()); // clear errors
+
     const dataToSubmit = !!props.preSubmit
       ? props.preSubmit(formData)
       : formData;
@@ -149,7 +152,6 @@ export default function DatabaseTableEditor(props) {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
           setOpen(false);
-          setErrors(new Set());
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
         }
