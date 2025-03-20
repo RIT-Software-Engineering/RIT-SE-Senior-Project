@@ -18,6 +18,7 @@ const file_size = "file_size";
 
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(false);
+  console.log("IS OPEN?", open);
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
