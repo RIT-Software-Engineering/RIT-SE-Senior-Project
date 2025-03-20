@@ -94,9 +94,9 @@ module.exports = () => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          error.message = "Error generating summary with gemini-1.5-flash-latest";
-          return next(error);
+        error.statusCode = 500;
+        error.message = "Error generating summary with gemini-1.5-flash-latest";
+        return next(error);
       });
   });
 

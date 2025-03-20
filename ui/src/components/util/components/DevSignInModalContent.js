@@ -23,7 +23,7 @@ export default function DevSignInModalContent() {
   }, []);
 
   return (
-    <Container textAlign='center'>
+    <Container textAlign="center">
       <h3>Sign in as</h3>
       <select className="ui dropdown labeled" ref={selectedUserIdx}>
         {users.map((user, idx) => (
@@ -33,7 +33,7 @@ export default function DevSignInModalContent() {
           >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
         ))}
       </select>
-      <br/>
+      <br />
       <Button
         color="orange"
         onClick={() => {
@@ -69,7 +69,7 @@ export default function DevSignInModalContent() {
           // Delete all cookies
           let cookies = document.cookie.split(";");
           cookies.forEach(
-            (cookie) => (document.cookie = cookie + ";max-age=0")
+            (cookie) => (document.cookie = cookie + ";max-age=0"),
           );
           // Simulate redirect from Shibboleth
           history.push("/");

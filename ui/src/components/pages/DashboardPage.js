@@ -101,7 +101,7 @@ export default function DashboardPage() {
               <CoachesTab />
             </Tab.Pane>
           ),
-        }
+        },
       );
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
@@ -139,9 +139,8 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-                <TimeLog semesterData={semesterData} />
-                <ActionLogs semesterData={semesterData} />
-
+              <TimeLog semesterData={semesterData} />
+              <ActionLogs semesterData={semesterData} />
             </Tab.Pane>
           ),
         },
@@ -153,10 +152,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <TimeLinesView semesterData={semesterData}/>
+              <TimeLinesView semesterData={semesterData} />
             </Tab.Pane>
           ),
-        }
+        },
       );
       break;
     default:
