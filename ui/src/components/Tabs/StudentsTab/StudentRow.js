@@ -135,7 +135,7 @@ const fetchAdditionalInfo = async () => {
 
 const handleSaveAdditionalInfo = async () => {
   try {
-    const url = `${config.url.API_UPDATE_ADDITIONAL_INFO}`;
+    const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
     console.log("Updating additional info at:", url);
 
     const response = await SecureFetch(url, {

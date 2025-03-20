@@ -3798,24 +3798,27 @@ module.exports = (db) => {
     });
   }
 
-      db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], (req, res, next) => {
-        const userId = req.user.system_id || req.query.system_id;
+      db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
+        const requestedUserId = req.query.system_id;
 
-        if (!userId) {
+        if (!requestedUserId) {
             return res.status(400).send({ error: "User ID is required" });
         }
 
-        db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [userId])
-          .then((result) => {
+        try {
+            // Fetch the additional_info of the requested student
+            const result = await db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [requestedUserId]);
+
             if (result.length === 0) {
-              return res.status(404).send({ error: "User not found" });
+                return res.status(404).send({ error: "User not found" });
             }
-            res.send(result[0]);
-          })
-          .catch((err) => {
+
+            res.send(result[0]); // Send the additional_info
+        } catch (err) {
             next(new Error("Database query failed: " + err.message));
-          });
+        }
     });
+
 
     db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], (req, res, next) => {
       const { system_id, additional_info } = req.body;
