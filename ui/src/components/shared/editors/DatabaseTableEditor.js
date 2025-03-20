@@ -222,8 +222,23 @@ export default function DatabaseTableEditor(props) {
     if (!field.hidden) {
       switch (field.type) {
         case "input":
-          if (formData.action_target === "peer_evaluation") { // hide input fields if peer_eval is chosen.
-            // TODO: display the action title; its currently also being hidden.
+          if (formData.action_target === "peer_evaluation" || formData.action_target === "coach_announcement" || formData.action_target === "student_announcement") { // hide input fields if peer_eval / announcements are chosen.
+            // display the Action Title input
+            if (field.name === 'action_title'){
+              fieldComponents.push(
+                <Form.Field key={field.name}>
+                <Form.Input
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  disabled={field.disabled}
+                  required
+                />
+              </Form.Field>,
+              );
+            }
           }
           else{
             fieldComponents.push(
