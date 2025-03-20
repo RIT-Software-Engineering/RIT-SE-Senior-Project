@@ -89,18 +89,20 @@ export default function DatabaseTableEditor(props) {
   const isInputValid = () => {
     const validationErrors = new Set();
 
-    if (formData.short_desc.trim() === ""){
-      // validationErrors.add("Short Description is empty");
-      validationErrors.add('short_desc');
-    }
-    if (formData.page_html.trim() === ""){
-      // validationErrors.add("Page HTML is empty");
-      validationErrors.add('page_html');
-    }
-    if (new Date(formData.start_date) > new Date(formData.due_date)){
-      // validationErrors.add("Due date must come after start_date");
-      validationErrors.add('start_date')
-      validationErrors.add('due_date');
+    if (formData.action_target !== "peer_evaluation" && formData.action_target !== "coach_announcement" && formData.action_target !== "student_announcement"){
+      if (formData.short_desc.trim() === ""){
+        // validationErrors.add("Short Description is empty");
+        validationErrors.add('short_desc');
+      }
+      if (formData.page_html.trim() === ""){
+        // validationErrors.add("Page HTML is empty");
+        validationErrors.add('page_html');
+      }
+      if (new Date(formData.start_date) > new Date(formData.due_date)){
+        // validationErrors.add("Due date must come after start_date");
+        validationErrors.add('start_date')
+        validationErrors.add('due_date');
+      }
     }
     
     setErrors(validationErrors);
@@ -113,7 +115,7 @@ export default function DatabaseTableEditor(props) {
     e.preventDefault();
 
     if (!isInputValid()){
-      console.log("Validation failed");
+      console.log("Validation failed", errors);
       setOpen(true); 
       // setSubmissionModalOpen(MODAL_STATUS.FAIL);
       return;
@@ -147,6 +149,7 @@ export default function DatabaseTableEditor(props) {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
           setOpen(false);
+          setErrors(new Set());
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
         }
@@ -219,22 +222,27 @@ export default function DatabaseTableEditor(props) {
     if (!field.hidden) {
       switch (field.type) {
         case "input":
-          fieldComponents.push(
-            <Form.Field key={field.name}>
-              <Form.Input
-                label={field.label}
-                placeholder={field.placeholder}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                disabled={field.disabled}
-                style={{
-                  borderColor: errors.has(field.name) ? 'red' : 'intial'
-                }}
-                required
-              />
-            </Form.Field>,
-          );
+          if (formData.action_target === "peer_evaluation") { // hide input fields if peer_eval is chosen.
+            // TODO: display the action title; its currently also being hidden.
+          }
+          else{
+            fieldComponents.push(
+              <Form.Field key={field.name}>
+                <Form.Input
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  disabled={field.disabled}
+                  style={{
+                    borderColor: errors.has(field.name) ? 'red' : 'intial'
+                  }}
+                  required
+                />
+              </Form.Field>,
+            );
+          }
           break;
         case "phoneInput":
           fieldComponents.push(
