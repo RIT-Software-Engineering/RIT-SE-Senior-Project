@@ -141,17 +141,20 @@ export default function ActionPanel(props) {
       [
         ACTION_TARGETS.coach_announcement,
         ACTION_TARGETS.student_announcement,
+        ACTION_TARGETS.peer_evaluation,
       ].includes(value)
     ) {
       formData[short_desc] = "";
       formData[file_types] = "";
+      formData[file_size] = "";
       formData[name] = value;
     } else if (
       [
         ACTION_TARGETS.coach_announcement,
         ACTION_TARGETS.student_announcement,
+        ACTION_TARGETS.peer_evaluation,
       ].includes(formData[action_target]) &&
-      [short_desc, file_types].includes(name)
+      [short_desc, file_types, file_size].includes(name)
     ) {
       return formData;
     }
