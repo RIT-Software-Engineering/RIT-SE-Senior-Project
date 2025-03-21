@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
 import _ from "lodash";
 
+// TODO clean this shit up
+
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
   const [selectedDate, setSelectedDate] = useState(null)
