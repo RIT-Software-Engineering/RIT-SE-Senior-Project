@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
-
-// TODO: get date selecting color changes working, get Tooltip date select working
+import _ from "lodash";
 
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
@@ -9,15 +8,13 @@ export function Calendar(props) {
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1000)
   const [hoveredDay, setHoveredDay] = useState(null)
 
-  let events = props.events.map((event) => {
-    return {
-      id: event.action_id,
-      title: event.action_title,
-      start: new Date(event.start_date),
-      end: new Date(event.due_date),
-      color: event.state === "green" ? "#0000ff" : "#fd2723"
-    }
-  })
+  const sortedActions = _.sortBy(
+    props.actions.map((action) => ({
+      ...action,
+      color: action.state === "green" ? "#0000ff" : "#fd2723",
+    })),
+    ["due_date", "start_date", "action_title"]
+  );
 
   // Handle window resize for responsive design
   useEffect(() => {
@@ -103,57 +100,58 @@ export function Calendar(props) {
     )
   }
 
-  // Get events for a specific day
-  const getEventsForDay = (day) => {
+  // Get actions for a specific day
+  const getActionsForDay = (day) => {
     const date = new Date(currentYear, currentMonth, day)
-    return events.filter((event) => {
-      const eventStart = new Date(event.start)
-      const eventEnd = new Date(event.end)
-      return date >= new Date(eventStart.setHours(0, 0, 0, 0)) && date <= new Date(eventEnd.setHours(23, 59, 59, 999))
+    return sortedActions.filter((action) => {
+      const actionStart = new Date(action.start_date)
+      const actionEnd = new Date(action.due_date)
+      console.log("selected day", date, "\n action-start", actionStart, "\n action-end", actionEnd, "\n action_start_date", action.start_date, "\n action_due_date", action.due_date, "\n action", action)
+      return date >= new Date(actionStart.setHours(0, 0, 0, 0)) && date <= new Date(actionEnd.setHours(23, 59, 59, 999))
     })
   }
 
-  // Check if an event starts on a specific day
-  const eventStartsOnDay = (event, day) => {
+  // Check if an action starts on a specific day
+  const actionStartsOnDay = (action, day) => {
     const date = new Date(currentYear, currentMonth, day)
-    const eventStart = new Date(event.start)
+    const actionStart = new Date(action.start_date)
     return (
-      date.getDate() === eventStart.getDate() &&
-      date.getMonth() === eventStart.getMonth() &&
-      date.getFullYear() === eventStart.getFullYear()
+      date.getDate() === actionStart.getDate() &&
+      date.getMonth() === actionStart.getMonth() &&
+      date.getFullYear() === actionStart.getFullYear()
     )
   }
 
-  // Calculate event display position (for overlapping events)
-  const calculateEventPosition = (event, eventsForDay) => {
-    if (!eventStartsOnDay(event, new Date(event.start).getDate())) {
+  // Calculate action display position (for overlapping actions)
+  const calculateActionPosition = (action, actionsForDay) => {
+    if (!actionStartsOnDay(action, new Date(action.start_date).getDate())) {
       return { top: 0, isStart: false }
     }
 
-    const overlappingEvents = eventsForDay.filter((e) => {
+    const overlappingActions = actionsForDay.filter((e) => {
       const eStart = new Date(e.start)
       const eEnd = new Date(e.end)
-      const eventStart = new Date(event.start)
-      const eventEnd = new Date(event.end)
+      const actionStart = new Date(action.start_date)
+      const actionEnd = new Date(action.due_date)
 
       return (
-        eventStart <= eEnd &&
-        eventEnd >= eStart && // Overlaps
-        e.id !== event.id // Not the same event
+        actionStart <= eEnd &&
+        actionEnd >= eStart && // Overlaps
+        e.id !== action.action_id // Not the same action
       )
     })
 
     // Sort by start time
-    overlappingEvents.sort((a, b) => new Date(a.start) - new Date(b.start))
+    overlappingActions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
 
-    // Find position in overlapping events
-    const position = overlappingEvents.findIndex((e) => new Date(e.start) > new Date(event.start))
+    // Find position in overlapping actions
+    const position = overlappingActions.findIndex((e) => new Date(e.start_date) > new Date(action.start_date))
 
     // If not found in the middle, add to the end
-    const index = position === -1 ? overlappingEvents.length : position
+    const index = position === -1 ? overlappingActions.length : position
 
     return {
-      top: index * 20, // 20px per event
+      top: index * 20, // 20px per action
       isStart: true,
     }
   }
@@ -250,19 +248,19 @@ export function Calendar(props) {
       marginBottom: "2px",
       alignSelf: "flex-start",
     },
-    eventContainer: {
+    actionContainer: {
       width: "100%",
       position: "relative",
       flex: 1,
       overflow: "hidden",
     },
-    event: (event, position) => ({
+    action: (action, position) => ({
       position: "absolute",
       top: `${position.top}px`,
       left: position.isStart ? "0" : "-4px",
       right: "0",
       height: "18px",
-      backgroundColor: event.color || "#4285f4",
+      backgroundColor: action.color,
       color: "white",
       fontSize: "0.65rem",
       padding: "1px 4px",
@@ -275,7 +273,7 @@ export function Calendar(props) {
       boxSizing: "border-box",
       borderLeft: position.isStart ? "none" : "4px solid transparent",
     }),
-    moreEvents: {
+    moreActions: {
       fontSize: "0.65rem",
       color: "#666",
       marginTop: "2px",
@@ -305,10 +303,9 @@ export function Calendar(props) {
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const isCurrentDay = isToday(day)
-      const eventsForDay = getEventsForDay(day)
-      const maxVisibleEvents = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
-      const hasMoreEvents = eventsForDay.length > maxVisibleEvents
-
+      const actionsForDay = getActionsForDay(day)
+      const maxVisibleActions = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
+      const hasMoreActions = actionsForDay.length > maxVisibleActions
       days.push(
         <div
           key={day}
@@ -327,46 +324,46 @@ export function Calendar(props) {
           >
             {day}
           </div>
-          <div style={styles.eventContainer}>
-            {eventsForDay.slice(0, maxVisibleEvents).map((event) => {
-              const position = calculateEventPosition(event, eventsForDay)
-              const start = `${new Date(event.start).getMonth()}/${new Date(event.start).getDate()}` 
-              const end = `${new Date(event.end).getMonth()}/${new Date(event.end).getDate()}`
+          <div style={styles.actionContainer}>
+            {actionsForDay.slice(0, maxVisibleActions).map((action) => {
+              console.log("action", action)
+              const position = calculateActionPosition(action, actionsForDay)
+              const start = `${new Date(action.start_date).getMonth()}/${new Date(action.start_date).getDate()}` 
+              const end = `${new Date(action.due_date).getMonth()}/${new Date(action.due_date).getDate()}`
 
               const trigger = (
-                <button className={`action-bar ${event.color}`} key={event.id}>
-                  {
-                    <div className="action-bar-text" title={event.title}>
-                      {event.title}
-                    </div>
-                  }
-                </button>
+                <div
+                key={action.action_id}
+                style={styles.action(action, position)}
+                title={`${action.action_title} ( ${start} - ${end} )`}
+                onClick={(e) => console.log("clicked", day, action)}>
+                  {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
+                </div>
               );
 
               return (
                 <div
-                  key={event.id}
-                  style={styles.event(event, position)}
-                  title={`${event.title} ( ${start} - ${end} )`}
-                  onClick={(e) => console.log("clicked", day)}
-                >
-                  {event.color === "#0000ff" ? <s>{event.title}</s> : event.title}
+                key={action.action_id}
+                style={styles.action(action, position)}
+                title={`${action.action_title} ( ${start} - ${end} )`}
+                onClick={(e) => console.log("clicked", day, action)}>
+                  {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
                   <ToolTip
                           autoLoadSubmissions={props.autoLoadSubmissions}
-                          color={event.color}
+                          color={action.color}
                           noPopup={props.noPopup}
                           trigger={trigger}
-                          action={event}
+                          action={action}
                           projectId={props.projectId}
                           semesterName={props.semesterName}
                           projectName={props.projectName}
-                          key={`tooltip-${event.title}-${event.id}`}
+                          key={`tooltip-${action.action_title}-${action.id}`}
                           reloadTimelineActions={props.reloadTimelineActions}
                         />
-                </div>
+                  </div>
               )
             })}
-            {hasMoreEvents && <div style={styles.moreEvents}>+{eventsForDay.length - maxVisibleEvents} more</div>}
+            {hasMoreActions && <div style={styles.moreActions}>+{actionsForDay.length - maxVisibleActions} more</div>}
           </div>
         </div>,
       )
@@ -384,7 +381,7 @@ export function Calendar(props) {
           onMouseEnter={() => setPrevHovered(true)}
           onMouseLeave={() => setPrevHovered(false)}
         >
-          &lt;
+          {"<"}
         </button>
         <div style={styles.currentMonth}>
           {monthNames[currentMonth]} {currentYear}
@@ -395,7 +392,7 @@ export function Calendar(props) {
           onMouseEnter={() => setNextHovered(true)}
           onMouseLeave={() => setNextHovered(false)}
         >
-          &gt;
+          {">"}
         </button>
       </div>
 

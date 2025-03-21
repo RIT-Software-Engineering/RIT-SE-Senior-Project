@@ -26,7 +26,7 @@ export default function Timeline(props) {
   const [ganttVisible, setGanttVisible] = useState(
     storedGanttView
       ? storedGanttView === "true"
-      : userContext.user?.role == USERTYPES.ADMIN
+      : userContext.user?.role === USERTYPES.ADMIN
         ? false
         : true,
   );
@@ -125,8 +125,8 @@ export default function Timeline(props) {
           reloadTimelineActions={() => {
             loadTimelineActions(props.elementData?.project_id);
           }}
-          events={actions}
-          initialDate={new Date(2024, 2, 15)}
+          actions={actions}
+          initialDate={new Date()}
           />
           : <GanttChart
           projectName={
