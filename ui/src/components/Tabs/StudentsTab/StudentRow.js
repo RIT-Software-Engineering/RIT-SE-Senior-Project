@@ -9,6 +9,9 @@ import { formatDateTime } from "../../util/functions/utils";
 
 dayjs.extend(utc);
 
+
+//Query to get peer evals can be updated to use semester numbers and potentially student ids to return less results, currently it returns all peer evals in the db
+
 export default function StudentRow(props) {
   let student_cells = [];
 
