@@ -3,10 +3,9 @@ import { Button, Dropdown, Input, DropdownMenu, DropdownItem, DropdownDivider, D
 import { config, USERTYPES } from '../functions/constants';
 import { SecureFetch } from '../functions/secureFetch';
 import { UserContext } from "../functions/UserContext";
-import _ from 'lodash';
+import _ from "lodash";
 
 export default function AdminView() {
-
   const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState([]);
   const [coaches, setCoaches] = useState([]);
@@ -63,7 +62,8 @@ export default function AdminView() {
     }
   }, [user, ref, isOpen])
 
-  const changeView = () => {// changes view for admin to another user
+  const changeView = () => {
+    // changes view for admin to another user
 
     if (!users[selectedUser]?.system_id) {
       alert("Can't change view - No user selected");
@@ -85,7 +85,7 @@ export default function AdminView() {
     document.cookie = `mock_active=${users[selectedUser].active}`;
     //refresh as new user
     window.location.reload();
-  }
+  };
 
   const renderSignOutButton = () => {
     return <Button

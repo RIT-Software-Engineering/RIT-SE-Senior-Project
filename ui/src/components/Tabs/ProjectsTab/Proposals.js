@@ -33,7 +33,7 @@ const DESCENDING = "descending";
 export default function Proposals(props) {
   const [proposalData, setProposalData] = useState({});
   const [active, setActive] = useState(
-    isSemesterActive(props.semester?.start_date, props.semester?.end_date)
+    isSemesterActive(props.semester?.start_date, props.semester?.end_date),
   );
 
   let semesterMap = { undefined: "No semester", null: "No semester" };
@@ -120,12 +120,8 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
-                  <ProjectArchivePanel
-                    project={proposal}
-                  />
-                  <WebsiteViewerModal
-                    project={proposal}
-                  />
+                  <ProjectArchivePanel project={proposal} />
+                  <WebsiteViewerModal project={proposal} />
                 </>
               ) : (
                 <>
@@ -168,7 +164,7 @@ export default function Proposals(props) {
         <TableHeader>
           <TableRow>
             <TableHeaderCell
-              /*sorted={
+            /*sorted={
                 proposalData.column === COLUMNS.SEMESTER
                   ? proposalData.direction
                   : null
@@ -178,7 +174,7 @@ export default function Proposals(props) {
               Semester
             </TableHeaderCell>
             <TableHeaderCell
-              /*sorted={
+            /*sorted={
                 proposalData.column === COLUMNS.TITLE
                   ? proposalData.direction
                   : null
@@ -188,7 +184,7 @@ export default function Proposals(props) {
               Name
             </TableHeaderCell>
             <TableHeaderCell
-              /*sorted={
+            /*sorted={
                 proposalData.column === COLUMNS.STATUS
                   ? proposalData.direction
                   : null

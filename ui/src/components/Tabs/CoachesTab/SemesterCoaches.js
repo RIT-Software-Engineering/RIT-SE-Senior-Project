@@ -43,7 +43,7 @@ export default function SemesterCoaches({ coaches, semesterId }) {
                       {coach.projects
                         ?.filter(
                           (project) =>
-                            project.semester_id === semesterId.toString()
+                            project.semester_id === semesterId.toString(),
                         )
                         ?.map((project) => {
                           return (

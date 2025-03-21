@@ -33,7 +33,7 @@ export default function ResultTable(props) {
     setExpandedRows(
       expandedRows.includes(index)
         ? expandedRows.filter((row) => row !== index)
-        : [...expandedRows, index]
+        : [...expandedRows, index],
     );
   };
 
@@ -43,7 +43,7 @@ export default function ResultTable(props) {
     new Set([
       ...Object.keys(props.OthersFeedbackAvg),
       ...(hasSelfRating ? Object.keys(props.SelfFeedback.Ratings) : []),
-    ])
+    ]),
   );
 
   return (

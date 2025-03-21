@@ -11,9 +11,8 @@ import { UserContext } from "../../util/functions/UserContext";
  *      Notable props: newArchive, indicates whether a project has been added to archives or not
  */
 export default function ProjectArchivePanel(props) {
-
   const [newArchive, setNewArchive] = useState({});
-  const isStudent = (useContext(UserContext).user?.role === USERTYPES.STUDENT);
+  const isStudent = useContext(UserContext).user?.role === USERTYPES.STUDENT;
 
   const [initialState, setInitialState] = useState({
     archive_id: "",
@@ -40,11 +39,11 @@ export default function ProjectArchivePanel(props) {
 
   const loadArchiveData = () => {
     SecureFetch(
-      `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`
+      `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`,
     )
       .then((response) => response.json())
       .then((archives) => {
-        if (archives.length > 0){
+        if (archives.length > 0) {
           let archive = archives[0];
           setNewArchive(false);
           setInitialState((prevInitialState) => {
@@ -68,15 +67,11 @@ export default function ProjectArchivePanel(props) {
               end_date: archive.end_date,
               keywords: archive.keywords,
               url_slug: archive.url_slug,
-              inactive: archive.inactive === ""
-                ? false
-                : true,
-              locked: archive.locked === ""
-                ? false
-                : true,
+              inactive: archive.inactive === "" ? false : true,
+              locked: archive.locked === "" ? false : true,
             };
           });
-        }else{
+        } else {
           setNewArchive(true);
           setInitialState((prevInitialState) => {
             return {
@@ -89,7 +84,7 @@ export default function ProjectArchivePanel(props) {
             };
           });
           SecureFetch(
-            `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`
+            `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`,
           )
             .then((response) => response.json())
             .then((members) => {
@@ -104,7 +99,7 @@ export default function ProjectArchivePanel(props) {
                       value: member.system_id,
                     });
                     projectGroupedValues.students.push(
-                      ` ${member.fname} ${member.lname}`
+                      ` ${member.fname} ${member.lname}`,
                     );
                     break;
                   case USERTYPES.COACH:
@@ -116,13 +111,13 @@ export default function ProjectArchivePanel(props) {
                       });
                     }
                     projectGroupedValues.coaches.push(
-                      `${member.fname} ${member.lname}`
+                      `${member.fname} ${member.lname}`,
                     );
                     break;
                   default:
                     console.error(
                       `Project editor error - invalid project member type "${member.type}" for member: `,
-                      member
+                      member,
                     );
                     break;
                 }
@@ -137,7 +132,7 @@ export default function ProjectArchivePanel(props) {
             });
           if (props.project?.semester) {
             SecureFetch(
-              `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project?.semester}`
+              `${config.url.API_GET_START_AND_END_DATE}/?semester=${props.project?.semester}`,
             )
               .then((response) => response.json())
               .then((dates) => {
@@ -152,7 +147,7 @@ export default function ProjectArchivePanel(props) {
               });
           }
           SecureFetch(
-           `${config.url.API_GET_PROJECT_SPONSOR}/?project_id=${props.project?.project_id}`
+            `${config.url.API_GET_PROJECT_SPONSOR}/?project_id=${props.project?.project_id}`,
           )
             .then((response) => response.json())
             .then((sponsor) => {
@@ -160,18 +155,18 @@ export default function ProjectArchivePanel(props) {
                 setInitialState((prevInitialState) => {
                   return {
                     ...prevInitialState,
-                    sponsor: `${sponsor[0].fname} ${sponsor[0].lname}`
+                    sponsor: `${sponsor[0].fname} ${sponsor[0].lname}`,
                   };
                 });
               }
             });
         }
       });
-  }
+  };
 
   //This is for checking for existing archives and assigning their values as defaults.
   useEffect(() => {
-    loadArchiveData(props.project)
+    loadArchiveData(props.project);
   }, [props.project]);
 
   let submissionModalMessages;
@@ -266,9 +261,11 @@ export default function ProjectArchivePanel(props) {
       submissionModalMessages={submissionModalMessages}
       submitRoute={submitRouter}
       formFieldArray={formFieldArray}
-      header={(newArchive ? "Create Website" : "Edit Website")}
-      button={(newArchive ? "plus" : "edit")}
-      callback={() => { loadArchiveData(props.project) }}
+      header={newArchive ? "Create Website" : "Edit Website"}
+      button={newArchive ? "plus" : "edit"}
+      callback={() => {
+        loadArchiveData(props.project);
+      }}
     />
   );
 }

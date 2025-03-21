@@ -9,35 +9,35 @@ import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/allPages/Header";
 import Footer from "./components/shared/allPages/Footer";
-import {UserContextProvider} from "./components/util/functions/UserContext";
+import { UserContextProvider } from "./components/util/functions/UserContext";
 import "./App.css";
-import {Container} from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import ErrorBoundary from "./components/shared/allPages/ErrorBoundary";
 import StackTraceErrorPage from "./components/pages/StackTraceErrorPage";
 
 function App() {
-    return (
-        <UserContextProvider>
-            <ErrorBoundary> 
-            <Header />
-            <div id="page">
-                <Container>
-                    <Switch>
-                        <Route path="/" component={HomePage} exact />
-                        <Route path="/projects/:url_slug" component={UniqueProjectPage}/>
-                        <Route path="/projects" component={ProjectsPage}/>
-                        <Route path="/sponsor" component={SponsorPage} />
-                        <Route path="/proposal-form" component={ProposalPage} />
-                        <Route path="/dashboard" component={DashboardPage} />
-                        <Route path="/error" component={StackTraceErrorPage} />
-                        <Route component={ErrorPage} />
-                    </Switch>
-                </Container>
-            </div>
-            <Footer/>
-            </ErrorBoundary>
-        </UserContextProvider>
-    );
+  return (
+    <UserContextProvider>
+      <ErrorBoundary>
+        <Header />
+        <div id="page">
+          <Container>
+            <Switch>
+              <Route path="/" component={HomePage} exact />
+              <Route path="/projects/:url_slug" component={UniqueProjectPage} />
+              <Route path="/projects" component={ProjectsPage} />
+              <Route path="/sponsor" component={SponsorPage} />
+              <Route path="/proposal-form" component={ProposalPage} />
+              <Route path="/dashboard" component={DashboardPage} />
+              <Route path="/error" component={StackTraceErrorPage} />
+              <Route component={ErrorPage} />
+            </Switch>
+          </Container>
+        </div>
+        <Footer />
+      </ErrorBoundary>
+    </UserContextProvider>
+  );
 }
 
 export default App;
