@@ -27,7 +27,7 @@ export default function StudentRow(props) {
 
   const fetchPeerReviews = async () => {
     try {
-      const url = `${config.url.API_GET_ACTION_LOGS}?project_id=${props.student.project}&action_id=2`;
+      const url = `${config.url.API_GET_PEER_EVALS}`
       console.log("Fetching peer reviews from:", url);
       const response = await SecureFetch(url);
       const data = await response.json();
@@ -162,10 +162,13 @@ const handleSaveAdditionalInfo = async () => {
 
   useEffect(() => {
     if (openModal) {
-      fetchPeerReviews();
-      fetchAdditionalInfo();
+      if (!props.isStudent) {
+        fetchPeerReviews(); 
+      }
+      fetchAdditionalInfo(); 
     }
   }, [openModal]);
+
 
   
 

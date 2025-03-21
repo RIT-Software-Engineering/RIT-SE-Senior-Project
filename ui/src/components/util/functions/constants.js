@@ -81,6 +81,7 @@ export const config = {
     API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
+    API_GET_PEER_EVALS: `${BASE_API_URL}/db/getPeerEvals`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,

@@ -3840,6 +3840,42 @@ module.exports = (db) => {
         });
     });
 
+    db_router.get("/getPeerEvals", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+      let getPeerEvalsQuery = `
+        SELECT action_id 
+        FROM actions
+        WHERE action_target = 'peer_evaluation'
+      `;
+    
+      db.query(getPeerEvalsQuery)
+        .then((values) => {
+          const actionIds = values.map(row => row.action_id);
+    
+          if (actionIds.length === 0) {
+            return res.send([]); // No peer evals found
+          }
+    
+          let getPeerEvalLogsQuery = `
+            SELECT * 
+            FROM action_log
+            WHERE action_template IN (${actionIds.join(",")})
+            ORDER BY submission_datetime DESC
+          `;
+    
+          return db.query(getPeerEvalLogsQuery);
+        })
+        .then((logs) => {
+          if (logs) res.send(logs);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    });
+    
+    
+
 
 
   return db_router;
