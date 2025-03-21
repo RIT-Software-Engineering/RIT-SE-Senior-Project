@@ -89,7 +89,7 @@ export default function AdminView() {
 
   const renderSignOutButton = () => {
     return <Button
-      style={{margin: '-7px', float: 'right'}}
+      style={{float: 'right'}}
       secondary
       content="Sign out of mock user"
       onClick={() => {
@@ -109,7 +109,7 @@ export default function AdminView() {
   const renderChangeView = () => {
     return (
       <>
-        <div style={{margin: '-14px', float: 'right'}} ref={ref}>
+        <div style={{float: 'right'}} ref={ref}>
           <Label pointing='right'>To view this page as a different user</Label>
           <Dropdown
             onClick={handleOpen}
@@ -206,18 +206,22 @@ export default function AdminView() {
     if (user?.isMock) {
       return (
         <>
-          <div className="ui error message">
+          <div>
+          <div className="ui error message" style={{float: 'left'}}>
             Currently mocking: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
-            {renderSignOutButton()}
+          </div>
+          {renderSignOutButton()}
           </div>
         </>
       )
     } else {
       return (
         <>
-          <div className="ui positive message">
+          <div>
+          <div className="ui positive message" style={{float: 'left'}}>
             Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
-            {renderChangeView()}
+          </div>
+          {renderChangeView()}
           </div>
         </>
       )
