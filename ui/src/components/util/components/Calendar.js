@@ -122,6 +122,7 @@ export function Calendar(props) {
     )
   }
 
+  // TODO: allow tooltips for overlapping actions
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, actionsForDay) => {
     if (!actionStartsOnDay(action, new Date(action.start_date).getDate())) {
@@ -129,15 +130,15 @@ export function Calendar(props) {
     }
 
     const overlappingActions = actionsForDay.filter((e) => {
-      const eStart = new Date(e.start)
-      const eEnd = new Date(e.end)
+      const eStart = new Date(e.start_date)
+      const eEnd = new Date(e.due_date)
       const actionStart = new Date(action.start_date)
       const actionEnd = new Date(action.due_date)
 
       return (
         actionStart <= eEnd &&
         actionEnd >= eStart && // Overlaps
-        e.id !== action.action_id // Not the same action
+        e.action_id !== action.action_id // Not the same action
       )
     })
 
