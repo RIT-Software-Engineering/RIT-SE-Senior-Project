@@ -127,9 +127,12 @@ module.exports = (db) => {
     switch (req.user.type) {
       //Retrieves all users from a semester group that is similar to the student that is making the query.
       case ROLES.STUDENT:
-        query = `SELECT users.* FROM users WHERE users.system_id = ?`;
-        params = [req.user.system_id];
-        break;
+          query = `
+            SELECT users.* 
+            FROM users 
+            WHERE users.project = ?`; 
+          params = [req.user.project];  
+          break;
       case ROLES.COACH:
         query = `
                     SELECT users.* FROM users
@@ -3806,14 +3809,13 @@ module.exports = (db) => {
         }
 
         try {
-            // Fetch the additional_info of the requested student
             const result = await db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [requestedUserId]);
 
             if (result.length === 0) {
                 return res.status(404).send({ error: "User not found" });
             }
 
-            res.send(result[0]); // Send the additional_info
+            res.send(result[0]); 
         } catch (err) {
             next(new Error("Database query failed: " + err.message));
         }
@@ -3852,7 +3854,7 @@ module.exports = (db) => {
           const actionIds = values.map(row => row.action_id);
     
           if (actionIds.length === 0) {
-            return res.send([]); // No peer evals found
+            return res.send([]); 
           }
     
           let getPeerEvalLogsQuery = `

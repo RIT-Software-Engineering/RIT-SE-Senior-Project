@@ -18,6 +18,8 @@ export default function StudentRow(props) {
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [currentUserID, setCurrentUserID] = useState(null);
+
 
 
 
@@ -116,7 +118,8 @@ const handleGenerateAISummary = async () => {
 };
 
 const fetchAdditionalInfo = async () => {
-  try {
+  console.log(props);
+    try {
     const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
     console.log("Fetching additional info from:", url);
     const response = await SecureFetch(url);
@@ -152,11 +155,28 @@ const handleSaveAdditionalInfo = async () => {
     if (!response.ok) throw new Error("Failed to update additional info");
 
     console.log("Additional info updated successfully");
-    setIsEditing(false); // Exit edit mode
+    setIsEditing(false);
   } catch (error) {
     console.error("Error updating additional info:", error);
   }
 };
+
+const fetchCurrentUserID = async () => {
+  try {
+    const url = `${config.url.API_WHO_AM_I}`;
+    console.log("Fetching current user info from:", url);
+    const response = await SecureFetch(url);
+    const data = await response.json();
+    console.log("Current User Info:", data);
+
+    setCurrentUserID(data.system_id); 
+  } catch (error) {
+    console.error("Error fetching current user info:", error);
+    setCurrentUserID(null); 
+  }
+};
+
+
 
 
 
@@ -166,6 +186,7 @@ const handleSaveAdditionalInfo = async () => {
         fetchPeerReviews(); 
       }
       fetchAdditionalInfo(); 
+      fetchCurrentUserID();
     }
   }, [openModal]);
 
@@ -258,7 +279,7 @@ const handleSaveAdditionalInfo = async () => {
             </p>
             <p>
                 <strong>Additional Info:</strong>
-                {props.isStudent ? (
+                {props.isStudent && props.student.system_id === currentUserID ? (
                   <>
                     {isEditing ? (
                       <>
