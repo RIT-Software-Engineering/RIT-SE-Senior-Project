@@ -106,7 +106,6 @@ export function Calendar(props) {
     return sortedActions.filter((action) => {
       const actionStart = new Date(action.start_date)
       const actionEnd = new Date(action.due_date)
-      console.log("selected day", date, "\n action-start", actionStart, "\n action-end", actionEnd, "\n action_start_date", action.start_date, "\n action_due_date", action.due_date, "\n action", action)
       return date >= new Date(actionStart.setHours(0, 0, 0, 0)) && date <= new Date(actionEnd.setHours(23, 59, 59, 999))
     })
   }
@@ -122,7 +121,6 @@ export function Calendar(props) {
     )
   }
 
-  // TODO: allow tooltips for overlapping actions
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, actionsForDay) => {
     if (!actionStartsOnDay(action, new Date(action.start_date).getDate())) {
@@ -327,7 +325,6 @@ export function Calendar(props) {
           </div>
           <div style={styles.actionContainer}>
             {actionsForDay.slice(0, maxVisibleActions).map((action) => {
-              console.log("action", action)
               const position = calculateActionPosition(action, actionsForDay)
               const start = `${new Date(action.start_date).getMonth()}/${new Date(action.start_date).getDate()}` 
               const end = `${new Date(action.due_date).getMonth()}/${new Date(action.due_date).getDate()}`
@@ -337,17 +334,14 @@ export function Calendar(props) {
                 key={action.action_id}
                 style={styles.action(action, position)}
                 title={`${action.action_title} ( ${start} - ${end} )`}
-                onClick={(e) => console.log("clicked", day, action)}>
+                onClick={(e) => console.log("trigger clicked", day, action)}>
                   {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
                 </div>
               );
 
               return (
-                <div
-                key={action.action_id}
-                style={styles.action(action, position)}
-                title={`${action.action_title} ( ${start} - ${end} )`}
-                onClick={(e) => console.log("clicked", day, action)}>
+                <>
+                  {trigger}
                   {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
                   <ToolTip
                           autoLoadSubmissions={props.autoLoadSubmissions}
@@ -361,7 +355,7 @@ export function Calendar(props) {
                           key={`tooltip-${action.action_title}-${action.id}`}
                           reloadTimelineActions={props.reloadTimelineActions}
                         />
-                  </div>
+                </>
               )
             })}
             {hasMoreActions && <div style={styles.moreActions}>+{actionsForDay.length - maxVisibleActions} more</div>}
