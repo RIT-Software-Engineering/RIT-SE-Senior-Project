@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import { Button, Dropdown, Input, DropdownMenu, DropdownItem, DropdownDivider, DropdownHeader, Label } from "semantic-ui-react";
 import { config, USERTYPES } from '../functions/constants';
 import { SecureFetch } from '../functions/secureFetch';
@@ -15,6 +15,7 @@ export default function AdminView() {
   const [searchStudents, setSearchStudents] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useContext(UserContext);
+  const ref = useRef(null);
 
   useEffect(() => {
     if (user.role === USERTYPES.ADMIN) {
@@ -48,8 +49,19 @@ export default function AdminView() {
             setSearchCoaches([]);
             setSearchStudents([]);
       })
+
+      const handleClickOutside = (event) => {
+        if (ref && !ref.current.contains(event.target) && isOpen) {
+          setIsOpen(false);
+        }
+      };
+      
+      document.addEventListener("click", handleClickOutside);
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
     }
-  }, [user])
+  }, [user, ref, isOpen])
 
   const changeView = () => {// changes view for admin to another user
 
@@ -97,7 +109,7 @@ export default function AdminView() {
   const renderChangeView = () => {
     return (
       <>
-        <div style={{margin: '-14px', float: 'right'}}>
+        <div style={{margin: '-14px', float: 'right'}} ref={ref}>
           <Label pointing='right'>To view this page as a different user</Label>
           <Dropdown
             onClick={handleOpen}
@@ -156,21 +168,37 @@ export default function AdminView() {
     )
   }
 
-  const handleOpen = () => {setIsOpen(!isOpen); handleSearch("")}
+  const handleOpen = () => {
+    setIsOpen(!isOpen);
+    handleSearch("")
+  }
 
-  const handleSelectUser = (user) => {setSelectedUser(user); setIsOpen(false);}
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setIsOpen(false);
+  }
 
-  function handleSearch(searchVal) {
-    if (searchVal === "") { setSearchCoaches(coaches); setSearchStudents(students); return; }
+  const handleSearch = (searchVal) => {
+    if (searchVal === "") {
+      setSearchCoaches(coaches);
+      setSearchStudents(students);
+      return;
+    }
     setSearchCoaches(Object.values(coaches).filter((coach) => {
       if (coach.fname.toLowerCase().includes(searchVal.toLowerCase()) 
         || coach.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return coach; } return null;
+        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) {
+          return coach;
+        }
+        return null;
     }))
     setSearchStudents(Object.values(students).filter((student) => {
       if (student.fname.toLowerCase().includes(searchVal.toLowerCase())
         || student.lname.toLowerCase().includes(searchVal.toLowerCase())
-        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) { return student; } return null;
+        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) {
+          return student;
+        }
+        return null;
     }))
   }
 
