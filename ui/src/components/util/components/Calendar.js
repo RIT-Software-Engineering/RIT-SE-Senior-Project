@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
-import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
-import _ from "lodash";
-
-// TODO clean this shit up
+import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
+import _ from "lodash"
+import "../../../css/calendar.css"
 
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
@@ -15,8 +14,8 @@ export function Calendar(props) {
       ...action,
       color: action.state === "green" ? "#0000ff" : "#fd2723",
     })),
-    ["due_date", "start_date", "action_title"]
-  );
+    ["due_date", "start_date", "action_title"],
+  )
 
   // Handle window resize for responsive design
   useEffect(() => {
@@ -124,168 +123,13 @@ export function Calendar(props) {
   }
 
   // Calculate action display position (for overlapping actions)
-  const calculateActionPosition = (action, actionsForDay) => {
-    if (!actionStartsOnDay(action, new Date(action.start_date).getDate())) {
-      return { top: 0, isStart: false }
-    }
-
-    const overlappingActions = actionsForDay.filter((e) => {
-      const eStart = new Date(e.start_date)
-      const eEnd = new Date(e.due_date)
-      const actionStart = new Date(action.start_date)
-      const actionEnd = new Date(action.due_date)
-
-      return (
-        actionStart <= eEnd &&
-        actionEnd >= eStart && // Overlaps
-        e.action_id !== action.action_id // Not the same action
-      )
-    })
-
-    // Sort by start time
-    overlappingActions.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
-
-    // Find position in overlapping actions
-    const position = overlappingActions.findIndex((e) => new Date(e.start_date) > new Date(action.start_date))
-
-    // If not found in the middle, add to the end
-    const index = position === -1 ? overlappingActions.length : position
-
+  const calculateActionPosition = (action, actionsForDay, index) => {
+    // Always position actions in order, regardless of start date
+    // This ensures consistent display even for multi-day events
     return {
       top: index * 20, // 20px per action
-      isStart: true,
+      isStart: actionStartsOnDay(action, new Date(action.start_date).getDate()),
     }
-  }
-
-  // Style objects
-  const styles = {
-    calendar: {
-      width: "100%",
-      maxWidth: "100%",
-      border: "1px solid #e0e0e0",
-      borderRadius: "8px",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-    },
-    calendarHeader: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: windowWidth <= 480 ? "12px" : "16px",
-      backgroundColor: "#f8f9fa",
-      borderBottom: "1px solid #e0e0e0",
-      borderRadius: "8px 8px 0 0",
-    },
-    currentMonth: {
-      fontWeight: 600,
-      fontSize: windowWidth <= 480 ? "1rem" : windowWidth <= 768 ? "1.1rem" : "1.2rem",
-    },
-    navButton: (isHovered) => ({
-      background: "none",
-      border: "none",
-      cursor: "pointer",
-      fontSize: windowWidth <= 480 ? "1rem" : "1.2rem",
-      color: "#555",
-      width: windowWidth <= 480 ? "28px" : "32px",
-      height: windowWidth <= 480 ? "28px" : "32px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: "50%",
-      backgroundColor: isHovered ? "#f0f0f0" : "transparent",
-      touchAction: "manipulation",
-    }),
-    calendarDaysHeader: {
-      display: "grid",
-      gridTemplateColumns: "repeat(7, 1fr)",
-      padding: windowWidth <= 480 ? "6px 0" : "8px 0",
-      backgroundColor: "#f8f9fa",
-      borderBottom: "1px solid #e0e0e0",
-    },
-    dayName: {
-      textAlign: "center",
-      fontSize: windowWidth <= 360 ? "0.7rem" : windowWidth <= 480 ? "0.75rem" : "0.85rem",
-      fontWeight: 500,
-      color: "#666",
-    },
-    calendarGrid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(7, 1fr)",
-      padding: windowWidth <= 480 ? "6px" : "8px",
-      gap: windowWidth <= 360 ? "1px" : "2px",
-    },
-    calendarDay: (day, isHovered) => {
-      const isCurrentDay = isToday(day)
-      const isDaySelected = isSelected(day)
-
-      return {
-        position: "relative",
-        height: windowWidth <= 360 ? "60px" : windowWidth <= 768 ? "80px" : "100px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        cursor: "pointer",
-        borderRadius: "4px",
-        margin: windowWidth <= 360 ? "1px" : "2px",
-        padding: "2px",
-        backgroundColor: isDaySelected
-          ? isHovered
-            ? "#e6f0fa"
-            : "#f0f7ff"
-          : isCurrentDay
-            ? "#f5f9ff"
-            : isHovered
-              ? "#f9f9f9"
-              : "white",
-        border: isCurrentDay ? "1px solid #0066cc" : "1px solid #e0e0e0",
-        overflow: "hidden",
-        touchAction: "manipulation",
-      }
-    },
-    dayNumber: {
-      fontSize: windowWidth <= 360 ? "0.7rem" : windowWidth <= 480 ? "0.8rem" : "0.9rem",
-      marginBottom: "2px",
-      alignSelf: "flex-start",
-    },
-    actionContainer: {
-      width: "100%",
-      position: "relative",
-      flex: 1,
-      overflow: "hidden",
-    },
-    action: (action, position) => ({
-      position: "absolute",
-      top: `${position.top}px`,
-      left: position.isStart ? "0" : "-4px",
-      right: "0",
-      height: "18px",
-      backgroundColor: action.color,
-      color: "white",
-      fontSize: "0.65rem",
-      padding: "1px 4px",
-      borderRadius: "2px",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      zIndex: 1,
-      marginRight: "1px",
-      boxSizing: "border-box",
-      borderLeft: position.isStart ? "none" : "4px solid transparent",
-    }),
-    moreActions: {
-      fontSize: "0.65rem",
-      color: "#666",
-      marginTop: "2px",
-    },
-    emptyDay: {
-      height: windowWidth <= 360 ? "60px" : windowWidth <= 768 ? "80px" : "100px",
-      margin: windowWidth <= 360 ? "1px" : "2px",
-      border: "1px solid #f0f0f0",
-      borderRadius: "4px",
-      backgroundColor: "#fafafa",
-    },
   }
 
   // Button hover state
@@ -298,69 +142,85 @@ export function Calendar(props) {
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} style={styles.emptyDay}></div>)
+      days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>)
     }
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const isCurrentDay = isToday(day)
+      const isDaySelected = isSelected(day)
       const actionsForDay = getActionsForDay(day)
       const maxVisibleActions = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
       const hasMoreActions = actionsForDay.length > maxVisibleActions
+
+      const dayClasses = [
+        "calendar-day",
+        isCurrentDay ? "today" : "",
+        isDaySelected ? "selected" : "",
+        hoveredDay === day ? "hovered" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")
+
       days.push(
         <div
           key={day}
-          style={styles.calendarDay(day, hoveredDay === day)}
+          className={dayClasses}
           onMouseEnter={() => setHoveredDay(day)}
           onMouseLeave={() => setHoveredDay(null)}
-          onClick={() => { setSelectedDate(new Date(currentYear, currentMonth, day));}}
+          onClick={() => {
+            setSelectedDate(new Date(currentYear, currentMonth, day))
+          }}
         >
-          <div
-            style={{
-              ...styles.dayNumber,
-              fontWeight: isCurrentDay ? "bold" : "normal",
-              color: isCurrentDay ? "#0066cc" : "#333",
-            }}
-            
-          >
-            {day}
-          </div>
-          <div style={styles.actionContainer}>
-            {actionsForDay.slice(0, maxVisibleActions).map((action) => {
-              const position = calculateActionPosition(action, actionsForDay)
-              const start = `${new Date(action.start_date).getMonth()}/${new Date(action.start_date).getDate()}` 
-              const end = `${new Date(action.due_date).getMonth()}/${new Date(action.due_date).getDate()}`
+          <div className={`day-number ${isCurrentDay ? "today" : ""}`}>{day}</div>
+          <div className="action-container">
+            {actionsForDay.slice(0, maxVisibleActions).map((action, index) => {
+              const position = calculateActionPosition(action, actionsForDay, index)
+              const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
+              const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
+
+              // Add z-index to ensure proper stacking
+              const actionStyle = {
+                top: `${position.top}px`,
+                backgroundColor: action.color,
+                borderLeft: position.isStart ? "none" : "4px solid transparent",
+                left: position.isStart ? "0" : "-4px",
+                zIndex: 10 + index, // Add z-index based on index
+              }
+
+              const actionContent = action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title
 
               const trigger = (
                 <div
-                key={action.action_id}
-                style={styles.action(action, position)}
-                title={`${action.action_title} ( ${start} - ${end} )`}
-                onClick={(e) => console.log("trigger clicked", day, action)}>
-                  {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
+                  key={`action-${action.action_id}-${day}`}
+                  className="calendar-action"
+                  style={actionStyle}
+                  title={`${action.action_title} (${start} - ${end})`}
+                  onClick={(e) => {
+                    e.stopPropagation() // Prevent day click
+                    console.log("trigger clicked", day, action)
+                  }}
+                >
+                  {actionContent}
                 </div>
-              );
+              )
 
               return (
-                <>
-                  {trigger}
-                  {action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title}
-                  <ToolTip
-                          autoLoadSubmissions={props.autoLoadSubmissions}
-                          color={action.color}
-                          noPopup={props.noPopup}
-                          trigger={trigger}
-                          action={action}
-                          projectId={props.projectId}
-                          semesterName={props.semesterName}
-                          projectName={props.projectName}
-                          key={`tooltip-${action.action_title}-${action.id}`}
-                          reloadTimelineActions={props.reloadTimelineActions}
-                        />
-                </>
+                <ToolTip
+                  autoLoadSubmissions={props.autoLoadSubmissions}
+                  color={action.color}
+                  noPopup={props.noPopup}
+                  trigger={trigger}
+                  action={action}
+                  projectId={props.projectId}
+                  semesterName={props.semesterName}
+                  projectName={props.projectName}
+                  key={`tooltip-${action.action_title}-${action.action_id}-${day}`}
+                  reloadTimelineActions={props.reloadTimelineActions}
+                />
               )
             })}
-            {hasMoreActions && <div style={styles.moreActions}>+{actionsForDay.length - maxVisibleActions} more</div>}
+            {hasMoreActions && <div className="more-actions">+{actionsForDay.length - maxVisibleActions} more</div>}
           </div>
         </div>,
       )
@@ -370,21 +230,21 @@ export function Calendar(props) {
   }
 
   return (
-    <div style={styles.calendar}>
-      <div style={styles.calendarHeader}>
+    <div className="calendar">
+      <div className="calendar-header">
         <button
-          style={styles.navButton(prevHovered)}
+          className={`nav-button ${prevHovered ? "hovered" : ""}`}
           onClick={prevMonth}
           onMouseEnter={() => setPrevHovered(true)}
           onMouseLeave={() => setPrevHovered(false)}
         >
           {"<"}
         </button>
-        <div style={styles.currentMonth}>
+        <div className="current-month">
           {monthNames[currentMonth]} {currentYear}
         </div>
         <button
-          style={styles.navButton(nextHovered)}
+          className={`nav-button ${nextHovered ? "hovered" : ""}`}
           onClick={nextMonth}
           onMouseEnter={() => setNextHovered(true)}
           onMouseLeave={() => setNextHovered(false)}
@@ -393,16 +253,17 @@ export function Calendar(props) {
         </button>
       </div>
 
-      <div style={styles.calendarDaysHeader}>
+      <div className="calendar-days-header">
         {dayNames.map((day) => (
-          <div key={day} style={styles.dayName} >
+          <div key={day} className="day-name">
             {day}
           </div>
         ))}
       </div>
 
-      <div style={styles.calendarGrid}>{generateCalendarDays()}</div>
+      <div className="calendar-grid">{generateCalendarDays()}</div>
     </div>
   )
 }
 
+export default Calendar
