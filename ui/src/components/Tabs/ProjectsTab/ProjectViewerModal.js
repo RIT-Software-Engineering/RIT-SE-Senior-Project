@@ -46,6 +46,15 @@ export default function ProjectViewerModal(props) {
 
     const generateModalContent = () => {
         return <>
+            <style>
+                {`
+                #gfg {
+                    overflow-x: auto;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
+                `}
+            </style>
             <h3>Team members</h3>
             <b>Students:</b> {projectMembers.students?.join(",")} <br />
             <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
@@ -60,20 +69,22 @@ export default function ProjectViewerModal(props) {
             <b>Phone:</b> {decode(props.project.contact_phone||'')} <br />
 
             <h3>Project Info</h3>
-            <b>Original Submission Date:</b><pre>{decode(props.project.submission_datetime||'')}</pre>
-            <b>Background info:</b><pre>{decode(props.project.background_info||'')}</pre>
-            <b>Description:</b><pre>{decode(props.project.project_description||'')}</pre>
-            <b>Scope:</b><pre>{decode(props.project.project_scope||'')}</pre>
-            <b>Challenges:</b><pre>{decode(props.project.project_challenges||'')}</pre>
-            <b>Constraints & Assumptions:</b><pre>{decode(props.project.constraints_assumptions||'')}</pre>
-            <b>Provided Resources:</b><pre>{decode(props.project.sponsor_provided_resources||'')}</pre>
-            <b>Search keywords:</b><pre>{decode(props.project.project_search_keywords||'')}</pre>
-            <b>Deliverables:</b><pre>{decode(props.project.sponsor_deliverables||'')}</pre>
-            <b>Proprietary Info:</b><pre>{decode(props.project.proprietary_info||'')}</pre>
+            <pre style={{overflowX:'auto', whiteSpace:'pre-wrap', wordWrap:'break-word'}}>
+            <b>Original Submission Date:</b><br /> {decode(props.project.submission_datetime||'')}<br /><br />
+            <b>Background info:</b><br /> {decode(props.project.background_info||'')}<br /><br />
+            <b>Description:</b><br /> {decode(props.project.project_description||'')}<br /><br />
+            <b>Scope:</b><br /> {decode(props.project.project_scope||'')}<br /><br />
+            <b>Challenges:</b><br /> {decode(props.project.project_challenges||'')}<br /><br />
+            <b>Constraints & Assumptions:</b><br /> {decode(props.project.constraints_assumptions||'')}<br /><br />
+            <b>Provided Resources:</b><br /> {decode(props.project.sponsor_provided_resources||'')}<br /><br />
+            <b>Search keywords:</b><br /> {decode(props.project.project_search_keywords||'')}<br /><br />
+            <b>Deliverables:</b><br /> {decode(props.project.sponsor_deliverables||'')}<br /><br />
+            <b>Proprietary Info:</b><br /> {decode(props.project.proprietary_info||'')}<br /><br />
             <b>Sponsor Available: </b>{decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"}<br />
             <b>Assignment of Rights: </b>{decode(props.project.assignment_of_rights||'')}<br />
             <b>Semester: </b>{decode(props.semesterMap[props.project.semester]||'')}<br />
             <b>Status: </b>{decode(props.project.status||'')}<br />
+            </pre>
 
             <h3>Attachments</h3>
             {props.project.attachments ? formattedAttachments(props.project)?.map(file => {
