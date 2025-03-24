@@ -163,7 +163,6 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     let body = new FormData();
-    //console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -602,12 +601,10 @@ export default function DatabaseTableEditor(props) {
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
-            console.log("OnClose triggered");
             setOpen(false);
             props.isOpenCallback(false);
           }}
           onOpen={() => {
-            console.log("onOpen triggered");
             setOpen(true);
             props.isOpenCallback(true);
           }}          
