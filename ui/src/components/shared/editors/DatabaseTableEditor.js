@@ -69,7 +69,9 @@ export default function DatabaseTableEditor(props) {
           content: submissionModalMessages["SUBMISSON_ERROR"],
           actions: [
             {
-              content: "Cancel", positive: false, onClick: () => {setErrors([]); setOpen(false);}
+              content: "Cancel", 
+              positive: false, 
+              onClick: () => {setErrors([]); setOpen(false);}
             },
             {
               header: "Submission Error",
@@ -160,6 +162,7 @@ export default function DatabaseTableEditor(props) {
       body: body,
     })
       .then((response) => {
+        console.log(" EDIT RESPONSE HERE", response) // testingggg
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
           props.isOpenCallback(false);
@@ -635,7 +638,7 @@ export default function DatabaseTableEditor(props) {
           content={{
             content: (
               <>
-                {errors.length > 0 && (
+                {/* {errors.length > 0 && (
                 <div className="submission-errors">
                   <Message error>
                     <MessageHeader>
@@ -648,7 +651,7 @@ export default function DatabaseTableEditor(props) {
                     </MessageList>
                   </Message>
                   <br/>
-                </div>)}
+                </div>)} */}
                 <Form>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
