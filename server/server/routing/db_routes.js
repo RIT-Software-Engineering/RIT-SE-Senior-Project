@@ -3801,61 +3801,78 @@ module.exports = (db) => {
     });
   }
 
-      db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
-        const requestedUserId = req.query.system_id;
+  db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
+    const requestedUserId = req.query.system_id;
 
-        if (!requestedUserId) {
-            return res.status(400).send({ error: "User ID is required" });
+    if (!requestedUserId) {
+        return res.status(400).send({ error: "User ID is required" });
+    }
+
+    try {
+        const result = await db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [requestedUserId]);
+
+        if (result.length === 0) {
+            const error = new Error("User not found");
+            error.statusCode = 404;
+            return next(error);
         }
 
-        try {
-            const result = await db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [requestedUserId]);
+        res.send(result[0]);
+    } catch (err) {
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+    }
+});
 
-            if (result.length === 0) {
-                return res.status(404).send({ error: "User not found" });
-            }
+db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id, additional_info } = req.body;
 
-            res.send(result[0]); 
-        } catch (err) {
-            next(new Error("Database query failed: " + err.message));
-        }
-    });
+    if (!system_id || additional_info === undefined) {
+        return res.status(400).send({ error: "system_id and additional_info are required" });
+    }
 
+    const updateQuery = `
+        UPDATE users
+        SET additional_info = ?
+        WHERE system_id = ?
+    `;
 
-    db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], (req, res, next) => {
-      const { system_id, additional_info } = req.body;
+    try {
+        await db.query(updateQuery, [additional_info, system_id]);
+        res.status(200).send({ message: "Additional info updated successfully" });
+    } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+    }
+});
 
-      if (!system_id || additional_info === undefined) {
-          return res.status(400).send({ error: "system_id and additional_info are required" });
-      }
-
-      const updateQuery = `
-          UPDATE users
-          SET additional_info = ?
-          WHERE system_id = ?
-      `;
-
-      db.query(updateQuery, [additional_info, system_id])
-        .then(() => res.status(200).send({ message: "Additional info updated successfully" }))
-        .catch((err) => {
-          next(new Error("Database update failed: " + err.message));
-        });
-    });
 
     db_router.get("/getPeerEvals", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+      const semesterNumber = req.query.semester;
+    
       let getPeerEvalsQuery = `
         SELECT action_id 
         FROM actions
         WHERE action_target = 'peer_evaluation'
       `;
     
-      db.query(getPeerEvalsQuery)
+      let queryParams = [];
+      if (semesterNumber) {
+        getPeerEvalsQuery += ` AND semester = ?`;
+        queryParams.push(semesterNumber);
+      } 
+    
+      db.query(getPeerEvalsQuery, queryParams)
         .then((values) => {
           const actionIds = values.map(row => row.action_id);
     
           if (actionIds.length === 0) {
             return res.send([]); 
-          }
+          } 
     
           let getPeerEvalLogsQuery = `
             SELECT * 
@@ -3870,11 +3887,13 @@ module.exports = (db) => {
           if (logs) res.send(logs);
         })
         .catch((err) => {
-          const error = new Error(err);
+          console.error(err);
+          const error = new Error("Error fetching peer evaluations");
           error.statusCode = 500;
           return next(error);
         });
     });
+    
     
     
 

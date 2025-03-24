@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { TableCell, TableRow, Modal, Button, Accordion, Icon } from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
 import dayjs from "dayjs";
@@ -6,6 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import { formatDateTime } from "../../util/functions/utils";
+import { UserContext } from "../../util/functions/UserContext";
 
 dayjs.extend(utc);
 
@@ -21,10 +22,9 @@ export default function StudentRow(props) {
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [currentUserID, setCurrentUserID] = useState(null);
-
-
-
+ 
+  const { user } = useContext(UserContext);
+  const currentUserID = user?.user;
 
   const handleAccordionClick = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -32,7 +32,7 @@ export default function StudentRow(props) {
 
   const fetchPeerReviews = async () => {
     try {
-      const url = `${config.url.API_GET_PEER_EVALS}`
+      const url = `${config.url.API_GET_PEER_EVALS}?semester=${props.student.semester_group}`
       console.log("Fetching peer reviews from:", url);
       const response = await SecureFetch(url);
       const data = await response.json();
@@ -164,22 +164,6 @@ const handleSaveAdditionalInfo = async () => {
   }
 };
 
-const fetchCurrentUserID = async () => {
-  try {
-    const url = `${config.url.API_WHO_AM_I}`;
-    console.log("Fetching current user info from:", url);
-    const response = await SecureFetch(url);
-    const data = await response.json();
-    console.log("Current User Info:", data);
-
-    setCurrentUserID(data.system_id); 
-  } catch (error) {
-    console.error("Error fetching current user info:", error);
-    setCurrentUserID(null); 
-  }
-};
-
-
 
 
 
@@ -189,7 +173,6 @@ const fetchCurrentUserID = async () => {
         fetchPeerReviews(); 
       }
       fetchAdditionalInfo(); 
-      fetchCurrentUserID();
     }
   }, [openModal]);
 
@@ -336,7 +319,7 @@ const fetchCurrentUserID = async () => {
                         onClick={() => handleAccordionClick(index)}
                       >
                         <Icon name="dropdown" />
-                        Review by {review.name} on {formatDateTime(review.submission_datetime)}
+                        Review by {review.system_id} on {formatDateTime(review.submission_datetime)}
                       </Accordion.Title>
                       <Accordion.Content active={activeIndex === index}>
                         {studentReview.Feedback || studentReview.Ratings ? (

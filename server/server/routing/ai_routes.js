@@ -1,3 +1,4 @@
+const UserAuth = require("./user_auth");
 const router = require("express").Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -64,13 +65,29 @@ Output Specification:
 
 const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
 Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
+
 Input Specification:
-    The input will be a JSON array of review objects (with extraneous metadata removed) representing the student's past evaluations.
+    The input will be a JSON array of review objects representing the student's past evaluations.
+    Each review will contain a timestamp, reviewer identity, and structured feedback.
+
+    The input format will be:
+    [
+        {
+            "submission_datetime": "Timestamp of review submission",
+            "form_data": "{\\"Students\\":{\\"Student Name\\":{\\"Feedback\\":{\\"Category\\":\\"Feedback entered in form\\"},\\"Ratings\\":{\\"Category\\":Numeric Rating}}}}"
+        },
+        ...
+    ]
+
+    - form_data contains feedback categories and ratings for the student.
+    - Each review is submitted at a different time, allowing trends to be analyzed.
+
 Output Specification:
-    1. Do not include any names or identifying information.
-    2. Focus on trends and changes over time.
-    3. The summary should be a comprehensive paragraph summarizing the historical performance in a coach's voice.
+    1. Focus on trends and changes over time.
+    2. Identify key improvements and recurring challenges in performance.
+    3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
 `;
+
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
@@ -108,7 +125,7 @@ async function provide_historic_summary(studentFeedback) {
 }
 
 module.exports = () => {
-  router.post("/GenerateSummary", (req, res, next) => {
+  router.post("/GenerateSummary", [UserAuth.isSignedIn], (req, res, next) => {
     const context = req.body.context;
 
     provide_summary(context)
@@ -125,9 +142,9 @@ module.exports = () => {
       });
   });
 
-  router.post("/GenerateHistoricSummary", (req, res, next) => {
+  router.post("/GenerateHistoricSummary", [UserAuth.isSignedIn], (req, res, next) => {
     const context = req.body.context;
-
+  
     provide_historic_summary(context)
       .then((response) => {
         res.type("text/plain");
@@ -135,9 +152,13 @@ module.exports = () => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        error.message = "Error generating historic summary";
+        return next(error);
       });
   });
+  
 
   return router;
 };
