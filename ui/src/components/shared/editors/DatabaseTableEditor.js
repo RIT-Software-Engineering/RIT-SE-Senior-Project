@@ -65,7 +65,7 @@ export default function DatabaseTableEditor(props) {
       
       case MODAL_STATUS.SUBMISSION_ERROR:
         return{
-          header: "Submission Errors",
+          header: "Invalid Submission",
           content: submissionModalMessages["SUBMISSON_ERROR"],
           actions: [
             {
@@ -78,6 +78,7 @@ export default function DatabaseTableEditor(props) {
               content: "Try again",
               positive: true,
               onClick: (event) => {
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 setOpen(true);
               },
               key: 0,
@@ -122,14 +123,25 @@ export default function DatabaseTableEditor(props) {
 
     // Error Handling 
     if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
+      // check for short_desc
       if (formData.short_desc === ""){
         errors.push("Please provide a short description (short_desc)")
         errorFields.add("short_desc");
       }
+      // check for page_html
       if (formData.page_html === ""){
         errors.push("Please provide the HTML (page_html)")
         errorFields.add("page_html");
       }
+      // date validation only if both start and due date are given.
+      if (formData.start_date && formData.due_date){
+        if (formData.start_date > formData.due_date){
+          errors.push("The Start Date must be before the Due Date");
+          errorFields.add("start_date");
+          errorFields.add("due_date");
+        }
+      }
+      
     }
 
     if (errors.length > 0) {
