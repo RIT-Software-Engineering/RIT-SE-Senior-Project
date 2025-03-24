@@ -122,26 +122,32 @@ export default function DatabaseTableEditor(props) {
     let errors = [];
 
     // Error Handling 
+
+     // check for page_html
+     if (formData.page_html === ""){
+      errors.push("Please provide the HTML (page_html)")
+      errorFields.add("page_html");
+    }
+    // date validation only if both start and due date are given.
+    if (formData.start_date && formData.due_date){
+      if (formData.start_date > formData.due_date){
+        errors.push("The Start Date must be before the Due Date");
+        errorFields.add("start_date");
+        errorFields.add("due_date");
+      }
+    }
+    // check whether Active checkbox is checked or not.
+    if (formData.date_deleted === false){
+      errors.push("Please check the Active box");
+      errorFields.add("date_deleted");
+    }
+    
     if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
       // check for short_desc
       if (formData.short_desc === ""){
         errors.push("Please provide a short description (short_desc)")
         errorFields.add("short_desc");
       }
-      // check for page_html
-      if (formData.page_html === ""){
-        errors.push("Please provide the HTML (page_html)")
-        errorFields.add("page_html");
-      }
-      // date validation only if both start and due date are given.
-      if (formData.start_date && formData.due_date){
-        if (formData.start_date > formData.due_date){
-          errors.push("The Start Date must be before the Due Date");
-          errorFields.add("start_date");
-          errorFields.add("due_date");
-        }
-      }
-      
     }
 
     if (errors.length > 0) {
