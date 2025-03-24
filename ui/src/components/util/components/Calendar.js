@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
 import "../../../css/calendar.css"
@@ -6,9 +6,9 @@ import "../../../css/calendar.css"
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
   const [selectedDate, setSelectedDate] = useState(null)
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1000)
   const [hoveredDay, setHoveredDay] = useState(null)
 
+  //actions dont nativly have a color field for display, this adds it for the calendar
   const sortedActions = _.sortBy(
     props.actions.map((action) => ({
       ...action,
@@ -16,8 +16,6 @@ export function Calendar(props) {
     })),
     ["due_date", "start_date", "action_title"],
   )
-
-  
 
   // Get current month and year
   const currentMonth = currentDate.getMonth()
@@ -106,11 +104,12 @@ export function Calendar(props) {
 
   // Button hover state
   const [prevHovered, setPrevHovered] = useState(false)
-  const [nextHovered, setNextHovered] = useState(false)
+  const [nextHovered, setNextHovered] = useState(false) 
 
   // Generate calendar days
   const generateCalendarDays = () => {
     const days = []
+    const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1000
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
@@ -125,6 +124,7 @@ export function Calendar(props) {
       const maxVisibleActions = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
       const hasMoreActions = actionsForDay.length > maxVisibleActions
 
+      // Determine day classes for styling
       const dayClasses = [
         "calendar-day",
         isCurrentDay ? "today" : "",
@@ -151,7 +151,7 @@ export function Calendar(props) {
               const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
               const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
 
-              // Add z-index to ensure proper stacking
+              // Add z-index to ensure proper stacking of overlapping actions
               const actionStyle = {
                 top: `${position.top}px`,
                 backgroundColor: action.color,
@@ -160,6 +160,7 @@ export function Calendar(props) {
                 zIndex: 10 + index, // Add z-index based on index
               }
 
+              // for strikethrough (completed actions)
               const actionContent = action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title
 
               const trigger = (
@@ -176,8 +177,8 @@ export function Calendar(props) {
                   {actionContent}
                 </div>
               )
-
               return (
+                // Add ToolTip to each action for the popup
                 <ToolTip
                   autoLoadSubmissions={props.autoLoadSubmissions}
                   color={action.color}
