@@ -125,10 +125,11 @@ export default function StudentEditPanel(props) {
       name: "active",
     },
     {
-        type: "checkbox",
-        label: "View Only",
-        placeHOlder:"View Only",
-        name: "view Only"
+      type: "checkbox",
+      label: "View Only",
+      placeHolder: "View Only",
+      name: "viewOnly",
+      disabled: false,
     },
   ];
 

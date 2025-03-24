@@ -82,25 +82,23 @@ export default function UserPanel(props) {
     {
       type: "checkbox",
       label: "View Only",
-      placeHOlder:"View Only",
-      name: "view Only"
+      placeHolder: "View Only",
+      name: "viewOnly",
     },
   ];
 
   return (
-    console.log(initialState),
-    (
-      <DatabaseTableEditor
-        initialState={initialState}
-        submissionModalMessages={submissionModalMessages}
-        submitRoute={submitRoute}
-        formFieldArray={formFieldArray}
-        semesterData={props.semesterData}
-        header={props.header}
-        create={initialState.system_id === ""}
-        button="plus"
-        callback={props.callback}
-      />
-    )
+    //console.log(initialState),
+    <DatabaseTableEditor
+      initialState={initialState}
+      submissionModalMessages={submissionModalMessages}
+      submitRoute={submitRoute}
+      formFieldArray={formFieldArray}
+      semesterData={props.semesterData}
+      header={props.header}
+      create={initialState.system_id === ""}
+      button="plus"
+      callback={props.callback}
+    />
   );
 }

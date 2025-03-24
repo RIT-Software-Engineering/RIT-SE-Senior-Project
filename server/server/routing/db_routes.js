@@ -278,11 +278,8 @@ module.exports = (db) => {
           ? moment().format(CONSTANTS.datetime_format)
           : "";
 
-      const viewOnly = 
-        body.viewOnly === "false"
-          ? "FALSE"
-          : "TRUE";
-      
+      const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
+
       const params = [
         body.system_id,
         body.fname,
@@ -373,10 +370,7 @@ module.exports = (db) => {
     const active =
       body.active === "false" ? moment().format(CONSTANTS.datetime_format) : "";
 
-    const viewOnly = 
-      body.viewOnly === "false"
-        ? "FALSE"
-        : "TRUE";
+    const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
     let params = [
       body.fname,
