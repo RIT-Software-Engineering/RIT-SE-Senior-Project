@@ -157,15 +157,6 @@ export default function ActionPanel(props) {
   // }
    
   const preSubmit = (data) => {
-
-    // if (!isInputValid(data)){
-    //   console.log("Form is not valid!");
-    //   setOpen(true); // Keep modal open if validation fails
-    // if (props.isOpenCallback) {
-    //   props.isOpenCallback(true);
-    // }
-    //   return null;
-    // }
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
@@ -212,7 +203,6 @@ export default function ActionPanel(props) {
         trigger={props.trigger}
         isOpenCallback={props.isOpenCallback}
         onClose={() => {
-          console.log("Modal explicitly closed by user"); // Debugging
           setOpen(false);
           props.isOpenCallback(false);
         }}
@@ -227,7 +217,6 @@ export default function ActionPanel(props) {
         //   }
         // }}
         onOpen={() => {
-          // console.log("Modal Opened");
           setOpen(true);
           props.isOpenCallback(true);
         }}
@@ -235,7 +224,6 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
-        // errors={errors}
       />
     );
   } else {
@@ -253,7 +241,6 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
-        // errors={errors}
       />
     );
   }
