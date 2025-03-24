@@ -17,35 +17,7 @@ export function Calendar(props) {
     ["due_date", "start_date", "action_title"],
   )
 
-  // Handle window resize for responsive design
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Set initial width
-      setWindowWidth(window.innerWidth)
-
-      // Debounced resize handler for better performance
-      let timeoutId = null
-      const handleResize = () => {
-        clearTimeout(timeoutId)
-        timeoutId = setTimeout(() => {
-          setWindowWidth(window.innerWidth)
-        }, 150) // Debounce time
-      }
-
-      window.addEventListener("resize", handleResize)
-
-      // Add orientation change listener for mobile devices
-      window.addEventListener("orientationchange", () => {
-        setTimeout(() => setWindowWidth(window.innerWidth), 200)
-      })
-
-      return () => {
-        window.removeEventListener("resize", handleResize)
-        window.removeEventListener("orientationchange", handleResize)
-        clearTimeout(timeoutId)
-      }
-    }
-  }, [])
+  
 
   // Get current month and year
   const currentMonth = currentDate.getMonth()
