@@ -15,10 +15,14 @@ const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
 const file_size = "file_size";
+const page_html = "page_html";
+const start_date = "start_date";
 
 export default function ActionPanel(props) {
-  const [open, setOpen] = useState(false);
-  console.log("IS OPEN?", open);
+  // const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
+  // const [errors, setErrors]  = useState({});
+  // const [errors, setErrors] = useState(new Set());
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
@@ -40,10 +44,12 @@ export default function ActionPanel(props) {
     ? {
         SUCCESS: "The action has been created.",
         FAIL: "We were unable to create your action.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
       }
     : {
         SUCCESS: "The action has been Edited.",
         FAIL: "We were unable to receive your edits.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
 
@@ -127,8 +133,39 @@ export default function ActionPanel(props) {
       name: "date_deleted",
     },
   ];
+
+  // const isInputValid = (formData) => {
+  //   const newErrors = new Set();
+
+  //   if (formData.action_target !== "peer_evaluation" && formData.action_target !== "coach_announcement" && formData.action_target !== "student_announcement"){
+  //     if (formData.short_desc.trim() === ""){
+  //       newErrors.add(short_desc);
+  //     }
+  //     if (formData.page_html.trim() === ""){
+  //       newErrors.add(page_html);
+  //     }
+  //     if (new Date(formData.start_date) > new Date(formData.due_date)){
+  //       newErrors.add(start_date);
+  //     }
+  //   }
+  
+  //   console.log("NEW Errors: ", newErrors.size);
+  //   setErrors(newErrors);
+  //   console.log("Errors: ", errors.size);
+  //   return newErrors.size === 0;
+
+  // }
    
   const preSubmit = (data) => {
+
+    // if (!isInputValid(data)){
+    //   console.log("Form is not valid!");
+    //   setOpen(true); // Keep modal open if validation fails
+    // if (props.isOpenCallback) {
+    //   props.isOpenCallback(true);
+    // }
+    //   return null;
+    // }
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
@@ -179,7 +216,18 @@ export default function ActionPanel(props) {
           setOpen(false);
           props.isOpenCallback(false);
         }}
+        // onClose={() => {
+        //   console.log("Modal close requested");
+        //   if (errors.size === 0) {  // Only close if there are no errors
+        //     setOpen(false);
+        //     props.isOpenCallback(false);
+        //     console.log("Modal closed");
+        //   } else {
+        //     console.log("Modal remains open due to validation errors");
+        //   }
+        // }}
         onOpen={() => {
+          // console.log("Modal Opened");
           setOpen(true);
           props.isOpenCallback(true);
         }}
@@ -187,6 +235,7 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
+        // errors={errors}
       />
     );
   } else {
@@ -204,6 +253,7 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
+        // errors={errors}
       />
     );
   }
