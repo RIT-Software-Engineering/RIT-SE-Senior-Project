@@ -71,13 +71,15 @@ export default function DatabaseTableEditor(props) {
             {
               content: "Cancel", 
               positive: false, 
-              onClick: () => {setErrors([]); setOpen(false);}
+              onClick: (event) => {handleCancel(event);}
             },
             {
               header: "Submission Error",
               content: "Try again",
               positive: true,
-              onClick: () => {setOpen(true);},
+              onClick: (event) => {
+                setOpen(true);
+              },
               key: 0,
             }
           ]
@@ -101,7 +103,6 @@ export default function DatabaseTableEditor(props) {
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         break;
       case MODAL_STATUS.SUBMISSION_ERROR:
-        // setOpen(open);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         break;
       default:
@@ -165,7 +166,6 @@ export default function DatabaseTableEditor(props) {
         console.log(" EDIT RESPONSE HERE", response) // testingggg
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-          props.isOpenCallback(false);
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
         }
@@ -174,7 +174,7 @@ export default function DatabaseTableEditor(props) {
         }
       })
       .catch((error) => {
-        setSubmissionModalOpen(MODAL_STATUS.FAIL);
+        setSubmissionModalOpen(Modal.STATUS.FAIL);
       });
   };
 
@@ -597,7 +597,8 @@ export default function DatabaseTableEditor(props) {
                       </MessageList>
                     </Message>
                     <br/>
-                  </div>)}
+                  </div>
+                  )}
                 <Form>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
@@ -622,23 +623,18 @@ export default function DatabaseTableEditor(props) {
           closeOnDimmerClick={false}
           className={"sticky"}
           trigger={trigger}
-          // open={open}
-          // onClose={() => {setOpen(false)}}
-          // onOpen={() => setOpen(true)}
-          // onClose={() => {
-          //   console.log("2nd MODAL closed")
-          //   setOpen(false)
-          // }}
-          // onOpen={() => {
-          //   console.log("2nd MODAL opened")
-          //   setOpen(true)
-          // }}
-          // open={open}
+          onClose={() => {
+            setOpen(false)
+          }}
+          onOpen={() => {
+            setOpen(true)
+          }}
+          open={open}
           header={props.header}
           content={{
             content: (
               <>
-                {/* {errors.length > 0 && (
+                {errors.length > 0 && (
                 <div className="submission-errors">
                   <Message error>
                     <MessageHeader>
@@ -651,7 +647,7 @@ export default function DatabaseTableEditor(props) {
                     </MessageList>
                   </Message>
                   <br/>
-                </div>)} */}
+                </div>)}
                 <Form>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
