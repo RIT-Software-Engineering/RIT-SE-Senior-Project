@@ -69,9 +69,13 @@ export default function DatabaseTableEditor(props) {
           content: submissionModalMessages["SUBMISSON_ERROR"],
           actions: [
             {
+              content: "Cancel", positive: false, onClick: () => {setErrors([]); setOpen(false);}
+            },
+            {
               header: "Submission Error",
-              content: "Close",
+              content: "Try again",
               positive: true,
+              onClick: () => {setOpen(true);},
               key: 0,
             }
           ]
@@ -95,6 +99,7 @@ export default function DatabaseTableEditor(props) {
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         break;
       case MODAL_STATUS.SUBMISSION_ERROR:
+        // setOpen(open);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         break;
       default:
@@ -124,13 +129,11 @@ export default function DatabaseTableEditor(props) {
       }
     }
 
-    console.log(errors);
-
     if (errors.length > 0) {
-      console.log("AM I HERE??")
+      console.log("AM I HERE??", errors)
       setErrors(errors);
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
-      return false; 
+      return;
     }
 
     const dataToSubmit = !!props.preSubmit
@@ -546,10 +549,7 @@ export default function DatabaseTableEditor(props) {
         content: mock
           ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
           : "Submit",
-        onClick: (event) => {
-          event.preventDefault()
-          handleSubmit(event)
-        },
+        onClick: (event) => handleSubmit(event),
         positive: true,
       },
     ];
@@ -571,10 +571,6 @@ export default function DatabaseTableEditor(props) {
             setOpen(false);
             props.isOpenCallback(false);
           }}
-          // onOpen={() => {
-          //   setOpen(true);
-          //   props.isOpenCallback(true);
-          // }}
           onOpen={() => {
             console.log("onOpen triggered");
             setOpen(true);
