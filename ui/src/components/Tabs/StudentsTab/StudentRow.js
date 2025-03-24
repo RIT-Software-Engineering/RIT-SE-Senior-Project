@@ -33,10 +33,8 @@ export default function StudentRow(props) {
   const fetchPeerReviews = async () => {
     try {
       const url = `${config.url.API_GET_PEER_EVALS}?semester=${props.student.semester_group}`
-      console.log("Fetching peer reviews from:", url);
       const response = await SecureFetch(url);
       const data = await response.json();
-      console.log("Parsed JSON data:", data);
 
       const allReviews = Array.isArray(data) ? data : [];
       const studentName = `${props.student.fname} ${props.student.lname}`;
@@ -49,7 +47,6 @@ export default function StudentRow(props) {
           return false;
         }
       });
-      console.log("Filtered peer reviews:", filteredReviews);
       setPeerReviews(filteredReviews);
     } catch (error) {
       console.error("Error fetching peer reviews:", error);
@@ -104,7 +101,6 @@ const handleGenerateAISummary = async () => {
     const sanitizedReviews = peerReviews.map(review => sanitizeReview(review, selectedStudentName));
     const body = new FormData();
     body.append("context", JSON.stringify(sanitizedReviews));
-    console.log("Generating AI Summary from sanitized reviews:", sanitizedReviews);
 
     const response = await SecureFetch(`${config.url.API_GENERATE_HISTORIC_SUMMARY}`, {
       method: "post",
@@ -112,7 +108,6 @@ const handleGenerateAISummary = async () => {
     });
 
     const textData = await response.text();
-    console.log("AI Summary response:", textData);
     setAiSummary(textData || "No Summary Generated");
   } catch (error) {
     console.error("Error generating AI Summary:", error);
@@ -121,10 +116,8 @@ const handleGenerateAISummary = async () => {
 };
 
 const fetchAdditionalInfo = async () => {
-  console.log(props);
     try {
     const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
-    console.log("Fetching additional info from:", url);
     const response = await SecureFetch(url);
     const data = await response.json();
 
@@ -142,7 +135,6 @@ const fetchAdditionalInfo = async () => {
 const handleSaveAdditionalInfo = async () => {
   try {
     const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
-    console.log("Updating additional info at:", url);
 
     const response = await SecureFetch(url, {
       method: "POST",
@@ -157,7 +149,6 @@ const handleSaveAdditionalInfo = async () => {
 
     if (!response.ok) throw new Error("Failed to update additional info");
 
-    console.log("Additional info updated successfully");
     setIsEditing(false);
   } catch (error) {
     console.error("Error updating additional info:", error);
