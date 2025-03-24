@@ -113,6 +113,7 @@ export default function DatabaseTableEditor(props) {
 
   function handleCancel() {
     setErrors([]);
+    setErrorFields(new Set());
     setFormData(initialState);
     setOpen(false);
   }
@@ -122,6 +123,15 @@ export default function DatabaseTableEditor(props) {
     let errors = [];
 
     // Error Handling 
+
+    // Don't track short_desc if certain action targets are chosen.
+    if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
+      // check for short_desc
+      if (formData.short_desc === ""){
+        errors.push("Please provide a short description (short_desc)")
+        errorFields.add("short_desc");
+      }
+    }
 
      // check for page_html
      if (formData.page_html === ""){
@@ -141,17 +151,8 @@ export default function DatabaseTableEditor(props) {
       errors.push("Please check the Active box");
       errorFields.add("date_deleted");
     }
-    
-    if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
-      // check for short_desc
-      if (formData.short_desc === ""){
-        errors.push("Please provide a short description (short_desc)")
-        errorFields.add("short_desc");
-      }
-    }
 
     if (errors.length > 0) {
-      console.log("AM I HERE??", errors)
       setErrors(errors);
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
@@ -181,7 +182,6 @@ export default function DatabaseTableEditor(props) {
       body: body,
     })
       .then((response) => {
-        console.log(" EDIT RESPONSE HERE", response) // testingggg
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
         } else {
@@ -199,6 +199,22 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
+
+    setErrorFields(prevErrorFields => {
+      const newErrorFields = new Set(prevErrorFields);
+      
+      if (value !== "") {
+        if ((name === "start_date" || name === "due_date")){
+          newErrorFields.delete("start_date");
+          newErrorFields.delete("due_date");
+        }
+        newErrorFields.delete(name);
+      } else {
+        newErrorFields.add(name);
+      }
+      
+      return newErrorFields;
+    });
     if (props.viewOnly) {
       return;
     }
@@ -285,6 +301,7 @@ export default function DatabaseTableEditor(props) {
                   onChange={handleChange}
                   disabled={field.disabled}
                   required
+                  error={errorFields.has(field.name)}
                 />
               </Form.Field>,
             );
@@ -316,9 +333,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                // style={{
-                //   borderColor: errors.has(field.name) ? 'red' : 'intial'
-                // }}
+                error={errorFields.has(field.name)}
                 required
               />
             </Form.Field>,
@@ -332,9 +347,6 @@ export default function DatabaseTableEditor(props) {
                 data={formData}
                 onChange={handleChange}
                 value={formData[field.name]}
-                // style={{
-                //   borderColor: errors.has(field.name) ? 'red' : 'intial'
-                // }}
               />,
             );
           } else {
@@ -356,7 +368,9 @@ export default function DatabaseTableEditor(props) {
                     borderRadius: "5px",
                     padding: "10px",
                     minHeight: "200px",
+                    backgroundColor: errorFields.has(field.name) ? "#fa8c8c" : "",
                   }}
+                  required
                 />
               </Form.Field>,
             );

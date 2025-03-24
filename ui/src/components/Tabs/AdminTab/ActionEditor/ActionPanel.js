@@ -19,10 +19,7 @@ const page_html = "page_html";
 const start_date = "start_date";
 
 export default function ActionPanel(props) {
-  // const [open, setOpen] = useState(false);
   const [open, setOpen] = useState(true);
-  // const [errors, setErrors]  = useState({});
-  // const [errors, setErrors] = useState(new Set());
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
@@ -134,28 +131,6 @@ export default function ActionPanel(props) {
     },
   ];
 
-  // const isInputValid = (formData) => {
-  //   const newErrors = new Set();
-
-  //   if (formData.action_target !== "peer_evaluation" && formData.action_target !== "coach_announcement" && formData.action_target !== "student_announcement"){
-  //     if (formData.short_desc.trim() === ""){
-  //       newErrors.add(short_desc);
-  //     }
-  //     if (formData.page_html.trim() === ""){
-  //       newErrors.add(page_html);
-  //     }
-  //     if (new Date(formData.start_date) > new Date(formData.due_date)){
-  //       newErrors.add(start_date);
-  //     }
-  //   }
-  
-  //   console.log("NEW Errors: ", newErrors.size);
-  //   setErrors(newErrors);
-  //   console.log("Errors: ", errors.size);
-  //   return newErrors.size === 0;
-
-  // }
-   
   const preSubmit = (data) => {
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
@@ -206,16 +181,6 @@ export default function ActionPanel(props) {
           setOpen(false);
           props.isOpenCallback(false);
         }}
-        // onClose={() => {
-        //   console.log("Modal close requested");
-        //   if (errors.size === 0) {  // Only close if there are no errors
-        //     setOpen(false);
-        //     props.isOpenCallback(false);
-        //     console.log("Modal closed");
-        //   } else {
-        //     console.log("Modal remains open due to validation errors");
-        //   }
-        // }}
         onOpen={() => {
           setOpen(true);
           props.isOpenCallback(true);
