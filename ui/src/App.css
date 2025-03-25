@@ -141,6 +141,15 @@ a.ui.button {
   background-color: #333;
 }
 
+/* Table Borders */
+body.dark-mode table, 
+body.dark-mode th, 
+body.dark-mode td {
+    border: 1px solid #444;
+}
+
+
+
 body.dark-mode .ui.header {
   color: #ffffff;
 }
