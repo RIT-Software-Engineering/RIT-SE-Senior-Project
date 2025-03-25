@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { TableCell, TableRow, Modal, Button, Accordion, Icon } from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
 import dayjs from "dayjs";
@@ -30,12 +30,12 @@ export default function StudentRow(props) {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  const fetchPeerReviews = async () => {
+  const fetchPeerReviews = useCallback(async () => {
     try {
-      const url = `${config.url.API_GET_PEER_EVALS}?semester=${props.student.semester_group}`
+      const url = `${config.url.API_GET_PEER_EVALS}?semester=${props.student.semester_group}`;
       const response = await SecureFetch(url);
       const data = await response.json();
-
+  
       const allReviews = Array.isArray(data) ? data : [];
       const studentName = `${props.student.fname} ${props.student.lname}`;
       const filteredReviews = allReviews.filter((review) => {
@@ -52,7 +52,7 @@ export default function StudentRow(props) {
       console.error("Error fetching peer reviews:", error);
       setPeerReviews([]);
     }
-  };
+  }, [props.student.semester_group, props.student.fname, props.student.lname]);
 
 const sanitizeReview = (review, selectedStudentName) => {
   const {
@@ -115,8 +115,8 @@ const handleGenerateAISummary = async () => {
   }
 };
 
-const fetchAdditionalInfo = async () => {
-    try {
+const fetchAdditionalInfo = useCallback(async () => {
+  try {
     const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
     const response = await SecureFetch(url);
     const data = await response.json();
@@ -130,7 +130,16 @@ const fetchAdditionalInfo = async () => {
     console.error("Error fetching additional info:", error);
     setAdditionalInfo("Error loading additional information.");
   }
-};
+}, [props.student.system_id]);
+
+useEffect(() => {
+  if (openModal) {
+    if (!props.isStudent) {
+      fetchPeerReviews();
+    }
+    fetchAdditionalInfo();
+  }
+}, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
 const handleSaveAdditionalInfo = async () => {
   try {
@@ -165,7 +174,7 @@ const handleSaveAdditionalInfo = async () => {
       }
       fetchAdditionalInfo(); 
     }
-  }, [openModal]);
+  }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
 
   
@@ -214,11 +223,7 @@ const handleSaveAdditionalInfo = async () => {
       <>
         <TableRow key={props.student.system_id}>
           <TableCell
-            style={{
-              cursor: "pointer",
-              color:"blue",
-              textDecoration:"underline",
-            }}
+            className="clickable-student-name"
             onClick={() => setOpenModal(true)}
           >
             {props.student.fname} {props.student.lname}
@@ -234,12 +239,20 @@ const handleSaveAdditionalInfo = async () => {
           </TableCell>
         </TableRow>
 
-        <Modal open={openModal} onClose={() => setOpenModal(false)} size="small" centered scrollable  style={{
-                        position: "fixed",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)"}}
- >
+        <Modal
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            size="small"
+            centered={false} // Disable default centering
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              maxHeight: "90vh", // Prevents excessive height issues
+              overflowY: "auto",  // Allows scrolling if content overflows
+            }}
+          >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
             <p>
@@ -355,10 +368,15 @@ const handleSaveAdditionalInfo = async () => {
               <textarea
                 readOnly
                 value={aiSummary}
-                rows={4}
-                style={{ width: "100%" }}
+                rows={aiSummary === "No Summary Generated" ? 2 : 6}
+                style={{ 
+                  width: "100%", 
+                  height: aiSummary === "No Summary Generated" ? "50px" : "auto", 
+                  minHeight: aiSummary === "No Summary Generated" ? "50px" : "200px",
+                  resize: "vertical"
+                }}
               />
-            </div>           
+            </div>     
             <Button onClick={handleGenerateAISummary}>Generate AI Summary</Button>
             </>
             )}

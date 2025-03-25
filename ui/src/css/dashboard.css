@@ -342,81 +342,81 @@ body.dark-mode {
 
 /* Dark mode styles for gantt chart */
 body.dark-mode .gantt {
-    border-color: #444 !important;
+    border-color: #444;
 }
 
 body.dark-mode .gantt-header {
-    background-color: #222 !important;
-    border-left-color: #555 !important;
-    border-bottom-color: #555 !important;
-    color: #e0e0e0 !important;
+    background-color: #222;
+    border-left-color: #555;
+    border-bottom-color: #555;
+    color: #e0e0e0;
 }
 
 body.dark-mode .gantt-col.weekday {
-    background-color: #1e1e1e !important;
+    background-color: #1e1e1e;
 }
 
 body.dark-mode .gantt-col.weekend {
-    background-color: #292929 !important;
+    background-color: #292929;
 }
 
 body.dark-mode .gantt-col.today {
-    background-color: #ff9800 !important;
+    background-color: #ff9800;
 }
 
 body.dark-mode .sidebar {
-    background-color: #222 !important;
-    color: #e0e0e0 !important;
-    border-right-color: #555 !important;
+    background-color: #222;
+    color: #e0e0e0;
+    border-right-color: #555;
 }
 
 body.dark-mode .sidebar.header {
-    background-color: #1e1e1e !important;
-    border-right-color: #777 !important;
-    border-bottom-color: #777 !important;
-    color: #ffffff !important;
+    background-color: #1e1e1e;
+    border-right-color: #777;
+    border-bottom-color: #777;
+    color: #ffffff;
 }
 
 /* Dark mode styles for action bar */
 body.dark-mode .action-bar {
-    background-color: #222 !important;
-    color: #e0e0e0 !important;
+    background-color: #222;
+    color: #e0e0e0;
 }
 
 body.dark-mode .action-bar.proposal-row-yellow {
-    border-color: #ffc107 !important;
-    color: #e0e0e0 !important;
+    border-color: #ffc107;
+    color: #e0e0e0;
 }
 
 body.dark-mode .action-bar.proposal-row-red {
-    border-color: #f44336 !important;
-    color: #e0e0e0 !important;
+    border-color: #f44336;
+    color: #e0e0e0;
 }
 
 body.dark-mode .action-bar.proposal-row-blue {
-    border-color: #2196f3 !important;
-    color: #e0e0e0 !important;
+    border-color: #2196f3;
+    color: #e0e0e0;
 }
 
 body.dark-mode .action-bar.proposal-row-green {
-    border-color: #4caf50 !important;
-    color: #e0e0e0 !important;
+    border-color: #4caf50;
+    color: #e0e0e0;
 }
 
 body.dark-mode .action-bar.proposal-row-gray {
-    border-color: #888 !important;
-    color: #e0e0e0 !important;
+    border-color: #888;
+    color: #e0e0e0;
 }
 
 /* Dark mode styles for Announcement */
 body.dark-mode .announcement-container-wrapper {
-    background-color: #1e1e1e !important;
-    color: #e0e0e0 !important;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
 }
 
 body.dark-mode .announcement {
-    background-color: #333 !important;
-    color: #e0e0e0 !important;
+    background-color: #333;
+    color: #e0e0e0;
 }
 
 /* Dark mode styles for checkbox */
@@ -434,5 +434,5 @@ body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
 
 /* Dark mode styles for submission errors */
 body.dark-mode .submission-errors {
-    color: #ff4444 !important;
+    color: #ff4444;
 }

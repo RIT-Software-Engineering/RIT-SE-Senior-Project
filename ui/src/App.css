@@ -104,6 +104,14 @@ a.ui.button {
   padding-top: 1em;
 }
 
+.clickable-student-name {
+  cursor: pointer;
+  color: #4183c4;
+  text-decoration: underline;
+}
+
+
+
 /* Dark Mode Styles */
 .dark-mode {
   background-color: #121212;
@@ -112,6 +120,10 @@ a.ui.button {
 
 .dark-mode a {
   color: #90caf9;
+}
+
+.dark-mode .fake-a {
+  color: #90CAF9;
 }
 
 .dark-mode #footer {
@@ -133,6 +145,12 @@ body.dark-mode .ui.header {
   color: #ffffff;
 }
 
+body.dark-mode .clickable-student-name {
+  cursor: pointer;
+  color: #90CAF9;
+  text-decoration: underline;
+}
+
 .dark-mode .ui.segment,
 .dark-mode .ui.tab {
     background-color: #222;
@@ -140,16 +158,17 @@ body.dark-mode .ui.header {
 }
 
 .dark-mode .ui.menu {
-    background-color: #999999;
+    background-color: black;
     color: white;
 }
 
 .dark-mode .ui.tabular.menu .item {
-    color: #bbb;
+    color: white;
+    background-color: rgb(48, 48, 48);
 }
 
 .dark-mode .ui.tabular.menu .active.item {
-    background-color: #444;
+    background-color: #999999;
     color: white;
 }
 
@@ -249,6 +268,7 @@ body.dark-mode .ui.accordion .title {
 
 body.dark-mode .ui.accordion .title:hover {
   background-color: #333;
+  color: white;
 }
 
 body.dark-mode .ui.accordion .content {
@@ -260,6 +280,39 @@ body.dark-mode .ui.accordion .active.title {
   background-color: #333;
   color: #ffffff;
 }
+
+body.dark-mode .accordion-button-group .title:hover {
+  background-color: #222;
+  color: #ffffff;
+}
+
+body.dark-mode .ui.ui.styled.accordion {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .title {
+  background-color: #222;
+  color: #ffffff;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .title:hover {
+  background-color: #333;
+  color: white;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .content {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .active.title {
+  background-color: #333;
+  color: #ffffff;
+}
+
+
 
 /* Dark mode styles for pagination */
 body.dark-mode .ui.pagination.menu {
