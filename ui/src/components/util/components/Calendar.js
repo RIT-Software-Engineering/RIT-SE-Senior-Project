@@ -43,9 +43,6 @@ export function Calendar(props) {
     "December",
   ]
 
-  // Day names
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-
   // Navigate to previous month
   const prevMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1))
@@ -93,7 +90,7 @@ export function Calendar(props) {
   }
 
   // Calculate action display position (for overlapping actions)
-  const calculateActionPosition = (action, actionsForDay, index) => {
+  const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
     // This ensures consistent display even for multi-day events
     return {
@@ -227,11 +224,27 @@ export function Calendar(props) {
       </div>
 
       <div className="calendar-days-header">
-        {dayNames.map((day) => (
-          <div key={day} className="day-name">
-            {day}
+          <div className="day-name">
+            Sunday
           </div>
-        ))}
+          <div className="day-name">
+            Monday
+          </div>
+          <div className="day-name">
+            Tuesday
+          </div>
+          <div className="day-name">
+            Wednesday
+          </div>
+          <div className="day-name">
+            Thursday
+          </div>
+          <div className="day-name">
+            Friday
+          </div>
+          <div className="day-name">
+            Saturday
+          </div>
       </div>
 
       <div className="calendar-grid">{generateCalendarDays()}</div>
