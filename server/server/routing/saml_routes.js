@@ -92,6 +92,7 @@ module.exports = (app, db) => {
         fname: mockUser.fname,
         lname: mockUser.lname,
         semester_group: mockUser.semester_group,
+        view_only: mockUser.view_only,
       },
     });
   });

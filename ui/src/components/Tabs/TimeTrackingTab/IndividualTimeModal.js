@@ -96,7 +96,7 @@ export default function IndividualTimeModal(props) {
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
-        {props.userId === user.user && props.delete === 1 ? deleteButton : ""}
+        {props.userId === user.user && props.delete === 1 && !user.view_only && user.mockUser.view_only != "TRUE" ? deleteButton : ""}
         <Button onClick={() => onClose()}>Close</Button>
       </Modal.Actions>
     </Modal>

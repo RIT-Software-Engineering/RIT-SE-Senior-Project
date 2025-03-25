@@ -88,7 +88,6 @@ export default function DatabaseTableEditor(props) {
       ? props.preSubmit(formData)
       : formData;
 
-    console.log(dataToSubmit);
     let body = new FormData();
     console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {

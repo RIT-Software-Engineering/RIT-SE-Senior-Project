@@ -54,10 +54,11 @@ export default function DashboardPage() {
   }, []);
 
   let panes = [];
+  console.log(user);
   //console.log(user)
   switch (user.role) {
     case "admin":
-      if(!user.view_only){
+      if(!user.view_only && !user.mockUser.view_only){
         panes.push({
           menuItem: {
             key: "Admin-Tab",
@@ -89,7 +90,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SponsorsTab viewOnly ={user.view_only}/>
+              <SponsorsTab viewOnly ={user.view_only || user.mockUser.view_only}/>
             </Tab.Pane>
           ),
         },
@@ -130,7 +131,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} viewOnly={user.view_only}/>
+              <ProjectsTab semesterData={semesterData} viewOnly={user.view_only || user.mockUser.view_only}/>
             </Tab.Pane>
           ),
         },
@@ -142,7 +143,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-                <TimeLog semesterData={semesterData} viewOnly={user.view_only}/>
+                <TimeLog semesterData={semesterData} viewOnly={user.view_only || user.mockUser.view_only}/>
                 <ActionLogs semesterData={semesterData} />
 
             </Tab.Pane>
