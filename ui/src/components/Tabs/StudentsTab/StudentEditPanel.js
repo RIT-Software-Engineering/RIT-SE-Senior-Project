@@ -54,7 +54,7 @@ export default function StudentEditPanel(props) {
     email: props.studentData.email || "",
     type: props.studentData.type || "",
     active: props.studentData.active || "",
-    viewOnly: props.studentData.viewOnly ? "viewOnly" : "",
+    viewOnly: props.studentData.view_only === "TRUE"? 1 : "",
     semesterProject: _.findIndex(semesterProjectDropdownMap, {
       semester: props.studentData.semester_group || "",
       project: props.studentData.project || "",
@@ -134,6 +134,7 @@ export default function StudentEditPanel(props) {
   ];
 
   return (
+    //console.log(initialState),
     <DatabaseTableEditor
       initialState={initialState}
       submissionModalMessages={submissionModalMessages}
