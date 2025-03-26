@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Header, Label, Modal, Message, MessageHeader, Icon, MessageList } from "semantic-ui-react";
@@ -33,6 +33,8 @@ export default function DatabaseTableEditor(props) {
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState([]);
   const [errorFields, setErrorFields] = useState(new Set());
+  
+  const formRef = useRef(null); // maintain the current form data in the case of submission error
 
   // Update initial state if provided initial state is changed
   useEffect(() => {
@@ -79,6 +81,7 @@ export default function DatabaseTableEditor(props) {
               positive: true,
               onClick: (event) => {
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                setFormData(formRef.current);
                 setOpen(true);
               },
               key: 0,
@@ -115,11 +118,20 @@ export default function DatabaseTableEditor(props) {
     setErrors([]);
     setErrorFields(new Set());
     setFormData(initialState);
+    formRef.current = null;
     setOpen(false);
   }
 
   const handleSubmit = async function (e) {
     e.preventDefault();
+
+    // data to be sent to backend
+    const dataToSubmit = !!props.preSubmit
+      ? props.preSubmit(formData)
+      : formData;
+
+    console.log(dataToSubmit);
+
     let errors = [];
 
     // Error Handling 
@@ -127,14 +139,14 @@ export default function DatabaseTableEditor(props) {
     // Don't track short_desc if certain action targets are chosen.
     if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
       // check for short_desc
-      if (formData.short_desc === ""){
+      if (formData.short_desc.trim() === ""){
         errors.push("Please provide a short description (short_desc)")
         errorFields.add("short_desc");
       }
     }
 
      // check for page_html
-     if (formData.page_html === ""){
+     if (formData.page_html.trim() === ""){
       errors.push("Please provide the HTML (page_html)")
       errorFields.add("page_html");
     }
@@ -154,13 +166,10 @@ export default function DatabaseTableEditor(props) {
 
     if (errors.length > 0) {
       setErrors(errors);
+      formRef.current = formData;
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
     }
-
-    const dataToSubmit = !!props.preSubmit
-      ? props.preSubmit(formData)
-      : formData;
 
     let body = new FormData();
     if ("changed_fields" in dataToSubmit) {
@@ -183,8 +192,10 @@ export default function DatabaseTableEditor(props) {
       .then((response) => {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+          formRef.current = null;
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
+          formRef.current = null;
         }
         if (props.callback) {
           props.callback();
@@ -201,17 +212,19 @@ export default function DatabaseTableEditor(props) {
 
     setErrorFields(prevErrorFields => {
       const newErrorFields = new Set(prevErrorFields);
-      
-      if (value !== "") {
-        if ((name === "start_date" || name === "due_date")){
-          newErrorFields.delete("start_date");
-          newErrorFields.delete("due_date");
-        }
-        newErrorFields.delete(name);
-      } else {
-        newErrorFields.add(name);
+
+      if ((name === "start_date" || name === "due_date")){
+        newErrorFields.delete("start_date");
+        newErrorFields.delete("due_date");
       }
-      
+      else{
+        if ( (name !== "date_deleted" && value.trim() !== "" )){
+          newErrorFields.delete(name);
+        }
+        else{
+          newErrorFields.add(name);
+        }
+      }
       return newErrorFields;
     });
     if (props.viewOnly) {
@@ -283,27 +296,42 @@ export default function DatabaseTableEditor(props) {
                   value={formData[field.name]}
                   onChange={handleChange}
                   disabled={field.disabled}
-                  required
                 />
               </Form.Field>,
               );
             }
           }
           else{
-            fieldComponents.push(
-              <Form.Field key={field.name}>
-                <Form.Input
-                  label={field.label}
-                  placeholder={field.placeholder}
-                  name={field.name}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  disabled={field.disabled}
-                  required
-                  error={errorFields.has(field.name)}
-                />
-              </Form.Field>,
-            );
+            if (field.name === "action_title" || field.name === "file_types" || field.name === "file_size"){
+              fieldComponents.push(
+                <Form.Field key={field.name}>
+                  <Form.Input
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    disabled={field.disabled}
+                  />
+                </Form.Field>,
+              );
+            }
+            else{
+              fieldComponents.push(
+                <Form.Field key={field.name}>
+                  <Form.Input
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    disabled={field.disabled}
+                    required
+                    error={errorFields.has(field.name)}
+                  />
+                </Form.Field>,
+              );
+            }
           }
           break;
         case "phoneInput":
@@ -333,7 +361,6 @@ export default function DatabaseTableEditor(props) {
                 onChange={handleChange}
                 disabled={field.disabled}
                 error={errorFields.has(field.name)}
-                required
               />
             </Form.Field>,
           );
@@ -367,7 +394,7 @@ export default function DatabaseTableEditor(props) {
                     borderRadius: "5px",
                     padding: "10px",
                     minHeight: "200px",
-                    backgroundColor: errorFields.has(field.name) ? "#fa8c8c" : "",
+                    backgroundColor: errorFields.has(field.name) ? "#fab9b4" : "",
                   }}
                   required
                 />
