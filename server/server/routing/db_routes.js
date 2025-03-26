@@ -216,7 +216,8 @@ module.exports = (db) => {
   db_router.post(
     "/createUser",
     [
-      UserAuth.isWriteAdmin,
+      UserAuth.isAdmin,
+      UserAuth.canWrite,
       body("system_id")
         .not()
         .isEmpty()
@@ -308,6 +309,7 @@ module.exports = (db) => {
     "/batchCreateUser",
     [
       UserAuth.isAdmin,
+      UserAuth.canWrite,
       // TODO: Add more validation
     ],
     async (req, res, next) => {
@@ -351,7 +353,7 @@ module.exports = (db) => {
     },
   );
 
-  db_router.post("/editUser", [UserAuth.isAdmin], (req, res, next) => {
+  db_router.post("/editUser", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     let body = req.body;
 
     let updateQuery = `
@@ -395,7 +397,7 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res, next) => {
+  db_router.post("/removeTime", [UserAuth.isSignedIn, UserAuth.canWrite], (req, res, next) => {
     if (!req.body.id) {
       const error = new Error("No Id Provided");
       error.statusCode = 400;
@@ -434,7 +436,7 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/createTimeLog", [], async (req, res, next) => {
+  db_router.post("/createTimeLog", [UserAuth.canWrite], async (req, res, next) => {
     let result = validationResult(req);
 
     if (result.errors.length !== 0) {
@@ -799,7 +801,7 @@ module.exports = (db) => {
     },
   );
 
-  db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res, next) => {
+  db_router.post("/editArchive", [UserAuth.isAdmin, UserAuth.canWrite], async (req, res, next) => {
     let body = req.body;
     const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
@@ -878,7 +880,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createArchive",
-    UserAuth.isAdmin,
+    [UserAuth.isAdmin, UserAuth.canWrite],
     body("featured")
       .not()
       .isEmpty()
@@ -963,7 +965,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editArchiveStudent",
-    UserAuth.isSignedIn,
+    [UserAuth.isSignedIn, UserAuth.canWrite],
     async (req, res, next) => {
       let body = req.body;
       let files = req.files;
@@ -1136,7 +1138,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createArchiveStudent",
-    UserAuth.isSignedIn,
+    [UserAuth.isSignedIn, UserAuth.canWrite],
     body("featured")
       .not()
       .isEmpty()
@@ -1340,6 +1342,7 @@ module.exports = (db) => {
     "/editProject",
     [
       UserAuth.isAdmin,
+      UserAuth.canWrite,
       // TODO: Should the max length be set to something smaller than 5000?
       body("title")
         .not()
@@ -1565,7 +1568,7 @@ module.exports = (db) => {
    */
   db_router.patch(
     "/updateProposalStatus",
-    [UserAuth.isAdmin, body("*").trim().escape().isJSON().isAlphanumeric()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("*").trim().escape().isJSON().isAlphanumeric()],
     (req, res, next) => {
       const query = `UPDATE ${DB_CONFIG.tableNames.senior_projects} SET status = ? WHERE project_id = ?`;
       db.query(query, [req.body.status, req.body.project_id])
@@ -1677,7 +1680,7 @@ module.exports = (db) => {
   /**
    * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
    */
-  db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res, next) => {
+  db_router.post("/uploadFiles", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     let filesUploaded = [];
 
     // Attachment Handling
@@ -1715,7 +1718,7 @@ module.exports = (db) => {
   /**
    * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
    */
-  db_router.post("/uploadFilesStudent", (req, res, next) => {
+  db_router.post("/uploadFilesStudent", UserAuth.canWrite, (req, res, next) => {
     let filesUploaded = [];
 
     // Attachment Handling
@@ -1762,7 +1765,7 @@ module.exports = (db) => {
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 
-  db_router.post("/createDirectory", UserAuth.isAdmin, (req, res, next) => {
+  db_router.post("/createDirectory", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
@@ -1778,7 +1781,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/renameDirectoryOrFile",
-    UserAuth.isAdmin,
+    [UserAuth.isAdmin, UserAuth.canWrite],
     (req, res, next) => {
       const { oldPath, newPath } = req.query;
       const formattedOldPath =
@@ -1919,7 +1922,7 @@ module.exports = (db) => {
     });
   });
 
-  db_router.delete("/removeFile", UserAuth.isAdmin, (req, res, next) => {
+  db_router.delete("/removeFile", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     fs.unlink(baseURL, (err) => {
@@ -1933,7 +1936,7 @@ module.exports = (db) => {
     });
   });
 
-  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res, next) => {
+  db_router.delete("/removeDirectory", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     if (fs.existsSync(baseURL)) {
@@ -2250,7 +2253,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/submitAction",
-    [UserAuth.isSignedIn, body("*").trim()],
+    [UserAuth.isSignedIn, UserAuth.canWrite, body("*").trim()],
     async (req, res, next) => {
       let result = validationResult(req);
 
@@ -2458,7 +2461,7 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/editPage", [UserAuth.isAdmin], (req, res, next) => {
+  db_router.post("/editPage", [UserAuth.isAdmin, UserAuth.canWrite], (req, res, next) => {
     let editPageQuery = `UPDATE page_html
         SET html = ?
         WHERE name = ?
@@ -3091,7 +3094,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editAction",
-    [UserAuth.isAdmin, body("page_html").unescape()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3448,7 +3451,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createSponsor",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3524,7 +3527,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editSponsor",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3650,7 +3653,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createSponsorNote",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3675,7 +3678,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createAction",
-    [UserAuth.isAdmin, body("page_html").unescape()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3794,7 +3797,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editSemester",
-    [UserAuth.isAdmin, body("*").trim()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("*").trim()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3830,7 +3833,8 @@ module.exports = (db) => {
   db_router.post(
     "/createSemester",
     [
-      UserAuth.isAdmin,
+      UserAuth.isAdmin, 
+      UserAuth.canWrite,
       body("name")
         .not()
         .isEmpty()

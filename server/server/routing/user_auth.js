@@ -24,14 +24,13 @@ const isAdmin = (req, res, next) => {
   res.sendStatus(401);
 };
 
-const isWriteAdmin = (req, res, next) => {
-
-    if (testIsAdmin(req) && testCanWrite) {
+const canWrite = (req, res, next) => {
+    if (testCanWrite(req)) {
         next();
         return;
     }
 
-    next();
+    res.sendStatus(401);
 }
 
 const isCoachOrAdmin = (req, res, next) => {
@@ -75,6 +74,7 @@ const mockUser = (req, res, next) => {
           : req.cookies.semester_group,
       project: req.cookies.project === "null" ? null : req.cookies.project,
       active: req.cookies.active,
+      view_only: req.cookies.view_only,
     };
   }
 
@@ -108,8 +108,8 @@ const testIsAdmin = (req) => {
 }
 
 const testCanWrite = (req) => {
-    console.log(req.user.type)
-    return req.user && !req.user.view_only;
+    console.log(req.user)
+    return req.user && req.user.view_only === "FALSE";
 }
 
 const testIsCoach = (req) => {
@@ -119,7 +119,7 @@ const testIsCoach = (req) => {
 module.exports = {
     isSignedIn,
     isAdmin,
-    isWriteAdmin,
+    canWrite,
     isCoachOrAdmin,
     mockUser,
 }
