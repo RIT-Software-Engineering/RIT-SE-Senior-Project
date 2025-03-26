@@ -144,7 +144,7 @@ export function Calendar(props) {
           <div className={`day-number ${isCurrentDay ? "today" : ""}`}>{day}</div>
           <div className="action-container">
             {actionsForDay.slice(0, maxVisibleActions).map((action, index) => {
-              const position = calculateActionPosition(action, actionsForDay, index)
+              const position = calculateActionPosition(action, index)
               const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
               const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
 
