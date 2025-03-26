@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Header, Label, Modal } from "semantic-ui-react";
+import { Dropdown, Header, Label} from "semantic-ui-react"; 
+import Modal from "../../util/components/Modal"; // Custom modal to override Semantic UI's Modal default close behavior
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
