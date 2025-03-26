@@ -12,26 +12,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/Users'
+              $ref: "./schemas.yaml#/components/schemas/Users"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Users'
-        '400':
+                $ref: "./schemas.yaml#/components/schemas/Users"
+        "400":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/batchCreateUser:
     post:
@@ -47,28 +47,28 @@ paths:
             schema:
               type: array
               items:
-                $ref: './schemas.yaml#/components/schemas/Users'
+                $ref: "./schemas.yaml#/components/schemas/Users"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '400':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "400":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/editUser:
     post:
@@ -82,21 +82,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/Users'
+              $ref: "./schemas.yaml#/components/schemas/Users"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-  
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getActiveUsers:
     get:
@@ -106,14 +105,14 @@ paths:
         - DB
       operationId: getActiveUsers
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
+                  $ref: "./schemas.yaml#/components/schemas/Users"
 
   /db/DevOnlyGetAllUsersForLogin:
     get:
@@ -123,14 +122,103 @@ paths:
         - DB
       operationId: DevOnlyGetAllUsersForLogin
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+  /db/getAdditionalInfo:
+    get:
+      summary: Get additional info
+      description: Get additional info for student
+      tags:
+        - DB
+      operationId: getAdditionalInfo
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "400":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+  /db/editAdditionalInfo:
+    post:
+      summary: Edit additional info
+      description: Edit additional info for student
+      tags:
+        - DB
+      operationId: editAdditionalInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/Users"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Additional info updated successfully"
+        "400":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+  /db/getPeerEvals:
+    get:
+      summary: Get peer evaluations
+      description: Get peer evaluations for student
+      tags:
+        - DB
+      operationId: getPeerEvals
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/ActionLog"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Sponsor and Coach Information
   /db/selectAllSponsorInfo:
@@ -143,14 +231,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Sponsors'
+                  $ref: "./schemas.yaml#/components/schemas/Sponsors"
 
   /db/selectAllCoachInfo:
     get:
@@ -160,20 +248,20 @@ paths:
         - DB
       operationId: selectAllCoachInfo
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getActiveCoaches:
     get:
@@ -183,20 +271,20 @@ paths:
         - DB
       operationId: getActiveCoaches
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getProjectCoaches:
     get:
@@ -206,20 +294,20 @@ paths:
         - DB
       operationId: getProjectCoaches
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Student Information
   /db/selectAllStudentInfo:
@@ -232,14 +320,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
+                  $ref: "./schemas.yaml#/components/schemas/Users"
 
   /db/selectAllNonStudentInfo:
     get:
@@ -249,20 +337,20 @@ paths:
         - DB
       operationId: selectAllNonStudentInfo
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getSemesterStudents:
     get:
@@ -272,20 +360,20 @@ paths:
         - DB
       operationId: getSemesterStudents
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getProjectStudents:
     get:
@@ -295,20 +383,20 @@ paths:
         - DB
       operationId: getProjcectStudents
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getProjectStudentNames:
     get:
@@ -318,7 +406,7 @@ paths:
         - DB
       operationId: getProjectStudentNames
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
@@ -326,12 +414,12 @@ paths:
                 type: array
                 items:
                   type: string
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Project Management
   /db/getActiveProjects:
@@ -342,20 +430,20 @@ paths:
         - DB
       operationId: getActiveProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getArchiveProjects:
     get:
@@ -365,20 +453,20 @@ paths:
         - DB
       operationId: getArchiveProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Archive'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Archive"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getCandidateProjects:
     get:
@@ -388,20 +476,20 @@ paths:
         - DB
       operationId: getCandidateProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getMyProjects:
     get:
@@ -411,20 +499,20 @@ paths:
         - DB
       operationId: getMyProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Invalid user type
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getSemesterProjects:
     get:
@@ -434,20 +522,20 @@ paths:
         - DB
       operationId: getSemesterProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Invalid user type
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getProjects:
     get:
@@ -457,20 +545,20 @@ paths:
         - DB
       operationId: getProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
   /db/editProject:
     post:
       summary: Edit project
@@ -483,20 +571,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/Projects'
+              $ref: "./schemas.yaml#/components/schemas/Projects"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Projects'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Projects"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/updateProposalStatus:
     post:
@@ -512,18 +600,18 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: object
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Archive Management
   /db/getActiveArchiveProjects:
@@ -534,20 +622,20 @@ paths:
         - DB
       operationId: getActiveArchivedProjects
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Archive'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Archive"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/editArchive:
     post:
@@ -561,20 +649,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/Archive'
+              $ref: "./schemas.yaml#/components/schemas/Archive"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Archive'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Archive"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/createArchive:
     post:
@@ -588,20 +676,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/Archive'
+              $ref: "./schemas.yaml#/components/schemas/Archive"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Archive'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Archive"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/editArchiveStudent:
     post:
@@ -617,18 +705,18 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: object
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/createArchiveStudent:
     post:
@@ -644,18 +732,18 @@ paths:
             schema:
               type: object
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: object
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Time Logging
   /db/createTimeLog:
@@ -670,26 +758,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schemas.yaml#/components/schemas/TimeLog'
+              $ref: "./schemas.yaml#/components/schemas/TimeLog"
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/TimeLog'
-        '400':
+                $ref: "./schemas.yaml#/components/schemas/TimeLog"
+        "400":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/removeTime:
     post:
@@ -708,24 +796,24 @@ paths:
                 time_log_id:
                   type: integer
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: object
-        '400':
+        "400":
           description: No Id Provided
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-        '500':
+                $ref: "./schemas.yaml#/components/schemas/Error"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/avgTime:
     get:
@@ -735,18 +823,18 @@ paths:
         - DB
       operationId: avgTime
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: number
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   # Miscellaneous
   /db/getProjectMembers:
@@ -757,20 +845,20 @@ paths:
         - DB
       operationId: getProjectMembers
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/components/schemas/Users'
-        '500':
+                  $ref: "./schemas.yaml#/components/schemas/Users"
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
+                $ref: "./schemas.yaml#/components/schemas/Error"
 
   /db/getProjectDates:
     get:
@@ -780,7 +868,7 @@ paths:
         - DB
       operationId: getProjectDates
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
@@ -788,10 +876,9 @@ paths:
                 type: array
                 items:
                   type: string
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/components/schemas/Error'
-
+                $ref: "./schemas.yaml#/components/schemas/Error"

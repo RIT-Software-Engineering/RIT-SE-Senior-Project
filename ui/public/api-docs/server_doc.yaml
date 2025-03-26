@@ -41,6 +41,8 @@ components:
 paths:
   /ai/GenerateSummary:
     $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateSummary"
+  /ai/GenerateHistoricSummary:
+    $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateHistoricSummary"
 
   /saml/whoami:
     $ref: "./saml_routes.yaml#/paths/~1saml~1whoami"
@@ -64,6 +66,12 @@ paths:
     $ref: "./db_routes.yaml#/paths/~1db~1getActiveUsers"
   /db/DevOnlyGetAllUsersForLogin:
     $ref: "./db_routes.yaml#/paths/~1db~1DevOnlyGetAllUsersForLogin"
+  /db/getAdditionalInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1getAdditionalInfo"
+  /db/editAdditionalInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1editAdditionalInfo"
+  /db/getPeerEvals:
+    $ref: "./db_routes.yaml#/paths/~1db~1getPeerEvals"
 
   # Sponsor and Coach Information
   /db/selectAllSponsorInfo:

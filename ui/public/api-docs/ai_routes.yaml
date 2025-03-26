@@ -25,3 +25,34 @@ paths:
               schema:
                 type: string
                 description: Generated summary
+  /ai/GenerateHistoricSummary:
+    post:
+      summary: Generate historic summary
+      description: Generates feedback for the given user, focuses on trends in performance and how they can be improved.
+      tags:
+        - AI
+      operationId: GenerateHistoricSummary
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Generated summary
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
