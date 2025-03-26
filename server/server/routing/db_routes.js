@@ -436,6 +436,8 @@ module.exports = (db) => {
     }
 
     let body = req.body;
+    
+    let mock_id = req.user.mock ? req.user.mock.system_id : ""; 
 
     const sql = `INSERT INTO time_log
                 (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
@@ -445,7 +447,7 @@ module.exports = (db) => {
       req.user.semester_group,
       req.user.system_id,
       req.user.project,
-      "",
+      mock_id,
       req.body.date,
       req.body.time_amount,
       req.body.comment,
