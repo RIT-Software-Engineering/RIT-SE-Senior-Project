@@ -129,9 +129,7 @@ export default function DatabaseTableEditor(props) {
     const dataToSubmit = !!props.preSubmit
       ? props.preSubmit(formData)
       : formData;
-
-    console.log(dataToSubmit);
-
+      
     let errors = [];
 
     // Error Handling 
