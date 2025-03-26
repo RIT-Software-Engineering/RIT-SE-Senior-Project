@@ -7,7 +7,7 @@ import { Modal as SemanticUIModal } from 'semantic-ui-react';
     USE this component to override Semantic UI React's Modal's default close behavior; 
 */
 const Modal  = (props) => {
-    return <SemanticUIModal closeOnDimmerClick={false} {...props}  />;
+    return (<SemanticUIModal closeOnDimmerClick={false} {...props}></SemanticUIModal>);
 }
 
 export default Modal;
