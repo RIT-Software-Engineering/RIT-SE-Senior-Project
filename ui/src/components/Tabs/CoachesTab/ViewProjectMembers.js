@@ -86,6 +86,7 @@ export default function ViewProjectMembers(props) {
 
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       trigger={
         <Button onClick={fetchProjectCoaches} icon={<Icon name="eye" />} />

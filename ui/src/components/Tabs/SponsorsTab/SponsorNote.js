@@ -18,6 +18,7 @@ export default function SponsorNote(props) {
 
   let revisionsModal = (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       trigger={modalButton}
       header={"Sponsor Note Revisions"}

@@ -11,13 +11,12 @@ import {
   Header,
   Icon,
   List,
-  // Modal,
+  Modal,
   Popup,
   Rating,
   Segment,
   Message,
 } from "semantic-ui-react";
-import Modal from '../../util/components/Modal';
 import {
   QuestionFeedback,
   QuestionMoodRating,
@@ -648,7 +647,7 @@ const QuestionBuilder = (props) => {
     <div>
       {/*Form Builder Modal*/}
       <Modal
-        // closeOnDimmerClick={false}
+        closeOnDimmerClick={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{
@@ -814,6 +813,7 @@ const QuestionBuilder = (props) => {
 
       {/* Preview Modal */}
       <Modal
+        closeOnDimmerClick={false}
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
         style={{

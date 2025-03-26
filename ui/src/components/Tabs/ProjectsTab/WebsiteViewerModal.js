@@ -94,6 +94,7 @@ export default function WebsiteViewerModal(props) {
                 />
               )}
               <Modal
+                closeOnDimmerClick={false}
                 className={"sticky"}
                 size={"large"}
                 open={posterOpen}
@@ -138,6 +139,7 @@ export default function WebsiteViewerModal(props) {
                 />
               )}
               <Modal
+                closeOnDimmerClick={false}
                 className={"sticky"}
                 size={"large"}
                 open={imageOpen}
@@ -192,6 +194,7 @@ export default function WebsiteViewerModal(props) {
 
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       trigger={<Button icon="archive" />}
       header={`Viewing "${props.project.display_name || props.project.title}"`}

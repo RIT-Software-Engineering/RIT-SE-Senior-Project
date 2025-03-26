@@ -547,6 +547,7 @@ export default function ActionModal(props) {
             </div>
           </Modal.Description>
           <Modal
+            closeOnDimmerClick={false}
             style={{
               position: "fixed",
               top: "50%",
@@ -636,6 +637,7 @@ export default function ActionModal(props) {
             )}
           </Modal.Description>
           <Modal
+            closeOnDimmerClick={false}
             style={{
               position: "fixed",
               top: "50%",

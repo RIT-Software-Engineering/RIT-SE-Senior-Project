@@ -139,8 +139,8 @@ export default function BatchUserPanel() {
       header="Upload users (Untested for large number of users)"
       content={{ content: modalContent, scrolling: true }}
       open={modalOpen}
-      closeOnEscape={true}
-      closeOnDimmerClick={true}
+      closeOnEscape={false}
+      closeOnDimmerClick={false}
       onOpen={() => setModalOpen(true)}
       onClose={(event, t) => {
         if (event.target?.innerText !== UPLOAD_BUTTON_TEXT) setModalOpen(false);

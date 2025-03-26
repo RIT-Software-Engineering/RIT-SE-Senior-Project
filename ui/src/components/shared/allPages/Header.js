@@ -86,6 +86,7 @@ function Header() {
             </button>
           ) : (
             <Modal
+              closeOnDimmerClick={false}
               className={"sticky"}
               trigger={<Button>Dev Sign in/out</Button>}
               header="Dev Sign in/out"
@@ -154,6 +155,7 @@ function Header() {
           ) : (
             <Menu.Item as="a" href={void 0}>
               <Modal
+                closeOnDimmerClick={false}
                 className={"sticky"}
                 trigger={<div>Dev Sign in/out</div>}
                 header="Sign in/Sign Out"

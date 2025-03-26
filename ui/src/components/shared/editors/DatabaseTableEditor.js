@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Header, Label} from "semantic-ui-react"; 
-import Modal from "../../util/components/Modal"; // Custom modal to override Semantic UI's Modal default close behavior
+import { Dropdown, Header, Label, Modal } from "semantic-ui-react"; 
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
@@ -485,6 +484,7 @@ export default function DatabaseTableEditor(props) {
     return (
       <>
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -509,6 +509,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
@@ -521,6 +522,7 @@ export default function DatabaseTableEditor(props) {
     return (
       <>
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           trigger={trigger}
           header={props.header}
@@ -536,6 +538,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
