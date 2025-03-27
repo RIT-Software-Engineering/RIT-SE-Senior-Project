@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
-import { config } from "../util/functions/constants";
+import { config, TINYMCE_API_KEY } from "../util/functions/constants";
 import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
+import { Editor } from "@tinymce/tinymce-react";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -13,6 +14,7 @@ function ProposalPage() {
     const [formFiles, setFormFiles] = useState(null);
     const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [errors, setErrors] = useState({})
+    const editorRef = useRef(null);
 
     const setFormData = (event) => {
         const target = event.target;
@@ -212,7 +214,7 @@ function ProposalPage() {
                     />
                 </Form.Field>
 
-                <Form.TextArea
+                {/* <Form.TextArea
                     required
                     label="Project Background Information"
                     name="background_info"
@@ -221,7 +223,36 @@ function ProposalPage() {
                         setFormData(e);
                     }}
                     error={errors.background_info && { content: errors.background_info, pointing: "below" }}
-                ></Form.TextArea>
+                ></Form.TextArea> */}
+                <div style={{fontWeight: 'bold', fontSize: "13px"}}>Project Background Information:</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
+                    value={formData.background_info || ""}
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    forced_root_block : "",
+                    placeholder: "Project Background Information",
+                    height: 200,
+                    menubar: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                    }}
+                    onEditorChange={(value) => {
+                        setActualFormData({
+                            ...formData,
+                            ['background_info']: value
+                        })
+                    }}
+                />
                 <Form.TextArea
                     required
                     label="Project Description"

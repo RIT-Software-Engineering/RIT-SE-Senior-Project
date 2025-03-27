@@ -9,5 +9,8 @@
   },
   "scripts": {
     "prepare": "husky"
+  },
+  "dependencies": {
+    "@tinymce/tinymce-react": "^6.0.0"
   }
 }

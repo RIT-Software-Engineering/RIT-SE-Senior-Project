@@ -120,6 +120,8 @@ export const config = {
   },
 };
 
+export const TINYMCE_API_KEY = "vnpx16ypdrh9lf26zz8kb3v3u7i00hdzn561oydw7wogiryt"
+
 export const USERTYPES = {
   COACH: "coach",
   STUDENT: "student",
