@@ -1,12 +1,23 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
 import "../../../css/calendar.css"
+
+// todo fill out with special no-school dates
+const SPECIAL_DATES = []
 
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
   const [selectedDate, setSelectedDate] = useState(null)
   const [hoveredDay, setHoveredDay] = useState(null)
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
+  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+
+  useEffect(() => {
+    setCurrentMonth(currentDate.getMonth())
+    setCurrentYear(currentDate.getFullYear())
+  }, [currentDate])
+    
 
   //actions dont nativly have a color field for display, this adds it for the calendar
   const sortedActions = _.sortBy(
@@ -16,10 +27,6 @@ export function Calendar(props) {
     })),
     ["due_date", "start_date", "action_title"],
   )
-
-  // Get current month and year
-  const currentMonth = currentDate.getMonth()
-  const currentYear = currentDate.getFullYear()
 
   // Get days in month
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
@@ -46,11 +53,13 @@ export function Calendar(props) {
   // Navigate to previous month
   const prevMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1))
+    setCurrentMonth(currentMonth - 1)
   }
 
   // Navigate to next month
   const nextMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
+    setCurrentMonth(currentMonth + 1)
   }
 
   // Check if a date is today
@@ -210,8 +219,27 @@ export function Calendar(props) {
         >
           {"<"}
         </button>
-        <div className="current-month">
-          {monthNames[currentMonth]} {currentYear}
+        <div className="current-month"> {/* DROP DOWN for month and year */}
+          <select
+            value={currentMonth}
+            onChange={(e) => setCurrentMonth(parseInt(e.target.value))}
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i} value={i}>
+                {monthNames[i]}
+              </option>
+            ))}
+          </select>
+          <select
+            value={currentYear}
+            onChange={(e) => setCurrentYear(parseInt(e.target.value))}
+          >
+            {Array.from({ length: 10 }, (_, i) => (
+              <option key={i} value={currentYear - 5 + i}>
+                {currentYear - 5 + i}
+              </option>
+          ))}
+          </select>
         </div>
         <button
           className={`nav-button ${nextHovered ? "hovered" : ""}`}
