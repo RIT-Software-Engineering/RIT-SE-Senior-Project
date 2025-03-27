@@ -1,43 +1,76 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Button, Dropdown, Label } from "semantic-ui-react";
-import { config, USERTYPES } from "../functions/constants";
-import { SecureFetch } from "../functions/secureFetch";
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import { Button, Dropdown, Input, DropdownMenu, DropdownItem, DropdownDivider, DropdownHeader, Label } from "semantic-ui-react";
+import { config, USERTYPES } from '../functions/constants';
+import { SecureFetch } from '../functions/secureFetch';
 import { UserContext } from "../functions/UserContext";
 import _ from "lodash";
 
 export default function AdminView() {
   const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState([]);
+  const [coaches, setCoaches] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [searchCoaches, setSearchCoaches] = useState([]);
+  const [searchStudents, setSearchStudents] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const { user } = useContext(UserContext);
+  const ref = useRef(null);
 
   useEffect(() => {
     if (user.role === USERTYPES.ADMIN) {
       SecureFetch(config.url.API_GET_ACTIVE_USERS)
         .then((response) => response.json())
-        .then((users) => {
+        .then(users => {
+          let studentMap = {};
+          let coachMap = {};
           let userMap = {};
-          users.forEach((dbUser) => {
-            if (dbUser.system_id !== user.user) {
+          users.forEach(dbUser => {
+            if (dbUser.system_id !== user.user && dbUser.type === "coach") {
+              coachMap[dbUser.system_id] = dbUser;
+              userMap[dbUser.system_id] = dbUser;
+            }
+            else if (dbUser.system_id !== user.user && dbUser.type === "student") {
+              studentMap[dbUser.system_id] = dbUser;
               userMap[dbUser.system_id] = dbUser;
             }
           });
           setUsers(userMap);
-        })
-        .catch((err) => {
-          console.error(
-            "Failed to fetch users for AdminView...this is probably to be expected",
-            err,
-          );
-          setUsers([]);
-        });
+          setCoaches(coachMap);
+          setStudents(studentMap);
+          setSearchCoaches(coachMap);
+          setSearchStudents(studentMap);
+          })
+          .catch(err => {
+            console.error("Failed to fetch users for AdminView...this is probably to be expected", err);
+            setUsers([]);
+            setCoaches([]);
+            setStudents([]);
+            setSearchCoaches([]);
+            setSearchStudents([]);
+      })
+
+      const handleClickOutside = (event) => {
+        if (ref && !ref.current.contains(event.target) && isOpen) {
+          setIsOpen(false);
+        }
+      };
+      
+      document.addEventListener("click", handleClickOutside);
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
     }
-  }, [user]);
+  }, [user, ref, isOpen])
 
   const changeView = () => {
     // changes view for admin to another user
 
     if (!users[selectedUser]?.system_id) {
       alert("Can't change view - No user selected");
+      return;
+    }
+    if (users[selectedUser]?.type === "admin") {
+      alert("Can't change view - Admin cannot mock another admin");
       return;
     }
 
@@ -54,68 +87,146 @@ export default function AdminView() {
     window.location.reload();
   };
 
-  const renderButton = () => {
-    if (user?.isMock) {
-      return (
-        <Button
-          secondary
-          content="Sign out of mock user"
-          onClick={() => {
-            document.cookie = `mock_system_id=;max-age=0`;
-            document.cookie = `mock_fname=;max-age=0`;
-            document.cookie = `mock_lname=;max-age=0`;
-            document.cookie = `mock_email=;max-age=0`;
-            document.cookie = `mock_type=;max-age=0`;
-            document.cookie = `mock_semester_group=;max-age=0`;
-            document.cookie = `mock_project=;max-age=0`;
-            document.cookie = `mock_active=;max-age=0`;
-            window.location.reload();
-          }}
-        />
-      );
-    }
-    return (
-      <Button
-        primary
-        content="Change View"
-        onClick={() => {
-          changeView();
-        }}
-      />
-    );
-  };
-
-  if (user?.isMock || user?.role === "admin") {
-    return (
-      <>
-        <div
-          className={`ui ${user?.isMock ? "warning message" : "info message"}`}
-        >
-          Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who
-          is a "{user.role}"
-        </div>
-        <Label pointing="right">To view this page as a different user</Label>
-        <Dropdown
-          search
-          button
-          value={selectedUser}
-          options={_.sortBy(Object.values(users), [
-            "fname",
-            "lname",
-            "last_login",
-          ]).map((user) => {
-            return {
-              text: `${user.fname} ${user.lname} (${user.system_id}) ${user.last_login}`,
-              value: user.system_id,
-              key: user.system_id,
-            };
-          })}
-          onChange={(e, target) => setSelectedUser(target.value)}
-        />
-        {renderButton()}
-      </>
-    );
+  const renderSignOutButton = () => {
+    return <Button
+      style={{float: 'right'}}
+      secondary
+      content="Sign out of mock user"
+      onClick={() => {
+        document.cookie = `mock_system_id=;max-age=0`;
+        document.cookie = `mock_fname=;max-age=0`;
+        document.cookie = `mock_lname=;max-age=0`;
+        document.cookie = `mock_email=;max-age=0`;
+        document.cookie = `mock_type=;max-age=0`;
+        document.cookie = `mock_semester_group=;max-age=0`;
+        document.cookie = `mock_project=;max-age=0`;
+        document.cookie = `mock_active=;max-age=0`;
+        window.location.reload();
+      }}
+    />
   }
 
-  return <></>;
+  const renderChangeView = () => {
+    return (
+      <>
+        <div style={{float: 'right'}} ref={ref}>
+          <Label pointing='right'>To view this page as a different user</Label>
+          <Dropdown
+            onClick={handleOpen}
+            floating
+            button
+            text={selectedUser}
+            direction='left'
+            open={isOpen}
+            >
+            {isOpen ? (
+              <DropdownMenu>
+                <Input
+                  icon="search"
+                  iconPosition="left"
+                  placeholder="Search User..."
+                  input={{onClick: (e) => e.stopPropagation()}}
+                  onChange={e => {handleSearch(e.target.value)}}
+                  autoFocus
+                />
+                <DropdownDivider />
+                <DropdownHeader content='Coaches' />
+                <DropdownMenu scrolling>
+                  {_.sortBy(Object.values(searchCoaches), ["fname", "lname"]).map((coach) => (
+                    <DropdownItem
+                      key={coach.system_id}
+                      text={`${coach.fname} ${coach.lname} (${coach.system_id})`}
+                      value={coach.system_id}
+                      onClick={(e, target) => handleSelectUser(target.value)}
+                    />
+                  ))}
+                </DropdownMenu>
+                <DropdownDivider />
+                <DropdownHeader content='Students' />
+                <DropdownMenu scrolling>
+                  {_.sortBy(Object.values(searchStudents), ["fname", "lname"]).map((student) => (
+                    <DropdownItem 
+                      key={student.system_id}
+                      text={`${student.fname} ${student.lname} (${student.system_id})`}
+                      value={student.system_id}
+                      onClick={(e, target) => handleSelectUser(target.value)}
+                    />
+                  ))}
+                </DropdownMenu>
+              </DropdownMenu>
+            ) : null}
+          </Dropdown>
+          <Button
+            primary
+            content="Change View"
+            onClick={() => {
+              changeView();
+            }}
+          />
+        </div>
+      </>
+    )
+  }
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen);
+    handleSearch("")
+  }
+
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setIsOpen(false);
+  }
+
+  const handleSearch = (searchVal) => {
+    if (searchVal === "") {
+      setSearchCoaches(coaches);
+      setSearchStudents(students);
+      return;
+    }
+    setSearchCoaches(Object.values(coaches).filter((coach) => {
+      if (coach.fname.toLowerCase().includes(searchVal.toLowerCase()) 
+        || coach.lname.toLowerCase().includes(searchVal.toLowerCase())
+        || coach.system_id.toLowerCase().includes(searchVal.toLowerCase())) {
+          return coach;
+        }
+        return null;
+    }))
+    setSearchStudents(Object.values(students).filter((student) => {
+      if (student.fname.toLowerCase().includes(searchVal.toLowerCase())
+        || student.lname.toLowerCase().includes(searchVal.toLowerCase())
+        || student.system_id.toLowerCase().includes(searchVal.toLowerCase())) {
+          return student;
+        }
+        return null;
+    }))
+  }
+
+  if (user?.isMock || user?.role === "admin") {
+    if (user?.isMock) {
+      return (
+        <>
+          <div>
+          <div className="ui error message" style={{float: 'left'}}>
+            Currently mocking: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
+          </div>
+          {renderSignOutButton()}
+          </div>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <div>
+          <div className="ui positive message" style={{float: 'left'}}>
+            Currently signed in as: {user?.fname} {user?.lname} ({user?.user}) who is a "{user.role}"
+          </div>
+          {renderChangeView()}
+          </div>
+        </>
+      )
+    }
+  }
+  return <></>
+
 }
