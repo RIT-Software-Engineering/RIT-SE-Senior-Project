@@ -3,8 +3,18 @@ import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
 import "../../../css/calendar.css"
 
-// todo fill out with special no-school dates
-const SPECIAL_DATES = []
+const SPECIAL_DATES = {
+  "01-01": "New Year's Day",
+  "06-19": "Juneteenth",
+  "07-04": "Independence Day",
+  "12-24": "Christmas Eve",
+  "12-25": "Christmas Day",
+  "12-26": "St. Stephen's Day",
+  "12-31": "New Year's Eve"
+};
+
+// this holds the holidays for the year, gets reset when the year changes
+var This_Years_Holidays = {};
 
 export function Calendar(props) {
   const [currentDate, setCurrentDate] = useState(props.initialDate)
@@ -13,10 +23,63 @@ export function Calendar(props) {
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
 
+  // want reload on date change
   useEffect(() => {
     setCurrentMonth(currentDate.getMonth())
     setCurrentYear(currentDate.getFullYear())
   }, [currentDate])
+
+  // only want re-calculation on year change
+  useEffect(() => {
+    getVariableHolidays(currentYear)
+  }, [currentYear])
+
+  function getVariableHolidays(year) {
+    // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
+    This_Years_Holidays = {...SPECIAL_DATES};
+    console.log("reset holidays", This_Years_Holidays);
+
+    function getNthDayOfMonth(n, day, month) {
+        let date = new Date(year, month, 1);
+        let count = 0;
+        while (date.getMonth() === month) {
+            if (date.getDay() === day) {
+                count++;
+                if (count === n) return date;
+            }
+            date.setDate(date.getDate() + 1);
+        }
+        return null;
+    }
+  
+    function getLastThursdayOfNovember() {
+        let date = new Date(year, 10, 30); // Start at Nov 30
+        while (date.getDay() !== 4) { // Thursday
+            date.setDate(date.getDate() - 1);
+        }
+        return date;
+    }
+  
+    function getDayAfter(date) {
+        let nextDay = new Date(date);
+        nextDay.setDate(nextDay.getDate() + 1);
+        return nextDay;
+    }
+  
+    const variableHolidays = {
+        "Memorial Day": getNthDayOfMonth(4, 1, 4), // Last Monday of May
+        "Labor Day": getNthDayOfMonth(1, 1, 8), // First Monday of September
+        "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
+        "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember())
+    };
+
+    console.log("variableHolidays", variableHolidays, "\n", This_Years_Holidays);
+  
+    Object.entries(variableHolidays).forEach(([name, date]) => {
+        const key = date.toISOString().slice(5, 10);
+        This_Years_Holidays[key] = name;
+    });
+  }
     
 
   //actions dont nativly have a color field for display, this adds it for the calendar
@@ -80,6 +143,11 @@ export function Calendar(props) {
   // Get actions for a specific day
   const getActionsForDay = (day) => {
     const date = new Date(currentYear, currentMonth, day)
+    const monthDay = `${date.toLocaleString("default", { month: "2-digit" })}-${date.toLocaleString("default", { day: "2-digit" })}`
+    if (This_Years_Holidays[monthDay]) {
+      // add special holiday
+      sortedActions.push({ action_title: This_Years_Holidays[monthDay], start_date: date, due_date: date, color: "#b66dff" })
+    }
     return sortedActions.filter((action) => {
       const actionStart = new Date(action.start_date)
       const actionEnd = new Date(action.due_date)
