@@ -84,7 +84,7 @@ async function provide_summary(studentFeedback) {
 }
 
 module.exports = () => {
-  router.post("/GenerateSummary", [UserAuth.isSignedIn], (req, res, next) => {
+  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     const context = req.body.context;
 
     provide_summary(context)
