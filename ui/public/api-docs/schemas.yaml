@@ -303,17 +303,19 @@ components:
           type: string
         active:
           type: string
-# ERROR SCHEMA IS NOT FROM THE DB, JUST FOR ERROR MESSAGES, CHECK error_handler.js
+        additional_info:
+          type: string
+    # ERROR SCHEMA IS NOT FROM THE DB, JUST FOR ERROR MESSAGES, CHECK error_handler.js
     Error:
       type: object
       properties:
-        error: 
+        error:
           type: string
           description: Error message
-        statusCode: 
+        statusCode:
           type: integer
           description: HTTP status code
-        user_role: 
+        user_role:
           type: string
           description: User role during error
         url:
@@ -323,6 +325,6 @@ components:
           type: string
           format: date-time
           description: Timestamp of error
-        componentStack: 
+        componentStack:
           type: string
           description: Stack trace
