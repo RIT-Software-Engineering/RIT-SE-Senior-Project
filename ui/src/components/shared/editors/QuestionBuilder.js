@@ -648,6 +648,7 @@ const QuestionBuilder = (props) => {
       {/*Form Builder Modal*/}
       <Modal
         closeOnDimmerClick={false}
+        closeOnEscape={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{

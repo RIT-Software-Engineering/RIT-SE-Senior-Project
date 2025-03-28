@@ -501,6 +501,7 @@ export default function ActionModal(props) {
     return (
       <Modal
         closeOnDimmerClick={false}
+        closeOnEscape={false}
         className={"sticky"}
         onClose={() => {
           setOpen(false);
@@ -577,6 +578,7 @@ export default function ActionModal(props) {
     return (
       <Modal
         closeOnDimmerClick={false}
+        closeOnEscape={false}
         className={"sticky"}
         onClose={() => {
           setOpen(false);

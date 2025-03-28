@@ -485,6 +485,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -523,6 +524,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           header={props.header}
