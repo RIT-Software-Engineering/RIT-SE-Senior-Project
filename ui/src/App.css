@@ -344,3 +344,12 @@ body.dark-mode .ui.pagination.menu .active.item {
   color: white;
   font-weight: bold;
 }
+
+
+
+body.dark-mode .ui.message {
+    background-color: #282828 ; 
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important; 
+    box-shadow: none !important; 
+}
