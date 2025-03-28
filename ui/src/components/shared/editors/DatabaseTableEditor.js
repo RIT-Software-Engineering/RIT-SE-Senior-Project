@@ -182,19 +182,23 @@ export default function DatabaseTableEditor(props) {
     if (!field.hidden) {
       switch (field.type) {
         case "input":
-          fieldComponents.push(
-            <Form.Field key={field.name}>
-              <Form.Input
-                label={field.label}
-                placeholder={field.placeholder}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                disabled={field.disabled}
-                required
-              />
-            </Form.Field>,
-          );
+          if (formData.action_target === "break_period" && (field.name === "file_types" || field.name === "file_size")) {
+            break; // Don't show these fields if the action is a break period (i.e spring break, christmas, etc)
+          } else {
+            fieldComponents.push(
+              <Form.Field key={field.name}>
+                <Form.Input
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  disabled={field.disabled}
+                  required
+                />
+              </Form.Field>,
+            );
+          }
           break;
         case "phoneInput":
           fieldComponents.push(
@@ -237,7 +241,8 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
               />,
             );
-          } else {
+          // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
+          } else if (formData.action_target !== "break_period") { 
             fieldComponents.push(
               <Form.Field key={field.name} required>
                 <label>{field.label}</label>

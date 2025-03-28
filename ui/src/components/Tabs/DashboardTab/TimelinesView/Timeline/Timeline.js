@@ -58,7 +58,7 @@ export default function Timeline(props) {
             }
             projectId={props.elementData.project_id}
             semesterName={props.elementData.semester_name}
-            actions={actions}
+            actions={actions.filter((action) => action.action_target !== "break_period")}
             reloadTimelineActions={() => {
               loadTimelineActions(props.elementData?.project_id);
             }}
@@ -87,7 +87,7 @@ export default function Timeline(props) {
           }
           projectId={props.elementData.project_id}
           semesterName={props.elementData.semester_name}
-          actions={actions}
+          actions={actions.filter((action) => action.action_target !== "break_period")}
           reloadTimelineActions={() => {
             loadTimelineActions(props.elementData?.project_id);
           }}
@@ -106,7 +106,12 @@ export default function Timeline(props) {
           semesterName={props.elementData.semester_name}
           projectStart={props.elementData.start_date}
           projectEnd={props.elementData.end_date}
-          actions={actions}
+          actions={actions.map(action => {
+            if (action.action_target === "break_period") {
+              return { ...action, state: "purple" };
+            }
+            return action;
+          })}
           isOpen={ganttVisible}
           reloadTimelineActions={() => {
             loadTimelineActions(props.elementData?.project_id);
