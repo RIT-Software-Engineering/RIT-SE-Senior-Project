@@ -4,6 +4,7 @@ import { config, USERTYPES } from '../../util/functions/constants'
 import { SecureFetch } from '../../util/functions/secureFetch'
 import { formattedAttachments } from './ProjectEditorModal'
 import {decode} from 'he'
+import {convert} from 'html-to-text'
 
 export default function ProjectViewerModal(props) {
 
@@ -37,7 +38,7 @@ export default function ProjectViewerModal(props) {
             .then(response => response.json())
             .then(archives => {
                 if (archives.length > 0) {
-                    if (archives[0].url_slug != null && archives[0].url_slug != ""){
+                    if (archives[0].url_slug !== null && archives[0].url_slug !== ""){
                         setURL(archives[0].url_slug);
                     }
                 }
@@ -71,7 +72,7 @@ export default function ProjectViewerModal(props) {
             <h3>Project Info</h3>
             <pre style={{overflowX:'auto', whiteSpace:'pre-wrap', wordWrap:'break-word'}}>
             <b>Original Submission Date:</b><br /> {decode(props.project.submission_datetime||'')}<br /><br />
-            <b>Background info:</b><br /> {decode(props.project.background_info||'')}<br /><br />
+            <b>Background info:</b><br /> {convert(decode(props.project.background_info||''))}<br /><br />
             <b>Description:</b><br /> {decode(props.project.project_description||'')}<br /><br />
             <b>Scope:</b><br /> {decode(props.project.project_scope||'')}<br /><br />
             <b>Challenges:</b><br /> {decode(props.project.project_challenges||'')}<br /><br />

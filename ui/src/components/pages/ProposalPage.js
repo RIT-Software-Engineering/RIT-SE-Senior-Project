@@ -230,8 +230,6 @@ function ProposalPage() {
                     value={formData.background_info || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
-                    selector: "textarea",
-                    forced_root_block : "",
                     placeholder: "Project Background Information",
                     height: 200,
                     menubar: false,
@@ -246,10 +244,11 @@ function ProposalPage() {
                         'removeformat',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    onEditorChange={(value) => {
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
                         setActualFormData({
                             ...formData,
-                            ['background_info']: value
+                            ['background_info']: editorContent
                         })
                     }}
                 />

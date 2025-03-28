@@ -11,6 +11,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@tinymce/tinymce-react": "^6.0.0"
+    "@tinymce/tinymce-react": "^6.0.0",
+    "html-to-text": "^9.0.5"
   }
 }
