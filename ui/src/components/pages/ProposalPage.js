@@ -432,7 +432,6 @@ function ProposalPage() {
                         })
                     }}
                 />
-                
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Proprietary Information</div><br />
                 <Editor
                     apiKey={TINYMCE_API_KEY}

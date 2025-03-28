@@ -64,7 +64,7 @@ module.exports = (db) => {
     // gets all users
     db_router.get("/DevOnlyGetAllUsersForLogin", (req, res) => {
       db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then(
-        (users) => res.send(users)
+        (users) => res.send(users),
       );
     });
   }
@@ -76,7 +76,7 @@ module.exports = (db) => {
       db.selectAll(DB_CONFIG.tableNames.sponsor_info).then(function (value) {
         res.send(value);
       });
-    }
+    },
   );
 
   db_router.get(
@@ -100,39 +100,46 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
-  db_router.get("/selectAllNonStudentInfo", [UserAuth.isAdmin], (req, res, next) => {
-    let getUsersQuery = `
+  db_router.get(
+    "/selectAllNonStudentInfo",
+    [UserAuth.isAdmin],
+    (req, res, next) => {
+      let getUsersQuery = `
             SELECT *
             FROM users
             LEFT JOIN semester_group
             ON users.semester_group = semester_group.semester_id
             WHERE type != 'student'
         `;
-    db.query(getUsersQuery)
-      .then((values) => {
-        res.send(values);
-      })
-      .catch((err) => {
-        const error = new Error(err);
+      db.query(getUsersQuery)
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
-  db_router.get("/getSemesterStudents", [UserAuth.isSignedIn], (req, res, next) => {
-    let query = "";
-    let params = [];
-    switch (req.user.type) {
-      //Retrieves all users from a semester group that is similar to the student that is making the query.
-      case ROLES.STUDENT:
-        query = `SELECT users.* FROM users WHERE users.system_id = ?`;
-        params = [req.user.system_id];
-        break;
-      case ROLES.COACH:
-        query = `
+  db_router.get(
+    "/getSemesterStudents",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      let query = "";
+      let params = [];
+      switch (req.user.type) {
+        //Retrieves all users from a semester group that is similar to the student that is making the query.
+        case ROLES.STUDENT:
+          query = `SELECT users.* FROM users WHERE users.system_id = ?`;
+          params = [req.user.system_id];
+          break;
+        case ROLES.COACH:
+          query = `
                     SELECT users.* FROM users
                     LEFT JOIN semester_group
                         ON users.semester_group = semester_group.semester_id
@@ -144,48 +151,49 @@ module.exports = (db) => {
                     )
                         )
                 `;
-        params = [req.user.system_id];
-        break;
-      case ROLES.ADMIN:
-        query = `SELECT * FROM users
+          params = [req.user.system_id];
+          break;
+        case ROLES.ADMIN:
+          query = `SELECT * FROM users
                     LEFT JOIN semester_group
                     ON users.semester_group = semester_group.semester_id
                     WHERE users.type = 'student'`;
-        break;
+          break;
 
-      default:
-        break;
-    }
+        default:
+          break;
+      }
 
-    db.query(query, params)
-      .then((users) => {
-        if (req.user.type === ROLES.STUDENT) {
-          users = users.map((user) => {
-            let output = {};
-            if (user.project === req.user.project) {
-              output["last_login"] = user["last_login"];
-              output["prev_login"] = user["prev_login"];
-            }
-            output["active"] = user["active"];
-            output["email"] = user["email"];
-            output["fname"] = user["fname"];
-            output["lname"] = user["lname"];
-            output["project"] = user["project"];
-            output["semester_group"] = user["semester_group"];
-            output["system_id"] = user["system_id"];
-            output["type"] = user["type"];
-            return output;
-          });
-        }
-        res.send(users);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
+      db.query(query, params)
+        .then((users) => {
+          if (req.user.type === ROLES.STUDENT) {
+            users = users.map((user) => {
+              let output = {};
+              if (user.project === req.user.project) {
+                output["last_login"] = user["last_login"];
+                output["prev_login"] = user["prev_login"];
+              }
+              output["active"] = user["active"];
+              output["email"] = user["email"];
+              output["fname"] = user["fname"];
+              output["lname"] = user["lname"];
+              output["project"] = user["project"];
+              output["semester_group"] = user["semester_group"];
+              output["system_id"] = user["system_id"];
+              output["type"] = user["type"];
+              return output;
+            });
+          }
+          res.send(users);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.get("/getProjectMembers", [UserAuth.isSignedIn], (req, res) => {
     let query = `SELECT users.*, project_coaches.project_id FROM users
@@ -255,8 +263,8 @@ module.exports = (db) => {
 
       if (result.errors.length !== 0) {
         const error = new Error("Validation Error");
-          error.statusCode = 400;
-          return next(error);
+        error.statusCode = 400;
+        return next(error);
       }
 
       let body = req.body;
@@ -290,7 +298,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -304,8 +312,8 @@ module.exports = (db) => {
 
       if (result.errors.length !== 0) {
         const error = new Error("Validation Error");
-          error.statusCode = 400;
-          return next(error);
+        error.statusCode = 400;
+        return next(error);
       }
 
       let users = JSON.parse(req.body.users);
@@ -325,7 +333,7 @@ module.exports = (db) => {
       const sql = `INSERT INTO ${
         DB_CONFIG.tableNames.users
       } (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(
-        ","
+        ",",
       )}`;
 
       db.query(sql)
@@ -337,7 +345,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.post("/editUser", [UserAuth.isAdmin], (req, res, next) => {
@@ -375,8 +383,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -396,19 +404,97 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
-  db_router.get("/avgTime", [UserAuth.isSignedIn],async (req, res, next) => {
-    const sql = "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id"
-    console.log(req.query.project_id)
+  db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
+    const sql =
+      "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id";
+    console.log(req.query.project_id);
 
     db.query(sql, [req.query.project_id])
-        .then((time) => {
-          console.log(time)
-          res.send(time)
+      .then((time) => {
+        console.log(time);
+        res.send(time);
+      })
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.post("/createTimeLog", [], async (req, res, next) => {
+    let result = validationResult(req);
+
+    if (result.errors.length !== 0) {
+      const error = new Error("Validation Error");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    let body = req.body;
+
+    const sql = `INSERT INTO time_log
+                (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
+                VALUES (?,?,?,?,?,?,?)`;
+
+    const params = [
+      req.user.semester_group,
+      req.user.system_id,
+      req.user.project,
+      "",
+      req.body.date,
+      req.body.time_amount,
+      req.body.comment,
+    ];
+    db.query(sql, params)
+      .then(() => {
+        return res.status(200).send();
+      })
+      .catch((err) => {
+        console.error(err);
+        let error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.get(
+    "/getActiveProjects",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      let getProjectsQuery = `
+            SELECT *
+            FROM projects
+            LEFT JOIN semester_group
+            ON projects.semester = semester_group.semester_id
+            WHERE projects.semester IS NOT NULL
+        `;
+      db.query(getProjectsQuery)
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
+  db_router.get(
+    "/getActiveCoaches",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      const sql = `SELECT * FROM users WHERE type = '${ROLES.COACH}' AND active = ''`;
+
+      db.query(sql)
+        .then((coaches) => {
+          res.send(coaches);
         })
         .catch((err) => {
           console.error(err);
@@ -416,100 +502,29 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-  })
-
-  db_router.post("/createTimeLog", [
-
-      ],
-      async (req, res, next) => {
-
-
-        let result = validationResult(req);
-
-        if (result.errors.length !== 0) {
-          const error = new Error("Validation Error");
-          error.statusCode = 400;
-          return next(error);
-        }
-
-        let body = req.body;
-
-        const sql = `INSERT INTO time_log
-                (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
-                VALUES (?,?,?,?,?,?,?)`;
-
-        const params = [
-          req.user.semester_group,
-          req.user.system_id,
-          req.user.project,
-          "",
-          req.body.date,
-          req.body.time_amount,
-          req.body.comment,
-        ];
-        db.query(sql, params)
-            .then(() => {
-              return res.status(200).send();
-            })
-            .catch((err) => {
-              console.error(err);
-              let error = new Error(err);
-              error.statusCode = 500;
-              return next(error);
-            });
-      }
+    },
   );
 
-  db_router.get("/getActiveProjects", [UserAuth.isSignedIn], (req, res, next) => {
-    let getProjectsQuery = `
-            SELECT *
-            FROM projects
-            LEFT JOIN semester_group
-            ON projects.semester = semester_group.semester_id
-            WHERE projects.semester IS NOT NULL
-        `;
-    db.query(getProjectsQuery)
-      .then((values) => {
-        res.send(values);
-      })
-      .catch((err) => {
-        const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-      });
-  });
-
-  db_router.get("/getActiveCoaches", [UserAuth.isCoachOrAdmin], (req, res, next) => {
-    const sql = `SELECT * FROM users WHERE type = '${ROLES.COACH}' AND active = ''`;
-
-    db.query(sql)
-      .then((coaches) => {
-        res.send(coaches);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-      });
-  });
-
-  db_router.get("/getProjectCoaches", [UserAuth.isCoachOrAdmin], (req, res, next) => {
-    const getProjectCoaches = `SELECT users.* FROM users
+  db_router.get(
+    "/getProjectCoaches",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      const getProjectCoaches = `SELECT users.* FROM users
             LEFT JOIN project_coaches ON project_coaches.coach_id = users.system_id
             WHERE project_coaches.project_id = ?`;
 
-    db.query(getProjectCoaches, [req.query.project_id])
-      .then((coaches) => {
-        res.send(coaches);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
+      db.query(getProjectCoaches, [req.query.project_id])
+        .then((coaches) => {
+          res.send(coaches);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.get(
     "/getProjectStudents",
@@ -527,7 +542,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -547,7 +562,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -588,7 +603,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   // used in the /projects page and home page if featured
@@ -621,8 +636,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -647,8 +662,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -657,16 +672,20 @@ module.exports = (db) => {
    *
    * TODO: Add pagination
    */
-  db_router.get("/getProjects", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
-    const query = "SELECT * from projects";
-    db.query(query)
-      .then((projects) => res.send(projects))
-      .catch((err) => {
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+  db_router.get(
+    "/getProjects",
+    [UserAuth.isCoachOrAdmin],
+    async (req, res, next) => {
+      const query = "SELECT * from projects";
+      db.query(query)
+        .then((projects) => res.send(projects))
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.get(
     "/getCandidateProjects",
@@ -681,42 +700,48 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
-  db_router.get("/getMyProjects", [UserAuth.isSignedIn], async (req, res, next) => {
-    let query;
-    let params;
-    switch (req.user.type) {
-      case ROLES.COACH:
-        query = `SELECT projects.*
+  db_router.get(
+    "/getMyProjects",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      let query;
+      let params;
+      switch (req.user.type) {
+        case ROLES.COACH:
+          query = `SELECT projects.*
                 FROM projects
                 INNER JOIN project_coaches
                 ON (projects.project_id = project_coaches.project_id AND project_coaches.coach_id = ?);`;
-        params = [req.user.system_id];
-        break;
-      case ROLES.STUDENT:
-        query = `SELECT users.system_id, users.semester_group, projects.*
+          params = [req.user.system_id];
+          break;
+        case ROLES.STUDENT:
+          query = `SELECT users.system_id, users.semester_group, projects.*
                 FROM users
                 INNER JOIN projects
                 ON users.system_id = ? AND projects.project_id = users.project;`;
-        params = [req.user.system_id];
-        break;
-      case ROLES.ADMIN:
-        query =
-          "SELECT * FROM projects WHERE projects.status NOT IN ('in progress', 'completed', 'rejected', 'archive');";
-        params = [];
-        break;
-      default:
-        const error = new Error("Invalid user type...something must be very very broken...");
-        error.statusCode = 500;
-        return next(error);
-    }
+          params = [req.user.system_id];
+          break;
+        case ROLES.ADMIN:
+          query =
+            "SELECT * FROM projects WHERE projects.status NOT IN ('in progress', 'completed', 'rejected', 'archive');";
+          params = [];
+          break;
+        default:
+          const error = new Error(
+            "Invalid user type...something must be very very broken...",
+          );
+          error.statusCode = 500;
+          return next(error);
+      }
 
-    db.query(query, params)
-      .then((proposals) => res.send(proposals))
-      .catch((err) => res.status(500).send(err));
-  });
+      db.query(query, params)
+        .then((proposals) => res.send(proposals))
+        .catch((err) => res.status(500).send(err));
+    },
+  );
 
   db_router.get(
     "/getSemesterProjects",
@@ -750,10 +775,11 @@ module.exports = (db) => {
           params = [];
           break;
         default:
-          const error = new Error("Invalid user type...something must be very very broken...");
+          const error = new Error(
+            "Invalid user type...something must be very very broken...",
+          );
           error.statusCode = 500;
           return next(error);
-          
       }
 
       db.query(query, params)
@@ -763,7 +789,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res, next) => {
@@ -783,7 +809,11 @@ module.exports = (db) => {
 
     const locked =
       body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+        ? req.user.fname +
+          " " +
+          req.user.lname +
+          " locked at " +
+          moment().format(CONSTANTS.datetime_format)
         : "";
 
     const checkBox = (data) => {
@@ -834,8 +864,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -856,7 +886,11 @@ module.exports = (db) => {
           : "";
       const locked =
         body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
           : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
@@ -893,10 +927,10 @@ module.exports = (db) => {
         body.sponsor,
         body.coach,
         body.poster_thumb,
-        poster_full,
-        archive_image,
+        body.poster_full,
+        body.archive_image,
         body.synopsis,
-        video,
+        body.video,
         body.name,
         body.dept,
         body.start_date,
@@ -917,13 +951,16 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
-  db_router.post("/editArchiveStudent", UserAuth.isSignedIn, async (req, res, next) => {
-    let body = req.body;
-    let files = req.files;
-    const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+  db_router.post(
+    "/editArchiveStudent",
+    UserAuth.isSignedIn,
+    async (req, res, next) => {
+      let body = req.body;
+      let files = req.files;
+      const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
@@ -931,141 +968,164 @@ module.exports = (db) => {
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
-    const inactive =
-      body.inactive === "true"
-        ? moment().format(CONSTANTS.datetime_format)
-        : "";
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    const locked =
-      body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
-        : "";
+      const locked =
+        body.locked === "true"
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    let files_uploaded = [];
+      let files_uploaded = [];
 
-    let poster_full = ``;
-    let poster_thumb = ``;
-    let archive_image = ``;
-    let video = ``;
-    if (!(files === undefined || files === null)){
-      if (files.poster_full === undefined){
+      let poster_full = ``;
+      let poster_thumb = ``;
+      let archive_image = ``;
+      let video = ``;
+      if (!(files === undefined || files === null)) {
+        if (files.poster_full === undefined) {
+          poster_full = body.poster_full;
+          poster_thumb = body.poster_thumb;
+        } else {
+          if (
+            files.poster_full.mimetype == "image/png" &&
+            files.poster_full.size <= 30000000
+          ) {
+            files.poster_full.name = body.url_slug + "-poster";
+            poster_full = `${files.poster_full.name}`;
+            poster_thumb = poster_full;
+            let poster_URL = path.join(
+              __dirname,
+              `../../resource/archivePosters`,
+            );
+            files_uploaded.push([files.poster_full, poster_URL]);
+          } else {
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        if (files.archive_image === undefined) {
+          archive_image = body.archive_image;
+        } else {
+          if (
+            files.archive_image.mimetype == "image/png" &&
+            files.archive_image.size <= 30000000
+          ) {
+            files.archive_image.name = body.url_slug + "-image";
+            archive_image = `${files.archive_image.name}`;
+            let image_URL = path.join(
+              __dirname,
+              `../../resource/archiveImages`,
+            );
+            files_uploaded.push([files.archive_image, image_URL]);
+          } else {
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        if (files.video === undefined) {
+          video = body.video;
+        } else {
+          if (
+            files.video.mimetype == "video/mp4" &&
+            files.video.size <= 300000000
+          ) {
+            files.video.name = body.url_slug + "-video";
+            video = `${files.video.name}`;
+            let video_URL = path.join(
+              __dirname,
+              `../../resource/archiveVideos`,
+            );
+            files_uploaded.push([files.video, video_URL]);
+          } else {
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+        }
+
+        for (let i = 0; i < files_uploaded.length; i++) {
+          fs.mkdirSync(files_uploaded[i][1], { recursive: true });
+          files_uploaded[i][0].mv(
+            `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            function (err) {
+              if (err) {
+                const error = new Error(err);
+                error.statusCode = 500;
+                return next(error);
+              }
+            },
+          );
+        }
+      } else {
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
-      }else{
-        if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-          files.poster_full.name = body.url_slug+"-poster"
-          poster_full = `${files.poster_full.name}`;
-          poster_thumb = poster_full;
-          let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
-          files_uploaded.push([files.poster_full, poster_URL]);
-        }else{
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        }
-      }
-
-      if (files.archive_image === undefined){
         archive_image = body.archive_image;
-      }else{
-        if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-          files.archive_image.name = body.url_slug+"-image"
-          archive_image = `${files.archive_image.name}`;
-          let image_URL = path.join(__dirname, `../../resource/archiveImages`);
-          files_uploaded.push([files.archive_image, image_URL]);
-        }else{
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        }
-      }
-
-      if (files.video === undefined){
         video = body.video;
-      }else{
-        if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-          files.video.name = body.url_slug+"-video"
-          video = `${files.video.name}`;
-          let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
-          files_uploaded.push([files.video, video_URL]);
-        }else{
+      }
+
+      const checkBox = (data) => {
+        if (data === "true" || data === "1") {
+          return 1;
+        }
+        return 0;
+      };
+
+      const strToInt = (data) => {
+        if (typeof data === "string") {
+          return parseInt(data);
+        }
+        return 0;
+      };
+
+      let updateArchiveParams = [
+        checkBox(body.featured),
+        checkBox(body.outstanding),
+        checkBox(body.creative),
+        strToInt(body.priority),
+        body.title,
+        body.project_id,
+        body.team_name,
+        body.members,
+        body.sponsor,
+        body.coach,
+        poster_thumb,
+        poster_full,
+        archive_image,
+        body.synopsis,
+        video,
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.keywords,
+        body.url_slug,
+        inactive,
+        locked,
+        body.archive_id,
+      ];
+
+      db.query(updateArchiveQuery, updateArchiveParams)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
           const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-        }
-      }
-
-      for (let i = 0; i<files_uploaded.length; i++) {
-        fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-        files_uploaded[i][0].mv(
-          `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
-          function (err) {
-            if (err) {
-              const error = new Error(err);
-              error.statusCode = 500;
-              return next(error);
-            }
-          }
-        );
-      }
-    }else{
-      poster_full = body.poster_full;
-      poster_thumb = body.poster_thumb;
-      archive_image = body.archive_image;
-      video = body.video;
-    }
-
-    const checkBox = (data) => {
-      if (data === "true" || data === "1") {
-        return 1;
-      }
-      return 0;
-    };
-
-    const strToInt = (data) => {
-      if (typeof data === "string") {
-        return parseInt(data);
-      }
-      return 0;
-    };
-
-    let updateArchiveParams = [
-      checkBox(body.featured),
-      checkBox(body.outstanding),
-      checkBox(body.creative),
-      strToInt(body.priority),
-      body.title,
-      body.project_id,
-      body.team_name,
-      body.members,
-      body.sponsor,
-      body.coach,
-      poster_thumb,
-      poster_full,
-      archive_image,
-      body.synopsis,
-      video,
-      body.name,
-      body.dept,
-      body.start_date,
-      body.end_date,
-      body.keywords,
-      body.url_slug,
-      inactive,
-      locked,
-      body.archive_id,
-    ];
-
-    db.query(updateArchiveQuery, updateArchiveParams)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.post(
     "/createArchiveStudent",
@@ -1084,7 +1144,11 @@ module.exports = (db) => {
           : "";
       const locked =
         body.locked === "true"
-        ? req.user.fname + " " + req.user.lname + " locked at " + moment().format(CONSTANTS.datetime_format)
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
           : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
@@ -1096,57 +1160,79 @@ module.exports = (db) => {
       let poster_thumb = ``;
       let archive_image = ``;
       let video = ``;
-      if (!(files === undefined || files === null)){
-        if (files.poster_full === undefined){
+      if (!(files === undefined || files === null)) {
+        if (files.poster_full === undefined) {
           poster_full = body.poster_full;
           poster_thumb = body.poster_thumb;
-        }else{
-          if (files.poster_full.mimetype == "image/png" && files.poster_full.size <= 30000000){
-            files.poster_full.name = body.url_slug+"-poster"
+        } else {
+          if (
+            files.poster_full.mimetype == "image/png" &&
+            files.poster_full.size <= 30000000
+          ) {
+            files.poster_full.name = body.url_slug + "-poster";
             poster_full = `${files.poster_full.name}`;
             poster_thumb = poster_full;
-            let poster_URL = path.join(__dirname, `../../resource/archivePosters`);
+            let poster_URL = path.join(
+              __dirname,
+              `../../resource/archivePosters`,
+            );
             files_uploaded.push([files.poster_full, poster_URL]);
-          }else{
+          } else {
             const error = new Error(err);
             error.statusCode = 500;
             return next(error);
           }
         }
 
-        if (files.archive_image === undefined){
+        if (files.archive_image === undefined) {
           archive_image = body.archive_image;
-        }else{
-          if (files.archive_image.mimetype == "image/png" && files.archive_image.size <= 30000000){
-            files.archive_image.name = body.url_slug+"-image"
+        } else {
+          if (
+            files.archive_image.mimetype == "image/png" &&
+            files.archive_image.size <= 30000000
+          ) {
+            files.archive_image.name = body.url_slug + "-image";
             archive_image = `${files.archive_image.name}`;
-            let image_URL = path.join(__dirname, `../../resource/archiveImages`);
+            let image_URL = path.join(
+              __dirname,
+              `../../resource/archiveImages`,
+            );
             files_uploaded.push([files.archive_image, image_URL]);
-          }else{
+          } else {
             const error = new Error(err);
             error.statusCode = 500;
             return next(error);
           }
         }
 
-        if (files.video === undefined){
+        if (files.video === undefined) {
           video = body.video;
-        }else{
-          if (files.video.mimetype == "video/mp4" && files.video.size <= 300000000) {
-            files.video.name = body.url_slug+"-video"
+        } else {
+          if (
+            files.video.mimetype == "video/mp4" &&
+            files.video.size <= 300000000
+          ) {
+            files.video.name = body.url_slug + "-video";
             video = `${files.video.name}`;
-            let video_URL = path.join(__dirname, `../../resource/archiveVideos`);
+            let video_URL = path.join(
+              __dirname,
+              `../../resource/archiveVideos`,
+            );
             files_uploaded.push([files.video, video_URL]);
-          }else{
+          } else {
             const error = new Error(err);
             error.statusCode = 500;
             return next(error);
           }
         }
 
-        for (let i = 0; i<files_uploaded.length; i++) {
+        for (let i = 0; i < files_uploaded.length; i++) {
           fs.mkdirSync(files_uploaded[i][1], { recursive: true });
-          if (fs.existsSync(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`)){
+          if (
+            fs.existsSync(
+              `${files_uploaded[i][1]}/${files_uploaded[i][0].name}`,
+            )
+          ) {
             fs.unlink(`${files_uploaded[i][1]}/${files_uploaded[i][0].name}`);
           }
           files_uploaded[i][0].mv(
@@ -1157,10 +1243,10 @@ module.exports = (db) => {
                 error.statusCode = 500;
                 return next(error);
               }
-            }
+            },
           );
         }
-      }else{
+      } else {
         poster_full = body.poster_full;
         poster_thumb = body.poster_thumb;
         archive_image = body.archive_image;
@@ -1224,7 +1310,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   //Gets the start and end dates of a project based on the semester that it is associated with.
@@ -1238,8 +1324,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -1464,7 +1550,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   /**
@@ -1485,7 +1571,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   /**
@@ -1493,21 +1579,28 @@ module.exports = (db) => {
    *
    * NOTE: This route is unused and untested.
    */
-  db_router.get("/getProposalPdfNames", UserAuth.isSignedIn, (req, res, next) => {
-    fs.readdir(path.join(__dirname, "../proposal_docs"), function (err, files) {
-      if (err) {
-        const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-      }
-      let fileLinks = [];
-      files.forEach(function (file) {
-        fileLinks.push(file.toString());
-      });
+  db_router.get(
+    "/getProposalPdfNames",
+    UserAuth.isSignedIn,
+    (req, res, next) => {
+      fs.readdir(
+        path.join(__dirname, "../proposal_docs"),
+        function (err, files) {
+          if (err) {
+            const error = new Error(err);
+            error.statusCode = 500;
+            return next(error);
+          }
+          let fileLinks = [];
+          files.forEach(function (file) {
+            fileLinks.push(file.toString());
+          });
 
-      res.send(fileLinks);
-    });
-  });
+          res.send(fileLinks);
+        },
+      );
+    },
+  );
 
   db_router.get("/getProposalPdf", UserAuth.isSignedIn, (req, res) => {
     if (req.query.project_id) {
@@ -1537,12 +1630,12 @@ module.exports = (db) => {
             });
 
             res.send(fileLinks);
-          }
+          },
         );
       } else {
         res.status(404).send("Bad request");
       }
-    }
+    },
   );
 
   db_router.get("/getProposalAttachment", UserAuth.isSignedIn, (req, res) => {
@@ -1550,7 +1643,7 @@ module.exports = (db) => {
       let projectId = req.query.project_id.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       let name = req.query.name.replace(/\\|\//g, ""); // attempt to avoid any path traversal issues
       res.sendFile(
-        path.join(__dirname, `../sponsor_proposal_files/${projectId}/${name}`)
+        path.join(__dirname, `../sponsor_proposal_files/${projectId}/${name}`),
       );
     } else res.send("File not found");
   });
@@ -1569,8 +1662,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -1602,10 +1695,10 @@ module.exports = (db) => {
               error.statusCode = 500;
               return next(error);
             }
-          }
+          },
         );
         filesUploaded.push(
-          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
         );
       }
     }
@@ -1639,10 +1732,10 @@ module.exports = (db) => {
               error.statusCode = 500;
               return next(error);
             }
-          }
+          },
         );
         filesUploaded.push(
-          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`
+          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
         );
         let fileName = req.files.files[x].name;
         let pathString = req.body.path;
@@ -1651,13 +1744,12 @@ module.exports = (db) => {
         pathString = '"' + pathString.join("/") + "/" + fileName + '"';
         let query = `UPDATE ${DB_CONFIG.tableNames.archive}
                      SET ${req.body.column} = ${pathString}
-                     WHERE archive_id = ${req.body.archive}`
-        db.query(query)
-          .catch((err) => {
-            const error = new Error(err);
-            error.statusCode = 500;
-            return next(error);
-          });
+                     WHERE archive_id = ${req.body.archive}`;
+        db.query(query).catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
       }
     }
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
@@ -1672,37 +1764,41 @@ module.exports = (db) => {
       res.send({ msg: "Success!" });
     } else {
       const error = new Error("Directory already exists");
-          error.statusCode = 500;
-          return next(error);
+      error.statusCode = 500;
+      return next(error);
     }
   });
 
-  db_router.post("/renameDirectoryOrFile", UserAuth.isAdmin, (req, res, next) => {
-    const { oldPath, newPath } = req.query;
-    const formattedOldPath =
-      oldPath === "" ? `resource/` : `resource/${oldPath}`;
-    const formattedNewPath =
-      newPath === "" ? `resource/` : `resource/${newPath}`;
-    const baseURLOld = path.join(__dirname, `../../${formattedOldPath}`);
-    const baseURLNew = path.join(__dirname, `../../${formattedNewPath}`);
+  db_router.post(
+    "/renameDirectoryOrFile",
+    UserAuth.isAdmin,
+    (req, res, next) => {
+      const { oldPath, newPath } = req.query;
+      const formattedOldPath =
+        oldPath === "" ? `resource/` : `resource/${oldPath}`;
+      const formattedNewPath =
+        newPath === "" ? `resource/` : `resource/${newPath}`;
+      const baseURLOld = path.join(__dirname, `../../${formattedOldPath}`);
+      const baseURLNew = path.join(__dirname, `../../${formattedNewPath}`);
 
-    // New path already exists, so we can't rename
-    if (fs.existsSync(baseURLNew)) {
-      const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-    }
-    // Copy all files from old directory to new directory
-    if (fs.lstatSync(baseURLOld).isDirectory()) {
-      fse.copySync(baseURLOld, baseURLNew);
-      fs.rmdirSync(baseURLOld, { recursive: true });
-      res.send({ msg: "Success!" });
-      // Rename file
-    } else if (fs.lstatSync(baseURLOld).isFile()) {
-      fs.renameSync(baseURLOld, baseURLNew);
-      res.send({ msg: "Success!" });
-    }
-  });
+      // New path already exists, so we can't rename
+      if (fs.existsSync(baseURLNew)) {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      }
+      // Copy all files from old directory to new directory
+      if (fs.lstatSync(baseURLOld).isDirectory()) {
+        fse.copySync(baseURLOld, baseURLNew);
+        fs.rmdirSync(baseURLOld, { recursive: true });
+        res.send({ msg: "Success!" });
+        // Rename file
+      } else if (fs.lstatSync(baseURLOld).isFile()) {
+        fs.renameSync(baseURLOld, baseURLNew);
+        res.send({ msg: "Success!" });
+      }
+    },
+  );
 
   db_router.get("/getFiles", UserAuth.isAdmin, (req, res, next) => {
     let fileData = [];
@@ -1710,15 +1806,15 @@ module.exports = (db) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    if(!fs.existsSync(baseURL)) {
+    if (!fs.existsSync(baseURL)) {
       fs.mkdirSync(baseURL, { recursive: true });
       // Get the files in the directory
       fs.readdir(baseURL, function (err, files) {
         if (err) {
           console.error(err);
           const error = new Error(err);
-            error.statusCode = 500;
-            return next(error);
+          error.statusCode = 500;
+          return next(error);
         }
         const info = fs.statSync(baseURL);
         files.forEach(function (file) {
@@ -1756,8 +1852,8 @@ module.exports = (db) => {
       if (err) {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       }
       const info = fs.statSync(baseURL);
       files.forEach(function (file) {
@@ -1822,15 +1918,15 @@ module.exports = (db) => {
     fs.unlink(baseURL, (err) => {
       if (err) {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       } else {
         res.send({ msg: "Success!" });
       }
     });
   });
 
-  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res, next ) => {
+  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res, next) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
     if (fs.existsSync(baseURL)) {
@@ -1838,11 +1934,10 @@ module.exports = (db) => {
       return res.status(200).send({ msg: "Success!" });
     } else {
       const error = new Error("Directory does not exist, cannot delete");
-          error.statusCode = 500;
-          return next(error);
+      error.statusCode = 500;
+      return next(error);
     }
   });
-
 
   db_router.post(
     "/submitProposal",
@@ -1957,8 +2052,8 @@ module.exports = (db) => {
 
       if (result.errors.length !== 0) {
         const error = new Error(result.errors);
-          error.statusCode = 400;
-          return next(error);
+        error.statusCode = 400;
+        return next(error);
       }
 
       // Insert into the database
@@ -1985,7 +2080,7 @@ module.exports = (db) => {
 
         const baseURL = path.join(
           __dirname,
-          `../sponsor_proposal_files/${projectId}`
+          `../sponsor_proposal_files/${projectId}`,
         );
 
         fs.mkdirSync(baseURL, { recursive: true });
@@ -1999,7 +2094,7 @@ module.exports = (db) => {
           }
           if (
             !CONFIG.accepted_file_types.includes(
-              path.extname(req.files.attachments[x].name)
+              path.extname(req.files.attachments[x].name),
             )
           ) {
             // send an error if the file is not an accepted type
@@ -2023,7 +2118,7 @@ module.exports = (db) => {
                 error.statusCode = 500;
                 return next(error);
               }
-            }
+            },
           );
         }
       }
@@ -2099,42 +2194,52 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get("/getArchivePoster", (req, res) => {
     res.sendFile(
       path.join(
         __dirname,
-        "../../resource/archivePosters/" + req.query.fileName
-      )
+        "../../resource/archivePosters/" + req.query.fileName,
+      ),
     );
   });
 
   db_router.get("/getArchiveVideo", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "../../resource/archiveVideos/" + req.query.fileName)
+      path.join(
+        __dirname,
+        "../../resource/archiveVideos/" + req.query.fileName,
+      ),
     );
   });
 
   db_router.get("/getArchiveImage", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "../../resource/archiveImages/" + req.query.fileName)
+      path.join(
+        __dirname,
+        "../../resource/archiveImages/" + req.query.fileName,
+      ),
     );
   });
 
-  db_router.get("/getActiveTimelines", [UserAuth.isSignedIn], (req, res, next) => {
-    calculateActiveTimelines(req.user)
-      .then((timelines) => {
-        res.send(timelines);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
+  db_router.get(
+    "/getActiveTimelines",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      calculateActiveTimelines(req.user)
+        .then((timelines) => {
+          res.send(timelines);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.post(
     "/submitAction",
@@ -2175,7 +2280,9 @@ module.exports = (db) => {
           break;
         case ACTION_TARGETS.INDIVIDUAL:
           if (req.user.type !== ROLES.STUDENT) {
-            const error = new Error("Only students can submit individual actions");
+            const error = new Error(
+              "Only students can submit individual actions",
+            );
             error.statusCode = 401;
             return next(error);
           }
@@ -2186,7 +2293,9 @@ module.exports = (db) => {
             req.user.type !== ROLES.COACH &&
             req.user.type !== ROLES.STUDENT
           ) {
-            const error = new Error("Only coaches and students can submit peer evaluations");
+            const error = new Error(
+              "Only coaches and students can submit peer evaluations",
+            );
             error.statusCode = 401;
             return next(error);
           }
@@ -2201,7 +2310,9 @@ module.exports = (db) => {
           break;
         case ACTION_TARGETS.PEER_EVALUATION:
           if (req.user.type !== ROLES.STUDENT) {
-            const error = new Error("Only students can submit peer evaluations.");
+            const error = new Error(
+              "Only students can submit peer evaluations.",
+            );
             error.statusCode = 401;
             return next(error);
           }
@@ -2218,7 +2329,7 @@ module.exports = (db) => {
 
       let baseURL = path.join(
         __dirname,
-        `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`
+        `../project_docs/${body.project}/${action.action_target}/${action.action_id}/${req.user.system_id}/${submission}`,
       );
 
       // Attachment Handling
@@ -2255,13 +2366,13 @@ module.exports = (db) => {
             !action.file_types
               .split(",")
               .includes(
-                path.extname(req.files.attachments[x].name).toLocaleLowerCase()
+                path.extname(req.files.attachments[x].name).toLocaleLowerCase(),
               )
           ) {
             // send an error if the file is not an accepted type
             const error = new Error("file type not accepted");
-          error.statusCode = 400;
-          return next(error);
+            error.statusCode = 400;
+            return next(error);
           }
 
           // Append the file name to the CSV string, begin with a comma if x is not 0
@@ -2279,7 +2390,7 @@ module.exports = (db) => {
                 error.statusCode = 500;
                 return next(error);
               }
-            }
+            },
           );
         }
       }
@@ -2317,7 +2428,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get("/getHtml", (req, res, next) => {
@@ -2335,8 +2446,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -2360,7 +2471,7 @@ module.exports = (db) => {
             const error = new Error(err);
             error.statusCode = 500;
             return next(error);
-          })
+          }),
       );
     });
     Promise.all(promises).then(() => {
@@ -2380,8 +2491,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -2394,8 +2505,8 @@ module.exports = (db) => {
         req.query.project_id !== req.user.project
       ) {
         const error = new Error("trying to acces project that is not yours");
-          error.statusCode = 401;
-          return next(error);
+        error.statusCode = 401;
+        return next(error);
       }
 
       // Add a case for when the action target is 'peer_evaluation'
@@ -2427,7 +2538,7 @@ module.exports = (db) => {
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,
-        req.query.project_id
+        req.query.project_id,
       ])
         .then((values) => {
           res.send(values);
@@ -2438,30 +2549,34 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   /*
    * This will join between the action and action_log tables. It returns the due date from
    * a specific log_id's action_template # = action_id.
    */
-  db_router.get("/getLateSubmission", [UserAuth.isSignedIn], (req, res, next) => {
-    let getLateSubmissionQuery = `SELECT actions.due_date
+  db_router.get(
+    "/getLateSubmission",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      let getLateSubmissionQuery = `SELECT actions.due_date
                                       FROM action_log
                                       JOIN actions ON actions.action_id = action_log.action_template
                                       WHERE action_log.action_log_id = ?`;
-    let params = [req.query.log_id];
-    db.query(getLateSubmissionQuery, params)
-      .then((values) => {
-        res.send(values);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
+      let params = [req.query.log_id];
+      db.query(getLateSubmissionQuery, params)
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.get("/getActionLogs", [UserAuth.isSignedIn], (req, res, next) => {
     let getActionLogQuery = "";
@@ -2493,8 +2608,8 @@ module.exports = (db) => {
 
       default:
         const error = new Error("Unknown Role");
-          error.statusCode = 401;
-          return next(error);
+        error.statusCode = 401;
+        return next(error);
     }
     db.query(getActionLogQuery, params)
       .then((values) => {
@@ -2503,8 +2618,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -2592,64 +2707,71 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
-  db_router.get("/getTimeLogs", [UserAuth.isSignedIn], async (req, res, next) => {
-    let getTimeLogQuery = "";
-    let params = [];
+  db_router.get(
+    "/getTimeLogs",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      let getTimeLogQuery = "";
+      let params = [];
 
-    switch (req.user.type) {
-      case ROLES.STUDENT:
-        // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
-        //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-                getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
+      switch (req.user.type) {
+        case ROLES.STUDENT:
+          // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
+          //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
+          getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         WHERE time_log.project = ?
                         ORDER BY
                         time_log.work_date DESC`;
-        params = [req.user.project];
-        break;
-      case ROLES.COACH:
-      case ROLES.ADMIN:
-        getTimeLogQuery = `SELECT time_log.*,
+          params = [req.user.project];
+          break;
+        case ROLES.COACH:
+        case ROLES.ADMIN:
+          getTimeLogQuery = `SELECT time_log.*,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) AS name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) AS mock_name
                     FROM time_log
                     WHERE time_log.project = ?`;
-        params = [req.query.project_id];
-        break;
+          params = [req.query.project_id];
+          break;
 
-      default:
-        const error = new Error("Unknown Role");
+        default:
+          const error = new Error("Unknown Role");
           error.statusCode = 401;
           return next(error);
-    }
-    db.query(getTimeLogQuery, params)
-      .then((values) => {
-        res.send(values);
-      })
-      .catch((err) => {
-        console.error(err);
-        error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+      }
+      db.query(getTimeLogQuery, params)
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          console.error(err);
+          error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
-  db_router.get("/getAllTimeLogs", [UserAuth.isSignedIn], async (req, res, next) => {
-    const { resultLimit, offset } = req.query;
+  db_router.get(
+    "/getAllTimeLogs",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { resultLimit, offset } = req.query;
 
-    let getTimeLogQuery = "";
-    let queryParams = [];
-    let getTimeLogCount = "";
-    let countParams = [];
+      let getTimeLogQuery = "";
+      let queryParams = [];
+      let getTimeLogCount = "";
+      let countParams = [];
 
-    switch (req.user.type) {
-      case ROLES.STUDENT:
-        getTimeLogQuery = `SELECT time_log.*,
+      switch (req.user.type) {
+        case ROLES.STUDENT:
+          getTimeLogQuery = `SELECT time_log.*,
                         projects.display_name, projects.title,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
@@ -2658,55 +2780,55 @@ module.exports = (db) => {
                         WHERE time_log.project = ?
                           ORDER BY
                         time_log.work_date DESC`;
-        queryParams = [req.user.project];
-        getTimeLogCount = `SELECT COUNT(*) FROM time_log
+          queryParams = [req.user.project];
+          getTimeLogCount = `SELECT COUNT(*) FROM time_log
                     WHERE time_log.project = ?
                     AND time_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
-        countParams = [req.user.project, req.user.project];
-        break;
-      case ROLES.COACH:
-        getTimeLogQuery = `SELECT time_log.*,
+          countParams = [req.user.project, req.user.project];
+          break;
+        case ROLES.COACH:
+          getTimeLogQuery = `SELECT time_log.*,
                     projects.display_name, projects.title,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
                         WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?) `;
-        queryParams = [req.user.system_id];
-        getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
-        countParams = [req.user.system_id];
-        break;
-      case ROLES.ADMIN:
-        getTimeLogQuery = `SELECT time_log.*,
+          queryParams = [req.user.system_id];
+          getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+          countParams = [req.user.system_id];
+          break;
+        case ROLES.ADMIN:
+          getTimeLogQuery = `SELECT time_log.*,
                 projects.display_name, projects.title,
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                 FROM time_log
                     JOIN projects ON projects.project_id = time_log.project `;
-        queryParams = [];
-        getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
-        break;
-      default:
-        const error = new Error("Unknown Role");
+          queryParams = [];
+          getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
+          break;
+        default:
+          const error = new Error("Unknown Role");
           error.statusCode = 401;
           return next(error);
-    }
+      }
 
-    const timeLogsPromise = db.query(getTimeLogQuery, queryParams);
-    const timeLogsCountPromise = db.query(getTimeLogCount, countParams);
-    Promise.all([timeLogsCountPromise, timeLogsPromise])
-      .then(([[timeLogCount], projects]) => {
-        res.send({
-          timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]],
-          timeLogs: projects,
-        });
+      const timeLogsPromise = db.query(getTimeLogQuery, queryParams);
+      const timeLogsCountPromise = db.query(getTimeLogCount, countParams);
+      Promise.all([timeLogsCountPromise, timeLogsPromise])
+        .then(([[timeLogCount], projects]) => {
+          res.send({
+            timeLogCount: timeLogCount[Object.keys(timeLogCount)[0]],
+            timeLogs: projects,
+          });
         })
         .catch((err) => {
           const error = new Error(err);
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -2731,22 +2853,25 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
-  db_router.get("/getAllSponsors", [UserAuth.isSignedIn], async (req, res, next) => {
-    const { resultLimit, offset } = req.query;
+  db_router.get(
+    "/getAllSponsors",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { resultLimit, offset } = req.query;
 
-    let getSponsorsQuery = "";
-    let queryParams = [];
-    let getSponsorsCount = "";
+      let getSponsorsQuery = "";
+      let queryParams = [];
+      let getSponsorsCount = "";
 
-    switch (req.user.type) {
-      case ROLES.STUDENT:
-        break;
-      case ROLES.COACH:
-      case ROLES.ADMIN:
-        getSponsorsQuery = `
+      switch (req.user.type) {
+        case ROLES.STUDENT:
+          break;
+        case ROLES.COACH:
+        case ROLES.ADMIN:
+          getSponsorsQuery = `
                     SELECT *
                     FROM sponsors
                     ORDER BY
@@ -2757,30 +2882,31 @@ module.exports = (db) => {
                     LIMIT ?
                     OFFSET ?
                 `;
-        queryParams = [resultLimit || -1, offset || 0];
-        getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
-        break;
-      default:
-        const error = new Error("Unknown Role");
+          queryParams = [resultLimit || -1, offset || 0];
+          getSponsorsCount = `SELECT COUNT(*) FROM sponsors`;
+          break;
+        default:
+          const error = new Error("Unknown Role");
           error.statusCode = 401;
           return next(error);
-    }
+      }
 
-    const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
-    const SponsorsCountPromise = db.query(getSponsorsCount);
-    Promise.all([SponsorsCountPromise, sponsorsPromise])
-      .then(([[sponsorsCount], sponsorsRows]) => {
-        res.send({
-          sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]],
-          sponsors: sponsorsRows,
-        });
-      })
-      .catch((err) => {
-        const error = new Error(err);
+      const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
+      const SponsorsCountPromise = db.query(getSponsorsCount);
+      Promise.all([SponsorsCountPromise, sponsorsPromise])
+        .then(([[sponsorsCount], sponsorsRows]) => {
+          res.send({
+            sponsorsCount: sponsorsCount[Object.keys(sponsorsCount)[0]],
+            sponsors: sponsorsRows,
+          });
+        })
+        .catch((err) => {
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.get("/getProjectSponsor", [UserAuth.isSignedIn], (req, res) => {
     let query = `SELECT * FROM sponsors
@@ -2816,11 +2942,14 @@ module.exports = (db) => {
 
       const params = [req.query.sponsor_id];
       db.query(query, params).then((projects) => res.send(projects));
-    }
+    },
   );
 
-  db_router.get("/getSponsorNotes", [UserAuth.isCoachOrAdmin], (req, res, next) => {
-    let getSponsorNotesQuery = `
+  db_router.get(
+    "/getSponsorNotes",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      let getSponsorNotesQuery = `
             SELECT * , users.fname, users.lname, users.email
             FROM sponsor_notes
             JOIN users
@@ -2829,19 +2958,20 @@ module.exports = (db) => {
             ORDER BY creation_date
         `;
 
-    const queryParams = [req.query.sponsor_id];
+      const queryParams = [req.query.sponsor_id];
 
-    db.query(getSponsorNotesQuery, queryParams)
-      .then((sponsorNotes) => {
-        res.send(sponsorNotes);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
+      db.query(getSponsorNotesQuery, queryParams)
+        .then((sponsorNotes) => {
+          res.send(sponsorNotes);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
           error.statusCode = 500;
           return next(error);
-      });
-  });
+        });
+    },
+  );
 
   db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res, next) => {
     let getSubmissionQuery = "";
@@ -2870,8 +3000,8 @@ module.exports = (db) => {
         break;
       default:
         const error = new Error("Unknown Role");
-          error.statusCode = 401;
-          return next(error);
+        error.statusCode = 401;
+        return next(error);
     }
 
     db.query(getSubmissionQuery, params)
@@ -2881,8 +3011,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -2940,14 +3070,16 @@ module.exports = (db) => {
         return res.sendFile(
           path.join(
             __dirname,
-            `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`
-          )
+            `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`,
+          ),
         );
       }
-      const error = new Error("File not found or you are unauthorized to view file");
-          error.statusCode = 404;
-          return next(error);
-    }
+      const error = new Error(
+        "File not found or you are unauthorized to view file",
+      );
+      error.statusCode = 404;
+      return next(error);
+    },
   );
 
   db_router.post(
@@ -3002,7 +3134,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get(
@@ -3089,7 +3221,7 @@ module.exports = (db) => {
       const sponsorsPromise = db.query(getSponsorsQuery, queryParams);
       const SponsorsCountPromise = db.query(
         getSponsorsCount,
-        sponsorCountParams
+        sponsorCountParams,
       );
       Promise.all([SponsorsCountPromise, sponsorsPromise])
         .then(([[sponsorsCount], sponsorsRows]) => {
@@ -3101,7 +3233,7 @@ module.exports = (db) => {
         .catch((error) => {
           res.status(500).send(error);
         });
-    }
+    },
   );
 
   db_router.get("/searchForArchive", (req, res, next) => {
@@ -3259,8 +3391,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -3274,8 +3406,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -3289,8 +3421,8 @@ module.exports = (db) => {
       .catch((err) => {
         console.error(err);
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -3370,15 +3502,17 @@ module.exports = (db) => {
           } else if (createNoteError) {
             res.status(createNoteStatusCode).send(createNoteError);
           } else if (createSponsorQueryStatusCode !== createNoteStatusCode) {
-            const error = new Error("status code mismatch in editing sponsor, please contact an admin to investigate");
+            const error = new Error(
+              "status code mismatch in editing sponsor, please contact an admin to investigate",
+            );
             error.statusCode = 500;
             return next(error);
           } else {
             res.status(createSponsorQueryStatusCode).send();
           }
-        }
+        },
       );
-    }
+    },
   );
 
   db_router.post(
@@ -3473,15 +3607,17 @@ module.exports = (db) => {
           } else if (createNoteError) {
             res.status(createNoteStatusCode).send(createNoteError);
           } else if (updateQueryStatusCode !== createNoteStatusCode) {
-            const error = new Error("status code mismatch in editing sponsor, please contact an admin to investigate");
+            const error = new Error(
+              "status code mismatch in editing sponsor, please contact an admin to investigate",
+            );
             error.statusCode = 500;
             return next(error);
           } else {
             res.status(updateQueryStatusCode).send();
           }
-        }
+        },
       );
-    }
+    },
   );
 
   async function createSponsorNote(queryParams) {
@@ -3527,7 +3663,7 @@ module.exports = (db) => {
           res.status(status).send();
         }
       });
-    }
+    },
   );
 
   db_router.post(
@@ -3571,7 +3707,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res, next) => {
@@ -3586,8 +3722,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -3601,8 +3737,8 @@ module.exports = (db) => {
       })
       .catch((err) => {
         const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+        error.statusCode = 500;
+        return next(error);
       });
   });
 
@@ -3614,7 +3750,9 @@ module.exports = (db) => {
       if (req.user.type === ROLES.STUDENT) {
         // req.query.semester comes in as a string and req.user.semester_group is a number so convert both to strings to compare them.
         if (`${req.query.semester}` !== `${req.user.semester_group}`) {
-          const error = new Error("Students can not access announcements that are not for your project");
+          const error = new Error(
+            "Students can not access announcements that are not for your project",
+          );
           error.statusCode = 401;
           return next(error);
         }
@@ -3644,7 +3782,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -3679,7 +3817,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   db_router.post(
@@ -3720,8 +3858,8 @@ module.exports = (db) => {
 
       if (result.errors.length !== 0) {
         const error = new Error(result.errors);
-          error.statusCode = 400;
-          return next(error);
+        error.statusCode = 400;
+        return next(error);
       }
 
       let body = req.body;
@@ -3743,7 +3881,7 @@ module.exports = (db) => {
           error.statusCode = 500;
           return next(error);
         });
-    }
+    },
   );
 
   function calculateActiveTimelines(user) {
