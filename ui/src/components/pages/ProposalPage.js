@@ -214,34 +214,25 @@ function ProposalPage() {
                     />
                 </Form.Field>
 
-                {/* <Form.TextArea
-                    required
-                    label="Project Background Information"
-                    name="background_info"
-                    value={formData.background_info || ""}
-                    onChange={(e) => {
-                        setFormData(e);
-                    }}
-                    error={errors.background_info && { content: errors.background_info, pointing: "below" }}
-                ></Form.TextArea> */}
-                <div style={{fontWeight: 'bold', fontSize: "13px"}}>Project Background Information:</div><br />
+                <div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Background Information</div><br />
                 <Editor
                     apiKey={TINYMCE_API_KEY}
                     value={formData.background_info || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
-                    placeholder: "Project Background Information",
+                    selector: "textarea",
+                    placeholder: "Project Background Information...",
                     height: 200,
                     menubar: false,
+                    branding: false,
+                    elementpath: false,
                     plugins: [
                         'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'wordcount'
+                        'insertdatetime', 'table', 'wordcount'
                     ],
                     toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat',
+                        'bold italic forecolor | bullist numlist',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
                     onEditorChange={(_, editor) => {
@@ -252,55 +243,156 @@ function ProposalPage() {
                         })
                     }}
                 />
-                <Form.TextArea
-                    required
-                    label="Project Description"
-                    name="project_description"
+
+                <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Description</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.project_description || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Project Description...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.project_description && { content: errors.project_description, pointing: "below" }}
-                ></Form.TextArea>
-                <Form.TextArea
-                    required
-                    label="Project Scope"
-                    name="project_scope"
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['project_description']: editorContent
+                        })
+                    }}
+                />
+
+                <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Scope</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.project_scope || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Project Scope...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.project_scope && { content: errors.project_scope, pointing: "below" }}
-                ></Form.TextArea>
-                <Form.TextArea
-                    required
-                    label="Project Challenges"
-                    name="project_challenges"
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['project_scope']: editorContent
+                        })
+                    }}
+                />
+
+                <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Challenges</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.project_challenges || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Project Challenges...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.project_challenges && { content: errors.project_challenges, pointing: "below" }}
-                ></Form.TextArea>
-                <Form.TextArea
-                    required
-                    label="Constraints & Assumptions"
-                    name="constraints_assumptions"
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['project_challenges']: editorContent
+                        })
+                    }}
+                />
+
+                <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Constraints & Assumptions</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.constraints_assumptions || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Constraints & Assumptions...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.constraints_assumptions && { content: errors.constraints_assumptions, pointing: "below" }}
-                ></Form.TextArea>
-                <Form.TextArea
-                    label="Sponsor-Provided Resources"
-                    name="sponsor_provided_resources"
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['constraints_assumptions']: editorContent
+                        })
+                    }}
+                />
+
+                <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor Provided Resources</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.sponsor_provided_resources || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Sponsor Provided Resources...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.sponsor_provided_resources && { content: errors.sponsor_provided_resources, pointing: "below" }}
-                ></Form.TextArea>
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['sponsor_provided_resources']: editorContent
+                        })
+                    }}
+                /><br />
                 <Form.Input
                     label="Project Search Keywords"
                     name="project_search_keywords"
@@ -310,25 +402,66 @@ function ProposalPage() {
                     }}
                     error={errors.project_search_keywords && { content: errors.project_search_keywords, pointing: "below" }}
                 />
-                <Form.TextArea
-                    required
-                    label="Sponsor and Project Specific Deliverables"
-                    name="sponsor_deliverables"
+
+                <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor and Project Specific Deliverables</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.sponsor_deliverables || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Sponsor and Project Specific Deliverables...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.sponsor_deliverables && { content: errors.sponsor_deliverables, pointing: "below" }}
-                ></Form.TextArea>
-                <Form.TextArea
-                    label="Proprietary Information"
-                    name="proprietary_info"
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['sponsor_deliverables']: editorContent
+                        })
+                    }}
+                />
+                
+                <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Proprietary Information</div><br />
+                <Editor
+                    apiKey={TINYMCE_API_KEY}
                     value={formData.proprietary_info || ""}
-                    onChange={(e) => {
-                        setFormData(e);
+                    onInit={(_evt, editor) => editorRef.current = editor}
+                    init={{
+                    selector: "textarea",
+                    placeholder: "Proprietary Information...",
+                    height: 200,
+                    menubar: false,
+                    branding: false,
+                    elementpath: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'table', 'wordcount'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | bullist numlist',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                     }}
-                    error={errors.proprietary_info && { content: errors.proprietary_info, pointing: "below" }}
-                ></Form.TextArea>
+                    onEditorChange={(_, editor) => {
+                        const editorContent = editor.getContent({format: 'rtf'});
+                        setActualFormData({
+                            ...formData,
+                            ['proprietary_info']: editorContent
+                        })
+                    }}
+                />
 
                 <Divider section />
 
