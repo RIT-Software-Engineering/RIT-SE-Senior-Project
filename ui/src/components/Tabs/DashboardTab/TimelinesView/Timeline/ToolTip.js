@@ -62,7 +62,7 @@ export default function ToolTip(props) {
           }}
         ></p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
-        <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
+        <p>{props.action?.action_target === "break_period" ? "Ends:" : "Due:"} {formatDateNoOffset(props.action?.due_date)}</p>
         {props.action?.action_target === "break_period" ? <></> : // break_period doesn't have a project, omit the fields
           <div>
             <p>Project: {props.projectName}</p>
