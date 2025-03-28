@@ -207,7 +207,7 @@ body.dark-mode .clickable-student-name {
 body.dark-mode .ui.modal .header,
 body.dark-mode .ui.modal .content,
 body.dark-mode .ui.modal .actions {
-  background-color: #1e1e1e;
+  background-color: inherit;
   color: #e0e0e0;
 }
 
