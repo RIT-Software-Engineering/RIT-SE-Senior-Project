@@ -55,7 +55,13 @@ export default function PreviewHtml(props) {
       </div>
     );
   }
-
+  /**
+   * TODO (Show action submissions for Admin):
+   *  1.) Get all the submissions that have been made to an actions
+   *  2.) Display the submission list for Admins
+   *      - If no submissions, "No submisions"
+   *      - Else, show the list similar to the way it is on dashboard.
+   */
   function preActionContent() {
     return (
       <>
