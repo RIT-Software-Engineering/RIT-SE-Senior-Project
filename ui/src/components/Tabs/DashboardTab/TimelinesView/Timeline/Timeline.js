@@ -116,37 +116,36 @@ export default function Timeline(props) {
             <option value="gantt">Gantt</option>
             <option value="calendar">Calendar</option>
           </select>
-      </div>
-      <div
-        className="timeline-action-block"
-        style={{ display: ganttVisible ? "block" : "none" }}
-      >
-        { actionView === 'Calendar' ? <Calendar
-          projectName={
-            props.elementData.display_name || props.elementData.title
-          }
-          projectId={props.elementData.project_id}
-          semesterName={props.elementData.semester_name}
-          reloadTimelineActions={() => {
-            loadTimelineActions(props.elementData?.project_id);
-          }}
-          actions={actions}
-          initialDate={new Date()}
-          />
-          : <GanttChart
-          projectName={
-            props.elementData.display_name || props.elementData.title
-          }
-          projectId={props.elementData.project_id}
-          semesterName={props.elementData.semester_name}
-          projectStart={props.elementData.start_date}
-          projectEnd={props.elementData.end_date}
-          actions={actions}
-          isOpen={ganttVisible}
-          reloadTimelineActions={() => {
-            loadTimelineActions(props.elementData?.project_id);
-          }}
-        />}
+        <div
+          className="timeline-action-block"
+        >
+          { actionView === 'Calendar' ? <Calendar
+            projectName={
+              props.elementData.display_name || props.elementData.title
+            }
+            projectId={props.elementData.project_id}
+            semesterName={props.elementData.semester_name}
+            reloadTimelineActions={() => {
+              loadTimelineActions(props.elementData?.project_id);
+            }}
+            actions={actions}
+            initialDate={new Date()}
+            />
+            : <GanttChart
+            projectName={
+              props.elementData.display_name || props.elementData.title
+            }
+            projectId={props.elementData.project_id}
+            semesterName={props.elementData.semester_name}
+            projectStart={props.elementData.start_date}
+            projectEnd={props.elementData.end_date}
+            actions={actions}
+            isOpen={ganttVisible}
+            reloadTimelineActions={() => {
+              loadTimelineActions(props.elementData?.project_id);
+            }}
+          />}
+        </div>
       </div>
     </div>
   );
