@@ -97,21 +97,26 @@ export default function Timeline(props) {
           }}
         />
       </div>
-      <label htmlFor="time-line-view"><h3>Time Line Style </h3></label>
-          <select
-          name="time-line-view"
-          defaultValue={'gantt'}
-          onChange={(e) => {
-            if (e.target.value === 'gantt') {
-              setActionView('Gantt');
-            } else {
-              setActionView('Calendar');
-            }
-          }}
-        >
-          <option value="gantt">Gantt</option>
-          <option value="calendar">Calendar</option>
-        </select>
+      <div
+        className="timeline-action-block"
+        style={{ display: ganttVisible ? "block" : "none" }}
+      >
+        <label htmlFor="time-line-view"><h3>Time Line Style </h3></label>
+            <select
+            name="time-line-view"
+            defaultValue={'gantt'}
+            onChange={(e) => {
+              if (e.target.value === 'gantt') {
+                setActionView('Gantt');
+              } else {
+                setActionView('Calendar');
+              }
+            }}
+          >
+            <option value="gantt">Gantt</option>
+            <option value="calendar">Calendar</option>
+          </select>
+      </div>
       <div
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
