@@ -19,6 +19,7 @@ import {
 import { SecureFetch } from "../functions/secureFetch";
 import { config } from "../functions/constants";
 import ResultTable from "./ResultTable";
+import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
 
 export default function CoachFeedback(props) {
   const [studentList, setStudentList] = useState([]);
@@ -34,6 +35,8 @@ export default function CoachFeedback(props) {
   const [aiSummaryText, setAISummaryText] = useState({});
   const [usedAI, setUsedAI] = useState([]);
   const [expandedFeedback, setExpandedFeedback] = useState({});
+  const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
 
   const expandFeedback = (category) => {
     setExpandedFeedback({
@@ -105,27 +108,29 @@ export default function CoachFeedback(props) {
     }));
   };
 
-  const getSummarization = (id, context) => {
+  const getSummarization = (id, context, prompt) => {
     const body = new FormData();
     body.append("context", JSON.stringify(context));
+    body.append("prompt", prompt);
 
     updateLoadingState(id, true);
 
-    SecureFetch(`${config.url.API_GENERATE_SUMMARY}`, {
-      method: "post",
-      body: body,
+    SecureFetch(`${config.url.API_GENERATE_RESPONSE}`, {
+        method: "post",
+        body: body,
     })
-      .then((response) => response.text())
-      .then((data) => {
-        updateAISummaryText(id, data);
-      })
-      .catch((error) => {
-        console.error("Error  Generating Summary:", error);
-      })
-      .finally(() => {
-        updateLoadingState(id, false);
-      });
-  };
+        .then((response) => response.text())
+        .then((data) => {
+            updateAISummaryText(id, data);
+        })
+        .catch((error) => {
+            console.error("Error Generating AI Response:", error);
+        })
+        .finally(() => {
+            updateLoadingState(id, false);
+        });
+};
+
 
   const updateLoadingState = (id, value) => {
     setLoadingStates((prevState) => ({
@@ -163,12 +168,17 @@ export default function CoachFeedback(props) {
 
   const handleGenerateSummarization = (s, context) => {
     ClosePopup(s);
-    getSummarization(s, context);
+    getSummarization(s, context, customPrompt);
     setUsedAI((prev) => ({
       ...prev,
       [s]: true,
     }));
   };
+
+  const handlePromptChange = (e) => {
+    setCustomPrompt(e.target.value);
+};
+
 
   useEffect(() => {
     fetchStudentList();
@@ -497,6 +507,19 @@ export default function CoachFeedback(props) {
               checked={usedAI[student]}
               value={usedAI[student] ? 1 : 0}
             />
+             <div>
+            <Button onClick={() => setIsEditingPrompt(!isEditingPrompt)}>
+                Edit Prompt
+            </Button>
+            {isEditingPrompt && (
+                <textarea
+                    value={customPrompt}
+                    onChange={handlePromptChange}
+                    rows={4}
+                    style={{ marginTop: '10px' }}
+                />
+            )}
+        </div>
           </Dimmer.Dimmable>
         </FormField>
       </div>

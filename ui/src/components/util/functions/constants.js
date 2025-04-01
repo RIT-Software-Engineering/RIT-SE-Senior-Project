@@ -82,6 +82,7 @@ export const config = {
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
+    API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
@@ -241,4 +242,5 @@ Output Specification:
     3. The summary should be concise, typically 3-5 sentences, highlighting strengths and areas for improvement. 
     4. Output should be in paragraph form.   
     5. Speak in the POV as the team coach talking to the student
+    6. Do not format your response as a JSON
 `;

@@ -83,8 +83,31 @@ async function provide_summary(studentFeedback) {
   }
 }
 
+async function generateResponse(prompt, context) {
+  try {
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash-latest" });
+
+    const result = await model.generateContent({
+      contents: [
+        {
+          parts: [
+            { text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}` }
+          ]
+        }
+      ]
+    });
+
+    return result.response.text();
+  } catch (error) {
+    console.error("Error generating content:", error);
+    throw new Error("Failed to generate response.");
+  }
+}
+
+
 module.exports = () => {
-  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+  router.post("/GenerateSummary", (req, res, next) => {
     const context = req.body.context;
 
     provide_summary(context)
@@ -100,6 +123,33 @@ module.exports = () => {
         return next(error);
       });
   });
+
+  
+
+  router.post("/GenerateResponse", (req, res, next) => {
+    const { prompt, context } = req.body;
+
+    if (!prompt || !context) {
+      return res.status(400).json({ error: "Missing 'prompt' or 'context' in request body." });
+    }
+  
+    generateResponse(prompt, context)
+      .then((response) => {
+        console.log(response)
+        res.type("text/plain");
+        res.status(200).send(response);
+      })
+      .catch((err) => {
+        console.error("Error generating response:", err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        error.message = "Error generating summary with gemini-1.5-flash-latest";
+        return next(error);
+      });
+});
+
+
+  
 
   return router;
 };
