@@ -15,7 +15,7 @@ export default function Timeline(props) {
     const storedMilestoneView = sessionStorage.getItem(props.elementData?.project_id + ' milestone');
     const storedGanttView = sessionStorage.getItem(props.elementData?.project_id + ' gantt');
     const [milestoneVisible, setMilestoneVisible] = useState(storedMilestoneView ? storedMilestoneView === 'true' : true);
-    const [ganttVisible, setGanttVisible] = useState(storedGanttView ? storedGanttView === 'true' : (userContext.user?.role == USERTYPES.ADMIN ? false : true));
+    const [ganttVisible, setGanttVisible] = useState(storedGanttView ? storedGanttView === 'true' : (userContext.user?.role === USERTYPES.ADMIN ? false : true));
 
     const loadTimelineActions = (project_id) => {
         SecureFetch(`${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`)
