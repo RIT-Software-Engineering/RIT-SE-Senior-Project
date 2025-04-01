@@ -19,10 +19,18 @@ export default function ActionTable(props) {
   const semester = props.semesterData.find(
     (s) => s.semester_id === props.actions[0]?.semester,
   );
+  const project = props.projectData.find(
+    (project) => project.semester === props.actions[0]?.semester,
+  );
+
   // if there is no semester, then there are no actions
   const semesterName = semester?.name || "No Semester";
   const semesterStart = semester?.start_date || "No Start Date";
   const semesterEnd = semester?.end_date || "No End Date";
+
+  const projectTitle = project?.title || "No Project";
+  const projectId = project?.project_id || "No Project Id";
+
   // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
   const [open, setOpen] = React.useState("false");
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
@@ -63,7 +71,10 @@ export default function ActionTable(props) {
                 callback={props.callback}
               />
               <PreviewHtml
+                autoLoadSubmissions={props.autoLoadSubmissions}
                 action={action}
+                projectName={projectTitle}
+                projectId={projectId}
                 semesterName={semesterName}
                 header={`Currently Viewing "${action.action_title}"`}
                 key={"viewHtml-" + i}

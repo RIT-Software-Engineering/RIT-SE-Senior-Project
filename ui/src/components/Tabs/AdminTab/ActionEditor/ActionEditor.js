@@ -7,6 +7,7 @@ import ActionTable from "./ActionTable";
 
 export default function ActionEditor(props) {
   const [actions, setActionsData] = useState([]);
+  const [projectData, setProjectData] = useState([]);
 
   const getActionData = () => {
     SecureFetch(config.url.API_GET_ACTIONS)
@@ -24,8 +25,21 @@ export default function ActionEditor(props) {
       });
   };
 
+  const getProjectData = () => {
+    SecureFetch(config.url.API_GET_PROJECTS)
+      .then((response) => response.json())
+      .then((projectData) => {
+        setProjectData(projectData);
+      })
+      .catch((error) => {
+        setProjectData([]); // unable to get projects
+        console.log("Failed to get projects ", error);
+      });
+  };
+
   useEffect(() => {
     getActionData();
+    getProjectData();
   }, []);
 
   let semesterPanels = [];
@@ -41,9 +55,11 @@ export default function ActionEditor(props) {
     for (const [key, value] of Object.entries(semesterMap)) {
       semesterPanels.push(
         <ActionTable
+          autoLoadSubmissions
           key={key}
           actions={value}
           semesterData={props.semesterData}
+          projectData={projectData}
           callback={getActionData}
         />,
       );
