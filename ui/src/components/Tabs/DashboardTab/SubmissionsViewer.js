@@ -23,21 +23,9 @@ import { config } from "../../util/functions/constants";
 
 const { isSameWeek, addDays } = require("date-fns");
 
-export default function WeeklyHourViewer(props) {
+export default function SubmissionsViewer(props) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-  const handleDelete = async function (e) {
-    let body = new FormData();
-    body.append("id", e);
-
-    SecureFetch(config.url.API_DELETE_TIME_LOG, {
-      method: "POST",
-      body: body,
-    }).then((response) => {
-      console.log(response);
-    });
-    setOpen(false);
-  };
 
   const onClose = (page) => {
     setOpen(false);
@@ -74,45 +62,22 @@ export default function WeeklyHourViewer(props) {
       trigger={
         <div>
           {props.trigger || (
-            <Button icon style={{ width: "170px"}}>
-              <Icon name="calendar" />
-              Time Log Report
+            <Button icon style={{ width: "200px"}}>
+              View All Submissions
             </Button>
           )}
         </div>
       }
     >
       <Modal.Header style={{ textAlign: "center" }}>
-        {props.projectName} Time Log Report
+        All Submissions For {props.projectName}
       </Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <Segment style={{ overflow: "auto", maxWidth: "100%" }}>
             <Table celled>
-              <TableHeader>
-                <TableRow>
-                  <TableHeaderCell>Name</TableHeaderCell>
-                  {props.weeks != undefined &&
-                    props.weeks.map((week) => (
-                      <TableHeaderCell>
-                        {week.toLocaleDateString()} to{" "}
-                        {addDays(week, 7).toLocaleDateString()}
-                      </TableHeaderCell>
-                    ))}
-                </TableRow>
-              </TableHeader>
 
-              <TableBody>
-                {props.students.map((stu) => (
-                  <TableRow>
-                    <TableCell>{stu.name} </TableCell>
-                    {props.weeks != undefined &&
-                      props.weeks.map((week) => (
-                        <TableCell>{getTotalTime(week, stu.name)}</TableCell>
-                      ))}
-                  </TableRow>
-                ))}
-              </TableBody>
+              
             </Table>
           </Segment>
         </Modal.Description>

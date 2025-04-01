@@ -21,6 +21,7 @@ import { config, USERTYPES } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
 import TimeLogProjects from "./TimeLogProjects";
+import SubmissionsViewer from "../DashboardTab/SubmissionsViewer";
 
 const LOGS_PER_PAGE = 50;
 const TIME_LOGS_PER_PAGE = 5;
@@ -364,7 +365,19 @@ export default function ActionLogs(props) {
 
     semesterPanels = [];
 
-    semesterPanels.push(<h3>Action Submissions</h3>);
+    userContext.user.role === USERTYPES.ADMIN || userContext.user.role === USERTYPES.COACH ? 
+    semesterPanels.push(
+      <div>
+        <div style={{float: 'left'}}>
+        <h3>Action Submissions</h3>
+        </div>
+        <div style={{float: 'right'}}>
+        <SubmissionsViewer/>
+        </div>
+      </div>
+    ) :
+    semesterPanels.push(<h3>Action Submissions</h3>)
+
     semesterPanels.push(
       <div>
         <Table>

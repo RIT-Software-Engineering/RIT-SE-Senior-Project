@@ -190,7 +190,7 @@ export default function ProjectTime(props) {
                         })}
                     </TableBody>
                   </Table>
-                  <div>
+                  <div style={{float: 'right'}}>
                     <WeeklyHoursViewer
                       projectName={props.proj.title}
                       semesterName={props.semester.name}
