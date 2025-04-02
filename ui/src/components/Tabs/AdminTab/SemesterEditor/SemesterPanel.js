@@ -46,6 +46,22 @@ export default function SemesterPanel(props) {
       placeHolder: "End Date",
       name: "end_date",
     },
+    {
+      type: "dropdown",
+      label: "Copy Semester",
+      placeHolder: "Copy Semester",
+      name: "copy_semester",
+      options: [
+        { value: "", text: "No Semester" },
+        ...(props.semesters?.map((semester) => {
+          return {
+            key: `${semester.semester_id}`,
+            text: `${semester.name}`,
+            value: `${semester.semester_id}`,
+          };
+        }) || []),
+      ],
+    }
   ];
 
   return (
