@@ -144,9 +144,12 @@ export default function ActionTable(props) {
                     <TableBody>{renderActions()}</TableBody>
                   </Table>
                   <GanttChart
+                    autoLoadSubmissions
                     admin="true"
                     semesterData={props.semesterData}
                     semesterName={semesterName}
+                    projectName={projectTitle}
+                    projectId={projectId}
                     projectStart={semesterStart}
                     projectEnd={semesterEnd}
                     actions={props.actions}

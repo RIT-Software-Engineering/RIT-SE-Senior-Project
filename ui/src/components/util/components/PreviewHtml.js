@@ -131,7 +131,7 @@ export default function PreviewHtml(props) {
               trigger={
                 <div className="fake-a">
                   <span>
-                    {submission.name}({submission.system_id}) -{" "}
+                    {submission.name} ({submission.system_id}) -{" "}
                   </span>
                   <i>{formatDateTime(submission.submission_datetime)}</i>{" "}
                   Submission
