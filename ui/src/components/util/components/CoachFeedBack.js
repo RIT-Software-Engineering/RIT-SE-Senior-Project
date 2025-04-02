@@ -37,6 +37,7 @@ export default function CoachFeedback(props) {
   const [expandedFeedback, setExpandedFeedback] = useState({});
   const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_FEEDBACK_SUMMARY);
   const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
+  const [tempPrompt, setTempPrompt] = useState(customPrompt);
 
   const expandFeedback = (category) => {
     setExpandedFeedback({
@@ -175,9 +176,6 @@ export default function CoachFeedback(props) {
     }));
   };
 
-  const handlePromptChange = (e) => {
-    setCustomPrompt(e.target.value);
-};
 
 
   useEffect(() => {
@@ -481,10 +479,13 @@ export default function CoachFeedback(props) {
             )}
             <Button
               attached="bottom"
-              onClick={(_) => {
-                OpenPopup(student);
-              }}
-              content="Generate AI Summarization"
+              onClick={(_) => OpenPopup(student)}
+              color="grey"
+              content={
+                customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                  ? "Generate AI Summarization with Custom Prompt"
+                  : "Generate AI Summarization"
+              }
             />
             <Confirm
               style={{
@@ -508,16 +509,36 @@ export default function CoachFeedback(props) {
               value={usedAI[student] ? 1 : 0}
             />
              <div>
-            <Button onClick={() => setIsEditingPrompt(!isEditingPrompt)}>
-                Edit Prompt
+             <Button attached="bottom" onClick={() => {
+              setIsEditingPrompt(!isEditingPrompt);
+              setTempPrompt(customPrompt)}}>
+              {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
             </Button>
             {isEditingPrompt && (
+              <div style={{ marginTop: "10px" }}>
                 <textarea
-                    value={customPrompt}
-                    onChange={handlePromptChange}
-                    rows={4}
-                    style={{ marginTop: '10px' }}
+                  value={tempPrompt}
+                  onChange={(e) => setTempPrompt(e.target.value)} 
+                  rows={8}
+                  style={{
+                    marginBottom: "10px",
+                    border: customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY ? "2px solid orange" : "1px solid grey",
+                  }}
                 />
+                <div>
+                  <Button color="blue" onClick={() => {
+                    setCustomPrompt(tempPrompt);
+                    setIsEditingPrompt(false);
+                  }}>Save</Button>
+                  <Button color="red" onClick={() => {
+                    setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+                    setIsEditingPrompt(false);
+                  }}>Reset</Button>
+                  <Button color="grey" onClick={() => {
+                    setIsEditingPrompt(false);
+                  }}>Cancel</Button>
+                </div>
+              </div>
             )}
         </div>
           </Dimmer.Dimmable>
