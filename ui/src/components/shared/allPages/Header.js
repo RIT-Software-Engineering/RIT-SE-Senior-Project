@@ -6,6 +6,7 @@ import "../../../css/header.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg"
 
 function Header() {
   const history = useHistory();
@@ -40,66 +41,19 @@ function Header() {
 
   const renderNavButtons = () => {
     return (
-      <>
-        <div id="nav-buttons" className="ui right floated buttons">
-          <a
-            href={"/"}
-            className="ui button"
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            Home
-          </a>
-          <a
-            href={"/projects"}
-            className="ui button"
-            onClick={() => {
-              history.push("/projects");
-            }}
-          >
-            Projects
-          </a>
-          {signedIn && (
-            <a
-              href={"/dashboard"}
-              className="ui button"
-              onClick={() => {
-                history.push("/dashboard");
-              }}
-            >
-              Dashboard
-            </a>
-          )}
-          <a
-            href={"/sponsor"}
-            className="ui button"
-            onClick={() => {
-              history.push("/sponsor");
-            }}
-          >
-            Sponsor a Project
-          </a>
-          {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <button className="ui button" onClick={signInOut}>
-              {signInOutBtnText}
-            </button>
-          ) : (
-            <Modal
-              className={"sticky"}
-              trigger={<Button>Dev Sign in/out</Button>}
-              header="Dev Sign in/out"
-              content={{
-                content: <DevSignInModalContent />,
-              }}
-              actions={["Cancel"]}
-            />
-          )}
-        </div>
-        <div id="hamburger-menu">
-          <Button icon onClick={() => setVisible(true)}>
-            <Icon name="bars" />
-          </Button>
+        <div id="header">
+            <div className="ui container">
+                <h1 className="ui header">
+                <img src={SELogo} alt="Department of Software Engineering" style={{
+                  maxWidth: "150px", 
+                  height: "auto",
+                  marginRight: "15px",
+                }} />
+                    Senior Project
+                    
+                </h1>
+                {renderNavButtons()}
+            </div>
         </div>
         <Sidebar
           as={Menu}
