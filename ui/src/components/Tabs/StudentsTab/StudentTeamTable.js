@@ -22,7 +22,7 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.DATE)}
       >
         ID
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
 
     tableHeaderCells.push(
@@ -32,7 +32,7 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.DATE)}
       >
         Name
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
 
     tableHeaderCells.push(
@@ -42,12 +42,12 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.ACTION)}
       >
         Email
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
     tableHeaderCells.push(
       <TableHeaderCell key={"student-tab-table-login"}>
         Last Login
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
   } else {
     tableHeaderCells.push(
@@ -57,7 +57,7 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.DATE)}
       >
         Name
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
 
     tableHeaderCells.push(
@@ -67,7 +67,7 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.DATE)}
       >
         Project Name
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
 
     tableHeaderCells.push(
@@ -77,7 +77,7 @@ export default function StudentTeamTable(props) {
         // onClick={() => changeSort(COLUMNS.DATE)}
       >
         Email
-      </TableHeaderCell>
+      </TableHeaderCell>,
     );
 
     /**
@@ -90,7 +90,7 @@ export default function StudentTeamTable(props) {
         tableHeaderCells.push(
           <TableHeaderCell key={"student-tab-table-login"}>
             Last Login
-          </TableHeaderCell>
+          </TableHeaderCell>,
         );
       } else {
         login = false;
@@ -99,7 +99,7 @@ export default function StudentTeamTable(props) {
       tableHeaderCells.push(
         <TableHeaderCell key={"student-tab-table-login"}>
           Last Login
-        </TableHeaderCell>
+        </TableHeaderCell>,
       );
     }
   }
@@ -129,6 +129,7 @@ export default function StudentTeamTable(props) {
             projectsData={props.projectsData}
             viewOnly={props.viewOnly}
             studentsTab={props.studentsTab}
+            callback={props.callback}
           />
         ))}
       </TableBody>

@@ -22,6 +22,7 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./server/error_handler");
 // Constants
 const port = process.env.PORT;
 
@@ -42,7 +43,7 @@ app.use(
   cors({
     origin: process.env.BASE_URL || "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 
 // Set up body parsing and file upload configurations
@@ -53,11 +54,12 @@ app.use(
   fileupload({
     safeFileNames: true,
     preserveExtension: 4,
-  })
+  }),
 );
 
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
+app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
 app.listen(port);

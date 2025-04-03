@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const UserAuth = require("./user_auth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 let key = process.env.GOOGLE_API_KEY;
@@ -83,7 +84,7 @@ async function provide_summary(studentFeedback) {
 }
 
 module.exports = () => {
-  router.post("/GenerateSummary", (req, res) => {
+  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     const context = req.body.context;
 
     provide_summary(context)
@@ -93,7 +94,10 @@ module.exports = () => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        error.message = "Error generating summary with gemini-1.5-flash-latest";
+        return next(error);
       });
   });
 

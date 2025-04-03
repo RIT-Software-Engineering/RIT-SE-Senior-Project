@@ -1,7 +1,13 @@
 {
-  "dependencies": {
-    "@google/generative-ai": "^0.15.0",
-    "react-icons": "^5.2.1",
-    "react-to-print": "^2.15.1"
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "3.5.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "scripts": {
+    "prepare": "husky"
   }
 }

@@ -8,7 +8,7 @@ const MemoryStore = require("memorystore")(session);
 const passport = require("passport");
 
 module.exports = (app, db) => {
-  const adjustLoginTimes = (req, res) => {
+  const adjustLoginTimes = (req, res, next) => {
     let queryParams = [req.user.system_id];
     let insertQuery = `UPDATE users SET prev_login = last_login, last_login = CURRENT_TIMESTAMP 
                                     WHERE system_id = ?;`;
@@ -18,7 +18,9 @@ module.exports = (app, db) => {
       })
       .catch((err) => {
         console.log(err);
-        return res.status(500).send(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
       });
   };
 
@@ -29,7 +31,7 @@ module.exports = (app, db) => {
         checkPeriod: CONFIG.maxSessionLength,
       }),
       ...CONFIG.session,
-    })
+    }),
   );
   app.use(passport.initialize());
   app.use(passport.session());
@@ -39,13 +41,13 @@ module.exports = (app, db) => {
   app.get("/saml/whoami", [UserAuth.isSignedIn], async (req, res) => {
     const userPromise = db.query(
       `SELECT * FROM ${DB_CONFIG.tableNames.users} WHERE users.system_id = ?`,
-      [req.user.system_id]
+      [req.user.system_id],
     );
     let mockPromise;
     if (req.user.mock) {
       mockPromise = db.query(
         `SELECT * FROM ${DB_CONFIG.tableNames.users} WHERE users.system_id = ?`,
-        [req.user.mock.system_id]
+        [req.user.mock.system_id],
       );
     }
 
@@ -66,7 +68,7 @@ module.exports = (app, db) => {
       return res
         .status(400)
         .send(
-          `${req.user.mock.system_id} does not exist and therefore can not be mocked.`
+          `${req.user.mock.system_id} does not exist and therefore can not be mocked.`,
         );
     }
 
@@ -101,7 +103,7 @@ module.exports = (app, db) => {
 
   app.post(
     "/saml/acs/consume",
-    passport.authenticate("saml", CONFIG.saml.options)
+    passport.authenticate("saml", CONFIG.saml.options),
   );
 
   /**
