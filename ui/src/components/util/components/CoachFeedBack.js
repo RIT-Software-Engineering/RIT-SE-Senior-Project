@@ -522,7 +522,7 @@ export default function CoachFeedback(props) {
                   rows={8}
                   style={{
                     marginBottom: "10px",
-                    border: customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY ? "2px solid orange" : "1px solid grey",
+                    border: tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY ? "2px solid orange" : "1px solid grey",
                   }}
                 />
                 <div>

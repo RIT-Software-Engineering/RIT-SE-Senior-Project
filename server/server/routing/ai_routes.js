@@ -107,7 +107,11 @@ async function generateResponse(prompt, context) {
 
 
 module.exports = () => {
-  router.post("/GenerateSummary", (req, res, next) => {
+  router.post("/GenerateSummary", async (req, res, next) => {
+    if (!key || key === "ADD_KEY_HERE") {
+      return res.status(200).send("Invalid API key. Please let an admin know.");
+    }
+  
     const context = req.body.context;
 
     provide_summary(context)
@@ -123,19 +127,21 @@ module.exports = () => {
         return next(error);
       });
   });
-
   
-
-  router.post("/GenerateResponse", (req, res, next) => {
+  router.post("/GenerateResponse", async (req, res, next) => {
+    if (!key || key === "ADD_KEY_HERE") {
+      res.type("text/plain");
+      return res.status(200).send("Invalid API key. Please let an admin know.");
+    }
+  
     const { prompt, context } = req.body;
 
     if (!prompt || !context) {
-      return res.status(400).json({ error: "Missing 'prompt' or 'context' in request body." });
+      return res.status(200).json({ error: "Missing 'prompt' or 'context' in request body." });
     }
   
     generateResponse(prompt, context)
       .then((response) => {
-        console.log(response)
         res.type("text/plain");
         res.status(200).send(response);
       })
