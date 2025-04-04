@@ -85,6 +85,7 @@ export const config = {
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
+    API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
@@ -220,3 +221,28 @@ export const ACTION_STATES = {
 export const SERVER_TIMEZONE = "America/New_York";
 
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
+
+export const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
+Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
+
+Input Specification:
+    The input will be a JSON array of review objects representing the student's past evaluations.
+    Each review will contain a timestamp, reviewer identity, and structured feedback.
+
+    The input format will be:
+    [
+        {
+            "submission_datetime": "Timestamp of review submission",
+            "form_data": "{\\"Students\\":{\\"Student Name\\":{\\"Feedback\\":{\\"Category\\":\\"Feedback entered in form\\"},\\"Ratings\\":{\\"Category\\":Numeric Rating}}}}"
+        },
+        ...
+    ]
+
+    - form_data contains feedback categories and ratings for the student.
+    - Each review is submitted at a different time, allowing trends to be analyzed.
+
+Output Specification:
+    1. Focus on trends and changes over time.
+    2. Identify key improvements and recurring challenges in performance.
+    3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
+`;

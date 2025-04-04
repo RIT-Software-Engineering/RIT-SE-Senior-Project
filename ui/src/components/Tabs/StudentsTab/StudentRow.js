@@ -7,6 +7,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import { formatDateTime } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
+import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 
 dayjs.extend(utc);
 
@@ -22,6 +23,9 @@ export default function StudentRow(props) {
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_HISTORIC_SUMMARY);
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
+  const [tempPrompt, setTempPrompt] = useState(customPrompt);
  
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -99,10 +103,12 @@ const handleGenerateAISummary = async () => {
   try {
     const selectedStudentName = `${props.student.fname} ${props.student.lname}`;
     const sanitizedReviews = peerReviews.map(review => sanitizeReview(review, selectedStudentName));
+    
     const body = new FormData();
     body.append("context", JSON.stringify(sanitizedReviews));
+    body.append("prompt", customPrompt);
 
-    const response = await SecureFetch(`${config.url.API_GENERATE_HISTORIC_SUMMARY}`, {
+    const response = await SecureFetch(`${config.url.API_GENERATE_RESPONSE}`, {
       method: "post",
       body: body,
     });
@@ -114,6 +120,7 @@ const handleGenerateAISummary = async () => {
     setAiSummary("Error generating summary");
   }
 };
+
 
 const fetchAdditionalInfo = useCallback(async () => {
   try {
@@ -380,7 +387,52 @@ const handleSaveAdditionalInfo = async () => {
                 }}
               />
             </div>     
-            <Button onClick={handleGenerateAISummary}>Generate AI Summary</Button>
+            <Button attached="bottom" onClick={handleGenerateAISummary}
+              color="grey"
+              content={
+                customPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
+                  ? "Generate AI Summarization with Custom Prompt"
+                  : "Generate AI Summarization"
+              }>
+            </Button>
+            <div>
+             <Button attached="bottom" onClick={() => {
+              setIsEditingPrompt(!isEditingPrompt);
+              setTempPrompt(customPrompt)}}>
+              {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+            </Button>
+            {isEditingPrompt && (
+              <div style={{ marginTop: "10px" }}>
+                <textarea
+                  value={tempPrompt}
+                  onChange={(e) => setTempPrompt(e.target.value)} 
+                  rows={8}
+                  style={{
+                    width: "100%",
+                    minWidth: "400px",
+                    minHeight: "150px",
+                    resize: "vertical",
+                    marginBottom: "10px",
+                    border: tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY ? "2px solid orange" : "1px solid grey",
+                    outline: tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY ? "2px solid orange" : "none",
+                  }}
+                />
+                <div>
+                  <Button color="blue" onClick={() => {
+                    setCustomPrompt(tempPrompt);
+                    setIsEditingPrompt(false);
+                  }}>Save</Button>
+                  <Button color="red" onClick={() => {
+                    setCustomPrompt(PROMPT_GENERATE_HISTORIC_SUMMARY);
+                    setIsEditingPrompt(false);
+                  }}>Reset</Button>
+                  <Button color="grey" onClick={() => {
+                    setIsEditingPrompt(false);
+                  }}>Cancel</Button>
+                </div>
+              </div>
+            )}
+        </div>
             </>
             )}
           </Modal.Content>
