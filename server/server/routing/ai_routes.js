@@ -107,7 +107,7 @@ async function generateResponse(prompt, context) {
 
 
 module.exports = () => {
-  router.post("/GenerateSummary", async (req, res, next) => {
+  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
     if (!key || key === "ADD_KEY_HERE") {
       return res.status(200).send("Invalid API key. Please let an admin know.");
     }
@@ -128,7 +128,7 @@ module.exports = () => {
       });
   });
   
-  router.post("/GenerateResponse", async (req, res, next) => {
+  router.post("/GenerateResponse", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
     if (!key || key === "ADD_KEY_HERE") {
       res.type("text/plain");
       return res.status(200).send("Invalid API key. Please let an admin know.");
