@@ -624,6 +624,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -663,6 +664,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
@@ -676,6 +678,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -712,6 +715,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}

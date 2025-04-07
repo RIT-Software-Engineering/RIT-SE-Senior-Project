@@ -156,6 +156,7 @@ export default function ToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
+      closeOnEscape={false}
       style={{ zIndex: 100 }}
       offset={[offsetX, 0]}
       trigger={props.trigger}
