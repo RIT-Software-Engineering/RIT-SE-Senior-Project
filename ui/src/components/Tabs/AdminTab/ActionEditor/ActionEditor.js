@@ -7,7 +7,7 @@ import ActionTable from "./ActionTable";
 
 export default function ActionEditor(props) {
   const [actions, setActionsData] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); // Track modal open state
+  const [projectData, setProjectData] = useState([]);
 
   const getActionData = () => {
     SecureFetch(config.url.API_GET_ACTIONS)
@@ -86,7 +86,6 @@ export default function ActionEditor(props) {
           create={true}
           key={"createAction"}
           callback={getActionData}
-          isOpenCallback={(isOpen) => setIsOpen(isOpen)} // Pass the isOpenCallback prop
         />
       </div>
     </div>
