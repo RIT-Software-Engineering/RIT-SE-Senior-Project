@@ -18,8 +18,8 @@ VALUES
         '',
         'This is the first test form for individuals',
         'individual',
-        '2019-08-27',
-        '2019-09-07',
+        DATE(DATE('now'), '-2 YEARS'),
+        DATE(DATE('now'), '-1.5 YEARS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="name">Name</label>
@@ -37,8 +37,8 @@ VALUES
         '',
         'Evaluate your team members',
         'peer_evaluation',
-        '2024-05-13',
-        '2024-09-30',
+        DATE(DATE('now'), '-2 YEARS'),
+        DATE(DATE('now'), '-1.5 YEARS'),
         '<h1>Peer Evaluation</h1>
           <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <h2>Instructions</h2>
@@ -400,8 +400,8 @@ VALUES
         '',
         'This is the first test form for individuals',
         'individual',
-        '2024-08-07',
-        '2024-08-10',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="name">Name</label>
@@ -422,8 +422,8 @@ VALUES
         '', 
         'Turn in your interim report',
         'team', 
-        '2024-01-13',
-        '2024-01-30',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1> Submit your interim report </h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="report">Report File</label>
@@ -434,8 +434,8 @@ VALUES
     (
         4, 'Team Name Submission', '', 'Come up <u>with</u> team name', 
         'team',
-        '2024-01-13',
-        '2024-01-30',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="name">Name</label>
@@ -452,8 +452,8 @@ VALUES
         4, 'Action 3', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-01-22',
-        '2024-02-27',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -474,8 +474,8 @@ VALUES
         4, 'Action 4', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-03-05',
-        '2024-03-15',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -496,8 +496,8 @@ VALUES
         4, 'Action 5', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-03-09',
-        '2024-03-20',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -518,8 +518,8 @@ VALUES
         4, 'Action 6', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-03-13',
-        '2024-03-25',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1.1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -540,8 +540,8 @@ VALUES
         4, 'Action 7', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-03-25',
-        '2024-04-17',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -562,8 +562,8 @@ VALUES
         4, 'Action 8', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-04-17',
-        '2024-04-28',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -584,8 +584,8 @@ VALUES
         4, 'Action 9', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-05-13',
-        '2024-06-16',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '-0.5 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -606,8 +606,8 @@ VALUES
         4, 'Action 10', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-05-16',
-        '2024-07-01',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now')),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -628,8 +628,8 @@ VALUES
         4, 'Action 11', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-06-25',
-        '2024-07-18',
+        DATE(DATE('now')),
+        DATE(DATE('now')),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -650,8 +650,8 @@ VALUES
         4, 'Action 12', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-07-03',
-        '2024-07-14',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '+3 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -672,8 +672,8 @@ VALUES
         4, 'Action 13', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-07-20',
-        '2024-08-06',
+        DATE(DATE('now'), '+2 MONTHS'),
+        DATE(DATE('now'), '+3 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">
@@ -694,8 +694,8 @@ VALUES
         4, 'Action 14', '', 
         'Come up <u>with</u> team name', 
         'team',
-        '2024-07-27',
-        '2024-08-07',
+        DATE(DATE('now'), '+3 MONTHS'),
+        DATE(DATE('now'), '+3 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <div class="required field">

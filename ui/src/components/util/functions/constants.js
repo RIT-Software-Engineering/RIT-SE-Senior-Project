@@ -1,11 +1,11 @@
 const BASE_API_URL =
   process.env.NODE_ENV === "development"
-  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 const BASE_URL =
   process.env.NODE_ENV === "development"
-  ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
-  : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
+    ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
+    : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
 export const config = {
   url: {
@@ -222,6 +222,7 @@ export const SERVER_TIMEZONE = "America/New_York";
 
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
 
+//Defualt AI prompts
 export const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
 Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
 
@@ -245,4 +246,31 @@ Output Specification:
     1. Focus on trends and changes over time.
     2. Identify key improvements and recurring challenges in performance.
     3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
+`;
+
+
+export const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
+Summarize and anonymize the following peer review feedback from a student project. 
+In JSON format, You'll be given categorized feedback for a student from their team members.
+Create a  anonymized paragraph that captures the key points and overall sentiment of the feedback. 
+
+Input Specification:
+    Will be in Json With this format:
+    {
+        Student: "Student context is for",
+        Ratings: {
+            From: "Student Feedback is From",
+            Feedback: {
+                "Category": "Feedback entered in form"
+            }
+        }
+    }  
+
+Output Specification: 
+    1. Do not include any names or identifying information. (Do not say you can not reveal names either)
+    2. Focus on providing constructive insights that the student can use to improve their performance. 
+    3. The summary should be concise, typically 3-5 sentences, highlighting strengths and areas for improvement. 
+    4. Output should be in paragraph form.   
+    5. Speak in the POV as the team coach talking to the student
+    6. Do not format your response as a JSON
 `;
