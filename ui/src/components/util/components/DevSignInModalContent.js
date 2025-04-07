@@ -117,6 +117,6 @@ export default function DevSignInModalContent() {
         {loading ? "Resetting..." : "Reset Database"}
       </Button>
 
-    </div>
+    </Container>
   );
 }
