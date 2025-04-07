@@ -61,6 +61,12 @@ export default function SemesterPanel(props) {
           };
         }) || []),
       ],
+    },
+    {
+      type: "copy_actions",
+      label: "Copy Actions",
+      placeHolder: "Copy Actions",
+      name: "copy_actions",
     }
   ];
 

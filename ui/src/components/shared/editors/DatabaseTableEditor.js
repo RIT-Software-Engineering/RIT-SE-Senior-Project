@@ -433,6 +433,21 @@ export default function DatabaseTableEditor(props) {
             </Form.Field>,
           );
           break;
+        case "copy_actions": //TODO fix this
+          console.log("semester", formData["copy_semester"], "\n props", props);
+          fieldComponents.push(
+            <Form.Field key={field["name"]}>
+              <label>{field.label}</label>
+              <Form.Checkbox
+                label={field["label"]}
+                checked={formData[field["name"]]}
+                name={field["name"]}
+                onChange={handleChange}
+                disabled={false}
+              />
+            </Form.Field>,
+          )
+          break;
         default:
           console.warn(`Found unknown field type: "${field.type}"`);
           break;
