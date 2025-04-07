@@ -26,7 +26,7 @@ export default function DatabaseTableEditor(props) {
   let date = new Date();
 
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
-    MODAL_STATUS.CLOSED
+    MODAL_STATUS.CLOSED,
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
@@ -89,11 +89,11 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     let body = new FormData();
-         console.log(submitRoute)
+    console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
-          dataToSubmit["changed_fields"]
+          dataToSubmit["changed_fields"],
         );
       }
     }
@@ -158,8 +158,7 @@ export default function DatabaseTableEditor(props) {
   function handleUpload(event, name) {
     let value = event.target.files[0];
     const newFormData =
-      props.preChange &&
-      props.preChange(formData, name, value);
+      props.preChange && props.preChange(formData, name, value);
 
     if (newFormData) {
       setFormData(newFormData);
@@ -194,7 +193,7 @@ export default function DatabaseTableEditor(props) {
                 disabled={field.disabled}
                 required
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "phoneInput":
@@ -209,7 +208,7 @@ export default function DatabaseTableEditor(props) {
                 labels={us}
                 placeholder={field.placeholder}
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "date":
@@ -225,7 +224,7 @@ export default function DatabaseTableEditor(props) {
                 disabled={field.disabled}
                 required
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "textArea":
@@ -236,11 +235,11 @@ export default function DatabaseTableEditor(props) {
                 data={formData}
                 onChange={handleChange}
                 value={formData[field.name]}
-              />
+              />,
             );
           } else {
             fieldComponents.push(
-              <Form.Field key={field.name}required>
+              <Form.Field key={field.name} required>
                 <label>{field.label}</label>
                 <Form.TextArea
                   label={field.label}
@@ -259,7 +258,7 @@ export default function DatabaseTableEditor(props) {
                     minHeight: "200px",
                   }}
                 />
-              </Form.Field>
+              </Form.Field>,
             );
           }
           break;
@@ -268,8 +267,8 @@ export default function DatabaseTableEditor(props) {
           if (
             (formData.type === "coach" || formData.type === "admin") &&
             (field.label === "Semester/Project" || field.label === "Semester")
-          ){}
-          else {
+          ) {
+          } else {
             fieldComponents.push(
               <Form.Field
                 key={field.name}
@@ -285,15 +284,15 @@ export default function DatabaseTableEditor(props) {
                   name={field.name}
                   onChange={handleChange}
                 />
-              </Form.Field>
+              </Form.Field>,
             );
           }
           break;
         case "checkbox":
-          if (field.disabled){
+          if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{color: "lightgray"}}>{field.label}</label>
+                <label style={{ color: "lightgray" }}>{field.label}</label>
                 <Form.Checkbox
                   label={field["label"]}
                   checked={!!formData[field["name"]]}
@@ -301,7 +300,7 @@ export default function DatabaseTableEditor(props) {
                   onChange={handleChange}
                   disabled={true}
                 />
-              </Form.Field>
+              </Form.Field>,
             );
             break;
           }
@@ -315,7 +314,7 @@ export default function DatabaseTableEditor(props) {
                 onChange={handleChange}
                 disabled={false}
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "files":
@@ -336,34 +335,34 @@ export default function DatabaseTableEditor(props) {
               ) : (
                 <p>No Attachments</p>
               )}
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "upload":
-          if(field.disabled){
+          if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{color: "lightgray"}}>{field.label}</label>
+                <label style={{ color: "lightgray" }}>{field.label}</label>
                 <input
                   type="file"
-                  onChange={event => handleUpload(event, field.name)}
+                  onChange={(event) => handleUpload(event, field.name)}
                   accept={field.accept}
                   disabled={true}
                 />
-              </Form.Field>
-           );
-          }else{
+              </Form.Field>,
+            );
+          } else {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
                 <label>{field.label}</label>
                 <input
                   type="file"
-                  onChange={event => handleUpload(event, field.name)}
+                  onChange={(event) => handleUpload(event, field.name)}
                   accept={field.accept}
                   disabled={false}
                 />
-              </Form.Field>
-           );
+              </Form.Field>,
+            );
           }
           break;
         case "multiSelectDropdown":
@@ -385,7 +384,7 @@ export default function DatabaseTableEditor(props) {
                 name={field.name}
                 onChange={handleChange}
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "searchDropdown":
@@ -406,7 +405,7 @@ export default function DatabaseTableEditor(props) {
                 name={field.name}
                 onChange={handleChange}
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         case "activeCheckbox":
@@ -431,7 +430,7 @@ export default function DatabaseTableEditor(props) {
                 }
                 disabled={field.disabled}
               />
-            </Form.Field>
+            </Form.Field>,
           );
           break;
         default:
@@ -490,11 +489,11 @@ export default function DatabaseTableEditor(props) {
           onClose={() => {
             setOpen(false);
             props.isOpenCallback(false);
-            }}
+          }}
           onOpen={() => {
-              setOpen(true);
-              props.isOpenCallback(true);
-              }}
+            setOpen(true);
+            props.isOpenCallback(true);
+          }}
           open={open}
           header={props.header}
           content={{

@@ -147,7 +147,7 @@ export default function StudentsTab(props) {
           initialActive[semesterMap[student.semester_group]?.semester_id] =
             isSemesterActive(
               semesterMap[student.semester_group]?.start_date,
-              semesterMap[student.semester_group]?.end_date
+              semesterMap[student.semester_group]?.end_date,
             );
         }
         if (student.project) {
@@ -166,7 +166,7 @@ export default function StudentsTab(props) {
           ].push(student);
           initialActiveProjects[student.project] = isSemesterActive(
             semesterMap[student.semester_group]?.start_date,
-            semesterMap[student.semester_group]?.end_date
+            semesterMap[student.semester_group]?.end_date,
           );
         } else {
           mappedData[student.semester_group]["projects"]["noProject"][
@@ -237,7 +237,7 @@ export default function StudentsTab(props) {
           ) {
             let sortedStudents = _.sortBy(
               semester.projects[projectKey].students || [],
-              ["fname", "lname", "email"]
+              ["fname", "lname", "email"],
             );
             activeProjects.push(
               <div className="accordion-button-group">
@@ -289,7 +289,7 @@ export default function StudentsTab(props) {
                     <Icon name="mail" />
                   </a>
                 </div>
-              </div>
+              </div>,
             );
           }
           return true;
@@ -345,7 +345,7 @@ export default function StudentsTab(props) {
                 <Icon name="mail" />
               </a>
             </div>
-          </div>
+          </div>,
         );
       }
     });
@@ -400,7 +400,7 @@ export default function StudentsTab(props) {
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>
-                        subAccordion(submission, index)
+                        subAccordion(submission, index),
                       )
                     ) : (
                       <Message>
@@ -415,7 +415,7 @@ export default function StudentsTab(props) {
                 },
               ]}
             />
-          </div>
+          </div>,
         );
       });
     });

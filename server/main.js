@@ -43,7 +43,7 @@ app.use(
   cors({
     origin: process.env.BASE_URL || "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 
 // Set up body parsing and file upload configurations
@@ -54,7 +54,7 @@ app.use(
   fileupload({
     safeFileNames: true,
     preserveExtension: 4,
-  })
+  }),
 );
 
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
