@@ -25,6 +25,12 @@ paths:
               schema:
                 type: string
                 description: Generated summary
+         "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
   /ai/GenerateHistoricSummary:
     post:
       summary: Generate historic summary
