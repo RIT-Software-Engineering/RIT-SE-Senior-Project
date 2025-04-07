@@ -200,6 +200,12 @@
   grid-column: span 2 / auto;
 }
 
+.action-bar.proposal-row-purple {
+  border: 2px #b66dff solid;
+  color: black;
+  grid-column: span 2 / auto;
+}
+
 .action-bar-text {
   text-overflow: ellipsis;
   overflow: hidden;
