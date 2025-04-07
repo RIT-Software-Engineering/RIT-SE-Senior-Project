@@ -1,6 +1,5 @@
 const UserAuth = require("./user_auth");
 const router = require("express").Router();
-const UserAuth = require("./user_auth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 let key = process.env.GOOGLE_API_KEY;
