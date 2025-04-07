@@ -137,14 +137,14 @@ export default function DatabaseTableEditor(props) {
     // Don't track short_desc if certain action targets are chosen.
     if (formData.action_target !== "peer_evaluation" && formData.action_target !== "student_announcement" && formData.action_target !== "coach_announcement"){
       // check for short_desc
-      if (formData.short_desc.trim() === ""){
+      if (formData.short_desc?.trim() === ""){
         errors.push("Please provide a short description (short_desc)")
         errorFields.add("short_desc");
       }
     }
 
      // check for page_html
-     if (formData.page_html.trim() === ""){
+     if (formData.page_html?.trim() === ""){
       errors.push("Please provide the HTML (page_html)")
       errorFields.add("page_html");
     }
