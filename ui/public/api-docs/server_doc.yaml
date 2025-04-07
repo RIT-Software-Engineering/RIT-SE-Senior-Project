@@ -14,29 +14,25 @@ servers:
 components:
   schemas:
     ActionLog:
-      $ref: "#/components/schemas/ActionLog"
+      $ref: './schemas.yaml#/components/schemas/ActionLog'
     Actions:
-      $ref: "#/components/schemas/Actions"
+      $ref: './schemas.yaml#/components/schemas/Actions'
     Archive:
-      $ref: "#/components/schemas/Archive"
-    Coaches:
-      $ref: "#/components/schemas/Coaches"
+      $ref: './schemas.yaml#/components/schemas/Archive'
     Projects:
-      $ref: "#/components/schemas/Projects"
+      $ref: './schemas.yaml#/components/schemas/Projects'
     ProjectCoaches:
-      $ref: "#/components/schemas/ProjectCoaches"
+      $ref: './schemas.yaml#/components/schemas/ProjectCoaches'
     SemesterGroup:
-      $ref: "#/components/schemas/SemesterGroup"
+      $ref: './schemas.yaml#/components/schemas/SemesterGroup'
     Sponsors:
-      $ref: "#/components/schemas/Sponsors"
-    Students:
-      $ref: "#/components/schemas/Students"
+      $ref: './schemas.yaml#/components/schemas/Sponsors'
     TimeLog:
-      $ref: "#/components/schemas/TimeLog"
+      $ref: './schemas.yaml#/components/schemas/TimeLog'
     Users:
-      $ref: "#/components/schemas/Users"
+      $ref: './schemas.yaml#/components/schemas/Users'
     Error:
-      $ref: "#/components/schemas/Error"
+      $ref: './schemas.yaml#/components/schemas/Error'
 
 paths:
   /ai/GenerateSummary:
