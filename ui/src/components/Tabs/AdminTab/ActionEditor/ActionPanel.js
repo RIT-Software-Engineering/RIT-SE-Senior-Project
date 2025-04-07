@@ -15,9 +15,11 @@ const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
 const file_size = "file_size";
+const page_html = "page_html";
+const start_date = "start_date";
 
 export default function ActionPanel(props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
@@ -39,10 +41,12 @@ export default function ActionPanel(props) {
     ? {
         SUCCESS: "The action has been created.",
         FAIL: "We were unable to create your action.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
       }
     : {
         SUCCESS: "The action has been Edited.",
         FAIL: "We were unable to receive your edits.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
 
@@ -127,6 +131,13 @@ export default function ActionPanel(props) {
     },
   ];
 
+  const preSubmit = (data) => {
+    if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
+      data.semester = "";
+    }
+    return data;
+  };
+
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
     if (
@@ -134,17 +145,20 @@ export default function ActionPanel(props) {
       [
         ACTION_TARGETS.coach_announcement,
         ACTION_TARGETS.student_announcement,
+        ACTION_TARGETS.peer_evaluation,
       ].includes(value)
     ) {
       formData[short_desc] = "";
       formData[file_types] = "";
+      formData[file_size] = "";
       formData[name] = value;
     } else if (
       [
         ACTION_TARGETS.coach_announcement,
         ACTION_TARGETS.student_announcement,
+        ACTION_TARGETS.peer_evaluation,
       ].includes(formData[action_target]) &&
-      [short_desc, file_types].includes(name)
+      [short_desc, file_types, file_size].includes(name)
     ) {
       return formData;
     }
@@ -173,12 +187,7 @@ export default function ActionPanel(props) {
         }}
         open={open}
         preChange={preChange}
-        preSubmit={(data) => {
-          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
-            data.semester = "";
-          }
-          return data;
-        }}
+        preSubmit={preSubmit}
         callback={props.callback}
       />
     );
@@ -195,12 +204,7 @@ export default function ActionPanel(props) {
         button={props.buttonIcon || (!!props.create ? "plus" : "edit")}
         trigger={props.trigger}
         preChange={preChange}
-        preSubmit={(data) => {
-          if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
-            data.semester = "";
-          }
-          return data;
-        }}
+        preSubmit={preSubmit}
         callback={props.callback}
       />
     );
