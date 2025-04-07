@@ -80,6 +80,7 @@ export default function DevSignInModalContent() {
         Sign Out
       </Button>
       <Button
+        color="red"
         onClick={async () => {
           setLoading(true);
 
