@@ -372,7 +372,12 @@ export default function ActionLogs(props) {
         <h3>Action Submissions</h3>
         </div>
         <div style={{float: 'right'}}>
-        <SubmissionsViewer/>
+        <SubmissionsViewer
+          semesterMap = {semesterMap}
+          actionLogs = {actionLogs}
+          prevLogin = {prevLogin}
+          userContext = {userContext}
+        />
         </div>
       </div>
     ) :
