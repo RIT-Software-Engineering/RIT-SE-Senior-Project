@@ -5,13 +5,34 @@ import "../../../App.css";
 const BarGraph = ({ data }) => {
   const userContext = useContext(UserContext);
   const [userFeedback, setUserFeedback] = useState([]);
-  const [dimensions] = useState({ width: 800, height: 400 });
+  const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const sortedFeedback = Object.entries(data.Students).map(
       ([student, feedback]) => [student, feedback.AverageRatings]
     );
     setUserFeedback(sortedFeedback);
+
+    // Check for dark mode
+    const checkDarkMode = () => {
+      setIsDarkMode(document.body.classList.contains("dark-mode"));
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // TODO CHANGE THIS SO THAT DARK MODE WORKS, THIS IS JUST A WORK AROUND
+
+    // Set up an observer to watch for changes to the body's class list
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // Cleanup
+    return () => observer.disconnect();
   }, [data, userContext]);
 
   const { width, height } = dimensions;
@@ -19,8 +40,7 @@ const BarGraph = ({ data }) => {
   const maxScore = 5;
   const colors = ["#D81B60", "#1E88E5", "#FFC107", "#004D40"];
 
-  // Check for dark mode on each render
-  const isDarkMode = document.body.classList.contains("dark-mode");
+  // Define text color based on dark mode
   const textColor = isDarkMode ? "#ffffff" : "#000000";
 
   return (
