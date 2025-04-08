@@ -4,7 +4,8 @@ import { Modal, Form, Radio, Divider } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
-import { Editor } from "@tinymce/tinymce-react";
+import QuillEditor from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -14,7 +15,16 @@ function ProposalPage() {
     const [formFiles, setFormFiles] = useState(null);
     const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
     const [errors, setErrors] = useState({})
-    const editorRef = useRef(null);
+    const quill = useRef(null);
+
+    const formats = [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "list",
+        "bullet",
+    ];
 
     const setFormData = (event) => {
         const target = event.target;
@@ -216,184 +226,84 @@ function ProposalPage() {
                 </Form.Field>
 
                 <div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Background Information</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.background_info || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Project Background Information...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['background_info']: editorContent
+                            ['background_info']: value
                         })
                     }}
                 />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Description</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.project_description || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Project Description...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['project_description']: editorContent
+                            ['project_description']: value
                         })
                     }}
                 />
-
+                
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Scope</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.project_scope || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Project Scope...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['project_scope']: editorContent
+                            ['project_scope']: value
                         })
                     }}
                 />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Challenges</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.project_challenges || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Project Challenges...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['project_challenges']: editorContent
+                            ['project_challenges']: value
                         })
                     }}
                 />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Constraints & Assumptions</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.constraints_assumptions || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Constraints & Assumptions...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['constraints_assumptions']: editorContent
+                            ['constraints_assumptions']: value
                         })
                     }}
                 />
 
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor Provided Resources</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.sponsor_provided_resources || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Sponsor Provided Resources...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['sponsor_provided_resources']: editorContent
+                            ['sponsor_provided_resources']: value
                         })
                     }}
-                /><br />
+                />
+
+                <br />
                 <Form.Input
                     label="Project Search Keywords"
                     name="project_search_keywords"
@@ -405,60 +315,27 @@ function ProposalPage() {
                 />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor and Project Specific Deliverables</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.sponsor_deliverables || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Sponsor and Project Specific Deliverables...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['sponsor_deliverables']: editorContent
+                            ['sponsor_deliverables']: value
                         })
                     }}
                 />
+
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Proprietary Information</div><br />
-                <Editor
-                    apiKey={config.url.TINYMCE_API_KEY}
+                <QuillEditor
+                    ref={(el) => (quill.current = el)}
                     value={formData.proprietary_info || ""}
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    init={{
-                    selector: "textarea",
-                    placeholder: "Proprietary Information...",
-                    height: 200,
-                    menubar: false,
-                    branding: false,
-                    elementpath: false,
-                    plugins: [
-                        'advlist', 'autolink', 'lists','image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'table', 'wordcount'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                        'bold italic forecolor | bullist numlist',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                    onEditorChange={(_, editor) => {
-                        const editorContent = editor.getContent({format: 'rtf'});
+                    formats={formats}
+                    onChange={(value) => {
                         setActualFormData({
                             ...formData,
-                            ['proprietary_info']: editorContent
+                            ['proprietary_info']: value
                         })
                     }}
                 />
