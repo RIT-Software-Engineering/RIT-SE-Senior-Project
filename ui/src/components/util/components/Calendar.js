@@ -82,7 +82,7 @@ export function Calendar(props) {
   }
     
 
-  //actions dont nativly have a color field for display, this adds it for the calendar
+  //actions dont natively have a color field for display, this adds it for the calendar
   const sortedActions = _.sortBy(
     props.actions.map((action) => ({
       ...action,

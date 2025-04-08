@@ -27,6 +27,9 @@ export default function ActionElements(props) {
       case ACTION_STATES.GREY:
         color += "proposal-row-gray";
         break;
+      case ACTION_STATES.PURPLE:
+        color += "proposal-row-purple";
+        break;
       default:
         color += `proposal-row-${action.state}`;
         break;
