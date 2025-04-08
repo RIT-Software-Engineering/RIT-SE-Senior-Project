@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
-import { config, TINYMCE_API_KEY } from "../util/functions/constants";
+import { config } from "../util/functions/constants";
 import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { Editor } from "@tinymce/tinymce-react";
@@ -152,6 +152,7 @@ function ProposalPage() {
                     name="title"
                     value={formData.title || ""}
                     onChange={(e) => {
+                        console.log("tinymce api code: " + config.url.TINYMCE_API_KEY);
                         setFormData(e);
                     }}
                     error={errors.title && { content: errors.title, pointing: "below" }}
@@ -216,7 +217,7 @@ function ProposalPage() {
 
                 <div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Background Information</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.background_info || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -246,7 +247,7 @@ function ProposalPage() {
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Description</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.project_description || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -276,7 +277,7 @@ function ProposalPage() {
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Scope</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.project_scope || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -306,7 +307,7 @@ function ProposalPage() {
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Challenges</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.project_challenges || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -336,7 +337,7 @@ function ProposalPage() {
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Constraints & Assumptions</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.constraints_assumptions || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -366,7 +367,7 @@ function ProposalPage() {
 
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor Provided Resources</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.sponsor_provided_resources || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -405,7 +406,7 @@ function ProposalPage() {
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor and Project Specific Deliverables</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.sponsor_deliverables || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{
@@ -434,7 +435,7 @@ function ProposalPage() {
                 />
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Proprietary Information</div><br />
                 <Editor
-                    apiKey={TINYMCE_API_KEY}
+                    apiKey={config.url.TINYMCE_API_KEY}
                     value={formData.proprietary_info || ""}
                     onInit={(_evt, editor) => editorRef.current = editor}
                     init={{

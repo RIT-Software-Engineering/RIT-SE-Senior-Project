@@ -7,10 +7,13 @@ const BASE_URL =
     ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
     : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
+const TINYMCE_API_KEY = process.env.REACT_APP_TINYMCE_API_KEY;
+
 export const config = {
   url: {
     BASE_URL: BASE_URL,
     BASE_API_URL: BASE_API_URL,
+    TINYMCE_API_KEY: TINYMCE_API_KEY,
     WWW: `${BASE_URL}/www`,
     LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
 
@@ -119,8 +122,6 @@ export const config = {
     DEV_ONLY_API_POST_EDIT_LAST_LOGIN: `${BASE_API_URL}/saml/DevOnlyLastLogin`,
   },
 };
-
-export const TINYMCE_API_KEY = "vnpx16ypdrh9lf26zz8kb3v3u7i00hdzn561oydw7wogiryt"
 
 export const USERTYPES = {
   COACH: "coach",
