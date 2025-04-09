@@ -106,14 +106,23 @@ export default function TimeLog(props) {
       .then((time_logs) => {
         setTimeLogs(time_logs.timeLogs);
         setTimeLogCount(time_logs.timeLogCount);
-        var users = [];
+        var userNames = [];
         for (var i = 0; i < time_logs.timeLogs.length; i++) {
           var timeLog = time_logs.timeLogs[i];
-          if (!users.includes(timeLog.name)) {
-            users.push(timeLog.name);
+          if (!userNames.some(e => e.name === timeLog.name)) {
+            userNames.push({name: timeLog.name, system_id: timeLog.system_id});
           }
         }
 
+        userNames.sort(function(a, b) {
+          return ((a.system_id < b.system_id) ? -1 : ((a.system_id == b.system_id) ? 0 : 1));
+        });
+
+        var users = [];
+        for (let i = 0; i < userNames.length; i++) {
+          users.push(userNames[i].name);
+        }
+        
         var userStats = [];
         for (let i = 0; i < users.length; i++) {
           let userTimeLogs = time_logs.timeLogs.filter(
