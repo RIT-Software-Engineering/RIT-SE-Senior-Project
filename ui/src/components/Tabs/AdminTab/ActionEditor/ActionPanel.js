@@ -20,6 +20,7 @@ const start_date = "start_date";
 
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
+  const [errors, setErrors] = useState([]); // track action form errors
 
   let initialState = {
     action_id: props.actionData?.action_id || "",
@@ -131,7 +132,62 @@ export default function ActionPanel(props) {
     },
   ];
 
+  // validation for the action form
+  const validateForm = (data) => {
+    const errorsFound = [];
+
+    if (
+      data.action_target !== "peer_evaluation" &&
+      data.action_target !== "student_announcement" &&
+      data.action_target !== "coach_announcement"
+    ) {
+      // check for short description
+      if (!data.short_desc?.trim()) {
+        errorsFound.push({
+          name: "short_desc",
+          message: "Please provide a short description (short_desc)",
+        });
+      }
+    }
+
+    // check for page_html
+    if (!data.page_html?.trim()) {
+      errorsFound.push({
+        name: "page_html",
+        message: "Please provide the page HTML (page_html)",
+      });
+    }
+
+    // date validation only if both start and due date are given.
+    if (data.start_date && data.due_date) {
+      if (data.start_date > data.due_date) {
+        errorsFound.push({
+          name: "date_start",
+          message: "Start Date must be before Due Date",
+        });
+      }
+    }
+
+    // check whether Active checkbox is checked or not.
+    if (data.date_deleted === false) {
+      errorsFound.push({
+        name: "date_deleted",
+        message: "Please check the Active box",
+      });
+    }
+    return errorsFound; // no errors found
+  };
+
   const preSubmit = (data) => {
+    const validationErrors = validateForm(data);
+    setErrors(validationErrors);
+
+    if (validationErrors.length > 0) {
+      console.log("The current error is:", validationErrors);
+      return null;
+    }
+
+    setErrors([]);
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
@@ -189,6 +245,7 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
+        errors={errors}
       />
     );
   } else {
@@ -206,6 +263,7 @@ export default function ActionPanel(props) {
         preChange={preChange}
         preSubmit={preSubmit}
         callback={props.callback}
+        errors={errors}
       />
     );
   }

@@ -44,8 +44,8 @@ export default function DatabaseTableEditor(props) {
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
-  const [errors, setErrors] = useState([]);
-  const [errorFields, setErrorFields] = useState(new Set());
+  const [errors, setErrors] = useState(props.errors);
+  // const [errorFields, setErrorFields] = useState(new Set());
 
   const formRef = useRef(null); // maintain the current form data in the case of submission error
 
@@ -96,7 +96,7 @@ export default function DatabaseTableEditor(props) {
               positive: true,
               onClick: (event) => {
                 setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-                setFormData(formRef.current);
+                setFormData(formRef.current || initialState);
                 setOpen(true);
               },
               key: 0,
@@ -131,7 +131,6 @@ export default function DatabaseTableEditor(props) {
 
   function handleCancel() {
     setErrors([]);
-    setErrorFields(new Set());
     setFormData(initialState);
     formRef.current = null;
     setOpen(false);
@@ -145,44 +144,8 @@ export default function DatabaseTableEditor(props) {
       ? props.preSubmit(formData)
       : formData;
 
-    let errors = [];
-
-    // Error Handling
-
-    // Don't track short_desc if certain action targets are chosen.
-    if (
-      formData.action_target !== "peer_evaluation" &&
-      formData.action_target !== "student_announcement" &&
-      formData.action_target !== "coach_announcement"
-    ) {
-      // check for short_desc
-      if (formData.short_desc?.trim() === "") {
-        errors.push("Please provide a short description (short_desc)");
-        errorFields.add("short_desc");
-      }
-    }
-
-    // check for page_html
-    if (formData.page_html?.trim() === "") {
-      errors.push("Please provide the HTML (page_html)");
-      errorFields.add("page_html");
-    }
-    // date validation only if both start and due date are given.
-    if (formData.start_date && formData.due_date) {
-      if (formData.start_date > formData.due_date) {
-        errors.push("The Start Date must be before the Due Date");
-        errorFields.add("start_date");
-        errorFields.add("due_date");
-      }
-    }
-    // check whether Active checkbox is checked or not.
-    if (formData.date_deleted === false) {
-      errors.push("Please check the Active box");
-      errorFields.add("date_deleted");
-    }
-
-    if (errors.length > 0) {
-      setErrors(errors);
+    console.log("THIS IS THE ERROR", errors);
+    if (dataToSubmit === null) {
       formRef.current = formData;
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
@@ -226,21 +189,21 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
-    setErrorFields((prevErrorFields) => {
-      const newErrorFields = new Set(prevErrorFields);
+    // setErrorFields((prevErrorFields) => {
+    //   const newErrorFields = new Set(prevErrorFields);
 
-      if (name === "start_date" || name === "due_date") {
-        newErrorFields.delete("start_date");
-        newErrorFields.delete("due_date");
-      } else {
-        if (name !== "date_deleted" && value.trim() !== "") {
-          newErrorFields.delete(name);
-        } else {
-          newErrorFields.add(name);
-        }
-      }
-      return newErrorFields;
-    });
+    //   if (name === "start_date" || name === "due_date") {
+    //     newErrorFields.delete("start_date");
+    //     newErrorFields.delete("due_date");
+    //   } else {
+    //     if (name !== "date_deleted" && value.trim() !== "") {
+    //       newErrorFields.delete(name);
+    //     } else {
+    //       newErrorFields.add(name);
+    //     }
+    //   }
+    //   return newErrorFields;
+    //});
     if (props.viewOnly) {
       return;
     }
@@ -348,7 +311,7 @@ export default function DatabaseTableEditor(props) {
                     onChange={handleChange}
                     disabled={field.disabled}
                     required
-                    error={errorFields.has(field.name)}
+                    // error={errorFields.has(field.name)}
                   />
                 </Form.Field>,
               );
@@ -381,7 +344,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                error={errorFields.has(field.name)}
+                // error={errorFields.has(field.name)}
               />
             </Form.Field>,
           );
@@ -415,9 +378,9 @@ export default function DatabaseTableEditor(props) {
                     borderRadius: "5px",
                     padding: "10px",
                     minHeight: "200px",
-                    backgroundColor: errorFields.has(field.name)
-                      ? "#fab9b4"
-                      : "",
+                    // backgroundColor: errorFields.has(field.name)
+                    //   ? "#fab9b4"
+                    //   : "",
                   }}
                   required
                 />
@@ -663,7 +626,7 @@ export default function DatabaseTableEditor(props) {
           content={{
             content: (
               <>
-                {errors.length > 0 && (
+                {errors?.length > 0 && (
                   <div className="submission-errors">
                     <Message error>
                       <MessageHeader>
@@ -713,7 +676,7 @@ export default function DatabaseTableEditor(props) {
           content={{
             content: (
               <>
-                {errors.length > 0 && (
+                {errors?.length > 0 && (
                   <div className="submission-errors">
                     <Message error>
                       <MessageHeader>
