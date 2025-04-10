@@ -162,8 +162,9 @@ export default function ActionPanel(props) {
     if (data.start_date && data.due_date) {
       if (data.start_date > data.due_date) {
         errorsFound.push({
-          name: "date_start",
+          name: "dates",
           message: "Start Date must be before Due Date",
+          elements: ["start_date", "due_date"], // display same message for both dates
         });
       }
     }
@@ -183,7 +184,6 @@ export default function ActionPanel(props) {
     setErrors(validationErrors);
 
     if (validationErrors.length > 0) {
-      console.log("The current error is:", validationErrors);
       return null;
     }
 
