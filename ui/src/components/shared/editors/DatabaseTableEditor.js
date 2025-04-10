@@ -54,6 +54,11 @@ export default function DatabaseTableEditor(props) {
     setFormData(initialState);
   }, [initialState]);
 
+  // update the errors as the errors are changing.
+  useEffect(() => {
+    setErrors(props.errors);
+  }, [props.errors]);
+
   const generateModalFields = () => {
     switch (submissionModalOpen) {
       case MODAL_STATUS.SUCCESS:
@@ -129,6 +134,15 @@ export default function DatabaseTableEditor(props) {
     }
   };
 
+  // helper function to check if the input element is invalid
+  function hasError(fieldName) {
+    return errors?.some(
+      (error) =>
+        error.name === fieldName ||
+        (error.elements && error.elements.includes(fieldName)),
+    );
+  }
+
   function handleCancel() {
     setErrors([]);
     setFormData(initialState);
@@ -144,7 +158,6 @@ export default function DatabaseTableEditor(props) {
       ? props.preSubmit(formData)
       : formData;
 
-    console.log("THIS IS THE ERROR", errors);
     if (dataToSubmit === null) {
       formRef.current = formData;
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
@@ -311,7 +324,7 @@ export default function DatabaseTableEditor(props) {
                     onChange={handleChange}
                     disabled={field.disabled}
                     required
-                    // error={errorFields.has(field.name)}
+                    error={hasError(field.name)}
                   />
                 </Form.Field>,
               );
@@ -344,7 +357,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                // error={errorFields.has(field.name)}
+                error={hasError(field.name)}
               />
             </Form.Field>,
           );
@@ -378,9 +391,7 @@ export default function DatabaseTableEditor(props) {
                     borderRadius: "5px",
                     padding: "10px",
                     minHeight: "200px",
-                    // backgroundColor: errorFields.has(field.name)
-                    //   ? "#fab9b4"
-                    //   : "",
+                    backgroundColor: hasError(field.name) ? "#fab9b4" : "",
                   }}
                   required
                 />
@@ -634,7 +645,7 @@ export default function DatabaseTableEditor(props) {
                       </MessageHeader>
                       <MessageList>
                         {errors.map((err) => (
-                          <li key={err}>{err}</li>
+                          <li key={err.name}>{err.message}</li>
                         ))}
                       </MessageList>
                     </Message>
@@ -684,7 +695,7 @@ export default function DatabaseTableEditor(props) {
                       </MessageHeader>
                       <MessageList>
                         {errors.map((err) => (
-                          <li key={err}>{err}</li>
+                          <li key={err.name}>{err.message}</li>
                         ))}
                       </MessageList>
                     </Message>
