@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "nodemon main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-ai": "node server/SummerizationAI.js"
   },
   "repository": {
     "type": "git",
@@ -14,6 +15,7 @@
   "author": "Tom Amaral",
   "license": "UNLICENSED",
   "dependencies": {
+    "@google/generative-ai": "^0.14.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -27,6 +29,7 @@
     "memorystore": "^1.6.6",
     "moment": "^2.29.4",
     "nanoid": "^3.1.31",
+    "node-fetch": "^2.7.0",
     "nodemon": "^2.0.20",
     "passport": "^0.4.1",
     "passport-saml": "^2.0.5",

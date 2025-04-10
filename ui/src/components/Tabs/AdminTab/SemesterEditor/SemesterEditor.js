@@ -6,37 +6,47 @@ import SemesterPanel from "./SemesterPanel";
 import SemesterTable from "./SemesterTable";
 
 export default function SemesterEditor() {
-    const [semesters, setSemestersData] = useState([]);
+  const [semesters, setSemestersData] = useState([]);
 
-    useEffect(() => {
-        SecureFetch(config.url.API_GET_SEMESTERS)
-            .then((response) => response.json())
-            .then((semestersData) => {
-                setSemestersData(semestersData);
-            })
-            .catch((error) => {
-                alert("Failed to get semesters data" + error);
-            });
-    }, []);
+  const getSemesters = () => {
+    SecureFetch(config.url.API_GET_SEMESTERS)
+      .then((response) => response.json())
+      .then((semestersData) => {
+        setSemestersData(semestersData);
+      })
+      .catch((error) => {
+        alert("Failed to get semesters data" + error);
+      });
+  };
 
-    let semestersToEdit = <SemesterTable semesters={semesters} semesterData={semesters}/>;
+  useEffect(() => {
+    getSemesters();
+  }, []);
 
-    return (
-        <div className="accordion-button-group">
-            <Accordion
-                fluid
-                styled
-                panels={[
-                    {
-                        key: "semesterEditor",
-                        title: "Semester Editor",
-                        content: { content: semestersToEdit },
-                    },
-                ]}
-            />
-            <div className="accordion-buttons-container">
-                <SemesterPanel header="Create Semester" />
-            </div>
-        </div>
-    );
+  let semestersToEdit = (
+    <SemesterTable
+      semesters={semesters}
+      semesterData={semesters}
+      callback={getSemesters}
+    />
+  );
+
+  return (
+    <div className="accordion-button-group">
+      <Accordion
+        fluid
+        styled
+        panels={[
+          {
+            key: "semesterEditor",
+            title: "Semester Editor",
+            content: { content: semestersToEdit },
+          },
+        ]}
+      />
+      <div className="accordion-buttons-container">
+        <SemesterPanel header="Create Semester" callback={getSemesters} />
+      </div>
+    </div>
+  );
 }

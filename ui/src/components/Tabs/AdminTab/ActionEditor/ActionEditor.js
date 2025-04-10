@@ -6,55 +6,72 @@ import ActionPanel from "./ActionPanel";
 import ActionTable from "./ActionTable";
 
 export default function ActionEditor(props) {
-    const [actions, setActionsData] = useState([]);
+  const [actions, setActionsData] = useState([]);
 
-    useEffect(() => {
-        SecureFetch(config.url.API_GET_ACTIONS)
-            .then((response) => response.json())
-            .then((actionsData) => {
-                setActionsData(actionsData);
-            })
-            .catch((error) => {
-                alert("Failed to get actions data" + error);
-            });
-    }, []);
+  const getActionData = () => {
+    SecureFetch(config.url.API_GET_ACTIONS)
+      .then((response) => response.json())
+      .then((actionsData) => {
+        setActionsData(actionsData);
+      })
+      .catch((error) => {
+        setActionsData([]); //unable to get actions, semester is null
+        alert(
+          "Failed to get actions data " +
+            error +
+            " \n No actions will be displayed",
+        );
+      });
+  };
 
-    let semesterPanels = [];
-    if (actions) {
-        let semesterMap = {};
-        for (let i = 0; i < actions.length; i++) {
-            let actionData = actions[i];
-            if (!semesterMap[actionData.semester]) {
-                semesterMap[actionData.semester] = [];
-            }
-            semesterMap[actionData.semester].push(actionData);
-        }
-        for (const [key, value] of Object.entries(semesterMap)) {
-            semesterPanels.push(<ActionTable key={key} actions={value} semesterData={props.semesterData} />);
-        }
+  useEffect(() => {
+    getActionData();
+  }, []);
+
+  let semesterPanels = [];
+  if (actions) {
+    let semesterMap = {};
+    for (let i = 0; i < actions.length; i++) {
+      let actionData = actions[i];
+      if (!semesterMap[actionData.semester]) {
+        semesterMap[actionData.semester] = [];
+      }
+      semesterMap[actionData.semester].push(actionData);
     }
+    for (const [key, value] of Object.entries(semesterMap)) {
+      semesterPanels.push(
+        <ActionTable
+          key={key}
+          actions={value}
+          semesterData={props.semesterData}
+          callback={getActionData}
+        />,
+      );
+    }
+  }
 
-    return (
-        <div className="accordion-button-group">
-            <Accordion
-                fluid
-                styled
-                panels={[
-                    {
-                        key: "actionEditor",
-                        title: "Action and Announcement Editor",
-                        content: { content: semesterPanels },
-                    },
-                ]}
-            />
-            <div className="accordion-buttons-container">
-                <ActionPanel
-                    semesterData={props.semesterData}
-                    header={"Create Action/Announcement"}
-                    create={true}
-                    key={"createAction"}
-                />
-            </div>
-        </div>
-    );
+  return (
+    <div className="accordion-button-group">
+      <Accordion
+        fluid
+        styled
+        panels={[
+          {
+            key: "actionEditor",
+            title: "Action and Announcement Editor",
+            content: { content: semesterPanels },
+          },
+        ]}
+      />
+      <div className="accordion-buttons-container">
+        <ActionPanel
+          semesterData={props.semesterData}
+          header={"Create Action/Announcement"}
+          create={true}
+          key={"createAction"}
+          callback={getActionData}
+        />
+      </div>
+    </div>
+  );
 }
