@@ -173,15 +173,23 @@ function Header() {
   return (
     <div id="header">
     <div className="ui container">
-        <h1 className="ui header">
-        <img src={SELogo} alt="Department of Software Engineering" style={{
-          maxWidth: "150px", 
+    <h1 className="ui header" style={{
+      display: "flex",
+      alignItems: "center",
+      flexWrap: "wrap", 
+    }}>
+      <img
+        src={SELogo}
+        alt="Department of Software Engineering"
+        style={{
+          maxWidth: "150px",
           height: "auto",
           marginRight: "15px",
-        }} />
-            Senior Project
-            
-        </h1>
+          flexShrink: 0, 
+        }}
+      />
+      <span style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}>Senior Project</span>
+    </h1>
         {renderNavButtons()}
     </div>
     </div>
