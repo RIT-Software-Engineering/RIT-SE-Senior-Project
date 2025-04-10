@@ -16,7 +16,8 @@ VALUES
     by event admins equipped with iOS devices along the route.This project is an existing project that continues off the work of a previous senior SE team, so many of the 
     baseline features have already been implemented. Existing features include participant check in/out logs, location estimation, a chat room for staff, and a comprehensive 
     overview showing participant location and status. While the application does these basic things, polishing up existing functionality will be a high priority.
-    <br> Additional work on this project will focus on fixing bugs, adding missing features, enhancing the UI, supporting both iPhone and iPad as well as different user types, 
+
+    Additional work on this project will focus on fixing bugs, adding missing features, enhancing the UI, supporting both iPhone and iPad as well as different user types,
     moving current web features to the mobile app, adding social media functionality, and monetization through ads. To ensure we’re creating an application that will satisfy 
     Trillium Health’s needs, we will have weekly meetings with our liaison, AJ Blythe, to discuss their needs and possible solutions.', '', 0
     ),

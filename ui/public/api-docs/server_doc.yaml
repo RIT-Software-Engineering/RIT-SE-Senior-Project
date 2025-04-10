@@ -1,0 +1,136 @@
+openapi: "3.0.3"
+info:
+  title: SE Senior Project Backend Documentation
+  version: "1.7.1"
+
+servers:
+  - url: https://seniorproject.se.rit.edu/
+    description: Production
+  - url: https://seniorproject-sandbox.se.rit.edu/
+    description: Sandbox (Runs most recent dev branch release)
+  - url: http://localhost:3000
+    description: Local
+
+components:
+  schemas:
+    ActionLog:
+      $ref: './schemas.yaml#/components/schemas/ActionLog'
+    Actions:
+      $ref: './schemas.yaml#/components/schemas/Actions'
+    Archive:
+      $ref: './schemas.yaml#/components/schemas/Archive'
+    Projects:
+      $ref: './schemas.yaml#/components/schemas/Projects'
+    ProjectCoaches:
+      $ref: './schemas.yaml#/components/schemas/ProjectCoaches'
+    SemesterGroup:
+      $ref: './schemas.yaml#/components/schemas/SemesterGroup'
+    Sponsors:
+      $ref: './schemas.yaml#/components/schemas/Sponsors'
+    TimeLog:
+      $ref: './schemas.yaml#/components/schemas/TimeLog'
+    Users:
+      $ref: './schemas.yaml#/components/schemas/Users'
+    Error:
+      $ref: './schemas.yaml#/components/schemas/Error'
+
+paths:
+  /ai/GenerateSummary:
+    $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateSummary"
+  /ai/GenerateHistoricSummary:
+    $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateHistoricSummary"
+
+  /saml/whoami:
+    $ref: "./saml_routes.yaml#/paths/~1saml~1whoami"
+  /saml/DevOnlyLastLogin:
+    $ref: "./saml_routes.yaml#/paths/~1saml~1DevOnlyLastLogin"
+  /saml/login:
+    $ref: "./saml_routes.yaml#/paths/~1saml~1login"
+  /saml/acs/consume:
+    $ref: "./saml_routes.yaml#/paths/~1saml~1acs~1consume"
+  /saml/logout:
+    $ref: "./saml_routes.yaml#/paths/~1saml~1logout"
+
+    # User Management
+  /db/createUser:
+    $ref: "./db_routes.yaml#/paths/~1db~1createUser"
+  /db/batchCreateUser:
+    $ref: "./db_routes.yaml#/paths/~1db~1batchCreateUser"
+  /db/editUser:
+    $ref: "./db_routes.yaml#/paths/~1db~1editUser"
+  /db/getActiveUsers:
+    $ref: "./db_routes.yaml#/paths/~1db~1getActiveUsers"
+  /db/DevOnlyGetAllUsersForLogin:
+    $ref: "./db_routes.yaml#/paths/~1db~1DevOnlyGetAllUsersForLogin"
+  /db/getAdditionalInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1getAdditionalInfo"
+  /db/editAdditionalInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1editAdditionalInfo"
+  /db/getPeerEvals:
+    $ref: "./db_routes.yaml#/paths/~1db~1getPeerEvals"
+
+  # Sponsor and Coach Information
+  /db/selectAllSponsorInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1selectAllSponsorInfo"
+  /db/selectAllCoachInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1selectAllCoachInfo"
+  /db/getActiveCoaches:
+    $ref: "./db_routes.yaml#/paths/~1db~1getActiveCoaches"
+  /db/getProjectCoaches:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjectCoaches"
+
+  # Student Information
+  /db/selectAllStudentInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1selectAllStudentInfo"
+  /db/selectAllNonStudentInfo:
+    $ref: "./db_routes.yaml#/paths/~1db~1selectAllNonStudentInfo"
+  /db/getSemesterStudents:
+    $ref: "./db_routes.yaml#/paths/~1db~1getSemesterStudents"
+  /db/getProjectStudents:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjectStudents"
+  /db/getProjectStudentNames:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjectStudentNames"
+
+  # Project Management
+  /db/getActiveProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getActiveProjects"
+  /db/getArchiveProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getArchiveProjects"
+  /db/getCandidateProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getCandidateProjects"
+  /db/getMyProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getMyProjects"
+  /db/getSemesterProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getSemesterProjects"
+  /db/getProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjects"
+  /db/editProject:
+    $ref: "./db_routes.yaml#/paths/~1db~1editProject"
+  /db/updateProposalStatus:
+    $ref: "./db_routes.yaml#/paths/~1db~1updateProposalStatus"
+
+  # Archive Management
+  /db/getActiveArchiveProjects:
+    $ref: "./db_routes.yaml#/paths/~1db~1getActiveArchiveProjects"
+  /db/editArchive:
+    $ref: "./db_routes.yaml#/paths/~1db~1editArchive"
+  /db/createArchive:
+    $ref: "./db_routes.yaml#/paths/~1db~1createArchive"
+  /db/editArchiveStudent:
+    $ref: "./db_routes.yaml#/paths/~1db~1editArchiveStudent"
+  /db/createArchiveStudent:
+    $ref: "./db_routes.yaml#/paths/~1db~1createArchiveStudent"
+
+  # Time Logging
+  /db/createTimeLog:
+    $ref: "./db_routes.yaml#/paths/~1db~1createTimeLog"
+  /db/removeTime:
+    $ref: "./db_routes.yaml#/paths/~1db~1removeTime"
+  /db/avgTime:
+    $ref: "./db_routes.yaml#/paths/~1db~1avgTime"
+
+  # Miscellaneous
+  /db/getProjectMembers:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjectMembers"
+  /db/getProjectDates:
+    $ref: "./db_routes.yaml#/paths/~1db~1getProjectDates"
