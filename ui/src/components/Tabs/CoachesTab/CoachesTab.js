@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Accordion, Icon } from "semantic-ui-react";
-import { config } from "../../util/functions/constants";
+import React, { useEffect, useState , useContext} from "react";
+import { 
+  Accordion,
+  Table,
+  TableHeader,
+  TableHeaderCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  Icon
+} from "semantic-ui-react";import { config, USERTYPES } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SemesterCoaches from "./SemesterCoaches";
 import _ from "lodash";
 import { isSemesterActive } from "../../util/functions/utils";
+import OverdueCoachActions from "./OverdueCoachActions";
+import CoachActions from "./CoachActions"
+import { UserContext } from "../../util/functions/UserContext";
 
 export default function CoachesTab() {
   const [semesters, setSemestersData] = useState([]);
   const [active, setActive] = useState({});
   const [coachInfo, setCoachInfoData] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     SecureFetch(config.url.API_GET_SEMESTERS)
@@ -53,6 +65,8 @@ export default function CoachesTab() {
   const mapCoachesToSemesters = () => {
     let mappedCoaches = { Unassigned: [] };
     let mappedEmails = { Unassigned: [] };
+    let mappedCurrent = {Unassigned: []};
+    let currentCoach = {};
 
     if (!!coachInfo && !!semesters) {
       coachInfo.forEach((coach) => {
@@ -61,10 +75,19 @@ export default function CoachesTab() {
             if (!mappedCoaches[project.semester_id]) {
               mappedCoaches[project.semester_id] = [];
               mappedEmails[project.semester_id] = [];
+              if(coach.system_id === user.user){
+                mappedCurrent[project.semester_id] = [];
+                currentCoach = coach;
+                console.log(currentCoach.projects)
+                console.log(semesters)
+              }
             }
             if (!mappedCoaches[project.semester_id].includes(coach)) {
               mappedCoaches[project.semester_id].push(coach);
               mappedEmails[project.semester_id].push(coach.email);
+              if(coach.system_id === user.user){
+                mappedCurrent[project.semester_id].push(coach);
+              }
             }
           });
         } else {
@@ -73,15 +96,133 @@ export default function CoachesTab() {
         }
       });
     }
-    return [mappedCoaches, mappedEmails];
+    return [mappedCoaches, mappedEmails, mappedCurrent, currentCoach];
   };
 
-  const [mappedCoachData, mappedEmailData] = mapCoachesToSemesters();
-
+  const [mappedCoachData, mappedEmailData, mappedCurrent, currentCoach] = mapCoachesToSemesters();
   console.log("mapped coach data here ", mappedCoachData);
+
+  const CoachActions = () => {
+    if(user.role === USERTYPES.ADMIN){
+      return(
+        <div className="OverdueCoachActions">
+        <Accordion
+          fluid
+          styled
+          panels={[
+            {
+              key: "Overdue coach actions",
+              title: "Overdue Coach Actions",
+              content:{
+                content:(
+                  semesters.map((semester) =>{
+                    return(
+                      mappedCoachData[semester.semester_id] &&
+                      <div key={semester.semester_id} className="test2">
+                        <Accordion
+                          key = {semester.semester_id}
+                          onTitleClick={() => {
+                            setActive({
+                              ...active,
+                              [semester.semester_id]: !active[semester.semester_id],
+                            });
+                          }}
+                          panels={[
+                            {
+                              active: active[semester.semester_id],
+                              title: semester.name,
+                              content:{
+                                content:(
+                                  <OverdueCoachActions
+                                    coaches = {mappedCoachData && mappedCoachData[semester.semester_id]}
+                                    semesterId={semester.semester_id}
+                                  />
+                                )
+                              }
+                            }
+                          ]}
+                        />
+                      </div>
+                    )     
+                }))
+              },
+            }
+          ]}/>
+      </div>)
+    }
+    else if(user.role === USERTYPES.COACH){
+      console.log("hi")
+      return(
+        <div className="OverdueCoachActions">
+          <Accordion
+            fluid
+            styled
+            panels={[
+              {
+                key: "Coach actions",
+                title: "Coach Actions",
+                content:{
+                  content:(
+                    semesters.map((semester) =>{
+                      return(
+                        mappedCurrent[semester.semester_id] &&
+                        <Accordion
+                          key = {semester.semester_id}
+                          onTitleClick={() => {
+                            setActive({
+                              ...active,
+                              [semester.semester_id]: !active[semester.semester_id],
+                            });
+                          }}
+                          panels={[
+                            {
+                              active: active[semester.semester_id],
+                              title: semester.name,
+                              content:{
+                                content:(
+                                  <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                        <TableHeaderCell>Project Name</TableHeaderCell>
+                                        <TableHeaderCell>Action Name</TableHeaderCell>
+                                        <TableHeaderCell>Due Date</TableHeaderCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    {currentCoach.projects
+                                    ?.filter(
+                                      (project) =>
+                                        project.semester_id === semester.semester_id.toString(),
+                                    )
+                                    ?.map((project) => {
+                                      return(
+                                        <CoachActions
+                                          project={project}
+                                        />
+                                      );
+                                    })};
+                                  </Table>  
+                                )
+                              }
+                            }
+                          ]}
+                        />
+                      )
+                    })
+                  )
+                }
+              }
+            ]}
+
+          />
+        </div>
+      )
+    }
+    
+  }
 
   return (
     <div>
+      {CoachActions()}
       <div className="accordion-button-group">
         <Accordion
           fluid
