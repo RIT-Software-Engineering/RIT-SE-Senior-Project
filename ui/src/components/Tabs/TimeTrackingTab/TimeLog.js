@@ -54,7 +54,7 @@ export default function TimeLog(props) {
   useEffect(() => {
     console.log(userContext);
     setActionLogs([]);
-    SecureFetch(config.url.API_GET_MY_PROJECTS)
+    SecureFetch(userContext.user.role != "admin"?config.url.API_GET_MY_PROJECTS : config.url.API_GET_PROJECTS)
       .then((response) => response.json())
       .then((project) => {
         if (project.length !== 0) {

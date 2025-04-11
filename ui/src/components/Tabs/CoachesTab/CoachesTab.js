@@ -105,7 +105,7 @@ export default function CoachesTab() {
   const CoachActions = () => {
     if(user.role === USERTYPES.ADMIN){
       return(
-        <div className="OverdueCoachActions">
+        <div className="accordion-button-group">
         <Accordion
           fluid
           styled
@@ -151,9 +151,8 @@ export default function CoachesTab() {
       </div>)
     }
     else if(user.role === USERTYPES.COACH){
-      console.log("hi")
       return(
-        <div className="OverdueCoachActions">
+        <div className="accordion-button-group">
           <Accordion
             fluid
             styled

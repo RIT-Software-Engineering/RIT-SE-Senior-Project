@@ -49,6 +49,32 @@ export default function ProjectTime(props) {
   const resetKey = () => {
     props.reset();
   };
+
+  const timeLogButton = () =>{
+    if(userContext.user.role != "admin"){
+      return(
+        <div className="accordion-buttons-container">
+          <TimeLogPanel callback={resetKey} header="Log Time" />
+        </div>
+      )
+    }
+    else{
+      let avgProjtime = 0;
+      for(let num in avgTime)
+        avgProjtime+=avgTime[num].avgTime;
+      
+      if(avgProjtime != 0)
+        avgProjtime = avgProjtime/avgTime.length;
+
+      avgProjtime.toFixed(2)
+      return(
+        <div className="accordion-buttons-container">
+          Average Hours : {avgProjtime.toFixed(2)} Hours
+        </div>
+      )
+    }
+  }
+
   return (
     <div className="accordion-button-group">
       <Accordion
@@ -207,9 +233,7 @@ export default function ProjectTime(props) {
           },
         ]}
       />
-      <div className="accordion-buttons-container">
-        <TimeLogPanel callback={resetKey} header="Log Time" />
-      </div>
+      {timeLogButton()}
     </div>
   );
 }
