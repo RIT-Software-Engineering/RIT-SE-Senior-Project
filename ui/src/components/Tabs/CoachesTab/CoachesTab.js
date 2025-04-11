@@ -13,9 +13,9 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import SemesterCoaches from "./SemesterCoaches";
 import _ from "lodash";
 import { isSemesterActive } from "../../util/functions/utils";
-import OverdueCoachActions from "./OverdueCoachActions";
 import CoachActions from "./CoachActions"
 import { UserContext } from "../../util/functions/UserContext";
+import CoachProjects from "./CoachProjects";
 
 export default function CoachesTab() {
   const [semesters, setSemestersData] = useState([]);
@@ -133,10 +133,32 @@ export default function CoachesTab() {
                               title: semester.name,
                               content:{
                                 content:(
-                                  <OverdueCoachActions
-                                    coaches = {mappedCoachData && mappedCoachData[semester.semester_id]}
-                                    semesterId={semester.semester_id}
-                                  />
+                                  <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                          <TableHeaderCell>Coach Name</TableHeaderCell>
+                                          <TableHeaderCell>Project Name</TableHeaderCell>
+                                          <TableHeaderCell>Action Name</TableHeaderCell>
+                                          <TableHeaderCell>Due Date</TableHeaderCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    {mappedCoachData[semester.semester_id]?.map((coach) =>{
+                                    return(
+                                      coach.projects
+                                      ?.filter(
+                                          (project) =>
+                                          project.semester_id === semester.semester_id.toString(),
+                                      )
+                                      ?.map((project) => {
+                                          return (
+                                              <CoachProjects
+                                              project = {project}
+                                              coach = {coach}
+                                              />
+                                          );
+                                    }));
+                                    })}
+                                  </Table>
                                 )
                               }
                             }
@@ -182,9 +204,10 @@ export default function CoachesTab() {
                                   <Table>
                                     <TableHeader>
                                         <TableRow>
-                                        <TableHeaderCell>Project Name</TableHeaderCell>
-                                        <TableHeaderCell>Action Name</TableHeaderCell>
-                                        <TableHeaderCell>Due Date</TableHeaderCell>
+                                          <TableHeaderCell>Coach Name</TableHeaderCell>
+                                          <TableHeaderCell>Project Name</TableHeaderCell>
+                                          <TableHeaderCell>Action Name</TableHeaderCell>
+                                          <TableHeaderCell>Due Date</TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     {currentCoach.projects
@@ -194,11 +217,12 @@ export default function CoachesTab() {
                                     )
                                     ?.map((project) => {
                                       return(
-                                        <CoachActions
+                                        <CoachProjects
                                           project={project}
+                                          coach={currentCoach}
                                         />
                                       );
-                                    })};
+                                    })}
                                   </Table>  
                                 )
                               }
@@ -206,13 +230,10 @@ export default function CoachesTab() {
                           ]}
                         />
                       )
-                    })
-                  )
-                }
+                    }))
+                },
               }
-            ]}
-
-          />
+            ]}/>
         </div>
       )
     }
