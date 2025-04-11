@@ -170,12 +170,12 @@ export default function ActionPanel(props) {
     }
 
     // check whether Active checkbox is checked or not.
-    if (data.date_deleted === false) {
-      errorsFound.push({
-        name: "date_deleted",
-        message: "Please check the Active box",
-      });
-    }
+    // if (data.date_deleted === false) {
+    //   errorsFound.push({
+    //     name: "date_deleted",
+    //     message: "Please check the Active box",
+    //   });
+    // }
     return errorsFound; // no errors found
   };
 

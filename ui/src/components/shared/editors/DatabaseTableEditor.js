@@ -45,7 +45,7 @@ export default function DatabaseTableEditor(props) {
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
-  // const [errorFields, setErrorFields] = useState(new Set());
+  const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
 
   const formRef = useRef(null); // maintain the current form data in the case of submission error
 
@@ -134,7 +134,7 @@ export default function DatabaseTableEditor(props) {
     }
   };
 
-  // helper function to check if the input element is invalid
+  // helper function to check if the input element is invalid; used to highlight input elements
   function hasError(fieldName) {
     return errors?.some(
       (error) =>
@@ -159,11 +159,14 @@ export default function DatabaseTableEditor(props) {
       : formData;
 
     if (dataToSubmit === null) {
+      // validation failed
       formRef.current = formData;
+      setErrorSubmitted(true);
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
     }
 
+    setErrorSubmitted(false);
     let body = new FormData();
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
@@ -202,21 +205,17 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
-    // setErrorFields((prevErrorFields) => {
-    //   const newErrorFields = new Set(prevErrorFields);
+    if (errorSubmitted) {
+      // remove errors if changes made after first submission.
+      setErrors((prevErrors) =>
+        prevErrors.filter(
+          (error) =>
+            error.name !== name &&
+            (!error.elements || !error.elements.includes(name)),
+        ),
+      );
+    }
 
-    //   if (name === "start_date" || name === "due_date") {
-    //     newErrorFields.delete("start_date");
-    //     newErrorFields.delete("due_date");
-    //   } else {
-    //     if (name !== "date_deleted" && value.trim() !== "") {
-    //       newErrorFields.delete(name);
-    //     } else {
-    //       newErrorFields.add(name);
-    //     }
-    //   }
-    //   return newErrorFields;
-    //});
     if (props.viewOnly) {
       return;
     }
