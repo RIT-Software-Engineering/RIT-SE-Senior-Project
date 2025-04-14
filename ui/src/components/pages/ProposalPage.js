@@ -230,78 +230,84 @@ function ProposalPage() {
                     ref={(el) => (quill.current = el)}
                     value={formData.background_info || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['background_info']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Description</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.project_description || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['project_description']: value
                         })
                     }}
-                />
+                /><br /><br />
                 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Scope</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.project_scope || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['project_scope']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Project Challenges</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.project_challenges || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['project_challenges']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br /><div className="required-field" style={{fontWeight: 'bold', fontSize: "13px"}}>Constraints & Assumptions</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.constraints_assumptions || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['constraints_assumptions']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Sponsor Provided Resources</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.sponsor_provided_resources || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['sponsor_provided_resources']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br />
                 <Form.Input
@@ -319,26 +325,28 @@ function ProposalPage() {
                     ref={(el) => (quill.current = el)}
                     value={formData.sponsor_deliverables || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['sponsor_deliverables']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <br /><div style={{fontWeight: 'bold', fontSize: "13px"}}>Proprietary Information</div><br />
                 <QuillEditor
                     ref={(el) => (quill.current = el)}
                     value={formData.proprietary_info || ""}
                     formats={formats}
+                    style={{height: "150px"}}
                     onChange={(value) => {
                         setActualFormData({
                             ...formData,
                             ['proprietary_info']: value
                         })
                     }}
-                />
+                /><br /><br />
 
                 <Divider section />
 
