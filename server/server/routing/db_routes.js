@@ -317,28 +317,29 @@ module.exports = (db) => {
 
       let users = JSON.parse(req.body.users);
 
-      const insertStatements = users.map((user) => {
+      const placeholders = users.map(() => `(?, ?, ?, ?, ?, ?, ?)`).join(",");
+      const values = users.flatMap((user) => {
         const active =
           user.active.toLocaleLowerCase() === "false"
             ? moment().format(CONSTANTS.datetime_format)
             : "";
-        return `('${user.system_id}','${user.fname}','${user.lname}','${
-          user.email
-        }','${user.type}',${
-          user.semester_group === "" ? null : `'${user.semester_group}'`
-        },'${active}')`;
+        return [
+          user.system_id,
+          user.fname,
+          user.lname,
+          user.email,
+          user.type,
+          user.semester_group === "" ? null : user.semester_group,
+          active,
+        ];
       });
 
-      const sql = `INSERT INTO ${
-        DB_CONFIG.tableNames.users
-      } (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(
-        ",",
-      )}`;
+      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
+      (system_id, fname, lname, email, type, semester_group, active) 
+      VALUES ${placeholders}`;
 
-      db.query(sql)
-        .then((values) => {
-          return res.status(200).send(values);
-        })
+      db.query(sql, values)
+        .then((result) => res.status(200).send(result))
         .catch((err) => {
           const error = new Error(err);
           error.statusCode = 500;
