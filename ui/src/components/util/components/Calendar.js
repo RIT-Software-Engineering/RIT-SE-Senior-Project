@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
 import "../../../css/calendar.css"
+import { max } from "moment";
+import { Popup } from "semantic-ui-react";
 
 const SPECIAL_DATES = {
   "01-01": "New Year's Day",
@@ -22,6 +24,7 @@ export function Calendar(props) {
   const [hoveredDay, setHoveredDay] = useState(null)
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+  const [selectedPopUp, setSelectedPopUp] = useState(false)
 
   // want reload on date change
   useEffect(() => {
@@ -199,6 +202,58 @@ export function Calendar(props) {
     }
   }
 
+  // Creates and styles the actions for that particular day
+  const generateActionsForDay = (actionsForDay, day) => {
+    return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
+      const position = calculateActionPosition(action, index)
+      const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
+      const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
+
+      // Add z-index to ensure proper stacking of overlapping actions
+      const actionStyle = {
+        top: `${position.top}px`,
+        backgroundColor: action.color,
+        borderLeft: position.isStart ? "none" : "4px solid transparent",
+        left: position.isStart ? "0" : "-4px",
+        zIndex: 10 + index, // Add z-index based on index
+      }
+
+      // for strikethrough (completed actions)
+      const actionContent = action.state === "green" ? <s>{action.action_title}</s> : action.action_title
+
+      const trigger = (
+        <div
+          key={`action-${action.action_id}-${day}`}
+          className="calendar-action"
+          style={actionStyle}
+          title={`${action.action_title} (${start} - ${end})`}
+          onClick={(e) => {
+            e.stopPropagation() // Prevent day click
+            console.log("trigger clicked", day, action)
+          }}
+        >
+          {actionContent}
+        </div>
+      )
+      return (
+        // Add ToolTip to each action for the popup
+        <ToolTip
+          zIndex={10 + index}
+          autoLoadSubmissions={props.autoLoadSubmissions}
+          color={action.color}
+          noPopup={props.noPopup}
+          trigger={trigger}
+          action={action}
+          projectId={props.projectId}
+          semesterName={props.semesterName}
+          projectName={props.projectName}
+          key={`tooltip-${action.action_title}-${action.action_id}-${day}`}
+          reloadTimelineActions={props.reloadTimelineActions}
+        />
+      )
+    })
+  }
+
   // Button hover state
   const [prevHovered, setPrevHovered] = useState(false)
   const [nextHovered, setNextHovered] = useState(false) 
@@ -218,8 +273,6 @@ export function Calendar(props) {
       const isDaySelected = isSelected(day)
       const actionsForDay = getActionsForDay(day)
       const maxVisibleActions = 3
-      const hasMoreActions = actionsForDay.length > maxVisibleActions
-      console.log("action things", actionsForDay, maxVisibleActions, hasMoreActions)
 
       // Determine day classes for styling
       const dayClasses = [
@@ -243,69 +296,44 @@ export function Calendar(props) {
         >
           <div className={`day-number ${isCurrentDay ? "today" : ""}`}>{day}</div>
           <div className="action-container">
-            {actionsForDay.slice(0, maxVisibleActions).map((action, index) => {
-              const position = calculateActionPosition(action, index)
-              const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
-              const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
-
-              // Add z-index to ensure proper stacking of overlapping actions
-              const actionStyle = {
-                top: `${position.top}px`,
-                backgroundColor: action.color,
-                borderLeft: position.isStart ? "none" : "4px solid transparent",
-                left: position.isStart ? "0" : "-4px",
-                zIndex: 10 + index, // Add z-index based on index
-              }
-
-              // for strikethrough (completed actions)
-              const actionContent = action.state === "green" ? <s>{action.action_title}</s> : action.action_title
-
-              const trigger = (
-                <div
-                  key={`action-${action.action_id}-${day}`}
-                  className="calendar-action"
-                  style={actionStyle}
-                  title={`${action.action_title} (${start} - ${end})`}
-                  onClick={(e) => {
-                    e.stopPropagation() // Prevent day click
-                    console.log("trigger clicked", day, action)
-                  }}
-                >
-                  {actionContent}
-                </div>
-              )
-              return (
-                // Add ToolTip to each action for the popup
-                <ToolTip
-                  autoLoadSubmissions={props.autoLoadSubmissions}
-                  color={action.color}
-                  noPopup={props.noPopup}
-                  trigger={trigger}
-                  action={action}
-                  projectId={props.projectId}
-                  semesterName={props.semesterName}
-                  projectName={props.projectName}
-                  key={`tooltip-${action.action_title}-${action.action_id}-${day}`}
-                  reloadTimelineActions={props.reloadTimelineActions}
-                />
-              )
-            })}
-            {/* TODO: add a `show more` button if there are more actions than can be displayed */}
-            {actionsForDay.length > maxVisibleActions && (
-              <div
-                className="calendar-expand-button"
-                onClick={() => {
-                  const dayDiv = document.getElementById(`day-${day}`)
-                  if (dayDiv.style.maxHeight) {
-                    dayDiv.style.maxHeight = null
-                  } else {
-                    dayDiv.style.maxHeight = `${actionsForDay.length * 20 + 20}px`
+              {/* if there are more than actions than can be shown create a button that displays a popup with all the actions */}
+              {/* TODO add option to view action from pop-up right now it doesnt work*/}
+              {actionsForDay.length > maxVisibleActions ? (
+                <Popup
+                  on='click'
+                  flowing={true}
+                  exclusive={false}
+                  keepInViewPort={true}
+                  closeOnDocumentClick={false}
+                  className="calendar-day"
+                  style={{width: '150px', overflow: 'auto', zIndex: 10}}
+                  content={
+                    generateActionsForDay(actionsForDay, day)
                   }
-                }}
-              >
-                {actionsForDay.length > 3 ? `+${actionsForDay.length - 3}` : "See all"}
-              </div>
-            )}
+                  basic={true}
+                  trigger={
+                    <div
+                      key={`action-${1}-${day}`}
+                      className="calendar-action"
+                      style={{
+                        top: `0`,
+                        backgroundColor: "grey",
+                        borderLeft: "none",
+                        left: "0",
+                        zIndex: 10,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation() // Prevent day click
+                      }}
+                    >
+                      {`${actionsForDay.length} actions`}
+                    </div>
+                  }
+                />
+                
+              ) : (
+                generateActionsForDay(actionsForDay, day)
+              )}
           </div>
         </div>,
       )
