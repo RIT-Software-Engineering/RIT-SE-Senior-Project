@@ -12,7 +12,7 @@ import {
  import { config } from "../../util/functions/constants";
  import { SecureFetch } from "../../util/functions/secureFetch";
 
-export default function CoachActions({project}){
+export default function CoachActions({project, coach}){
     const [actionInfo, setActionInfo] = useState([]);
     
     useEffect(() => {
@@ -37,6 +37,7 @@ export default function CoachActions({project}){
             ?.map((action) => {
                 return(
                     <TableRow key={action.action_id}>
+                        <TableCell> {coach.fname + coach.lname}</TableCell>
                         <TableCell> {project.title} </TableCell>
                         <TableCell> {action.action_title} </TableCell>
                         <TableCell> {action.due_date} </TableCell>

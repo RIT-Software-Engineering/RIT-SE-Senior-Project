@@ -102,7 +102,7 @@ export default function CoachesTab() {
   const [mappedCoachData, mappedEmailData, mappedCurrent, currentCoach] = mapCoachesToSemesters();
   console.log("mapped coach data here ", mappedCoachData);
 
-  const CoachActions = () => {
+  const GenerateCoachActions = () => {
     if(user.role === USERTYPES.ADMIN){
       return(
         <div className="accordion-button-group">
@@ -120,6 +120,8 @@ export default function CoachesTab() {
                       mappedCoachData[semester.semester_id] &&
                       <div key={semester.semester_id} className="test2">
                         <Accordion
+                          fluid
+                          styled
                           key = {semester.semester_id}
                           onTitleClick={() => {
                             setActive({
@@ -188,6 +190,8 @@ export default function CoachesTab() {
                       return(
                         mappedCurrent[semester.semester_id] &&
                         <Accordion
+                          fluid
+                          styled
                           key = {semester.semester_id}
                           onTitleClick={() => {
                             setActive({
@@ -217,13 +221,13 @@ export default function CoachesTab() {
                                     )
                                     ?.map((project) => {
                                       return(
-                                        <CoachProjects
+                                        <CoachActions
                                           project={project}
                                           coach={currentCoach}
                                         />
                                       );
                                     })}
-                                  </Table>  
+                                  </Table> 
                                 )
                               }
                             }
@@ -242,7 +246,7 @@ export default function CoachesTab() {
 
   return (
     <div>
-      {CoachActions()}
+      {GenerateCoachActions()}
       <div className="accordion-button-group">
         <Accordion
           fluid

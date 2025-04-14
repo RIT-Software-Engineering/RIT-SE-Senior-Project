@@ -331,7 +331,7 @@ VALUES
     (
         3, 'Action 13', '', 
         'Come up <u>with</u> team name', 
-        'team',
+        'coach',
         '2020-03-16',
         '2020-04-18',
         '<h1>Take the individual test form</h1>
@@ -605,7 +605,7 @@ VALUES
     (
         4, 'Action 10', '', 
         'Come up <u>with</u> team name', 
-        'team',
+        'coach',
         DATE(DATE('now'), '-1 MONTHS'),
         DATE(DATE('now')),
         '<h1>Take the individual test form</h1>
