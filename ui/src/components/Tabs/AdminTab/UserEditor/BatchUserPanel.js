@@ -6,7 +6,7 @@ import { config } from "../../../util/functions/constants";
 
 const UPLOAD_BUTTON_TEXT = "Upload";
 
-export default function BatchUserPanel() {
+export default function BatchUserPanel({callback}) {
   const [users, setUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInput = useRef();
@@ -47,6 +47,7 @@ export default function BatchUserPanel() {
         if (response.ok) {
           alert("Users successfully created!");
           setModalOpen(false);
+          callback?.();
           return null;
         }
         return response.json();
