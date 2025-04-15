@@ -365,115 +365,133 @@ export default function ActionLogs(props) {
     semesterPanels = [];
     semesterPanels.push(<h3>Action Submissions</h3>)
     
-    semesterMap.forEach((semester) => {
-      Object.keys(semester.projects).forEach((projectKey) => {
-        const project = semester.projects[projectKey];
-
-        const subTable = (projectKey) => (
-          <div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {userContext.user?.role !== USERTYPES.STUDENT && (
-                  <TableHeaderCell>Project</TableHeaderCell>
-                )}
-                <TableHeaderCell>Action</TableHeaderCell>
-                <TableHeaderCell>Action Type</TableHeaderCell>
-                <TableHeaderCell>Submitted By</TableHeaderCell>
-                <TableHeaderCell>Submission Time</TableHeaderCell>
-                <TableHeaderCell>View</TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {actionLogs?.map((action, idx) => {
-                if(project.name === action.display_name || project.name === action.title) {
-                  let submittedBy = `${action.name} (${action.system_id})`;
-                  if (action.mock_id) {
-                    submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
-                  }
-                  let showNewSubmissionHighlight =
-                    new Date(action.submission_datetime) > prevLogin;
-                  return (
-                    <TableRow
-                      style={{
-                        background: showNewSubmissionHighlight ? "#fffaf3" : "none",
-                        fontWeight: showNewSubmissionHighlight ? "bold" : "none",
-                      }}
-                      key={idx}
-                    >
-                      {userContext.user?.role !== USERTYPES.STUDENT && (
-                        <TableCell>{action.display_name || action.title}</TableCell>
-                      )}
-                      <TableCell>{action.action_title}</TableCell>
-                      <TableCell>{action.action_target}</TableCell>
-                      <TableCell>{submittedBy}</TableCell>
-                      <TableCell>
-                        {formatDateTime(action.submission_datetime)}
-                      </TableCell>
-                      <TableCell>
-                        {
-                          <SubmissionViewerModal
-                            projectName={action.display_name || action.title}
-                            semesterName={onlySemesters[action.semester]?.name}
-                            action={action}
-                            target={action?.action_target}
-                            isOpenCallback={() => {}}
-                          />
-                        }
-                      </TableCell>
-                    </TableRow>
-                  );
-                }
-              })}
-            </TableBody>
-          </Table>
-
-          <div className="pagination-container">
-            <Pagination
-              defaultActivePage={1}
-              ellipsisItem={null}
-              firstItem={null}
-              lastItem={null}
-              prevItem={{ content: <Icon name="angle left" />, icon: true }}
-              nextItem={{ content: <Icon name="angle right" />, icon: true }}
-              totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
-              onPageChange={(event, data) => {
-                getPaginationData(data.activePage - 1);
-              }}
-            />
-          </div>
+    function actionSubAccordions(project) {
+      return (
+        <div className="accordion-button-group">
+          <Accordion
+            fluid
+            styled
+            panels={[
+              {
+                key: "Project",
+                title: project.title,
+                content: {
+                  content: 
+                  <div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHeaderCell>Action</TableHeaderCell>
+                          <TableHeaderCell>Action Type</TableHeaderCell>
+                          <TableHeaderCell>Submitted By</TableHeaderCell>
+                          <TableHeaderCell>Submission Time</TableHeaderCell>
+                          <TableHeaderCell>View</TableHeaderCell>
+                        </TableRow>
+                      </TableHeader>
+          
+                      <TableBody>
+                        {actionLogs?.map((action, idx) => {
+                          if(project.title === action.display_name || project.title === action.title) {
+                            let submittedBy = `${action.name} (${action.system_id})`;
+                            if (action.mock_id) {
+                              submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
+                            }
+                            let showNewSubmissionHighlight =
+                              new Date(action.submission_datetime) > prevLogin;
+                            return (
+                              <TableRow
+                                style={{
+                                  background: showNewSubmissionHighlight ? "#fffaf3" : "none",
+                                  fontWeight: showNewSubmissionHighlight ? "bold" : "none",
+                                }}
+                                key={idx}
+                              >
+                                <TableCell>{action.action_title}</TableCell>
+                                <TableCell>{action.action_target}</TableCell>
+                                <TableCell>{submittedBy}</TableCell>
+                                <TableCell>
+                                  {formatDateTime(action.submission_datetime)}
+                                </TableCell>
+                                <TableCell>
+                                  {
+                                    <SubmissionViewerModal
+                                      projectName={action.display_name || action.title}
+                                      semesterName={onlySemesters[action.semester]?.name}
+                                      action={action}
+                                      target={action?.action_target}
+                                      isOpenCallback={() => {}}
+                                    />
+                                  }
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
+                        })}
+                      </TableBody>
+                    </Table>
+          
+                    <div className="pagination-container">
+                      <Pagination
+                        defaultActivePage={1}
+                        ellipsisItem={null}
+                        firstItem={null}
+                        lastItem={null}
+                        prevItem={{ content: <Icon name="angle left" />, icon: true }}
+                        nextItem={{ content: <Icon name="angle right" />, icon: true }}
+                        totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
+                        onPageChange={(event, data) => {
+                          getPaginationData(data.activePage - 1);
+                        }}
+                      />
+                    </div>
+                  </div>
+                },
+              },
+            ]}
+          />
         </div>
-        );
-
+      )
+    }
+      
+    semesterMap.forEach((semester) => {
+      if(semester.name !== unassignedStudentsStr) {
         semesterPanels.push(
-          <div>
+          <div className="accordion-button-group">
             <Accordion
-              key={"SUBMISSION" + projectKey}
+              key={"SUBMISSION"}
               fluid
               styled
-              onTitleClick={() => {
-                setActiveSemesters({
-                  ...activeSemesters,
-                  [semester.semester_id]:
-                    !activeSemesters[semester.semester_id],
-                });
-              }}
+              // onTitleClick={() => {
+              //   setActiveSemesters({
+              //     ...activeSemesters,
+              //     [semester.semester_id]:
+              //       !activeSemesters[semester.semester_id],
+              //   });
+              // }}
               panels={[
                 {
-                  key: "submission",
-                  title: project.name + " - " + semester.name,
+                  key: "Semester",
+                  title: semester.name,
+                  // active: activeSemesters[semester.semester_id],
                   content: {
                     content: 
-                      subTable(projectKey)
+                      <>
+                        {myProjects
+                          .filter((project) => project.semester === semester.semester_id)
+                          .map((project, counter) => {
+                            return (
+                              actionSubAccordions(project)
+                            );
+                          })}
+                      </>
                   },
                 },
               ]}
             />
           </div>,
         );
-      })
-    });
+      }
+    })
     // semesterPanels.push(
     //   <div>
     //     <Table>
