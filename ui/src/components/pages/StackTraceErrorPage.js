@@ -68,7 +68,7 @@ const StackTraceErrorPage = () => {
 
 
   return (
-    <div style={{ maxWidth: "600px", margin: "50px auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ maxWidth: "600px", margin: "50px auto", textAlign: "center", fontFamily: "Arial, sans-serif", color: "Black" }}>
       <h1 style={{ color: "#D32F2F" }}>⚠️ An Error Occurred</h1>
       {errorInfo ? (
         <div style={{ background: "#FFEBEE", padding: "15px", borderRadius: "8px", textAlign: "left" }}>
