@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Header, Label, Modal } from "semantic-ui-react"; 
+import { Dropdown, Label, Modal } from "semantic-ui-react"; 
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
-import { Dropdown as SemanticDropdown } from "semantic-ui-react";
-import ReactCodeMirror, {
-  oneDark,
-  oneDarkHighlightStyle,
-} from "@uiw/react-codemirror";
+import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
