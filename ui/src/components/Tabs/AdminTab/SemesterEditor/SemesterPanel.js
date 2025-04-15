@@ -50,20 +50,6 @@ export default function SemesterPanel(props) {
     },
   ];
 
-  const validateForm = (data) => {};
-
-  const preSubmit = (data) => {
-    const validationErrors = validateForm(data);
-    setErrors(validationErrors);
-
-    if (validationErrors.length > 0) {
-      return null;
-    }
-
-    setErrors([]);
-    return data;
-  };
-
   return (
     <DatabaseTableEditor
       initialState={initialState}

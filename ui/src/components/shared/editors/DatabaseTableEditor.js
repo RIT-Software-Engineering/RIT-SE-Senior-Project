@@ -200,7 +200,7 @@ export default function DatabaseTableEditor(props) {
         }
       })
       .catch((error) => {
-        setSubmissionModalOpen(Modal.STATUS.FAIL);
+        setSubmissionModalOpen(MODAL_STATUS.FAIL);
       });
   };
 
