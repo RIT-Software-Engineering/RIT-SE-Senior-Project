@@ -187,6 +187,8 @@ export default function FileEditor() {
                 <>
                   {/* Modal with add file functionality */}
                   <Modal
+                    closeOnDimmerClick={false}
+                    closeOnEscape={false}
                     className={"sticky"}
                     open={addFileOpen}
                     onClose={() => setAddFileOpen(false)}

@@ -89,6 +89,7 @@ export default function SubmissionViewerModal(props) {
 
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       onClose={() => {
         setOpen(false);

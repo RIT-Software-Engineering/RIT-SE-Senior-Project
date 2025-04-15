@@ -143,6 +143,7 @@ function ProposalPage() {
   return (
     <>
       <Modal
+        closeOnDimmerClick={false}
         open={!!modalOpen}
         {...generateModalFields()}
         onClose={() => closeModal()}

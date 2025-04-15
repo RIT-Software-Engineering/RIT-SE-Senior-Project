@@ -1,24 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import {
-  Dropdown,
-  Header,
-  Label,
-  Modal,
-  Message,
-  MessageHeader,
-  Icon,
-  MessageList,
-} from "semantic-ui-react";
+import { Dropdown, Label, Modal } from "semantic-ui-react"; 
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
-import { Dropdown as SemanticDropdown } from "semantic-ui-react";
-import ReactCodeMirror, {
-  oneDark,
-  oneDarkHighlightStyle,
-} from "@uiw/react-codemirror";
+import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
@@ -621,6 +608,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -660,6 +648,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
@@ -673,6 +662,7 @@ export default function DatabaseTableEditor(props) {
       <>
         <Modal
           closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -710,6 +700,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}

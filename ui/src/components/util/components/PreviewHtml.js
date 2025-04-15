@@ -93,6 +93,7 @@ export default function PreviewHtml(props) {
   if (props.isOpenCallback) {
     return (
       <Modal
+        closeOnDimmerClick={false}
         className={"sticky"}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         onClose={() => {
@@ -119,6 +120,7 @@ export default function PreviewHtml(props) {
   } else {
     return (
       <Modal
+        closeOnDimmerClick={false}
         className={"sticky"}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         header={props.header}
