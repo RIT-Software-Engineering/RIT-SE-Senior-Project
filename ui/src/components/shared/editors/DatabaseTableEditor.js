@@ -209,13 +209,24 @@ export default function DatabaseTableEditor(props) {
   const handleChange = (e, { name, value, checked, isActiveField }) => {
     if (errorSubmitted) {
       // remove errors if changes made after first submission.
-      setErrors((prevErrors) =>
-        prevErrors.filter(
+      setErrors((prevErrors) => {
+        let newErrors = [...prevErrors];
+
+        if (
+          name === "action_target" &&
+          (value === "peer_evaluation" ||
+            value === "coach_announcement" ||
+            value === "student_announcement")
+        ) {
+          newErrors = newErrors.filter((error) => error.name !== "short_desc");
+        }
+        newErrors = newErrors.filter(
           (error) =>
             error.name !== name &&
             (!error.elements || !error.elements.includes(name)),
-        ),
-      );
+        );
+        return newErrors;
+      });
     }
 
     if (props.viewOnly) {
@@ -276,28 +287,18 @@ export default function DatabaseTableEditor(props) {
       switch (field.type) {
         case "input":
           if (
-            formData.action_target === "peer_evaluation" ||
-            formData.action_target === "coach_announcement" ||
-            formData.action_target === "student_announcement"
+            (formData.action_target === "peer_evaluation" ||
+              formData.action_target === "coach_announcement" ||
+              formData.action_target === "student_announcement") &&
+            (field.name === "file_types" ||
+              field.name === "file_size" ||
+              field.name === "short_desc")
           ) {
             // hide input fields if peer_eval / announcements are chosen.
-            // display the Action Title input
-            if (field.name === "action_title") {
-              fieldComponents.push(
-                <Form.Field key={field.name}>
-                  <Form.Input
-                    label={field.label}
-                    placeholder={field.placeholder}
-                    name={field.name}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    disabled={field.disabled}
-                  />
-                </Form.Field>,
-              );
-            }
+            break;
           } else {
             if (field.name === "file_types" || field.name === "file_size") {
+              // not required
               fieldComponents.push(
                 <Form.Field key={field.name}>
                   <Form.Input
