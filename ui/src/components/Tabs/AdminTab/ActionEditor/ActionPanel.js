@@ -145,20 +145,42 @@ export default function ActionPanel(props) {
       if (!data.short_desc?.trim()) {
         errorsFound.push({
           name: "short_desc",
-          message: "Please provide a short description (short_desc)",
+          message: "Please provide a Short Description (Short Desc)",
         });
       }
+    }
+
+    // check for action title
+    if (!data.action_title?.trim()) {
+      errorsFound.push({
+        name: "action_title",
+        message: "Please provide the Action Title",
+      });
     }
 
     // check for page_html
     if (!data.page_html?.trim()) {
       errorsFound.push({
         name: "page_html",
-        message: "Please provide the page HTML (page_html)",
+        message: "Please provide the Page Html",
       });
     }
 
-    // date validation only if both start and due date are given.
+    // date validations
+    if (!data.start_date) {
+      errorsFound.push({
+        name: "start_date",
+        message: "Please provide the Start Date",
+      });
+    }
+
+    if (!data.due_date) {
+      errorsFound.push({
+        name: "due_date",
+        message: "Please provide the Due Date",
+      });
+    }
+
     if (data.start_date && data.due_date) {
       if (data.start_date > data.due_date) {
         errorsFound.push({

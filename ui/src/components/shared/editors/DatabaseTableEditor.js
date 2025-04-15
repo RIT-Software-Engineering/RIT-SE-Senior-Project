@@ -158,6 +158,8 @@ export default function DatabaseTableEditor(props) {
       ? props.preSubmit(formData)
       : formData;
 
+    console.log("This is the DATA:", dataToSubmit);
+
     if (dataToSubmit === null) {
       // validation failed
       formRef.current = formData;
@@ -295,11 +297,7 @@ export default function DatabaseTableEditor(props) {
               );
             }
           } else {
-            if (
-              field.name === "action_title" ||
-              field.name === "file_types" ||
-              field.name === "file_size"
-            ) {
+            if (field.name === "file_types" || field.name === "file_size") {
               fieldComponents.push(
                 <Form.Field key={field.name}>
                   <Form.Input
@@ -356,6 +354,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                required
                 error={hasError(field.name)}
               />
             </Form.Field>,
