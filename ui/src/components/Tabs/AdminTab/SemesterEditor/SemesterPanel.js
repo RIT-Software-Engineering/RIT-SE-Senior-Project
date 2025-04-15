@@ -16,6 +16,7 @@ export default function SemesterPanel(props) {
   let submissionModalMessages = {
     SUCCESS: "The semester has been updated.",
     FAIL: "We were unable to receive your update to the semester.",
+    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
   };
 
   let submitRoute =
@@ -54,12 +55,62 @@ export default function SemesterPanel(props) {
 
   const validateForm = (data) => {
     const errorsFound = [];
+
     if (!data.name?.trim()) {
+      // Semester Name
       errorsFound.push({
         name: "name",
-        message: "Name must be provided",
+        message: "Semester Name must be provided",
       });
     }
+    if (!data.dept?.trim()) {
+      // Department
+      errorsFound.push({
+        name: "dept",
+        message: "The Department must be provided",
+      });
+    }
+
+    // date validations
+    if (!data.start_date) {
+      // Start Date
+      errorsFound.push({
+        name: "start_date",
+        message: "Please provide the Start Date",
+      });
+    }
+
+    if (!data.end_date) {
+      // End Date
+      errorsFound.push({
+        name: "end_date",
+        message: "Please provide the End Date",
+      });
+    }
+    // Start Date is after Due Date
+    if (data.start_date && data.end_date) {
+      if (data.start_date > data.end_date) {
+        errorsFound.push({
+          name: "dates",
+          message: "Start Date must be before End Date",
+          elements: ["start_date", "end_date"], // display same message for both dates
+        });
+      }
+    }
+
+    return errorsFound;
+  };
+
+  const preSubmit = (data) => {
+    const validationErrors = validateForm(data);
+    setErrors(validationErrors);
+
+    if (validationErrors.length > 0) {
+      return null;
+    }
+
+    setErrors([]);
+    return data;
   };
 
   return (
@@ -72,6 +123,8 @@ export default function SemesterPanel(props) {
       create={initialState.semester_id === ""}
       button={initialState.semester_id === "" ? "plus" : "edit"}
       callback={props.callback}
+      preSubmit={preSubmit}
+      errors={errors}
     />
   );
 }
