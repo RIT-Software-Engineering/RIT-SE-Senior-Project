@@ -50,6 +50,18 @@ export default function SemesterPanel(props) {
     },
   ];
 
+  // input validation
+
+  const validateForm = (data) => {
+    const errorsFound = [];
+    if (!data.name?.trim()) {
+      errorsFound.push({
+        name: "name",
+        message: "Name must be provided",
+      });
+    }
+  };
+
   return (
     <DatabaseTableEditor
       initialState={initialState}
