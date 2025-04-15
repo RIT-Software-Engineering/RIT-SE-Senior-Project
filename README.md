@@ -65,3 +65,6 @@ After sshing into the server, cd into either prod or test project. Then run acco
 - /server files for the backend
 
 - /ui files for the REACT based frontend
+
+## Backend Documentation
+[Swagger Link](https://petstore.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIT-Software-Engineering%2FRIT-SE-Senior-Project%2Frefs%2Fheads%2Fdev%2Fui%2Fpublic%2Fapi-docs%2Fserver_doc.yaml)
