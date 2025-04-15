@@ -128,7 +128,7 @@ export default function SubmissionViewerModal(props) {
               {` ${props.action.name} (${props.action.system_id}) `}
               {formatDate(props.action.submission_datetime)}
               {` (Due ${formatDate(due)})`}
-              {late && ` ${day} days' late`}
+              {late && ` ${day} days late`}
             </p>
             <Divider />
             <h3>Submission</h3>
