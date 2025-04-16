@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import { config, DROPDOWN_ITEMS } from "../../../util/functions/constants";
 
 export default function UserPanel(props) {
+  const [errors, setErrors] = useState([]);
+
   let initialState = {
     system_id: props.userData?.system_id || "",
     fname: props.userData?.fname || "",
@@ -29,6 +31,24 @@ export default function UserPanel(props) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
+
+  // helper function; get all current users'
+  const getUsersId = () => {
+    const coachAdminArray = Object.entries(props.userData); // coach & admins types
+    const studentsArray = Object.entries(props.studentData); // student types
+
+    // get system_ids
+    const studentsID = studentsArray.map((student) => student[1]?.system_id);
+    const coachAdminID = coachAdminArray.map((user) => user[1]?.system_id);
+
+    const usersId = [...studentsID, ...coachAdminID]; // all users ID
+    console.log(usersId);
+    return usersId;
+  };
+
+  useEffect(() => {
+    getUsersId();
+  }, []);
 
   let formFieldArray = [
     {
@@ -79,6 +99,24 @@ export default function UserPanel(props) {
       name: "active",
     },
   ];
+
+  // input validation
+  const validateForm = (data) => {
+    const errorsFound = [];
+
+    if (!data.system_id?.trim()) {
+      // Semester Name
+      errorsFound.push({
+        name: "name",
+        message: "User ID must be provided",
+      });
+    }
+    if (data.system_id) {
+      console.log("ok");
+    }
+
+    return data;
+  };
 
   return (
     console.log(initialState),
