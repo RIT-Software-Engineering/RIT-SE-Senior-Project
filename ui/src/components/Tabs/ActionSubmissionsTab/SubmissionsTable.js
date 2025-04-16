@@ -20,6 +20,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { ACTION_TARGETS, config } from "../../util/functions/constants";
+import SubmissionsModal from "./SubmissionsModal";
 
 const { isSameWeek, addDays } = require("date-fns");
 
@@ -134,13 +135,13 @@ export default function SubmissionsTable(props) {
 
   return (
     <>
-      <h3>All Submissions</h3>
+      <h3>All Action Submissions</h3>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Action</TableHeaderCell>
             <TableHeaderCell>Action Type</TableHeaderCell>
-            <TableHeaderCell style={{textAlign: "right"}}>View Submissions</TableHeaderCell>
+            <TableHeaderCell style={{textAlign: "right"}}>View All</TableHeaderCell>
           </TableRow>
         </TableHeader>
 
@@ -159,6 +160,14 @@ export default function SubmissionsTable(props) {
                     <TableCell>{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
                     <TableCell style={{textAlign: "right"}}>
+                      <SubmissionsModal
+                        projectName={action.display_name || action.title}
+                        semesterName={props.semesterName}
+                        actionLogs={props.actionLogs}
+                        action={action}
+                        target={action?.action_target}
+                        isOpenCallback={() => {}}
+                      />
                     </TableCell>
                   </TableRow>
                 );

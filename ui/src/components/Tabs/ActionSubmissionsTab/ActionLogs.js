@@ -381,7 +381,7 @@ export default function ActionLogs(props) {
                   content: {
                     content: 
                     <div>
-                      <h3>Actions</h3>
+                      <h3>Individual Action Submissions</h3>
                       <Table>
                         <TableHeader>
                           <TableRow>
