@@ -47,6 +47,7 @@ export default function BatchUserPanel({callback}) {
         if (response.ok) {
           alert("Users successfully created!");
           setModalOpen(false);
+          setUsers([]);
           callback?.();
           return null;
         }
