@@ -381,6 +381,7 @@ export default function ActionLogs(props) {
                   content: {
                     content: 
                     <div>
+                      <h3>Actions</h3>
                       <Table>
                         <TableHeader>
                           <TableRow>

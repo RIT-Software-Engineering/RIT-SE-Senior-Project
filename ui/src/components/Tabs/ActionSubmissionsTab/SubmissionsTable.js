@@ -32,6 +32,7 @@ export default function SubmissionsTable(props) {
   const [due, setDue] = useState();
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
+  const [actions, setActions] = useState([]);
 
   const loadSubmission = (action) => {
     SecureFetch(
@@ -122,42 +123,49 @@ export default function SubmissionsTable(props) {
     return total.toFixed(2);
   };
 
+  function getActions(keyFn, actionLogs) {
+    var mySet = new Set();
+    return actionLogs.filter(function(x) {
+        var key = keyFn(x), isNew = !mySet.has(key);
+        if (isNew) mySet.add(key);
+        return isNew;
+    });
+  };
+
   return (
-    <Table celled>
+    <>
+      <h3>All Submissions</h3>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderCell>Action</TableHeaderCell>
+            <TableHeaderCell>Action Type</TableHeaderCell>
+            <TableHeaderCell style={{textAlign: "right"}}>View Submissions</TableHeaderCell>
+          </TableRow>
+        </TableHeader>
 
-      <TableHeader>
-        <TableRow>
-          <TableHeaderCell>Action</TableHeaderCell>
-          <TableHeaderCell>Action Type</TableHeaderCell>
-          <TableHeaderCell>Submitted By</TableHeaderCell>
-          <TableHeaderCell>Submission Time</TableHeaderCell>
-          <TableHeaderCell>Submissions</TableHeaderCell>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-          {props.actionLogs?.map((action, idx) => {
-            if(props.project.title === action.display_name || props.project.title === action.title) {
-              let submittedBy = `${action.name} (${action.system_id})`;
-              if (action.mock_id) {
-                submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
+        <TableBody>
+            {/* {console.log(getActions((x) => x.action_template, props.actionLogs))} */}
+            {getActions((x) => x.action_template, props.actionLogs)?.map((action, idx) => {
+              if((props.project.title === action.display_name || props.project.title === action.title)) {
+                let submittedBy = `${action.name} (${action.system_id})`;
+                if (action.mock_id) {
+                  submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
+                }
+                return(
+                  <TableRow
+                    key={idx}
+                  >
+                    <TableCell>{action.action_title}</TableCell>
+                    <TableCell>{action.action_target}</TableCell>
+                    <TableCell style={{textAlign: "right"}}>
+                    </TableCell>
+                  </TableRow>
+                );
               }
-              return(
-                <TableRow
-                  key={idx}
-                >
-                  <TableCell>{action.action_title}</TableCell>
-                  <TableCell>{action.action_target}</TableCell>
-                  <TableCell>{submittedBy}</TableCell>
-                  <TableCell>{formatDateTime(action.submission_datetime)}</TableCell>
-                  <TableCell>
-                  </TableCell>
-                </TableRow>
-              );
-            }
-          })}  
-      </TableBody>
-      
-    </Table>
+            })}  
+        </TableBody>
+      </Table>
+    </>
   );
 }
