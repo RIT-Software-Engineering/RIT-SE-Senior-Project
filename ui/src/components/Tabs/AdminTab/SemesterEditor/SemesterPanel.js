@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { config } from "../../../util/functions/constants";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 
@@ -51,26 +51,44 @@ export default function SemesterPanel(props) {
     },
   ];
 
+  // helper function for validating semester names
+  const getSemesterNames = () => {
+    // TODO: need to fetch the specific semester for editing a semester... to handle the unique semester name.
+    const semesters = Object.entries(props.semester);
+    const semesterNames = semesters.map((sem) => sem[1]?.name);
+
+    console.log("SEMESTERS", semesterNames);
+    return semesterNames;
+  };
+
   // input validation
 
   const validateForm = (data) => {
     const errorsFound = [];
 
+    // Semester Name
     if (!data.name?.trim()) {
-      // Semester Name
       errorsFound.push({
         name: "name",
         message: "Semester Name must be provided",
       });
+    } else {
+      const semesterNames = getSemesterNames();
+      if (semesterNames.includes(data.name.trim())) {
+        errorsFound.push({
+          name: "name",
+          message: "Semester Name is taken. Please choose a different name.",
+        });
+      }
     }
+
+    // Department
     if (!data.dept?.trim()) {
-      // Department
       errorsFound.push({
         name: "dept",
         message: "The Department must be provided",
       });
     }
-
     // date validations
     if (!data.start_date) {
       // Start Date
