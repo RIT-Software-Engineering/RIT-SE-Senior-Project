@@ -98,7 +98,7 @@ export default function UserEditor(props) {
           header={`Create user`}
           callback={getSemesters}
         />
-        <BatchUserPanel />
+        <BatchUserPanel callback={getSemesters}/>
       </div>
     </div>
   );

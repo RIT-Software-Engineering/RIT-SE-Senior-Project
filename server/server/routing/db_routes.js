@@ -302,50 +302,48 @@ module.exports = (db) => {
 
   db_router.post(
     "/batchCreateUser",
-    [
-      UserAuth.isAdmin,
-      // TODO: Add more validation
-    ],
+    [UserAuth.isAdmin],
     async (req, res, next) => {
-      let result = validationResult(req);
-
-      if (result.errors.length !== 0) {
-        const error = new Error("Validation Error");
-        error.statusCode = 400;
+      try {
+        let users = JSON.parse(req.body.users);
+        const failedUsers = [];
+        const successUsers = [];
+  
+        for (const user of users) {
+          const values = [
+            user.system_id,
+            user.fname,
+            user.lname,
+            user.email,
+            user.type,
+            user.semester_group === "" ? null : user.semester_group,
+            user.active.toLocaleLowerCase() === "false"
+              ? moment().format(CONSTANTS.datetime_format)
+              : "",
+          ];
+  
+          try {
+            await db.query(
+              `INSERT INTO ${DB_CONFIG.tableNames.users} 
+              (system_id, fname, lname, email, type, semester_group, active) 
+              VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              values
+            );
+            successUsers.push(user);
+          } catch (err) {
+            failedUsers.push({ user, error: err.message });
+          }
+        }
+  
+        res.status(200).json({ successUsers, failedUsers });
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
         return next(error);
       }
-
-      let users = JSON.parse(req.body.users);
-
-      const insertStatements = users.map((user) => {
-        const active =
-          user.active.toLocaleLowerCase() === "false"
-            ? moment().format(CONSTANTS.datetime_format)
-            : "";
-        return `('${user.system_id}','${user.fname}','${user.lname}','${
-          user.email
-        }','${user.type}',${
-          user.semester_group === "" ? null : `'${user.semester_group}'`
-        },'${active}')`;
-      });
-
-      const sql = `INSERT INTO ${
-        DB_CONFIG.tableNames.users
-      } (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(
-        ",",
-      )}`;
-
-      db.query(sql)
-        .then((values) => {
-          return res.status(200).send(values);
-        })
-        .catch((err) => {
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        });
-    },
+    }
   );
+  
 
   db_router.post("/editUser", [UserAuth.isAdmin], (req, res, next) => {
     let body = req.body;
