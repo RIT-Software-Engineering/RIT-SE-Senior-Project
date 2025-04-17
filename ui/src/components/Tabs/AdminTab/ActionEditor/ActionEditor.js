@@ -86,6 +86,7 @@ export default function ActionEditor(props) {
           create={true}
           key={"createAction"}
           callback={getActionData}
+          isOpenCallback={(isOpen) => setIsOpen(isOpen)} // Pass the isOpenCallback prop
         />
       </div>
     </div>

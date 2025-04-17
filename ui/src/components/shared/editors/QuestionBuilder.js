@@ -647,6 +647,8 @@ const QuestionBuilder = (props) => {
     <div>
       {/*Form Builder Modal*/}
       <Modal
+        closeOnDimmerClick={false}
+        closeOnEscape={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{
@@ -812,6 +814,7 @@ const QuestionBuilder = (props) => {
 
       {/* Preview Modal */}
       <Modal
+        closeOnDimmerClick={false}
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
         style={{

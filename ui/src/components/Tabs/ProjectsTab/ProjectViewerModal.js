@@ -120,6 +120,7 @@ export default function ProjectViewerModal(props) {
   };
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       trigger={<Button icon="eye" />}
       header={`Viewing "${props.project.display_name || props.project.title}"`}
