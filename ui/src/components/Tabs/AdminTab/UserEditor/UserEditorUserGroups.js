@@ -229,7 +229,7 @@ export default function UserEditorUserGroups(props) {
           styled
           panels={[{
             key: semesterId,
-            title: `${semesterMap[semesterId].name} (...)`,
+            title: `${semesterMap[semesterId].name}`,
             content: {
               content: activeIndexes.includes(semesterId)
                 ? createSemesterAccordion(groupings.semesters[semesterId])
