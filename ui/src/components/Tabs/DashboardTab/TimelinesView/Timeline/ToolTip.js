@@ -62,11 +62,18 @@ export default function ToolTip(props) {
           }}
         ></p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
-        <p>{props.action?.action_target === "break_period" ? "Ends:" : "Due:"} {formatDateNoOffset(props.action?.due_date)}</p>
-        {props.action?.action_target === "break_period" ? <></> : // break_period doesn't have a project, omit the fields
+        <p>
+          {props.action?.action_target === "break_period" ? "Ends:" : "Due:"}{" "}
+          {formatDateNoOffset(props.action?.due_date)}
+        </p>
+        {props.action?.action_target === "break_period" ? (
+          <></> // break_period doesn't have a project, omit the fields
+        ) : (
           <div>
             <p>Project: {props.projectName}</p>
-            <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
+            <p>
+              Submission Type: {submissionTypeMap[props.action?.action_target]}
+            </p>
             {submissions === null && !loadingSubmissions && (
               <p
                 className="fake-a"
@@ -104,7 +111,9 @@ export default function ToolTip(props) {
                         </>
                       ) : (
                         <>
-                          <i>{formatDateTime(submission.submission_datetime)}</i>{" "}
+                          <i>
+                            {formatDateTime(submission.submission_datetime)}
+                          </i>{" "}
                           Submission
                         </>
                       )}
@@ -114,7 +123,7 @@ export default function ToolTip(props) {
               );
             })}
           </div>
-          }
+        )}
       </>
     );
   };
@@ -129,7 +138,7 @@ export default function ToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-        {props.action?.action_target !== "break_period" ?
+        {props.action?.action_target !== "break_period" ? (
           <ActionModal
             key={props.action?.action_id}
             {...props.action}
@@ -137,7 +146,10 @@ export default function ToolTip(props) {
             projectId={props.projectId}
             preActionContent={metadata(true)}
             reloadTimelineActions={props.reloadTimelineActions}
-          /> : <></>}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     );
   };
@@ -156,6 +168,7 @@ export default function ToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
+      closeOnEscape={false}
       style={{ zIndex: 100 }}
       offset={[offsetX, 0]}
       trigger={props.trigger}
