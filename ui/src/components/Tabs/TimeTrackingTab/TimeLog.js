@@ -18,6 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import moment from "moment-timezone";
+import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 
 import ProjectTime from "./ProjectTIme";
 
@@ -51,6 +52,7 @@ export default function TimeLog(props) {
 
   const [students, setStudentsData] = useState([]);
   const { eachWeekOfInterval } = require("date-fns");
+
   useEffect(() => {
     console.log(userContext);
     setActionLogs([]);
@@ -92,6 +94,14 @@ export default function TimeLog(props) {
       .catch((error) => {
         alert("Failed to get proposal data " + error);
       });
+      SecureFetch(`${config.url.API_GET_TIME_AVG_SEMESTER}`,)
+      .then((response) => response.json())
+      .then((time) => {
+        setAvgTime(time);
+      })
+      .catch((error) => {
+        alert("Failed to get Avg data " + error);
+      });
   }, [userContext]);
 
   const resetKey = () => {
@@ -104,6 +114,7 @@ export default function TimeLog(props) {
     )
       .then((response) => response.json())
       .then((time_logs) => {
+        console.log(time_logs)
         setTimeLogs(time_logs.timeLogs);
         setTimeLogCount(time_logs.timeLogCount);
         var users = [];
@@ -143,12 +154,59 @@ export default function TimeLog(props) {
 
   function getPaginationData(number) {}
 
+  // const getAverage = () =>{
+  //   console.log(projects)
+  //   if(userContext.user.role === "admin"){
+  //     for(let proj in projects){
+  //       console.log(projects[proj])
+  //       SecureFetch(
+  //         `${config.url.API_GET_TIME_AVG}?project_id=${projects[proj].project_id}`,
+  //       )
+  //         .then((response) => response.json())
+  //         .then((time) => {
+  //           console.log(time);
+  //         });
+  //     }
+  //   }
+  // }
+
+  const adminAverages = (sem) =>{
+    if(userContext.user.role === "admin"){
+      let avg = 0;
+      let length = 0;
+      let avgProjects = [];
+      //console.log(sem.semester_id)
+      for(let num in avgTime){
+        //console.log(avgTime[avg].semester)
+        if(avgTime[num].semester === sem.semester_id){
+            avg+=avgTime[num].avgTime;
+            length += 1;
+        }
+      }
+      /*for(let num in avgProjects){
+        avg += avgProjects[num]/length[num]
+      }*/
+      if(avg != 0){
+        avg = avg/length;
+      }
+      console.log(avgTime)
+      return(
+        <div className="accordion-buttons-container">
+          <Button disabled={true}>
+            Average Hours per Student: {avg.toFixed(2)} Hours
+          </Button>
+        </div>
+      )
+    }
+  }
+
   useEffect(() => {
     getPaginationData(0);
   }, []);
   useEffect(() => {
     console.log("changed");
     getTimeData(0);
+    //getAverage();
   }, [key]);
 
   return (
@@ -189,6 +247,7 @@ export default function TimeLog(props) {
                   {},
                 ]}
               />
+            {adminAverages(sem)}
             </div>
           </>
         );

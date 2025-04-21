@@ -426,6 +426,24 @@ module.exports = (db) => {
       });
   });
 
+  db_router.get("/avgTimeSem", [UserAuth.isSignedIn], async (req, res, next) => {
+    const sql =
+      "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id, semester, project FROM time_log GROUP BY system_id";
+    console.log(req.query.semester_id);
+
+    db.query(sql, [req.query.semester_id])
+      .then((time) => {
+        console.log(time);
+        res.send(time);
+      })
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
   db_router.post("/createTimeLog", [], async (req, res, next) => {
     let result = validationResult(req);
 

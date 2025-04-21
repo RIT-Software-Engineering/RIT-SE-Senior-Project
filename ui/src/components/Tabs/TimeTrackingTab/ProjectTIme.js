@@ -18,6 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import moment from "moment-timezone";
+import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 
 const LOGS_PER_PAGE = 50;
 
@@ -51,7 +52,7 @@ export default function ProjectTime(props) {
   };
 
   const timeLogButton = () =>{
-    if(userContext.user.role != "admin"){
+    if(userContext.user.role === "student"){
       return(
         <div className="accordion-buttons-container">
           <TimeLogPanel callback={resetKey} header="Log Time" />
@@ -69,7 +70,9 @@ export default function ProjectTime(props) {
       avgProjtime.toFixed(2)
       return(
         <div className="accordion-buttons-container">
-          Average Hours : {avgProjtime.toFixed(2)} Hours
+          <Button disabled={true}>
+            Average Hours per Student : {avgProjtime.toFixed(2)} Hours
+          </Button>
         </div>
       )
     }
