@@ -22,6 +22,7 @@ import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { ACTION_TARGETS, ACTION_STATES, config } from "../../util/functions/constants";
 import SubmissionsModal from "./SubmissionsModal";
+import _ from "lodash";
 
 const { isSameWeek, addDays } = require("date-fns");
 
@@ -99,7 +100,11 @@ export default function SubmissionsTable(props) {
     )
       .then((response) => response.json())
       .then((actions) => {
-        setActions(actions);
+        setActions(_.sortBy(actions || [], [
+            "due_date",
+            "start_date",
+            "action_title",
+          ]));
       })
       .catch((error) => console.error(error));
   };
@@ -173,24 +178,27 @@ export default function SubmissionsTable(props) {
 
     switch (action.state) {
       case ACTION_STATES.YELLOW:
-        color += "proposal-row-yellow";
+        color += "action-row-yellow";
         break;
       case ACTION_STATES.RED:
-        color += "proposal-row-red";
+        color += "action-row-red";
         break;
       case ACTION_STATES.GREEN:
-        color += "proposal-row-blue";
+        color += "action-row-green";
         break;
       case ACTION_STATES.GREY:
-        color += "proposal-row-gray";
+        color += "action-row-gray";
         break;
       default:
-        color += `proposal-row-${action.state}`;
+        color += `action-row-${action.state}`;
         break;
     };
 
     return color;
   }
+
+  // console.log(props.actionLogs);
+
 
   return (
     <>
@@ -208,10 +216,9 @@ export default function SubmissionsTable(props) {
         <TableBody>
             {/* {console.log(getActions((x) => x.action_template, props.actionLogs))} */}
             {/* {getActions((x) => x.action_template, props.actionLogs)?.map((action, idx) => { */}
-            {console.log(props.actions)}
-            {console.log(props.project)}
             
             {actions.map((action, idx) => {
+              // console.log(action)
               if(props.project.semester === action.semester) {
                 let submittedBy = `${action.name} (${action.system_id})`;
                 if (action.mock_id) {
@@ -219,9 +226,7 @@ export default function SubmissionsTable(props) {
                 }
                 return(
                   <TableRow
-                    style={{
-                      background: `${actionColor(action)}`
-                    }}
+                    className={actionColor(action)}
                     key={idx}
                   >
                     <TableCell >{action.action_title}</TableCell>

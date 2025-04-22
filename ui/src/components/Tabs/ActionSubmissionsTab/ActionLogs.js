@@ -448,7 +448,6 @@ export default function ActionLogs(props) {
         <div>
           {semesterMap.forEach((semester) => {
               let projects = myProjects.filter((project) => project.semester === semester.semester_id);
-              console.log(projects)
               if(semester.name !== unassignedStudentsStr && projects.length > 0) {
                 semesterPanels.push(
                   <div className="accordion-button-group">

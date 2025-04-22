@@ -17,7 +17,7 @@ import {
   TableHeaderCell,
   TableRow,
 } from "semantic-ui-react";
-import { formatDate } from "../../util/functions/utils";
+import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import EvalReview from "../../util/components/EvalReview";
 
@@ -25,14 +25,14 @@ export default function SubmissionsModal(props) {
   const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState({});
   const [files, setFiles] = useState([]);
-  const [noSubmission, setNoSubmission] = useState(true);
+  // const [noSubmission, setNoSubmission] = useState(true);
   const [due, setDue] = useState();
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
 
-  const loadSubmission = () => {
+  const loadSubmission = (log_id) => {
     SecureFetch(
-      `${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`,
+      `${config.url.API_GET_SUBMISSION}?log_id=${log_id}`,
     )
       .then((response) => response.json())
       .then((submission) => {
@@ -41,7 +41,7 @@ export default function SubmissionsModal(props) {
           const fileData = submission[0].files?.split(",");
           setSubmission(formData);
           setFiles(fileData);
-          setNoSubmission(formData.length === 0 && files.length === 0);
+          // setNoSubmission(formData.length === 0 && files.length === 0);
         }
       })
       .catch((error) => {
@@ -72,7 +72,10 @@ export default function SubmissionsModal(props) {
     setDay(diffInDays);
   };
 
-  const IS_PEER_EVALUATION = props.target === ACTION_TARGETS.peer_evaluation;
+  const IS_PEER_EVALUATION = props.action.target === ACTION_TARGETS.peer_evaluation;
+
+  // console.log(props.action)
+  // console.log(props.actionLogs)
 
   return (
     <Modal
@@ -87,7 +90,7 @@ export default function SubmissionsModal(props) {
       }}
       open={open}
       trigger={
-        <Button icon onClick={loadSubmission}>
+        <Button icon>
           <Icon name="eye" />
         </Button>
       }
@@ -99,30 +102,74 @@ export default function SubmissionsModal(props) {
       actions={[{ content: "Close", key: 0 }]}
       content={{
         content: (
-          <div>
-
+          <>
             <Table celled>
-                <TableHeader>
-                    <TableRow>
-                    <TableHeaderCell>Semester/Project</TableHeaderCell>
-                    <TableHeaderCell>Submitted By</TableHeaderCell>
-                    <TableHeaderCell>Submission Time</TableHeaderCell>
-                    <TableHeaderCell>Submission Name</TableHeaderCell>
-                    <TableHeaderCell>Submission Email</TableHeaderCell>
-                    <TableHeaderCell>File</TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
+              <TableHeader>
+                <TableRow>
+                <TableHeaderCell>Semester/Project</TableHeaderCell>
+                <TableHeaderCell>Submitted By</TableHeaderCell>
+                <TableHeaderCell>Submission Time</TableHeaderCell>
+                <TableHeaderCell>Submission Name</TableHeaderCell>
+                <TableHeaderCell>Submission Email</TableHeaderCell>
+                <TableHeaderCell>File</TableHeaderCell>
+                </TableRow>
+              </TableHeader>
     
-                <TableBody>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                </TableBody>
+              <TableBody>
+                {props.actionLogs.map((log, idx) => {
+                  console.log(log)
+                  console.log(props.action)
+                  if(log.action_template === props.action.action_id && log.semester === props.action.semester) {
+                    // loadSubmission(log.action_log_id);
+                    let submittedBy = `${log.name} (${log.system_id})`;
+                    if (log.mock_id) {
+                      submittedBy = `${log.mock_name} (${log.mock_id}) as ${log.name} (${log.system_id})`;
+                    }
+                    return(
+                      <TableRow key={idx}>
+                        <TableCell>{log.title}</TableCell>
+                        <TableCell>{submittedBy}</TableCell>
+                        <TableCell>{formatDateTime(log.submission_datetime)}</TableCell>
+                        <TableCell>name</TableCell>
+                        <TableCell>email</TableCell>
+                        <TableCell>
+                          {/* {!noSubmission && ( */}
+                            <>
+                              {/* {loadSubmission(log.action_log_id)} */}
+                              {Object.keys(submission)?.map((key) => {
+                                if (submission[key].includes("fakepath")) {
+                                  return false;
+                                }
+                                return (
+                                  <div key={key}>
+                                    <p>
+                                      <b>{key}:</b> {submission[key]}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                              {files?.map((file) => {
+                                return (
+                                  <div key={file}>
+                                    <a
+                                      href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${log.action_log_id}&project=${log.project}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {file.replace(/^[^/]*\/(.*)$/, "$1")}
+                                    </a>
+                                    <br />
+                                  </div>
+                                );
+                              })}
+                            </>
+                          {/* )} */}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  }
+                })}
+              </TableBody>
             </Table>
 
             {/* <p>
@@ -294,7 +341,7 @@ export default function SubmissionsModal(props) {
                   />
                 </>
               )} */}
-          </div>
+          </>
         ),
       }}
     />
