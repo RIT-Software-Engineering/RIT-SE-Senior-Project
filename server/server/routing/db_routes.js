@@ -318,28 +318,29 @@ module.exports = (db) => {
 
       let users = JSON.parse(req.body.users);
 
-      const insertStatements = users.map((user) => {
+      const placeholders = users.map(() => `(?, ?, ?, ?, ?, ?, ?)`).join(",");
+      const values = users.flatMap((user) => {
         const active =
           user.active.toLocaleLowerCase() === "false"
             ? moment().format(CONSTANTS.datetime_format)
             : "";
-        return `('${user.system_id}','${user.fname}','${user.lname}','${
-          user.email
-        }','${user.type}',${
-          user.semester_group === "" ? null : `'${user.semester_group}'`
-        },'${active}')`;
+        return [
+          user.system_id,
+          user.fname,
+          user.lname,
+          user.email,
+          user.type,
+          user.semester_group === "" ? null : user.semester_group,
+          active,
+        ];
       });
 
-      const sql = `INSERT INTO ${
-        DB_CONFIG.tableNames.users
-      } (system_id, fname, lname, email, type, semester_group, active) VALUES ${insertStatements.join(
-        ",",
-      )}`;
+      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
+      (system_id, fname, lname, email, type, semester_group, active) 
+      VALUES ${placeholders}`;
 
-      db.query(sql)
-        .then((values) => {
-          return res.status(200).send(values);
-        })
+      db.query(sql, values)
+        .then((result) => res.status(200).send(result))
         .catch((err) => {
           const error = new Error(err);
           error.statusCode = 500;
@@ -1877,41 +1878,6 @@ module.exports = (db) => {
     });
   });
 
-  db_router.get("/getProjectFiles", (req, res, next) => {
-    let fileData = [];
-    // This is the path with the specified directory we want to find files in.
-    const formattedPath = `resource/`;
-    const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    fs.mkdirSync(baseURL, { recursive: true });
-    // Get the files in the directory
-    fs.readdir(baseURL, function (err, files) {
-      if (err) {
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      }
-      const info = fs.statSync(baseURL);
-      files.forEach(function (file) {
-        // Only files have sizes, directories do not. Send file size if it is a file
-        const fileInfo = fs.statSync(baseURL + file);
-        if (fileInfo.isFile()) {
-          fileData.push({
-            file: file,
-            size: fileInfo.size,
-            lastModified: fileInfo.ctime,
-          });
-        } else {
-          fileData.push({
-            file: file,
-            size: 0,
-            lastModified: info.ctime,
-          });
-        }
-      });
-      res.send(fileData);
-    });
-  });
-
   db_router.delete("/removeFile", UserAuth.isAdmin, (req, res, next) => {
     const formattedPath = `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
@@ -3423,19 +3389,6 @@ module.exports = (db) => {
         const error = new Error(err);
         error.statusCode = 500;
         return next(error);
-      });
-  });
-
-  db_router.get("/getArchiveFromProject", (req, res) => {
-    let query = `SELECT * FROM archive WHERE archive.project_id=?`;
-    let params = [req.query.project_id];
-    db.query(query, params)
-      .then((values) => {
-        res.status(200).send(values);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send(err);
       });
   });
 

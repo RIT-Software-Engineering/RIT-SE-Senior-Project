@@ -49,6 +49,7 @@ export default function IndividualTimeModal(props) {
   };
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       onOpen={() => {
         setOpen(true);

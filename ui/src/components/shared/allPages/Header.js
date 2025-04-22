@@ -6,6 +6,7 @@ import "../../../css/header.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 
 function Header() {
   const history = useHistory();
@@ -86,6 +87,7 @@ function Header() {
             </button>
           ) : (
             <Modal
+              closeOnDimmerClick={false}
               className={"sticky"}
               trigger={<Button>Dev Sign in/out</Button>}
               header="Dev Sign in/out"
@@ -154,6 +156,7 @@ function Header() {
           ) : (
             <Menu.Item as="a" href={void 0}>
               <Modal
+                closeOnDimmerClick={false}
                 className={"sticky"}
                 trigger={<div>Dev Sign in/out</div>}
                 header="Sign in/Sign Out"
@@ -173,10 +176,16 @@ function Header() {
     <div id="header">
       <div className="ui container">
         <h1 className="ui header">
+          <img
+            src={SELogo}
+            alt="Department of Software Engineering"
+            style={{
+              maxWidth: "150px",
+              height: "auto",
+              marginRight: "15px",
+            }}
+          />
           Senior Project
-          <div id="subHeader" className="sub header">
-            Department of Software Engineering, RIT
-          </div>
         </h1>
         {renderNavButtons()}
       </div>

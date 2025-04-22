@@ -106,12 +106,32 @@ export default function TimeLog(props) {
       .then((time_logs) => {
         setTimeLogs(time_logs.timeLogs);
         setTimeLogCount(time_logs.timeLogCount);
-        var users = [];
+        var userNames = [];
         for (var i = 0; i < time_logs.timeLogs.length; i++) {
-          var timeLog = time_logs.timeLogs[i];
-          if (!users.includes(timeLog.name)) {
-            users.push(timeLog.name);
+          let timeLog = time_logs.timeLogs[i];
+          if (!userNames.some((e) => e.name === timeLog.name)) {
+            userNames.push({
+              name: timeLog.name,
+              system_id: timeLog.system_id,
+            });
           }
+        }
+
+        // Sort the array of user objects by system_id. This is necessary because the
+        // the timeLogs array is sorted by date, and we want to group the time logs
+        // by user in the order of their system_id.
+        userNames.sort(function (a, b) {
+          // If a's system_id is less than b's, return -1 (a should come before b)
+          if (a.system_id < b.system_id) return -1;
+          // If a's system_id is greater than b's, return 1 (change nothing,a should come before b)
+          else if (a.system_id > b.system_id) return 1;
+          // If the system_ids are equal, return 0 (the order of the users doesn't matter)
+          else return 0;
+        });
+
+        var users = [];
+        for (let i = 0; i < userNames.length; i++) {
+          users.push(userNames[i].name);
         }
 
         var userStats = [];

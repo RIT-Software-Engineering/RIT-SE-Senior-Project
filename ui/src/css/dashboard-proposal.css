@@ -33,6 +33,11 @@
   color: black;
 }
 
+.proposal-row-purple {
+  background: #fcfff5;
+  color: black;
+}
+
 .proposal-status-action {
   display: flex;
   justify-content: space-between;
