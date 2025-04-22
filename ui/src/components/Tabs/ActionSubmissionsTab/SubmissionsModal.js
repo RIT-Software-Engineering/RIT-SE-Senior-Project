@@ -47,25 +47,6 @@ export default function SubmissionsModal(props) {
       .catch((error) => {
         alert("Failed to get action log data " + error);
       });
-
-    SecureFetch(
-      `${config.url.API_GET_LATE_SUBMISSION}?log_id=${props.action?.action_log_id}`,
-    )
-      .then((response) => response.json())
-      .then((dueDate) => {
-        let dueDateTime = new Date(dueDate[0].due_date);
-        setDue(dueDateTime);
-        let submitDate = new Date(
-          props.action.submission_datetime.split(" ")[0].toString(),
-        );
-        setLate(dueDateTime < submitDate);
-        if (dueDateTime < submitDate) {
-          daysLate(dueDateTime, submitDate);
-        }
-      })
-      .catch((error) => {
-        alert("Failed to get due and submission data " + error);
-      });
   };
 
   const noSubmissionText = (target) => {
@@ -106,13 +87,9 @@ export default function SubmissionsModal(props) {
       }}
       open={open}
       trigger={
-        <div onClick={loadSubmission}>
-          {props.trigger || (
-            <Button icon>
-              <Icon name="eye" />
-            </Button>
-          )}
-        </div>
+        <Button icon onClick={loadSubmission}>
+          <Icon name="eye" />
+        </Button>
       }
       header={`Submissions for ${
         props.action.action_title

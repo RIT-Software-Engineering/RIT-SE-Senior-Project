@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   Modal,
   ModalActions,
   Segment,
+  Pagination,
   Table,
   TableBody,
   TableCell,
@@ -19,10 +20,12 @@ import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
-import { ACTION_TARGETS, config } from "../../util/functions/constants";
+import { ACTION_TARGETS, ACTION_STATES, config } from "../../util/functions/constants";
 import SubmissionsModal from "./SubmissionsModal";
 
 const { isSameWeek, addDays } = require("date-fns");
+
+const ACTIONS_PER_PAGE = 11;
 
 export default function SubmissionsTable(props) {
   const [open, setOpen] = useState(false);
@@ -34,6 +37,23 @@ export default function SubmissionsTable(props) {
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
   const [actions, setActions] = useState([]);
+  // const [actionCount, setActionCount] = useState(ACTIONS_PER_PAGE);
+
+  // const getPaginationData = (page) => {
+  //   SecureFetch(
+  //     `${
+  //       config.url.API_GET_ALL_ACTION_LOGS
+  //     }/?resultLimit=${ACTIONS_PER_PAGE}&offset=${ACTIONS_PER_PAGE * page}`,
+  //   )
+  //     .then((response) => response.json())
+  //     .then((action_logs) => {
+  //       setActions(action_logs.actionLogs);
+  //       setActionCount(action_logs.actionLogCount);
+  //     })
+  //     .catch((error) => {
+  //       alert("Failed to get action data " + error);
+  //     });
+  // };
 
   const loadSubmission = (action) => {
     SecureFetch(
@@ -72,6 +92,21 @@ export default function SubmissionsTable(props) {
         alert("Failed to get due and submission data " + error);
       });
   };
+
+  const getActions = (project_id) => {
+    SecureFetch(
+      `${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`,
+    )
+      .then((response) => response.json())
+      .then((actions) => {
+        setActions(actions);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    getActions(props.project?.project_id);
+  }, [props.project?.project_id]);
 
   const noSubmissionText = (target) => {
     switch (target) {
@@ -124,41 +159,74 @@ export default function SubmissionsTable(props) {
     return total.toFixed(2);
   };
 
-  function getActions(keyFn, actionLogs) {
-    var mySet = new Set();
-    return actionLogs.filter(function(x) {
-        var key = keyFn(x), isNew = !mySet.has(key);
-        if (isNew) mySet.add(key);
-        return isNew;
-    });
-  };
+  // function getActions(keyFn, actionLogs) {
+  //   var mySet = new Set();
+  //   return actionLogs.filter(function(x) {
+  //       var key = keyFn(x), isNew = !mySet.has(key);
+  //       if (isNew) mySet.add(key);
+  //       return isNew;
+  //   });
+  // };
+
+  const actionColor = (action) => {
+    let color = "";
+
+    switch (action.state) {
+      case ACTION_STATES.YELLOW:
+        color += "proposal-row-yellow";
+        break;
+      case ACTION_STATES.RED:
+        color += "proposal-row-red";
+        break;
+      case ACTION_STATES.GREEN:
+        color += "proposal-row-blue";
+        break;
+      case ACTION_STATES.GREY:
+        color += "proposal-row-gray";
+        break;
+      default:
+        color += `proposal-row-${action.state}`;
+        break;
+    };
+
+    return color;
+  }
 
   return (
     <>
-      <h3>All Action Submissions</h3>
+      <h3>Action Submissions for {props.project.title}</h3>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Action</TableHeaderCell>
             <TableHeaderCell>Action Type</TableHeaderCell>
-            <TableHeaderCell style={{textAlign: "right"}}>View All</TableHeaderCell>
+            <TableHeaderCell>Submission Status</TableHeaderCell>
+            <TableHeaderCell style={{textAlign: "right"}}>View All Submissions</TableHeaderCell>
           </TableRow>
         </TableHeader>
 
         <TableBody>
             {/* {console.log(getActions((x) => x.action_template, props.actionLogs))} */}
-            {getActions((x) => x.action_template, props.actionLogs)?.map((action, idx) => {
-              if((props.project.title === action.display_name || props.project.title === action.title)) {
+            {/* {getActions((x) => x.action_template, props.actionLogs)?.map((action, idx) => { */}
+            {console.log(props.actions)}
+            {console.log(props.project)}
+            
+            {actions.map((action, idx) => {
+              if(props.project.semester === action.semester) {
                 let submittedBy = `${action.name} (${action.system_id})`;
                 if (action.mock_id) {
                   submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
                 }
                 return(
                   <TableRow
+                    style={{
+                      background: `${actionColor(action)}`
+                    }}
                     key={idx}
                   >
-                    <TableCell>{action.action_title}</TableCell>
+                    <TableCell >{action.action_title}</TableCell>
                     <TableCell>{action.action_target}</TableCell>
+                    <TableCell>{action.state}</TableCell>
                     <TableCell style={{textAlign: "right"}}>
                       <SubmissionsModal
                         projectName={action.display_name || action.title}
@@ -175,6 +243,21 @@ export default function SubmissionsTable(props) {
             })}  
         </TableBody>
       </Table>
+
+      {/* <div className="pagination-container">
+        <Pagination
+          defaultActivePage={1}
+          ellipsisItem={null}
+          firstItem={null}
+          lastItem={null}
+          prevItem={{ content: <Icon name="angle left" />, icon: true }}
+          nextItem={{ content: <Icon name="angle right" />, icon: true }}
+          totalPages={Math.ceil(actionCount / ACTIONS_PER_PAGE)}
+          onPageChange={(event, data) => {
+            getPaginationData(data.activePage - 1);
+          }}
+        />
+      </div> */}
     </>
   );
 }
