@@ -11,6 +11,7 @@ export default function DevSignInModalContent() {
   const history = useHistory();
   const [users, setUsers] = useState([]);
   const selectedUserIdx = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (process.env.REACT_APP_NODE_ENV === "development") {
@@ -62,7 +63,7 @@ export default function DevSignInModalContent() {
         }}
       >
         Sign In
-      </Button>{" "}
+      </Button>
       <Button
         secondary
         onClick={() => {
@@ -77,6 +78,44 @@ export default function DevSignInModalContent() {
         }}
       >
         Sign Out
+      </Button>
+      <Button
+        color="red"
+        onClick={async () => {
+          setLoading(true);
+
+          // Delete all cookies
+          document.cookie.split(";").forEach((cookie) => {
+            document.cookie = cookie + ";max-age=0";
+          });
+
+          try {
+            const response = await SecureFetch(config.url.DEV_ONLY_REDEPLOY_DATABASE, {
+              method: "PUT",
+            });
+
+            if (response.ok) {
+              // Successful database reset
+              console.log("Database reset successful");
+              history.push("/");
+              setTimeout(() => {
+                window.location.reload();
+              }, 500);
+            } else {
+              // Handle failure
+              const data = await response.json();
+              alert(`Error: ${data.message || "Failed to reset database"}`);
+            }
+          } catch (error) {
+            console.error("Request failed", error);
+            alert("Failed to connect to the server. Please try again.");
+          } finally {
+            setLoading(false);
+          }
+        }}
+        disabled={loading}
+      >
+        {loading ? "Resetting..." : "Reset Database"}
       </Button>
     </Container>
   );
