@@ -192,6 +192,17 @@ export function Calendar(props) {
     )
   }
 
+  // Check if an action ends on a specific day
+  const actionEndsOnDay = (action, day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    const actionEnd = new Date(action.due_date)
+    return (
+      date.getDate() === actionEnd.getDate() &&
+      date.getMonth() === actionEnd.getMonth() &&
+      date.getFullYear() === actionEnd.getFullYear()
+    )
+  }
+
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
@@ -204,6 +215,7 @@ export function Calendar(props) {
 
   // Creates and styles the actions for that particular day
   const generateActionsForDay = (actionsForDay, day) => {
+    console.log(day, actionsForDay)
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index)
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
@@ -218,8 +230,21 @@ export function Calendar(props) {
         zIndex: 10 + index, // Add z-index based on index
       }
 
+      // checks conditions for action arrows which signify the duration of the action
+      // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
+      let actionTitleWithArrows = action.action_title;
+      if (actionStartsOnDay(action, day) && actionEndsOnDay(action, day)) {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
+      } else if (actionStartsOnDay(action, day)) {
+        actionTitleWithArrows = `${actionTitleWithArrows} ► `;
+      } else if (actionEndsOnDay(action, day)) {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows}`;
+      }  else {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
+      }
+
       // for strikethrough (completed actions)
-      const actionContent = action.state === "green" ? <s>{action.action_title}</s> : action.action_title
+      const actionContent = action.state === "green" ? <s>{actionTitleWithArrows}</s> : actionTitleWithArrows;
 
       const trigger = (
         <div
@@ -296,8 +321,6 @@ export function Calendar(props) {
         >
           <div className={`day-number ${isCurrentDay ? "today" : ""}`}>{day}</div>
           <div className="action-container">
-              {/* if there are more than actions than can be shown create a button that displays a popup with all the actions */}
-              {/* TODO add option to view action from pop-up right now it doesnt work*/}
               {actionsForDay.length > maxVisibleActions ? (
                 <Popup
                   on='click'
