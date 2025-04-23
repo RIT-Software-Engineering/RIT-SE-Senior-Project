@@ -48,7 +48,8 @@ export default function SemesterEditor() {
         <SemesterPanel
           header="Create Semester"
           callback={getSemesters}
-          semester={semesters}
+          semester={null} // for semester creation
+          semesterData={semesters}
         />
       </div>
     </div>

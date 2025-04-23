@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { config } from "../../../util/functions/constants";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 
@@ -53,11 +53,11 @@ export default function SemesterPanel(props) {
 
   // helper function for validating semester names
   const getSemesterNames = () => {
-    // TODO: need to fetch the specific semester for editing a semester... to handle the unique semester name.
-    const semesters = Object.entries(props.semester);
-    const semesterNames = semesters.map((sem) => sem[1]?.name);
+    const currentSemId = props.semester?.semester_id;
+    const semesterNames = props.semesterData
+      ?.filter((sem) => sem?.semester_id !== currentSemId)
+      .map((sem) => sem?.name); // check all other semesters for unique names
 
-    console.log("SEMESTERS", semesterNames);
     return semesterNames;
   };
 
@@ -72,9 +72,16 @@ export default function SemesterPanel(props) {
         name: "name",
         message: "Semester Name must be provided",
       });
+    } else if (data.name.trim().length > 50) {
+      // check length
+      errorsFound.push({
+        name: "name",
+        message: `Semester Name must be less than 50 characters [currently: ${data.name.trim().length} characters]`,
+      });
     } else {
       const semesterNames = getSemesterNames();
       if (semesterNames.includes(data.name.trim())) {
+        // checking unique semester names
         errorsFound.push({
           name: "name",
           message: "Semester Name is taken. Please choose a different name.",
@@ -87,6 +94,12 @@ export default function SemesterPanel(props) {
       errorsFound.push({
         name: "dept",
         message: "The Department must be provided",
+      });
+    } else if (data.dept.trim().length > 50) {
+      // check length
+      errorsFound.push({
+        name: "dept",
+        message: `Department must be less than 50 characters [currently: ${data.dept.trim().length} characters]`,
       });
     }
     // date validations
