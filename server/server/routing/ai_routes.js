@@ -101,5 +101,13 @@ module.exports = () => {
       });
   });
 
+  router.get("/CheckGeminiKeyExists", [UserAuth.isCoachOrAdmin], (req, res) => {
+
+    const isValid =
+      key && key.trim().length > 0 && key !== "INSERT_KEY_HERE";
+
+    res.status(200).json({ valid: isValid });
+  });
+
   return router;
 };
