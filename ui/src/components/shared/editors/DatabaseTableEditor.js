@@ -209,12 +209,16 @@ export default function DatabaseTableEditor(props) {
         let newErrors = [...prevErrors];
 
         if (
-          name === "action_target" &&
-          (value === "peer_evaluation" ||
-            value === "coach_announcement" ||
-            value === "student_announcement")
+          (name === "action_target" &&
+            (value === "peer_evaluation" ||
+              value === "coach_announcement" ||
+              value === "student_announcement")) ||
+          (name === "type" && (value === "admin" || value === "coach"))
         ) {
-          newErrors = newErrors.filter((error) => error.name !== "short_desc");
+          newErrors = newErrors.filter(
+            (error) =>
+              error.name !== "short_desc" && error.name !== "semester_group",
+          );
         }
         newErrors = newErrors.filter(
           (error) =>
@@ -400,6 +404,28 @@ export default function DatabaseTableEditor(props) {
             (formData.type === "coach" || formData.type === "admin") &&
             (field.label === "Semester/Project" || field.label === "Semester")
           ) {
+          } else if (field.name === "semester_group" || field.name === "type") {
+            // required dropdowns; used for user creation.
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
+                disabled={field.loading || field.disabled}
+                required
+                error={hasError(field.name)}
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] || field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>,
+            );
+            break;
           } else {
             fieldComponents.push(
               <Form.Field
