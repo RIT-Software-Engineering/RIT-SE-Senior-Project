@@ -145,31 +145,36 @@ module.exports = (db) => {
       switch (req.user.type) {
         //Retrieves all users from a semester group that is similar to the student that is making the query.
         case ROLES.STUDENT:
-          query = `SELECT users.* FROM users WHERE users.system_id = ?`;
+          query = `
+            SELECT users.* 
+            FROM users 
+            WHERE users.semester_group = (
+              SELECT semester_group FROM users WHERE system_id = ?
+            ) AND users.type = 'student'`;
           params = [req.user.system_id];
           break;
+
         case ROLES.COACH:
           query = `
-                    SELECT users.* FROM users
-                    LEFT JOIN semester_group
-                        ON users.semester_group = semester_group.semester_id
-                    WHERE users.semester_group in (
-                    SELECT projects.semester FROM projects
-                    WHERE projects.project_id in (
-                        SELECT project_coaches.project_id FROM project_coaches
-                        WHERE project_coaches.coach_id = ?
-                    )
-                        )
-                `;
+            SELECT users.* FROM users
+            LEFT JOIN semester_group
+              ON users.semester_group = semester_group.semester_id
+            WHERE users.semester_group IN (
+              SELECT projects.semester FROM projects
+              WHERE projects.project_id IN (
+                SELECT project_coaches.project_id FROM project_coaches
+                WHERE project_coaches.coach_id = ?
+              )
+            )`;
           params = [req.user.system_id];
           break;
+
         case ROLES.ADMIN:
           query = `SELECT * FROM users
                     LEFT JOIN semester_group
                     ON users.semester_group = semester_group.semester_id
                     WHERE users.type = 'student'`;
           break;
-
         default:
           break;
       }
