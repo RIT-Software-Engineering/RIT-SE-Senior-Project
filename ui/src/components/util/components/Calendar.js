@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
 import "../../../css/calendar.css"
-import { max } from "moment";
 import { Popup } from "semantic-ui-react";
 
 const SPECIAL_DATES = {
@@ -221,23 +220,19 @@ export function Calendar(props) {
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
       const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
 
-      // Add z-index to ensure proper stacking of overlapping actions
       const actionStyle = {
         top: `${position.top}px`,
         backgroundColor: action.color,
         borderLeft: position.isStart ? "none" : "4px solid transparent",
         left: position.isStart ? "0" : "-4px",
-        zIndex: 10 + index, // Add z-index based on index
       }
 
       // checks conditions for action arrows which signify the duration of the action
       // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
       let actionTitleWithArrows = action.action_title;
-      if (actionStartsOnDay(action, day) && actionEndsOnDay(action, day)) {
-        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
-      } else if (actionStartsOnDay(action, day)) {
+      if (actionStartsOnDay(action, day) && !actionEndsOnDay(action, day)) {
         actionTitleWithArrows = `${actionTitleWithArrows} ► `;
-      } else if (actionEndsOnDay(action, day)) {
+      } else if (actionEndsOnDay(action, day) && !actionStartsOnDay(action, day)) {
         actionTitleWithArrows = `◄ ${actionTitleWithArrows}`;
       }  else {
         actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
