@@ -85,17 +85,20 @@ async function provide_summary(studentFeedback) {
 
 async function generateResponse(prompt, context) {
   try {
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash-latest",
+    });
 
     const result = await model.generateContent({
       contents: [
         {
           parts: [
-            { text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}` }
-          ]
-        }
-      ]
+            {
+              text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}`,
+            },
+          ],
+        },
+      ],
     });
 
     return result.response.text();
@@ -105,57 +108,69 @@ async function generateResponse(prompt, context) {
   }
 }
 
-
 module.exports = () => {
-  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
-    if (!key || key === "ADD_KEY_HERE") {
-      return res.status(200).send("Invalid API key. Please let an admin know.");
-    }
-  
-    const context = req.body.context;
+  router.post(
+    "/GenerateSummary",
+    [UserAuth.isCoachOrAdmin],
+    async (req, res, next) => {
+      if (!key || key === "ADD_KEY_HERE") {
+        return res
+          .status(200)
+          .send("Invalid API key. Please let an admin know.");
+      }
 
-    provide_summary(context)
-      .then((response) => {
+      const context = req.body.context;
+
+      provide_summary(context)
+        .then((response) => {
+          res.type("text/plain");
+          res.status(200).send(response);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          error.message =
+            "Error generating summary with gemini-1.5-flash-latest";
+          return next(error);
+        });
+    },
+  );
+
+  router.post(
+    "/GenerateResponse",
+    [UserAuth.isCoachOrAdmin],
+    async (req, res, next) => {
+      if (!key || key === "ADD_KEY_HERE") {
         res.type("text/plain");
-        res.status(200).send(response);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        error.message = "Error generating summary with gemini-1.5-flash-latest";
-        return next(error);
-      });
-  });
-  
-  router.post("/GenerateResponse", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
-    if (!key || key === "ADD_KEY_HERE") {
-      res.type("text/plain");
-      return res.status(200).send("Invalid API key. Please let an admin know.");
-    }
-  
-    const { prompt, context } = req.body;
+        return res
+          .status(200)
+          .send("Invalid API key. Please let an admin know.");
+      }
 
-    if (!prompt || !context) {
-      return res.status(200).json({ error: "Missing 'prompt' or 'context' in request body." });
-    }
-  
-    generateResponse(prompt, context)
-      .then((response) => {
-        res.type("text/plain");
-        res.status(200).send(response);
-      })
-      .catch((err) => {
-        console.error("Error generating response:", err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        error.message = "Error generating summary with gemini-1.5-flash-latest";
-        return next(error);
-      });
-});
+      const { prompt, context } = req.body;
 
+      if (!prompt || !context) {
+        return res
+          .status(200)
+          .json({ error: "Missing 'prompt' or 'context' in request body." });
+      }
 
-  
+      generateResponse(prompt, context)
+        .then((response) => {
+          res.type("text/plain");
+          res.status(200).send(response);
+        })
+        .catch((err) => {
+          console.error("Error generating response:", err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          error.message =
+            "Error generating summary with gemini-1.5-flash-latest";
+          return next(error);
+        });
+    },
+  );
 
   return router;
 };

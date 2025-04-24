@@ -374,10 +374,15 @@ export default function StudentsTab(props) {
                 content: {
                   content: (
                     <>
-                      
-                      { // only show bar graph if admin or coach
-                      userContext.user.role === USERTYPES.ADMIN || userContext.user.role === USERTYPES.COACH ? <BarGraph data={submission}/> : ""
-                      } 
+                      {
+                        // only show bar graph if admin or coach
+                        userContext.user.role === USERTYPES.ADMIN ||
+                        userContext.user.role === USERTYPES.COACH ? (
+                          <BarGraph data={submission} />
+                        ) : (
+                          ""
+                        )
+                      }
                       <EvalReview
                         forms={submission}
                         isSub={submission?.Submitter === "COACH"}

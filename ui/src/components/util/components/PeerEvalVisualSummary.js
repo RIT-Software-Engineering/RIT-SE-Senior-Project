@@ -10,7 +10,7 @@ const BarGraph = ({ data }) => {
 
   useEffect(() => {
     const sortedFeedback = Object.entries(data.Students).map(
-      ([student, feedback]) => [student, feedback.AverageRatings]
+      ([student, feedback]) => [student, feedback.AverageRatings],
     );
     setUserFeedback(sortedFeedback);
 

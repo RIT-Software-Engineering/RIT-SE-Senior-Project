@@ -218,7 +218,7 @@ export const ACTION_STATES = {
   RED: "red",
   GREEN: "green",
   GREY: "grey",
-  PURPLE: "purple",//used for break period
+  PURPLE: "purple", //used for break period
 };
 
 export const SERVER_TIMEZONE = "America/New_York";
