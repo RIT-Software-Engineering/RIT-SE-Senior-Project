@@ -19,6 +19,7 @@ import {
 import { SecureFetch } from "../functions/secureFetch";
 import { config } from "../functions/constants";
 import ResultTable from "./ResultTable";
+import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
 
 export default function CoachFeedback(props) {
   const [studentList, setStudentList] = useState([]);
@@ -34,6 +35,11 @@ export default function CoachFeedback(props) {
   const [aiSummaryText, setAISummaryText] = useState({});
   const [usedAI, setUsedAI] = useState([]);
   const [expandedFeedback, setExpandedFeedback] = useState({});
+  const [customPrompt, setCustomPrompt] = useState(
+    PROMPT_GENERATE_FEEDBACK_SUMMARY,
+  );
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false);
+  const [tempPrompt, setTempPrompt] = useState(customPrompt);
 
   const expandFeedback = (category) => {
     setExpandedFeedback({
@@ -105,13 +111,14 @@ export default function CoachFeedback(props) {
     }));
   };
 
-  const getSummarization = (id, context) => {
+  const getSummarization = (id, context, prompt) => {
     const body = new FormData();
     body.append("context", JSON.stringify(context));
+    body.append("prompt", prompt);
 
     updateLoadingState(id, true);
 
-    SecureFetch(`${config.url.API_GENERATE_SUMMARY}`, {
+    SecureFetch(`${config.url.API_GENERATE_RESPONSE}`, {
       method: "post",
       body: body,
     })
@@ -120,7 +127,7 @@ export default function CoachFeedback(props) {
         updateAISummaryText(id, data);
       })
       .catch((error) => {
-        console.error("Error  Generating Summary:", error);
+        console.error("Error Generating AI Response:", error);
       })
       .finally(() => {
         updateLoadingState(id, false);
@@ -163,7 +170,7 @@ export default function CoachFeedback(props) {
 
   const handleGenerateSummarization = (s, context) => {
     ClosePopup(s);
-    getSummarization(s, context);
+    getSummarization(s, context, customPrompt);
     setUsedAI((prev) => ({
       ...prev,
       [s]: true,
@@ -471,10 +478,13 @@ export default function CoachFeedback(props) {
             )}
             <Button
               attached="bottom"
-              onClick={(_) => {
-                OpenPopup(student);
-              }}
-              content="Generate AI Summarization"
+              onClick={(_) => OpenPopup(student)}
+              color="grey"
+              content={
+                customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                  ? "Generate AI Summarization with Custom Prompt"
+                  : "Generate AI Summarization"
+              }
             />
             <Confirm
               style={{
@@ -497,6 +507,61 @@ export default function CoachFeedback(props) {
               checked={usedAI[student]}
               value={usedAI[student] ? 1 : 0}
             />
+            <div>
+              <Button
+                attached="bottom"
+                onClick={() => {
+                  setIsEditingPrompt(!isEditingPrompt);
+                  setTempPrompt(customPrompt);
+                }}
+              >
+                {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+              </Button>
+              {isEditingPrompt && (
+                <div style={{ marginTop: "10px" }}>
+                  <textarea
+                    value={tempPrompt}
+                    onChange={(e) => setTempPrompt(e.target.value)}
+                    rows={8}
+                    style={{
+                      marginBottom: "10px",
+                      border:
+                        tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                          ? "2px solid orange"
+                          : "1px solid grey",
+                    }}
+                  />
+                  <div>
+                    <Button
+                      color="blue"
+                      onClick={() => {
+                        setCustomPrompt(tempPrompt);
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      color="red"
+                      onClick={() => {
+                        setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      color="grey"
+                      onClick={() => {
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </Dimmer.Dimmable>
         </FormField>
       </div>
