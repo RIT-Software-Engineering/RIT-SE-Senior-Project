@@ -82,6 +82,7 @@ export const config = {
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
+    API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
@@ -117,6 +118,7 @@ export const config = {
     // *** DEVELOPMENT ONLY ***
     DEV_ONLY_API_GET_ALL_USERS: `${BASE_API_URL}/db/DevOnlyGetAllUsersForLogin`,
     DEV_ONLY_API_POST_EDIT_LAST_LOGIN: `${BASE_API_URL}/saml/DevOnlyLastLogin`,
+    DEV_ONLY_REDEPLOY_DATABASE: `${BASE_API_URL}/db/DevOnlyRedeployDatabase`,
   },
 };
 
@@ -174,6 +176,11 @@ export const DROPDOWN_ITEMS = {
       text: "Peer Evaluation",
       value: "peer_evaluation",
     },
+    {
+      key: "break_period",
+      text: "Break Period",
+      value: "break_period",
+    },
   ],
 
   userTypes: [
@@ -211,8 +218,36 @@ export const ACTION_STATES = {
   RED: "red",
   GREEN: "green",
   GREY: "grey",
+  PURPLE: "purple", //used for break period
 };
 
 export const SERVER_TIMEZONE = "America/New_York";
 
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
+
+//Defualt AI prompts
+export const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
+Summarize and anonymize the following peer review feedback from a student project. 
+In JSON format, You'll be given categorized feedback for a student from their team members.
+Create a  anonymized paragraph that captures the key points and overall sentiment of the feedback. 
+
+Input Specification:
+    Will be in Json With this format:
+    {
+        Student: "Student context is for",
+        Ratings: {
+            From: "Student Feedback is From",
+            Feedback: {
+                "Category": "Feedback entered in form"
+            }
+        }
+    }  
+
+Output Specification: 
+    1. Do not include any names or identifying information. (Do not say you can not reveal names either)
+    2. Focus on providing constructive insights that the student can use to improve their performance. 
+    3. The summary should be concise, typically 3-5 sentences, highlighting strengths and areas for improvement. 
+    4. Output should be in paragraph form.   
+    5. Speak in the POV as the team coach talking to the student
+    6. Do not format your response as a JSON
+`;

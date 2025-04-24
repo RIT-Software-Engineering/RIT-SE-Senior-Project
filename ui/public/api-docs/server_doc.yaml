@@ -14,31 +14,33 @@ servers:
 components:
   schemas:
     ActionLog:
-      $ref: './schemas.yaml#/components/schemas/ActionLog'
+      $ref: "./schemas.yaml#/components/schemas/ActionLog"
     Actions:
-      $ref: './schemas.yaml#/components/schemas/Actions'
+      $ref: "./schemas.yaml#/components/schemas/Actions"
     Archive:
-      $ref: './schemas.yaml#/components/schemas/Archive'
+      $ref: "./schemas.yaml#/components/schemas/Archive"
     Projects:
-      $ref: './schemas.yaml#/components/schemas/Projects'
+      $ref: "./schemas.yaml#/components/schemas/Projects"
     ProjectCoaches:
-      $ref: './schemas.yaml#/components/schemas/ProjectCoaches'
+      $ref: "./schemas.yaml#/components/schemas/ProjectCoaches"
     SemesterGroup:
-      $ref: './schemas.yaml#/components/schemas/SemesterGroup'
+      $ref: "./schemas.yaml#/components/schemas/SemesterGroup"
     Sponsors:
-      $ref: './schemas.yaml#/components/schemas/Sponsors'
+      $ref: "./schemas.yaml#/components/schemas/Sponsors"
     TimeLog:
-      $ref: './schemas.yaml#/components/schemas/TimeLog'
+      $ref: "./schemas.yaml#/components/schemas/TimeLog"
     Users:
-      $ref: './schemas.yaml#/components/schemas/Users'
+      $ref: "./schemas.yaml#/components/schemas/Users"
     Error:
-      $ref: './schemas.yaml#/components/schemas/Error'
+      $ref: "./schemas.yaml#/components/schemas/Error"
 
 paths:
   /ai/GenerateSummary:
     $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateSummary"
   /ai/GenerateHistoricSummary:
     $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateHistoricSummary"
+  /ai/GenerateResponse:
+    $ref: "./ai_routes.yaml#/paths/~1ai~1GenerateResponse"
 
   /saml/whoami:
     $ref: "./saml_routes.yaml#/paths/~1saml~1whoami"

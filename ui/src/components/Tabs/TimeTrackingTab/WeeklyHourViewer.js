@@ -65,6 +65,7 @@ export default function WeeklyHourViewer(props) {
 
   return (
     <Modal
+      closeOnDimmerClick={false}
       size={"fullscreen"}
       className={"sticky"}
       onOpen={() => {

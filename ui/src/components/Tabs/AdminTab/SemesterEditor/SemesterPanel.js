@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { config } from "../../../util/functions/constants";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 
 export default function SemesterPanel(props) {
+  const [errors, setErrors] = useState([]);
+
   let initialState = {
     semester_id: props.semester?.semester_id || "",
     name: props.semester?.name || "",
