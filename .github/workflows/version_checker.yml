@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract version from Footer.js
-        id: extract_version
+        id: extract_footer_version
         run: |
           VERSION_LINE=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' ui/src/components/shared/allPages/Footer.js | head -n 1)
           if [ -z "$VERSION_LINE" ]; then
@@ -24,7 +24,7 @@ jobs:
       - name: Check milestone against Footer version
         run: |
           MILESTONE_TITLE="${{ github.event.issue.milestone.title }}"
-          FOOTER_VERSION="${{ steps.extract_version.outputs.version }}"
+          FOOTER_VERSION="${{ steps.extract_footer_version.outputs.version }}"
 
           echo "Milestone: $MILESTONE_TITLE"
           echo "Footer Version: $FOOTER_VERSION"
@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Extract version from StackTraceErrorPage.js
-        id: extract_version
+        id: extract_stack_trace_version
         run: |
           VERSION_LINE=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' ui/src/components/pages/StackTraceErrorPage.js | head -n 1)
           if [ -z "$VERSION_LINE" ]; then
@@ -49,7 +49,7 @@ jobs:
       - name: Check milestone against StackTraceErrorPage version
         run: |
           MILESTONE_TITLE="${{ github.event.issue.milestone.title }}"
-          STACK_TRACE_VERSION="${{ steps.extract_version.outputs.version }}"
+          STACK_TRACE_VERSION="${{ steps.extract_stack_trace_version.outputs.version }}"
 
           echo "Milestone: $MILESTONE_TITLE"
           echo "Footer Version: $STACK_TRACE_VERSION"
@@ -62,7 +62,7 @@ jobs:
           fi
       
       - name: Extract version from server_doc.yaml
-        id: extract_version
+        id: extract_yaml_version
         run: |
           VERSION_LINE=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' ui/public/api-docs/server_doc.yaml | head -n 1)
           if [ -z "$VERSION_LINE" ]; then
@@ -74,7 +74,7 @@ jobs:
       - name: Check milestone against server_doc.yaml version
         run: |
           MILESTONE_TITLE="${{ github.event.issue.milestone.title }}"
-          SERVER_DOC_VERSION="${{ steps.extract_version.outputs.version }}"
+          SERVER_DOC_VERSION="${{ steps.extract_yaml_version.outputs.version }}"
 
           echo "Milestone: $MILESTONE_TITLE"
           echo "Footer Version: $SERVER_DOC_VERSION"
@@ -83,5 +83,5 @@ jobs:
             echo "Error: Milestone title does not match version in server_doc.yaml. Did you forget to bump the version?"
             exit 1
           else
-            echo "Milestone matches server_doc.yaml version"
+            echo "Milestone matches StackTraceErrorPage.js version"
           fi
