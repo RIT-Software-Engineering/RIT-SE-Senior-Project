@@ -229,6 +229,7 @@ export const SERVER_TIMEZONE = "America/New_York";
 
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
 
+//Defualt AI prompts
 export const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
 Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
 
@@ -254,7 +255,6 @@ Output Specification:
     3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
 `;
 
-//Defualt AI prompts
 export const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
 Summarize and anonymize the following peer review feedback from a student project. 
 In JSON format, You'll be given categorized feedback for a student from their team members.
