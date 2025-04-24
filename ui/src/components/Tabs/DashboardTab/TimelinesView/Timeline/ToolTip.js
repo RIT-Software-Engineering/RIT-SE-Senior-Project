@@ -8,7 +8,7 @@ import {
 } from "../../../../util/functions/utils";
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
-import DOMpurify from 'dompurify';
+import DOMpurify from "dompurify";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -33,7 +33,7 @@ export default function ToolTip(props) {
   const loadSubmission = (projectId, actionId) => {
     setLoadingSubmissions(true);
     SecureFetch(
-      `${config.url.API_GET_ACTION_LOGS}?project_id=${projectId}&action_id=${actionId}`
+      `${config.url.API_GET_ACTION_LOGS}?project_id=${projectId}&action_id=${actionId}`,
     )
       .then((response) => response.json())
       .then((actionLogs) => {
@@ -54,57 +54,76 @@ export default function ToolTip(props) {
   const metadata = (longSubmissionTitle) => {
     return (
       <>
-        <p dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(props.action?.short_desc, {ALLOWED_TAGS: ['b', 'i', 'strong', 'em']})}}></p>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: DOMpurify.sanitize(props.action?.short_desc, {
+              ALLOWED_TAGS: ["b", "i", "strong", "em"],
+            }),
+          }}
+        ></p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
-        <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
-        <p>Project: {props.projectName}</p>
-        <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
-        {submissions === null && !loadingSubmissions && (
-          <p
-            className="fake-a"
-            onClick={() =>
-              loadSubmission(props.projectId, props.action?.action_id)
-            }
-          >
-            Load submissions
-          </p>
+        <p>
+          {props.action?.action_target === "break_period" ? "Ends:" : "Due:"}{" "}
+          {formatDateNoOffset(props.action?.due_date)}
+        </p>
+        {props.action?.action_target === "break_period" ? (
+          <></> // break_period doesn't have a project, omit the fields
+        ) : (
+          <div>
+            <p>Project: {props.projectName}</p>
+            <p>
+              Submission Type: {submissionTypeMap[props.action?.action_target]}
+            </p>
+            {submissions === null && !loadingSubmissions && (
+              <p
+                className="fake-a"
+                onClick={() =>
+                  loadSubmission(props.projectId, props.action?.action_id)
+                }
+              >
+                Load submissions
+              </p>
+            )}
+            {loadingSubmissions && <Icon name="spinner" size="large" />}
+            {submissions?.length === 0 && (
+              <p>
+                <b>No submissions</b>
+              </p>
+            )}
+            {submissions?.map((submission) => {
+              return (
+                <SubmissionViewerModal
+                  key={submission.action_log_id}
+                  action={submission}
+                  title={props.action?.action_title}
+                  target={props.action?.action_target}
+                  semesterName={props.semesterName}
+                  projectName={props.projectName}
+                  isOpenCallback={isOpenCallback}
+                  trigger={
+                    <div className="fake-a">
+                      {longSubmissionTitle ? (
+                        <>
+                          {submission.mock_id &&
+                            `${submission.mock_name} (${submission.mock_id}) as `}
+                          {`${submission.name} (${submission.system_id})`}{" "}
+                          {formatDateTime(submission.submission_datetime)}{" "}
+                        </>
+                      ) : (
+                        <>
+                          <i>
+                            {formatDateTime(submission.submission_datetime)}
+                          </i>{" "}
+                          Submission
+                        </>
+                      )}
+                    </div>
+                  }
+                />
+              );
+            })}
+          </div>
         )}
-        {loadingSubmissions && <Icon name="spinner" size="large" />}
-        {submissions?.length === 0 && (
-          <p>
-            <b>No submissions</b>
-          </p>
-        )}
-        {submissions?.map((submission) => {
-          return (
-            <SubmissionViewerModal
-              key={submission.action_log_id}
-              action={submission}
-              title={props.action?.action_title}
-              target={props.action?.action_target}
-              semesterName={props.semesterName}
-              projectName={props.projectName}
-              isOpenCallback={isOpenCallback}
-              trigger={
-                <div className="fake-a">
-                  {longSubmissionTitle ? (
-                    <>
-                      {submission.mock_id &&
-                        `${submission.mock_name} (${submission.mock_id}) as `}
-                      {`${submission.name} (${submission.system_id})`}{" "}
-                      {formatDateTime(submission.submission_datetime)}{" "}
-                    </>
-                  ) : (
-                    <>
-                      <i>{formatDateTime(submission.submission_datetime)}</i>{" "}
-                      Submission
-                    </>
-                  )}
-                </div>
-              }
-            />
-          );
-        })}
       </>
     );
   };
@@ -119,15 +138,18 @@ export default function ToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-
-        <ActionModal
-          key={props.action?.action_id}
-          {...props.action}
-          isOpenCallback={isOpenCallback}
-          projectId={props.projectId}
-          preActionContent={metadata(true)}
-          reloadTimelineActions={props.reloadTimelineActions}
-        />
+        {props.action?.action_target !== "break_period" ? (
+          <ActionModal
+            key={props.action?.action_id}
+            {...props.action}
+            isOpenCallback={isOpenCallback}
+            projectId={props.projectId}
+            preActionContent={metadata(true)}
+            reloadTimelineActions={props.reloadTimelineActions}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     );
   };
@@ -146,6 +168,7 @@ export default function ToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
+      closeOnEscape={false}
       style={{ zIndex: 100 }}
       offset={[offsetX, 0]}
       trigger={props.trigger}
@@ -156,10 +179,12 @@ export default function ToolTip(props) {
             // purpose is to get the mouse's position relative to the start of the bar
             let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
             let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
-            let mouseXWithinContainer = event.clientX - props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+            let mouseXWithinContainer =
+              event.clientX -
+              props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
             setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
-            } catch (e) {
-              console.log('tooltip positioning', e);
+          } catch (e) {
+            console.log("tooltip positioning", e);
           }
         }
         loadSubmission(props.projectId, props.action?.action_id);

@@ -59,11 +59,11 @@ const QuestionBuilder = (props) => {
           setFormHtml(data);
           props.onChange(
             { target: { name: field.name, value: data } },
-            { name: field.name, value: data }
+            { name: field.name, value: data },
           );
         })
         .catch((error) =>
-          console.error("Error fetching MasterPeerEval.txt", error)
+          console.error("Error fetching MasterPeerEval.txt", error),
         );
     }
   }, []);
@@ -72,7 +72,7 @@ const QuestionBuilder = (props) => {
     setFormHtml(event);
     props.onChange(
       { target: { name: field.name, value: event } },
-      { name: field.name, value: event }
+      { name: field.name, value: event },
     );
   }
 
@@ -222,7 +222,7 @@ const QuestionBuilder = (props) => {
         }' includeStudents='true'/>`;
       } else if (question.type === "QuestionTable") {
         html += `\t<QuestionTable questions='${JSON.stringify(
-          question.questions
+          question.questions,
         )}' scale='${globalSettings.ratingScale}' required='${
           question.isRequired
         }' icon='${question.icon}' selfFeedback='${
@@ -238,7 +238,7 @@ const QuestionBuilder = (props) => {
         question.questions.map((question_title, _) => {
           html += "\t<div>\n";
           html += `\t\t<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(
-            levels
+            levels,
           )}' required='${question.isRequired}' selfFeedback='${
             globalSettings.selfRating
           }' feedback='${
@@ -268,7 +268,7 @@ const QuestionBuilder = (props) => {
       },
       (err) => {
         alert(`Failed to copy HTML to clipboard: ${err}`);
-      }
+      },
     );
 
     return html;
@@ -296,7 +296,7 @@ const QuestionBuilder = (props) => {
               />
             }
           />
-        </Form.Field>
+        </Form.Field>,
       );
     }
 
@@ -318,7 +318,7 @@ const QuestionBuilder = (props) => {
               />
             }
           />
-        </Form.Field>
+        </Form.Field>,
       );
     }
 
@@ -340,7 +340,7 @@ const QuestionBuilder = (props) => {
               />
             }
           />
-        </Form.Field>
+        </Form.Field>,
       );
     }
 
@@ -365,7 +365,7 @@ const QuestionBuilder = (props) => {
             value={question.icon}
             onChange={(e, data) => updateQuestion(index, "icon", data.value)}
           />
-        </Form.Field>
+        </Form.Field>,
       );
     }
 
@@ -386,7 +386,7 @@ const QuestionBuilder = (props) => {
               />
             }
           />
-        </Form.Field>
+        </Form.Field>,
       );
     }
 
@@ -647,12 +647,14 @@ const QuestionBuilder = (props) => {
     <div>
       {/*Form Builder Modal*/}
       <Modal
+        closeOnDimmerClick={false}
+        closeOnEscape={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         style={{
           position: "sticky",
           top: "5%",
-          left: "0%"
+          left: "0%",
         }}
         size="large"
       >
@@ -761,7 +763,8 @@ const QuestionBuilder = (props) => {
                           same question.{" "}
                           <b>
                             {" "}
-                            Only pair Textual and Numeric questions together{" "}
+                            Only pair Textual and Numeric questions
+                            together{" "}
                           </b>{" "}
                           e.g Table+Peer Feedback{" "}
                         </p>
@@ -811,12 +814,13 @@ const QuestionBuilder = (props) => {
 
       {/* Preview Modal */}
       <Modal
+        closeOnDimmerClick={false}
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
         style={{
           position: "sticky",
           top: "35%",
-          left: "0%"
+          left: "0%",
         }}
       >
         <Modal.Header>Form Preview</Modal.Header>

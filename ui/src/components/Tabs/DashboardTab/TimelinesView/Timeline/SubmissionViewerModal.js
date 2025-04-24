@@ -5,7 +5,8 @@ import {
   Divider,
   Header,
   Icon,
-  Message, MessageHeader,
+  Message,
+  MessageHeader,
   Modal,
   Rating,
   Segment,
@@ -25,7 +26,7 @@ export default function SubmissionViewerModal(props) {
 
   const loadSubmission = () => {
     SecureFetch(
-      `${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`
+      `${config.url.API_GET_SUBMISSION}?log_id=${props.action?.action_log_id}`,
     )
       .then((response) => response.json())
       .then((submission) => {
@@ -42,14 +43,14 @@ export default function SubmissionViewerModal(props) {
       });
 
     SecureFetch(
-      `${config.url.API_GET_LATE_SUBMISSION}?log_id=${props.action?.action_log_id}`
+      `${config.url.API_GET_LATE_SUBMISSION}?log_id=${props.action?.action_log_id}`,
     )
       .then((response) => response.json())
       .then((dueDate) => {
         let dueDateTime = new Date(dueDate[0].due_date);
         setDue(dueDateTime);
         let submitDate = new Date(
-          props.action.submission_datetime.split(" ")[0].toString()
+          props.action.submission_datetime.split(" ")[0].toString(),
         );
         setLate(dueDateTime < submitDate);
         if (dueDateTime < submitDate) {
@@ -88,7 +89,7 @@ export default function SubmissionViewerModal(props) {
 
   return (
     <Modal
-
+      closeOnDimmerClick={false}
       className={"sticky"}
       onClose={() => {
         setOpen(false);
@@ -111,7 +112,7 @@ export default function SubmissionViewerModal(props) {
       header={`Submission for ${
         props.action.action_title
       } (${props.target[0]?.toUpperCase()}${props.target?.substring(
-        1
+        1,
       )} Action)`}
       actions={[{ content: "Close", key: 0 }]}
       content={{
@@ -204,7 +205,7 @@ export default function SubmissionViewerModal(props) {
 
                               {/* Showing quantative feedback with written feedback */}
                               {submission.Students[key].Ratings.hasOwnProperty(
-                                feedback_key
+                                feedback_key,
                               ) && (
                                 <Rating
                                   rating={
@@ -236,7 +237,7 @@ export default function SubmissionViewerModal(props) {
                                 </Message>
                               )}
                             </div>
-                          )
+                          ),
                         )}
 
                         {/* Peer Quantative Feedback */}
@@ -244,7 +245,7 @@ export default function SubmissionViewerModal(props) {
                           (rating_key) => {
                             if (
                               submission.Students[key].Feedback.hasOwnProperty(
-                                rating_key
+                                rating_key,
                               )
                             ) {
                               return false;
@@ -265,7 +266,7 @@ export default function SubmissionViewerModal(props) {
                                 />
                               </div>
                             );
-                          }
+                          },
                         )}
                       </Segment>
                       <br />

@@ -6,6 +6,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
+import BarGraph from "../../util/components/PeerEvalVisualSummary";
 import _ from "lodash";
 
 export default function StudentsTab(props) {
@@ -147,7 +148,7 @@ export default function StudentsTab(props) {
           initialActive[semesterMap[student.semester_group]?.semester_id] =
             isSemesterActive(
               semesterMap[student.semester_group]?.start_date,
-              semesterMap[student.semester_group]?.end_date
+              semesterMap[student.semester_group]?.end_date,
             );
         }
         if (student.project) {
@@ -166,7 +167,7 @@ export default function StudentsTab(props) {
           ].push(student);
           initialActiveProjects[student.project] = isSemesterActive(
             semesterMap[student.semester_group]?.start_date,
-            semesterMap[student.semester_group]?.end_date
+            semesterMap[student.semester_group]?.end_date,
           );
         } else {
           mappedData[student.semester_group]["projects"]["noProject"][
@@ -237,7 +238,7 @@ export default function StudentsTab(props) {
           ) {
             let sortedStudents = _.sortBy(
               semester.projects[projectKey].students || [],
-              ["fname", "lname", "email"]
+              ["fname", "lname", "email"],
             );
             activeProjects.push(
               <div className="accordion-button-group">
@@ -289,7 +290,7 @@ export default function StudentsTab(props) {
                     <Icon name="mail" />
                   </a>
                 </div>
-              </div>
+              </div>,
             );
           }
           return true;
@@ -345,7 +346,7 @@ export default function StudentsTab(props) {
                 <Icon name="mail" />
               </a>
             </div>
-          </div>
+          </div>,
         );
       }
     });
@@ -372,11 +373,17 @@ export default function StudentsTab(props) {
                 title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
                 content: {
                   content: (
-                    <EvalReview
-                      forms={submission}
-                      isSub={submission?.Submitter === "COACH"}
-                      id={projectKey + semester.name}
-                    />
+                    <>
+                      
+                      { // only show bar graph if admin or coach
+                      userContext.user.role === USERTYPES.ADMIN || userContext.user.role === USERTYPES.COACH ? <BarGraph data={submission}/> : ""
+                      } 
+                      <EvalReview
+                        forms={submission}
+                        isSub={submission?.Submitter === "COACH"}
+                        id={projectKey + semester.name}
+                      />
+                    </>
                   ),
                 },
               },
@@ -400,7 +407,7 @@ export default function StudentsTab(props) {
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>
-                        subAccordion(submission, index)
+                        subAccordion(submission, index),
                       )
                     ) : (
                       <Message>
@@ -415,7 +422,7 @@ export default function StudentsTab(props) {
                 },
               ]}
             />
-          </div>
+          </div>,
         );
       });
     });

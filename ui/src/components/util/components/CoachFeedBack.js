@@ -19,6 +19,7 @@ import {
 import { SecureFetch } from "../functions/secureFetch";
 import { config } from "../functions/constants";
 import ResultTable from "./ResultTable";
+import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
 
 export default function CoachFeedback(props) {
   const [studentList, setStudentList] = useState([]);
@@ -34,6 +35,9 @@ export default function CoachFeedback(props) {
   const [aiSummaryText, setAISummaryText] = useState({});
   const [usedAI, setUsedAI] = useState([]);
   const [expandedFeedback, setExpandedFeedback] = useState({});
+  const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
+  const [tempPrompt, setTempPrompt] = useState(customPrompt);
 
   const expandFeedback = (category) => {
     setExpandedFeedback({
@@ -45,12 +49,12 @@ export default function CoachFeedback(props) {
   // Function to fetch submissions and set submissionList state
   const fetchSubmissions = () => {
     SecureFetch(
-      `${config.url.API_GET_ACTION_LOGS}?project_id=${props.team}&action_id=${props.action_id}`
+      `${config.url.API_GET_ACTION_LOGS}?project_id=${props.team}&action_id=${props.action_id}`,
     )
       .then((response) => response.json())
       .then((actionLogs) => {
         const formatedLogs = actionLogs.map((submission) =>
-          JSON.parse(submission.form_data)
+          JSON.parse(submission.form_data),
         );
         setSubmissionList(actionLogs);
         setStudentData(formatedLogs);
@@ -65,12 +69,12 @@ export default function CoachFeedback(props) {
   // Function to fetch student list based on project ID and set studentList state
   const fetchStudentList = () => {
     SecureFetch(
-      `${config.url.API_GET_PROJECT_STUDENT_NAMES}?project_id=${props.team}`
+      `${config.url.API_GET_PROJECT_STUDENT_NAMES}?project_id=${props.team}`,
     )
       .then((response) => response.json())
       .then((data) => {
         const combinedNames = data.map(
-          (student) => `${student.fname} ${student.lname}`
+          (student) => `${student.fname} ${student.lname}`,
         );
         setStudentList(combinedNames);
         setStudentListFetched(true);
@@ -85,7 +89,7 @@ export default function CoachFeedback(props) {
   const checkAllSubmissionsMade = () => {
     const submittedStudents = studentData.map((log) => log.Submitter);
     const missing = studentList.filter(
-      (student) => !submittedStudents.includes(student)
+      (student) => !submittedStudents.includes(student),
     );
     setMissingStudents(missing);
     setAllSubmissionsMade(missing.length === 0);
@@ -105,27 +109,29 @@ export default function CoachFeedback(props) {
     }));
   };
 
-  const getSummarization = (id, context) => {
+  const getSummarization = (id, context, prompt) => {
     const body = new FormData();
     body.append("context", JSON.stringify(context));
+    body.append("prompt", prompt);
 
     updateLoadingState(id, true);
 
-    SecureFetch(`${config.url.API_GENERATE_SUMMARY}`, {
-      method: "post",
-      body: body,
+    SecureFetch(`${config.url.API_GENERATE_RESPONSE}`, {
+        method: "post",
+        body: body,
     })
-      .then((response) => response.text())
-      .then((data) => {
-        updateAISummaryText(id, data);
-      })
-      .catch((error) => {
-        console.error("Error  Generating Summary:", error);
-      })
-      .finally(() => {
-        updateLoadingState(id, false);
-      });
-  };
+        .then((response) => response.text())
+        .then((data) => {
+            updateAISummaryText(id, data);
+        })
+        .catch((error) => {
+            console.error("Error Generating AI Response:", error);
+        })
+        .finally(() => {
+            updateLoadingState(id, false);
+        });
+};
+
 
   const updateLoadingState = (id, value) => {
     setLoadingStates((prevState) => ({
@@ -163,12 +169,14 @@ export default function CoachFeedback(props) {
 
   const handleGenerateSummarization = (s, context) => {
     ClosePopup(s);
-    getSummarization(s, context);
+    getSummarization(s, context, customPrompt);
     setUsedAI((prev) => ({
       ...prev,
       [s]: true,
     }));
   };
+
+
 
   useEffect(() => {
     fetchStudentList();
@@ -188,7 +196,7 @@ export default function CoachFeedback(props) {
     // NOTE: You can use the formdata.Submitter to differentiate Coach and Student as well somehow on submission
     // e.g. could just set it to "Coach" since we don't actually care about whom the coach is
     const studentSubmission = studentData.findLast(
-      (formData) => formData.Submitter === student
+      (formData) => formData.Submitter === student,
     );
     if (!studentSubmission) return null;
 
@@ -199,12 +207,12 @@ export default function CoachFeedback(props) {
         (formData) =>
           formData.Submitter !== student &&
           formData.Submitter !== "COACH" &&
-          formData.Students[student]
+          formData.Students[student],
       )
       // Filter out previous submissions
       .filter(
         (formData, i, arr) =>
-          arr.findLastIndex((f) => f.Submitter === formData.Submitter) === i
+          arr.findLastIndex((f) => f.Submitter === formData.Submitter) === i,
       )
       // Map to the relevant data
       .map((formData) => ({
@@ -231,7 +239,7 @@ export default function CoachFeedback(props) {
     Object.entries(OthersFeedbackAvg).forEach(([category, ratings]) => {
       OthersFeedbackAvg[category] = ratings.reduce(
         (prev, curr, _, { length }) => prev + curr / length,
-        0
+        0,
       );
     });
 
@@ -251,7 +259,7 @@ export default function CoachFeedback(props) {
     };
 
     OthersFeedback.forEach(({ From, Feedback }) =>
-      appendQualitativeFeedback(Feedback, From)
+      appendQualitativeFeedback(Feedback, From),
     );
     if (SelfFeedback.Feedback) {
       appendQualitativeFeedback(SelfFeedback.Feedback, student);
@@ -388,7 +396,7 @@ export default function CoachFeedback(props) {
                       })}
                   </div>
                 );
-              }
+              },
             )
           ) : (
             <p>No Feedback Available</p>
@@ -471,10 +479,13 @@ export default function CoachFeedback(props) {
             )}
             <Button
               attached="bottom"
-              onClick={(_) => {
-                OpenPopup(student);
-              }}
-              content="Generate AI Summarization"
+              onClick={(_) => OpenPopup(student)}
+              color="grey"
+              content={
+                customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                  ? "Generate AI Summarization with Custom Prompt"
+                  : "Generate AI Summarization"
+              }
             />
             <Confirm
               style={{
@@ -497,6 +508,39 @@ export default function CoachFeedback(props) {
               checked={usedAI[student]}
               value={usedAI[student] ? 1 : 0}
             />
+             <div>
+             <Button attached="bottom" onClick={() => {
+              setIsEditingPrompt(!isEditingPrompt);
+              setTempPrompt(customPrompt)}}>
+              {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+            </Button>
+            {isEditingPrompt && (
+              <div style={{ marginTop: "10px" }}>
+                <textarea
+                  value={tempPrompt}
+                  onChange={(e) => setTempPrompt(e.target.value)} 
+                  rows={8}
+                  style={{
+                    marginBottom: "10px",
+                    border: tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY ? "2px solid orange" : "1px solid grey",
+                  }}
+                />
+                <div>
+                  <Button color="blue" onClick={() => {
+                    setCustomPrompt(tempPrompt);
+                    setIsEditingPrompt(false);
+                  }}>Save</Button>
+                  <Button color="red" onClick={() => {
+                    setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+                    setIsEditingPrompt(false);
+                  }}>Reset</Button>
+                  <Button color="grey" onClick={() => {
+                    setIsEditingPrompt(false);
+                  }}>Cancel</Button>
+                </div>
+              </div>
+            )}
+        </div>
           </Dimmer.Dimmable>
         </FormField>
       </div>
@@ -531,7 +575,7 @@ export default function CoachFeedback(props) {
 
       <Form>
         {studentList.map((student, index) =>
-          generateFeedbackForm(student, index)
+          generateFeedbackForm(student, index),
         )}
       </Form>
     </>

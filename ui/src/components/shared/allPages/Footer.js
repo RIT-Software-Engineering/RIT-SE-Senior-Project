@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
+import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+
 
 function Footer() {
   const { user } = useContext(UserContext);
@@ -54,7 +56,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  V.1.7.0
+                  v1.7.2
                 </a>
               </h5>
             </div>
@@ -73,11 +75,15 @@ function Footer() {
         <div id="bringMeDownSignedIn" className="ui container stackable grid">
           <div className="three column row">
             <div className="column">
-              <h3>
-                B. THOMAS GOLISANO <br />
-                COLLEGE OF COMPUTING & <br />
-                INFORMATION SCIENCES
-              </h3>
+            <img
+                src={collegeLogo}
+                alt="Golisano College of Computing & Information Sciences"
+                style={{
+                  maxWidth: "200px", 
+                  width: "100%", 
+                  height: "auto", 
+                }}
+              />
             </div>
             <div className="column">
               <h4>
