@@ -36,7 +36,7 @@ const StackTraceErrorPage = () => {
 
   const handleReportOnGitHub = () => {
     try {
-      const version = "V 1.7.0";
+      const version = "v1.7.3";
       const timestamp = errorInfo?.timestamp || "No timestamp saved";
       const error = errorInfo?.error || "Unknown error";
       const statusCode = errorInfo?.statusCode
