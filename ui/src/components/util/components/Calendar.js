@@ -74,8 +74,6 @@ export function Calendar(props) {
         "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
         "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember())
     };
-
-    console.log("variableHolidays", variableHolidays, "\n", This_Years_Holidays);
   
     Object.entries(variableHolidays).forEach(([name, date]) => {
         const key = date.toISOString().slice(5, 10);
@@ -222,18 +220,19 @@ export function Calendar(props) {
 
       const actionStyle = {
         top: `${position.top}px`,
-        backgroundColor: action.color,
-        borderLeft: position.isStart ? "none" : "4px solid transparent",
-        left: position.isStart ? "0" : "-4px",
+        backgroundColor: "inherit",
+        border: `2px solid ${action.color}`,
+        left: "0",
       }
 
       // checks conditions for action arrows which signify the duration of the action
       // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
+      // there is a little formating magic taking place, full space characters(　) are added to the string to make them all the same width
       let actionTitleWithArrows = action.action_title;
       if (actionStartsOnDay(action, day) && !actionEndsOnDay(action, day)) {
-        actionTitleWithArrows = `${actionTitleWithArrows} ► `;
+        actionTitleWithArrows = `　${actionTitleWithArrows} ►`;
       } else if (actionEndsOnDay(action, day) && !actionStartsOnDay(action, day)) {
-        actionTitleWithArrows = `◄ ${actionTitleWithArrows}`;
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows}　`;
       }  else {
         actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
       }
