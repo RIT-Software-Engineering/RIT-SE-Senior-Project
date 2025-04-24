@@ -14,7 +14,7 @@ jobs:
       - name: Extract version from Footer.js
         id: extract_version
         run: |
-          VERSION_LINE=$(grep -oE 'V[0-9]+\.[0-9]+\.[0-9]+' ui/src/components/shared/allPages/Footer.js | head -n 1)
+          VERSION_LINE=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' ui/src/components/shared/allPages/Footer.js | head -n 1)
           if [ -z "$VERSION_LINE" ]; then
             echo "No version string found in Footer.js"
             exit 1
