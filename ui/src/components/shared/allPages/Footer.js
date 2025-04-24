@@ -30,7 +30,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  V.1.7.3
+                  v1.7.3
                 </a>
               </h5>
             </div>
