@@ -155,8 +155,6 @@ module.exports = () => {
 });
 
 
-  
-
   router.get("/CheckGeminiKeyExists", [UserAuth.isCoachOrAdmin], (req, res) => {
 
     const isValid =
@@ -164,6 +162,7 @@ module.exports = () => {
 
     res.status(200).json({ valid: isValid });
   });
+
 
   return router;
 };
