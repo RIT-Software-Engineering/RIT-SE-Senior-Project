@@ -18,6 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import moment from "moment-timezone";
+import { isSemesterActive } from "../../util/functions/utils";
 
 import ProjectTime from "./ProjectTIme";
 
@@ -175,6 +176,7 @@ export default function TimeLog(props) {
     <>
       {semesters.length > 0 && <h3>Time Log</h3>}
       {semesters.map((sem) => {
+        let active = isSemesterActive(sem?.start_date, sem?.end_date);
         return (
           <>
             <div className="accordion-button-group">
@@ -185,6 +187,7 @@ export default function TimeLog(props) {
                   {
                     key: "Semester Here",
                     title: sem.name,
+                    active: active,
                     content: {
                       content: (
                         <>
