@@ -1,6 +1,5 @@
 const UserAuth = require("./user_auth");
 const router = require("express").Router();
-const UserAuth = require("./user_auth");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 let key = process.env.GOOGLE_API_KEY;
@@ -127,17 +126,20 @@ async function provide_historic_summary(studentFeedback) {
 
 async function generateResponse(prompt, context) {
   try {
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash-latest" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash-latest",
+    });
 
     const result = await model.generateContent({
       contents: [
         {
           parts: [
-            { text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}` }
-          ]
-        }
-      ]
+            {
+              text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}`,
+            },
+          ],
+        },
+      ],
     });
 
     return result.response.text();
@@ -207,7 +209,5 @@ module.exports = () => {
         return next(error);
       });
     });
-  
-
   return router;
 };

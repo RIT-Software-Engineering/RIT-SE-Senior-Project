@@ -33,22 +33,28 @@
   #nav-buttons {
     display: none;
   }
+  #hamburger-menu {
+    display: block;
+  }
 }
 
-@media only screen and (max-device-width: 768px) {
+/* @media only screen and (max-device-width: 768px) {
   #nav-buttons {
     display: none;
   }
-}
+} */
 
 @media only screen and (min-width: 769px) {
   #hamburger-menu {
     display: none;
   }
+  #nav-buttons {
+    display: inline-flex;
+  }
 }
 
-@media only screen and (min-device-width: 769px) {
+/* @media only screen and (min-device-width: 769px) {
   #hamburger-menu {
     display: none;
   }
-}
+} */

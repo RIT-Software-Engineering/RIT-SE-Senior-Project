@@ -3,7 +3,6 @@ import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
 import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 
-
 function Footer() {
   const { user } = useContext(UserContext);
   const [signedIn, setSignedIn] = useState(false);
@@ -56,7 +55,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  v1.7.2
+                  v1.7.3
                 </a>
               </h5>
             </div>
@@ -75,13 +74,13 @@ function Footer() {
         <div id="bringMeDownSignedIn" className="ui container stackable grid">
           <div className="three column row">
             <div className="column">
-            <img
+              <img
                 src={collegeLogo}
                 alt="Golisano College of Computing & Information Sciences"
                 style={{
-                  maxWidth: "200px", 
-                  width: "100%", 
-                  height: "auto", 
+                  maxWidth: "200px",
+                  width: "100%",
+                  height: "auto",
                 }}
               />
             </div>

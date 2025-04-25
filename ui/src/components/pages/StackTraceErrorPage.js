@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "semantic-ui-react";
 
 const StackTraceErrorPage = () => {
   // Retrieve error details from sessionStorage.
@@ -36,7 +37,7 @@ const StackTraceErrorPage = () => {
 
   const handleReportOnGitHub = () => {
     try {
-      const version = "V 1.7.0";
+      const version = "v1.7.3";
       const timestamp = errorInfo?.timestamp || "No timestamp saved";
       const error = errorInfo?.error || "Unknown error";
       const statusCode = errorInfo?.statusCode
@@ -116,15 +117,15 @@ const StackTraceErrorPage = () => {
         <p style={{ fontSize: "14px", color: "#D32F2F" }}>
           ⚠️ A GitHub account is required to report an issue.
         </p>
-        <button onClick={handleGoBack} style={buttonStyle}>
+        <Button onClick={handleGoBack} >
           🔙 Go Back
-        </button>
-        <button onClick={handleCopyStackTrace} style={buttonStyle}>
+        </Button>
+        <Button onClick={handleCopyStackTrace} >
           📋 Copy Stack Trace
-        </button>
-        <button onClick={handleReportOnGitHub} style={buttonStyle}>
+        </Button>
+        <Button onClick={handleReportOnGitHub} >
           🐞 Report on GitHub
-        </button>
+        </Button>
       </div>
 
       {userFeedback && (
@@ -134,15 +135,5 @@ const StackTraceErrorPage = () => {
   );
 };
 
-const buttonStyle = {
-  margin: "5px",
-  padding: "10px 15px",
-  background: "#1976D2",
-  color: "white",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-  fontSize: "14px",
-};
 
 export default StackTraceErrorPage;

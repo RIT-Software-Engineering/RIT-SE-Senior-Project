@@ -70,13 +70,20 @@ module.exports = (db) => {
     //Redeploy database
     db_router.put("/DevOnlyRedeployDatabase", async (req, res) => {
       try {
-        await redeployDatabase(); 
-        res.status(200).json({ success: true, message: "Database redeployed successfully" });
+        await redeployDatabase();
+        res
+          .status(200)
+          .json({ success: true, message: "Database redeployed successfully" });
       } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to redeploy database", error: error.message });
+        res
+          .status(500)
+          .json({
+            success: false,
+            message: "Failed to redeploy database",
+            error: error.message,
+          });
       }
     });
-    
   }
 
   db_router.get(

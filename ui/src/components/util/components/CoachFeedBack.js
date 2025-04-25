@@ -35,8 +35,10 @@ export default function CoachFeedback(props) {
   const [aiSummaryText, setAISummaryText] = useState({});
   const [usedAI, setUsedAI] = useState([]);
   const [expandedFeedback, setExpandedFeedback] = useState({});
-  const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_FEEDBACK_SUMMARY);
-  const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
+  const [customPrompt, setCustomPrompt] = useState(
+    PROMPT_GENERATE_FEEDBACK_SUMMARY,
+  );
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
 
   const expandFeedback = (category) => {
@@ -117,21 +119,20 @@ export default function CoachFeedback(props) {
     updateLoadingState(id, true);
 
     SecureFetch(`${config.url.API_GENERATE_RESPONSE}`, {
-        method: "post",
-        body: body,
+      method: "post",
+      body: body,
     })
-        .then((response) => response.text())
-        .then((data) => {
-            updateAISummaryText(id, data);
-        })
-        .catch((error) => {
-            console.error("Error Generating AI Response:", error);
-        })
-        .finally(() => {
-            updateLoadingState(id, false);
-        });
-};
-
+      .then((response) => response.text())
+      .then((data) => {
+        updateAISummaryText(id, data);
+      })
+      .catch((error) => {
+        console.error("Error Generating AI Response:", error);
+      })
+      .finally(() => {
+        updateLoadingState(id, false);
+      });
+  };
 
   const updateLoadingState = (id, value) => {
     setLoadingStates((prevState) => ({
@@ -175,8 +176,6 @@ export default function CoachFeedback(props) {
       [s]: true,
     }));
   };
-
-
 
   useEffect(() => {
     fetchStudentList();
@@ -508,39 +507,61 @@ export default function CoachFeedback(props) {
               checked={usedAI[student]}
               value={usedAI[student] ? 1 : 0}
             />
-             <div>
-             <Button attached="bottom" onClick={() => {
-              setIsEditingPrompt(!isEditingPrompt);
-              setTempPrompt(customPrompt)}}>
-              {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
-            </Button>
-            {isEditingPrompt && (
-              <div style={{ marginTop: "10px" }}>
-                <textarea
-                  value={tempPrompt}
-                  onChange={(e) => setTempPrompt(e.target.value)} 
-                  rows={8}
-                  style={{
-                    marginBottom: "10px",
-                    border: tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY ? "2px solid orange" : "1px solid grey",
-                  }}
-                />
-                <div>
-                  <Button color="blue" onClick={() => {
-                    setCustomPrompt(tempPrompt);
-                    setIsEditingPrompt(false);
-                  }}>Save</Button>
-                  <Button color="red" onClick={() => {
-                    setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
-                    setIsEditingPrompt(false);
-                  }}>Reset</Button>
-                  <Button color="grey" onClick={() => {
-                    setIsEditingPrompt(false);
-                  }}>Cancel</Button>
+            <div>
+              <Button
+                attached="bottom"
+                onClick={() => {
+                  setIsEditingPrompt(!isEditingPrompt);
+                  setTempPrompt(customPrompt);
+                }}
+              >
+                {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+              </Button>
+              {isEditingPrompt && (
+                <div style={{ marginTop: "10px" }}>
+                  <textarea
+                    value={tempPrompt}
+                    onChange={(e) => setTempPrompt(e.target.value)}
+                    rows={8}
+                    style={{
+                      marginBottom: "10px",
+                      border:
+                        tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                          ? "2px solid orange"
+                          : "1px solid grey",
+                    }}
+                  />
+                  <div>
+                    <Button
+                      color="blue"
+                      onClick={() => {
+                        setCustomPrompt(tempPrompt);
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      color="red"
+                      onClick={() => {
+                        setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      color="grey"
+                      onClick={() => {
+                        setIsEditingPrompt(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
-        </div>
+              )}
+            </div>
           </Dimmer.Dimmable>
         </FormField>
       </div>
