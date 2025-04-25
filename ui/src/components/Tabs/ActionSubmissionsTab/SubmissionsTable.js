@@ -56,44 +56,6 @@ export default function SubmissionsTable(props) {
   //     });
   // };
 
-  const loadSubmission = (action) => {
-    SecureFetch(
-      `${config.url.API_GET_SUBMISSION}?log_id=${action.action_log_id}`,
-    )
-      .then((response) => response.json())
-      .then((submission) => {
-        if (submission.length > 0) {
-          const formData = JSON.parse(submission[0].form_data.toString());
-          const fileData = submission[0].files?.split(",");
-          setSubmission(formData);
-          setFiles(fileData);
-          setNoSubmission(formData.length === 0 && files.length === 0);
-        }
-      })
-      .catch((error) => {
-        alert("Failed to get action log data " + error);
-      });
-
-    SecureFetch(
-      `${config.url.API_GET_LATE_SUBMISSION}?log_id=${action.action_log_id}`,
-    )
-      .then((response) => response.json())
-      .then((dueDate) => {
-        let dueDateTime = new Date(dueDate[0].due_date);
-        setDue(dueDateTime);
-        let submitDate = new Date(
-          action.submission_datetime.split(" ")[0].toString(),
-        );
-        setLate(dueDateTime < submitDate);
-        if (dueDateTime < submitDate) {
-          daysLate(dueDateTime, submitDate);
-        }
-      })
-      .catch((error) => {
-        alert("Failed to get due and submission data " + error);
-      });
-  };
-
   const getActions = (project_id) => {
     SecureFetch(
       `${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`,

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ACTION_TARGETS, config } from "../../util/functions/constants";
 import {
   Button,
@@ -23,30 +23,34 @@ import EvalReview from "../../util/components/EvalReview";
 
 export default function SubmissionsModal(props) {
   const [open, setOpen] = useState(false);
-  const [submission, setSubmission] = useState({});
-  const [files, setFiles] = useState([]);
+  // const [submission, setSubmission] = useState({});
+  // const [files, setFiles] = useState([]);
   // const [noSubmission, setNoSubmission] = useState(true);
   const [due, setDue] = useState();
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
 
-  const loadSubmission = (log_id) => {
-    SecureFetch(
-      `${config.url.API_GET_SUBMISSION}?log_id=${log_id}`,
+  function loadSubmission(log_id) {
+    return (
+      SecureFetch(
+        `${config.url.API_GET_SUBMISSION}?log_id=${log_id}`,
+      )
+        .then((response) => response.json())
+        .then((submission) => {
+          if (submission.length > 0) {
+            const formData = JSON.parse(submission[0].form_data.toString());
+            const fileData = submission[0].files?.split(",");
+            // setSubmission(formData);
+            // setFiles(fileData);
+            // setNoSubmission(formData.length === 0 && files.length === 0);
+            // console.log([formData, fileData, (formData.length === 0 && fileData.length === 0)])
+            return [formData, fileData, (formData.length === 0 && fileData.length === 0)]
+          }
+        })
+        .catch((error) => {
+          alert("Failed to get action log data " + error);
+        })
     )
-      .then((response) => response.json())
-      .then((submission) => {
-        if (submission.length > 0) {
-          const formData = JSON.parse(submission[0].form_data.toString());
-          const fileData = submission[0].files?.split(",");
-          setSubmission(formData);
-          setFiles(fileData);
-          // setNoSubmission(formData.length === 0 && files.length === 0);
-        }
-      })
-      .catch((error) => {
-        alert("Failed to get action log data " + error);
-      });
   };
 
   const noSubmissionText = (target) => {
@@ -73,6 +77,7 @@ export default function SubmissionsModal(props) {
   };
 
   const IS_PEER_EVALUATION = props.action.target === ACTION_TARGETS.peer_evaluation;
+  let submissions = []
 
   // console.log(props.action)
   // console.log(props.actionLogs)
@@ -116,11 +121,22 @@ export default function SubmissionsModal(props) {
               </TableHeader>
     
               <TableBody>
-                {props.actionLogs.map((log, idx) => {
-                  console.log(log)
-                  console.log(props.action)
+                {props.actionLogs.map((log) => {
+                  // console.log(log)
+                  // console.log(props.action)
                   if(log.action_template === props.action.action_id && log.semester === props.action.semester) {
-                    // loadSubmission(log.action_log_id);
+                    submissions.push(log);
+                  }
+                })}
+                {/* {console.log(submissions)} */}
+                {submissions.length > 0 ? (
+                  submissions.map((log, idx) => {
+                    // console.log(log)
+                    let submission = loadSubmission(log.action_log_id)
+                    let submissionName = submission.then(arr => {
+                                            return arr[0].name
+                                          })
+                    console.log(submissionName)
                     let submittedBy = `${log.name} (${log.system_id})`;
                     if (log.mock_id) {
                       submittedBy = `${log.mock_name} (${log.mock_id}) as ${log.name} (${log.system_id})`;
@@ -130,25 +146,31 @@ export default function SubmissionsModal(props) {
                         <TableCell>{log.title}</TableCell>
                         <TableCell>{submittedBy}</TableCell>
                         <TableCell>{formatDateTime(log.submission_datetime)}</TableCell>
-                        <TableCell>name</TableCell>
+                        <TableCell>
+                          {/* {submissionName.then(name => {
+                            console.log(name)
+                            return name
+                          })} */}
+                          name
+                        </TableCell>
                         <TableCell>email</TableCell>
                         <TableCell>
-                          {/* {!noSubmission && ( */}
-                            <>
-                              {/* {loadSubmission(log.action_log_id)} */}
-                              {Object.keys(submission)?.map((key) => {
-                                if (submission[key].includes("fakepath")) {
+                          
+                          {/* {!submission[2] && ( */}
+                            {/* <>
+                              {Object.keys(submission[0])?.map((key) => {
+                                if ((submission[0])[key].includes("fakepath")) {
                                   return false;
                                 }
                                 return (
                                   <div key={key}>
                                     <p>
-                                      <b>{key}:</b> {submission[key]}
+                                      <b>{key}:</b> {(submission[0])[key]}
                                     </p>
                                   </div>
                                 );
                               })}
-                              {files?.map((file) => {
+                              {submission[1]?.map((file) => {
                                 return (
                                   <div key={file}>
                                     <a
@@ -162,13 +184,12 @@ export default function SubmissionsModal(props) {
                                   </div>
                                 );
                               })}
-                            </>
+                            </> */}
                           {/* )} */}
                         </TableCell>
                       </TableRow>
                     )
-                  }
-                })}
+                })) : (<h3>No Submissions</h3>)}
               </TableBody>
             </Table>
 
