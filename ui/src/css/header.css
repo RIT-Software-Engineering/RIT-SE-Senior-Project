@@ -1,20 +1,32 @@
 #header {
-  height: var(--header-height);
-  padding-top: 2em;
-  padding-bottom: 1em;
-  background-color: #f76902;
+    height: var(--header-height);
+    padding-top: 2em;
+    padding-bottom: 1em;
+    background-color: #f76902;
+    transition: background-color 0.3s ease;
 }
 
 #header .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    transition: color 0.3s ease;
 }
 
 #subHeader {
   font-weight: bold;
   text-transform: uppercase;
+}
+
+/* Dark Mode Styles */
+.dark-mode #header {
+    background-color: #333; 
+}
+
+.dark-mode #header .container,
+.dark-mode #subHeader {
+    color: #e0e0e0;
 }
 
 @media only screen and (max-width: 768px) {

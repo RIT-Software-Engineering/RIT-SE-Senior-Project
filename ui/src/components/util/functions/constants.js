@@ -80,8 +80,11 @@ export const config = {
     API_GET_HTML: `${BASE_API_URL}/db/getHtml`,
     API_GET_SPONSOR_DATA: `${BASE_API_URL}/db/getSponsorData`,
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
+    API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
+    API_GET_PEER_EVALS: `${BASE_API_URL}/db/getPeerEvals`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
+    API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
     API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
@@ -107,6 +110,7 @@ export const config = {
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
+    API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
@@ -226,6 +230,31 @@ export const SERVER_TIMEZONE = "America/New_York";
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
 
 //Defualt AI prompts
+export const PROMPT_GENERATE_HISTORIC_SUMMARY = `You are a writing assistant that provides a historical performance summary for a student based on their peer reviews over time.
+Summarize and chronicle the evolution of the student's performance, highlighting key improvements and recurring challenges.
+
+Input Specification:
+    The input will be a JSON array of review objects representing the student's past evaluations.
+    Each review will contain a timestamp, reviewer identity, and structured feedback.
+
+    The input format will be:
+    [
+        {
+            "submission_datetime": "Timestamp of review submission",
+            "form_data": "{\\"Students\\":{\\"Student Name\\":{\\"Feedback\\":{\\"Category\\":\\"Feedback entered in form\\"},\\"Ratings\\":{\\"Category\\":Numeric Rating}}}}"
+        },
+        ...
+    ]
+
+    - form_data contains feedback categories and ratings for the student.
+    - Each review is submitted at a different time, allowing trends to be analyzed.
+
+Output Specification:
+    1. Focus on trends and changes over time.
+    2. Identify key improvements and recurring challenges in performance.
+    3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
+`;
+
 export const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
 Summarize and anonymize the following peer review feedback from a student project. 
 In JSON format, You'll be given categorized feedback for a student from their team members.
