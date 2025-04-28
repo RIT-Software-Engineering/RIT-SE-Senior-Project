@@ -2,7 +2,7 @@
 
 #footer {
     min-height: var(--footer-height);
-    background-color: white;
+    background-color: var(--bg-primary);
     color: black;
     padding-top: 2em;
     padding-bottom: 1em;
@@ -36,5 +36,5 @@
 /* Dark Mode Styles */
 .dark-mode #footer {
     background-color: #1e1e1e; 
-    color: #e0e0e0;          
+    color: var(--bg-primary);          
 }

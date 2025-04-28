@@ -13,7 +13,7 @@
   
   .edited-input input,
   .edited-input.dropdown {
-    background-color: #fffaf3 !important;
+    background-color: var(--bg-primary) !important;
     color: #573a08 !important;
   }
 
@@ -28,32 +28,32 @@
   }
   
   .proposal-row-gray {
-    background: #dddddd;
+    background: var(--bg-primary);
     color: #666666;
   }
   
   .proposal-row-red {
-    background: #fff6f6;
+    background: var(--bg-primary);
     color: black;
   }
   
   .proposal-row-yellow {
-    background: #fffaf3;
+    background: var(--bg-primary);
     color: black;
   }
   
   .proposal-row-green {
-    background: #fcfff5;
+    background: var(--bg-primary);
     color: black;
   }
   
   .proposal-row-blue {
-    background: #fcfff5;
+    background: var(--bg-primary);
     color: black;
   }
   
   .proposal-row-purple {
-    background: #fcfff5;
+    background: var(--bg-primary);
     color: black;
   }
   
@@ -90,28 +90,28 @@
   
   .dark-mode .proposal-row-red {
       background: #4d1c1c;        
-      color: #ffffff;             
+      color: var(--bg-primary);             
   }
   
   .dark-mode .proposal-row-yellow {
       background: #665c40;        
-      color: #ffffff;            
+      color: var(--bg-primary);            
   }
   
   .dark-mode .proposal-row-green {
       background: #2c3e2c;         
-      color: #e0f0e0;            
+      color: var(--bg-primary);            
   }
   
   .dark-mode .proposal-row-blue {
       background: #2d3a50;       
-      color: #d0e0f0;            
+      color: var(--bg-primary);            
   }
   
   .dark-mode .edited-input input,
   .dark-mode .edited-input.dropdown {
       background-color: #333 !important;
-      color: #e0e0e0 !important;
+      color: var(--bg-primary) !important;
   }
   
 

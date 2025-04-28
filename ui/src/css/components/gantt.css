@@ -3,7 +3,7 @@
 .gantt {
     display: grid;
     position: relative;
-    border: #000000 1px solid;
+    border: var(--border-color) 1px solid;
     width: 100%;
     grid-auto-flow: column;
     grid-template-columns: 200px;
@@ -39,9 +39,9 @@
     position: sticky;
     top: 0;
     border: none;
-    border-left: #000000 solid 1px;
-    border-bottom: #000000 solid 1px;
-    background-color: white;
+    border-left: var(--border-color) solid 1px;
+    border-bottom: var(--border-color) solid 1px;
+    background-color: var(--bg-primary);
     z-index: 99;
   }
   
@@ -69,23 +69,23 @@
   }
   
   .gantt-col.weekday {
-    background-color: white;
+    background-color: var(--bg-primary);
   }
   
   .gantt-col.weekend {
-    background-color: rgb(238, 238, 238);
+    background-color: var(--bg-primary);
   }
   
   .gantt-col.today {
-    background-color: #f76902;
+    background-color: var(--gantt-today);
   }
   
   .gantt-col.projectStart {
-    background-color: #000000;
+    background-color: var(--border-color);
   }
   
   .gantt-col.projectEnd {
-    background-color: #000000;
+    background-color: var(--border-color);
   }
   
   .sidebar-container {
@@ -106,13 +106,13 @@
   
   .sidebar {
     width: 100%;
-    background: rgb(255, 255, 255);
+    background: var(--bg-primary);
     text-wrap: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     border: none;
-    border-top: #000000 1px solid;
-    border-right: #000000 1px solid;
+    border-top: var(--border-color) 1px solid;
+    border-right: var(--border-color) 1px solid;
     text-align: left;
     cursor: pointer;
   }
@@ -126,8 +126,8 @@
     cursor: default;
     text-align: left;
     border: none;
-    border-right: #000000 1px solid;
-    border-bottom: #000000 2px solid;
+    border-right: var(--border-color) 1px solid;
+    border-bottom: var(--border-color) 2px solid;
     position: sticky;
     top: 0;
   }
@@ -161,19 +161,19 @@
   }
   
   .action-bar.proposal-row-yellow {
-    border: 2px #885601 solid;
+    border: 2px var(--action-bar-proposal-yellow) solid;
     color: black;
     grid-column: span 3 / auto;
   }
   
   .action-bar.proposal-row-red {
-    border: 2px #fd2723 solid;
+    border: 2px var(--action-bar-proposal-red) solid;
     color: black;
     grid-column: span 3 / auto;
   }
   
   .action-bar.proposal-row-blue {
-    border: 2px #0000ff solid;
+    border: 2px var(--action-bar-proposal-blue) solid;
     color: black;
     grid-column: span 2 / auto;
     font-weight: bold;
@@ -181,19 +181,19 @@
   }
   
   .action-bar.proposal-row-green {
-    border: 2px #2c662d solid;
+    border: 2px var(--action-bar-proposal-green) solid;
     color: black;
     grid-column: span 2 / auto;
   }
   
   .action-bar.proposal-row-gray {
-    border: 2px #484848 solid;
-    color: #000000;
+    border: 2px var(--action-bar-proposal-gray) solid;
+    color: var(--border-color);
     grid-column: span 2 / auto;
   }
   
   .action-bar.proposal-row-purple {
-    border: 2px #b66dff solid;
+    border: 2px var(--action-bar-proposal-purple) solid;
     color: black;
     grid-column: span 2 / auto;
   }
@@ -278,81 +278,81 @@
 
   /* Dark mode styles for gantt chart */
 body.dark-mode .gantt {
-    border-color: #444;
+    border-color: var(--dark-mode-border-color);
 }
 
 body.dark-mode .gantt-header {
     background-color: #222;
     border-left-color: #555;
     border-bottom-color: #555;
-    color: #e0e0e0;
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .gantt-col.weekday {
-    background-color: #1e1e1e;
+    background-color: var(--dark-mode-bg-primary);
 }
 
 body.dark-mode .gantt-col.weekend {
-    background-color: #292929;
+    background-color: var(--dark-mode-bg-secondary);
 }
 
 body.dark-mode .gantt-col.today {
-    background-color: #ff9800;
+    background-color: var(--dark-mode-bg-today);
 }
 
 body.dark-mode .sidebar {
     background-color: #222;
-    color: #e0e0e0;
+    color: var(--dark-mode-text-primary);
     border-right-color: #555;
 }
 
 body.dark-mode .sidebar.header {
-    background-color: #1e1e1e;
+    background-color: var(--dark-mode-bg-primary);
     border-right-color: #777;
     border-bottom-color: #777;
-    color: #ffffff;
+    color: var(--dark-mode-text-primary);
 }
 
 /* Dark mode styles for action bar */
 body.dark-mode .action-bar {
     background-color: #222;
-    color: #e0e0e0;
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .action-bar.proposal-row-yellow {
-    border-color: #ffc107;
-    color: #e0e0e0;
+    border-color: var(--dark-mode-action-bar-proposal-yellow);
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .action-bar.proposal-row-red {
-    border-color: #f44336;
-    color: #e0e0e0;
+    border-color: var(--dark-mode-action-bar-proposal-red);
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .action-bar.proposal-row-blue {
-    border-color: #2196f3;
-    color: #e0e0e0;
+    border-color: var(--dark-mode-action-bar-proposal-blue);
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .action-bar.proposal-row-green {
-    border-color: #4caf50;
-    color: #e0e0e0;
+    border-color: var(--dark-mode-action-bar-proposal-green);
+    color: var(--dark-mode-text-primary);
 }
 
 body.dark-mode .action-bar.proposal-row-gray {
-    border-color: #888;
-    color: #e0e0e0;
+    border-color: var(--dark-mode-action-bar-proposal-gray);
+    color: var(--dark-mode-text-primary);
 }
 
 /* Dark mode styles for checkbox */
 body.dark-mode .timeline-checkbox {
-    color: #e0e0e0 !important;
+    color: var(--dark-mode-text-primary) !important;
 }
 
 body.dark-mode .ui.checkbox label {
-    color: #e0e0e0 !important;
+    color: var(--dark-mode-text-primary) !important;
 }
 
 body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
-    color: #e0e0e0 !important; 
+    color: var(--dark-mode-text-primary) !important; 
 }

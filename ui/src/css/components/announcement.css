@@ -9,7 +9,7 @@
 
     .announcement {
         width: 100%;
-        background-color: #fff6f6;
+        background-color: var(--bg-primary);
         border-radius: 0.5em;
         padding: 0.5em;
         margin-bottom: 0.25em;
@@ -30,18 +30,18 @@
     }
 
     .announcement-container-wrapper {
-        background-color: white;
+        background-color: var(--bg-primary);
         padding: 10px;
         border-radius: 5px;
     }
 
     /* Dark mode styles for Announcement */
     body.dark-mode .announcement-container-wrapper {
-        background-color: #1e1e1e;
-        color: #e0e0e0;
+        background-color: var(--dark-mode-bg-primary);
+        color: var(--dark-mode-text-primary);
     }
 
     body.dark-mode .announcement {
-        background-color: #333;
-        color: #e0e0e0;
+        background-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-primary);
     }

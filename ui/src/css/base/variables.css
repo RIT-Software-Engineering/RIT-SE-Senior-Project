@@ -2,7 +2,7 @@
 
 :root {
     --bg-default: #f8f9fa;
-    --bg-primary: #ffffff;
+    --bg-primary: white;
     --bg-secondary: #f8f9fa;
     --bg-tertiary: #fafafa;
     --bg-day: white;
@@ -12,13 +12,21 @@
     --bg-hover: #f9f9f9;
     --bg-button-hover: #f0f0f0;
   
-    --border-color: #000000;
+    --border-color: black;
     --border-light: #f0f0f0;
     --border-today: #0066cc;
   
     --text-primary: #333;
     --text-secondary: #666;
     --text-today: #0066cc;
+
+    --gantt-today: #f76902;
+    --action-bar-proposal-yellow: #885601;
+    --action-bar-proposal-red: #fd2723;
+    --action-bar-proposal-blue: #0000ff;
+    --action-bar-proposal-green: #2c662d;
+    --action-bar-proposal-gray: #484848;
+    --action-bar-proposal-purple: #b66dff;
   
     --shadow-color: rgba(0, 0, 0, 0.1);
 
@@ -48,15 +56,17 @@
     --border-light: #333333;
     --border-today: #4d94ff;
   
-    --text-primary: #e0e0e0;
+    --text-primary: white;
     --text-secondary: #b0b0b0;
     --text-today: #4d94ff;
+
+    --gantt-today: #ff9800;
+    --action-bar-proposal-yellow: #ffc107;
+    --action-bar-proposal-red: #f44336;
+    --action-bar-proposal-blue: #2196f3;
+    --action-bar-proposal-green: #4caf50;
+    --action-bar-proposal-gray: #888;
+    --action-bar-proposal-purple: #b66dff;
   
     --shadow-color: rgba(0, 0, 0, 0.3);
   }
-
-    /* Dark Mode Styles */
-    .dark-mode {
-        background-color: #121212;
-        color: #e0e0e0;
-    }

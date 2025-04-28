@@ -7,6 +7,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 import "./../../../css/containers/header.css";
+import "./../../../css/utils/responsive.css";
 
 function Header() {
   const history = useHistory();

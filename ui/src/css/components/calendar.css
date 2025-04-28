@@ -145,7 +145,7 @@
   position: absolute;
   right: 0;
   height: 18px;
-  color: white;
+  color: var(--bg-primary);
   font-size: 0.65rem;
   padding: 1px 4px;
   border-radius: 2px;
@@ -239,15 +239,15 @@
 }
 
 .dark-mode .nav-button {
-  color: #b0b0b0;
+  color: var(--dark-mode-text-secondary);
 }
 
 .dark-mode .nav-button:hover {
-  background-color: #3a3a3a;
+  background-color: var(--dark-mode-bg-button-hover);
 }
 
 /* Improve visibility of strikethrough text in dark mode */
 .dark-mode .calendar-action s {
-  text-decoration-color: rgba(255, 255, 255, 0.5);
+  text-decoration-color: var(--dark-mode-text-secondary);
 }
 

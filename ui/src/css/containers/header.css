@@ -4,7 +4,7 @@
     height: var(--header-height);
     padding-top: 2em;
     padding-bottom: 1em;
-    background-color: #f76902;
+    background-color: var(--gantt-today);
     transition: background-color 0.3s ease;
 }
 
@@ -28,35 +28,5 @@
 
 .dark-mode #header .container,
 .dark-mode #subHeader {
-    color: #e0e0e0;
+    color: var(--bg-primary);
 }
-
-@media only screen and (max-width: 768px) {
-  #nav-buttons {
-    display: none;
-  }
-  #hamburger-menu {
-    display: block;
-  }
-}
-
-/* @media only screen and (max-device-width: 768px) {
-  #nav-buttons {
-    display: none;
-  }
-} */
-
-@media only screen and (min-width: 769px) {
-  #hamburger-menu {
-    display: none;
-  }
-  #nav-buttons {
-    display: inline-flex;
-  }
-}
-
-/* @media only screen and (min-device-width: 769px) {
-  #hamburger-menu {
-    display: none;
-  }
-} */
