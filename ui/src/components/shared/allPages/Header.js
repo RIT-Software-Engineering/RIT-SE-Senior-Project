@@ -2,11 +2,11 @@ import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
 import DevSignInModalContent from "../../util/components/DevSignInModalContent";
-import "../../../css/header.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
+import "./../../../css/containers/header.css";
 
 function Header() {
   const history = useHistory();

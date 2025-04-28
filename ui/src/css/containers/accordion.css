@@ -1,0 +1,111 @@
+@import './../base/variables.css';
+
+
+.accordion-button-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordion {
+  height: auto !important;
+  margin-top: 0 !important;
+  margin-bottom: 1em !important;
+}
+
+.accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  right: 1em;
+  margin: 2px 1em !important;
+}
+
+/* For nested accordion with depth of 1 */
+.accordion .accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  right: 1em;
+  margin: 2px 2em !important;
+}
+
+/* 
+ * For nested accordion with depth of 2 
+ * (please for the love of all that is holy, do not have accordions nested more than 2 deep) 
+ */
+.accordion .accordion .accordion-button-group .accordion-buttons-container {
+  position: absolute;
+  /* right: 1em;
+  margin: 2px 3em !important; */
+}
+
+.accordion-buttons-container > * {
+  margin: 0 0 0 0 !important;
+  border-radius: 0 !important;
+}
+
+.accordion-buttons-container :first-child {
+  margin: 0 0 0 0 !important;
+  /* border-top-left-radius: 0.28571429rem !important;
+  border-bottom-left-radius: 0.28571429rem !important; */
+}
+
+.accordion-buttons-container :last-child {
+  margin: 0 0 0 0 !important;
+  /* border-top-right-radius: 0.28571429rem !important;
+  border-bottom-right-radius: 0.28571429rem !important; */
+}
+
+/* Dark mode styles for accordion */
+body.dark-mode .ui.accordion {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+}
+
+body.dark-mode .ui.accordion .title {
+  background-color: #222;
+  color: #ffffff;
+}
+
+body.dark-mode .ui.accordion .title:hover {
+  background-color: #333;
+  color: white;
+}
+
+body.dark-mode .ui.accordion .content {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .ui.accordion .active.title {
+  background-color: #333;
+  color: #ffffff;
+}
+
+body.dark-mode .accordion-button-group .title:hover {
+  background-color: #222;
+  color: #ffffff;
+}
+
+body.dark-mode .ui.ui.styled.accordion {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .title {
+  background-color: #222;
+  color: #ffffff;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .title:hover {
+  background-color: #333;
+  color: white;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .content {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .ui.styled.accordion .accordion .active.title {
+  background-color: #333;
+  color: #ffffff;
+}

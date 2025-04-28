@@ -10,7 +10,6 @@ import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
 import AdminView from "../util/components/AdminView";
 import { UserContext } from "../util/functions/UserContext";
-import "./../../css/dashboard.css";
 import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { config } from "../util/functions/constants";
@@ -19,6 +18,7 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
+import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);

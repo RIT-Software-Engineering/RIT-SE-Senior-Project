@@ -1,0 +1,62 @@
+/* CSS Variables for theming */
+
+:root {
+    --bg-default: #f8f9fa;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #fafafa;
+    --bg-day: white;
+    --bg-today: #f5f9ff;
+    --bg-selected: #f0f7ff;
+    --bg-selected-hover: #e6f0fa;
+    --bg-hover: #f9f9f9;
+    --bg-button-hover: #f0f0f0;
+  
+    --border-color: #000000;
+    --border-light: #f0f0f0;
+    --border-today: #0066cc;
+  
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-today: #0066cc;
+  
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    --header-height: 7em;
+    --footer-height: 7em;
+    --page-padding: 1.5em;
+    --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
+
+    --timeline-element-height: 4.6em;
+    --gantt-maximum-rows: 300;
+    /* --gantt-maximum-columns: 365; */
+  }
+  
+  /* Dark mode variables */
+  .dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --bg-tertiary: #252525;
+    --bg-day: #2d2d2d;
+    --bg-today: #1e3a5f;
+    --bg-selected: #2c3e50;
+    --bg-selected-hover: #34495e;
+    --bg-hover: #333333;
+    --bg-button-hover: #3a3a3a;
+  
+    --border-color: #444444;
+    --border-light: #333333;
+    --border-today: #4d94ff;
+  
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-today: #4d94ff;
+  
+    --shadow-color: rgba(0, 0, 0, 0.3);
+  }
+
+    /* Dark Mode Styles */
+    .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+    }

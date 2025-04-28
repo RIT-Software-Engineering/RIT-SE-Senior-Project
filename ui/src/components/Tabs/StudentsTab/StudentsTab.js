@@ -403,15 +403,12 @@ export default function StudentsTab(props) {
             <Accordion
               key={"PEEREVAL" + projectKey}
               fluid
-              defaultActiveIndex={
-                activeProjectIds[projectKey] && hasSubmissions ? 0 : -1
-              }
               styled
+              defaultActiveIndex={isSemesterActive(semester.start_date, semester.end_date) ? 0 : -1}
               panels={[
                 {
                   key: "eval",
-                  title: project.name + " - " + semester.name,
-                  active: active,
+                  title: `${project.name} - ${semester.name}`,
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>

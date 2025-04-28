@@ -1,11 +1,11 @@
 import React, { act, createElement, useEffect, useRef } from "react";
 import { ACTION_STATES } from "../../../../util/functions/constants";
-// import "./../../../../../css/gantt.css";
 import { isSemesterActive, dateDiff } from "../../../../util/functions/utils";
 import GanttChartBackdrop from "./GanttChartBackdrop";
 import _ from "lodash";
 import ToolTip from "./ToolTip";
 import ActionToolTip from "../../../AdminTab/ActionEditor/ActionToolTip";
+import "./../../../../../css/components/gantt.css";
 
 export default function GanttChart(props) {
   const containerRef = useRef(null);
