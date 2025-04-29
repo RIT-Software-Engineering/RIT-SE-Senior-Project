@@ -1,117 +1,115 @@
-@import './../base/variables.css';
+@import "./../base/variables.css";
 
 .proposal-submit-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .project-editor-input-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .edited-input input,
-  .edited-input.dropdown {
-    background-color: var(--bg-primary) !important;
-    color: #573a08 !important;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .proposal-row-UNHANDLED-CASE {
-    background: blue;
-    color: red;
-  }
-  
-  .proposal-row-UNHANDLED-CASE::before {
-    color: red;
-    content: "Something's not right...You're not supposed to see this.";
-  }
-  
-  .proposal-row-gray {
-    background: var(--bg-primary);
-    color: #666666;
-  }
-  
-  .proposal-row-red {
-    background: var(--bg-primary);
-    color: black;
-  }
-  
-  .proposal-row-yellow {
-    background: var(--bg-primary);
-    color: black;
-  }
-  
-  .proposal-row-green {
-    background: var(--bg-primary);
-    color: black;
-  }
-  
-  .proposal-row-blue {
-    background: var(--bg-primary);
-    color: black;
-  }
-  
-  .proposal-row-purple {
-    background: var(--bg-primary);
-    color: black;
-  }
-  
-  .proposal-status-action {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .proposal-status-action .dropdown {
-    margin-right: 0.33em;
-  }
-  
-  td.attachments {
-    max-width: 25em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Dark Mode Styles */
-  .dark-mode .proposal-row-UNHANDLED-CASE {
-      background: darkblue;       
-      color: #ff8080;             
-  }
-  
-  .dark-mode .proposal-row-UNHANDLED-CASE::before {
-      color: #ff8080;
-  }
-  
-  .dark-mode .proposal-row-gray {
-      background: #444444;      
-      color: #cccccc;            
-  }
-  
-  .dark-mode .proposal-row-red {
-      background: #4d1c1c;        
-      color: var(--bg-primary);             
-  }
-  
-  .dark-mode .proposal-row-yellow {
-      background: #665c40;        
-      color: var(--bg-primary);            
-  }
-  
-  .dark-mode .proposal-row-green {
-      background: #2c3e2c;         
-      color: var(--bg-primary);            
-  }
-  
-  .dark-mode .proposal-row-blue {
-      background: #2d3a50;       
-      color: var(--bg-primary);            
-  }
-  
-  .dark-mode .edited-input input,
-  .dark-mode .edited-input.dropdown {
-      background-color: #333 !important;
-      color: var(--bg-primary) !important;
-  }
-  
+.project-editor-input-container {
+  display: flex;
+  flex-direction: column;
+}
 
+.edited-input input,
+.edited-input.dropdown {
+  background-color: var(--bg-primary) !important;
+  color: #573a08 !important;
+}
+
+.proposal-row-UNHANDLED-CASE {
+  background: blue;
+  color: red;
+}
+
+.proposal-row-UNHANDLED-CASE::before {
+  color: red;
+  content: "Something's not right...You're not supposed to see this.";
+}
+
+.proposal-row-gray {
+  background: #dddddd;
+  color: #666666;
+}
+
+.proposal-row-red {
+  background: #fff6f6;
+  color: var(--text-primary);
+}
+
+.proposal-row-yellow {
+  background: #fffaf3;
+  color: var(--text-primary);
+}
+
+.proposal-row-green {
+  background: #fcfff5;
+  color: var(--text-primary);
+}
+
+.proposal-row-blue {
+  background: #fcfff5;
+  color: var(--text-primary);
+}
+
+.proposal-row-purple {
+  background: #fcfff5;
+  color: var(--text-primary);
+}
+
+.proposal-status-action {
+  display: flex;
+  justify-content: space-between;
+}
+
+.proposal-status-action .dropdown {
+  margin-right: 0.33em;
+}
+
+td.attachments {
+  max-width: 25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark Mode Styles */
+.dark-mode .proposal-row-UNHANDLED-CASE {
+  background: darkblue;
+  color: #ff8080;
+}
+
+.dark-mode .proposal-row-UNHANDLED-CASE::before {
+  color: #ff8080;
+}
+
+.dark-mode .proposal-row-gray {
+  background: #444444;
+  color: #cccccc;
+}
+
+.dark-mode .proposal-row-red {
+  background: #4d1c1c;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-yellow {
+  background: #665c40;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-green {
+  background: #2c3e2c;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-blue {
+  background: #2d3a50;
+  color: var(--text-primary);
+}
+
+.dark-mode .edited-input input,
+.dark-mode .edited-input.dropdown {
+  background-color: #333 !important;
+  color: var(--text-primary) !important;
+}

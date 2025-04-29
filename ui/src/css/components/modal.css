@@ -1,28 +1,27 @@
-@import './../base/variables.css';
+@import "./../base/variables.css";
 
 button.ui.button,
 .ui.icon.button,
 .ui.icon.buttons,
 .button,
 a.ui.button {
-  background-color: var(--bg-primary);
+  background-color: #e0e1e2;
   color: #212529;
   padding: 10px 20px;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
-
 .ui.dimmer .ui.workaround.loader {
-    color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .ui.dimmer .ui.workaround.loader:before {
-    border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 .ui.dimmer .ui.workaround.loader:after {
-    border-color: #767676 transparent transparent;
+  border-color: #767676 transparent transparent;
 }
 
 /* Dark mode styles for pagination */
@@ -33,7 +32,7 @@ body.dark-mode .ui.pagination.menu {
 
 body.dark-mode .ui.pagination.menu .item {
   background-color: #444;
-  color: var(--bg-primary);
+  color: var(--text-primary);
   margin: 0;
   display: inline-flex;
   vertical-align: middle;
@@ -45,20 +44,20 @@ body.dark-mode .ui.pagination.menu .item:hover {
 
 body.dark-mode .ui.pagination.menu .active.item {
   background-color: #666;
-  color: white;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
 body.dark-mode .ui.message {
   background-color: #282828;
-  color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
   border: 1px solid #444 !important;
   box-shadow: none !important;
 }
 
 .dark-mode .ui.button {
   background-color: #424242;
-  color: var(--bg-primary);
+  color: var(--text-primary);
   border: 1px solid var(--bg-primary);
 }
 
@@ -67,110 +66,112 @@ body.dark-mode .ui.message {
 }
 
 body.dark-mode .ui.header {
-    color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.segment,
-  .dark-mode .ui.tab {
-      background-color: #222;
-      color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.menu {
-      background-color: black;
-      color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.tabular.menu .item {
-      color: var(--bg-primary);
-      background-color: rgb(48, 48, 48);
-  }
-  
-  .dark-mode .ui.tabular.menu .active.item {
-      background-color: #999999;
-      color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.pane {
-      background-color: #222;
-      color: #ddd;
-  }
-  
-  .dark-mode .semester-editor {
-    background-color: #222;
-    color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.modal {
-      background-color: #1e1e1e;
-      color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.table {
-      background-color: #282828;
-      color: var(--bg-primary);
-  }
-  
-  .dark-mode .ui.input > input {
-      background-color: #333;
-      color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.modal .header,
-  body.dark-mode .ui.modal .content,
-  body.dark-mode .ui.modal .actions {
-    background-color: inherit;
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.modal .button {
-    background-color: #424242;
-    color: var(--bg-primary);
-    border: 1px solid var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.modal .button:hover {
-    background-color: #333;
-  }
-  
-  body.dark-mode .ui.segment.stackable.padded.grid {
-    background-color: #1e1e1e;
-    color: var(--bg-primary);
-    border-color: #333;
-  }
-  
-  body.dark-mode .ui.container.stackable.grid {
-    background-color: #1e1e1e;
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.modal .actions {
-    background-color: #1e1e1e;
-    border-top: 1px solid #333;
-  }
-  
-  body.dark-mode .ui.segment .column {
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.segment .ui.small.header {
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.segment p {
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.segment .column h3,
-  body.dark-mode .ui.segment .column h4,
-  body.dark-mode .ui.segment .column h5,
-  body.dark-mode .ui.segment .column p {
-    color: var(--bg-primary);
-  }
-  
-  body.dark-mode .ui.modal label,
-  body.dark-mode .ui.form .field > label {
-      color: var(--bg-primary);
-  }
-  
-  
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.segment,
+.dark-mode .ui.tab {
+  background-color: #222;
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.menu {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.tabular.menu .item {
+  color: var(--text-primary);
+  background-color: rgb(48, 48, 48);
+}
+
+.dark-mode .ui.tabular.menu .active.item {
+  background-color: #999999;
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.pane {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .semester-editor {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.modal {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.table {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.input > input {
+  background-color: #333;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .header,
+body.dark-mode .ui.modal .content,
+body.dark-mode .ui.modal .actions {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .button {
+  background-color: #424242;
+  color: var(--text-primary);
+  border: 1px solid var(--bg-primary);
+}
+
+body.dark-mode .ui.modal .button:hover {
+  background-color: var(--bg-button-hover);
+}
+
+body.dark-mode .ui.segment.stackable.padded.grid {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+body.dark-mode .ui.container.stackable.grid {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .actions {
+  background-color: var(--bg-primary);
+  border-top: 1px solid #333;
+}
+
+body.dark-mode .ui.segment .column {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .ui.small.header {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .column h3,
+body.dark-mode .ui.segment .column h4,
+body.dark-mode .ui.segment .column h5,
+body.dark-mode .ui.segment .column p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal label,
+body.dark-mode .ui.form .field > label {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.rating .active.icon {
+  color: var(--text-primary);
+}

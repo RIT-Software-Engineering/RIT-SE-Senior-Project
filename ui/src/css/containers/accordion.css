@@ -1,5 +1,4 @@
-@import './../base/variables.css';
-
+@import "./../base/variables.css";
 
 .accordion-button-group {
   display: flex;
@@ -55,57 +54,57 @@
 /* Dark mode styles for accordion */
 body.dark-mode .ui.accordion {
   background-color: #1e1e1e;
-  color: var(--bg-primary);
+  color: var(--text-primary);
   border: 1px solid #333;
 }
 
 body.dark-mode .ui.accordion .title {
   background-color: #222;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.accordion .title:hover {
   background-color: #333;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.accordion .content {
-  background-color: #1e1e1e;
-  color: var(--bg-primary);
+  background-color: inherit;
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.accordion .active.title {
   background-color: #333;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .accordion-button-group .title:hover {
   background-color: #222;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.ui.styled.accordion {
   background-color: #1e1e1e;
-  color: var(--bg-primary);
+  color: var(--text-primary);
   border: 1px solid #333;
 }
 
 body.dark-mode .ui.styled.accordion .accordion .title {
   background-color: #222;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.styled.accordion .accordion .title:hover {
   background-color: #333;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.styled.accordion .accordion .content {
-  background-color: #1e1e1e;
-  color: var(--bg-primary);
+  background-color: inherit;
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.styled.accordion .accordion .active.title {
   background-color: #333;
-  color: var(--bg-primary);
+  color: var(--text-primary);
 }

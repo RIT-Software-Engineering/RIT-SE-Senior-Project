@@ -4,6 +4,7 @@ import _ from "lodash";
 import { max } from "moment";
 import { Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
+import "./../../../css/utils/responsive.css";
 
 const SPECIAL_DATES = {
   "01-01": "New Year's Day",

@@ -1,31 +1,96 @@
-@import './../base/variables.css';
+@import "./../base/variables.css";
 
+/* Header Responsive styles */
 @media only screen and (max-width: 768px) {
-    #nav-buttons {
-      display: none;
-    }
-    #hamburger-menu {
-      display: block;
-    }
+  #nav-buttons {
+    display: none;
   }
-  
-  /* @media only screen and (max-device-width: 768px) {
+  #hamburger-menu {
+    display: block;
+  }
+}
+
+/* @media only screen and (max-device-width: 768px) {
     #nav-buttons {
       display: none;
     }
   } */
-  
-  @media only screen and (min-width: 769px) {
-    #hamburger-menu {
-      display: none;
-    }
-    #nav-buttons {
-      display: inline-flex;
-    }
+
+@media only screen and (min-width: 769px) {
+  #hamburger-menu {
+    display: none;
   }
-  
-  /* @media only screen and (min-device-width: 769px) {
+  #nav-buttons {
+    display: inline-flex;
+  }
+}
+
+/* @media only screen and (min-device-width: 769px) {
     #hamburger-menu {
       display: none;
     }
   } */
+
+/* Calendar Responsive styles */
+@media (max-width: 768px) {
+  .calendar-day,
+  .calendar-day.empty {
+    height: 80px;
+  }
+
+  .current-month {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-header {
+    padding: 12px;
+  }
+
+  .current-month {
+    font-size: 1rem;
+  }
+
+  .nav-button {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .calendar-days-header {
+    padding: 6px 0;
+  }
+
+  .day-name {
+    font-size: 0.75rem;
+  }
+
+  .calendar-grid {
+    padding: 6px;
+  }
+
+  .day-number {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .calendar-day,
+  .calendar-day.empty {
+    height: 60px;
+    margin: 1px;
+  }
+
+  .calendar-grid {
+    gap: 1px;
+  }
+
+  .day-name {
+    font-size: 0.7rem;
+  }
+
+  .day-number {
+    font-size: 0.7rem;
+  }
+}
