@@ -110,6 +110,7 @@ module.exports = (db) => {
         `;
       db.query(getStudentsQuery)
         .then((values) => {
+          console.log(values);
           res.send(values);
         })
         .catch((err) => {
@@ -133,6 +134,7 @@ module.exports = (db) => {
         `;
       db.query(getUsersQuery)
         .then((values) => {
+          console.log(values);
           res.send(values);
         })
         .catch((err) => {
@@ -701,7 +703,10 @@ module.exports = (db) => {
     async (req, res, next) => {
       const query = "SELECT * from projects";
       db.query(query)
-        .then((projects) => res.send(projects))
+        .then((projects) => {
+          console.log(projects);
+          res.send(projects);
+        })
         .catch((err) => {
           const error = new Error(err);
           error.statusCode = 500;
@@ -3693,6 +3698,7 @@ module.exports = (db) => {
         `;
     db.query(getSemestersQuery)
       .then((values) => {
+        //console.log(values);
         res.send(values);
       })
       .catch((err) => {
