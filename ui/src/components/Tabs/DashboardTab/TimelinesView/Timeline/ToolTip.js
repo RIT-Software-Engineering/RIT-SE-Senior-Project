@@ -116,35 +116,67 @@ export default function ToolTip(props) {
   };
 
   const content = () => {
-    return (
-      <div className="content">
-        {metadata()}
-        <span className="spacer" />
-        {/*
-         * Not sure if it makes more sense to check action.state or action.start_date.
-         * However, action.state is based off of server time whereas if we parse action.start_date,
-         * we need to deal with parsing with time zones and all of that.
-         */}
+    if(props.coachTab){
+      return (
+        <div className="content">
+          <span className="spacer" />
+          {/*
+          * Not sure if it makes more sense to check action.state or action.start_date.
+          * However, action.state is based off of server time whereas if we parse action.start_date,
+          * we need to deal with parsing with time zones and all of that.
+          */}
 
-        <ActionModal
-          key={props.action?.action_id}
-          {...props.action}
-          isOpenCallback={isOpenCallback}
-          projectId={props.projectId}
-          preActionContent={metadata(true)}
-          reloadTimelineActions={props.reloadTimelineActions}
-        />
-      </div>
-    );
+          <ActionModal
+            key={props.action?.action_id}
+            {...props.action}
+            isOpenCallback={isOpenCallback}
+            projectId={props.projectId}
+            preActionContent={metadata(true)}
+            reloadTimelineActions={props.reloadTimelineActions}
+          />
+        </div>
+      );
+    }
+    else{
+      return (
+        <div className="content">
+          {metadata()}
+          <span className="spacer" />
+          {/*
+          * Not sure if it makes more sense to check action.state or action.start_date.
+          * However, action.state is based off of server time whereas if we parse action.start_date,
+          * we need to deal with parsing with time zones and all of that.
+          */}
+
+          <ActionModal
+            key={props.action?.action_id}
+            {...props.action}
+            isOpenCallback={isOpenCallback}
+            projectId={props.projectId}
+            preActionContent={metadata(true)}
+            reloadTimelineActions={props.reloadTimelineActions}
+          />
+        </div>
+      );
+    }
   };
 
   if (props.noPopup) {
-    return (
-      <div className={`no-popup-tooltip ${props.color}`}>
-        <h4>{props.action?.action_title}</h4>
-        {content()}
-      </div>
-    );
+    if(props.coachTab){
+      return (
+        <div className={`no-popup-tooltip ${props.color}`}>
+          {content()}
+        </div>
+      );
+    }
+    else{
+      return (
+        <div className={`no-popup-tooltip ${props.color}`}>
+          <h4>{props.action?.action_title}</h4>
+          {content()}
+        </div>
+      );
+    }
   }
 
   return (

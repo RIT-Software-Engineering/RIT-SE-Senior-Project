@@ -208,10 +208,9 @@ export default function CoachesTab() {
                                   <Table>
                                     <TableHeader>
                                         <TableRow>
-                                          <TableHeaderCell>Coach Name</TableHeaderCell>
                                           <TableHeaderCell>Project Name</TableHeaderCell>
                                           <TableHeaderCell>Action Name</TableHeaderCell>
-                                          <TableHeaderCell>Due Date</TableHeaderCell>
+                                          <TableHeaderCell>Action</TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     {currentCoach.projects
@@ -224,6 +223,7 @@ export default function CoachesTab() {
                                         <CoachActions
                                           project={project}
                                           coach={currentCoach}
+                                          semester={semester}
                                         />
                                       );
                                     })}
