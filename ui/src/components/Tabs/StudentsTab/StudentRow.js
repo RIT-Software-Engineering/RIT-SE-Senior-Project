@@ -26,6 +26,7 @@ export default function StudentRow(props) {
   const [customPrompt, setCustomPrompt] = useState(PROMPT_GENERATE_HISTORIC_SUMMARY);
   const [isEditingPrompt, setIsEditingPrompt] = useState(false); 
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
+  const [canUseAI, setCanUseAI] = useState(false);
  
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -33,6 +34,21 @@ export default function StudentRow(props) {
   const handleAccordionClick = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
+
+  useEffect(() => {
+      SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.valid === true) {
+            setCanUseAI(true);
+          } else {
+            setCanUseAI(false);
+          }
+        })
+        .catch((err) => {
+          setCanUseAI(false);
+        });
+    }, []);
 
   const fetchPeerReviews = useCallback(async () => {
     try {
@@ -374,7 +390,8 @@ const handleSaveAdditionalInfo = async () => {
                 <p>No peer reviews available.</p>
               )}
             </Accordion>
-            <div style={{ marginTop: "1em" }}>
+            {canUseAI && (
+            <><div style={{ marginTop: "1em" }}>
               <textarea
                 readOnly
                 value={aiSummary}
@@ -432,7 +449,7 @@ const handleSaveAdditionalInfo = async () => {
                 </div>
               </div>
             )}
-        </div>
+        </div></>)}
             </>
             )}
           </Modal.Content>

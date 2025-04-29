@@ -579,7 +579,7 @@ export default function CoachFeedback(props) {
                 </div>
               )}
             </div>
-          </Dimmer.Dimmable>
+          </Dimmer.Dimmable>)}
         </FormField>
       </div>
     );
