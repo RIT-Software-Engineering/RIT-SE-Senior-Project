@@ -53,3 +53,38 @@ td.attachments {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Dark Mode Styles */
+.dark-mode .proposal-row-UNHANDLED-CASE {
+    background: darkblue;       
+    color: #ff8080;             
+}
+
+.dark-mode .proposal-row-UNHANDLED-CASE::before {
+    color: #ff8080;
+}
+
+.dark-mode .proposal-row-gray {
+    background: #444444;      
+    color: #cccccc;            
+}
+
+.dark-mode .proposal-row-red {
+    background: #4d1c1c;        
+    color: #ffffff;             
+}
+
+.dark-mode .proposal-row-yellow {
+    background: #665c40;        
+    color: #ffffff;            
+}
+
+.dark-mode .proposal-row-green {
+    background: #2c3e2c;         
+    color: #e0f0e0;            
+}
+
+.dark-mode .proposal-row-blue {
+    background: #2d3a50;       
+    color: #d0e0f0;            
+}

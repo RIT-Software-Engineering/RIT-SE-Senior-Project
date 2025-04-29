@@ -90,9 +90,12 @@ export default function DevSignInModalContent() {
           });
 
           try {
-            const response = await SecureFetch(config.url.DEV_ONLY_REDEPLOY_DATABASE, {
-              method: "PUT",
-            });
+            const response = await SecureFetch(
+              config.url.DEV_ONLY_REDEPLOY_DATABASE,
+              {
+                method: "PUT",
+              },
+            );
 
             if (response.ok) {
               // Successful database reset
