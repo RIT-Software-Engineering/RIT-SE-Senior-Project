@@ -18,6 +18,8 @@ function Header() {
     // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
+  const [darkMode, setDarkMode] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
   const signInOut = () => {
@@ -36,6 +38,37 @@ function Header() {
         });
     } else {
       window.location.href = config.url.API_LOGIN;
+    }
+  };
+
+  useEffect(() => {
+    if (signedIn) {
+      fetch(`/api/user/getDarkMode?system_id=${user.system_id}`)
+        .then(res => res.json())
+        .then(data => setDarkMode(data.dark_mode === true))
+        .catch(err => console.error("Failed to fetch dark mode:", err));
+    }
+  }, [signedIn, user.system_id]);
+  
+  const toggleDarkMode = async () => {
+    try {
+      const res = await fetch("/api/user/toggleDarkMode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ system_id: user.system_id }),
+      });
+  
+      if (!res.ok) throw new Error("Toggle failed");
+  
+      const newDarkMode = !darkMode;
+      setDarkMode(newDarkMode);
+      if (newDarkMode) {
+        document.body.classList.add("dark-mode");
+      } else {
+        document.body.classList.remove("dark-mode");
+      }
+    } catch (err) {
+      console.error("Error toggling dark mode:", err);
     }
   };
 
@@ -96,6 +129,11 @@ function Header() {
               }}
               actions={["Cancel"]}
             />
+          )}
+          {signedIn && (
+            <button className="ui button" onClick={() => setProfileModalOpen(true)}>
+              Profile
+            </button>
           )}
         </div>
         <div id="hamburger-menu">
@@ -198,6 +236,28 @@ function Header() {
           </span>
         </h1>
         {renderNavButtons()}
+        <Modal
+  open={profileModalOpen}
+  onClose={() => setProfileModalOpen(false)}
+  size="small"
+  header={`Hi, ${user.fname}!`}
+  content={
+    <div>
+      <p>Toggle Dark Mode:</p>
+      <Button toggle active={darkMode} onClick={toggleDarkMode}>
+        {darkMode ? "Dark Mode On" : "Dark Mode Off"}
+      </Button>
+    </div>
+  }
+  actions={[
+    {
+      key: "close",
+      content: "Close",
+      onClick: () => setProfileModalOpen(false),
+    },
+  ]}
+/>
+
       </div>
     </div>
   );

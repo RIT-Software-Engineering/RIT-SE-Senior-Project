@@ -111,6 +111,7 @@ export const config = {
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
     API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
+    API_POST_SET_DARK_MODE: `${BASE_API_URL}/db/setDarkMode`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
