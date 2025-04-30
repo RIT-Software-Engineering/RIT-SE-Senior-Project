@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
   title: SE Senior Project Backend Documentation
-  version: "1.7.1"
+  version: "v1.7.3"
 
 servers:
   - url: https://seniorproject.se.rit.edu/

@@ -30,7 +30,7 @@ export default function Timeline(props) {
         ? false
         : true,
   );
-  const [actionView, setActionView] = useState('Gantt')
+  const [actionView, setActionView] = useState("Gantt");
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -62,7 +62,9 @@ export default function Timeline(props) {
             }
             projectId={props.elementData.project_id}
             semesterName={props.elementData.semester_name}
-            actions={actions.filter((action) => action.action_target !== "break_period")}
+            actions={actions.filter(
+              (action) => action.action_target !== "break_period",
+            )}
             reloadTimelineActions={() => {
               loadTimelineActions(props.elementData?.project_id);
             }}
@@ -91,7 +93,9 @@ export default function Timeline(props) {
           }
           projectId={props.elementData.project_id}
           semesterName={props.elementData.semester_name}
-          actions={actions.filter((action) => action.action_target !== "break_period")}
+          actions={actions.filter(
+            (action) => action.action_target !== "break_period",
+          )}
           reloadTimelineActions={() => {
             loadTimelineActions(props.elementData?.project_id);
           }}
@@ -101,60 +105,63 @@ export default function Timeline(props) {
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
       >
-        <label htmlFor="time-line-view"><h3>Time Line Style </h3></label>
-            <select
-            name="time-line-view"
-            defaultValue={'gantt'}
-            onChange={(e) => {
-              if (e.target.value === 'gantt') {
-                setActionView('Gantt');
-              } else {
-                setActionView('Calendar');
-              }
-            }}
-          >
-            <option value="gantt">Gantt</option>
-            <option value="calendar">Calendar</option>
-          </select>
-        <div
-          className="timeline-action-block"
+        <label htmlFor="time-line-view">
+          <h3>Time Line Style </h3>
+        </label>
+        <select
+          name="time-line-view"
+          defaultValue={"gantt"}
+          onChange={(e) => {
+            if (e.target.value === "gantt") {
+              setActionView("Gantt");
+            } else {
+              setActionView("Calendar");
+            }
+          }}
         >
-          { actionView === 'Calendar' ? <Calendar
-            projectName={
-              props.elementData.display_name || props.elementData.title
-            }
-            projectId={props.elementData.project_id}
-            semesterName={props.elementData.semester_name}
-            reloadTimelineActions={() => {
-              loadTimelineActions(props.elementData?.project_id);
-            }}
-            actions={actions.map(action => {
-              if (action.action_target === "break_period") {
-                return { ...action, state: "purple" };
+          <option value="gantt">Gantt</option>
+          <option value="calendar">Calendar</option>
+        </select>
+        <div className="timeline-action-block">
+          {actionView === "Calendar" ? (
+            <Calendar
+              projectName={
+                props.elementData.display_name || props.elementData.title
               }
-              return action;
-            })}
-            initialDate={new Date()}
+              projectId={props.elementData.project_id}
+              semesterName={props.elementData.semester_name}
+              reloadTimelineActions={() => {
+                loadTimelineActions(props.elementData?.project_id);
+              }}
+              actions={actions.map((action) => {
+                if (action.action_target === "break_period") {
+                  return { ...action, state: "purple" };
+                }
+                return action;
+              })}
+              initialDate={new Date()}
             />
-            : <GanttChart
-            projectName={
-              props.elementData.display_name || props.elementData.title
-            }
-            projectId={props.elementData.project_id}
-            semesterName={props.elementData.semester_name}
-            projectStart={props.elementData.start_date}
-            projectEnd={props.elementData.end_date}
-            actions={actions.map(action => {
-              if (action.action_target === "break_period") {
-                return { ...action, state: "purple" };
+          ) : (
+            <GanttChart
+              projectName={
+                props.elementData.display_name || props.elementData.title
               }
-              return action;
-            })}
-            isOpen={ganttVisible}
-            reloadTimelineActions={() => {
-              loadTimelineActions(props.elementData?.project_id);
-            }}
-          />}
+              projectId={props.elementData.project_id}
+              semesterName={props.elementData.semester_name}
+              projectStart={props.elementData.start_date}
+              projectEnd={props.elementData.end_date}
+              actions={actions.map((action) => {
+                if (action.action_target === "break_period") {
+                  return { ...action, state: "purple" };
+                }
+                return action;
+              })}
+              isOpen={ganttVisible}
+              reloadTimelineActions={() => {
+                loadTimelineActions(props.elementData?.project_id);
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
