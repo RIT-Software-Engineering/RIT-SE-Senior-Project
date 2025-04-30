@@ -600,8 +600,7 @@ export default function DatabaseTableEditor(props) {
         key: "cancel",
         content: "Cancel",
         onClick: (event) => handleCancel(event),
-        positive: true,
-        style: { backgroundColor: "grey" },
+        color: "grey",
       },
       {
         key: "submit",
@@ -610,6 +609,8 @@ export default function DatabaseTableEditor(props) {
           ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
           : "Submit",
         onClick: (event) => handleSubmit(event),
+        labelPosition: "right",
+        icon: "check",
         positive: true,
       },
     ];

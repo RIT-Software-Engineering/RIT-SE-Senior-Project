@@ -510,6 +510,7 @@ export default function CoachFeedback(props) {
               open={confirmedStates[student]}
               onCancel={() => ClosePopup(student)}
               onConfirm={() => handleGenerateSummarization(student, AIContext)}
+              cancelButton={{ content: "Cancel", color: "grey" }}
             />
 
             <Radio
