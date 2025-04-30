@@ -62,6 +62,7 @@ function Header() {
     return (
       <>
         <div id="nav-buttons" className="ui right floated buttons">
+          {!signedIn && (<>
           <a
             href={"/"}
             className="ui button"
@@ -80,17 +81,6 @@ function Header() {
           >
             Projects
           </a>
-          {signedIn && (
-            <a
-              href={"/dashboard"}
-              className="ui button"
-              onClick={() => {
-                history.push("/dashboard");
-              }}
-            >
-              Dashboard
-            </a>
-          )}
           <a
             href={"/sponsor"}
             className="ui button"
@@ -100,6 +90,8 @@ function Header() {
           >
             Sponsor a Project
           </a>
+          </>)
+          }
           {process.env.REACT_APP_NODE_ENV === "production" ? (
             <button className="ui button" onClick={signInOut}>
               {signInOutBtnText}
