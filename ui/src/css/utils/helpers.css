@@ -35,10 +35,10 @@
 
     #page {
         min-height: calc(
-          100vh - var(--header-height) - var(--footer-height) - var(--page-padding) -
-            var(--page-padding)
+          100vh - var(--header-footer-height) - var(--header-footer-height) - var(--helpers-page-padding) -
+            var(--helpers-page-padding)
         );
-        margin: var(--page-padding) 0 3em 0;
+        margin: var(--helpers-page-padding) 0 3em 0;
     }
 
     .pagination-container {
@@ -76,10 +76,15 @@
         color: #90CAF9;
     }
 
+    .dark-mode #page {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
     body.dark-mode table, 
     body.dark-mode th, 
     body.dark-mode td {
-        border: 1px solid #444;
+        border: 1px solid var(--border-color);
     }
     
 

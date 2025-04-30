@@ -18,6 +18,8 @@ Our CSS is separated by _functionality_, not by page or feature. This ensures a 
   Contains global CSS variables — colors, fonts, layout sizes, paddings, spacings, etc.  
   These are the _source of truth_ for style values used project-wide. Always reference variables instead of hardcoding values.
 
+  _*side note: one off values can be hardcoded, there are instances of this in some files._
+
 ---
 
 ### 2. `components/`

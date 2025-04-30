@@ -5,19 +5,19 @@ button.ui.button,
 .ui.icon.buttons,
 .button,
 a.ui.button {
-  background-color: #e0e1e2;
-  color: #212529;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   padding: 10px 20px;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
 .ui.dimmer .ui.workaround.loader {
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-primary);
 }
 
 .ui.dimmer .ui.workaround.loader:before {
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: var(--shadow-color);
 }
 
 .ui.dimmer .ui.workaround.loader:after {
@@ -26,12 +26,13 @@ a.ui.button {
 
 /* Dark mode styles for pagination */
 body.dark-mode .ui.pagination.menu {
-  background-color: #333;
-  border: 1px solid #555;
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 body.dark-mode .ui.pagination.menu .item {
-  background-color: #444;
+  background-color: var(--menu-item);
   color: var(--text-primary);
   margin: 0;
   display: inline-flex;
@@ -39,30 +40,30 @@ body.dark-mode .ui.pagination.menu .item {
 }
 
 body.dark-mode .ui.pagination.menu .item:hover {
-  background-color: #555;
+  background-color: var(--menu-item-hover);
 }
 
 body.dark-mode .ui.pagination.menu .active.item {
-  background-color: #666;
+  background-color: var(--menu-item-active);
   color: var(--text-primary);
   font-weight: bold;
 }
 
 body.dark-mode .ui.message {
-  background-color: #282828;
+  background-color: var(--bg-primary);
   color: var(--text-primary) !important;
-  border: 1px solid #444 !important;
+  border: 1px solid var(--border-color) !important;
   box-shadow: none !important;
 }
 
 .dark-mode .ui.button {
-  background-color: #424242;
+  background-color: var(--bg-button);
   color: var(--text-primary);
   border: 1px solid var(--bg-primary);
 }
 
 .dark-mode .ui.button:hover {
-  background-color: #333;
+  background-color: var(--bg-hover);
 }
 
 body.dark-mode .ui.header {
@@ -71,7 +72,7 @@ body.dark-mode .ui.header {
 
 .dark-mode .ui.segment,
 .dark-mode .ui.tab {
-  background-color: #222;
+  background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
@@ -82,11 +83,11 @@ body.dark-mode .ui.header {
 
 .dark-mode .ui.tabular.menu .item {
   color: var(--text-primary);
-  background-color: rgb(48, 48, 48);
+  background-color: var(--menu-item);
 }
 
 .dark-mode .ui.tabular.menu .active.item {
-  background-color: #999999;
+  background-color: var(--menu-item-active);
   color: var(--text-primary);
 }
 
@@ -111,7 +112,7 @@ body.dark-mode .ui.header {
 }
 
 .dark-mode .ui.input > input {
-  background-color: #333;
+  background-color: var(--bg-footer-header);
   color: var(--text-primary);
 }
 
@@ -123,7 +124,7 @@ body.dark-mode .ui.modal .actions {
 }
 
 body.dark-mode .ui.modal .button {
-  background-color: #424242;
+  background-color: var(--bg-button);
   color: var(--text-primary);
   border: 1px solid var(--bg-primary);
 }
@@ -139,13 +140,13 @@ body.dark-mode .ui.segment.stackable.padded.grid {
 }
 
 body.dark-mode .ui.container.stackable.grid {
-  background-color: var(--bg-primary);
+  background-color: inherit;
   color: var(--text-primary);
 }
 
 body.dark-mode .ui.modal .actions {
   background-color: var(--bg-primary);
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--bg-footer-header);
 }
 
 body.dark-mode .ui.segment .column {

@@ -18,42 +18,42 @@
 }
 
 .proposal-row-UNHANDLED-CASE {
-  background: blue;
-  color: red;
+  background: var(--action-bar-proposal-blue);;
+  color: var(--action-bar-proposal-red);
 }
 
 .proposal-row-UNHANDLED-CASE::before {
-  color: red;
+  color: var(--action-bar-proposal-red);
   content: "Something's not right...You're not supposed to see this.";
 }
 
 .proposal-row-gray {
-  background: #dddddd;
-  color: #666666;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .proposal-row-red {
-  background: #fff6f6;
+  background: var(--bg-unfinished-action);
   color: var(--text-primary);
 }
 
 .proposal-row-yellow {
-  background: #fffaf3;
+  background: var(--bg-inprogress-action);
   color: var(--text-primary);
 }
 
 .proposal-row-green {
-  background: #fcfff5;
+  background: var(--bg-finished-action);
   color: var(--text-primary);
 }
 
 .proposal-row-blue {
-  background: #fcfff5;
+  background: var(--bg-finished-action);
   color: var(--text-primary);
 }
 
 .proposal-row-purple {
-  background: #fcfff5;
+  background: var(--bg-finished-action);
   color: var(--text-primary);
 }
 
@@ -84,8 +84,8 @@ td.attachments {
 }
 
 .dark-mode .proposal-row-gray {
-  background: #444444;
-  color: #cccccc;
+  background: var(--bg-button);
+  color: var(--text-primary);
 }
 
 .dark-mode .proposal-row-red {
@@ -110,6 +110,6 @@ td.attachments {
 
 .dark-mode .edited-input input,
 .dark-mode .edited-input.dropdown {
-  background-color: #333 !important;
+  background-color: var(--bg-footer-header) !important;
   color: var(--text-primary) !important;
 }

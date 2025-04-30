@@ -1,7 +1,7 @@
 @import './../base/variables.css';
 
 #header {
-    height: var(--header-height);
+    height: var(--header-footer-height);
     padding-top: 2em;
     padding-bottom: 1em;
     background-color: var(--gantt-today);
@@ -23,7 +23,7 @@
 
 /* Dark Mode Styles */
 .dark-mode #header {
-    background-color: #333; 
+    background-color: var(--bg-footer-header); 
 }
 
 .dark-mode #header .container,

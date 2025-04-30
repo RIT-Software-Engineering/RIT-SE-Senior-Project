@@ -367,7 +367,7 @@ export function Calendar(props) {
   };
 
   return (
-    <div className="calendar">
+    <div className="action-calendar">
       <div className="calendar-header">
         <button
           className={`nav-button ${prevHovered ? "hovered" : ""}`}

@@ -4,20 +4,20 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: var(--default-gap);
 }
 
 .announcement {
   width: 100%;
-  background-color: var(--bg-primary);
-  border-radius: 0.5em;
-  padding: 0.5em;
+  background-color: var(--bg-unfinished-action);
+  border-radius: var(--default-br);
+  padding: var(--default-padding);
   margin-bottom: 0.25em;
 }
 
 .announcement .announcement-header {
   display: flex;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.25em;
 }
 
 .announcement .announcement-header :first-child {
@@ -31,8 +31,8 @@
 
 .announcement-container-wrapper {
   background-color: var(--bg-primary);
-  padding: 10px;
-  border-radius: 5px;
+  padding: var(--default-br);
+  border-radius: var(--default-pading);
 }
 
 /* Dark mode styles for Announcement */
