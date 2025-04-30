@@ -199,6 +199,8 @@ function Header() {
   return (
     <div id="header">
       <div className="ui container">
+        
+          
         <h1
           className="ui header"
           style={{
@@ -207,20 +209,43 @@ function Header() {
             flexWrap: "wrap",
           }}
         >
-          <img
-            src={SELogo}
-            alt="Department of Software Engineering"
-            style={{
-              maxWidth: "150px",
-              height: "auto",
-              marginRight: "15px",
-              flexShrink: 0,
+            <img
+              src={SELogo}
+              alt="Department of Software Engineering"
+              style={{
+                maxWidth: "150px",
+                height: "auto",
+                marginRight: "15px",
+                flexShrink: 0,
+                cursor: "pointer"
+              }}
+              href={"/"}
+            onClick={() => {
+              history.push("/");
+              // Delete all cookies
+              let cookies = document.cookie.split(";");
+              cookies.forEach(
+                (cookie) => (document.cookie = cookie + ";max-age=0"),
+              );
+              window.location.reload();
             }}
-          />
-          <span style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}>
-            Senior Project
-          </span>
+            />
+            <span 
+            style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
+            href={"/"}
+            onClick={() => {
+              history.push("/");
+              // Delete all cookies
+              let cookies = document.cookie.split(";");
+              cookies.forEach(
+                (cookie) => (document.cookie = cookie + ";max-age=0"),
+              );
+              window.location.reload();
+            }}>
+              Senior Project
+            </span>
         </h1>
+      
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
