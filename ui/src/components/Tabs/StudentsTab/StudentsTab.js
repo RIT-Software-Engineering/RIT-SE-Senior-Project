@@ -382,7 +382,11 @@ export default function StudentsTab(props) {
             />
             <div className="accordion-buttons-container">
               <Dropdown
-                style={{ backgroundColor: "#f8f9fa" }}
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
                 text="Sort By"
                 direction="left"
                 floating
