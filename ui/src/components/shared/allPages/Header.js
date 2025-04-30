@@ -7,6 +7,7 @@ import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
+import ProfileModal from "./profileModal";
 
 function Header() {
   const history = useHistory();
@@ -42,35 +43,20 @@ function Header() {
   };
 
   useEffect(() => {
-    if (signedIn) {
-      fetch(`/api/user/getDarkMode?system_id=${user.system_id}`)
+    if (signedIn && user.system_id) {
+      SecureFetch(config.url.API_GET_DARK_MODE+`?system_id=${user.system_id}`)
         .then(res => res.json())
-        .then(data => setDarkMode(data.dark_mode === true))
+        .then(data => {
+          const darkPref = data.dark_mode === true;
+          setDarkMode(darkPref);
+          document.body.classList.toggle("dark-mode", darkPref);
+        })
         .catch(err => console.error("Failed to fetch dark mode:", err));
     }
   }, [signedIn, user.system_id]);
   
-  const toggleDarkMode = async () => {
-    try {
-      const res = await fetch("/api/user/toggleDarkMode", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ system_id: user.system_id }),
-      });
   
-      if (!res.ok) throw new Error("Toggle failed");
-  
-      const newDarkMode = !darkMode;
-      setDarkMode(newDarkMode);
-      if (newDarkMode) {
-        document.body.classList.add("dark-mode");
-      } else {
-        document.body.classList.remove("dark-mode");
-      }
-    } catch (err) {
-      console.error("Error toggling dark mode:", err);
-    }
-  };
+
 
   const renderNavButtons = () => {
     return (
@@ -236,28 +222,11 @@ function Header() {
           </span>
         </h1>
         {renderNavButtons()}
-        <Modal
-  open={profileModalOpen}
-  onClose={() => setProfileModalOpen(false)}
-  size="small"
-  header={`Hi, ${user.fname}!`}
-  content={
-    <div>
-      <p>Toggle Dark Mode:</p>
-      <Button toggle active={darkMode} onClick={toggleDarkMode}>
-        {darkMode ? "Dark Mode On" : "Dark Mode Off"}
-      </Button>
-    </div>
-  }
-  actions={[
-    {
-      key: "close",
-      content: "Close",
-      onClick: () => setProfileModalOpen(false),
-    },
-  ]}
-/>
-
+        <ProfileModal
+          open={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+          user={user}
+        />
       </div>
     </div>
   );

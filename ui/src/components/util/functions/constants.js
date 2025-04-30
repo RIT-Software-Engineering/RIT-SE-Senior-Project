@@ -82,6 +82,7 @@ export const config = {
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
     API_GET_PEER_EVALS: `${BASE_API_URL}/db/getPeerEvals`,
+    API_GET_DARK_MODE: `${BASE_API_URL}/db/getDarkMode`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,

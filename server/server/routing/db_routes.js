@@ -3969,10 +3969,6 @@ module.exports = (db) => {
   db_router.post("/setDarkMode", [UserAuth.isSignedIn], async (req, res, next) => {
     const { system_id, dark_mode } = req.body;
 
-    if (!system_id || typeof dark_mode !== "boolean") {
-        return res.status(400).send({ error: "system_id and dark_mode (true or false) are required" });
-    }
-
     const updateQuery = `
         UPDATE users
         SET profile_info = json_set(profile_info, '$.dark_mode', ?)
@@ -3980,7 +3976,7 @@ module.exports = (db) => {
     `;
 
     try {
-        await db.query(updateQuery, [dark_mode ? 1 : 0, system_id]); 
+        await db.query(updateQuery, [dark_mode, system_id]); 
         res.status(200).send({ message: "Dark mode preference updated successfully" });
     } catch (err) {
         const error = new Error("Database update failed");
@@ -3989,6 +3985,36 @@ module.exports = (db) => {
         next(error);
     }
 });
+
+  db_router.get("/getDarkMode", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id } = req.query;
+
+    const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.dark_mode') AS dark_mode
+      FROM users
+      WHERE system_id = ?
+    `;
+
+    try {
+      const result = await db.query(query, [system_id]);
+
+      if (result.length === 0) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        return next(error);
+      }
+
+      const darkModeRaw = result[0].dark_mode;
+      const dark_mode = Boolean(darkModeRaw);
+
+      res.status(200).send({ dark_mode });
+    } catch (err) {
+      const error = new Error("Database query failed");
+      error.statusCode = 500;
+      error.details = err.message;
+      next(error);
+    }
+  }); 
 
 
   db_router.get("/getPeerEvals", [UserAuth.isCoachOrAdmin], (req, res, next) => {
