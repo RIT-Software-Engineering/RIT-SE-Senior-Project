@@ -1,6 +1,11 @@
 INSERT INTO users (system_id, fname, lname, email, type, semester_group, project, active, additional_info) 
 VALUES
-    ('abc123', 'John', 'Smith', 'abc123@rit.edu', 'student', NULL, NULL,'',''),
+    ('abc123', 'John', 'Smith', 'abc123@rit.edu', 'student', 2, '2025-3-29_4TjBfOIsShLO7O_cdOotZ','',''),
+    ('bbc123', 'Jane', 'Doe', 'bbc123@rit.edu', 'student', 2, '2025-3-29_4TjBfOIsShLO7O_cdOotZ','',''),
+    ('cbc123', 'Bill', 'Bo', 'cbc123@rit.edu', 'student', 2, '2025-3-29_4TjBfOIsShLO7O_cdO1tZ','',''),
+    ('dbc123', 'Jim', 'Bo', 'dbc123@rit.edu', 'student', 1, '2025-3-29_4TjBfOIsShLO7O_cdO1tZ','',''),
+
+
     ('coach1', 'Current', 'Coach1', 'coachC@rit.edu', 'coach', NULL, NULL,'',''),
     ('mwahaha', 'SUPER DUPER', 'ADMIN', 'adminB@rit.edu', 'admin', NULL, NULL,'','')
     -- ('def123', 'Dude', 'Bro', 'def123@rit.edu', 'student', 3, '2021-5-14_da90mGtCgojqWElAItowB','',''),

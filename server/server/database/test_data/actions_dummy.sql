@@ -13,13 +13,51 @@ actions (
 
 VALUES
     (
-        1,
+        2,
         'Action 1',
         '',
         'This is the first test form for individuals',
         'individual',
         DATE(DATE('now'), '-2 MONTHS'),
         DATE(DATE('now'), '-1.5 MONTHS'),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+       </form>
+        ',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        2,
+        'Action 2',
+        '',
+        'This is the second test form for individuals',
+        'individual',
+        DATE(DATE('now'), '-1.5 MONTHS'),
+        DATE(DATE('now'), '-1 MONTHS'),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+       </form>
+        ',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        2,
+        'Action 3',
+        '',
+        'This is the third test form for individuals',
+        'individual',
+        DATE(DATE('now'), '-1 MONTHS'),
+        DATE(DATE('now'), '-0.5 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="name">Name</label>

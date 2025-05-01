@@ -5,7 +5,7 @@ INSERT INTO time_log(semester,
                      work_date,
                      time_amount,
                      work_comment)
-VALUES (1, 'abc123', '2025-3-29_4TjBfOIsShLO7O_cdOotZ', NULL, DATE(DATE('now')), 3, 'Coded Widget')
+VALUES (2, 'abc123', '2025-3-29_4TjBfOIsShLO7O_cdOotZ', NULL, DATE(DATE('now')), 3, 'Coded Widget')
     --    (8, 'tuv123', '2021-5-14_RUM5kpFxW_doOsiZpkdri', NULL, '2021-03-05', 2, 'Debugged Feature'),
     --    (8, 'abc123', '2021-5-14_da90mGtCgojqWElAItowB', NULL, '2021-03-07', 4, 'Designed Architecture'),
     --    (8, 'nop123', '2021-5-14_RUM5kpFxW_doOsiZpkdri', NULL, '2021-03-06', 1, 'Applied Code Standards'),

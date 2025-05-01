@@ -1,7 +1,7 @@
 INSERT INTO semester_group (name, dept, start_date, end_date)
 VALUES
-    ('Current Semester', 'SE', DATE(DATE('now'), '-2 MONTHS'), DATE(DATE('now'), '+3.5 MONTHS')),
-    ('Completed Semester', 'SE', DATE(DATE('now'), '-7.5 MONTHS'), DATE(DATE('now'), '-2 MONTHS'))
+    ('Completed Semester', 'SE', DATE(DATE('now'), '-7.5 MONTHS'), DATE(DATE('now'), '-2 MONTHS')),
+    ('Current Semester', 'SE', DATE(DATE('now'), '-2 MONTHS'), DATE(DATE('now'), '+3.5 MONTHS'))
     -- ('2018-19 Fall / Spring', 'SE', '2018-08-27', '2019-05-08'),
     -- ('2019-19 Spring / Summer', 'SE', '2019-01-13', '2019-08-07'),
     -- ('2019-20 Fall / Spring', 'SE', '2024-05-27', '2024-08-08'),

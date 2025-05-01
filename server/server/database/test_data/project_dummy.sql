@@ -69,24 +69,31 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
     -- ),
 
     (
-        '2025-3-29_4TjBfOIsShLO7O_cdOotz', 'submitted', 'submitted Project 1','org','contname','email','2222222222',NULL,
+        '2025-3-29_4TjBfOIsShLO6O_cdOotZ', 'submitted', 'Submitted Project 1','org','contname','email','2222222222',NULL,
         'background info','desc','scop', 'chal', 'cons', '', 
         NULL, 'deliverables', 'prop info', 'on', NULL, 'on', 'full_rights',
         NULL,NULL,NULL,NULL,NULL,NULL,NULL
     ),
 
     (
-        '2025-3-29_4TjBfOIsShLO7O_cdOotZ', 'in progress', 'Current Project 1','org','contname','email','2222222222',NULL,
+        '2025-3-29_5TjBfOIsShLO7O_cdOotZ', 'completed', 'Completed Project 1','org','contname','email','2222222222',NULL,
         'background info','desc','scop', 'chal', 'cons', '', 
         NULL, 'deliverables', 'prop info', 'on', NULL, 'on', 'full_rights',
         NULL,NULL,NULL,NULL,NULL,NULL,1
     ),
 
     (
+        '2025-3-29_4TjBfOIsShLO7O_cdOotZ', 'in progress', 'Current Project 1','org','contname','email','2222222222',NULL,
+        'background info','desc','scop', 'chal', 'cons', '', 
+        NULL, 'deliverables', 'prop info', 'on', NULL, 'on', 'full_rights',
+        NULL,NULL,NULL,NULL,NULL,NULL,2
+    ),
+
+    (
         '2025-3-29_4TjBfOIsShLO7O_cdO1tZ', 'in progress', 'Current Project 2','org','contname','email','2222222222',NULL,
         'background info','desc','scop', 'chal', 'cons', '', 
         NULL, 'deliverables', 'prop info', 'on', NULL, 'on', 'full_rights',
-        NULL,NULL,NULL,NULL,NULL,NULL,1
+        NULL,NULL,NULL,NULL,NULL,NULL,2
     )
 
 
