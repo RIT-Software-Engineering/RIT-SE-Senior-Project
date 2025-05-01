@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { SecureFetch } from "../functions/secureFetch";
+import { config } from "../functions/constants";
 import { USERTYPES } from "../functions/constants";
 import {
   Divider,
@@ -19,6 +21,22 @@ export default function EvalReview(props) {
   const userContext = useContext(UserContext);
   const userName = `${userContext.user.fname} ${userContext.user.lname}`;
   const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
+  const [canUseAI, setCanUseAI] = useState(false);
+
+  useEffect(() => {
+    SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.valid === true) {
+          setCanUseAI(true);
+        } else {
+          setCanUseAI(false);
+        }
+      })
+      .catch((err) => {
+        setCanUseAI(false);
+      });
+  }, []);
 
   useEffect(() => {
     let sortedFeedback = [];
@@ -120,7 +138,9 @@ export default function EvalReview(props) {
                   <Message color={"grey"}>
                     <Message.Header>
                       {"Coach Feedback"}{" "}
-                      <p>(AI Is available for coach to use)</p>{" "}
+                      {canUseAI && (
+                        <p>(AI Is available for coach to use)</p>
+                      )}{" "}
                     </Message.Header>
                     {data.UsedAI && (
                       <Popup
