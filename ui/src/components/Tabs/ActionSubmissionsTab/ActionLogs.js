@@ -47,6 +47,7 @@ export default function ActionLogs(props) {
   // const [projects, setProjectsData] = useState([]);
   const [myProjects, setMyProjectsData] = useState([]);
   const [activeSemesters, setActiveSemesters] = useState({});
+  const [actionsData, setActionsData] = useState([]);
 
   const unassignedStudentsStr = "Unassigned students";
 
@@ -63,6 +64,22 @@ export default function ActionLogs(props) {
       })
       .catch((error) => {
         alert("Failed to get action log data " + error);
+      });
+  };
+
+  const getActionData = () => {
+    SecureFetch(config.url.API_GET_ACTIONS)
+      .then((response) => response.json())
+      .then((actionsData) => {
+        setActionsData(actionsData);
+      })
+      .catch((error) => {
+        setActionsData([]); //unable to get actions, semester is null
+        alert(
+          "Failed to get actions data " +
+            error +
+            " \n No actions will be displayed",
+        );
       });
   };
 
@@ -140,6 +157,10 @@ export default function ActionLogs(props) {
   useEffect(() => {
     getPaginationData(0);
     // getTimeData(0);
+  }, []);
+
+  useEffect(() => {
+    getActionData();
   }, []);
 
   useEffect(() => {
@@ -236,7 +257,7 @@ export default function ActionLogs(props) {
     return hoursPerWeek;
   }
 
-  function generateMappedData(studentData, semesterData, projectData) {
+  function generateMappedData(studentData, semesterData, projectData, actionData) {
     let projectMap = {};
     projectData.forEach((project) => {
       projectMap[project.project_id] = project;
@@ -363,6 +384,8 @@ export default function ActionLogs(props) {
     );
 
     console.log("semester map ", semesterMap);
+    console.log("actions data ", actionsData);
+    console.log("actions log ", actionLogs);
 
     semesterPanels = [];
 
@@ -447,49 +470,83 @@ export default function ActionLogs(props) {
       semesterPanels.push(
         <div>
           {semesterMap.forEach((semester) => {
-              let projects = myProjects.filter((project) => project.semester === semester.semester_id);
-              if(semester.name !== unassignedStudentsStr && projects.length > 0) {
-                semesterPanels.push(
-                  <div className="accordion-button-group">
-                    <Accordion
-                      key={"SUBMISSION"}
-                      fluid
-                      styled
-                      onTitleClick={() => {
-                        setActiveSemesters({
-                          ...activeSemesters,
-                          [semester.semester_id]:
-                            !activeSemesters[semester.semester_id],
-                        });
-                      }}
-                      panels={[
-                        {
-                          key: "Semester",
-                          title: semester.name,
-                          active: activeSemesters[semester.semester_id],
-                          content: {
-                            content: 
-                              <>
-                                {projects.map((project, counter) => {
-                                    return (
-                                      <SubmissionsTable
-                                        semesterMap={semesterMap}
-                                        actionLogs={actionLogs}
-                                        prevLogin={prevLogin}
-                                        userContext={userContext}
-                                        project={project}
+            let projects = myProjects.filter((project) => project.semester === semester.semester_id);
+            let actions = actionsData.filter((action) => semester.semester_id === action.semester);
+            if(semester.name !== unassignedStudentsStr && projects.length > 0 && actions.length > 0) {
+              semesterPanels.push(
+                <div className="accordion-button-group">
+                  <Accordion
+                    key={"SEMESTER"}
+                    fluid
+                    styled
+                    onTitleClick={() => {
+                      setActiveSemesters({
+                        ...activeSemesters,
+                        [semester.semester_id]:
+                          !activeSemesters[semester.semester_id],
+                      });
+                    }}
+                    panels={[
+                      {
+                        key: "Semester",
+                        title: semester.name,
+                        active: activeSemesters[semester.semester_id],
+                        content: {
+                          content: 
+                            <>
+
+                              {actionsData.map((action, counter) => {
+                                let submissions = []
+                                actionLogs.map((log) => {
+                                  if(log.action_template === action.action_id && log.semester === semester.semester_id) {
+                                    submissions.push(log);
+                                  }
+                                })
+                                // console.log(submissions)
+                                if(action.semester === semester.semester_id && submissions.length > 0) {
+                                  return (
+                                    <div className="accordion-button-group">
+                                      <Accordion
+                                        key={"ACTION"}
+                                        fluid
+                                        styled
+                                        panels={[
+                                          {
+                                            key: "Action",
+                                            title: action.action_title,
+                                            content: {
+                                              content: 
+                                                <SubmissionsTable
+                                                  semesterMap={semesterMap}
+                                                  actionLogs={actionLogs}
+                                                  prevLogin={prevLogin}
+                                                  userContext={userContext}
+                                                  projects={projects}
+                                                  action={action}
+                                                  submissions={submissions}
+                                                />
+                                            }
+                                          }
+                                        ]}
                                       />
-                                    );
-                                  })}
-                              </>
-                          },
+                                    </div>
+                                  );
+                                }
+                                // else {
+                                //   return (
+                                //     <h3>No Submissions</h3>
+                                //   )
+                                // }
+                                })}
+                            </>
                         },
-                      ]}
-                    />
-                  </div>,
-                );
-              }
-            })}
+                      },
+                    ]}
+                  />
+                </div>,
+              );
+            }
+          })}
         </div>,
       );
     }

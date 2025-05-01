@@ -2478,7 +2478,7 @@ module.exports = (db) => {
     });
   });
 
-  db_router.get("/getActions", [UserAuth.isAdmin], (req, res, next) => {
+  db_router.get("/getActions", [UserAuth.isCoachOrAdmin], (req, res, next) => {
     let getActionsQuery = `
             SELECT *
             FROM actions

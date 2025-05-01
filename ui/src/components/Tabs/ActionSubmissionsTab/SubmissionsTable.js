@@ -37,7 +37,6 @@ export default function SubmissionsTable(props) {
   const [due, setDue] = useState();
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
-  const [actions, setActions] = useState([]);
   // const [actionCount, setActionCount] = useState(ACTIONS_PER_PAGE);
 
   // const getPaginationData = (page) => {
@@ -56,24 +55,28 @@ export default function SubmissionsTable(props) {
   //     });
   // };
 
-  const getActions = (project_id) => {
-    SecureFetch(
-      `${config.url.API_GET_TIMELINE_ACTIONS}?project_id=${project_id}`,
+  function loadSubmission(log_id) {
+    return (
+      SecureFetch(
+        `${config.url.API_GET_SUBMISSION}?log_id=${log_id}`,
+      )
+        .then((response) => response.json())
+        .then((submission) => {
+          if (submission.length > 0) {
+            const formData = JSON.parse(submission[0].form_data.toString());
+            const fileData = submission[0].files?.split(",");
+            // setSubmission(formData);
+            // setFiles(fileData);
+            // setNoSubmission(formData.length === 0 && files.length === 0);
+            // console.log([formData, fileData, (formData.length === 0 && fileData.length === 0)])
+            return [formData, fileData, (formData.length === 0 && fileData.length === 0)]
+          }
+        })
+        .catch((error) => {
+          alert("Failed to get action log data " + error);
+        })
     )
-      .then((response) => response.json())
-      .then((actions) => {
-        setActions(_.sortBy(actions || [], [
-            "due_date",
-            "start_date",
-            "action_title",
-          ]));
-      })
-      .catch((error) => console.error(error));
   };
-
-  useEffect(() => {
-    getActions(props.project?.project_id);
-  }, [props.project?.project_id]);
 
   const noSubmissionText = (target) => {
     switch (target) {
@@ -159,13 +162,11 @@ export default function SubmissionsTable(props) {
     return color;
   }
 
-  // console.log(props.actionLogs);
-
+  console.log(props.submissions);
 
   return (
     <>
-      <h3>Action Submissions for {props.project.title}</h3>
-      <Table>
+      {/* <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Action</TableHeaderCell>
@@ -176,10 +177,8 @@ export default function SubmissionsTable(props) {
         </TableHeader>
 
         <TableBody>
-            {/* {console.log(getActions((x) => x.action_template, props.actionLogs))} */}
-            {/* {getActions((x) => x.action_template, props.actionLogs)?.map((action, idx) => { */}
             
-            {actions.map((action, idx) => {
+            {props.actions.map((action, idx) => {
               // console.log(action)
               if(props.project.semester === action.semester) {
                 let submittedBy = `${action.name} (${action.system_id})`;
@@ -209,7 +208,7 @@ export default function SubmissionsTable(props) {
               }
             })}  
         </TableBody>
-      </Table>
+      </Table> */}
 
       {/* <div className="pagination-container">
         <Pagination
@@ -225,6 +224,84 @@ export default function SubmissionsTable(props) {
           }}
         />
       </div> */}
+      <Table celled>
+        <TableHeader>
+          <TableRow>
+          <TableHeaderCell>Semester/Project</TableHeaderCell>
+          <TableHeaderCell>Submitted By</TableHeaderCell>
+          <TableHeaderCell>Submission Time</TableHeaderCell>
+          <TableHeaderCell>Submission Name</TableHeaderCell>
+          <TableHeaderCell>Submission Email</TableHeaderCell>
+          <TableHeaderCell>File</TableHeaderCell>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          
+          {/* {console.log(submissions)} */}
+          
+            {props.submissions.map((log, idx) => {
+              // console.log(log)
+              // let submission = loadSubmission(log.action_log_id)
+              // let submissionName = submission.then(arr => {
+              //                         return arr[0].name
+              //                       })
+              // console.log(submissionName)
+              let submittedBy = `${log.name} (${log.system_id})`;
+              if (log.mock_id) {
+                submittedBy = `${log.mock_name} (${log.mock_id}) as ${log.name} (${log.system_id})`;
+              }
+              return(
+                <TableRow key={idx}>
+                  <TableCell>{log.title}</TableCell>
+                  <TableCell>{submittedBy}</TableCell>
+                  <TableCell>{formatDateTime(log.submission_datetime)}</TableCell>
+                  <TableCell>
+                    {/* {submissionName.then(name => {
+                      console.log(name)
+                      return name
+                    })} */}
+                    name
+                  </TableCell>
+                  <TableCell>email</TableCell>
+                  <TableCell>
+                    
+                    {/* {!submission[2] && ( */}
+                      {/* <>
+                        {Object.keys(submission[0])?.map((key) => {
+                          if ((submission[0])[key].includes("fakepath")) {
+                            return false;
+                          }
+                          return (
+                            <div key={key}>
+                              <p>
+                                <b>{key}:</b> {(submission[0])[key]}
+                              </p>
+                            </div>
+                          );
+                        })}
+                        {submission[1]?.map((file) => {
+                          return (
+                            <div key={file}>
+                              <a
+                                href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${log.action_log_id}&project=${log.project}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {file.replace(/^[^/]*\/(.*)$/, "$1")}
+                              </a>
+                              <br />
+                            </div>
+                          );
+                        })}
+                      </> */}
+                    {/* )} */}
+                  </TableCell>
+                </TableRow>
+              )
+          })}
+        </TableBody>
+      </Table>
     </>
   );
 }
