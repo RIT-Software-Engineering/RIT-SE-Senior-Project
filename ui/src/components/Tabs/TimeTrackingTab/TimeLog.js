@@ -77,9 +77,9 @@ export default function TimeLog(props) {
                 setWeeks(
                   eachWeekOfInterval({
                     start: new Date(
-                      props.semesterData[x.semester_id].start_date,
+                      props.semesterData[x.semester_id-1].start_date,
                     ),
-                    end: new Date(props.semesterData[x.semester_id].end_date),
+                    end: new Date(props.semesterData[x.semester_id-1].end_date),
                   }),
                 ),
               );

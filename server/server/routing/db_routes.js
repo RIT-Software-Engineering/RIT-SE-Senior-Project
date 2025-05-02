@@ -2606,6 +2606,7 @@ module.exports = (db) => {
     }
     db.query(getActionLogQuery, params)
       .then((values) => {
+        console.log(values);
         res.send(values);
       })
       .catch((err) => {

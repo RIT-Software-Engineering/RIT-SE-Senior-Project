@@ -14,9 +14,9 @@ actions (
 VALUES
     (
         2,
-        'Action 1',
+        'Inidividual information',
         '',
-        'This is the first test form for individuals',
+        'All students should submit their names and contact info',
         'individual',
         DATE(DATE('now'), '-2 MONTHS'),
         DATE(DATE('now'), '-1.5 MONTHS'),
@@ -29,14 +29,14 @@ VALUES
             <input name="email" type="text"/>
        </form>
         ',
-        '.png,.pdf,.jpg'
+        ''
     ),
     (
         2,
         'Action 2',
         '',
         'This is the second test form for individuals',
-        'individual',
+        'team',
         DATE(DATE('now'), '-1.5 MONTHS'),
         DATE(DATE('now'), '-1 MONTHS'),
         '<h1>Take the individual test form</h1>
@@ -55,9 +55,47 @@ VALUES
         'Action 3',
         '',
         'This is the third test form for individuals',
-        'individual',
+        'team',
         DATE(DATE('now'), '-1 MONTHS'),
         DATE(DATE('now'), '-0.5 MONTHS'),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+       </form>
+        ',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        2,
+        'Action 4',
+        '',
+        'This is the forth test form for individuals',
+        'team',
+        DATE(DATE('now')),
+        DATE(DATE('now'), '+0.5 MONTHS'),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+       </form>
+        ',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        2,
+        'Action 5',
+        '',
+        'This is the fifth test form for individuals',
+        'team',
+        DATE(DATE('now'), '+0.5 MONTHS'),
+        DATE(DATE('now'), '+1 MONTHS'),
         '<h1>Take the individual test form</h1>
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <label for="name">Name</label>
