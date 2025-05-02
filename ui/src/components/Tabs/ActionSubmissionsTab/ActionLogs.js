@@ -526,9 +526,8 @@ export default function ActionLogs(props) {
                                                   projects={projects}
                                                   target={action?.action_target}
                                                   submissions={submissions}
+                                                  isOpenCallback={() => {}}
                                                 />
-
-
                                             }
                                           }
                                         ]}
