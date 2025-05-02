@@ -22,6 +22,7 @@ import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { ACTION_TARGETS, ACTION_STATES, config } from "../../util/functions/constants";
 import SubmissionsModal from "./SubmissionsModal";
+import SubmissionFileData from "./SubmissionFileData";
 import _ from "lodash";
 
 const { isSameWeek, addDays } = require("date-fns");
@@ -55,28 +56,7 @@ export default function SubmissionsTable(props) {
   //     });
   // };
 
-  function loadSubmission(log_id) {
-    return (
-      SecureFetch(
-        `${config.url.API_GET_SUBMISSION}?log_id=${log_id}`,
-      )
-        .then((response) => response.json())
-        .then((submission) => {
-          if (submission.length > 0) {
-            const formData = JSON.parse(submission[0].form_data.toString());
-            const fileData = submission[0].files?.split(",");
-            // setSubmission(formData);
-            // setFiles(fileData);
-            // setNoSubmission(formData.length === 0 && files.length === 0);
-            // console.log([formData, fileData, (formData.length === 0 && fileData.length === 0)])
-            return [formData, fileData, (formData.length === 0 && fileData.length === 0)]
-          }
-        })
-        .catch((error) => {
-          alert("Failed to get action log data " + error);
-        })
-    )
-  };
+  
 
   const noSubmissionText = (target) => {
     switch (target) {
@@ -227,19 +207,17 @@ export default function SubmissionsTable(props) {
       <Table celled>
         <TableHeader>
           <TableRow>
-          <TableHeaderCell>Semester/Project</TableHeaderCell>
+          <TableHeaderCell>Project</TableHeaderCell>
+          <TableHeaderCell>Action Type</TableHeaderCell>
           <TableHeaderCell>Submitted By</TableHeaderCell>
           <TableHeaderCell>Submission Time</TableHeaderCell>
-          <TableHeaderCell>Submission Name</TableHeaderCell>
-          <TableHeaderCell>Submission Email</TableHeaderCell>
-          <TableHeaderCell>File</TableHeaderCell>
+          <TableHeaderCell>Submission Data</TableHeaderCell>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           
           {/* {console.log(submissions)} */}
-          
             {props.submissions.map((log, idx) => {
               // console.log(log)
               // let submission = loadSubmission(log.action_log_id)
@@ -254,17 +232,17 @@ export default function SubmissionsTable(props) {
               return(
                 <TableRow key={idx}>
                   <TableCell>{log.title}</TableCell>
+                  <TableCell>{log.action_target}</TableCell>
                   <TableCell>{submittedBy}</TableCell>
                   <TableCell>{formatDateTime(log.submission_datetime)}</TableCell>
                   <TableCell>
-                    {/* {submissionName.then(name => {
-                      console.log(name)
-                      return name
-                    })} */}
-                    name
-                  </TableCell>
-                  <TableCell>email</TableCell>
-                  <TableCell>
+                    <>
+                      <SubmissionFileData
+                        log={log}
+                        target={props.target}
+                        isOpenCallback={props.isOpenCallback}
+                      />
+                    </>
                     
                     {/* {!submission[2] && ( */}
                       {/* <>

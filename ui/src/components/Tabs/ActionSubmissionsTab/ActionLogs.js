@@ -68,7 +68,8 @@ export default function ActionLogs(props) {
   };
 
   const getActionData = () => {
-    SecureFetch(config.url.API_GET_ACTIONS)
+    if(userContext.user?.role !== USERTYPES.STUDENT) {
+      SecureFetch(config.url.API_GET_ACTIONS)
       .then((response) => response.json())
       .then((actionsData) => {
         setActionsData(actionsData);
@@ -81,6 +82,7 @@ export default function ActionLogs(props) {
             " \n No actions will be displayed",
         );
       });
+    }
   };
 
   const getTimeData = (page) => {
@@ -522,9 +524,11 @@ export default function ActionLogs(props) {
                                                   prevLogin={prevLogin}
                                                   userContext={userContext}
                                                   projects={projects}
-                                                  action={action}
+                                                  target={action?.action_target}
                                                   submissions={submissions}
                                                 />
+
+
                                             }
                                           }
                                         ]}
@@ -532,12 +536,7 @@ export default function ActionLogs(props) {
                                     </div>
                                   );
                                 }
-                                // else {
-                                //   return (
-                                //     <h3>No Submissions</h3>
-                                //   )
-                                // }
-                                })}
+                              })}
                             </>
                         },
                       },
