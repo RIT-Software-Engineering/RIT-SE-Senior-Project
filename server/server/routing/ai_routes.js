@@ -1,10 +1,8 @@
 const UserAuth = require("./user_auth");
 const router = require("express").Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const Logger = require("../logger");
 
 let key = process.env.GOOGLE_API_KEY;
-Logger.log("AI key is ready : " + key);
 
 // Windows for some reason adds a double quote around Environment Variables
 if (key?.startsWith('"')) {
@@ -225,7 +223,7 @@ module.exports = () => {
         })
         .catch((err) => {
           if (err.status === 400 && err.message.includes("Invalid Key")) {
-            // Invalid API key, etc
+            // Invalid API key
             return res
               .type("text/plain")
               .status(200)
