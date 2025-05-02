@@ -38,7 +38,7 @@ const ProfileModal = ({ open, onClose, user }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system_id: user.system_id,
+          system_id: user.user,
           dark_mode: newDarkMode,
         }),
       });
@@ -60,7 +60,7 @@ const ProfileModal = ({ open, onClose, user }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system_id: user.system_id,
+          system_id: user.user,
           dark_mode: newGanttView,
         }),
       });
