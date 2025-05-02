@@ -8,7 +8,6 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 import ProfileModal from "./profileModal";
-import { applyDarkModeClass } from "../../util/functions/utils";
 
 function Header() {
   const history = useHistory();

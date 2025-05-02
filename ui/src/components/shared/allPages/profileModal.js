@@ -2,32 +2,33 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
+import { UserContext } from "../../util/functions/UserContext";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [ganttView, setGanttView] = useState(true);
+  
 
   useEffect(() => {
-    if (user?.system_id) {
-      SecureFetch(config.url.API_GET_DARK_MODE+`?system_id=${user.system_id}`)
+    if (open && user?.user) {
+      SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
-          const isDark = data.dark_mode === true;
+          const isDark = ['1', 1, true, 'true'].includes(data.dark_mode);
           setDarkMode(isDark);
-          document.body.classList.toggle("dark-mode", isDark);
         })
         .catch((err) => console.error("Failed to fetch dark mode:", err));
-
-        SecureFetch(config.url.API_GET_GANTT_VIEW+`?system_id=${user.system_id}`)
+  
+      SecureFetch(config.url.API_GET_GANTT_VIEW + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
-          const gantt = data.gantt === true;
+          const gantt = ['1', 1, true, 'true'].includes(data.gantt);
           setGanttView(gantt);
-          sessionStorage.setItem("ganttView", gantt);
         })
         .catch((err) => console.error("Failed to fetch gantt view:", err));
     }
-  }, [user]);
+  }, [open, user]);
+  
 
   const toggleDarkMode = async () => {
     const newDarkMode = !darkMode;
