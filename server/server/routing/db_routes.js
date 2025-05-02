@@ -4059,10 +4059,57 @@ module.exports = (db) => {
         return next(error);
       });
   });
-  
-  
-  
 
+
+  db_router.post("/setGanttView", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id, gantt_view } = req.body;
+
+    const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(profile_info, '$.gantt_view', ?)
+        WHERE system_id = ?
+    `;
+
+    try {
+        await db.query(updateQuery, [gantt_view, system_id]); 
+        res.status(200).send({ message: "Dark mode preference updated successfully" });
+    } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+    }
+});
+
+  db_router.get("/getGanttView", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id } = req.query;
+
+    const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.gantt_view') AS gantt_view
+      FROM users
+      WHERE system_id = ?
+    `;
+
+    try {
+      const result = await db.query(query, [system_id]);
+
+      if (result.length === 0) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        return next(error);
+      }
+
+      const ganttViewRaw = result[0].gantt_view;
+      const gantt_view = Boolean(ganttViewRaw);
+
+      res.status(200).send({ gantt_view });
+    } catch (err) {
+      const error = new Error("Database query failed");
+      error.statusCode = 500;
+      error.details = err.message;
+      next(error);
+    }
+  }); 
 
 
   return db_router;

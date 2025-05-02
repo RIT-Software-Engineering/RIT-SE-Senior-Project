@@ -83,6 +83,7 @@ export const config = {
     API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
     API_GET_PEER_EVALS: `${BASE_API_URL}/db/getPeerEvals`,
     API_GET_DARK_MODE: `${BASE_API_URL}/db/getDarkMode`,
+    API_GET_GANTT_VIEW: `${BASE_API_URL}/db/getGanttView`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
@@ -113,6 +114,7 @@ export const config = {
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
     API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
     API_POST_SET_DARK_MODE: `${BASE_API_URL}/db/setDarkMode`,
+    API_POST_SET_GANTT_VIEW: `${BASE_API_URL}/db/setGanttView`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

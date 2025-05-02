@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import ActionElements from "./ActionElements";
 import UpcomingActions from "./UpcomingActions";
 import GanttChart from "./GanttChart";
@@ -30,7 +30,7 @@ export default function Timeline(props) {
         ? false
         : true,
   );
-  const [actionView, setActionView] = useState("Gantt");
+  let actionView = useRef(sessionStorage.getItem("ganttView"));
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -44,6 +44,8 @@ export default function Timeline(props) {
   };
 
   useEffect(() => {
+    // get gantt chart or calendar view of actions
+    actionView.current = sessionStorage.getItem("ganttView");
     loadTimelineActions(props.elementData?.project_id);
   }, [props.elementData?.project_id]);
 
@@ -106,24 +108,10 @@ export default function Timeline(props) {
         style={{ display: ganttVisible ? "block" : "none" }}
       >
         <label htmlFor="time-line-view">
-          <h3>Time Line Style </h3>
+          <h3>{actionView.current === "true" ? "Gantt Chart" : "Calendar"}</h3>
         </label>
-        <select
-          name="time-line-view"
-          defaultValue={"gantt"}
-          onChange={(e) => {
-            if (e.target.value === "gantt") {
-              setActionView("Gantt");
-            } else {
-              setActionView("Calendar");
-            }
-          }}
-        >
-          <option value="gantt">Gantt</option>
-          <option value="calendar">Calendar</option>
-        </select>
         <div className="timeline-action-block">
-          {actionView === "Calendar" ? (
+          {actionView.current === "false" ? (
             <Calendar
               projectName={
                 props.elementData.display_name || props.elementData.title
