@@ -1,10 +1,10 @@
 const UserAuth = require("./user_auth");
 const router = require("express").Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-//const Logger = require("../logger");
+const Logger = require("../logger");
 
 let key = process.env.GOOGLE_API_KEY;
-// Logger.log("AI key is ready : "+ key);
+Logger.log("AI key is ready : " + key);
 
 // Windows for some reason adds a double quote around Environment Variables
 if (key?.startsWith('"')) {
@@ -146,6 +146,11 @@ async function generateResponse(prompt, context) {
     return result.response.text();
   } catch (error) {
     console.error("Error generating content:", error);
+    if (error.status === 400 && error.message.includes("API key not valid")) {
+      const invalidKey = new Error("Invalid Key");
+      invalidKey.status = 400;
+      throw invalidKey;
+    }
     throw new Error("Failed to generate response.");
   }
 }
@@ -219,12 +224,20 @@ module.exports = () => {
           res.status(200).send(response);
         })
         .catch((err) => {
-          console.error("Error generating response:", err);
-          const error = new Error(err);
-          error.statusCode = 500;
-          error.message =
-            "Error generating summary with gemini-1.5-flash-latest";
-          return next(error);
+          if (err.status === 400 && err.message.includes("Invalid Key")) {
+            // Invalid API key, etc
+            return res
+              .type("text/plain")
+              .status(200)
+              .send("API key is not valid. Please let Admin know");
+          } else {
+            console.error("Error generating response:", err);
+            const error = new Error(err);
+            error.statusCode = 500;
+            error.message =
+              "Error generating summary with gemini-1.5-flash-latest";
+            return next(error);
+          }
         });
     },
   );
