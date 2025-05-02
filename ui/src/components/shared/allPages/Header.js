@@ -8,6 +8,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 import ProfileModal from "./profileModal";
+import { applyDarkModeClass } from "../../util/functions/utils";
 
 function Header() {
   const history = useHistory();
@@ -41,20 +42,6 @@ function Header() {
       window.location.href = config.url.API_LOGIN;
     }
   };
-
-  useEffect(() => {
-    if (signedIn && user.system_id) {
-      SecureFetch(config.url.API_GET_DARK_MODE+`?system_id=${user.system_id}`)
-        .then(res => res.json())
-        .then(data => {
-          const darkPref = data.dark_mode === true;
-          setDarkMode(darkPref);
-          document.body.classList.toggle("dark-mode", darkPref);
-        })
-        .catch(err => console.error("Failed to fetch dark mode:", err));
-    }
-  }, [signedIn, user.system_id]);
-  
   
 
 
