@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
-import { UserContext } from "../../util/functions/UserContext";
+import { useSessionStorage } from "../../util/functions/utils";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
-  const [ganttView, setGanttView] = useState(true);
+  const [preference, setPreference] = useSessionStorage('displayPreference', 'gantt');
+
   
 
   useEffect(() => {
@@ -22,8 +23,9 @@ const ProfileModal = ({ open, onClose, user }) => {
       SecureFetch(config.url.API_GET_GANTT_VIEW + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
-          const gantt = ['1', 1, true, 'true'].includes(data.gantt);
-          setGanttView(gantt);
+          const gantt = ['1', 1, true, 'true'].includes(data.gantt_view);
+          setPreference(gantt);
+          sessionStorage.setItem("ganttView", gantt);
         })
         .catch((err) => console.error("Failed to fetch gantt view:", err));
     }
@@ -53,7 +55,7 @@ const ProfileModal = ({ open, onClose, user }) => {
   };
 
   const toggleGanttView = async () => {
-    const newGanttView = !ganttView;
+    const newPreference = !preference;
   
     try {
       const res = await SecureFetch(config.url.API_POST_SET_GANTT_VIEW, {
@@ -61,14 +63,14 @@ const ProfileModal = ({ open, onClose, user }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           system_id: user.user,
-          dark_mode: newGanttView,
+          gantt_view: newPreference,
         }),
       });
   
       if (!res.ok) throw new Error("Failed to update gantt view preference");
   
-      setGanttView(newGanttView);
-      sessionStorage.setItem("ganttView", newGanttView);
+      setPreference(newPreference);
+      sessionStorage.setItem("ganttView", newPreference);
     } catch (err) {
       console.error("Error updating gantt view:", err);
     }
@@ -91,8 +93,8 @@ const ProfileModal = ({ open, onClose, user }) => {
           </div>
           <div>
             <p>Gantt or Calendar View:</p>
-            <Button toggle active={ganttView} onClick={toggleGanttView}>
-              {ganttView ? "Viewing Gantt" : "Viewing Calendar"}
+            <Button toggle active={preference} onClick={toggleGanttView}>
+              {preference ? "Viewing Calendar" : "Viewing Gantt"}
             </Button>
           </div>
         </>

@@ -9,6 +9,7 @@ import TimelineCheckboxes from "./TimelineCheckboxes";
 import { Dropdown } from "semantic-ui-react";
 import { Calendar } from "../../../../util/components/Calendar";
 import { element } from "prop-types";
+import { useSessionStorage } from "../../../../util/functions/utils";
 
 export default function Timeline(props) {
   const [actions, setActions] = useState([]);
@@ -30,7 +31,9 @@ export default function Timeline(props) {
         ? false
         : true,
   );
-  let actionView = useRef(sessionStorage.getItem("ganttView"));
+  const [displayPreference] = useSessionStorage('displayPreference', 'gantt');
+
+  console.log(displayPreference);
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -44,10 +47,9 @@ export default function Timeline(props) {
   };
 
   useEffect(() => {
-    // get gantt chart or calendar view of actions
-    actionView.current = sessionStorage.getItem("ganttView");
     loadTimelineActions(props.elementData?.project_id);
   }, [props.elementData?.project_id]);
+
 
   return (
     <div>
@@ -108,10 +110,10 @@ export default function Timeline(props) {
         style={{ display: ganttVisible ? "block" : "none" }}
       >
         <label htmlFor="time-line-view">
-          <h3>{actionView.current === "true" ? "Gantt Chart" : "Calendar"}</h3>
+          <h3>{displayPreference ? "Calendar" : "Gantt Chart"}</h3>
         </label>
         <div className="timeline-action-block">
-          {actionView.current === "false" ? (
+          {displayPreference ? (
             <Calendar
               projectName={
                 props.elementData.display_name || props.elementData.title

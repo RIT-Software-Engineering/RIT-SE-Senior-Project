@@ -4072,6 +4072,7 @@ module.exports = (db) => {
 
     try {
         await db.query(updateQuery, [gantt_view, system_id]); 
+        console.log("Dark mode preference updated successfully", gantt_view, system_id);
         res.status(200).send({ message: "Dark mode preference updated successfully" });
     } catch (err) {
         const error = new Error("Database update failed");
