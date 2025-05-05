@@ -92,12 +92,13 @@ export default function UserEditor(props) {
       />
       <div className="accordion-buttons-container">
         <UserPanel
-          userData={{}}
+          studentData={students}
+          userData={users}
           semesterData={semesters}
           header={`Create user`}
           callback={getSemesters}
         />
-        <BatchUserPanel callback={getSemesters} />
+        <BatchUserPanel callback={getSemesters}/>
       </div>
     </div>
   );
