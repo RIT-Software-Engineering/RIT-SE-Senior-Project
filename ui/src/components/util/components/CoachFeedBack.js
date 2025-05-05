@@ -40,6 +40,7 @@ export default function CoachFeedback(props) {
   );
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
+  const [canUseAI, setCanUseAI] = useState(false);
 
   const expandFeedback = (category) => {
     setExpandedFeedback({
@@ -110,6 +111,21 @@ export default function CoachFeedback(props) {
       [s]: false,
     }));
   };
+
+  useEffect(() => {
+    SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.valid === true) {
+          setCanUseAI(true);
+        } else {
+          setCanUseAI(false);
+        }
+      })
+      .catch((err) => {
+        setCanUseAI(false);
+      });
+  }, []);
 
   const getSummarization = (id, context, prompt) => {
     const body = new FormData();
@@ -451,6 +467,7 @@ export default function CoachFeedback(props) {
             onChange={(e) => updateCoachSummaryText(student, e.target.value)}
           />
           <br /> <br />
+          {canUseAI && (
           <Dimmer.Dimmable dimmed={loadingStates[student]}>
             <Dimmer active={loadingStates[student]} inverted>
               <Loader
@@ -562,7 +579,7 @@ export default function CoachFeedback(props) {
                 </div>
               )}
             </div>
-          </Dimmer.Dimmable>
+          </Dimmer.Dimmable>)}
         </FormField>
       </div>
     );
