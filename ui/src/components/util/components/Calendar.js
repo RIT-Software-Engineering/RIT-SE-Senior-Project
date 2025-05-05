@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
-import _ from "lodash";
-import { max } from "moment";
+import { useState, useEffect } from "react"
+import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
+import _ from "lodash"
+import "../../../css/calendar.css"
 import { Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
@@ -77,14 +77,6 @@ export function Calendar(props) {
       "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
       "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember()),
     };
-
-    console.log(
-      "variableHolidays",
-      variableHolidays,
-      "\n",
-      This_Years_Holidays,
-    );
-
     Object.entries(variableHolidays).forEach(([name, date]) => {
       const key = date.toISOString().slice(5, 10);
       This_Years_Holidays[key] = name;
@@ -212,6 +204,17 @@ export function Calendar(props) {
     );
   };
 
+  // Check if an action ends on a specific day
+  const actionEndsOnDay = (action, day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    const actionEnd = new Date(action.due_date)
+    return (
+      date.getDate() === actionEnd.getDate() &&
+      date.getMonth() === actionEnd.getMonth() &&
+      date.getFullYear() === actionEnd.getFullYear()
+    )
+  }
+
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
@@ -224,27 +227,33 @@ export function Calendar(props) {
 
   // Creates and styles the actions for that particular day
   const generateActionsForDay = (actionsForDay, day) => {
+    console.log(day, actionsForDay)
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index);
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
       const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`;
 
-      // Add z-index to ensure proper stacking of overlapping actions
       const actionStyle = {
         top: `${position.top}px`,
-        backgroundColor: action.color,
-        borderLeft: position.isStart ? "none" : "4px solid transparent",
-        left: position.isStart ? "0" : "-4px",
-        zIndex: 10 + index, // Add z-index based on index
-      };
+        backgroundColor: "inherit",
+        border: `2px solid ${action.color}`,
+        left: "0",
+      }
+
+      // checks conditions for action arrows which signify the duration of the action
+      // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
+      // there is a little formating magic taking place, full space characters(　) are added to the string to make them all the same width
+      let actionTitleWithArrows = action.action_title;
+      if (actionStartsOnDay(action, day) && !actionEndsOnDay(action, day)) {
+        actionTitleWithArrows = `　${actionTitleWithArrows} ►`;
+      } else if (actionEndsOnDay(action, day) && !actionStartsOnDay(action, day)) {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows}　`;
+      }  else {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
+      }
 
       // for strikethrough (completed actions)
-      const actionContent =
-        action.state === "green" ? (
-          <s>{action.action_title}</s>
-        ) : (
-          action.action_title
-        );
+      const actionContent = action.state === "green" ? <s>{actionTitleWithArrows}</s> : actionTitleWithArrows;
 
       const trigger = (
         <div
@@ -323,41 +332,42 @@ export function Calendar(props) {
             {day}
           </div>
           <div className="action-container">
-            {/* if there are more than actions than can be shown create a button that displays a popup with all the actions */}
-            {/* TODO add option to view action from pop-up right now it doesnt work*/}
-            {actionsForDay.length > maxVisibleActions ? (
-              <Popup
-                on="click"
-                flowing={true}
-                exclusive={false}
-                keepInViewPort={true}
-                closeOnDocumentClick={false}
-                className="calendar-day"
-                style={{ width: "150px", overflow: "auto", zIndex: 10 }}
-                content={generateActionsForDay(actionsForDay, day)}
-                basic={true}
-                trigger={
-                  <div
-                    key={`action-${1}-${day}`}
-                    className="calendar-action"
-                    style={{
-                      top: `0`,
-                      backgroundColor: "grey",
-                      borderLeft: "none",
-                      left: "0",
-                      zIndex: 10,
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent day click
-                    }}
-                  >
-                    {`${actionsForDay.length} actions`}
-                  </div>
-                }
-              />
-            ) : (
-              generateActionsForDay(actionsForDay, day)
-            )}
+              {actionsForDay.length > maxVisibleActions ? (
+                <Popup
+                  on='click'
+                  flowing={true}
+                  exclusive={false}
+                  keepInViewPort={true}
+                  closeOnDocumentClick={false}
+                  className="calendar-day"
+                  style={{width: '150px', overflow: 'auto', zIndex: 10}}
+                  content={
+                    generateActionsForDay(actionsForDay, day)
+                  }
+                  basic={true}
+                  trigger={
+                    <div
+                      key={`action-${1}-${day}`}
+                      className="calendar-action"
+                      style={{
+                        top: `0`,
+                        backgroundColor: "grey",
+                        borderLeft: "none",
+                        left: "0",
+                        zIndex: 10,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation() // Prevent day click
+                      }}
+                    >
+                      {`${actionsForDay.length} actions`}
+                    </div>
+                  }
+                />
+                
+              ) : (
+                generateActionsForDay(actionsForDay, day)
+              )}
           </div>
         </div>,
       );

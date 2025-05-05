@@ -3834,6 +3834,7 @@ module.exports = (db) => {
       if (result.errors.length !== 0) {
         const error = new Error(result.errors);
         error.statusCode = 400;
+        error.message = `Error Creating Semester: ${result.errors}`;
         return next(error);
       }
 
