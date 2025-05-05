@@ -10,15 +10,6 @@ import {
   MessageList,
   Icon,
 } from "semantic-ui-react";
-import {
-  Dropdown,
-  Label,
-  Modal,
-  Message,
-  MessageHeader,
-  MessageList,
-  Icon,
-} from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
