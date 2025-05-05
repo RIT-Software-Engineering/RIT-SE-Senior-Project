@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
 import _ from "lodash"
-import "../../../css/calendar.css"
 import { Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
+import "../../../css/components/calendar.css"
 
 const SPECIAL_DATES = {
   "01-01": "New Year's Day",
