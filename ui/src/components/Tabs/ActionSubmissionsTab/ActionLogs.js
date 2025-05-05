@@ -515,7 +515,7 @@ export default function ActionLogs(props) {
                                         panels={[
                                           {
                                             key: "Action",
-                                            title: action.action_title,
+                                            title: `${action.action_title} (${action.action_target})`,
                                             content: {
                                               content: 
                                                 <SubmissionsTable

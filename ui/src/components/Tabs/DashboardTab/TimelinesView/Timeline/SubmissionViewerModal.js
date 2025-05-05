@@ -48,6 +48,7 @@ export default function SubmissionViewerModal(props) {
       .then((response) => response.json())
       .then((dueDate) => {
         let dueDateTime = new Date(dueDate[0].due_date);
+        dueDateTime.setDate(dueDateTime.getDate()+1);
         setDue(dueDateTime);
         let submitDate = new Date(
           props.action.submission_datetime.split(" ")[0].toString(),

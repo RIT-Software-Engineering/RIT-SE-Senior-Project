@@ -1,46 +1,25 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
     Button,
     Icon,
-    Label,
     Modal,
-    ModalActions,
     Segment,
-    Pagination,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
     Header,
     Message,
     MessageHeader,
     Rating,
 } from "semantic-ui-react";
-import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import InnerHTML from "dangerously-set-html-content";
-import { UserContext } from "../../util/functions/UserContext";
-import { ACTION_TARGETS, ACTION_STATES, config } from "../../util/functions/constants";
-import SubmissionsModal from "./SubmissionsModal";
+import { ACTION_TARGETS, config } from "../../util/functions/constants";
 import EvalReview from "../../util/components/EvalReview";
 import _ from "lodash";
 
-const { isSameWeek, addDays } = require("date-fns");
-
-const ACTIONS_PER_PAGE = 11;
-
-export default function SubmissionsTable(props) {
+export default function SubmissionsFileData(props) {
     const [open, setOpen] = useState(false);
-    const [index, setIndex] = useState(0);
     const [submission, setSubmission] = useState({});
     const [files, setFiles] = useState([]);
     const [noSubmission, setNoSubmission] = useState(true);
-    const [due, setDue] = useState();
-    const [late, setLate] = useState(false);
-    const [day, setDay] = useState(0);
 
     const loadSubmission = () => {
         SecureFetch(
@@ -80,43 +59,7 @@ export default function SubmissionsTable(props) {
         }
     };
 
-    const daysLate = (due, submitted) => {
-        const dueDate = formatDate(due);
-        const submitDate = formatDate(submitted);
-        const diffInMs = new Date(submitDate) - new Date(dueDate);
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-        setDay(diffInDays);
-    };
-
     const IS_PEER_EVALUATION = props.target === ACTION_TARGETS.peer_evaluation;
-
-    const onClose = (page) => {
-        setOpen(false);
-    };
-
-    const getTotalTime = (week, name) => {
-        let filteredTimeLogs = props.timeLog
-        // Is not deleted
-        .filter((timeLog) => timeLog.active !== 0)
-        // Is from User
-        .filter((timeLog) => name === timeLog.name)
-        // Is in week range
-        .filter((timeLog) => isSameWeek(week, new Date(timeLog.work_date)));
-
-        let total = filteredTimeLogs.reduce(
-        (total, log) => total + log.time_amount,
-        0,
-        );
-
-        if (total == 0 || parseFloat(total) / parseInt(total) == 1) {
-        return total;
-        }
-        return total.toFixed(2);
-    };
-
-
-    console.log("file data", files);
-    console.log("submission", submission);
 
     return (
         <div>
