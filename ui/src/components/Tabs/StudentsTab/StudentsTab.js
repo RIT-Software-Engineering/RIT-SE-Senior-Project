@@ -355,7 +355,6 @@ export default function StudentsTab(props) {
 
     // Peer Evaluations
     semesterMap.forEach((semester) => {
-      let active = isSemesterActive(semester?.start_date, semester?.end_date);
       Object.keys(semester.projects).forEach((projectKey) => {
         const project = semester.projects[projectKey];
         const submissions = coachFeedback[projectKey];
@@ -367,12 +366,10 @@ export default function StudentsTab(props) {
             key={"Peer-Eval" + projectKey + submission.ActionData.id}
             fluid
             styled
-            defaultActiveIndex={index === submissions.length - 1 ? 0 : -1}
             panels={[
               {
                 key: `${projectKey}eval${submission.ActionData.id}`,
                 title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
-                active: active,
                 content: {
                   content: (
                     <>
@@ -403,15 +400,12 @@ export default function StudentsTab(props) {
             <Accordion
               key={"PEEREVAL" + projectKey}
               fluid
-              defaultActiveIndex={
-                activeProjectIds[projectKey] && hasSubmissions ? 0 : -1
-              }
               styled
+              //defaultActiveIndex={isSemesterActive(semester.start_date, semester.end_date) ? 0 : -1}
               panels={[
                 {
                   key: "eval",
-                  title: project.name + " - " + semester.name,
-                  active: active,
+                  title: `${project.name} - ${semester.name}`,
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>

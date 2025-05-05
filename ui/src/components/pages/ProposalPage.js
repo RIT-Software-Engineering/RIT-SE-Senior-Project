@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
-import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
+import "./../../css/components/proposal.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 

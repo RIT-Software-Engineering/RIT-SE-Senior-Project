@@ -1,0 +1,70 @@
+/* CSS Variables for theming */
+
+:root {
+  --bg-primary: white;
+  --bg-secondary: #f8f9fa;
+  --bg-today: #f5f9ff;
+  --bg-hover: #f9f9f9;
+  --bg-button-hover: #f0f0f0;
+  --bg-footer: black;
+  --bg-unfinished-action: #fff6f6;
+  --bg-inprogress-action: #fffaf3;
+  --bg-finished-action: #fcfff5;
+
+  --border-color: black;
+  --border-light: #f0f0f0;
+
+  --default-br: 0.5em;
+  --default-padding: 0.5em;
+  --default-gap: 0.5em;
+
+  --text-primary: #333;
+
+  --gantt-today: #f76902;
+  --gantt-weekend: #eeeeee;
+  --action-bar-proposal-yellow: #db8e07;
+  --action-bar-proposal-red: #fd2723;
+  --action-bar-proposal-blue: #0000ff;
+  --action-bar-proposal-green: #2c662d;
+  --action-bar-proposal-gray: #484848;
+  --action-bar-proposal-purple: #b66dff;
+
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  --header-footer-height: 7em;
+  --helpers-page-padding: 1.5em;
+  --fonts: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans‑serif;
+
+  /* --gantt-maximum-columns: 365; */
+}
+
+/* Dark mode variables */
+.dark-mode {
+  background: #1a1a1a;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-day: #2d2d2d;
+  --bg-hover: #333333;
+  --bg-button: #424242;
+  --bg-button-hover: #3a3a3a;
+  --bg-footer-header: #333333;
+
+  --menu-item: #444;
+  --menu-item-hover: #555;
+  --menu-item-active: #666;
+
+  --border-color: #444444;
+  --border-light: #555555;
+
+  --text-primary: white;
+
+  --gantt-today: #ff9800;
+  --action-bar-proposal-yellow: #ffc107;
+  --action-bar-proposal-red: #f44336;
+  --action-bar-proposal-blue: #2196f3;
+  --action-bar-proposal-green: #4caf50;
+  --action-bar-proposal-gray: #888;
+  --action-bar-proposal-purple: #b66dff;
+
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
