@@ -3918,10 +3918,11 @@ module.exports = (db) => {
         return res.status(400).send({ error: "User ID is required" });
       }
 
-      try {
+    try {
         const result = await db.query(
-          `SELECT additional_info FROM users WHERE system_id = ?`,
-          [requestedUserId],
+            `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
+             FROM users WHERE system_id = ?`,
+            [requestedUserId]
         );
 
         if (result.length === 0) {
@@ -3936,15 +3937,12 @@ module.exports = (db) => {
         error.statusCode = 500;
         error.details = err.message;
         next(error);
-      }
-    },
-  );
+    }
+});
 
-  db_router.post(
-    "/editAdditionalInfo",
-    [UserAuth.isSignedIn],
-    async (req, res, next) => {
-      const { system_id, additional_info } = req.body;
+
+  db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id, additional_info } = req.body;
 
       if (!system_id || additional_info === undefined) {
         return res
@@ -3954,7 +3952,7 @@ module.exports = (db) => {
 
       const updateQuery = `
         UPDATE users
-        SET additional_info = ?
+        SET profile_info = json_set(profile_info, '$.additional_info', ?)
         WHERE system_id = ?
     `;
 
@@ -3968,56 +3966,155 @@ module.exports = (db) => {
         error.statusCode = 500;
         error.details = err.message;
         next(error);
+    }
+  });
+
+  db_router.post("/setDarkMode", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id, dark_mode } = req.body;
+
+    const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(profile_info, '$.dark_mode', ?)
+        WHERE system_id = ?
+    `;
+
+    try {
+        await db.query(updateQuery, [dark_mode, system_id]); 
+        res.status(200).send({ message: "Dark mode preference updated successfully" });
+    } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+    }
+});
+
+  db_router.get("/getDarkMode", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id } = req.query;
+
+    const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.dark_mode') AS dark_mode
+      FROM users
+      WHERE system_id = ?
+    `;
+
+    try {
+      const result = await db.query(query, [system_id]);
+
+      if (result.length === 0) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        return next(error);
       }
-    },
-  );
 
-  db_router.get(
-    "/getPeerEvals",
-    [UserAuth.isCoachOrAdmin],
-    (req, res, next) => {
-      const semesterNumber = req.query.semester;
+      const darkModeRaw = result[0].dark_mode;
+      const dark_mode = Boolean(darkModeRaw);
 
-      let getPeerEvalsQuery = `
-        SELECT action_id 
-        FROM actions
-        WHERE action_target = 'peer_evaluation'
-      `;
+      res.status(200).send({ dark_mode });
+    } catch (err) {
+      const error = new Error("Database query failed");
+      error.statusCode = 500;
+      error.details = err.message;
+      next(error);
+    }
+  }); 
 
-      let queryParams = [];
-      if (semesterNumber) {
-        getPeerEvalsQuery += ` AND semester = ?`;
-        queryParams.push(semesterNumber);
+
+  db_router.get("/getPeerEvals", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+    const semesterNumber = req.query.semester;
+  
+    let getPeerEvalsQuery = `
+      SELECT action_id 
+      FROM actions
+      WHERE action_target = 'peer_evaluation'
+    `;
+  
+    let queryParams = [];
+    if (semesterNumber) {
+      getPeerEvalsQuery += ` AND semester = ?`;
+      queryParams.push(semesterNumber);
+    } 
+  
+    db.query(getPeerEvalsQuery, queryParams)
+      .then((values) => {
+        const actionIds = values.map(row => row.action_id);
+  
+        if (actionIds.length === 0) {
+          return res.send([]); 
+        } 
+  
+        let getPeerEvalLogsQuery = `
+          SELECT * 
+          FROM action_log
+          WHERE action_template IN (${actionIds.join(",")})
+          ORDER BY submission_datetime DESC
+        `;
+  
+        return db.query(getPeerEvalLogsQuery);
+      })
+      .then((logs) => {
+        if (logs) res.send(logs);
+      })
+      .catch((err) => {
+        console.error(err);
+        const error = new Error("Error fetching peer evaluations");
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+
+  db_router.post("/setGanttView", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id, gantt_view } = req.body;
+
+    const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(profile_info, '$.gantt_view', ?)
+        WHERE system_id = ?
+    `;
+
+    try {
+        await db.query(updateQuery, [gantt_view, system_id]); 
+        console.log("Dark mode preference updated successfully", gantt_view, system_id);
+        res.status(200).send({ message: "Dark mode preference updated successfully" });
+    } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+    }
+});
+
+  db_router.get("/getGanttView", [UserAuth.isSignedIn], async (req, res, next) => {
+    const { system_id } = req.query;
+
+    const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.gantt_view') AS gantt_view
+      FROM users
+      WHERE system_id = ?
+    `;
+
+    try {
+      const result = await db.query(query, [system_id]);
+
+      if (result.length === 0) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        return next(error);
       }
 
-      db.query(getPeerEvalsQuery, queryParams)
-        .then((values) => {
-          const actionIds = values.map((row) => row.action_id);
+      const ganttViewRaw = result[0].gantt_view;
+      const gantt_view = Boolean(ganttViewRaw);
 
-          if (actionIds.length === 0) {
-            return res.send([]);
-          }
+      res.status(200).send({ gantt_view });
+    } catch (err) {
+      const error = new Error("Database query failed");
+      error.statusCode = 500;
+      error.details = err.message;
+      next(error);
+    }
+  }); 
 
-          let getPeerEvalLogsQuery = `
-            SELECT * 
-            FROM action_log
-            WHERE action_template IN (${actionIds.join(",")})
-            ORDER BY submission_datetime DESC
-          `;
-
-          return db.query(getPeerEvalLogsQuery);
-        })
-        .then((logs) => {
-          if (logs) res.send(logs);
-        })
-        .catch((err) => {
-          console.error(err);
-          const error = new Error("Error fetching peer evaluations");
-          error.statusCode = 500;
-          return next(error);
-        });
-    },
-  );
 
   return db_router;
 };
