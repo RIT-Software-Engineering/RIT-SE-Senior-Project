@@ -36,8 +36,8 @@ export default function ActionTable(props) {
   const [open, setOpen] = React.useState("false");
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
   const [active, setActive] = useState(
-      isSemesterActive(semester?.start_date, semester?.end_date),
-    );
+    isSemesterActive(semester?.start_date, semester?.end_date),
+  );
 
   function isOpenCallback(isOpen) {
     setCloseOnDocClick(!isOpen);

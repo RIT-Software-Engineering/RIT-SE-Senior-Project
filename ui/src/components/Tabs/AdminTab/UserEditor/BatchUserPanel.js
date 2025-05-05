@@ -148,7 +148,7 @@ export default function BatchUserPanel({ callback }) {
         if (event.target?.innerText !== UPLOAD_BUTTON_TEXT) setModalOpen(false);
       }} // Don't close modal if close was triggered by pressing the upload button
       actions={[
-        { key: "Close", content: "Close" },
+        { key: "Cancel", content: "Cancel" },
         {
           key: UPLOAD_BUTTON_TEXT,
           content: UPLOAD_BUTTON_TEXT,
