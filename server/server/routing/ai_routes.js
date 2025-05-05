@@ -159,11 +159,6 @@ module.exports = () => {
     [UserAuth.isCoachOrAdmin],
     (req, res, next) => {
       const context = req.body.context;
-  router.post(
-    "/GenerateSummary",
-    [UserAuth.isCoachOrAdmin],
-    (req, res, next) => {
-      const context = req.body.context;
 
       provide_summary(context)
         .then((response) => {
@@ -232,18 +227,7 @@ module.exports = () => {
           .status(200)
           .send("Invalid API key. Please let an admin know.");
       }
-  router.post(
-    "/GenerateResponse",
-    [UserAuth.isCoachOrAdmin],
-    async (req, res, next) => {
-      if (!key || key === "ADD_KEY_HERE") {
-        res.type("text/plain");
-        return res
-          .status(200)
-          .send("Invalid API key. Please let an admin know.");
-      }
 
-      const { prompt, context } = req.body;
       const { prompt, context } = req.body;
 
       if (!prompt || !context) {
