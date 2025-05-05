@@ -6,6 +6,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
+import BarGraph from "../../util/components/PeerEvalVisualSummary";
 import _ from "lodash";
 
 export default function StudentsTab(props) {
@@ -354,6 +355,7 @@ export default function StudentsTab(props) {
 
     // Peer Evaluations
     semesterMap.forEach((semester) => {
+      let active = isSemesterActive(semester?.start_date, semester?.end_date);
       Object.keys(semester.projects).forEach((projectKey) => {
         const project = semester.projects[projectKey];
         const submissions = coachFeedback[projectKey];
@@ -370,13 +372,25 @@ export default function StudentsTab(props) {
               {
                 key: `${projectKey}eval${submission.ActionData.id}`,
                 title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
+                active: active,
                 content: {
                   content: (
-                    <EvalReview
-                      forms={submission}
-                      isSub={submission?.Submitter === "COACH"}
-                      id={projectKey + semester.name}
-                    />
+                    <>
+                      {
+                        // only show bar graph if admin or coach
+                        userContext.user.role === USERTYPES.ADMIN ||
+                        userContext.user.role === USERTYPES.COACH ? (
+                          <BarGraph data={submission} />
+                        ) : (
+                          ""
+                        )
+                      }
+                      <EvalReview
+                        forms={submission}
+                        isSub={submission?.Submitter === "COACH"}
+                        id={projectKey + semester.name}
+                      />
+                    </>
                   ),
                 },
               },
@@ -397,6 +411,7 @@ export default function StudentsTab(props) {
                 {
                   key: "eval",
                   title: project.name + " - " + semester.name,
+                  active: active,
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>

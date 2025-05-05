@@ -108,6 +108,7 @@ function UniqueProjectPage({ projectData }) {
               />
             )}
             <Modal
+              closeOnDocumentClick={false}
               className={"sticky"}
               size={"large"}
               open={posterOpen}
@@ -152,6 +153,7 @@ function UniqueProjectPage({ projectData }) {
               />
             )}
             <Modal
+              closeOnDimmerClick={false}
               className={"sticky"}
               size={"large"}
               open={imageOpen}

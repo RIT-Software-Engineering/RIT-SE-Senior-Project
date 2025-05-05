@@ -90,6 +90,7 @@ function ExemplaryProject({ project }) {
       </div>
       {/* Modal with expanded information */}
       <Modal
+        closeOnDimmerClick={false}
         className={"sticky"}
         size={"large"}
         open={initialOpen}

@@ -416,12 +416,14 @@ export default function ActionLogs(props) {
               }
               let showNewSubmissionHighlight =
                 new Date(action.submission_datetime) > prevLogin;
+               
+
               return (
                 <TableRow
-                  style={{
-                    background: showNewSubmissionHighlight ? "#fffaf3" : "none",
-                    fontWeight: showNewSubmissionHighlight ? "bold" : "none",
-                  }}
+                // Originally, we were using a different highlight color for new submissions but this overrides darkmode, so we're just using bold
+                style={{
+                  fontWeight: showNewSubmissionHighlight ? "bold" : "none",
+                }}
                   key={idx}
                 >
                   {userContext.user?.role !== USERTYPES.STUDENT && (

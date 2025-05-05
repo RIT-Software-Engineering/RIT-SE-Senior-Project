@@ -501,6 +501,7 @@ export default function ActionModal(props) {
     return (
       <Modal
         closeOnDimmerClick={false}
+        closeOnEscape={false}
         className={"sticky"}
         onClose={() => {
           setOpen(false);
@@ -547,6 +548,7 @@ export default function ActionModal(props) {
             </div>
           </Modal.Description>
           <Modal
+            closeOnDimmerClick={false}
             style={{
               position: "fixed",
               top: "50%",
@@ -576,6 +578,7 @@ export default function ActionModal(props) {
     return (
       <Modal
         closeOnDimmerClick={false}
+        closeOnEscape={false}
         className={"sticky"}
         onClose={() => {
           setOpen(false);
@@ -589,7 +592,12 @@ export default function ActionModal(props) {
         open={open}
         trigger={
           props.trigger || (
-            <Button ref={props.ref} fluid className="view-action-button">
+            <Button
+              ref={props.ref}
+              fluid
+              className="view-action-button"
+              onClick={() => console.log("CLICKEDF!!!!")}
+            >
               View Action
             </Button>
           )
@@ -636,6 +644,7 @@ export default function ActionModal(props) {
             )}
           </Modal.Description>
           <Modal
+            closeOnDimmerClick={false}
             style={{
               position: "fixed",
               top: "50%",

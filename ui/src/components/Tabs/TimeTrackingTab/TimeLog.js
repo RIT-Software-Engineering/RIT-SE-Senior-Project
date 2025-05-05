@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { act, useContext, useEffect, useRef, useState } from "react";
 import {
   Accordion,
   Icon,
@@ -18,6 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import moment from "moment-timezone";
+import { isSemesterActive } from "../../util/functions/utils";
 
 import ProjectTime from "./ProjectTIme";
 
@@ -48,9 +49,10 @@ export default function TimeLog(props) {
   const [weeks, setWeeks] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [key, setKey] = useState(Math.random());
+  const [activeSemesters, setActiveSemesters] = useState({});
 
   const [students, setStudentsData] = useState([]);
-  const { eachWeekOfInterval } = require("date-fns");
+  const { eachWeekOfInterval, set } = require("date-fns");
   useEffect(() => {
     console.log(userContext);
     setActionLogs([]);
@@ -106,12 +108,32 @@ export default function TimeLog(props) {
       .then((time_logs) => {
         setTimeLogs(time_logs.timeLogs);
         setTimeLogCount(time_logs.timeLogCount);
-        var users = [];
+        var userNames = [];
         for (var i = 0; i < time_logs.timeLogs.length; i++) {
-          var timeLog = time_logs.timeLogs[i];
-          if (!users.includes(timeLog.name)) {
-            users.push(timeLog.name);
+          let timeLog = time_logs.timeLogs[i];
+          if (!userNames.some((e) => e.name === timeLog.name)) {
+            userNames.push({
+              name: timeLog.name,
+              system_id: timeLog.system_id,
+            });
           }
+        }
+
+        // Sort the array of user objects by system_id. This is necessary because the
+        // the timeLogs array is sorted by date, and we want to group the time logs
+        // by user in the order of their system_id.
+        userNames.sort(function (a, b) {
+          // If a's system_id is less than b's, return -1 (a should come before b)
+          if (a.system_id < b.system_id) return -1;
+          // If a's system_id is greater than b's, return 1 (change nothing,a should come before b)
+          else if (a.system_id > b.system_id) return 1;
+          // If the system_ids are equal, return 0 (the order of the users doesn't matter)
+          else return 0;
+        });
+
+        var users = [];
+        for (let i = 0; i < userNames.length; i++) {
+          users.push(userNames[i].name);
         }
 
         var userStats = [];
@@ -155,16 +177,26 @@ export default function TimeLog(props) {
     <>
       {semesters.length > 0 && <h3>Time Log</h3>}
       {semesters.map((sem) => {
+        const isActive = isSemesterActive(sem?.start_date, sem?.end_date);
+        const isAccordionActive = activeSemesters[sem.semester_id] === undefined ? isActive : activeSemesters[sem.semester_id];
+
         return (
           <>
             <div className="accordion-button-group">
               <Accordion
                 fluid
                 styled
+                onTitleClick={() => {
+                  setActiveSemesters((prevActiveSemesters) => ({
+                    ...prevActiveSemesters,
+                    [sem.semester_id]: !isAccordionActive,
+                  }));
+                }}
                 panels={[
                   {
                     key: "Semester Here",
                     title: sem.name,
+                    active: isAccordionActive,
                     content: {
                       content: (
                         <>

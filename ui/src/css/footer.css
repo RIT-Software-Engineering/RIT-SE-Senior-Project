@@ -1,9 +1,10 @@
 #footer {
-  min-height: var(--footer-height);
-  background-color: black;
-  color: white;
-  padding-top: 2em;
-  padding-bottom: 1em;
+    min-height: var(--footer-height);
+    background-color: white;
+    color: black;
+    padding-top: 2em;
+    padding-bottom: 1em;
+    text-align: left;
 }
 
 #bringMeDown {
@@ -28,4 +29,10 @@
 
 #copyright {
   text-align: left;
+}
+
+/* Dark Mode Styles */
+.dark-mode #footer {
+    background-color: #1e1e1e; 
+    color: #e0e0e0;          
 }
