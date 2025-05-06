@@ -339,7 +339,8 @@ export function Calendar(props) {
                   flowing={true}
                   exclusive={false}
                   keepInViewPort={true}
-                  closeOnDocumentClick={false}
+                  closeOnDocumentClick={true} // Allow closing on document click
+                  onUnmount={() => setHoveredDay(null)} // Reset hovered day on unmount
                   className="calendar-day"
                   style={{width: '150px', overflow: 'auto', zIndex: 10}}
                   content={
