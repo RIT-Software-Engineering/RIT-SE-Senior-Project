@@ -35,7 +35,7 @@ export default function StudentRow(props) {
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
   const [canUseAI, setCanUseAI] = useState(false);
- 
+
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
 
@@ -44,19 +44,19 @@ export default function StudentRow(props) {
   };
 
   useEffect(() => {
-      SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.valid === true) {
-            setCanUseAI(true);
-          } else {
-            setCanUseAI(false);
-          }
-        })
-        .catch((err) => {
+    SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.valid === true) {
+          setCanUseAI(true);
+        } else {
           setCanUseAI(false);
-        });
-    }, []);
+        }
+      })
+      .catch((err) => {
+        setCanUseAI(false);
+      });
+  }, []);
 
   const fetchPeerReviews = useCallback(async () => {
     try {
@@ -267,14 +267,16 @@ export default function StudentRow(props) {
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
           </TableCell>
-          <TableCell>
-            {props.student.last_login
-              ? dayjs(props.student.last_login)
-                  .utc(true)
-                  .local()
-                  .format("DD/MM/YYYY HH:mm:ss")
-              : "Never Logged in"}
-          </TableCell>
+          {props.showLogin && (
+            <TableCell>
+              {props.student.last_login
+                ? dayjs(props.student.last_login)
+                    .utc(true)
+                    .local()
+                    .format("DD/MM/YYYY HH:mm:ss")
+                : "Never Logged in"}
+            </TableCell>
+          )}
         </TableRow>
 
         <Modal
