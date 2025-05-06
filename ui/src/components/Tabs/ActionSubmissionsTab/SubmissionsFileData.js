@@ -17,32 +17,14 @@ import _ from "lodash";
 
 export default function SubmissionsFileData(props) {
     const [open, setOpen] = useState(false);
-    const [submission, setSubmission] = useState({});
-    const [files, setFiles] = useState([]);
-    const [noSubmission, setNoSubmission] = useState(true);
+    // const [submission, setSubmission] = useState({});
+    // const [files, setFiles] = useState([]);
+    // const [noSubmission, setNoSubmission] = useState(true);
 
-    const loadSubmission = () => {
-        SecureFetch(
-        `${config.url.API_GET_SUBMISSION}?log_id=${props.log?.action_log_id}`,
-        )
-        .then((response) => response.json())
-        .then((submission) => {
-            if (submission.length > 0) {
-            const formData = JSON.parse(submission[0].form_data.toString());
-            const fileData = submission[0].files?.split(",");
-            setSubmission(formData);
-            setFiles(fileData);
-            setNoSubmission(formData.length === 0 && files.length === 0);
-            }
-        })
-        .catch((error) => {
-            alert("Failed to get action log data " + error);
-        });
-    }
-
-    useEffect(() => {
-        loadSubmission();
-    }, []);
+    let actionSubmission = props.submissions?.filter((submission) => submission[0][2] === props.log?.action_log_id);
+    let submission = actionSubmission[0][0][0];
+    let files = actionSubmission[0][0][1];
+    let noSubmission = (submission.length === 0 && files.length === 0)
 
     const noSubmissionText = (target) => {
         switch (target) {
@@ -249,10 +231,4 @@ export default function SubmissionsFileData(props) {
                 )}
         </div>
     );
-
-
-
-
-
-
 }

@@ -2961,6 +2961,43 @@ module.exports = (db) => {
     },
   );
 
+  db_router.get("/getSubmissions", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+    let getSubmissionsQuery = "";
+    let params = [];
+
+    switch (req.user.type) {
+      case ROLES.COACH:
+        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date
+                    FROM action_log
+                    JOIN actions ON actions.action_id = action_log.action_template
+                    JOIN project_coaches ON project_coaches.project_id = action_log.project
+                    WHERE project_coaches.coach_id = ?`;
+        params = [req.user.system_id];
+        break;
+      case ROLES.ADMIN:
+        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date
+                    FROM action_log
+                    JOIN actions ON actions.action_id = action_log.action_template`;
+        params = [];
+        break;
+      default:
+        const error = new Error("Unknown Role");
+        error.statusCode = 401;
+        return next(error);
+    }
+
+    db.query(getSubmissionsQuery, params)
+      .then((submissions) => {
+        res.send(submissions);
+      })
+      .catch((err) => {
+        console.error(err);
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
   db_router.get("/getSubmission", [UserAuth.isSignedIn], (req, res, next) => {
     let getSubmissionQuery = "";
     let params = [];

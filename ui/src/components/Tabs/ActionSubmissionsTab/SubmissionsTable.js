@@ -9,7 +9,7 @@ import {
 import { formatDateTime } from "../../util/functions/utils";
 import SubmissionsFileData from "./SubmissionsFileData";
 import _ from "lodash";
-import SubmissionsLateData from "./SubmissionsLateData";
+import SubmissionsData from "./SubmissionsData";
 
 export default function SubmissionsTable(props) {
 
@@ -26,7 +26,7 @@ export default function SubmissionsTable(props) {
         </TableHeader>
 
         <TableBody>
-            {props.submissions.map((log, idx) => {
+            {props.actionSubmissions.map((log, idx) => {
               let submittedBy = `${log.name} (${log.system_id})`;
               if (log.mock_id) {
                 submittedBy = `${log.mock_name} (${log.mock_id}) as ${log.name} (${log.system_id})`;
@@ -37,15 +37,16 @@ export default function SubmissionsTable(props) {
                   <TableCell>{submittedBy}</TableCell>
                   <TableCell>
                     {formatDateTime(log.submission_datetime)}
-                    <SubmissionsLateData
+                    {/* <SubmissionsLateData
                       log={log}
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell>
                     <>
                       <SubmissionsFileData
                         log={log}
                         target={props.target}
+                        submissions={props.submissions}
                         isOpenCallback={props.isOpenCallback}
                       />
                     </>
