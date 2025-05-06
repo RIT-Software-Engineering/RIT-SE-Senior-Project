@@ -23,7 +23,6 @@ import { UserContext } from "../../util/functions/UserContext";
 import _, { isNull } from "lodash";
 import TimeLogProjects from "./TimeLogProjects";
 import SubmissionsTable from "./SubmissionsTable";
-import SubmissionsData from "./SubmissionsData";
 
 const LOGS_PER_PAGE = 50;
 const TIME_LOGS_PER_PAGE = 5;

@@ -17,14 +17,6 @@ import _ from "lodash";
 
 export default function SubmissionsFileData(props) {
     const [open, setOpen] = useState(false);
-    // const [submission, setSubmission] = useState({});
-    // const [files, setFiles] = useState([]);
-    // const [noSubmission, setNoSubmission] = useState(true);
-
-    let actionSubmission = props.submissions?.filter((submission) => submission[0][2] === props.log?.action_log_id);
-    let submission = actionSubmission[0][0][0];
-    let files = actionSubmission[0][0][1];
-    let noSubmission = (submission.length === 0 && files.length === 0)
 
     const noSubmissionText = (target) => {
         switch (target) {
@@ -45,26 +37,26 @@ export default function SubmissionsFileData(props) {
 
     return (
         <div>
-            {(props.noSubmission || noSubmission) && (
+            {(props.noSubmission) && (
               <p>{noSubmissionText(props.target)}</p>
             )}
 
             {/* Normal Submissions */}
-            {!noSubmission && !IS_PEER_EVALUATION && (
+            {!props.noSubmission && !IS_PEER_EVALUATION && (
                 <>
-                {Object.keys(submission)?.map((key) => {
-                    if (submission[key].includes("fakepath")) {
+                {Object.keys(props.submission)?.map((key) => {
+                    if (props.submission[key].includes("fakepath")) {
                     return false;
                     }
                     return (
                     <div key={key}>
                         <p>
-                        <b>{key}:</b> {submission[key]}
+                        <b>{key}:</b> {props.submission[key]}
                         </p>
                     </div>
                     );
                 })}
-                {files?.map((file) => {
+                {props.files?.map((file) => {
                     return (
                     <div key={file}>
                         <a
@@ -82,9 +74,9 @@ export default function SubmissionsFileData(props) {
             )}
 
             {/* Peer Evaluations */}
-            {!noSubmission &&
+            {!props.noSubmission &&
                 IS_PEER_EVALUATION &&
-                submission.Submitter !== "COACH" && (
+                props.submission.Submitter !== "COACH" && (
                     <>
                         <Modal
                             className={"sticky"}
@@ -113,12 +105,12 @@ export default function SubmissionsFileData(props) {
                                     <>
                                         <h2>Coach Feedback</h2>
                                         <Segment secondary={false}>
-                                            {Object.keys(submission.CoachFeedback ?? {})?.map((key) => (
+                                            {Object.keys(props.submission.CoachFeedback ?? {})?.map((key) => (
                                             <div style={{ marginBottom: "35px" }}>
                                                 <Header as={"h3"} dividing content={key} />
                                                 <p>
                                                 {" "}
-                                                {submission.CoachFeedback[key] || (
+                                                {props.submission.CoachFeedback[key] || (
                                                     <i>No Feedback Provided</i>
                                                 )}
                                                 </p>
@@ -126,12 +118,12 @@ export default function SubmissionsFileData(props) {
                                             ))}
                                         </Segment>
                                         <h2>Peer Feedback</h2>
-                                        {Object.keys(submission.Students ?? {})?.map((key) => (
+                                        {Object.keys(props.submission.Students ?? {})?.map((key) => (
                                             <div>
                                             <Header as={"h2"} dividing content={key} />
                                             <Segment>
                                                 {/* Peer Qualative Feedback */}
-                                                {Object.keys(submission.Students[key].Feedback)?.map(
+                                                {Object.keys(props.submission.Students[key].Feedback)?.map(
                                                 (feedback_key) => (
                                                     <div style={{ marginBottom: "25px" }}>
                                                     <Header
@@ -141,12 +133,12 @@ export default function SubmissionsFileData(props) {
                                                     />
 
                                                     {/* Showing quantative feedback with written feedback */}
-                                                    {submission.Students[key].Ratings.hasOwnProperty(
+                                                    {props.submission.Students[key].Ratings.hasOwnProperty(
                                                         feedback_key,
                                                     ) && (
                                                         <Rating
                                                         rating={
-                                                            submission.Students[key].Ratings[
+                                                            props.submission.Students[key].Ratings[
                                                             feedback_key
                                                             ]
                                                         }
@@ -154,7 +146,7 @@ export default function SubmissionsFileData(props) {
                                                         disabled
                                                         />
                                                     )}
-                                                    {submission.Students[key].Feedback[
+                                                    {props.submission.Students[key].Feedback[
                                                         feedback_key
                                                     ] === "" ? (
                                                         <p style={{ marginTop: "5px" }}>
@@ -166,7 +158,7 @@ export default function SubmissionsFileData(props) {
                                                         <p>
                                                             {" "}
                                                             {
-                                                            submission.Students[key].Feedback[
+                                                            props.submission.Students[key].Feedback[
                                                                 feedback_key
                                                             ]
                                                             }
@@ -178,10 +170,10 @@ export default function SubmissionsFileData(props) {
                                                 )}
 
                                                 {/* Peer Quantative Feedback */}
-                                                {Object.keys(submission.Students[key].Ratings)?.map(
+                                                {Object.keys(props.submission.Students[key].Ratings)?.map(
                                                 (rating_key) => {
                                                     if (
-                                                    submission.Students[key].Feedback.hasOwnProperty(
+                                                    props.submission.Students[key].Feedback.hasOwnProperty(
                                                         rating_key,
                                                     )
                                                     ) {
@@ -196,7 +188,7 @@ export default function SubmissionsFileData(props) {
                                                         />
                                                         <Rating
                                                         rating={
-                                                            submission.Students[key].Ratings[rating_key]
+                                                            props.submission.Students[key].Ratings[rating_key]
                                                         }
                                                         maxRating={5}
                                                         disabled
@@ -218,13 +210,13 @@ export default function SubmissionsFileData(props) {
             }
 
             {/* Peer Evaluations Coach View */}
-            {!noSubmission &&
+            {!props.noSubmission &&
                 IS_PEER_EVALUATION &&
-                submission.Submitter === "COACH" && (
+                props.submission.Submitter === "COACH" && (
                     <>
                     <EvalReview
-                        forms={submission}
-                        isSub={submission?.Submitter === "COACH"}
+                        forms={props.submission}
+                        isSub={props.submission?.Submitter === "COACH"}
                         id={props.projectName + props.semesterName}
                     />
                     </>
