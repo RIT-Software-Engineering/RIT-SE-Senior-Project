@@ -41,7 +41,7 @@ export function Calendar(props) {
   function getVariableHolidays(year) {
     // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
     This_Years_Holidays = { ...SPECIAL_DATES };
-    console.log("reset holidays", This_Years_Holidays);
+    //console.log("reset holidays", This_Years_Holidays);
 
     function getNthDayOfMonth(n, day, month) {
       let date = new Date(year, month, 1);
@@ -227,7 +227,7 @@ export function Calendar(props) {
 
   // Creates and styles the actions for that particular day
   const generateActionsForDay = (actionsForDay, day) => {
-    console.log(day, actionsForDay)
+    //console.log(day, actionsForDay)
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index);
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;

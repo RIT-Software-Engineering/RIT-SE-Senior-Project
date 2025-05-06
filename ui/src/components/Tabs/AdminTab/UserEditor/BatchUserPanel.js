@@ -105,7 +105,7 @@ export default function BatchUserPanel({ callback }) {
                 return (
                   <Table.Row
                     key={idx}
-                    style={isError ? { backgroundColor: "#ffdddd" } : {}}
+                    style={isError ? { backgroundColor: "var(--action-bar-proposal-red)" } : {}}
                   >
                     {Object.keys(user).map((key) => (
                       <Table.Cell key={key}>{user[key]}</Table.Cell>
