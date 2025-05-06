@@ -78,29 +78,28 @@ const StackTraceErrorPage = () => {
         maxWidth: "600px",
         margin: "50px auto",
         textAlign: "center",
-        fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1 style={{ color: "#D32F2F" }}>⚠️ An Error Occurred</h1>
+      <h1 style={{ color: "var(--action-bar-proposal-red)" }}>⚠️ An Error Occurred</h1>
       {errorInfo ? (
         <div
           style={{
-            background: "#FFEBEE",
+            background: "var(--bg-secondary)",
             padding: "15px",
             borderRadius: "8px",
             textAlign: "left",
           }}
         >
-          <h2 style={{ color: "#B71C1C" }}>Error: {errorInfo.error}</h2>
+          <h2 style={{ color: "var(--action-bar-proposal-red)" }}>Error: {errorInfo.error}</h2>
           <details style={{ marginTop: "10px" }}>
-            <summary style={{ cursor: "pointer", fontWeight: "bold" }}>
+            <summary style={{ cursor: "pointer", fontWeight: "bold", color: "var(--text-primary)" }}>
               View Stack Trace
             </summary>
             <pre
               style={{
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
-                background: "#FFF",
+                background: "var(--bg-secondary)",
                 padding: "10px",
                 borderRadius: "5px",
               }}
@@ -114,7 +113,7 @@ const StackTraceErrorPage = () => {
       )}
 
       <div style={{ marginTop: "20px" }}>
-        <p style={{ fontSize: "14px", color: "#D32F2F" }}>
+        <p style={{ fontSize: "14px", color: "var(--action-bar-proposal-red)" }}>
           ⚠️ A GitHub account is required to report an issue.
         </p>
         <Button onClick={handleGoBack}>🔙 Go Back</Button>
@@ -123,7 +122,7 @@ const StackTraceErrorPage = () => {
       </div>
 
       {userFeedback && (
-        <p style={{ marginTop: "10px", color: "#388E3C" }}>{userFeedback}</p>
+        <p style={{ marginTop: "10px", color: "var(--action-bar-proposal-green)" }}>{userFeedback}</p>
       )}
     </div>
   );
