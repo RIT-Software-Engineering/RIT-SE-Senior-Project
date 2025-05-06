@@ -93,7 +93,7 @@ const ProfileModal = ({ open, onClose, user }) => {
           </div>
           <div>
             <p>Gantt or Calendar View:</p>
-            <Button toggle active={preference} onClick={toggleGanttView}>
+            <Button toggle active={preference==='gantt'} onClick={toggleGanttView}>
               {preference ? "Viewing Calendar" : "Viewing Gantt"}
             </Button>
           </div>
