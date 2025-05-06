@@ -4,6 +4,8 @@ Welcome to the CSS styling documentation. **This is essential reading for anyone
 
 Maintaining consistent, clean, and well-organized CSS is critical for scalability, maintainability, and collaboration. **All CSS contributions _must_ adhere to the structure and practices outlined below.** Please read carefully before making any changes.
 
+Inline CSS is allowed, but reference variables.css whenever possible.
+
 ---
 
 ## 🔧 CSS Directory Structure & Responsibilities
