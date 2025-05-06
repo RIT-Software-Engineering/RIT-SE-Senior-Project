@@ -333,7 +333,7 @@ export default function StudentsTab(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon name="mail" style={{ color: "#333333" }} />
+                    <Icon name="mail" style={{ color: "var(--text-primary)" }} />
                   </a>
                 </div>
               </div>,
@@ -383,7 +383,6 @@ export default function StudentsTab(props) {
             <div className="accordion-buttons-container">
               <Dropdown
                 style={{
-                  backgroundColor: "#f8f9fa",
                   paddingTop: "10px",
                   paddingBottom: "10px",
                 }}
@@ -410,7 +409,7 @@ export default function StudentsTab(props) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon name="mail" style={{ color: '#333333'}} />
+                <Icon name="mail" style={{ color: 'var(--text-primary)'}} />
               </a>
             </div>
           </div>,
