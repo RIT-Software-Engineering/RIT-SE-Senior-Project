@@ -333,7 +333,10 @@ export default function StudentsTab(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon name="mail" style={{ color: "var(--text-primary)" }} />
+                    <Icon
+                      name="mail"
+                      style={{ color: "var(--text-primary)" }}
+                    />
                   </a>
                 </div>
               </div>,
@@ -389,7 +392,6 @@ export default function StudentsTab(props) {
                 text="Sort By"
                 direction="left"
                 floating
-                button
                 compact
                 value={sortBy[semester.semester_id] || null}
                 onChange={(e, { value }) =>
@@ -409,7 +411,7 @@ export default function StudentsTab(props) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon name="mail" style={{ color: 'var(--text-primary)'}} />
+                <Icon name="mail" style={{ color: "var(--text-primary)" }} />
               </a>
             </div>
           </div>,
