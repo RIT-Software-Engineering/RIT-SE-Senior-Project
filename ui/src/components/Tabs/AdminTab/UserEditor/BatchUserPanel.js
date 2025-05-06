@@ -6,12 +6,11 @@ import { config } from "../../../util/functions/constants";
 
 const UPLOAD_BUTTON_TEXT = "Upload";
 
-export default function BatchUserPanel({callback}) {
+export default function BatchUserPanel({ callback }) {
   const [users, setUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const fileInput = useRef();
   const [failedUsers, setFailedUsers] = useState([]);
-
 
   const onFileUpload = (event) => {
     const fileReader = new FileReader();
@@ -45,26 +44,33 @@ export default function BatchUserPanel({callback}) {
       method: "post",
       body: body,
     })
-    .then((response) => {
-      if (response.ok) return response.json();
-      return response.json().then((err) => Promise.reject(err));
-    })
-    .then((response) => {
-      if (response.failedUsers.length > 0) {
-        setFailedUsers(response.failedUsers.map(f => f.user.system_id));
-        alert("Some users failed to upload.");
-      } else {
-        setFailedUsers([]);
-        alert("Users successfully created!");
-        setModalOpen(false);
-        setUsers([]);
-        callback?.();
-      }
-    })
-    .catch((err) => {
-      alert("An unknown error has occurred in the UI: " + JSON.stringify(err));
-    });
-    
+      .then((response) => {
+        if (response.ok) return response.json();
+        return response.json().then((err) => Promise.reject(err));
+      })
+      .then((response) => {
+        if (response.failedUsers.length > 0) {
+          setFailedUsers(response.failedUsers.map((f) => f.user.system_id));
+          alert("Some users failed to upload.");
+        } else {
+          setFailedUsers([]);
+          alert("Users successfully created!");
+          setModalOpen(false);
+          setUsers([]);
+          callback?.();
+        }
+      })
+      .catch((err) => {
+        alert(
+          "An unknown error has occurred in the UI: " + JSON.stringify(err),
+        );
+      });
+  };
+
+  const handleCancel = () => {
+    setModalOpen(false);
+    setUsers([]);
+    callback?.();
   };
 
   const clearData = () => {
@@ -94,18 +100,20 @@ export default function BatchUserPanel({callback}) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-  {users.map((user, idx) => {
-    const isError = failedUsers.includes(user.system_id);
-    return (
-      <Table.Row key={idx} style={isError ? { backgroundColor: "#ffdddd" } : {}}>
-        {Object.keys(user).map((key) => (
-          <Table.Cell key={key}>{user[key]}</Table.Cell>
-        ))}
-      </Table.Row>
-    );
-  })}
-</Table.Body>
-
+              {users.map((user, idx) => {
+                const isError = failedUsers.includes(user.system_id);
+                return (
+                  <Table.Row
+                    key={idx}
+                    style={isError ? { backgroundColor: "#ffdddd" } : {}}
+                  >
+                    {Object.keys(user).map((key) => (
+                      <Table.Cell key={key}>{user[key]}</Table.Cell>
+                    ))}
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
           </Table>
         </>
       );
@@ -154,7 +162,7 @@ export default function BatchUserPanel({callback}) {
         if (event.target?.innerText !== UPLOAD_BUTTON_TEXT) setModalOpen(false);
       }} // Don't close modal if close was triggered by pressing the upload button
       actions={[
-        { key: "Cancel", content: "Cancel" },
+        { key: "Cancel", content: "Cancel", onClick: handleCancel },
         {
           key: UPLOAD_BUTTON_TEXT,
           content: UPLOAD_BUTTON_TEXT,
