@@ -23,7 +23,7 @@ export default function TimelineCheckboxes(props) {
       <Checkbox
         toggle
         className="timeline-checkbox"
-        label="Gantt"
+        label="Action View"
         defaultChecked={props.ganttVisible}
         onChange={ganttChange}
       />

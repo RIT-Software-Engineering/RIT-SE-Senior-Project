@@ -38,6 +38,7 @@ export function Calendar(props) {
     getVariableHolidays(currentYear);
   }, [currentYear]);
 
+
   function getVariableHolidays(year) {
     // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
     This_Years_Holidays = { ...SPECIAL_DATES };
