@@ -61,6 +61,7 @@ function ActionToolTip(props) {
             key={"editAction-" + props.index}
           />
           <PreviewHtml
+            autoLoadSubmissions={props.autoLoadSubmissions}
             trigger={
               <Button fluid className="view-action-button">
                 View Action
@@ -69,6 +70,8 @@ function ActionToolTip(props) {
             isOpenCallback={isOpenCallback}
             action={props.action}
             semesterName={props.semesterName}
+            projectName={props.projectName}
+            projectId={props.projectId}
             header={`Currently Viewing "${props.action.action_title}"`}
             key={"viewHtml-" + props.index}
           />

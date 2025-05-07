@@ -215,10 +215,9 @@ export default function DatabaseTableEditor(props) {
               value === "student_announcement")) ||
           (name === "type" && (value === "admin" || value === "coach"))
         ) {
-          newErrors = newErrors.filter(
-            (error) =>
-              error.name !== "short_desc" && error.name !== "semester_group",
-          );
+          newErrors = newErrors.filter((error) => error.name !== "short_desc");
+        } else if (name === "action_target" && value === "break_period") {
+          newErrors = newErrors.filter((error) => error.name !== "page_html");
         }
         newErrors = newErrors.filter(
           (error) =>
@@ -296,6 +295,11 @@ export default function DatabaseTableEditor(props) {
           ) {
             // hide input fields if peer_eval / announcements are chosen.
             break;
+          } else if (
+            formData.action_target === "break_period" &&
+            (field.name === "file_types" || field.name === "file_size")
+          ) {
+            break;
           } else {
             if (field.name === "file_types" || field.name === "file_size") {
               // not required
@@ -371,7 +375,8 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
               />,
             );
-          } else {
+            // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
+          } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
               <Form.Field key={field.name} required>
                 <label>{field.label}</label>
@@ -619,8 +624,7 @@ export default function DatabaseTableEditor(props) {
         key: "cancel",
         content: "Cancel",
         onClick: (event) => handleCancel(event),
-        positive: true,
-        style: { backgroundColor: "grey" },
+        color: "grey",
       },
       {
         key: "submit",
@@ -629,6 +633,8 @@ export default function DatabaseTableEditor(props) {
           ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
           : "Submit",
         onClick: (event) => handleSubmit(event),
+        labelPosition: "right",
+        icon: "check",
         positive: true,
       },
     ];

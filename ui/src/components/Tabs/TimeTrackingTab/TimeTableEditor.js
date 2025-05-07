@@ -492,6 +492,9 @@ export default function TimeTableEditor(props) {
         </Modal.Content>
 
         <Modal.Actions>
+          <Button color="grey" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
           <Button
             content={"Submit"}
             labelPosition="right"
@@ -499,7 +502,6 @@ export default function TimeTableEditor(props) {
             positive
             onClick={() => handleSubmit()}
           />
-          <Button onClick={() => setOpen(false)}>Close</Button>
         </Modal.Actions>
       </Modal>
 

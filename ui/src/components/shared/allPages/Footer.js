@@ -3,15 +3,39 @@ import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
 import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 
-
 function Footer() {
   const { user } = useContext(UserContext);
   const [signedIn, setSignedIn] = useState(false);
+  // Initialize darkMode from localStorage (default: false)
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("darkMode") === "enabled",
+  );
+
   useEffect(() => {
     // A user is considered signed in if the user object has a value
-    // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
+
+  useEffect(() => {
+    // On mount, update the body class based on darkMode
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    if (darkMode) {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("darkMode", "disabled");
+      setDarkMode(false);
+    } else {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("darkMode", "enabled");
+      setDarkMode(true);
+    }
+  };
 
   if (signedIn) {
     return (
@@ -31,10 +55,15 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  V.1.7.2
+                  v1.7.3
                 </a>
               </h5>
             </div>
+          </div>
+          <div className="centered row">
+            <button className="ui button" onClick={toggleDarkMode}>
+              {darkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </div>
@@ -45,13 +74,13 @@ function Footer() {
         <div id="bringMeDownSignedIn" className="ui container stackable grid">
           <div className="three column row">
             <div className="column">
-            <img
+              <img
                 src={collegeLogo}
                 alt="Golisano College of Computing & Information Sciences"
                 style={{
-                  maxWidth: "200px", 
-                  width: "100%", 
-                  height: "auto", 
+                  maxWidth: "200px",
+                  width: "100%",
+                  height: "auto",
                 }}
               />
             </div>
@@ -72,11 +101,22 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div className="centered row">
+          <div
+            className="centered row"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
             </h5>
+            <button className="ui button" onClick={toggleDarkMode}>
+              {darkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </div>

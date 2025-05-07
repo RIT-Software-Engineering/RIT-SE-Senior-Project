@@ -159,11 +159,13 @@ export default function ActionPanel(props) {
     }
 
     // check for page_html
-    if (!data.page_html?.trim()) {
-      errorsFound.push({
-        name: "page_html",
-        message: "Please provide the Page Html",
-      });
+    if (data.action_target !== "break_period") {
+      if (!data.page_html?.trim()) {
+        errorsFound.push({
+          name: "page_html",
+          message: "Please provide the Page Html",
+        });
+      }
     }
 
     // date validations

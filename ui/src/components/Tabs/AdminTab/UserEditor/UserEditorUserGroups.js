@@ -4,6 +4,7 @@ import { config, USERTYPES } from "../../../util/functions/constants";
 import _ from "lodash";
 import StudentTeamTable from "../../StudentsTab/StudentTeamTable";
 import { SecureFetch } from "../../../util/functions/secureFetch";
+import { isSemesterActive } from "../../../util/functions/utils";
 
 /**
  * FIXME: This whole component should be redesigned to only
@@ -29,7 +30,7 @@ export default function UserEditorUserGroups(props) {
     setActiveIndexes((prev) =>
       prev.includes(semesterId)
         ? prev.filter((id) => id !== semesterId)
-        : [...prev, semesterId]
+        : [...prev, semesterId],
     );
   };
 
@@ -219,6 +220,11 @@ export default function UserEditorUserGroups(props) {
   groupings = groupUsers(props.studentData, props.userData, projectMap);
 
   semesterAccordions = Object.keys(groupings["semesters"]).map((semesterId) => {
+    let active = isSemesterActive(
+      semesterMap[semesterId]["start_date"],
+      semesterMap[semesterId]["end_date"],
+    );
+
     return {
       endDate: semesterMap[semesterId]?.end_date,
       startDate: semesterMap[semesterId]?.start_date,
@@ -227,15 +233,17 @@ export default function UserEditorUserGroups(props) {
           key={semesterId}
           fluid
           styled
-          panels={[{
-            key: semesterId,
-            title: `${semesterMap[semesterId].name}`,
-            content: {
-              content: activeIndexes.includes(semesterId)
-                ? createSemesterAccordion(groupings.semesters[semesterId])
-                : null,
+          panels={[
+            {
+              key: semesterId,
+              title: `${semesterMap[semesterId].name}`,
+              content: {
+                content: activeIndexes.includes(semesterId)
+                  ? createSemesterAccordion(groupings.semesters[semesterId])
+                  : null,
+              },
             },
-          }]}
+          ]}
           onTitleClick={() => handleAccordionClick(semesterId)}
         />
       ),

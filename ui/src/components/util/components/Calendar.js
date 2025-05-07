@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react"
-import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js"
-import _ from "lodash"
-import "../../../css/calendar.css"
+import { useState, useEffect } from "react";
+import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
+import _ from "lodash";
+import "../../../css/calendar.css";
+import { Popup } from "semantic-ui-react";
 
 const SPECIAL_DATES = {
   "01-01": "New Year's Day",
@@ -10,92 +11,105 @@ const SPECIAL_DATES = {
   "12-24": "Christmas Eve",
   "12-25": "Christmas Day",
   "12-26": "St. Stephen's Day",
-  "12-31": "New Year's Eve"
+  "12-31": "New Year's Eve",
 };
 
 // this holds the holidays for the year, gets reset when the year changes
 var This_Years_Holidays = {};
 
 export function Calendar(props) {
-  const [currentDate, setCurrentDate] = useState(props.initialDate)
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [hoveredDay, setHoveredDay] = useState(null)
-  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
-  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+  const [currentDate, setCurrentDate] = useState(props.initialDate);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [hoveredDay, setHoveredDay] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
+  const [selectedPopUp, setSelectedPopUp] = useState(false);
 
   // want reload on date change
   useEffect(() => {
-    setCurrentMonth(currentDate.getMonth())
-    setCurrentYear(currentDate.getFullYear())
-  }, [currentDate])
+    setCurrentMonth(currentDate.getMonth());
+    setCurrentYear(currentDate.getFullYear());
+  }, [currentDate]);
 
   // only want re-calculation on year change
   useEffect(() => {
-    getVariableHolidays(currentYear)
-  }, [currentYear])
+    getVariableHolidays(currentYear);
+  }, [currentYear]);
 
   function getVariableHolidays(year) {
     // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
-    This_Years_Holidays = {...SPECIAL_DATES};
+    This_Years_Holidays = { ...SPECIAL_DATES };
     console.log("reset holidays", This_Years_Holidays);
 
     function getNthDayOfMonth(n, day, month) {
-        let date = new Date(year, month, 1);
-        let count = 0;
-        while (date.getMonth() === month) {
-            if (date.getDay() === day) {
-                count++;
-                if (count === n) return date;
-            }
-            date.setDate(date.getDate() + 1);
+      let date = new Date(year, month, 1);
+      let count = 0;
+      while (date.getMonth() === month) {
+        if (date.getDay() === day) {
+          count++;
+          if (count === n) return date;
         }
-        return null;
+        date.setDate(date.getDate() + 1);
+      }
+      return null;
     }
-  
-    function getLastThursdayOfNovember() {
-        let date = new Date(year, 10, 30); // Start at Nov 30
-        while (date.getDay() !== 4) { // Thursday
-            date.setDate(date.getDate() - 1);
-        }
-        return date;
-    }
-  
-    function getDayAfter(date) {
-        let nextDay = new Date(date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        return nextDay;
-    }
-  
-    const variableHolidays = {
-        "Memorial Day": getNthDayOfMonth(4, 1, 4), // Last Monday of May
-        "Labor Day": getNthDayOfMonth(1, 1, 8), // First Monday of September
-        "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
-        "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember())
-    };
 
-    console.log("variableHolidays", variableHolidays, "\n", This_Years_Holidays);
-  
+    function getLastThursdayOfNovember() {
+      let date = new Date(year, 10, 30); // Start at Nov 30
+      while (date.getDay() !== 4) {
+        // Thursday
+        date.setDate(date.getDate() - 1);
+      }
+      return date;
+    }
+
+    function getDayAfter(date) {
+      let nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
+      return nextDay;
+    }
+
+    const variableHolidays = {
+      "Memorial Day": getNthDayOfMonth(4, 1, 4), // Last Monday of May
+      "Labor Day": getNthDayOfMonth(1, 1, 8), // First Monday of September
+      "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
+      "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember()),
+    };
     Object.entries(variableHolidays).forEach(([name, date]) => {
-        const key = date.toISOString().slice(5, 10);
-        This_Years_Holidays[key] = name;
+      const key = date.toISOString().slice(5, 10);
+      This_Years_Holidays[key] = name;
     });
   }
-    
 
   //actions dont nativly have a color field for display, this adds it for the calendar
   const sortedActions = _.sortBy(
     props.actions.map((action) => ({
       ...action,
-      color: action.state === "green" ? "#0000ff" : "#fd2723",
+      color: (() => {
+        switch (action.state) {
+          case "yellow":
+            return "#885601";
+          case "red":
+            return "#fd2723";
+          case "green":
+            return "#0000ff";
+          case "grey":
+            return "#484848";
+          case "purple":
+            return "#b66dff";
+          default: //defaults to grey
+            return `#484848`;
+        }
+      })(),
     })),
     ["due_date", "start_date", "action_title"],
-  )
+  );
 
   // Get days in month
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   // Get first day of month (0 = Sunday, 1 = Monday, etc.)
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
   // Month names
   const monthNames = [
@@ -111,25 +125,29 @@ export function Calendar(props) {
     "October",
     "November",
     "December",
-  ]
+  ];
 
   // Navigate to previous month
   const prevMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth - 1, 1))
-    setCurrentMonth(currentMonth - 1)
-  }
+    setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+    setCurrentMonth(currentMonth - 1);
+  };
 
   // Navigate to next month
   const nextMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
-    setCurrentMonth(currentMonth + 1)
-  }
+    setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+    setCurrentMonth(currentMonth + 1);
+  };
 
   // Check if a date is today
   const isToday = (day) => {
-    const today = new Date()
-    return day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()
-  }
+    const today = new Date();
+    return (
+      day === today.getDate() &&
+      currentMonth === today.getMonth() &&
+      currentYear === today.getFullYear()
+    );
+  };
 
   // Check if a date is selected
   const isSelected = (day) => {
@@ -137,34 +155,63 @@ export function Calendar(props) {
       selectedDate?.getDate() === day &&
       selectedDate?.getMonth() === currentMonth &&
       selectedDate?.getFullYear() === currentYear
-    )
-  }
+    );
+  };
 
   // Get actions for a specific day
+  // Actions are displayed in a hierarchical order: TOP (Holidays, breaks, tasks) BOTTOM
   const getActionsForDay = (day) => {
-    const date = new Date(currentYear, currentMonth, day)
-    const monthDay = `${date.toLocaleString("default", { month: "2-digit" })}-${date.toLocaleString("default", { day: "2-digit" })}`
+    const date = new Date(currentYear, currentMonth, day);
+    const monthDay = `${date.toLocaleString("default", { month: "2-digit" })}-${date.toLocaleString("default", { day: "2-digit" })}`;
+    const actions = sortedActions.filter((action) => {
+      const actionStart = new Date(action.start_date);
+      const actionEnd = new Date(action.due_date);
+      return (
+        date >= new Date(actionStart.setHours(0, 0, 0, 0)) &&
+        date <= new Date(actionEnd.setHours(23, 59, 59, 999))
+      );
+    });
     if (This_Years_Holidays[monthDay]) {
       // add special holiday
-      sortedActions.push({ action_title: This_Years_Holidays[monthDay], start_date: date, due_date: date, color: "#b66dff" })
+      actions.unshift({
+        action_title: This_Years_Holidays[monthDay],
+        start_date: date,
+        due_date: date,
+        color: "#b66dff",
+        state: "purple",
+        action_target: "break_period",
+      });
     }
-    return sortedActions.filter((action) => {
-      const actionStart = new Date(action.start_date)
-      const actionEnd = new Date(action.due_date)
-      return date >= new Date(actionStart.setHours(0, 0, 0, 0)) && date <= new Date(actionEnd.setHours(23, 59, 59, 999))
-    })
-  }
+    return actions.sort((a, b) => {
+      if (a.action_target === "break_period") return -1;
+      if (b.action_target === "break_period") return 1;
+      if (a.action_target === "holiday") return -1;
+      if (b.action_target === "holiday") return 1;
+      return 0;
+    });
+  };
 
   // Check if an action starts on a specific day
   const actionStartsOnDay = (action, day) => {
-    const date = new Date(currentYear, currentMonth, day)
-    const actionStart = new Date(action.start_date)
+    const date = new Date(currentYear, currentMonth, day);
+    const actionStart = new Date(action.start_date);
     return (
       date.getDate() === actionStart.getDate() &&
       date.getMonth() === actionStart.getMonth() &&
       date.getFullYear() === actionStart.getFullYear()
-    )
-  }
+    );
+  };
+
+  // Check if an action ends on a specific day
+  const actionEndsOnDay = (action, day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    const actionEnd = new Date(action.due_date);
+    return (
+      date.getDate() === actionEnd.getDate() &&
+      date.getMonth() === actionEnd.getMonth() &&
+      date.getFullYear() === actionEnd.getFullYear()
+    );
+  };
 
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
@@ -173,30 +220,99 @@ export function Calendar(props) {
     return {
       top: index * 20, // 20px per action
       isStart: actionStartsOnDay(action, new Date(action.start_date).getDate()),
-    }
-  }
+    };
+  };
+
+  // Creates and styles the actions for that particular day
+  const generateActionsForDay = (actionsForDay, day) => {
+    console.log(day, actionsForDay);
+    return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
+      const position = calculateActionPosition(action, index);
+      const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
+      const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`;
+
+      const actionStyle = {
+        top: `${position.top}px`,
+        backgroundColor: "inherit",
+        border: `2px solid ${action.color}`,
+        left: "0",
+      };
+
+      // checks conditions for action arrows which signify the duration of the action
+      // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
+      // there is a little formating magic taking place, full space characters(　) are added to the string to make them all the same width
+      let actionTitleWithArrows = action.action_title;
+      if (actionStartsOnDay(action, day) && !actionEndsOnDay(action, day)) {
+        actionTitleWithArrows = `　${actionTitleWithArrows} ►`;
+      } else if (
+        actionEndsOnDay(action, day) &&
+        !actionStartsOnDay(action, day)
+      ) {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows}　`;
+      } else {
+        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
+      }
+
+      // for strikethrough (completed actions)
+      const actionContent =
+        action.state === "green" ? (
+          <s>{actionTitleWithArrows}</s>
+        ) : (
+          actionTitleWithArrows
+        );
+
+      const trigger = (
+        <div
+          key={`action-${action.action_id}-${day}`}
+          className="calendar-action"
+          style={actionStyle}
+          title={`${action.action_title} (${start} - ${end})`}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent day click
+            console.log("trigger clicked", day, action);
+          }}
+        >
+          {actionContent}
+        </div>
+      );
+      return (
+        // Add ToolTip to each action for the popup
+        <ToolTip
+          zIndex={10 + index}
+          autoLoadSubmissions={props.autoLoadSubmissions}
+          color={action.color}
+          noPopup={props.noPopup}
+          trigger={trigger}
+          action={action}
+          projectId={props.projectId}
+          semesterName={props.semesterName}
+          projectName={props.projectName}
+          key={`tooltip-${action.action_title}-${action.action_id}-${day}`}
+          reloadTimelineActions={props.reloadTimelineActions}
+        />
+      );
+    });
+  };
 
   // Button hover state
-  const [prevHovered, setPrevHovered] = useState(false)
-  const [nextHovered, setNextHovered] = useState(false) 
+  const [prevHovered, setPrevHovered] = useState(false);
+  const [nextHovered, setNextHovered] = useState(false);
 
   // Generate calendar days
   const generateCalendarDays = () => {
-    const days = []
-    const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1000
+    const days = [];
 
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>)
+      days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
     }
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const isCurrentDay = isToday(day)
-      const isDaySelected = isSelected(day)
-      const actionsForDay = getActionsForDay(day)
-      const maxVisibleActions = windowWidth <= 360 ? 1 : windowWidth <= 768 ? 2 : 3
-      const hasMoreActions = actionsForDay.length > maxVisibleActions
+      const isCurrentDay = isToday(day);
+      const isDaySelected = isSelected(day);
+      const actionsForDay = getActionsForDay(day);
+      const maxVisibleActions = 3;
 
       // Determine day classes for styling
       const dayClasses = [
@@ -206,7 +322,7 @@ export function Calendar(props) {
         hoveredDay === day ? "hovered" : "",
       ]
         .filter(Boolean)
-        .join(" ")
+        .join(" ");
 
       days.push(
         <div
@@ -215,66 +331,53 @@ export function Calendar(props) {
           onMouseEnter={() => setHoveredDay(day)}
           onMouseLeave={() => setHoveredDay(null)}
           onClick={() => {
-            setSelectedDate(new Date(currentYear, currentMonth, day))
+            setSelectedDate(new Date(currentYear, currentMonth, day));
           }}
         >
-          <div className={`day-number ${isCurrentDay ? "today" : ""}`}>{day}</div>
+          <div className={`day-number ${isCurrentDay ? "today" : ""}`}>
+            {day}
+          </div>
           <div className="action-container">
-            {actionsForDay.slice(0, maxVisibleActions).map((action, index) => {
-              const position = calculateActionPosition(action, index)
-              const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`
-              const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`
-
-              // Add z-index to ensure proper stacking of overlapping actions
-              const actionStyle = {
-                top: `${position.top}px`,
-                backgroundColor: action.color,
-                borderLeft: position.isStart ? "none" : "4px solid transparent",
-                left: position.isStart ? "0" : "-4px",
-                zIndex: 10 + index, // Add z-index based on index
-              }
-
-              // for strikethrough (completed actions)
-              const actionContent = action.color === "#0000ff" ? <s>{action.action_title}</s> : action.action_title
-
-              const trigger = (
-                <div
-                  key={`action-${action.action_id}-${day}`}
-                  className="calendar-action"
-                  style={actionStyle}
-                  title={`${action.action_title} (${start} - ${end})`}
-                  onClick={(e) => {
-                    e.stopPropagation() // Prevent day click
-                    console.log("trigger clicked", day, action)
-                  }}
-                >
-                  {actionContent}
-                </div>
-              )
-              return (
-                // Add ToolTip to each action for the popup
-                <ToolTip
-                  autoLoadSubmissions={props.autoLoadSubmissions}
-                  color={action.color}
-                  noPopup={props.noPopup}
-                  trigger={trigger}
-                  action={action}
-                  projectId={props.projectId}
-                  semesterName={props.semesterName}
-                  projectName={props.projectName}
-                  key={`tooltip-${action.action_title}-${action.action_id}-${day}`}
-                  reloadTimelineActions={props.reloadTimelineActions}
-                />
-              )
-            })}
-            {hasMoreActions && <div className="more-actions">+{actionsForDay.length - maxVisibleActions} more</div>}
+            {actionsForDay.length > maxVisibleActions ? (
+              <Popup
+                on="click"
+                flowing={true}
+                exclusive={false}
+                keepInViewPort={true}
+                closeOnDocumentClick={false}
+                className="calendar-day"
+                style={{ width: "150px", overflow: "auto", zIndex: 10 }}
+                content={generateActionsForDay(actionsForDay, day)}
+                basic={true}
+                trigger={
+                  <div
+                    key={`action-${1}-${day}`}
+                    className="calendar-action"
+                    style={{
+                      top: `0`,
+                      backgroundColor: "grey",
+                      borderLeft: "none",
+                      left: "0",
+                      zIndex: 10,
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent day click
+                    }}
+                  >
+                    {`${actionsForDay.length} actions`}
+                  </div>
+                }
+              />
+            ) : (
+              generateActionsForDay(actionsForDay, day)
+            )}
           </div>
         </div>,
-      )
+      );
     }
 
-    return days
-  }
+    return days;
+  };
 
   return (
     <div className="calendar">
@@ -287,7 +390,9 @@ export function Calendar(props) {
         >
           {"<"}
         </button>
-        <div className="current-month"> {/* DROP DOWN for month and year */}
+        <div className="current-month">
+          {" "}
+          {/* DROP DOWN for month and year */}
           <select
             value={currentMonth}
             onChange={(e) => setCurrentMonth(parseInt(e.target.value))}
@@ -306,7 +411,7 @@ export function Calendar(props) {
               <option key={i} value={currentYear - 5 + i}>
                 {currentYear - 5 + i}
               </option>
-          ))}
+            ))}
           </select>
         </div>
         <button
@@ -320,32 +425,18 @@ export function Calendar(props) {
       </div>
 
       <div className="calendar-days-header">
-          <div className="day-name">
-            Sunday
-          </div>
-          <div className="day-name">
-            Monday
-          </div>
-          <div className="day-name">
-            Tuesday
-          </div>
-          <div className="day-name">
-            Wednesday
-          </div>
-          <div className="day-name">
-            Thursday
-          </div>
-          <div className="day-name">
-            Friday
-          </div>
-          <div className="day-name">
-            Saturday
-          </div>
+        <div className="day-name">Sunday</div>
+        <div className="day-name">Monday</div>
+        <div className="day-name">Tuesday</div>
+        <div className="day-name">Wednesday</div>
+        <div className="day-name">Thursday</div>
+        <div className="day-name">Friday</div>
+        <div className="day-name">Saturday</div>
       </div>
 
       <div className="calendar-grid">{generateCalendarDays()}</div>
     </div>
-  )
+  );
 }
 
-export default Calendar
+export default Calendar;
