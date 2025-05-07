@@ -7,10 +7,13 @@ const BASE_URL =
     ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
     : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
+const TINYMCE_API_KEY = process.env.REACT_APP_TINYMCE_API_KEY;
+
 export const config = {
   url: {
     BASE_URL: BASE_URL,
     BASE_API_URL: BASE_API_URL,
+    TINYMCE_API_KEY: TINYMCE_API_KEY,
     WWW: `${BASE_URL}/www`,
     LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
 

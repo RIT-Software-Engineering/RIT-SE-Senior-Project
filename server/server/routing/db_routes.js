@@ -9,6 +9,7 @@ const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require("filesize-parser");
 const he = require("he");
+const {convert} = require('html-to-text');
 const redeployDatabase = require("../../db_setup");
 
 function humanFileSize(bytes, si = false, dp = 1) {
@@ -2160,7 +2161,7 @@ module.exports = (db) => {
             doc
               .fontSize(12)
               .fill("black")
-              .text(he.decode(body[key].replace(/\r\n|\r/g, "\n"))); // Text value from proposal
+              .text(convert(he.decode(body[key]||''))); // Text value from proposal
             doc.moveDown();
             doc.save();
           }
