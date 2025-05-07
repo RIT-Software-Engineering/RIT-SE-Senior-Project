@@ -230,7 +230,6 @@
   .calendar-grid {
     padding: 6px;
   }
-
 }
 
 @media (max-width: 360px) {
@@ -243,7 +242,6 @@
   .calendar-grid {
     gap: 1px;
   }
-
 }
 
 /* Dark mode specific adjustments for better contrast */
@@ -263,4 +261,3 @@
 .dark-mode .calendar-action s {
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
-

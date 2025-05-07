@@ -323,49 +323,45 @@ module.exports = (db) => {
 
   db_router.post(
     "/batchCreateUser",
-    [
-      UserAuth.isAdmin,
-      // TODO: Add more validation
-    ],
+    [UserAuth.isAdmin],
     async (req, res, next) => {
-      let result = validationResult(req);
+      try {
+        let users = JSON.parse(req.body.users);
+        const failedUsers = [];
+        const successUsers = [];
 
-      if (result.errors.length !== 0) {
-        const error = new Error("Validation Error");
-        error.statusCode = 400;
+        for (const user of users) {
+          const values = [
+            user.system_id,
+            user.fname,
+            user.lname,
+            user.email,
+            user.type,
+            user.semester_group === "" ? null : user.semester_group,
+            user.active.toLocaleLowerCase() === "false"
+              ? moment().format(CONSTANTS.datetime_format)
+              : "",
+          ];
+
+          try {
+            await db.query(
+              `INSERT INTO ${DB_CONFIG.tableNames.users} 
+              (system_id, fname, lname, email, type, semester_group, active) 
+              VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              values,
+            );
+            successUsers.push(user);
+          } catch (err) {
+            failedUsers.push({ user, error: err.message });
+          }
+        }
+
+        res.status(200).json({ successUsers, failedUsers });
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
         return next(error);
       }
-
-      let users = JSON.parse(req.body.users);
-
-      const placeholders = users.map(() => `(?, ?, ?, ?, ?, ?, ?)`).join(",");
-      const values = users.flatMap((user) => {
-        const active =
-          user.active.toLocaleLowerCase() === "false"
-            ? moment().format(CONSTANTS.datetime_format)
-            : "";
-        return [
-          user.system_id,
-          user.fname,
-          user.lname,
-          user.email,
-          user.type,
-          user.semester_group === "" ? null : user.semester_group,
-          active,
-        ];
-      });
-
-      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
-      (system_id, fname, lname, email, type, semester_group, active) 
-      VALUES ${placeholders}`;
-
-      db.query(sql, values)
-        .then((result) => res.status(200).send(result))
-        .catch((err) => {
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        });
     },
   );
 

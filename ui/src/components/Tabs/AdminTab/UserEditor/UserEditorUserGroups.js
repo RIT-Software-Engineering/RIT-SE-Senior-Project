@@ -24,6 +24,16 @@ export default function UserEditorUserGroups(props) {
   let projectMap = {};
   let semesterAccordions = [];
 
+  const [activeIndexes, setActiveIndexes] = useState([]);
+
+  const handleAccordionClick = (semesterId) => {
+    setActiveIndexes((prev) =>
+      prev.includes(semesterId)
+        ? prev.filter((id) => id !== semesterId)
+        : [...prev, semesterId],
+    );
+  };
+
   function groupUsers(studentData, userData, projectMap) {
     let semesterMap = { semesters: [] };
 
@@ -225,16 +235,16 @@ export default function UserEditorUserGroups(props) {
           styled
           panels={[
             {
-              key: "StudentsTab-semester-selector-" + semesterId,
-              title: `${semesterMap[semesterId]["name"]} (${Object.keys(groupings["semesters"][semesterId])?.length})`,
-              active: active,
+              key: semesterId,
+              title: `${semesterMap[semesterId].name}`,
               content: {
-                content: createSemesterAccordion(
-                  groupings["semesters"][semesterId],
-                ),
+                content: activeIndexes.includes(semesterId)
+                  ? createSemesterAccordion(groupings.semesters[semesterId])
+                  : null,
               },
             },
           ]}
+          onTitleClick={() => handleAccordionClick(semesterId)}
         />
       ),
     };
