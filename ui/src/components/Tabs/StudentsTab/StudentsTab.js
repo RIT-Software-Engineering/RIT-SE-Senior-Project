@@ -287,7 +287,10 @@ export default function StudentsTab(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon name="mail" />
+                     <Icon
+                      name="mail"
+                      style={{ color: "var(--text-primary)" }}
+                    />
                   </a>
                 </div>
               </div>,
@@ -343,7 +346,10 @@ export default function StudentsTab(props) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon name="mail" />
+                 <Icon
+                      name="mail"
+                      style={{ color: "var(--text-primary)" }}
+                    />
               </a>
             </div>
           </div>,

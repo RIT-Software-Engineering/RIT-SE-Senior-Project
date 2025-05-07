@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Modal, Form, Radio, Divider } from "semantic-ui-react";
+import { Modal, Form, Radio, Divider, Button } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import "./../../css/components/proposal.css";
@@ -629,25 +629,28 @@ function ProposalPage() {
 
         <div className="row proposal-submit-buttons">
           <div>
-            <button
+            <Button
               className="ui deny left floated left labeled icon button"
+              color="grey"
               onClick={() => {
                 history.push("/sponsor");
               }}
             >
               Cancel
               <i className="times icon"></i>
-            </button>
+            </Button>
           </div>
           <div>
-            <button
+            <Button
+              positive
+              labelPosition="right"
+              icon="checkmark"
               id="formSubmit"
-              className="ui blue right floated left labeled icon button"
               form="proposalForm"
             >
               Submit
               <i className="checkmark icon"></i>
-            </button>
+            </Button>
           </div>
         </div>
       </Form>

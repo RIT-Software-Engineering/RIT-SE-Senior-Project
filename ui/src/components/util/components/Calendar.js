@@ -41,7 +41,7 @@ export function Calendar(props) {
   function getVariableHolidays(year) {
     // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
     This_Years_Holidays = { ...SPECIAL_DATES };
-    console.log("reset holidays", This_Years_Holidays);
+    //console.log("reset holidays", This_Years_Holidays);
 
     function getNthDayOfMonth(n, day, month) {
       let date = new Date(year, month, 1);
@@ -77,13 +77,6 @@ export function Calendar(props) {
       "Thanksgiving Day": getLastThursdayOfNovember(), // Fourth Thursday of November
       "Day After Thanksgiving": getDayAfter(getLastThursdayOfNovember()),
     };
-
-    console.log(
-      "variableHolidays",
-      variableHolidays,
-      "\n",
-      This_Years_Holidays,
-    );
 
     Object.entries(variableHolidays).forEach(([name, date]) => {
       const key = date.toISOString().slice(5, 10);
@@ -232,10 +225,9 @@ export function Calendar(props) {
       // Add z-index to ensure proper stacking of overlapping actions
       const actionStyle = {
         top: `${position.top}px`,
-        backgroundColor: action.color,
-        borderLeft: position.isStart ? "none" : "4px solid transparent",
-        left: position.isStart ? "0" : "-4px",
-        zIndex: 10 + index, // Add z-index based on index
+        backgroundColor: "inherit",
+        border: `2px solid ${action.color}`,
+        left: "0",
       };
 
       // for strikethrough (completed actions)
