@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import { config } from "../../util/functions/constants";
+import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [preference, setPreference] = useSessionStorage('displayPreference', 'gantt');
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   
 
@@ -28,6 +30,11 @@ const ProfileModal = ({ open, onClose, user }) => {
           sessionStorage.setItem("ganttView", gantt);
         })
         .catch((err) => console.error("Failed to fetch gantt view:", err));
+      
+      SecureFetch(config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => setAdditionalInfo(data?.additional_info || ""))
+        .catch((err) => console.error("Failed to fetch additional info:", err));
     }
   }, [open, user]);
   
@@ -75,6 +82,35 @@ const ProfileModal = ({ open, onClose, user }) => {
       console.error("Error updating gantt view:", err);
     }
   };
+
+const handleSaveAdditionalInfo = async () => {
+  try {
+    const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
+
+    const response = await SecureFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        system_id: user.user,
+        additional_info: additionalInfo,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update additional info");
+
+    setIsEditing(false);
+  } catch (error) {
+    console.error("Error updating additional info:", error);
+  }
+};
+  
+
+const handleClose = () => {
+  setIsEditing(false);
+  onClose();
+};
   
 
   return (
@@ -82,31 +118,79 @@ const ProfileModal = ({ open, onClose, user }) => {
       open={open}
       onClose={onClose}
       size="small"
-      header={`Hi, ${user.fname}!`}
-      content={
-        <>
-          <div>
-            <p>Toggle Dark Mode:</p>
+      centered={false}
+      style={{
+        position: "sticky",
+        top: "20%",
+        left: "0%",
+      }}
+    >
+      <Modal.Header>Hi, {user.fname}!</Modal.Header>
+      <Modal.Content>
+        {/* --- User Info --- */}
+        <div style={{ marginBottom: "2em" }}>
+          <p><strong>Name:</strong> {user.fname} {user.lname}</p>
+          <p><strong>Username:</strong> {user.user}</p>
+          <p><strong>Last Login:</strong> {user.last_login
+            ? new Date(user.last_login).toLocaleString()
+            : "Never Logged In"}
+          </p>
+        </div>
+  
+        {/* --- Additional Info (Students Only) --- */}
+        {user.role === USERTYPES.STUDENT && (
+          <div style={{ marginBottom: "2em" }}>
+            <strong>Additional Info:</strong>
+            {isEditing ? (
+              <>
+                <textarea
+                  value={additionalInfo}
+                  onChange={(e) => setAdditionalInfo(e.target.value)}
+                  rows={4}
+                  style={{ width: "100%" }}
+                />
+                <Button onClick={handleSaveAdditionalInfo} primary size="small" style={{ marginTop: "0.5em" }}>
+                  Save
+                </Button>
+                <Button onClick={() => setIsEditing(false)} size="small" style={{ marginLeft: "0.5em", marginTop: "0.5em" }}>
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <>
+                <span style={{ marginLeft: "0.5em" }}>{additionalInfo || "No additional info available"}</span>
+                <Button onClick={() => setIsEditing(true)} size="small" style={{ marginLeft: "0.5em" }}>
+                  Edit
+                </Button>
+              </>
+            )}
+          </div>
+        )}
+  
+        {/* --- Preferences Section --- */}
+        <div style={{ borderTop: "1px solid #ccc", paddingTop: "1em" }}>
+          <h4 style={{ marginBottom: "1em" }}>Preferences:</h4>
+  
+          <div style={{ marginBottom: "1em" }}>
+            <p><strong>Dark Mode:</strong></p>
             <Button toggle active={darkMode} onClick={toggleDarkMode}>
               {darkMode ? "Dark Mode On" : "Dark Mode Off"}
             </Button>
           </div>
+  
           <div>
-            <p>Gantt or Calendar View:</p>
+            <p><strong>Gantt or Calendar View:</strong></p>
             <Button toggle active={preference} onClick={toggleGanttView}>
               {preference ? "Viewing Calendar" : "Viewing Gantt"}
             </Button>
           </div>
-        </>
-      }
-      actions={[
-        {
-          key: "close",
-          content: "Close",
-          onClick: onClose,
-        },
-      ]}
-    />
+        </div>
+      </Modal.Content>
+  
+      <Modal.Actions>
+        <Button onClick={handleClose}>Close</Button>
+      </Modal.Actions>
+    </Modal>
   );
 };
 
