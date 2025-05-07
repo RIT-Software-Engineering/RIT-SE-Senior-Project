@@ -53,34 +53,36 @@ export default function ActionLogs(props) {
   const unassignedStudentsStr = "Unassigned students";
 
   const getSubmissions = () => {
-    SecureFetch(config.url.API_GET_SUBMISSIONS)
+    if(userContext.user?.role !== USERTYPES.STUDENT) {
+      SecureFetch(config.url.API_GET_SUBMISSIONS)
         .then((response) => response.json())
         .then((submissions) => {
-            if (submissions.length > 0) {
-                // const formData = JSON.parse(submission[0].form_data.toString());
-                // const fileData = submission[0].files?.split(",");
-                // setSubmission(formData);
-                // setFiles(fileData);
-                // setNoSubmission(formData.length === 0 && files.length === 0);
-                
-                let actionSubmissions = [];
-                for(let i=0; i<submissions.length; i++) {
-                    let submissionsData = [];
-                    let formData = JSON.parse(submissions[i].form_data.toString());
-                    let fileData = submissions[i].files?.split(",");
-                    let logId = submissions[i].action_log_id;
-                    let actionId = submissions[i].action_id;
-                    let dueDate = new Date(submissions[i].due_date);
-                    dueDate.setDate(dueDate.getDate()+1);
-                    submissionsData.push([formData, fileData, logId, actionId, dueDate]);
-                    actionSubmissions.push(submissionsData);
-                }
-                setSubmissions(actionSubmissions);
+          if (submissions.length > 0) {
+            // const formData = JSON.parse(submission[0].form_data.toString());
+            // const fileData = submission[0].files?.split(",");
+            // setSubmission(formData);
+            // setFiles(fileData);
+            // setNoSubmission(formData.length === 0 && files.length === 0);
+            
+            let actionSubmissions = [];
+            for(let i=0; i<submissions.length; i++) {
+              let submissionsData = [];
+              let formData = JSON.parse(submissions[i].form_data.toString());
+              let fileData = submissions[i].files?.split(",");
+              let logId = submissions[i].action_log_id;
+              let actionId = submissions[i].action_id;
+              let dueDate = new Date(submissions[i].due_date);
+              dueDate.setDate(dueDate.getDate()+1);
+              submissionsData.push([formData, fileData, logId, actionId, dueDate]);
+              actionSubmissions.push(submissionsData);
             }
-        })
-        .catch((error) => {
-            alert("Failed to get submission data " + error);
-        });
+            setSubmissions(actionSubmissions);
+          }
+      })
+      .catch((error) => {
+          alert("Failed to get submission data " + error);
+      });
+    }
   }
 
   const getPaginationData = (page) => {
