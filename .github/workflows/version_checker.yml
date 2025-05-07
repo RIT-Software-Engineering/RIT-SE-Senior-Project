@@ -60,7 +60,7 @@ jobs:
           else
             echo "Milestone matches StackTraceErrorPage.js version"
           fi
-      
+
       - name: Extract version from server_doc.yaml
         id: extract_yaml_version
         run: |

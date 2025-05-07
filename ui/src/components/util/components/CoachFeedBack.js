@@ -473,19 +473,30 @@ export default function CoachFeedback(props) {
                   border: "none",
                   width: "100%",
                   color: "#4D5258",
+                  marginBottom: "10px",
                 }}
               />
             )}
-            <Button
-              attached="bottom"
-              onClick={(_) => OpenPopup(student)}
-              color="grey"
-              content={
-                customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
-                  ? "Generate AI Summarization with Custom Prompt"
-                  : "Generate AI Summarization"
-              }
-            />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Button
+                color="grey"
+                onClick={() => {
+                  setIsEditingPrompt(!isEditingPrompt);
+                  setTempPrompt(customPrompt);
+                }}
+              >
+                {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+              </Button>
+              <Button
+                onClick={(_) => OpenPopup(student)}
+                color="grey"
+                content={
+                  customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                    ? "Generate AI Summarization with Custom Prompt"
+                    : "Generate AI Summarization"
+                }
+              />
+            </div>
             <Confirm
               style={{
                 position: "fixed",
@@ -499,6 +510,7 @@ export default function CoachFeedback(props) {
               open={confirmedStates[student]}
               onCancel={() => ClosePopup(student)}
               onConfirm={() => handleGenerateSummarization(student, AIContext)}
+              cancelButton={{ content: "Cancel", color: "grey" }}
             />
 
             <Radio
@@ -508,17 +520,8 @@ export default function CoachFeedback(props) {
               value={usedAI[student] ? 1 : 0}
             />
             <div>
-              <Button
-                attached="bottom"
-                onClick={() => {
-                  setIsEditingPrompt(!isEditingPrompt);
-                  setTempPrompt(customPrompt);
-                }}
-              >
-                {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
-              </Button>
               {isEditingPrompt && (
-                <div style={{ marginTop: "10px" }}>
+                <div>
                   <textarea
                     value={tempPrompt}
                     onChange={(e) => setTempPrompt(e.target.value)}

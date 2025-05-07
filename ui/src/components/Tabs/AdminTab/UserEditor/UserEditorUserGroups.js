@@ -210,7 +210,10 @@ export default function UserEditorUserGroups(props) {
   groupings = groupUsers(props.studentData, props.userData, projectMap);
 
   semesterAccordions = Object.keys(groupings["semesters"]).map((semesterId) => {
-    let active = isSemesterActive(semesterMap[semesterId]["start_date"], semesterMap[semesterId]["end_date"]);
+    let active = isSemesterActive(
+      semesterMap[semesterId]["start_date"],
+      semesterMap[semesterId]["end_date"],
+    );
 
     return {
       endDate: semesterMap[semesterId]?.end_date,
@@ -220,7 +223,6 @@ export default function UserEditorUserGroups(props) {
           key={semesterId}
           fluid
           styled
-
           panels={[
             {
               key: "StudentsTab-semester-selector-" + semesterId,

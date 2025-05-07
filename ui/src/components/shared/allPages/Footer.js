@@ -8,7 +8,7 @@ function Footer() {
   const [signedIn, setSignedIn] = useState(false);
   // Initialize darkMode from localStorage (default: false)
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "enabled"
+    localStorage.getItem("darkMode") === "enabled",
   );
 
   useEffect(() => {
@@ -101,7 +101,15 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div className="centered row" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+          <div
+            className="centered row"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
