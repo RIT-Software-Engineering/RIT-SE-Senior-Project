@@ -239,6 +239,7 @@ module.exports = (db) => {
     "/createUser",
     [
       UserAuth.isAdmin,
+      UserAuth.canWrite,
       body("system_id")
         .not()
         .isEmpty()
@@ -277,6 +278,7 @@ module.exports = (db) => {
       body("semester_group").isLength({ max: 50 }),
       body("project").isLength({ max: 50 }),
       body("active").trim().escape().isLength({ max: 50 }),
+      body("viewOnly").trim().escape().isLength({ max: 50 }),
     ],
     async (req, res, next) => {
       let result = validationResult(req);
@@ -291,13 +293,15 @@ module.exports = (db) => {
       let body = req.body;
 
       const sql = `INSERT INTO ${DB_CONFIG.tableNames.users}
-                (system_id, fname, lname, email, type, semester_group, project, active)
-                VALUES (?,?,?,?,?,?,?,?)`;
+                (system_id, fname, lname, email, type, semester_group, project, active, view_only)
+                VALUES (?,?,?,?,?,?,?,?,?)`;
 
       const active =
         body.active === "false"
           ? moment().format(CONSTANTS.datetime_format)
           : "";
+
+      const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
       const params = [
         body.system_id,
@@ -308,6 +312,7 @@ module.exports = (db) => {
         body.semester_group,
         body.project,
         active,
+        viewOnly,
       ];
       db.query(sql, params)
         .then(() => {
@@ -324,7 +329,11 @@ module.exports = (db) => {
 
   db_router.post(
     "/batchCreateUser",
-    [UserAuth.isAdmin],
+    [
+      UserAuth.isAdmin,
+      UserAuth.canWrite,
+      // TODO: Add more validation
+    ],
     async (req, res, next) => {
       try {
         let users = JSON.parse(req.body.users);
@@ -366,10 +375,13 @@ module.exports = (db) => {
     },
   );
 
-  db_router.post("/editUser", [UserAuth.isAdmin], (req, res, next) => {
-    let body = req.body;
+  db_router.post(
+    "/editUser",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      let body = req.body;
 
-    let updateQuery = `
+      let updateQuery = `
             UPDATE users
             SET fname = ?,
                 lname = ?,
@@ -377,55 +389,66 @@ module.exports = (db) => {
                 type = ?,
                 semester_group = ?,
                 project = ?,
-                active = ?
+                active = ?,
+                view_only = ?
             WHERE system_id = ?
         `;
 
-    const active =
-      body.active === "false" ? moment().format(CONSTANTS.datetime_format) : "";
+      const active =
+        body.active === "false"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    let params = [
-      body.fname,
-      body.lname,
-      body.email,
-      body.type,
-      body.semester_group || null,
-      body.project || null,
-      active,
-      body.system_id,
-    ];
+      const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
-    db.query(updateQuery, params)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        const error = new Error(err);
-        error.statusCode = 500;
+      let params = [
+        body.fname,
+        body.lname,
+        body.email,
+        body.type,
+        body.semester_group || null,
+        body.project || null,
+        active,
+        viewOnly,
+        body.system_id,
+      ];
+
+      db.query(updateQuery, params)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
+  db_router.post(
+    "/removeTime",
+    [UserAuth.isSignedIn, UserAuth.canWrite],
+    (req, res, next) => {
+      if (!req.body.id) {
+        const error = new Error("No Id Provided");
+        error.statusCode = 400;
         return next(error);
-      });
-  });
+      }
 
-  db_router.post("/removeTime", UserAuth.isSignedIn, (req, res, next) => {
-    if (!req.body.id) {
-      const error = new Error("No Id Provided");
-      error.statusCode = 400;
-      return next(error);
-    }
+      const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
 
-    const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
-
-    db.query(sql, [req.body.id])
-      .then(() => {
-        res.status(200).send();
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+      db.query(sql, [req.body.id])
+        .then(() => {
+          res.status(200).send();
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
     const sql =
@@ -445,41 +468,45 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/createTimeLog", [], async (req, res, next) => {
-    let result = validationResult(req);
+  db_router.post(
+    "/createTimeLog",
+    [UserAuth.canWrite],
+    async (req, res, next) => {
+      let result = validationResult(req);
 
-    if (result.errors.length !== 0) {
-      const error = new Error("Validation Error");
-      error.statusCode = 400;
-      return next(error);
-    }
+      if (result.errors.length !== 0) {
+        const error = new Error("Validation Error");
+        error.statusCode = 400;
+        return next(error);
+      }
 
-    let mock_id = req.user.mock ? req.user.mock.system_id : "";
+      let mock_id = req.user.mock ? req.user.mock.system_id : "";
 
-    const sql = `INSERT INTO time_log
+      const sql = `INSERT INTO time_log
                 (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
                 VALUES (?,?,?,?,?,?,?)`;
 
-    const params = [
-      req.user.semester_group,
-      req.user.system_id,
-      req.user.project,
-      mock_id,
-      req.body.date,
-      req.body.time_amount,
-      req.body.comment,
-    ];
-    db.query(sql, params)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        console.error(err);
-        let error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+      const params = [
+        req.user.semester_group,
+        req.user.system_id,
+        req.user.project,
+        mock_id,
+        req.body.date,
+        req.body.time_amount,
+        req.body.comment,
+      ];
+      db.query(sql, params)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
+          console.error(err);
+          let error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.get(
     "/getActiveProjects",
@@ -810,9 +837,12 @@ module.exports = (db) => {
     },
   );
 
-  db_router.post("/editArchive", [UserAuth.isAdmin], async (req, res, next) => {
-    let body = req.body;
-    const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
+  db_router.post(
+    "/editArchive",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    async (req, res, next) => {
+      let body = req.body;
+      const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
                                     SET featured=?, outstanding=?, creative=?, priority=?,
                                         title=?, project_id=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
@@ -820,76 +850,77 @@ module.exports = (db) => {
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
                                     WHERE archive_id = ?`;
-    const inactive =
-      body.inactive === "true"
-        ? moment().format(CONSTANTS.datetime_format)
-        : "";
+      const inactive =
+        body.inactive === "true"
+          ? moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    const locked =
-      body.locked === "true"
-        ? req.user.fname +
-          " " +
-          req.user.lname +
-          " locked at " +
-          moment().format(CONSTANTS.datetime_format)
-        : "";
+      const locked =
+        body.locked === "true"
+          ? req.user.fname +
+            " " +
+            req.user.lname +
+            " locked at " +
+            moment().format(CONSTANTS.datetime_format)
+          : "";
 
-    const checkBox = (data) => {
-      if (data === "true" || data === "1") {
-        return 1;
-      }
-      return 0;
-    };
+      const checkBox = (data) => {
+        if (data === "true" || data === "1") {
+          return 1;
+        }
+        return 0;
+      };
 
-    const strToInt = (data) => {
-      if (typeof data === "string") {
-        return parseInt(data);
-      }
-      return 0;
-    };
+      const strToInt = (data) => {
+        if (typeof data === "string") {
+          return parseInt(data);
+        }
+        return 0;
+      };
 
-    let updateArchiveParams = [
-      checkBox(body.featured),
-      checkBox(body.outstanding),
-      checkBox(body.creative),
-      strToInt(body.priority),
-      body.title,
-      body.project_id,
-      body.team_name,
-      body.members,
-      body.sponsor,
-      body.coach,
-      body.poster_thumb,
-      body.poster_full,
-      body.archive_image,
-      body.synopsis,
-      body.video,
-      body.name,
-      body.dept,
-      body.start_date,
-      body.end_date,
-      body.keywords,
-      body.url_slug,
-      inactive,
-      locked,
-      body.archive_id,
-    ];
+      let updateArchiveParams = [
+        checkBox(body.featured),
+        checkBox(body.outstanding),
+        checkBox(body.creative),
+        strToInt(body.priority),
+        body.title,
+        body.project_id,
+        body.team_name,
+        body.members,
+        body.sponsor,
+        body.coach,
+        body.poster_thumb,
+        body.poster_full,
+        body.archive_image,
+        body.synopsis,
+        body.video,
+        body.name,
+        body.dept,
+        body.start_date,
+        body.end_date,
+        body.keywords,
+        body.url_slug,
+        inactive,
+        locked,
+        body.archive_id,
+      ];
 
-    db.query(updateArchiveQuery, updateArchiveParams)
-      .then(() => {
-        return res.status(200).send();
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
-  });
+      db.query(updateArchiveQuery, updateArchiveParams)
+        .then(() => {
+          return res.status(200).send();
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.post(
     "/createArchive",
-    UserAuth.isAdmin,
+    [UserAuth.isAdmin, UserAuth.canWrite],
     body("featured")
       .not()
       .isEmpty()
@@ -974,7 +1005,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editArchiveStudent",
-    UserAuth.isSignedIn,
+    [UserAuth.isSignedIn, UserAuth.canWrite],
     async (req, res, next) => {
       let body = req.body;
       let files = req.files;
@@ -1147,7 +1178,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createArchiveStudent",
-    UserAuth.isSignedIn,
+    [UserAuth.isSignedIn, UserAuth.canWrite],
     body("featured")
       .not()
       .isEmpty()
@@ -1351,6 +1382,7 @@ module.exports = (db) => {
     "/editProject",
     [
       UserAuth.isAdmin,
+      UserAuth.canWrite,
       // TODO: Should the max length be set to something smaller than 5000?
       body("title")
         .not()
@@ -1576,7 +1608,11 @@ module.exports = (db) => {
    */
   db_router.patch(
     "/updateProposalStatus",
-    [UserAuth.isAdmin, body("*").trim().escape().isJSON().isAlphanumeric()],
+    [
+      UserAuth.isAdmin,
+      UserAuth.canWrite,
+      body("*").trim().escape().isJSON().isAlphanumeric(),
+    ],
     (req, res, next) => {
       const query = `UPDATE ${DB_CONFIG.tableNames.senior_projects} SET status = ? WHERE project_id = ?`;
       db.query(query, [req.body.status, req.body.project_id])
@@ -1688,45 +1724,49 @@ module.exports = (db) => {
   /**
    * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
    */
-  db_router.post("/uploadFiles", UserAuth.isAdmin, (req, res, next) => {
-    let filesUploaded = [];
+  db_router.post(
+    "/uploadFiles",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      let filesUploaded = [];
 
-    // Attachment Handling
-    if (req.files && req.files.files) {
-      // If there is only one attachment, then it does not come as a list
-      if (req.files.files.length === undefined) {
-        req.files.files = [req.files.files];
+      // Attachment Handling
+      if (req.files && req.files.files) {
+        // If there is only one attachment, then it does not come as a list
+        if (req.files.files.length === undefined) {
+          req.files.files = [req.files.files];
+        }
+
+        const formattedPath = `resource/${req.body.path}`;
+        const baseURL = path.join(__dirname, `../../${formattedPath}`);
+
+        //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
+        fs.mkdirSync(baseURL, { recursive: true });
+        for (let x = 0; x < req.files.files.length; x++) {
+          req.files.files[x].mv(
+            `${baseURL}/${req.files.files[x].name}`,
+            function (err) {
+              if (err) {
+                console.error(err);
+                const error = new Error(err);
+                error.statusCode = 500;
+                return next(error);
+              }
+            },
+          );
+          filesUploaded.push(
+            `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
+          );
+        }
       }
-
-      const formattedPath = `resource/${req.body.path}`;
-      const baseURL = path.join(__dirname, `../../${formattedPath}`);
-
-      //If directory, exists, it won't make one, otherwise it will based on the baseUrl :/
-      fs.mkdirSync(baseURL, { recursive: true });
-      for (let x = 0; x < req.files.files.length; x++) {
-        req.files.files[x].mv(
-          `${baseURL}/${req.files.files[x].name}`,
-          function (err) {
-            if (err) {
-              console.error(err);
-              const error = new Error(err);
-              error.statusCode = 500;
-              return next(error);
-            }
-          },
-        );
-        filesUploaded.push(
-          `${process.env.BASE_URL}/${formattedPath}/${req.files.files[x].name}`,
-        );
-      }
-    }
-    res.send({ msg: "Success!", filesUploaded: filesUploaded });
-  });
+      res.send({ msg: "Success!", filesUploaded: filesUploaded });
+    },
+  );
 
   /**
    * WARN: THIS IS VERY DANGEROUS AND IT CAN BE USED TO OVERWRITE SERVER FILES.
    */
-  db_router.post("/uploadFilesStudent", (req, res, next) => {
+  db_router.post("/uploadFilesStudent", UserAuth.canWrite, (req, res, next) => {
     let filesUploaded = [];
 
     // Attachment Handling
@@ -1773,23 +1813,27 @@ module.exports = (db) => {
     res.send({ msg: "Success!", filesUploaded: filesUploaded });
   });
 
-  db_router.post("/createDirectory", UserAuth.isAdmin, (req, res, next) => {
-    const formattedPath =
-      req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
-    const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    if (!fs.existsSync(baseURL)) {
-      fs.mkdirSync(baseURL, { recursive: true });
-      res.send({ msg: "Success!" });
-    } else {
-      const error = new Error("Directory already exists");
-      error.statusCode = 500;
-      return next(error);
-    }
-  });
+  db_router.post(
+    "/createDirectory",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      const formattedPath =
+        req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
+      const baseURL = path.join(__dirname, `../../${formattedPath}`);
+      if (!fs.existsSync(baseURL)) {
+        fs.mkdirSync(baseURL, { recursive: true });
+        res.send({ msg: "Success!" });
+      } else {
+        const error = new Error("Directory already exists");
+        error.statusCode = 500;
+        return next(error);
+      }
+    },
+  );
 
   db_router.post(
     "/renameDirectoryOrFile",
-    UserAuth.isAdmin,
+    [UserAuth.isAdmin, UserAuth.canWrite],
     (req, res, next) => {
       const { oldPath, newPath } = req.query;
       const formattedOldPath =
@@ -1895,32 +1939,75 @@ module.exports = (db) => {
     });
   });
 
-  db_router.delete("/removeFile", UserAuth.isAdmin, (req, res, next) => {
-    const formattedPath = `resource/${req.query.path}`;
+  db_router.get("/getProjectFiles", (req, res, next) => {
+    let fileData = [];
+    // This is the path with the specified directory we want to find files in.
+    const formattedPath = `resource/`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    fs.unlink(baseURL, (err) => {
+    fs.mkdirSync(baseURL, { recursive: true });
+    // Get the files in the directory
+    fs.readdir(baseURL, function (err, files) {
       if (err) {
         const error = new Error(err);
         error.statusCode = 500;
         return next(error);
-      } else {
-        res.send({ msg: "Success!" });
       }
+      const info = fs.statSync(baseURL);
+      files.forEach(function (file) {
+        // Only files have sizes, directories do not. Send file size if it is a file
+        const fileInfo = fs.statSync(baseURL + file);
+        if (fileInfo.isFile()) {
+          fileData.push({
+            file: file,
+            size: fileInfo.size,
+            lastModified: fileInfo.ctime,
+          });
+        } else {
+          fileData.push({
+            file: file,
+            size: 0,
+            lastModified: info.ctime,
+          });
+        }
+      });
+      res.send(fileData);
     });
   });
 
-  db_router.delete("/removeDirectory", UserAuth.isAdmin, (req, res, next) => {
-    const formattedPath = `resource/${req.query.path}`;
-    const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    if (fs.existsSync(baseURL)) {
-      fs.rmdirSync(baseURL, { recursive: true });
-      return res.status(200).send({ msg: "Success!" });
-    } else {
-      const error = new Error("Directory does not exist, cannot delete");
-      error.statusCode = 500;
-      return next(error);
-    }
-  });
+  db_router.delete(
+    "/removeFile",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      const formattedPath = `resource/${req.query.path}`;
+      const baseURL = path.join(__dirname, `../../${formattedPath}`);
+      fs.unlink(baseURL, (err) => {
+        if (err) {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        } else {
+          res.send({ msg: "Success!" });
+        }
+      });
+    },
+  );
+
+  db_router.delete(
+    "/removeDirectory",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      const formattedPath = `resource/${req.query.path}`;
+      const baseURL = path.join(__dirname, `../../${formattedPath}`);
+      if (fs.existsSync(baseURL)) {
+        fs.rmdirSync(baseURL, { recursive: true });
+        return res.status(200).send({ msg: "Success!" });
+      } else {
+        const error = new Error("Directory does not exist, cannot delete");
+        error.statusCode = 500;
+        return next(error);
+      }
+    },
+  );
 
   db_router.post(
     "/submitProposal",
@@ -2226,7 +2313,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/submitAction",
-    [UserAuth.isSignedIn, body("*").trim()],
+    [UserAuth.isSignedIn, UserAuth.canWrite, body("*").trim()],
     async (req, res, next) => {
       let result = validationResult(req);
 
@@ -2434,33 +2521,37 @@ module.exports = (db) => {
       });
   });
 
-  db_router.post("/editPage", [UserAuth.isAdmin], (req, res, next) => {
-    let editPageQuery = `UPDATE page_html
+  db_router.post(
+    "/editPage",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    (req, res, next) => {
+      let editPageQuery = `UPDATE page_html
         SET html = ?
         WHERE name = ?
         `;
-    let promises = [];
-    //Individually update all html tables from the body of the req.
-    Object.keys(req.body).forEach((key) => {
-      let queryParams = [req.body[key], key];
-      promises.push(
-        db
-          .query(editPageQuery, queryParams)
-          .then(() => {
-            //do nothing
-          })
-          .catch((err) => {
-            console.error(err);
-            const error = new Error(err);
-            error.statusCode = 500;
-            return next(error);
-          }),
-      );
-    });
-    Promise.all(promises).then(() => {
-      res.send({ msg: "Success!" });
-    });
-  });
+      let promises = [];
+      //Individually update all html tables from the body of the req.
+      Object.keys(req.body).forEach((key) => {
+        let queryParams = [req.body[key], key];
+        promises.push(
+          db
+            .query(editPageQuery, queryParams)
+            .then(() => {
+              //do nothing
+            })
+            .catch((err) => {
+              console.error(err);
+              const error = new Error(err);
+              error.statusCode = 500;
+              return next(error);
+            }),
+        );
+      });
+      Promise.all(promises).then(() => {
+        res.send({ msg: "Success!" });
+      });
+    },
+  );
 
   db_router.get("/getActions", [UserAuth.isAdmin], (req, res, next) => {
     let getActionsQuery = `
@@ -3067,7 +3158,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editAction",
-    [UserAuth.isAdmin, body("page_html").unescape()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3411,7 +3502,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createSponsor",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3487,7 +3578,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editSponsor",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3613,7 +3704,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createSponsorNote",
-    [UserAuth.isCoachOrAdmin, body("page_html").unescape()],
+    [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3638,7 +3729,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/createAction",
-    [UserAuth.isAdmin, body("page_html").unescape()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3757,7 +3848,7 @@ module.exports = (db) => {
 
   db_router.post(
     "/editSemester",
-    [UserAuth.isAdmin, body("*").trim()],
+    [UserAuth.isAdmin, UserAuth.canWrite, body("*").trim()],
     (req, res, next) => {
       let body = req.body;
 
@@ -3794,6 +3885,7 @@ module.exports = (db) => {
     "/createSemester",
     [
       UserAuth.isAdmin,
+      UserAuth.canWrite,
       body("name")
         .not()
         .isEmpty()
@@ -4013,7 +4105,6 @@ module.exports = (db) => {
 
       try {
         const result = await db.query(query, [system_id]);
-
         if (result.length === 0) {
           const error = new Error("User not found");
           error.statusCode = 404;

@@ -266,6 +266,7 @@ export default function ProjectArchivePanel(props) {
       callback={() => {
         loadArchiveData(props.project);
       }}
+      viewOnly={props.viewOnly}
     />
   );
 }

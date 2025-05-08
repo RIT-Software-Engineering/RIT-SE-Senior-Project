@@ -40,6 +40,7 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
+          view_only: responseUser.view_only == "TRUE" ? true : false,
         });
         if (responseUser.system_id) {
           SecureFetch(
@@ -65,27 +66,30 @@ export default function DashboardPage() {
   }, []);
 
   let panes = [];
-
+  console.log(user);
+  //console.log(user)
   switch (user.role) {
     case "admin":
-      panes.push({
-        menuItem: {
-          key: "Admin-Tab",
-          content: "Admin",
-          href: "#",
-        },
-        render: () => (
-          <Tab.Pane>
-            <SemesterEditor />
-            <ActionEditor semesterData={semesterData} />
-            <ProjectEditor semesterData={semesterData} />
-            <ArchiveEditor />
-            <UserEditor />
-            <SponsorEditorAccordion />
-            <FileEditor />
-          </Tab.Pane>
-        ),
-      });
+      if (!user.view_only && !user.mockUser.view_only) {
+        panes.push({
+          menuItem: {
+            key: "Admin-Tab",
+            content: "Admin",
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <SemesterEditor />
+              <ActionEditor semesterData={semesterData} />
+              <ProjectEditor semesterData={semesterData} />
+              <ArchiveEditor />
+              <UserEditor />
+              <SponsorEditorAccordion />
+              <FileEditor />
+            </Tab.Pane>
+          ),
+        });
+      }
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
     case "coach":
@@ -98,7 +102,9 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SponsorsTab />
+              <SponsorsTab
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -139,7 +145,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} />
+              <ProjectsTab
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -151,7 +160,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <TimeLog semesterData={semesterData} />
+              <TimeLog
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
               <ActionLogs semesterData={semesterData} />
             </Tab.Pane>
           ),

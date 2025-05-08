@@ -23,14 +23,22 @@ export default function ProjectViewerModal(props) {
         members.forEach((member, idx) => {
           switch (member.type) {
             case USERTYPES.STUDENT:
-              projectGroupedValues.students.push(
-                `${member.fname} ${member.lname}`,
-              );
+              member.view_only === "TRUE"
+                ? projectGroupedValues.students.push(
+                    `${member.fname} ${member.lname} ${"(View Only)"}`,
+                  )
+                : projectGroupedValues.students.push(
+                    `${member.fname} ${member.lname}`,
+                  );
               break;
             case USERTYPES.COACH:
-              projectGroupedValues.coaches.push(
-                `${member.fname} ${member.lname}`,
-              );
+              member.view_only === "TRUE"
+                ? projectGroupedValues.coaches.push(
+                    `${member.fname} ${member.lname} ${"(View Only)"}`,
+                  )
+                : projectGroupedValues.coaches.push(
+                    `${member.fname} ${member.lname}`,
+                  );
               break;
             default:
               console.error(
@@ -71,8 +79,8 @@ export default function ProjectViewerModal(props) {
                 `}
         </style>
         <h3>Team members</h3>
-        <b>Students:</b> {projectMembers.students?.join(",")} <br />
-        <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
+        <b>Students:</b> {projectMembers.students?.join(", ")} <br />
+        <b>Coaches:</b> {projectMembers.coaches?.join(", ")} <br />
         <h3>Website</h3>
         <b>URL:</b> {URL} <br />
         <h3>Sponsor Info</h3>

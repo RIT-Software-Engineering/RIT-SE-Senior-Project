@@ -11,6 +11,7 @@ export default function BatchUserPanel({ callback }) {
   const [modalOpen, setModalOpen] = useState(false);
   const fileInput = useRef();
   const [failedUsers, setFailedUsers] = useState([]);
+  const [failedUsers, setFailedUsers] = useState([]);
 
   const onFileUpload = (event) => {
     const fileReader = new FileReader();

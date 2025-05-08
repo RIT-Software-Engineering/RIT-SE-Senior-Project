@@ -32,6 +32,7 @@ export default function ProjectEditor(props) {
             semester={semesters[semester_id] || null}
             semesterData={props.semesterData}
             viewOnly={props.viewOnly}
+            viewOnlyArchive={props.viewOnlyArchive}
             activeCoaches={activeCoaches}
             activeSponsors={activeSponsors}
             callback={getProjectInformation}

@@ -57,6 +57,7 @@
 .day-name {
   text-align: center;
   color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 /* Calendar grid */
@@ -136,10 +137,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
+  border-radius: 1em;
   border-radius: 1em;
   right: 0;
   height: 18px;
+  color: black;
+  padding: 6px;
   color: black;
   padding: 6px;
   white-space: nowrap;
