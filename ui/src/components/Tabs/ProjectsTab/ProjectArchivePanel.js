@@ -261,11 +261,10 @@ export default function ProjectArchivePanel(props) {
       submissionModalMessages={submissionModalMessages}
       submitRoute={submitRouter}
       formFieldArray={formFieldArray}
-      header={newArchive ? "Create Website" : "Edit Website"}
-      button={newArchive ? "plus" : "edit"}
-      callback={() => {
-        loadArchiveData(props.project);
-      }}
+      header={(newArchive ? "Create Website" : "Edit Website")}
+      button={(newArchive ? "plus" : "edit")}
+      callback={() => { loadArchiveData(props.project) }}
+      viewOnly={props.viewOnly}
     />
   );
 }

@@ -496,18 +496,22 @@ export default function TimeTableEditor(props) {
           <Button color="grey" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button
-            content={
-              user.isMock
-                ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
-                : "Submit"
-              //"Submit"
-            }
-            labelPosition="right"
-            icon="check"
-            positive
-            onClick={() => handleSubmit()}
-          />
+          {props.viewOnly ? (
+            <Button content={"View Only Role"} />
+          ) : (
+            <Button
+              content={
+                user.isMock
+                  ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
+                  : "Submit"
+                //"Submit"
+              }
+              labelPosition="right"
+              icon="check"
+              positive
+              onClick={() => handleSubmit()}
+            />
+          )}
         </Modal.Actions>
       </Modal>
 

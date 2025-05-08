@@ -214,6 +214,7 @@ export default function TimeLog(props) {
                                   studentData={students}
                                   timeStats={timeStats}
                                   timeLogs={timeLogs}
+                                  viewOnly={props.viewOnly}
                                 ></ProjectTime>
                               );
                             })}

@@ -13,6 +13,7 @@ export default function UserPanel(props) {
     type: props.userData?.type || "",
     semester_group: props.userData?.semester_group || "",
     active: props.userData?.active || "",
+    viewOnly: props.userData?.viewOnly || "",
   };
 
   let submissionModalMessages = {
@@ -94,6 +95,12 @@ export default function UserPanel(props) {
       label: "Active",
       placeHolder: "Active",
       name: "active",
+    },
+    {
+      type: "checkbox",
+      label: "View Only",
+      placeHolder: "View Only",
+      name: "viewOnly",
     },
   ];
 
@@ -198,21 +205,18 @@ export default function UserPanel(props) {
   };
 
   return (
-    console.log(initialState),
-    (
-      <DatabaseTableEditor
-        initialState={initialState}
-        submissionModalMessages={submissionModalMessages}
-        submitRoute={submitRoute}
-        formFieldArray={formFieldArray}
-        semesterData={props.semesterData}
-        header={props.header}
-        create={initialState.system_id === ""}
-        button="plus"
-        callback={props.callback}
-        preSubmit={preSubmit}
-        errors={errors}
-      />
-    )
+    <DatabaseTableEditor
+      initialState={initialState}
+      submissionModalMessages={submissionModalMessages}
+      submitRoute={submitRoute}
+      formFieldArray={formFieldArray}
+      semesterData={props.semesterData}
+      header={props.header}
+      create={initialState.system_id === ""}
+      button="plus"
+      callback={props.callback}
+      preSubmit={preSubmit}
+      errors={errors}
+    />
   );
 }

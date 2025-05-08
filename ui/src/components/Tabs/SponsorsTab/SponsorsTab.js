@@ -178,6 +178,7 @@ export default function SponsorsTab(props) {
                     summaryView={summaryView}
                     sponsor={sponsor}
                     callback={getPaginationData}
+                    viewOnly={props.viewOnly}
                   />
                 </TableCell>
               </TableRow>
