@@ -33,7 +33,6 @@ export default function Timeline(props) {
   );
   const [displayPreference] = useSessionStorage('displayPreference', 'gantt');
 
-  console.log(displayPreference);
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
