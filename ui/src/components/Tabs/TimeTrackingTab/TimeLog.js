@@ -178,7 +178,10 @@ export default function TimeLog(props) {
       {semesters.length > 0 && <h3>Time Log</h3>}
       {semesters.map((sem) => {
         const isActive = isSemesterActive(sem?.start_date, sem?.end_date);
-        const isAccordionActive = activeSemesters[sem.semester_id] === undefined ? isActive : activeSemesters[sem.semester_id];
+        const isAccordionActive =
+          activeSemesters[sem.semester_id] === undefined
+            ? isActive
+            : activeSemesters[sem.semester_id];
 
         return (
           <>

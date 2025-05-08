@@ -7,10 +7,13 @@ const BASE_URL =
     ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
     : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
+const TINYMCE_API_KEY = process.env.REACT_APP_TINYMCE_API_KEY;
+
 export const config = {
   url: {
     BASE_URL: BASE_URL,
     BASE_API_URL: BASE_API_URL,
+    TINYMCE_API_KEY: TINYMCE_API_KEY,
     WWW: `${BASE_URL}/www`,
     LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
 
@@ -88,6 +91,7 @@ export const config = {
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
     API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
+    API_CHECK_GEMINI_KEY_EXISTS: `${BASE_API_URL}/ai/CheckGeminiKeyExists`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,

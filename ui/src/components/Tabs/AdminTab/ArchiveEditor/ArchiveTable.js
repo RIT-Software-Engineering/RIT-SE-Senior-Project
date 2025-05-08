@@ -17,7 +17,7 @@ import ArchivePanel from "./ArchivePanel";
 
 const PROJECTS_PER_PAGE = 10;
 
-export default function ArchiveTable() {
+export default function ArchiveTable(props) {
   const [projects, setProjects] = useState([]);
   const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
   const [activePage, setActivePage] = useState(0);
@@ -127,6 +127,7 @@ export default function ArchiveTable() {
                   <TableCell>
                     <ArchivePanel
                       project={project}
+                      archiveData={props.archiveData}
                       header={"Edit Archive"}
                       buttonIcon={"edit"}
                       callback={getPaginationData}

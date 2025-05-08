@@ -117,15 +117,9 @@ const StackTraceErrorPage = () => {
         <p style={{ fontSize: "14px", color: "#D32F2F" }}>
           ⚠️ A GitHub account is required to report an issue.
         </p>
-        <Button onClick={handleGoBack} >
-          🔙 Go Back
-        </Button>
-        <Button onClick={handleCopyStackTrace} >
-          📋 Copy Stack Trace
-        </Button>
-        <Button onClick={handleReportOnGitHub} >
-          🐞 Report on GitHub
-        </Button>
+        <Button onClick={handleGoBack}>🔙 Go Back</Button>
+        <Button onClick={handleCopyStackTrace}>📋 Copy Stack Trace</Button>
+        <Button onClick={handleReportOnGitHub}>🐞 Report on GitHub</Button>
       </div>
 
       {userFeedback && (
@@ -134,6 +128,5 @@ const StackTraceErrorPage = () => {
     </div>
   );
 };
-
 
 export default StackTraceErrorPage;
