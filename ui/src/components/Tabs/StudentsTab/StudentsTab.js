@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Accordion, Icon, Message, Dropdown } from "semantic-ui-react";
-import { Accordion, Icon, Message, Dropdown } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import { SecureFetch } from "../../util/functions/secureFetch";

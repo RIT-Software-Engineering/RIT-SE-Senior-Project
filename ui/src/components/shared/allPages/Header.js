@@ -9,7 +9,6 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 import ProfileModal from "./profileModal";
-import ProfileModal from "./profileModal";
 
 function Header() {
   const history = useHistory();

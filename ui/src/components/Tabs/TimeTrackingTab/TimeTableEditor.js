@@ -1,12 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import React, { useContext, useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Icon, Label, Message, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
-import { UserContext } from "../../util/functions/UserContext";
 import { UserContext } from "../../util/functions/UserContext";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };

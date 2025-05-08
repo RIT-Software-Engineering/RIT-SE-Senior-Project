@@ -7,14 +7,6 @@ import {
   Accordion,
   Icon,
 } from "semantic-ui-react";
-import {
-  TableCell,
-  TableRow,
-  Modal,
-  Button,
-  Accordion,
-  Icon,
-} from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
