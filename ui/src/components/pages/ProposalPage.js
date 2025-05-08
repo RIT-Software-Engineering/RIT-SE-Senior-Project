@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider, Button } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
+import QuillEditor from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 
@@ -15,6 +17,9 @@ function ProposalPage() {
   const [formFiles, setFormFiles] = useState(null);
   const [modalOpen, setModalOpen] = useState(MODAL_STATUS.CLOSED);
   const [errors, setErrors] = useState({});
+  const quill = useRef(null);
+
+  const formats = ["header", "bold", "italic", "underline", "list", "bullet"];
 
   const setFormData = (event) => {
     const target = event.target;
@@ -143,7 +148,6 @@ function ProposalPage() {
   return (
     <>
       <Modal
-        closeOnDimmerClick={false}
         open={!!modalOpen}
         {...generateModalFields()}
         onClose={() => closeModal()}
@@ -166,6 +170,7 @@ function ProposalPage() {
           name="title"
           value={formData.title || ""}
           onChange={(e) => {
+            console.log("tinymce api code: " + config.url.TINYMCE_API_KEY);
             setFormData(e);
           }}
           error={errors.title && { content: errors.title, pointing: "below" }}
@@ -248,95 +253,141 @@ function ProposalPage() {
           />
         </Form.Field>
 
-        <Form.TextArea
-          required
-          label="Project Background Information"
-          name="background_info"
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Project Background Information
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.background_info || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["background_info"]: value,
+            });
           }}
-          error={
-            errors.background_info && {
-              content: errors.background_info,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          required
-          label="Project Description"
-          name="project_description"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Project Description
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.project_description || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["project_description"]: value,
+            });
           }}
-          error={
-            errors.project_description && {
-              content: errors.project_description,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          required
-          label="Project Scope"
-          name="project_scope"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Project Scope
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.project_scope || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["project_scope"]: value,
+            });
           }}
-          error={
-            errors.project_scope && {
-              content: errors.project_scope,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          required
-          label="Project Challenges"
-          name="project_challenges"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Project Challenges
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.project_challenges || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["project_challenges"]: value,
+            });
           }}
-          error={
-            errors.project_challenges && {
-              content: errors.project_challenges,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          required
-          label="Constraints & Assumptions"
-          name="constraints_assumptions"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Constraints & Assumptions
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.constraints_assumptions || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["constraints_assumptions"]: value,
+            });
           }}
-          error={
-            errors.constraints_assumptions && {
-              content: errors.constraints_assumptions,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          label="Sponsor-Provided Resources"
-          name="sponsor_provided_resources"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
+          Sponsor Provided Resources
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.sponsor_provided_resources || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["sponsor_provided_resources"]: value,
+            });
           }}
-          error={
-            errors.sponsor_provided_resources && {
-              content: errors.sponsor_provided_resources,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
+        />
+        <br />
+        <br />
+
+        <br />
         <Form.Input
           label="Project Search Keywords"
           name="project_search_keywords"
@@ -351,35 +402,49 @@ function ProposalPage() {
             }
           }
         />
-        <Form.TextArea
-          required
-          label="Sponsor and Project Specific Deliverables"
-          name="sponsor_deliverables"
+
+        <br />
+        <div
+          className="required-field"
+          style={{ fontWeight: "bold", fontSize: "13px" }}
+        >
+          Sponsor and Project Specific Deliverables
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.sponsor_deliverables || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["sponsor_deliverables"]: value,
+            });
           }}
-          error={
-            errors.sponsor_deliverables && {
-              content: errors.sponsor_deliverables,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
-        <Form.TextArea
-          label="Proprietary Information"
-          name="proprietary_info"
+        />
+        <br />
+        <br />
+
+        <br />
+        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
+          Proprietary Information
+        </div>
+        <br />
+        <QuillEditor
+          ref={(el) => (quill.current = el)}
           value={formData.proprietary_info || ""}
-          onChange={(e) => {
-            setFormData(e);
+          formats={formats}
+          style={{ height: "150px" }}
+          onChange={(value) => {
+            setActualFormData({
+              ...formData,
+              ["proprietary_info"]: value,
+            });
           }}
-          error={
-            errors.proprietary_info && {
-              content: errors.proprietary_info,
-              pointing: "below",
-            }
-          }
-        ></Form.TextArea>
+        />
+        <br />
+        <br />
 
         <Divider section />
 

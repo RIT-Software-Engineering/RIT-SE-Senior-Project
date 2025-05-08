@@ -461,7 +461,7 @@ export default function TimeTableEditor(props) {
   }
 
   let trigger = (
-    <Button >
+    <Button>
       {" "}
       <Icon name={props.button} />
       Log Project Time
@@ -501,7 +501,7 @@ export default function TimeTableEditor(props) {
               user.isMock
                 ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
                 : "Submit"
-                //"Submit"
+              //"Submit"
             }
             labelPosition="right"
             icon="check"

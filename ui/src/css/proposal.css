@@ -15,6 +15,10 @@
   color: #573a08 !important;
 }
 
+.required-field::after {
+  content: " *";
+  color: rgb(225, 25, 0);
+}
 /* Dark Mode Styles */
 .dark-mode .edited-input input,
 .dark-mode .edited-input.dropdown {
