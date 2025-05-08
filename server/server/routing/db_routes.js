@@ -9,7 +9,8 @@ const path = require("path");
 const moment = require("moment");
 const fileSizeParser = require("filesize-parser");
 const he = require("he");
-const {convert} = require('html-to-text');
+const { convert } = require("html-to-text");
+const redeployDatabase = require("../../db_setup");
 
 function humanFileSize(bytes, si = false, dp = 1) {
   const thresh = si ? 1000 : 1024;
@@ -66,6 +67,21 @@ module.exports = (db) => {
       db.query(`SELECT ${CONSTANTS.SIGN_IN_SELECT_ATTRIBUTES} FROM users`).then(
         (users) => res.send(users),
       );
+    });
+    //Redeploy database
+    db_router.put("/DevOnlyRedeployDatabase", async (req, res) => {
+      try {
+        await redeployDatabase();
+        res
+          .status(200)
+          .json({ success: true, message: "Database redeployed successfully" });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: "Failed to redeploy database",
+          error: error.message,
+        });
+      }
     });
   }
 
@@ -135,31 +151,36 @@ module.exports = (db) => {
       switch (req.user.type) {
         //Retrieves all users from a semester group that is similar to the student that is making the query.
         case ROLES.STUDENT:
-          query = `SELECT users.* FROM users WHERE users.system_id = ?`;
+          query = `
+            SELECT users.* 
+            FROM users 
+            WHERE users.semester_group = (
+              SELECT semester_group FROM users WHERE system_id = ?
+            ) AND users.type = 'student'`;
           params = [req.user.system_id];
           break;
+
         case ROLES.COACH:
           query = `
-                    SELECT users.* FROM users
-                    LEFT JOIN semester_group
-                        ON users.semester_group = semester_group.semester_id
-                    WHERE users.semester_group in (
-                    SELECT projects.semester FROM projects
-                    WHERE projects.project_id in (
-                        SELECT project_coaches.project_id FROM project_coaches
-                        WHERE project_coaches.coach_id = ?
-                    )
-                        )
-                `;
+            SELECT users.* FROM users
+            LEFT JOIN semester_group
+              ON users.semester_group = semester_group.semester_id
+            WHERE users.semester_group IN (
+              SELECT projects.semester FROM projects
+              WHERE projects.project_id IN (
+                SELECT project_coaches.project_id FROM project_coaches
+                WHERE project_coaches.coach_id = ?
+              )
+            )`;
           params = [req.user.system_id];
           break;
+
         case ROLES.ADMIN:
           query = `SELECT * FROM users
                     LEFT JOIN semester_group
                     ON users.semester_group = semester_group.semester_id
                     WHERE users.type = 'student'`;
           break;
-
         default:
           break;
       }
@@ -303,49 +324,45 @@ module.exports = (db) => {
 
   db_router.post(
     "/batchCreateUser",
-    [
-      UserAuth.isAdmin,
-      // TODO: Add more validation
-    ],
+    [UserAuth.isAdmin],
     async (req, res, next) => {
-      let result = validationResult(req);
+      try {
+        let users = JSON.parse(req.body.users);
+        const failedUsers = [];
+        const successUsers = [];
 
-      if (result.errors.length !== 0) {
-        const error = new Error("Validation Error");
-        error.statusCode = 400;
+        for (const user of users) {
+          const values = [
+            user.system_id,
+            user.fname,
+            user.lname,
+            user.email,
+            user.type,
+            user.semester_group === "" ? null : user.semester_group,
+            user.active.toLocaleLowerCase() === "false"
+              ? moment().format(CONSTANTS.datetime_format)
+              : "",
+          ];
+
+          try {
+            await db.query(
+              `INSERT INTO ${DB_CONFIG.tableNames.users} 
+              (system_id, fname, lname, email, type, semester_group, active) 
+              VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              values,
+            );
+            successUsers.push(user);
+          } catch (err) {
+            failedUsers.push({ user, error: err.message });
+          }
+        }
+
+        res.status(200).json({ successUsers, failedUsers });
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
         return next(error);
       }
-
-      let users = JSON.parse(req.body.users);
-
-      const placeholders = users.map(() => `(?, ?, ?, ?, ?, ?, ?)`).join(",");
-      const values = users.flatMap((user) => {
-        const active =
-          user.active.toLocaleLowerCase() === "false"
-            ? moment().format(CONSTANTS.datetime_format)
-            : "";
-        return [
-          user.system_id,
-          user.fname,
-          user.lname,
-          user.email,
-          user.type,
-          user.semester_group === "" ? null : user.semester_group,
-          active,
-        ];
-      });
-
-      const sql = `INSERT INTO ${DB_CONFIG.tableNames.users} 
-      (system_id, fname, lname, email, type, semester_group, active) 
-      VALUES ${placeholders}`;
-
-      db.query(sql, values)
-        .then((result) => res.status(200).send(result))
-        .catch((err) => {
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        });
     },
   );
 
@@ -437,7 +454,7 @@ module.exports = (db) => {
       return next(error);
     }
 
-    let body = req.body;
+    let mock_id = req.user.mock ? req.user.mock.system_id : "";
 
     const sql = `INSERT INTO time_log
                 (semester, system_id, project, mock_id, work_date, time_amount, work_comment)
@@ -447,7 +464,7 @@ module.exports = (db) => {
       req.user.semester_group,
       req.user.system_id,
       req.user.project,
-      "",
+      mock_id,
       req.body.date,
       req.body.time_amount,
       req.body.comment,
@@ -2138,7 +2155,7 @@ module.exports = (db) => {
             doc
               .fontSize(12)
               .fill("black")
-              .text(convert(he.decode(body[key]||''))); // Text value from proposal
+              .text(convert(he.decode(body[key] || ""))); // Text value from proposal
             doc.moveDown();
             doc.save();
           }
@@ -3812,6 +3829,7 @@ module.exports = (db) => {
       if (result.errors.length !== 0) {
         const error = new Error(result.errors);
         error.statusCode = 400;
+        error.message = `Error Creating Semester: ${result.errors}`;
         return next(error);
       }
 
@@ -3889,6 +3907,117 @@ module.exports = (db) => {
         });
     });
   }
+
+  db_router.get(
+    "/getAdditionalInfo",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const requestedUserId = req.query.system_id;
+
+      if (!requestedUserId) {
+        return res.status(400).send({ error: "User ID is required" });
+      }
+
+      try {
+        const result = await db.query(
+          `SELECT additional_info FROM users WHERE system_id = ?`,
+          [requestedUserId],
+        );
+
+        if (result.length === 0) {
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+
+        res.send(result[0]);
+      } catch (err) {
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.post(
+    "/editAdditionalInfo",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, additional_info } = req.body;
+
+      if (!system_id || additional_info === undefined) {
+        return res
+          .status(400)
+          .send({ error: "system_id and additional_info are required" });
+      }
+
+      const updateQuery = `
+        UPDATE users
+        SET additional_info = ?
+        WHERE system_id = ?
+    `;
+
+      try {
+        await db.query(updateQuery, [additional_info, system_id]);
+        res
+          .status(200)
+          .send({ message: "Additional info updated successfully" });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.get(
+    "/getPeerEvals",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      const semesterNumber = req.query.semester;
+
+      let getPeerEvalsQuery = `
+        SELECT action_id 
+        FROM actions
+        WHERE action_target = 'peer_evaluation'
+      `;
+
+      let queryParams = [];
+      if (semesterNumber) {
+        getPeerEvalsQuery += ` AND semester = ?`;
+        queryParams.push(semesterNumber);
+      }
+
+      db.query(getPeerEvalsQuery, queryParams)
+        .then((values) => {
+          const actionIds = values.map((row) => row.action_id);
+
+          if (actionIds.length === 0) {
+            return res.send([]);
+          }
+
+          let getPeerEvalLogsQuery = `
+            SELECT * 
+            FROM action_log
+            WHERE action_template IN (${actionIds.join(",")})
+            ORDER BY submission_datetime DESC
+          `;
+
+          return db.query(getPeerEvalLogsQuery);
+        })
+        .then((logs) => {
+          if (logs) res.send(logs);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error("Error fetching peer evaluations");
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   return db_router;
 };

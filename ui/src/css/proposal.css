@@ -16,6 +16,12 @@
 }
 
 .required-field::after {
-    content: " *";
-    color: rgb(225, 25, 0);
+  content: " *";
+  color: rgb(225, 25, 0);
+}
+/* Dark Mode Styles */
+.dark-mode .edited-input input,
+.dark-mode .edited-input.dropdown {
+  background-color: #333 !important;
+  color: #e0e0e0 !important;
 }

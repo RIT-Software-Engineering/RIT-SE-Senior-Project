@@ -13,6 +13,7 @@ import ActionPanel from "./ActionPanel";
 import { formatDateNoOffset } from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
+import { isSemesterActive } from "../../../util/functions/utils";
 
 export default function ActionTable(props) {
   // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
@@ -34,6 +35,9 @@ export default function ActionTable(props) {
   // const semesterName = props.semesterData.find(semester => props.actions[0].semester === semester.semester_id)?.name;
   const [open, setOpen] = React.useState("false");
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
+  const [active, setActive] = useState(
+    isSemesterActive(semester?.start_date, semester?.end_date),
+  );
 
   function isOpenCallback(isOpen) {
     setCloseOnDocClick(!isOpen);
@@ -102,6 +106,7 @@ export default function ActionTable(props) {
           {
             key: "actionEditor",
             title: title || "No Semester",
+            active: active,
             content: {
               content: (
                 <div>
@@ -160,7 +165,9 @@ export default function ActionTable(props) {
             },
           },
         ]}
-        onTitleClick={(e, data) => setOpen(data.active)}
+        onTitleClick={() => {
+          setActive(!active);
+        }}
       />
     </>
   );

@@ -45,7 +45,12 @@ export default function SemesterEditor() {
         ]}
       />
       <div className="accordion-buttons-container">
-        <SemesterPanel header="Create Semester" callback={getSemesters} />
+        <SemesterPanel
+          header="Create Semester"
+          callback={getSemesters}
+          semester={null} // for semester creation
+          semesterData={semesters}
+        />
       </div>
     </div>
   );
