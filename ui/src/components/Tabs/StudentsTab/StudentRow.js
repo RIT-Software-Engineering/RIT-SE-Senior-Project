@@ -34,6 +34,7 @@ export default function StudentRow(props) {
   );
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
+  const [canUseAI, setCanUseAI] = useState(false);
 
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -154,6 +155,18 @@ export default function StudentRow(props) {
   useEffect(() => {
     if (openModal) {
       if (!props.isStudent) {
+        SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.valid === true) {
+              setCanUseAI(true);
+            } else {
+              setCanUseAI(false);
+            }
+          })
+          .catch((err) => {
+            setCanUseAI(false);
+          });
         fetchPeerReviews();
       }
       fetchAdditionalInfo();
@@ -241,12 +254,18 @@ export default function StudentRow(props) {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell
-            className="clickable-student-name"
-            onClick={() => setOpenModal(true)}
-          >
-            {props.student.fname} {props.student.lname}
-          </TableCell>
+          {props.isMyTeamTable ? (
+            <TableCell
+              className="clickable-student-name"
+              onClick={() => setOpenModal(true)}
+            >
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          ) : (
+            <TableCell>
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          )}
           <TableCell>{project}</TableCell>
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>

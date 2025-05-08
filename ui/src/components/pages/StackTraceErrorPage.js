@@ -81,7 +81,9 @@ const StackTraceErrorPage = () => {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1 style={{ color: "var(--action-bar-proposal-red)" }}>⚠️ An Error Occurred</h1>
+      <h1 style={{ color: "var(--action-bar-proposal-red)" }}>
+        ⚠️ An Error Occurred
+      </h1>
       {errorInfo ? (
         <div
           style={{
@@ -91,9 +93,17 @@ const StackTraceErrorPage = () => {
             textAlign: "left",
           }}
         >
-          <h2 style={{ color: "var(--action-bar-proposal-red)" }}>Error: {errorInfo.error}</h2>
+          <h2 style={{ color: "var(--action-bar-proposal-red)" }}>
+            Error: {errorInfo.error}
+          </h2>
           <details style={{ marginTop: "10px" }}>
-            <summary style={{ cursor: "pointer", fontWeight: "bold", color: "var(--text-primary)" }}>
+            <summary
+              style={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "var(--text-primary)",
+              }}
+            >
               View Stack Trace
             </summary>
             <pre
@@ -114,26 +124,28 @@ const StackTraceErrorPage = () => {
       )}
 
       <div style={{ marginTop: "20px" }}>
-        <p style={{ fontSize: "14px", color: "var(--action-bar-proposal-red)" }}>
+        <p
+          style={{ fontSize: "14px", color: "var(--action-bar-proposal-red)" }}
+        >
           ⚠️ A GitHub account is required to report an issue.
         </p>
-        <Button onClick={handleGoBack} >
-          🔙 Go Back
-        </Button>
-        <Button onClick={handleCopyStackTrace} >
-          📋 Copy Stack Trace
-        </Button>
-        <Button onClick={handleReportOnGitHub} >
-          🐞 Report on GitHub
-        </Button>
+        <Button onClick={handleGoBack}>🔙 Go Back</Button>
+        <Button onClick={handleCopyStackTrace}>📋 Copy Stack Trace</Button>
+        <Button onClick={handleReportOnGitHub}>🐞 Report on GitHub</Button>
       </div>
 
       {userFeedback && (
-        <p style={{ marginTop: "10px", color: "var(--action-bar-proposal-green)" }}>{userFeedback}</p>
+        <p
+          style={{
+            marginTop: "10px",
+            color: "var(--action-bar-proposal-green)",
+          }}
+        >
+          {userFeedback}
+        </p>
       )}
     </div>
   );
 };
-
 
 export default StackTraceErrorPage;

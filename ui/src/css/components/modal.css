@@ -25,6 +25,11 @@ a.ui.button {
 }
 
 /* Dark mode styles for pagination */
+
+.dark-mode .ui.sortable.table thead th:hover {
+  color: var(--text-primary);
+}
+
 body.dark-mode .ui.pagination.menu {
   background-color: var(--bg-footer-header);
   color: var(--text-primary);
@@ -64,6 +69,10 @@ body.dark-mode .ui.message {
 
 .dark-mode .ui.button:hover {
   background-color: var(--bg-hover);
+}
+
+.dark-mode .ui.active.button:hover {
+  color: var(--text-primary);
 }
 
 body.dark-mode .ui.header {

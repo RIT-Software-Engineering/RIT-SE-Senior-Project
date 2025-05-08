@@ -4,6 +4,7 @@ import { config, USERTYPES } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { formattedAttachments } from "./ProjectEditorModal";
 import { decode } from "he";
+import { convert } from "html-to-text";
 
 export default function ProjectViewerModal(props) {
   const [projectMembers, setProjectMembers] = useState({
@@ -50,7 +51,7 @@ export default function ProjectViewerModal(props) {
       .then((response) => response.json())
       .then((archives) => {
         if (archives.length > 0) {
-          if (archives[0].url_slug != null && archives[0].url_slug != "") {
+          if (archives[0].url_slug !== null && archives[0].url_slug !== "") {
             setURL(archives[0].url_slug);
           }
         }
@@ -60,6 +61,15 @@ export default function ProjectViewerModal(props) {
   const generateModalContent = () => {
     return (
       <>
+        <style>
+          {`
+                #gfg {
+                    overflow-x: auto;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
+                `}
+        </style>
         <h3>Team members</h3>
         <b>Students:</b> {projectMembers.students?.join(",")} <br />
         <b>Coaches:</b> {projectMembers.coaches?.join(",")} <br />
@@ -72,33 +82,67 @@ export default function ProjectViewerModal(props) {
         <b>Email:</b> {decode(props.project.contact_email || "")} <br />
         <b>Phone:</b> {decode(props.project.contact_phone || "")} <br />
         <h3>Project Info</h3>
-        <b>Original Submission Date:</b>{" "}
-        {decode(props.project.submission_datetime || "")} <br />
-        <b>Background info:</b> {decode(props.project.background_info || "")}{" "}
-        <br />
-        <b>Description:</b> {decode(props.project.project_description || "")}{" "}
-        <br />
-        <b>Scope:</b> {decode(props.project.project_scope || "")} <br />
-        <b>Challenges:</b> {decode(props.project.project_challenges || "")}{" "}
-        <br />
-        <b>Constraints & Assumptions:</b>{" "}
-        {decode(props.project.constraints_assumptions || "")} <br />
-        <b>Provided Resources:</b>{" "}
-        {decode(props.project.sponsor_provided_resources || "")} <br />
-        <b>Search keywords:</b>{" "}
-        {decode(props.project.project_search_keywords || "")} <br />
-        <b>Deliverables:</b> {decode(props.project.sponsor_deliverables || "")}{" "}
-        <br />
-        <b>Proprietary Info:</b> {decode(props.project.proprietary_info || "")}{" "}
-        <br />
-        <b>Sponsor Available:</b>{" "}
-        {decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"}{" "}
-        <br />
-        <b>Assignment of Rights:</b>{" "}
-        {decode(props.project.assignment_of_rights || "")} <br />
-        <b>Semester:</b>{" "}
-        {decode(props.semesterMap[props.project.semester] || "")} <br />
-        <b>Status:</b> {decode(props.project.status || "")} <br />
+        <pre
+          style={{
+            overflowX: "auto",
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+          }}
+        >
+          <b>Original Submission Date:</b>
+          <br /> {decode(props.project.submission_datetime || "")}
+          <br />
+          <br />
+          <b>Background info:</b>
+          <br /> {convert(decode(props.project.background_info || ""))}
+          <br />
+          <br />
+          <b>Description:</b>
+          <br /> {convert(decode(props.project.project_description || ""))}
+          <br />
+          <br />
+          <b>Scope:</b>
+          <br /> {convert(decode(props.project.project_scope || ""))}
+          <br />
+          <br />
+          <b>Challenges:</b>
+          <br /> {convert(decode(props.project.project_challenges || ""))}
+          <br />
+          <br />
+          <b>Constraints & Assumptions:</b>
+          <br /> {convert(decode(props.project.constraints_assumptions || ""))}
+          <br />
+          <br />
+          <b>Provided Resources:</b>
+          <br />{" "}
+          {convert(decode(props.project.sponsor_provided_resources || ""))}
+          <br />
+          <br />
+          <b>Search keywords:</b>
+          <br /> {decode(props.project.project_search_keywords || "")}
+          <br />
+          <br />
+          <b>Deliverables:</b>
+          <br /> {convert(decode(props.project.sponsor_deliverables || ""))}
+          <br />
+          <br />
+          <b>Proprietary Info:</b>
+          <br /> {convert(decode(props.project.proprietary_info || ""))}
+          <br />
+          <br />
+          <b>Sponsor Available: </b>
+          {decode(props.project.sponsor_avail_checked) === "on" ? "Yes" : "No"}
+          <br />
+          <b>Assignment of Rights: </b>
+          {decode(props.project.assignment_of_rights || "")}
+          <br />
+          <b>Semester: </b>
+          {decode(props.semesterMap[props.project.semester] || "")}
+          <br />
+          <b>Status: </b>
+          {decode(props.project.status || "")}
+          <br />
+        </pre>
         <h3>Attachments</h3>
         {props.project.attachments ? (
           formattedAttachments(props.project)?.map((file) => {
@@ -120,8 +164,8 @@ export default function ProjectViewerModal(props) {
   };
   return (
     <Modal
-      closeOnDimmerClick={false}
       className={"sticky"}
+      closeOnDimmerClick={false}
       trigger={<Button icon="eye" />}
       header={`Viewing "${props.project.display_name || props.project.title}"`}
       content={{ content: generateModalContent() }}

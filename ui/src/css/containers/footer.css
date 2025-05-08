@@ -1,12 +1,12 @@
-@import './../base/variables.css';
+@import "./../base/variables.css";
 
 #footer {
-    min-height: var(--header-footer-height);
-    background-color: var(--bg-footer);
-    color: white;
-    padding-top: 2em;
-    padding-bottom: 1em;
-    text-align: left;
+  min-height: var(--header-footer-height);
+  background-color: var(--bg-footer);
+  color: white;
+  padding-top: 2em;
+  padding-bottom: 1em;
+  text-align: left;
 }
 
 #bringMeDown {
@@ -35,8 +35,6 @@
 
 /* Dark Mode Styles */
 .dark-mode #footer {
-  background-color: var(--bg-footer-header); 
-  color: var(--bg-primary);          
+  background-color: var(--bg-footer-header);
+  color: var(--bg-primary);
 }
-
-

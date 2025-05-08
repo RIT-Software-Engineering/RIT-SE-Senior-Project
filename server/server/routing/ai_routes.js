@@ -88,7 +88,6 @@ Output Specification:
     3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
 `;
 
-
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash-latest",
   systemInstruction: PROMPT_GENERATE_FEEDBACK_SUMMARY,
@@ -145,69 +144,107 @@ async function generateResponse(prompt, context) {
     return result.response.text();
   } catch (error) {
     console.error("Error generating content:", error);
+    if (error.status === 400 && error.message.includes("API key not valid")) {
+      const invalidKey = new Error("Invalid Key");
+      invalidKey.status = 400;
+      throw invalidKey;
+    }
     throw new Error("Failed to generate response.");
   }
 }
 
 module.exports = () => {
-  router.post("/GenerateSummary", [UserAuth.isCoachOrAdmin], (req, res, next) => {
-    const context = req.body.context;
+  router.post(
+    "/GenerateSummary",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      const context = req.body.context;
 
-    provide_summary(context)
-      .then((response) => {
+      provide_summary(context)
+        .then((response) => {
+          res.type("text/plain");
+          res.status(200).send(response);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          error.message =
+            "Error generating summary with gemini-1.5-flash-latest";
+          return next(error);
+        });
+    },
+  );
+
+  router.post(
+    "/GenerateHistoricSummary",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
+      const context = req.body.context;
+
+      provide_historic_summary(context)
+        .then((response) => {
+          res.type("text/plain");
+          res.status(200).send(response);
+        })
+        .catch((err) => {
+          console.error(err);
+          const error = new Error(err);
+          error.statusCode = 500;
+          error.message = "Error generating historic summary";
+          return next(error);
+        });
+    },
+  );
+
+  router.post(
+    "/GenerateResponse",
+    [UserAuth.isCoachOrAdmin],
+    async (req, res, next) => {
+      if (!key || key === "ADD_KEY_HERE") {
         res.type("text/plain");
-        res.status(200).send(response);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        error.message = "Error generating summary with gemini-1.5-flash-latest";
-        return next(error);
-      });
+        return res
+          .status(200)
+          .send("Invalid API key. Please let an admin know.");
+      }
+
+      const { prompt, context } = req.body;
+
+      if (!prompt || !context) {
+        return res
+          .status(200)
+          .json({ error: "Missing 'prompt' or 'context' in request body." });
+      }
+
+      generateResponse(prompt, context)
+        .then((response) => {
+          res.type("text/plain");
+          res.status(200).send(response);
+        })
+        .catch((err) => {
+          if (err.status === 400 && err.message.includes("Invalid Key")) {
+            // Invalid API key
+            return res
+              .type("text/plain")
+              .status(200)
+              .send("API key is not valid. Please let Admin know");
+          } else {
+            console.error("Error generating response:", err);
+            const error = new Error(err);
+            error.statusCode = 500;
+            error.message =
+              "Error generating summary with gemini-1.5-flash-latest";
+            return next(error);
+          }
+        });
+    },
+  );
+
+  router.get("/CheckGeminiKeyExists", [UserAuth.isCoachOrAdmin], (req, res) => {
+    const isValid = key && key.trim().length > 0 && key !== "INSERT_KEY_HERE";
+
+    res.status(200).json({ valid: isValid });
   });
 
-  router.post("/GenerateHistoricSummary", [UserAuth.isCoachOrAdmin], (req, res, next) => {
-    const context = req.body.context;
-  
-    provide_historic_summary(context)
-      .then((response) => {
-        res.type("text/plain");
-        res.status(200).send(response);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        error.message = "Error generating historic summary";
-        return next(error);
-      });
-  });
-
-  router.post("/GenerateResponse", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
-    if (!key || key === "ADD_KEY_HERE") {
-      res.type("text/plain");
-      return res.status(200).send("Invalid API key. Please let an admin know.");
-    }
-
-    const { prompt, context } = req.body;
-
-    if (!prompt || !context) {
-      return res.status(200).json({ error: "Missing 'prompt' or 'context' in request body." });
-    }
-
-    generateResponse(prompt, context)
-      .then((response) => {
-        res.type("text/plain");
-        res.status(200).send(response);
-      })
-      .catch((err) => {
-        console.error("Error generating response:", err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        error.message = "Error generating summary with gemini-1.5-flash-latest";
-        return next(error);
-      });
-    });
   return router;
 };

@@ -2,12 +2,13 @@ import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
 import DevSignInModalContent from "../../util/components/DevSignInModalContent";
+import "../../../css/containers/header.css";
+import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
-import "./../../../css/containers/header.css";
-import "./../../../css/utils/responsive.css";
+import ProfileModal from "./profileModal";
 
 function Header() {
   const history = useHistory();
@@ -19,6 +20,8 @@ function Header() {
     // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
+  const [darkMode, setDarkMode] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
   const signInOut = () => {
@@ -44,44 +47,37 @@ function Header() {
     return (
       <>
         <div id="nav-buttons" className="ui right floated buttons">
-          <a
-            href={"/"}
-            className="ui button"
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            Home
-          </a>
-          <a
-            href={"/projects"}
-            className="ui button"
-            onClick={() => {
-              history.push("/projects");
-            }}
-          >
-            Projects
-          </a>
-          {signedIn && (
-            <a
-              href={"/dashboard"}
-              className="ui button"
-              onClick={() => {
-                history.push("/dashboard");
-              }}
-            >
-              Dashboard
-            </a>
+          {!signedIn && (
+            <>
+              <a
+                href={"/"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                Home
+              </a>
+              <a
+                href={"/projects"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/projects");
+                }}
+              >
+                Projects
+              </a>
+              <a
+                href={"/sponsor"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/sponsor");
+                }}
+              >
+                Sponsor a Project
+              </a>
+            </>
           )}
-          <a
-            href={"/sponsor"}
-            className="ui button"
-            onClick={() => {
-              history.push("/sponsor");
-            }}
-          >
-            Sponsor a Project
-          </a>
           {process.env.REACT_APP_NODE_ENV === "production" ? (
             <button className="ui button" onClick={signInOut}>
               {signInOutBtnText}
@@ -97,6 +93,14 @@ function Header() {
               }}
               actions={["Cancel"]}
             />
+          )}
+          {signedIn && (
+            <button
+              className="ui button"
+              onClick={() => setProfileModalOpen(true)}
+            >
+              Profile
+            </button>
           )}
         </div>
         <div id="hamburger-menu">
@@ -192,13 +196,42 @@ function Header() {
               height: "auto",
               marginRight: "15px",
               flexShrink: 0,
+              cursor: "pointer",
+            }}
+            href={"/"}
+            onClick={() => {
+              history.push("/");
+              // Delete all cookies
+              let cookies = document.cookie.split(";");
+              cookies.forEach(
+                (cookie) => (document.cookie = cookie + ";max-age=0"),
+              );
+              window.location.reload();
             }}
           />
-          <span style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)" }}>
+          <span
+            style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
+            href={"/"}
+            onClick={() => {
+              history.push("/");
+              // Delete all cookies
+              let cookies = document.cookie.split(";");
+              cookies.forEach(
+                (cookie) => (document.cookie = cookie + ";max-age=0"),
+              );
+              window.location.reload();
+            }}
+          >
             Senior Project
           </span>
         </h1>
+
         {renderNavButtons()}
+        <ProfileModal
+          open={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+          user={user}
+        />
       </div>
     </div>
   );

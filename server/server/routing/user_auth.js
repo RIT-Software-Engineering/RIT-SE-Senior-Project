@@ -30,7 +30,7 @@ const isCoachOrAdmin = (req, res, next) => {
     return true;
   }
 
-  const error = new Error(err);
+  const error = new Error("Coach or Admin required");
   error.statusCode = 401;
   return next(error);
 };

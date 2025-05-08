@@ -7,10 +7,13 @@ const BASE_URL =
     ? `${window.location.protocol}//localhost:${process.env.REACT_APP_PORT}`
     : process.env.REACT_APP_BASE_URL; // Production URLs should always be HTTPS
 
+const TINYMCE_API_KEY = process.env.REACT_APP_TINYMCE_API_KEY;
+
 export const config = {
   url: {
     BASE_URL: BASE_URL,
     BASE_API_URL: BASE_API_URL,
+    TINYMCE_API_KEY: TINYMCE_API_KEY,
     WWW: `${BASE_URL}/www`,
     LOGOUT_SUCCESS: "https://shibboleth.main.ad.rit.edu/logout.html",
 
@@ -82,10 +85,13 @@ export const config = {
     API_GET_ARCHIVE: `${BASE_API_URL}/db/getArchive`,
     API_GET_ADDITIONAL_INFO: `${BASE_API_URL}/db/getAdditionalInfo`,
     API_GET_PEER_EVALS: `${BASE_API_URL}/db/getPeerEvals`,
+    API_GET_DARK_MODE: `${BASE_API_URL}/db/getDarkMode`,
+    API_GET_GANTT_VIEW: `${BASE_API_URL}/db/getGanttView`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
     API_GENERATE_RESPONSE: `${BASE_API_URL}/ai/GenerateResponse`,
+    API_CHECK_GEMINI_KEY_EXISTS: `${BASE_API_URL}/ai/CheckGeminiKeyExists`,
     //Matches semester from project table to semester_id from semester_groups, returns start and end date
     API_GET_START_AND_END_DATE: `${BASE_API_URL}/db/getProjectDates`,
     API_GET_COACH_FEEDBACK: `${BASE_API_URL}/db/getCoachFeedback`,
@@ -111,6 +117,8 @@ export const config = {
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
     API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
+    API_POST_SET_DARK_MODE: `${BASE_API_URL}/db/setDarkMode`,
+    API_POST_SET_GANTT_VIEW: `${BASE_API_URL}/db/setGanttView`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,
