@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
+import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 
 function Footer() {
   const { user } = useContext(UserContext);
   const [signedIn, setSignedIn] = useState(false);
+
   useEffect(() => {
     // A user is considered signed in if the user object has a value
-    // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
 
@@ -29,7 +30,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  V.1.7.0
+                  v1.7.3
                 </a>
               </h5>
             </div>
@@ -43,11 +44,15 @@ function Footer() {
         <div id="bringMeDownSignedIn" className="ui container stackable grid">
           <div className="three column row">
             <div className="column">
-              <h3>
-                B. THOMAS GOLISANO <br />
-                COLLEGE OF COMPUTING & <br />
-                INFORMATION SCIENCES
-              </h3>
+              <img
+                src={collegeLogo}
+                alt="Golisano College of Computing & Information Sciences"
+                style={{
+                  maxWidth: "200px",
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
             </div>
             <div className="column">
               <h4>
@@ -66,7 +71,15 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div className="centered row">
+          <div
+            className="centered row"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved

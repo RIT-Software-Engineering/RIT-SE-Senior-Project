@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Accordion, Icon, Message } from "semantic-ui-react";
+import { Accordion, Icon, Message, Dropdown } from "semantic-ui-react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import StudentTeamTable from "./StudentTeamTable";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
+import BarGraph from "../../util/components/PeerEvalVisualSummary";
 import _ from "lodash";
 
 export default function StudentsTab(props) {
@@ -16,6 +17,7 @@ export default function StudentsTab(props) {
   const [activeSemesters, setActiveSemesters] = useState({});
   const [activeProjectIds, setActiveProjectIds] = useState({});
   const [coachFeedback, setCoachFeedback] = useState({});
+  const [sortBy, setSortBy] = useState({});
 
   const userContext = useContext(UserContext);
   const unassignedStudentsStr = "Unassigned students";
@@ -23,6 +25,36 @@ export default function StudentsTab(props) {
   function updateCoachFeedback(project_id, form_data) {
     setCoachFeedback((prev) => ({ ...prev, [project_id]: form_data }));
   }
+
+  function getSortOptions() {
+    const sortOptions = [
+      {
+        key: "name",
+        text: "Student Name",
+        value: "student",
+      },
+      {
+        key: "project",
+        text: "Project Name",
+        value: "project",
+      },
+    ];
+
+    // coaches and admins are able to see the Last Login column for All Students section
+    if (
+      userContext.user.role === USERTYPES.ADMIN ||
+      userContext.user.role === USERTYPES.COACH
+    ) {
+      sortOptions.push({
+        key: "lastLogin",
+        text: "Last Login",
+        value: "lastLogin",
+      });
+    }
+    return sortOptions;
+  }
+
+  const sortOptions = getSortOptions();
 
   function getCoachFeedback(project_id) {
     SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`)
@@ -222,11 +254,26 @@ export default function StudentsTab(props) {
           return true;
         });
 
-        studentsData = _.sortBy(studentsData || [], [
-          "fname",
-          "lname",
-          "email",
-        ]);
+        const semesterSort = sortBy[semester.semester_id];
+        // sorting based on dropdown selection
+        if (semesterSort === "student") {
+          studentsData = _.sortBy(
+            studentsData || [],
+            (student) => `${student.fname} ${student.lname}`,
+          );
+        } else if (semesterSort === "project") {
+          studentsData = _.sortBy(
+            studentsData || [],
+            (student) =>
+              semester.projects[student.project]?.name || "No Project",
+          );
+        } else if (semesterSort === "lastLogin") {
+          studentsData = _.sortBy(studentsData || [], (student) => {
+            if (!student.last_login) return 0;
+            return new Date(student.last_login).getTime();
+          });
+          studentsData = studentsData.reverse(); // latest login at top
+        }
 
         Object.keys(semester.projects).map((projectKey) => {
           if (
@@ -271,6 +318,7 @@ export default function StudentsTab(props) {
                             isStudent={
                               userContext.user.role === USERTYPES.STUDENT
                             }
+                            isMyTeamTable={true}
                           />
                         ),
                       },
@@ -327,6 +375,12 @@ export default function StudentsTab(props) {
                         studentsTab={true}
                         projectsData={semester.projects}
                         isStudent={userContext.user.role === USERTYPES.STUDENT}
+                        isMyTeamTable={
+                          userContext.user.role !== USERTYPES.ADMIN &&
+                          userContext.user.role !== USERTYPES.COACH
+                            ? false
+                            : true
+                        }
                       />
                     ),
                   },
@@ -334,6 +388,27 @@ export default function StudentsTab(props) {
               ]}
             />
             <div className="accordion-buttons-container">
+              <Dropdown
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
+                text="Sort By"
+                direction="left"
+                floating
+                button
+                compact
+                value={sortBy[semester.semester_id] || null}
+                onChange={(e, { value }) =>
+                  setSortBy((prev) => ({
+                    ...prev,
+                    [semester.semester_id]: value,
+                  }))
+                }
+                options={sortOptions}
+              />
+
               <a
                 href={`mailTo:${studentsData
                   ?.map((student) => student.email)
@@ -354,6 +429,7 @@ export default function StudentsTab(props) {
 
     // Peer Evaluations
     semesterMap.forEach((semester) => {
+      let active = isSemesterActive(semester?.start_date, semester?.end_date);
       Object.keys(semester.projects).forEach((projectKey) => {
         const project = semester.projects[projectKey];
         const submissions = coachFeedback[projectKey];
@@ -370,13 +446,25 @@ export default function StudentsTab(props) {
               {
                 key: `${projectKey}eval${submission.ActionData.id}`,
                 title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
+                active: active,
                 content: {
                   content: (
-                    <EvalReview
-                      forms={submission}
-                      isSub={submission?.Submitter === "COACH"}
-                      id={projectKey + semester.name}
-                    />
+                    <>
+                      {
+                        // only show bar graph if admin or coach
+                        userContext.user.role === USERTYPES.ADMIN ||
+                        userContext.user.role === USERTYPES.COACH ? (
+                          <BarGraph data={submission} />
+                        ) : (
+                          ""
+                        )
+                      }
+                      <EvalReview
+                        forms={submission}
+                        isSub={submission?.Submitter === "COACH"}
+                        id={projectKey + semester.name}
+                      />
+                    </>
                   ),
                 },
               },
@@ -397,6 +485,7 @@ export default function StudentsTab(props) {
                 {
                   key: "eval",
                   title: project.name + " - " + semester.name,
+                  active: active,
                   content: {
                     content: hasSubmissions ? (
                       submissions.map((submission, index) =>

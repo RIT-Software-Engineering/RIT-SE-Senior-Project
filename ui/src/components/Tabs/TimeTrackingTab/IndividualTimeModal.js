@@ -49,6 +49,7 @@ export default function IndividualTimeModal(props) {
   };
   return (
     <Modal
+      closeOnDimmerClick={false}
       className={"sticky"}
       onOpen={() => {
         setOpen(true);
@@ -96,8 +97,10 @@ export default function IndividualTimeModal(props) {
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
+ //   196-view-only-admin-role
         {props.userId === user.user && props.delete === 1 && !user.view_only && user.mockUser.view_only != "TRUE" ? deleteButton : ""}
         <Button onClick={() => onClose()}>Close</Button>
+        {props.userId === user.user && props.delete === 1 ? deleteButton : ""}
       </Modal.Actions>
     </Modal>
   );

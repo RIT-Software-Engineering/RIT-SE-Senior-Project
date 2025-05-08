@@ -210,6 +210,7 @@ export default function SponsorEditor(props) {
 
     editor = (
       <Modal
+        closeOnDimmerClick={false}
         className={"sticky"}
         trigger={trigger}
         header={"Sponsor Summary View"}

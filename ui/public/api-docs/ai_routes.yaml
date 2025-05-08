@@ -1,0 +1,100 @@
+paths:
+  # AI
+  /ai/GenerateSummary:
+    post:
+      summary: Generate summary
+      description: Generates anonymous feedback for the given user or a summary of their peer's feedback
+      tags:
+        - AI
+      operationId: GenerateSummary
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Generated summary
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+  /ai/GenerateHistoricSummary:
+    post:
+      summary: Generate historic summary
+      description: Generates feedback for the given user, focuses on trends in performance and how they can be improved.
+      tags:
+        - AI
+      operationId: GenerateHistoricSummary
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Generated summary
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"
+  /ai/GenerateResponse:
+    post:
+      summary: Generate response
+      description: Generates anonymous feedback for the given user or a summary of their peer's feedback
+      tags:
+        - AI
+      operationId: GenerateResponse
+      requestBody:
+        description: Context for generating summary
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: string
+                  description: Context for generating summary
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                oneOf:
+                  - type: string
+                    description: Invalid API key
+                  - type: string
+                    description: Missing 'prompt' or 'context' in request body.
+                  - type: string
+                    description: Generated Response
+        "500":
+          description: Error generating summary with gemini-1.5-flash-latest
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/Error"

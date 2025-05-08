@@ -130,6 +130,8 @@ export default function StudentTeamTable(props) {
             viewOnly={props.viewOnly}
             studentsTab={props.studentsTab}
             callback={props.callback}
+            isStudent={props.isStudent}
+            isMyTeamTable={props.isMyTeamTable}
           />
         ))}
       </TableBody>

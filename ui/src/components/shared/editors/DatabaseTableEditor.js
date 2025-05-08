@@ -1,20 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { Dropdown, Header, Label, Modal } from "semantic-ui-react";
+import {
+  Dropdown,
+  Label,
+  Modal,
+  Message,
+  MessageHeader,
+  MessageList,
+  Icon,
+} from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
-import { Dropdown as SemanticDropdown } from "semantic-ui-react";
-import ReactCodeMirror, {
-  oneDark,
-  oneDarkHighlightStyle,
-} from "@uiw/react-codemirror";
+import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
 
-const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
+const MODAL_STATUS = {
+  SUCCESS: "success",
+  FAIL: "fail",
+  SUBMISSION_ERROR: "submission_error",
+  CLOSED: false,
+};
 
 const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
@@ -30,10 +39,20 @@ export default function DatabaseTableEditor(props) {
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
+  const [errors, setErrors] = useState(props.errors);
+  const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
+
+  const formRef = useRef(null); // maintain the current form data in the case of submission error
+
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
   }, [initialState]);
+
+  // update the errors as the errors are changing.
+  useEffect(() => {
+    setErrors(props.errors);
+  }, [props.errors]);
 
   const generateModalFields = () => {
     switch (submissionModalOpen) {
@@ -58,6 +77,32 @@ export default function DatabaseTableEditor(props) {
             },
           ],
         };
+
+      case MODAL_STATUS.SUBMISSION_ERROR:
+        return {
+          header: "Invalid Submission",
+          content: submissionModalMessages["SUBMISSON_ERROR"],
+          actions: [
+            {
+              content: "Cancel",
+              positive: false,
+              onClick: (event) => {
+                handleCancel(event);
+              },
+            },
+            {
+              header: "Submission Error",
+              content: "Try again",
+              positive: true,
+              onClick: (event) => {
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+                setFormData(formRef.current || initialState);
+                setOpen(true);
+              },
+              key: 0,
+            },
+          ],
+        };
       default:
         return;
     }
@@ -66,12 +111,17 @@ export default function DatabaseTableEditor(props) {
   const closeSubmissionModal = () => {
     switch (submissionModalOpen) {
       case MODAL_STATUS.SUCCESS:
+        setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         if (props.reload) {
           props.reloadData();
         }
         break;
       case MODAL_STATUS.FAIL:
+        setErrors([]);
+        setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+        break;
+      case MODAL_STATUS.SUBMISSION_ERROR:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         break;
       default:
@@ -79,17 +129,42 @@ export default function DatabaseTableEditor(props) {
     }
   };
 
+  // helper function to check if the input element is invalid; used to highlight input elements
+  function hasError(fieldName) {
+    return errors?.some(
+      (error) =>
+        error.name === fieldName ||
+        (error.elements && error.elements.includes(fieldName)),
+    );
+  }
+
   function handleCancel() {
+    setErrors([]);
     setFormData(initialState);
+    formRef.current = null;
+    setOpen(false);
   }
 
   const handleSubmit = async function (e) {
+    e.preventDefault();
+
+    // data to be sent to backend
     const dataToSubmit = !!props.preSubmit
       ? props.preSubmit(formData)
       : formData;
 
+    console.log("This is the DATA:", dataToSubmit);
+
+    if (dataToSubmit === null) {
+      // validation failed
+      formRef.current = formData;
+      setErrorSubmitted(true);
+      setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
+      return;
+    }
+
+    setErrorSubmitted(false);
     let body = new FormData();
-    console.log(submitRoute);
     if ("changed_fields" in dataToSubmit) {
       if (typeof dataToSubmit["changed_fields"] === "object") {
         dataToSubmit["changed_fields"] = JSON.stringify(
@@ -110,14 +185,17 @@ export default function DatabaseTableEditor(props) {
       .then((response) => {
         if (response.status === 200) {
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+          formRef.current = null;
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
+          formRef.current = null;
         }
         if (props.callback) {
           props.callback();
         }
       })
       .catch((error) => {
+        console.error(error);
         setSubmissionModalOpen(MODAL_STATUS.FAIL);
       });
   };
@@ -125,6 +203,31 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
+    if (errorSubmitted) {
+      // remove errors if changes made after first submission.
+      setErrors((prevErrors) => {
+        let newErrors = [...prevErrors];
+
+        if (
+          (name === "action_target" &&
+            (value === "peer_evaluation" ||
+              value === "coach_announcement" ||
+              value === "student_announcement")) ||
+          (name === "type" && (value === "admin" || value === "coach"))
+        ) {
+          newErrors = newErrors.filter((error) => error.name !== "short_desc");
+        } else if (name === "action_target" && value === "break_period") {
+          newErrors = newErrors.filter((error) => error.name !== "page_html");
+        }
+        newErrors = newErrors.filter(
+          (error) =>
+            error.name !== name &&
+            (!error.elements || !error.elements.includes(name)),
+        );
+        return newErrors;
+      });
+    }
+
     if (props.viewOnly) {
       return;
     }
@@ -182,19 +285,53 @@ export default function DatabaseTableEditor(props) {
     if (!field.hidden) {
       switch (field.type) {
         case "input":
-          fieldComponents.push(
-            <Form.Field key={field.name}>
-              <Form.Input
-                label={field.label}
-                placeholder={field.placeholder}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                disabled={field.disabled}
-                required
-              />
-            </Form.Field>,
-          );
+          if (
+            (formData.action_target === "peer_evaluation" ||
+              formData.action_target === "coach_announcement" ||
+              formData.action_target === "student_announcement") &&
+            (field.name === "file_types" ||
+              field.name === "file_size" ||
+              field.name === "short_desc")
+          ) {
+            // hide input fields if peer_eval / announcements are chosen.
+            break;
+          } else if (
+            formData.action_target === "break_period" &&
+            (field.name === "file_types" || field.name === "file_size")
+          ) {
+            break;
+          } else {
+            if (field.name === "file_types" || field.name === "file_size") {
+              // not required
+              fieldComponents.push(
+                <Form.Field key={field.name}>
+                  <Form.Input
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    disabled={field.disabled}
+                  />
+                </Form.Field>,
+              );
+            } else {
+              fieldComponents.push(
+                <Form.Field key={field.name}>
+                  <Form.Input
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    disabled={field.disabled}
+                    required
+                    error={hasError(field.name)}
+                  />
+                </Form.Field>,
+              );
+            }
+          }
           break;
         case "phoneInput":
           fieldComponents.push(
@@ -223,6 +360,7 @@ export default function DatabaseTableEditor(props) {
                 onChange={handleChange}
                 disabled={field.disabled}
                 required
+                error={hasError(field.name)}
               />
             </Form.Field>,
           );
@@ -237,7 +375,8 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
               />,
             );
-          } else {
+            // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
+          } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
               <Form.Field key={field.name} required>
                 <label>{field.label}</label>
@@ -256,7 +395,9 @@ export default function DatabaseTableEditor(props) {
                     borderRadius: "5px",
                     padding: "10px",
                     minHeight: "200px",
+                    backgroundColor: hasError(field.name) ? "#fab9b4" : "",
                   }}
+                  required
                 />
               </Form.Field>,
             );
@@ -268,6 +409,28 @@ export default function DatabaseTableEditor(props) {
             (formData.type === "coach" || formData.type === "admin") &&
             (field.label === "Semester/Project" || field.label === "Semester")
           ) {
+          } else if (field.name === "semester_group" || field.name === "type") {
+            // required dropdowns; used for user creation.
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
+                disabled={field.loading || field.disabled}
+                required
+                error={hasError(field.name)}
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] || field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>,
+            );
+            break;
           } else {
             fieldComponents.push(
               <Form.Field
@@ -461,8 +624,7 @@ export default function DatabaseTableEditor(props) {
         key: "cancel",
         content: "Cancel",
         onClick: (event) => handleCancel(event),
-        positive: true,
-        style: { backgroundColor: "grey" },
+        color: "grey",
       },
       {
         key: "submit",
@@ -471,6 +633,8 @@ export default function DatabaseTableEditor(props) {
           ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
           : "Submit",
         onClick: (event) => handleSubmit(event),
+        labelPosition: "right",
+        icon: "check",
         positive: true,
       },
     ];
@@ -484,6 +648,8 @@ export default function DatabaseTableEditor(props) {
     return (
       <>
         <Modal
+          closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
           onClose={() => {
@@ -499,6 +665,21 @@ export default function DatabaseTableEditor(props) {
           content={{
             content: (
               <>
+                {errors?.length > 0 && (
+                  <div className="submission-errors">
+                    <Message error>
+                      <MessageHeader>
+                        <Icon name="warning circle" /> Errors:
+                      </MessageHeader>
+                      <MessageList>
+                        {errors.map((err) => (
+                          <li key={err.name}>{err.message}</li>
+                        ))}
+                      </MessageList>
+                    </Message>
+                    <br />
+                  </div>
+                )}
                 <Form>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
@@ -508,6 +689,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
@@ -520,12 +702,36 @@ export default function DatabaseTableEditor(props) {
     return (
       <>
         <Modal
+          closeOnDimmerClick={false}
+          closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
+          onClose={() => {
+            setOpen(false);
+          }}
+          onOpen={() => {
+            setOpen(true);
+          }}
+          open={open}
           header={props.header}
           content={{
             content: (
               <>
+                {errors?.length > 0 && (
+                  <div className="submission-errors">
+                    <Message error>
+                      <MessageHeader>
+                        <Icon name="warning circle" /> Errors:
+                      </MessageHeader>
+                      <MessageList>
+                        {errors.map((err) => (
+                          <li key={err.name}>{err.message}</li>
+                        ))}
+                      </MessageList>
+                    </Message>
+                    <br />
+                  </div>
+                )}
                 <Form>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
@@ -535,6 +741,7 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
         />
         <Modal
+          closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
