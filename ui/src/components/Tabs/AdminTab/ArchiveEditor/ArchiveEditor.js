@@ -59,7 +59,8 @@ export default function ArchiveEditor() {
       />
       <div className="accordion-buttons-container">
         <ArchivePanel
-          project={"null"}
+          project={null}
+          archiveData={projects}
           create={true}
           newArchive
           header={"Create Archive"}

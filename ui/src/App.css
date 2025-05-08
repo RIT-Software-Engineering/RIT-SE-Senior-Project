@@ -110,8 +110,6 @@ a.ui.button {
   text-decoration: underline;
 }
 
-
-
 /* Dark Mode Styles */
 .dark-mode {
   background-color: #121212;
@@ -123,7 +121,7 @@ a.ui.button {
 }
 
 .dark-mode .fake-a {
-  color: #90CAF9;
+  color: #90caf9;
 }
 
 .dark-mode #footer {
@@ -141,12 +139,11 @@ a.ui.button {
   background-color: #333;
 }
 
-body.dark-mode table, 
-body.dark-mode th, 
+body.dark-mode table,
+body.dark-mode th,
 body.dark-mode td {
-    border: 1px solid #444;
+  border: 1px solid #444;
 }
-
 
 body.dark-mode .ui.header {
   color: #ffffff;
@@ -154,34 +151,34 @@ body.dark-mode .ui.header {
 
 body.dark-mode .clickable-student-name {
   cursor: pointer;
-  color: #90CAF9;
+  color: #90caf9;
   text-decoration: underline;
 }
 
 .dark-mode .ui.segment,
 .dark-mode .ui.tab {
-    background-color: #222;
-    color: #fff;
+  background-color: #222;
+  color: #fff;
 }
 
 .dark-mode .ui.menu {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
 
 .dark-mode .ui.tabular.menu .item {
-    color: white;
-    background-color: rgb(48, 48, 48);
+  color: white;
+  background-color: rgb(48, 48, 48);
 }
 
 .dark-mode .ui.tabular.menu .active.item {
-    background-color: #999999;
-    color: white;
+  background-color: #999999;
+  color: white;
 }
 
 .dark-mode .ui.pane {
-    background-color: #222;
-    color: #ddd;
+  background-color: #222;
+  color: #ddd;
 }
 
 .dark-mode .semester-editor {
@@ -190,18 +187,18 @@ body.dark-mode .clickable-student-name {
 }
 
 .dark-mode .ui.modal {
-    background-color: #1e1e1e;
-    color: #ffffff;
+  background-color: #1e1e1e;
+  color: #ffffff;
 }
 
 .dark-mode .ui.table {
-    background-color: #282828;
-    color: white;
+  background-color: #282828;
+  color: white;
 }
 
 .dark-mode .ui.input > input {
-    background-color: #333;
-    color: white;
+  background-color: #333;
+  color: white;
 }
 
 body.dark-mode .ui.modal .header,
@@ -258,7 +255,7 @@ body.dark-mode .ui.segment .column p {
 
 body.dark-mode .ui.modal label,
 body.dark-mode .ui.form .field > label {
-    color: #e0e0e0;
+  color: #e0e0e0;
 }
 
 /* Dark mode styles for accordion */
@@ -319,8 +316,6 @@ body.dark-mode .ui.styled.accordion .accordion .active.title {
   color: #ffffff;
 }
 
-
-
 /* Dark mode styles for pagination */
 body.dark-mode .ui.pagination.menu {
   background-color: #333;
@@ -345,11 +340,9 @@ body.dark-mode .ui.pagination.menu .active.item {
   font-weight: bold;
 }
 
-
-
 body.dark-mode .ui.message {
-    background-color: #282828 ; 
-    color: #e0e0e0 !important;
-    border: 1px solid #444 !important; 
-    box-shadow: none !important; 
+  background-color: #282828;
+  color: #e0e0e0 !important;
+  border: 1px solid #444 !important;
+  box-shadow: none !important;
 }

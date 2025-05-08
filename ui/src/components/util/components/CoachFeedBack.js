@@ -468,118 +468,124 @@ export default function CoachFeedback(props) {
           />
           <br /> <br />
           {canUseAI && (
-          <Dimmer.Dimmable dimmed={loadingStates[student]}>
-            <Dimmer active={loadingStates[student]} inverted>
-              <Loader
-                active={loadingStates[student]}
-                content="Generating Summerization from AI"
-              />
-            </Dimmer>
-            {aiSummaryText[student] && (
-              <textarea
-                placeholder={`Generate AI Summary of all peer feedback given to ${student} here to aid in your feedback.`}
-                key={"coach-feedback-ai" + index}
-                rows={5}
-                value={aiSummaryText[student] ?? ""}
-                onChange={(_) =>
-                  updateAISummaryText(student, aiSummaryText[student])
-                }
-                style={{
-                  backgroundColor: "#EBEDEF",
-                  outline: "none",
-                  border: "none",
-                  width: "100%",
-                  color: "#4D5258",
-                }}
-              />
-            )}
-            <Button
-              attached="bottom"
-              onClick={(_) => OpenPopup(student)}
-              color="grey"
-              content={
-                customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
-                  ? "Generate AI Summarization with Custom Prompt"
-                  : "Generate AI Summarization"
-              }
-            />
-            <Confirm
-              style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-              content={
-                "Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "
-              }
-              open={confirmedStates[student]}
-              onCancel={() => ClosePopup(student)}
-              onConfirm={() => handleGenerateSummarization(student, AIContext)}
-            />
-
-            <Radio
-              name={`UsedAI--${student}`}
-              style={{ visibility: "hidden" }}
-              checked={usedAI[student]}
-              value={usedAI[student] ? 1 : 0}
-            />
-            <div>
-              <Button
-                attached="bottom"
-                onClick={() => {
-                  setIsEditingPrompt(!isEditingPrompt);
-                  setTempPrompt(customPrompt);
-                }}
-              >
-                {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
-              </Button>
-              {isEditingPrompt && (
-                <div style={{ marginTop: "10px" }}>
-                  <textarea
-                    value={tempPrompt}
-                    onChange={(e) => setTempPrompt(e.target.value)}
-                    rows={8}
-                    style={{
-                      marginBottom: "10px",
-                      border:
-                        tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
-                          ? "2px solid orange"
-                          : "1px solid grey",
-                    }}
-                  />
-                  <div>
-                    <Button
-                      color="blue"
-                      onClick={() => {
-                        setCustomPrompt(tempPrompt);
-                        setIsEditingPrompt(false);
-                      }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      color="red"
-                      onClick={() => {
-                        setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
-                        setIsEditingPrompt(false);
-                      }}
-                    >
-                      Reset
-                    </Button>
-                    <Button
-                      color="grey"
-                      onClick={() => {
-                        setIsEditingPrompt(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
+            <Dimmer.Dimmable dimmed={loadingStates[student]}>
+              <Dimmer active={loadingStates[student]} inverted>
+                <Loader
+                  active={loadingStates[student]}
+                  content="Generating Summerization from AI"
+                />
+              </Dimmer>
+              {aiSummaryText[student] && (
+                <textarea
+                  placeholder={`Generate AI Summary of all peer feedback given to ${student} here to aid in your feedback.`}
+                  key={"coach-feedback-ai" + index}
+                  rows={5}
+                  value={aiSummaryText[student] ?? ""}
+                  onChange={(_) =>
+                    updateAISummaryText(student, aiSummaryText[student])
+                  }
+                  style={{
+                    backgroundColor: "#EBEDEF",
+                    outline: "none",
+                    border: "none",
+                    width: "100%",
+                    color: "#4D5258",
+                    marginBottom: "10px",
+                  }}
+                />
               )}
-            </div>
-          </Dimmer.Dimmable>)}
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  color="grey"
+                  onClick={() => {
+                    setIsEditingPrompt(!isEditingPrompt);
+                    setTempPrompt(customPrompt);
+                  }}
+                >
+                  {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+                </Button>
+                <Button
+                  onClick={(_) => OpenPopup(student)}
+                  color="grey"
+                  content={
+                    customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                      ? "Generate AI Summarization with Custom Prompt"
+                      : "Generate AI Summarization"
+                  }
+                />
+              </div>
+              <Confirm
+                style={{
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+                content={
+                  "Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "
+                }
+                open={confirmedStates[student]}
+                onCancel={() => ClosePopup(student)}
+                onConfirm={() =>
+                  handleGenerateSummarization(student, AIContext)
+                }
+                cancelButton={{ content: "Cancel", color: "grey" }}
+              />
+
+              <Radio
+                name={`UsedAI--${student}`}
+                style={{ visibility: "hidden" }}
+                checked={usedAI[student]}
+                value={usedAI[student] ? 1 : 0}
+              />
+              <div>
+                {isEditingPrompt && (
+                  <div>
+                    <textarea
+                      value={tempPrompt}
+                      onChange={(e) => setTempPrompt(e.target.value)}
+                      rows={8}
+                      style={{
+                        marginBottom: "10px",
+                        border:
+                          tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                            ? "2px solid orange"
+                            : "1px solid grey",
+                      }}
+                    />
+                    <div>
+                      <Button
+                        color="blue"
+                        onClick={() => {
+                          setCustomPrompt(tempPrompt);
+                          setIsEditingPrompt(false);
+                        }}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        color="red"
+                        onClick={() => {
+                          setCustomPrompt(PROMPT_GENERATE_FEEDBACK_SUMMARY);
+                          setIsEditingPrompt(false);
+                        }}
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        color="grey"
+                        onClick={() => {
+                          setIsEditingPrompt(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Dimmer.Dimmable>
+          )}
         </FormField>
       </div>
     );

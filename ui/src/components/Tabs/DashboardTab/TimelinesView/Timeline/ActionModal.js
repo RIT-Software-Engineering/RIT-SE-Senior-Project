@@ -562,6 +562,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            color="grey"
             onClick={() => {
               onActionCancel();
               setOpen(false);
@@ -658,6 +659,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            color="grey"
             onClick={() => {
               onActionCancel();
               setOpen(false);
