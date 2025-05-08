@@ -282,16 +282,11 @@ export default function StudentRow(props) {
 
         <Modal
           open={openModal}
+          closeOnDimmerClick={false}
           onClose={() => setOpenModal(false)}
           size="small"
           centered={false} // Disable default centering
           style={{
-            // position: "fixed",
-            // top: "50%",
-            // left: "50%",
-            // transform: "translate(-50%, -50%)",
-            // maxHeight: "90vh", // Prevents excessive height issues
-            // overflowY: "auto",  // Allows scrolling if content overflows
             position: "sticky",
             top: "20%",
             left: "0%",
