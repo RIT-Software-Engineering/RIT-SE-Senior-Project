@@ -75,13 +75,11 @@ module.exports = (db) => {
           .status(200)
           .json({ success: true, message: "Database redeployed successfully" });
       } catch (error) {
-        res
-          .status(500)
-          .json({
-            success: false,
-            message: "Failed to redeploy database",
-            error: error.message,
-          });
+        res.status(500).json({
+          success: false,
+          message: "Failed to redeploy database",
+          error: error.message,
+        });
       }
     });
   }
@@ -3912,86 +3910,103 @@ module.exports = (db) => {
     });
   }
 
-  db_router.get("/getAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
-    const requestedUserId = req.query.system_id;
+  db_router.get(
+    "/getAdditionalInfo",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const requestedUserId = req.query.system_id;
 
-    if (!requestedUserId) {
+      if (!requestedUserId) {
         return res.status(400).send({ error: "User ID is required" });
-    }
+      }
 
-    try {
-        const result = await db.query(`SELECT additional_info FROM users WHERE system_id = ?`, [requestedUserId]);
+      try {
+        const result = await db.query(
+          `SELECT additional_info FROM users WHERE system_id = ?`,
+          [requestedUserId],
+        );
 
         if (result.length === 0) {
-            const error = new Error("User not found");
-            error.statusCode = 404;
-            return next(error);
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
         }
 
         res.send(result[0]);
-    } catch (err) {
+      } catch (err) {
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
         next(error);
-    }
-});
+      }
+    },
+  );
 
-db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], async (req, res, next) => {
-    const { system_id, additional_info } = req.body;
+  db_router.post(
+    "/editAdditionalInfo",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, additional_info } = req.body;
 
-    if (!system_id || additional_info === undefined) {
-        return res.status(400).send({ error: "system_id and additional_info are required" });
-    }
+      if (!system_id || additional_info === undefined) {
+        return res
+          .status(400)
+          .send({ error: "system_id and additional_info are required" });
+      }
 
-    const updateQuery = `
+      const updateQuery = `
         UPDATE users
         SET additional_info = ?
         WHERE system_id = ?
     `;
 
-    try {
+      try {
         await db.query(updateQuery, [additional_info, system_id]);
-        res.status(200).send({ message: "Additional info updated successfully" });
-    } catch (err) {
+        res
+          .status(200)
+          .send({ message: "Additional info updated successfully" });
+      } catch (err) {
         const error = new Error("Database update failed");
         error.statusCode = 500;
         error.details = err.message;
         next(error);
-    }
-});
+      }
+    },
+  );
 
-
-    db_router.get("/getPeerEvals", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+  db_router.get(
+    "/getPeerEvals",
+    [UserAuth.isCoachOrAdmin],
+    (req, res, next) => {
       const semesterNumber = req.query.semester;
-    
+
       let getPeerEvalsQuery = `
         SELECT action_id 
         FROM actions
         WHERE action_target = 'peer_evaluation'
       `;
-    
+
       let queryParams = [];
       if (semesterNumber) {
         getPeerEvalsQuery += ` AND semester = ?`;
         queryParams.push(semesterNumber);
-      } 
-    
+      }
+
       db.query(getPeerEvalsQuery, queryParams)
         .then((values) => {
-          const actionIds = values.map(row => row.action_id);
-    
+          const actionIds = values.map((row) => row.action_id);
+
           if (actionIds.length === 0) {
-            return res.send([]); 
-          } 
-    
+            return res.send([]);
+          }
+
           let getPeerEvalLogsQuery = `
             SELECT * 
             FROM action_log
             WHERE action_template IN (${actionIds.join(",")})
             ORDER BY submission_datetime DESC
           `;
-    
+
           return db.query(getPeerEvalLogsQuery);
         })
         .then((logs) => {
@@ -4003,12 +4018,8 @@ db_router.post("/editAdditionalInfo", [UserAuth.isSignedIn], async (req, res, ne
           error.statusCode = 500;
           return next(error);
         });
-    });
-    
-    
-    
-
-
+    },
+  );
 
   return db_router;
 };
