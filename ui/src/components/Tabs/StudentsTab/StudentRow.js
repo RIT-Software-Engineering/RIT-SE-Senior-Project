@@ -35,20 +35,20 @@ export default function StudentRow(props) {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  useEffect(() => {
-      SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.valid === true) {
-            setCanUseAI(true);
-          } else {
-            setCanUseAI(false);
-          }
-        })
-        .catch((err) => {
-          setCanUseAI(false);
-        });
-    }, []);
+  // useEffect(() => {
+  //     SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.valid === true) {
+  //           setCanUseAI(true);
+  //         } else {
+  //           setCanUseAI(false);
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         setCanUseAI(false);
+  //       });
+  //   }, []);
 
   const fetchPeerReviews = useCallback(async () => {
     try {
@@ -155,15 +155,6 @@ const fetchAdditionalInfo = useCallback(async () => {
   }
 }, [props.student.system_id]);
 
-useEffect(() => {
-  if (openModal) {
-    if (!props.isStudent) {
-      fetchPeerReviews();
-    }
-    fetchAdditionalInfo();
-  }
-}, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
-
 const handleSaveAdditionalInfo = async () => {
   try {
     const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
@@ -188,11 +179,21 @@ const handleSaveAdditionalInfo = async () => {
 };
 
 
-
-
   useEffect(() => {
     if (openModal) {
       if (!props.isStudent) {
+        SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.valid === true) {
+            setCanUseAI(true);
+          } else {
+            setCanUseAI(false);
+          }
+        })
+        .catch((err) => {
+          setCanUseAI(false);
+        });
         fetchPeerReviews(); 
       }
       fetchAdditionalInfo(); 
@@ -245,12 +246,18 @@ const handleSaveAdditionalInfo = async () => {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell
-            className="clickable-student-name"
-            onClick={() => setOpenModal(true)}
-          >
-            {props.student.fname} {props.student.lname}
-          </TableCell>
+          {props.isMyTeamTable ? (
+            <TableCell
+              className="clickable-student-name"
+              onClick={() => setOpenModal(true)}
+            >
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          ) : (
+            <TableCell>
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          )}
           <TableCell>{project}</TableCell>
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
