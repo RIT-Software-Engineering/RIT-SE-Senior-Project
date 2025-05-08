@@ -19,6 +19,7 @@ export default function EvalReview(props) {
   const userContext = useContext(UserContext);
   const userName = `${userContext.user.fname} ${userContext.user.lname}`;
   const userIsStudent = userContext.user.role === USERTYPES.STUDENT;
+  const [canUseAI, setCanUseAI] = useState(false);
 
   useEffect(() => {
     let sortedFeedback = [];

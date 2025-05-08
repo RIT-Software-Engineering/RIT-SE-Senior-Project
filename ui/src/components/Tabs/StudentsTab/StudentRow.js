@@ -34,6 +34,7 @@ export default function StudentRow(props) {
   );
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
+  const [canUseAI, setCanUseAI] = useState(false);
 
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -134,32 +135,6 @@ export default function StudentRow(props) {
     }
   };
 
-  const fetchAdditionalInfo = useCallback(async () => {
-    try {
-      const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
-      const response = await SecureFetch(url);
-      const data = await response.json();
-
-      if (data && data.additional_info) {
-        setAdditionalInfo(data.additional_info);
-      } else {
-        setAdditionalInfo("No additional information available.");
-      }
-    } catch (error) {
-      console.error("Error fetching additional info:", error);
-      setAdditionalInfo("Error loading additional information.");
-    }
-  }, [props.student.system_id]);
-
-  useEffect(() => {
-    if (openModal) {
-      if (!props.isStudent) {
-        fetchPeerReviews();
-      }
-      fetchAdditionalInfo();
-    }
-  }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
-
   const handleSaveAdditionalInfo = async () => {
     try {
       const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
@@ -182,6 +157,44 @@ export default function StudentRow(props) {
       console.error("Error updating additional info:", error);
     }
   };
+
+  const fetchAdditionalInfo = useCallback(async () => {
+    try {
+      const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
+      const response = await SecureFetch(url);
+      const data = await response.json();
+
+      if (data && data.additional_info) {
+        setAdditionalInfo(data.additional_info);
+      } else {
+        setAdditionalInfo("No additional information available.");
+      }
+    } catch (error) {
+      console.error("Error fetching additional info:", error);
+      setAdditionalInfo("Error loading additional information.");
+    }
+  }, [props.student.system_id]);
+
+  useEffect(() => {
+    if (openModal) {
+      if (!props.isStudent) {
+        SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.valid === true) {
+              setCanUseAI(true);
+            } else {
+              setCanUseAI(false);
+            }
+          })
+          .catch((err) => {
+            setCanUseAI(false);
+          });
+        fetchPeerReviews();
+      }
+      fetchAdditionalInfo();
+    }
+  }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
   useEffect(() => {
     if (openModal) {
@@ -241,12 +254,18 @@ export default function StudentRow(props) {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell
-            className="clickable-student-name"
-            onClick={() => setOpenModal(true)}
-          >
-            {props.student.fname} {props.student.lname}
-          </TableCell>
+          {props.isMyTeamTable ? (
+            <TableCell
+              className="clickable-student-name"
+              onClick={() => setOpenModal(true)}
+            >
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          ) : (
+            <TableCell>
+              {props.student.fname} {props.student.lname}
+            </TableCell>
+          )}
           <TableCell>{project}</TableCell>
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>

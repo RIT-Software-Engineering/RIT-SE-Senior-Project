@@ -318,6 +318,7 @@ export default function StudentsTab(props) {
                             isStudent={
                               userContext.user.role === USERTYPES.STUDENT
                             }
+                            isMyTeamTable={true}
                           />
                         ),
                       },
@@ -374,6 +375,12 @@ export default function StudentsTab(props) {
                         studentsTab={true}
                         projectsData={semester.projects}
                         isStudent={userContext.user.role === USERTYPES.STUDENT}
+                        isMyTeamTable={
+                          userContext.user.role !== USERTYPES.ADMIN &&
+                          userContext.user.role !== USERTYPES.COACH
+                            ? false
+                            : true
+                        }
                       />
                     ),
                   },

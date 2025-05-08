@@ -144,6 +144,11 @@ async function generateResponse(prompt, context) {
     return result.response.text();
   } catch (error) {
     console.error("Error generating content:", error);
+    if (error.status === 400 && error.message.includes("API key not valid")) {
+      const invalidKey = new Error("Invalid Key");
+      invalidKey.status = 400;
+      throw invalidKey;
+    }
     throw new Error("Failed to generate response.");
   }
 }
@@ -217,14 +222,29 @@ module.exports = () => {
           res.status(200).send(response);
         })
         .catch((err) => {
-          console.error("Error generating response:", err);
-          const error = new Error(err);
-          error.statusCode = 500;
-          error.message =
-            "Error generating summary with gemini-1.5-flash-latest";
-          return next(error);
+          if (err.status === 400 && err.message.includes("Invalid Key")) {
+            // Invalid API key
+            return res
+              .type("text/plain")
+              .status(200)
+              .send("API key is not valid. Please let Admin know");
+          } else {
+            console.error("Error generating response:", err);
+            const error = new Error(err);
+            error.statusCode = 500;
+            error.message =
+              "Error generating summary with gemini-1.5-flash-latest";
+            return next(error);
+          }
         });
     },
   );
+
+  router.get("/CheckGeminiKeyExists", [UserAuth.isCoachOrAdmin], (req, res) => {
+    const isValid = key && key.trim().length > 0 && key !== "INSERT_KEY_HERE";
+
+    res.status(200).json({ valid: isValid });
+  });
+
   return router;
 };
