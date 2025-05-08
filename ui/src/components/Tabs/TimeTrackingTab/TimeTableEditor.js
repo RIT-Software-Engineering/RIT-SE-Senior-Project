@@ -461,7 +461,7 @@ export default function TimeTableEditor(props) {
   }
 
   let trigger = (
-    <Button>
+    <Button >
       {" "}
       <Icon name={props.button} />
       Log Project Time
@@ -470,12 +470,11 @@ export default function TimeTableEditor(props) {
   if (props.trigger) {
     trigger = props.trigger;
   }
-
   return (
     <>
       <Modal
         className={"sticky"}
-        trigger={trigger}
+        trigger={user.role === "coach" ? null : trigger}
         onOpen={() => {
           setOpen(true);
         }}
