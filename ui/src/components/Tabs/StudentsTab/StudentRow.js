@@ -35,20 +35,6 @@ export default function StudentRow(props) {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  // useEffect(() => {
-  //     SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data.valid === true) {
-  //           setCanUseAI(true);
-  //         } else {
-  //           setCanUseAI(false);
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         setCanUseAI(false);
-  //       });
-  //   }, []);
 
   const fetchPeerReviews = useCallback(async () => {
     try {
