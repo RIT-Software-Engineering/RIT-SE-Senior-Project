@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
 import { Dropdown, Icon, Label, Message, Modal } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
+import { UserContext } from "../../util/functions/UserContext";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 const { differenceInWeeks } = require("date-fns");
@@ -13,6 +14,7 @@ export default function TimeTableEditor(props) {
   let submissionModalMessages = props.submissionModalMessages;
   let submitRoute = props.submitRoute;
   let formFieldArray = props.formFieldArray;
+  const { user } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
@@ -459,7 +461,7 @@ export default function TimeTableEditor(props) {
   }
 
   let trigger = (
-    <Button>
+    <Button >
       {" "}
       <Icon name={props.button} />
       Log Project Time
@@ -468,13 +470,12 @@ export default function TimeTableEditor(props) {
   if (props.trigger) {
     trigger = props.trigger;
   }
-
   return (
     <>
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
-        trigger={trigger}
+        trigger={user.role === "coach" ? null : trigger}
         onOpen={() => {
           setOpen(true);
         }}
@@ -496,7 +497,12 @@ export default function TimeTableEditor(props) {
             Cancel
           </Button>
           <Button
-            content={"Submit"}
+            content={
+              user.isMock
+                ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
+                : "Submit"
+                //"Submit"
+            }
             labelPosition="right"
             icon="check"
             positive
