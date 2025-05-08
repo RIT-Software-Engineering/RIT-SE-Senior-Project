@@ -97,10 +97,13 @@ export default function IndividualTimeModal(props) {
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
- //   196-view-only-admin-role
-        {props.userId === user.user && props.delete === 1 && !user.view_only && user.mockUser.view_only != "TRUE" ? deleteButton : ""}
         <Button onClick={() => onClose()}>Close</Button>
-        {props.userId === user.user && props.delete === 1 ? deleteButton : ""}
+        {props.userId === user.user &&
+        props.delete === 1 &&
+        !user.view_only &&
+        user.mockUser.view_only !== "TRUE"
+          ? deleteButton
+          : ""}
       </Modal.Actions>
     </Modal>
   );

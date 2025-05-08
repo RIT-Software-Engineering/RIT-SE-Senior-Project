@@ -205,34 +205,18 @@ export default function UserPanel(props) {
   };
 
   return (
-    // ash commit 196
-//      console.log(initialState),
-//     <DatabaseTableEditor
-//       initialState={initialState}
-//       submissionModalMessages={submissionModalMessages}
-//       submitRoute={submitRoute}
-//       formFieldArray={formFieldArray}
-//       semesterData={props.semesterData}
-//       header={props.header}
-//       create={initialState.system_id === ""}
-//       button="plus"
-//       callback={props.callback}
-//     />
-    console.log(initialState),
-    (
-      <DatabaseTableEditor
-        initialState={initialState}
-        submissionModalMessages={submissionModalMessages}
-        submitRoute={submitRoute}
-        formFieldArray={formFieldArray}
-        semesterData={props.semesterData}
-        header={props.header}
-        create={initialState.system_id === ""}
-        button="plus"
-        callback={props.callback}
-        preSubmit={preSubmit}
-        errors={errors}
-      />
-    )
+    <DatabaseTableEditor
+      initialState={initialState}
+      submissionModalMessages={submissionModalMessages}
+      submitRoute={submitRoute}
+      formFieldArray={formFieldArray}
+      semesterData={props.semesterData}
+      header={props.header}
+      create={initialState.system_id === ""}
+      button="plus"
+      callback={props.callback}
+      preSubmit={preSubmit}
+      errors={errors}
+    />
   );
 }
