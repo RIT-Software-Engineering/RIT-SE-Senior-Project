@@ -56,80 +56,85 @@ export default function SponsorEditor(props) {
   //submit route for if editing a sponsor
   let submitRoute = config.url.API_POST_EDIT_SPONSOR;
 
-    let formFieldArray = [
-        {
-            type: "input",
-            label: "First Name",
-            placeHolder: "First Name",
-            name: "fname",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Last Name",
-            placeHolder: "Last Name",
-            name: "lname",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Sponsor's Company",
-            placeHolder: "Sponsor's Company",
-            name: "company",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Sponsor's Division",
-            placeHolder: "Sponsor's Division",
-            name: "division",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Email",
-            placeHolder: "Email",
-            name: "email",
-            disabled: false
-        },
-        {
-            type: "phoneInput",
-            label: "Phone Number",
-            placeHolder: "Phone Number",
-            name: "phone",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Association",
-            placeHolder: "Association",
-            name: "association",
-            disabled: false
-        },
-        {
-            type: "input",
-            label: "Type",
-            placeHolder: "Type",
-            name: "type",
-            disabled: false
-        },
-        {
-            type: "checkbox",
-            label: "inActive",
-            placeHolder: "inActive",
-            name: "inActive",
-            disabled: false
-        },
-        {
-            type: "checkbox",
-            label: "doNotEmail",
-            placeHolder: "doNotEmail",
-            name: "doNotEmail",
-            disabled: false
-        }
-    ]
+  let formFieldArray = [
+    {
+      type: "input",
+      label: "First Name",
+      placeHolder: "First Name",
+      name: "fname",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Last Name",
+      placeHolder: "Last Name",
+      name: "lname",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Sponsor's Company",
+      placeHolder: "Sponsor's Company",
+      name: "company",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Sponsor's Division",
+      placeHolder: "Sponsor's Division",
+      name: "division",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Email",
+      placeHolder: "Email",
+      name: "email",
+      disabled: false,
+    },
+    {
+      type: "phoneInput",
+      label: "Phone Number",
+      placeHolder: "Phone Number",
+      name: "phone",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Association",
+      placeHolder: "Association",
+      name: "association",
+      disabled: false,
+    },
+    {
+      type: "input",
+      label: "Type",
+      placeHolder: "Type",
+      name: "type",
+      disabled: false,
+    },
+    {
+      type: "checkbox",
+      label: "inActive",
+      placeHolder: "inActive",
+      name: "inActive",
+      disabled: false,
+    },
+    {
+      type: "checkbox",
+      label: "doNotEmail",
+      placeHolder: "doNotEmail",
+      name: "doNotEmail",
+      disabled: false,
+    },
+  ];
 
-    let noteEditor = (<SponsorNoteEditor sponsor_id={props?.sponsor?.sponsor_id || ""} viewOnly={props.viewOnly}/>);
+  let noteEditor = (
+    <SponsorNoteEditor
+      sponsor_id={props?.sponsor?.sponsor_id || ""}
+      viewOnly={props.viewOnly}
+    />
+  );
 
   let trigger = <Button icon={"edit"} />;
 

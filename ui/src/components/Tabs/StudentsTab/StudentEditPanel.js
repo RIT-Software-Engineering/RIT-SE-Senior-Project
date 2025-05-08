@@ -54,7 +54,7 @@ export default function StudentEditPanel(props) {
     email: props.studentData.email || "",
     type: props.studentData.type || "",
     active: props.studentData.active || "",
-    viewOnly: props.studentData.view_only === "TRUE"? 1 : "",
+    viewOnly: props.studentData.view_only === "TRUE" ? 1 : "",
     semesterProject: _.findIndex(semesterProjectDropdownMap, {
       semester: props.studentData.semester_group || "",
       project: props.studentData.project || "",

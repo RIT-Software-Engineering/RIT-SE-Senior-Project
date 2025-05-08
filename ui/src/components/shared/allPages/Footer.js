@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import "../../../css/footer.css";
 import { UserContext } from "../../util/functions/UserContext";
 import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import "./../../../css/containers/footer.css";
 
 function Footer() {
   const { user } = useContext(UserContext);

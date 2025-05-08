@@ -7,6 +7,14 @@ import {
   Accordion,
   Icon,
 } from "semantic-ui-react";
+import {
+  TableCell,
+  TableRow,
+  Modal,
+  Button,
+  Accordion,
+  Icon,
+} from "semantic-ui-react";
 import StudentEditPanel from "./StudentEditPanel";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -135,29 +143,6 @@ export default function StudentRow(props) {
     }
   };
 
-  const handleSaveAdditionalInfo = async () => {
-    try {
-      const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
-
-      const response = await SecureFetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          system_id: props.student.system_id,
-          additional_info: additionalInfo,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to update additional info");
-
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating additional info:", error);
-    }
-  };
-
   const fetchAdditionalInfo = useCallback(async () => {
     try {
       const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
@@ -195,6 +180,29 @@ export default function StudentRow(props) {
       fetchAdditionalInfo();
     }
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
+
+  const handleSaveAdditionalInfo = async () => {
+    try {
+      const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
+
+      const response = await SecureFetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          system_id: props.student.system_id,
+          additional_info: additionalInfo,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update additional info");
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating additional info:", error);
+    }
+  };
 
   useEffect(() => {
     if (openModal) {
@@ -270,14 +278,16 @@ export default function StudentRow(props) {
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
           </TableCell>
-          <TableCell>
-            {props.student.last_login
-              ? dayjs(props.student.last_login)
-                  .utc(true)
-                  .local()
-                  .format("DD/MM/YYYY HH:mm:ss")
-              : "Never Logged in"}
-          </TableCell>
+          {props.showLogin && (
+            <TableCell>
+              {props.student.last_login
+                ? dayjs(props.student.last_login)
+                    .utc(true)
+                    .local()
+                    .format("DD/MM/YYYY HH:mm:ss")
+                : "Never Logged in"}
+            </TableCell>
+          )}
         </TableRow>
 
         <Modal

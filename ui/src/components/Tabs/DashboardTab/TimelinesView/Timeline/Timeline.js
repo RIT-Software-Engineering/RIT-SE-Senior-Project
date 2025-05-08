@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import ActionElements from "./ActionElements";
 import UpcomingActions from "./UpcomingActions";
 import GanttChart from "./GanttChart";
@@ -31,8 +32,7 @@ export default function Timeline(props) {
         ? false
         : true,
   );
-  const [displayPreference] = useSessionStorage('displayPreference', 'gantt');
-
+  const [displayPreference] = useSessionStorage("displayPreference", "gantt");
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -48,7 +48,6 @@ export default function Timeline(props) {
   useEffect(() => {
     loadTimelineActions(props.elementData?.project_id);
   }, [props.elementData?.project_id]);
-
 
   return (
     <div>

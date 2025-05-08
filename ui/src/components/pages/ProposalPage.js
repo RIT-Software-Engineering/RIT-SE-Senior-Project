@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Modal, Form, Radio, Divider, Button } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
-import "../../css/proposal.css";
 import { SecureFetch } from "../util/functions/secureFetch";
+import "./../../css/components/proposal.css";
 import QuillEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -695,12 +695,14 @@ function ProposalPage() {
         <div className="row proposal-submit-buttons">
           <div>
             <Button
+              className="ui deny left floated left labeled icon button"
               color="grey"
               onClick={() => {
                 history.push("/sponsor");
               }}
             >
               Cancel
+              <i className="times icon"></i>
             </Button>
           </div>
           <div>

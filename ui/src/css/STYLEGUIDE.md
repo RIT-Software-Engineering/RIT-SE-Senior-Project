@@ -6,6 +6,8 @@ Maintaining consistent, clean, and well-organized CSS is critical for scalabilit
 
 Inline CSS is allowed, but reference variables.css whenever possible.
 
+Inline CSS is allowed, but reference variables.css whenever possible.
+
 ---
 
 ## 🔧 CSS Directory Structure & Responsibilities

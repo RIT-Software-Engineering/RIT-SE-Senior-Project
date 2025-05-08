@@ -11,6 +11,7 @@ export default function BatchUserPanel({ callback }) {
   const [modalOpen, setModalOpen] = useState(false);
   const fileInput = useRef();
   const [failedUsers, setFailedUsers] = useState([]);
+  const [failedUsers, setFailedUsers] = useState([]);
 
   const onFileUpload = (event) => {
     const fileReader = new FileReader();
@@ -105,7 +106,11 @@ export default function BatchUserPanel({ callback }) {
                 return (
                   <Table.Row
                     key={idx}
-                    style={isError ? { backgroundColor: "#ffdddd" } : {}}
+                    style={
+                      isError
+                        ? { backgroundColor: "var(--action-bar-proposal-red)" }
+                        : {}
+                    }
                   >
                     {Object.keys(user).map((key) => (
                       <Table.Cell key={key}>{user[key]}</Table.Cell>

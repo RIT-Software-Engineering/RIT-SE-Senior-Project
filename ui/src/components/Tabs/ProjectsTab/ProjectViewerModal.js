@@ -23,20 +23,22 @@ export default function ProjectViewerModal(props) {
         members.forEach((member, idx) => {
           switch (member.type) {
             case USERTYPES.STUDENT:
-              member.view_only === "TRUE" ? projectGroupedValues.students.push(
-                `${member.fname} ${member.lname} ${"(View Only)"}`,
-              ) :
-              projectGroupedValues.students.push(
-                `${member.fname} ${member.lname}`,
-              );
+              member.view_only === "TRUE"
+                ? projectGroupedValues.students.push(
+                    `${member.fname} ${member.lname} ${"(View Only)"}`,
+                  )
+                : projectGroupedValues.students.push(
+                    `${member.fname} ${member.lname}`,
+                  );
               break;
             case USERTYPES.COACH:
-              member.view_only === "TRUE" ? projectGroupedValues.coaches.push(
-                `${member.fname} ${member.lname} ${"(View Only)"}`,
-              ) :
-              projectGroupedValues.coaches.push(
-                `${member.fname} ${member.lname}`,
-              );
+              member.view_only === "TRUE"
+                ? projectGroupedValues.coaches.push(
+                    `${member.fname} ${member.lname} ${"(View Only)"}`,
+                  )
+                : projectGroupedValues.coaches.push(
+                    `${member.fname} ${member.lname}`,
+                  );
               break;
             default:
               console.error(

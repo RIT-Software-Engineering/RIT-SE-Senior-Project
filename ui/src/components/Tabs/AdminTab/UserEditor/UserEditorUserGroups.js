@@ -233,10 +233,13 @@ export default function UserEditorUserGroups(props) {
           key={semesterId}
           fluid
           styled
+          defaultActiveIndex={active ? 0 : false}
           panels={[
             {
-              key: semesterId,
-              title: `${semesterMap[semesterId].name}`,
+              key: "StudentsTab-semester-selector-" + semesterId,
+              title: `${semesterMap[semesterId]["name"]} (${
+                Object.keys(groupings["semesters"][semesterId])?.length
+              })`,
               content: {
                 content: activeIndexes.includes(semesterId)
                   ? createSemesterAccordion(groupings.semesters[semesterId])

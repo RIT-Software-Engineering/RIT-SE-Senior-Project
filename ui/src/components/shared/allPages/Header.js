@@ -2,11 +2,13 @@ import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Modal, Sidebar, Menu, Icon } from "semantic-ui-react";
 import DevSignInModalContent from "../../util/components/DevSignInModalContent";
-import "../../../css/header.css";
+import "../../../css/containers/header.css";
+import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
+import ProfileModal from "./profileModal";
 import ProfileModal from "./profileModal";
 
 function Header() {
@@ -41,43 +43,42 @@ function Header() {
       window.location.href = config.url.API_LOGIN;
     }
   };
-  
-
 
   const renderNavButtons = () => {
     return (
       <>
         <div id="nav-buttons" className="ui right floated buttons">
-          {!signedIn && (<>
-          <a
-            href={"/"}
-            className="ui button"
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            Home
-          </a>
-          <a
-            href={"/projects"}
-            className="ui button"
-            onClick={() => {
-              history.push("/projects");
-            }}
-          >
-            Projects
-          </a>
-          <a
-            href={"/sponsor"}
-            className="ui button"
-            onClick={() => {
-              history.push("/sponsor");
-            }}
-          >
-            Sponsor a Project
-          </a>
-          </>)
-          }
+          {!signedIn && (
+            <>
+              <a
+                href={"/"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                Home
+              </a>
+              <a
+                href={"/projects"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/projects");
+                }}
+              >
+                Projects
+              </a>
+              <a
+                href={"/sponsor"}
+                className="ui button"
+                onClick={() => {
+                  history.push("/sponsor");
+                }}
+              >
+                Sponsor a Project
+              </a>
+            </>
+          )}
           {process.env.REACT_APP_NODE_ENV === "production" ? (
             <button className="ui button" onClick={signInOut}>
               {signInOutBtnText}
@@ -95,7 +96,10 @@ function Header() {
             />
           )}
           {signedIn && (
-            <button className="ui button" onClick={() => setProfileModalOpen(true)}>
+            <button
+              className="ui button"
+              onClick={() => setProfileModalOpen(true)}
+            >
               Profile
             </button>
           )}
@@ -177,8 +181,6 @@ function Header() {
   return (
     <div id="header">
       <div className="ui container">
-        
-          
         <h1
           className="ui header"
           style={{
@@ -187,17 +189,17 @@ function Header() {
             flexWrap: "wrap",
           }}
         >
-            <img
-              src={SELogo}
-              alt="Department of Software Engineering"
-              style={{
-                maxWidth: "150px",
-                height: "auto",
-                marginRight: "15px",
-                flexShrink: 0,
-                cursor: "pointer"
-              }}
-              href={"/"}
+          <img
+            src={SELogo}
+            alt="Department of Software Engineering"
+            style={{
+              maxWidth: "150px",
+              height: "auto",
+              marginRight: "15px",
+              flexShrink: 0,
+              cursor: "pointer",
+            }}
+            href={"/"}
             onClick={() => {
               history.push("/");
               // Delete all cookies
@@ -207,8 +209,8 @@ function Header() {
               );
               window.location.reload();
             }}
-            />
-            <span 
+          />
+          <span
             style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
             href={"/"}
             onClick={() => {
@@ -219,11 +221,12 @@ function Header() {
                 (cookie) => (document.cookie = cookie + ";max-age=0"),
               );
               window.location.reload();
-            }}>
-              Senior Project
-            </span>
+            }}
+          >
+            Senior Project
+          </span>
         </h1>
-      
+
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}

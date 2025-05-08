@@ -10,7 +10,6 @@ import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
 import AdminView from "../util/components/AdminView";
 import { UserContext } from "../util/functions/UserContext";
-import "./../../css/dashboard.css";
 import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { config } from "../util/functions/constants";
@@ -19,6 +18,7 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
+import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
@@ -40,13 +40,16 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
-          view_only: responseUser.view_only=="TRUE" ? true: false,
+          view_only: responseUser.view_only == "TRUE" ? true : false,
         });
         if (responseUser.system_id) {
-          SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${responseUser.system_id}`)
+          SecureFetch(
+            config.url.API_GET_DARK_MODE +
+              `?system_id=${responseUser.system_id}`,
+          )
             .then((res) => res.json())
             .then((data) => {
-              const darkPref = ['1', 1, true, 'true'].includes(data.dark_mode);
+              const darkPref = ["1", 1, true, "true"].includes(data.dark_mode);
               document.body.classList.toggle("dark-mode", darkPref);
             })
             .catch((err) => console.error("Failed to fetch dark mode:", err));
@@ -67,7 +70,7 @@ export default function DashboardPage() {
   //console.log(user)
   switch (user.role) {
     case "admin":
-      if(!user.view_only && !user.mockUser.view_only){
+      if (!user.view_only && !user.mockUser.view_only) {
         panes.push({
           menuItem: {
             key: "Admin-Tab",
@@ -99,7 +102,9 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SponsorsTab viewOnly ={user.view_only || user.mockUser.view_only}/>
+              <SponsorsTab
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -140,7 +145,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} viewOnly={user.view_only || user.mockUser.view_only}/>
+              <ProjectsTab
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -152,9 +160,11 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-                <TimeLog semesterData={semesterData} viewOnly={user.view_only || user.mockUser.view_only}/>
-                <ActionLogs semesterData={semesterData} />
-
+              <TimeLog
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
+              <ActionLogs semesterData={semesterData} />
             </Tab.Pane>
           ),
         },

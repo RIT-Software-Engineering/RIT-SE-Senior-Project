@@ -152,7 +152,6 @@ export function applyDarkModeClass(isDark) {
   }
 }
 
-
 /**
  * A React hook that provides a way to store and retrieve state in
  * `sessionStorage`, and synchronize it across tabs.
@@ -164,7 +163,7 @@ export function applyDarkModeClass(isDark) {
  *
  * The `updateValue` function will cause the value to be updated in all tabs, and
  * will trigger a re-render of the component.
- * 
+ *
  * This is currently being used to handle the gantt chart view
  */
 export const useSessionStorage = (key, initialValue) => {
@@ -179,27 +178,27 @@ export const useSessionStorage = (key, initialValue) => {
         setValue(JSON.parse(e.newValue));
       }
     };
-    
+
     // Listen for storage changes (including cross-tab)
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // Manually trigger update for same-tab changes
     const manualSync = () => {
       const newValue = sessionStorage.getItem(key);
       setValue(JSON.parse(newValue));
     };
-    window.addEventListener('sessionStorageSync', manualSync);
+    window.addEventListener("sessionStorageSync", manualSync);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('sessionStorageSync', manualSync);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("sessionStorageSync", manualSync);
     };
   }, [key]);
 
   const updateValue = (newValue) => {
     sessionStorage.setItem(key, JSON.stringify(newValue));
     // Dispatch custom event for same-tab sync
-    window.dispatchEvent(new Event('sessionStorageSync'));
+    window.dispatchEvent(new Event("sessionStorageSync"));
     setValue(newValue);
   };
 

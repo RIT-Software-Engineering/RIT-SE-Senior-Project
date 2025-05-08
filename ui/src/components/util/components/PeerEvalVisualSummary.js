@@ -1,11 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
-import "../../../App.css";
 
 const BarGraph = ({ data }) => {
   const userContext = useContext(UserContext);
   const [userFeedback, setUserFeedback] = useState([]);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 400 });
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -35,7 +33,7 @@ const BarGraph = ({ data }) => {
     return () => observer.disconnect();
   }, [data, userContext]);
 
-  const { width, height } = dimensions;
+  const { width, height } = { width: 800, height: 400 };
   const padding = 50;
   const maxScore = 5;
   const colors = ["#D81B60", "#1E88E5", "#FFC107", "#004D40"];

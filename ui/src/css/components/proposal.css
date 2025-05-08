@@ -1,0 +1,115 @@
+@import "./../base/variables.css";
+
+.proposal-submit-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-editor-input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.edited-input input,
+.edited-input.dropdown {
+  background-color: var(--bg-primary) !important;
+  color: #573a08 !important;
+}
+
+.proposal-row-UNHANDLED-CASE {
+  background: var(--action-bar-proposal-blue);;
+  color: var(--action-bar-proposal-red);
+}
+
+.proposal-row-UNHANDLED-CASE::before {
+  color: var(--action-bar-proposal-red);
+  content: "Something's not right...You're not supposed to see this.";
+}
+
+.proposal-row-gray {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.proposal-row-red {
+  background: var(--bg-unfinished-action);
+  color: var(--text-primary);
+}
+
+.proposal-row-yellow {
+  background: var(--bg-inprogress-action);
+  color: var(--text-primary);
+}
+
+.proposal-row-green {
+  background: var(--bg-finished-action);
+  color: var(--text-primary);
+}
+
+.proposal-row-blue {
+  background: var(--bg-finished-action);
+  color: var(--text-primary);
+}
+
+.proposal-row-purple {
+  background: var(--bg-finished-action);
+  color: var(--text-primary);
+}
+
+.proposal-status-action {
+  display: flex;
+  justify-content: space-between;
+}
+
+.proposal-status-action .dropdown {
+  margin-right: 0.33em;
+}
+
+td.attachments {
+  max-width: 25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark Mode Styles */
+.dark-mode .proposal-row-UNHANDLED-CASE {
+  background: darkblue;
+  color: #ff8080;
+}
+
+.dark-mode .proposal-row-UNHANDLED-CASE::before {
+  color: #ff8080;
+}
+
+.dark-mode .proposal-row-gray {
+  background: var(--bg-button);
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-red {
+  background: #4d1c1c;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-yellow {
+  background: #665c40;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-green {
+  background: #2c3e2c;
+  color: var(--text-primary);
+}
+
+.dark-mode .proposal-row-blue {
+  background: #2d3a50;
+  color: var(--text-primary);
+}
+
+.dark-mode .edited-input input,
+.dark-mode .edited-input.dropdown {
+  background-color: var(--bg-footer-header) !important;
+  color: var(--text-primary) !important;
+}

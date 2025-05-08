@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
 import _ from "lodash";
-import "../../../css/calendar.css";
+import { max } from "moment";
 import { Popup } from "semantic-ui-react";
+import "./../../../css/components/calendar.css";
+import "./../../../css/utils/responsive.css";
 
 const SPECIAL_DATES = {
   "01-01": "New Year's Day",
@@ -39,7 +41,7 @@ export function Calendar(props) {
   function getVariableHolidays(year) {
     // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
     This_Years_Holidays = { ...SPECIAL_DATES };
-    console.log("reset holidays", This_Years_Holidays);
+    //console.log("reset holidays", This_Years_Holidays);
 
     function getNthDayOfMonth(n, day, month) {
       let date = new Date(year, month, 1);
@@ -380,7 +382,7 @@ export function Calendar(props) {
   };
 
   return (
-    <div className="calendar">
+    <div className="action-calendar">
       <div className="calendar-header">
         <button
           className={`nav-button ${prevHovered ? "hovered" : ""}`}
