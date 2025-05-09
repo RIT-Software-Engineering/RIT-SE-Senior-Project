@@ -15,6 +15,9 @@ const submissionTypeMap = {
   [ACTION_TARGETS.team]: "Team",
   [ACTION_TARGETS.coach]: "Coach",
   [ACTION_TARGETS.admin]: "Admin",
+  [ACTION_TARGETS.student_announcement]: "Student Announcement",
+  [ACTION_TARGETS.coach_announcement]: "Coach Announcement",
+  [ACTION_TARGETS.peer_evaluation]: "Peer Evaluation",
 };
 
 export default function ToolTip(props) {
@@ -73,6 +76,7 @@ export default function ToolTip(props) {
             <p>Project: {props.projectName}</p>
             <p>
               Submission Type: {submissionTypeMap[props.action?.action_target]}
+              {console.log(props.action?.action_target)}
             </p>
             {submissions === null && !loadingSubmissions && (
               <p
