@@ -153,8 +153,6 @@ export default function DatabaseTableEditor(props) {
       ? props.preSubmit(formData)
       : formData;
 
-    console.log("This is the DATA:", dataToSubmit);
-
     if (dataToSubmit === null) {
       // validation failed
       formRef.current = formData;

@@ -227,7 +227,6 @@ export function Calendar(props) {
 
   // Creates and styles the actions for that particular day
   const generateActionsForDay = (actionsForDay, day) => {
-    console.log(day, actionsForDay);
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index);
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
@@ -271,7 +270,6 @@ export function Calendar(props) {
           title={`${action.action_title} (${start} - ${end})`}
           onClick={(e) => {
             e.stopPropagation(); // Prevent day click
-            console.log("trigger clicked", day, action);
           }}
         >
           {actionContent}

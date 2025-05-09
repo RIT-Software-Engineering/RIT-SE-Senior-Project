@@ -76,7 +76,6 @@ export default function ToolTip(props) {
             <p>Project: {props.projectName}</p>
             <p>
               Submission Type: {submissionTypeMap[props.action?.action_target]}
-              {console.log(props.action?.action_target)}
             </p>
             {submissions === null && !loadingSubmissions && (
               <p

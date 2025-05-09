@@ -596,12 +596,7 @@ export default function ActionModal(props) {
         open={open}
         trigger={
           props.trigger || (
-            <Button
-              ref={props.ref}
-              fluid
-              className="view-action-button"
-              onClick={() => console.log("CLICKEDF!!!!")}
-            >
+            <Button ref={props.ref} fluid className="view-action-button">
               View Action
             </Button>
           )
