@@ -185,3 +185,11 @@ body.dark-mode .ui.form .field > label {
 body.dark-mode .ui.rating .active.icon {
   color: var(--text-primary);
 }
+
+body.dark-mode .ui.positive.message {
+  background-color: #1f2d1f;
+  color: #a3c293 !important;
+  box-shadow:
+    0 0 0 1px #3c6142 inset,
+    0 0 0 0 transparent;
+}
