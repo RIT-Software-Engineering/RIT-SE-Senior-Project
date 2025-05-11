@@ -399,8 +399,8 @@ export default function StudentsTab(props) {
                 text="Sort By"
                 direction="left"
                 floating
-                button
-                compact
+                // button
+                // compact
                 value={sortBy[semester.semester_id] || null}
                 onChange={(e, { value }) =>
                   setSortBy((prev) => ({
