@@ -22,7 +22,7 @@ export default function ActionElements(props) {
         color += "proposal-row-red";
         break;
       case ACTION_STATES.GREEN:
-        color += "proposal-row-blue";
+        color += "proposal-row-green";
         break;
       case ACTION_STATES.GREY:
         color += "proposal-row-gray";

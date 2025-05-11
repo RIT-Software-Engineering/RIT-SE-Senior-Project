@@ -185,6 +185,8 @@
   border: 2px var(--action-bar-proposal-green) solid;
   color: var(--border-color);
   grid-column: span 2 / auto;
+  font-weight: bold;
+  text-decoration: line-through;
 }
 
 .action-bar.proposal-row-gray {
