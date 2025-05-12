@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useContext } from "react";
 import {
   Table,
   TableBody,
@@ -6,11 +7,52 @@ import {
   TableHeaderCell,
   TableRow,
 } from "semantic-ui-react";
+import { SecureFetch } from "../../util/functions/secureFetch";
+import { config, USERTYPES } from "../../util/functions/constants";
+import { UserContext } from "../../util/functions/UserContext";
 import { formatDateTime, formatDate } from "../../util/functions/utils";
 import SubmissionsFileData from "./SubmissionsFileData";
 import _ from "lodash";
 
 export default function SubmissionsTable(props) {
+  const [submissions, setSubmissions] = useState([]);
+
+  const getSubmissions = () => {
+    if(props.userContext.user?.role !== USERTYPES.STUDENT) {
+      SecureFetch(config.url.API_GET_SUBMISSIONS)
+        .then((response) => response.json())
+        .then((submissions) => {
+          if (submissions.length > 0) {
+            // const formData = JSON.parse(submission[0].form_data.toString());
+            // const fileData = submission[0].files?.split(",");
+            // setSubmission(formData);
+            // setFiles(fileData);
+            // setNoSubmission(formData.length === 0 && files.length === 0);
+            
+            let actionSubmissions = [];
+            for(let i=0; i<submissions.length; i++) {
+              let submissionsData = [];
+              let formData = JSON.parse(submissions[i].form_data.toString());
+              let fileData = submissions[i].files?.split(",");
+              let logId = submissions[i].action_log_id;
+              let actionId = submissions[i].action_id;
+              let dueDate = new Date(submissions[i].due_date);
+              dueDate.setDate(dueDate.getDate()+1);
+              submissionsData.push([formData, fileData, logId, actionId, dueDate]);
+              actionSubmissions.push(submissionsData);
+            }
+            setSubmissions(actionSubmissions);
+          }
+      })
+      .catch((error) => {
+          alert("Failed to get submission data " + error);
+      });
+    }
+  }
+
+  useEffect(() => {
+    getSubmissions();
+  }, []);
 
   const daysLate = (due, submitted) => {
       let dueDate = formatDate(due);
@@ -19,6 +61,9 @@ export default function SubmissionsTable(props) {
       let diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
       return diffInDays;
   };
+
+  console.log("submissions", submissions);
+  console.log("action submissions", props.actionSubmissions);
 
   return (
     <>
@@ -33,8 +78,10 @@ export default function SubmissionsTable(props) {
         </TableHeader>
 
         <TableBody>
-            {props.actionSubmissions.map((log, idx) => {
-              let actionSubmission = props.submissions?.filter((submission) => submission[0][2] === log.action_log_id);
+          {props.actionSubmissions.map((log, idx) => {
+            if(submissions.length > 0) {
+              let actionSubmission = submissions.filter((submission) => submission[0][2] === log.action_log_id);
+              console.log("actionSubmission", actionSubmission);
               let submission = actionSubmission[0][0][0];
               let files = actionSubmission[0][0][1];
               let due = actionSubmission[0][0][4];
@@ -69,6 +116,7 @@ export default function SubmissionsTable(props) {
                   </TableCell>
                 </TableRow>
               )
+            }
           })}
         </TableBody>
       </Table>
