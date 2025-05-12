@@ -48,6 +48,7 @@ export default function DevSignInModalContent() {
           document.cookie = `semester_group=${user.semester_group}`;
           document.cookie = `project=${user.project}`;
           document.cookie = `active=${user.active}`;
+          document.cookie = `view_only=${user.view_only}`;
           //TODO: MAKE ADJUSTMENTS FOR PRODUCTION, BUT DO NOT REMOVE THIS. UPDATES LOGIN TIMES.
           SecureFetch(config.url.DEV_ONLY_API_POST_EDIT_LAST_LOGIN, {
             method: "post",

@@ -1,0 +1,32 @@
+@import './../base/variables.css';
+
+#header {
+    height: var(--header-footer-height);
+    padding-top: 2em;
+    padding-bottom: 1em;
+    background-color: var(--gantt-today);
+    transition: background-color 0.3s ease;
+}
+
+#header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    transition: color 0.3s ease;
+}
+
+#subHeader {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Dark Mode Styles */
+.dark-mode #header {
+    background-color: var(--bg-footer-header); 
+}
+
+.dark-mode #header .container,
+.dark-mode #subHeader {
+    color: var(--bg-primary);
+}

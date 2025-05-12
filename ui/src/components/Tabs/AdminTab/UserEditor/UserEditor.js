@@ -23,7 +23,6 @@ export default function UserEditor(props) {
 
   //user upload wont refresh bc no new user data is given
   const getSemesters = () => {
-    console.log("hihi");
     SecureFetch(config.url.API_GET_STUDENT_INFO)
       .then((response) => response.json())
       .then((studentsData) => {
@@ -92,7 +91,8 @@ export default function UserEditor(props) {
       />
       <div className="accordion-buttons-container">
         <UserPanel
-          userData={{}}
+          studentData={students}
+          userData={users}
           semesterData={semesters}
           header={`Create user`}
           callback={getSemesters}

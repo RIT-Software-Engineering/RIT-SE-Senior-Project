@@ -477,6 +477,9 @@ export default function ActionModal(props) {
     );
 
   const renderSubmitButton = () => {
+    if (user.view_only || user.mockUser.view_only == "TRUE") {
+      return "View Only Role";
+    }
     switch (props.action_target) {
       case ACTION_TARGETS.admin:
         return user.role === USERTYPES.ADMIN
@@ -562,6 +565,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            color="grey"
             onClick={() => {
               onActionCancel();
               setOpen(false);
@@ -592,12 +596,7 @@ export default function ActionModal(props) {
         open={open}
         trigger={
           props.trigger || (
-            <Button
-              ref={props.ref}
-              fluid
-              className="view-action-button"
-              onClick={() => console.log("CLICKEDF!!!!")}
-            >
+            <Button ref={props.ref} fluid className="view-action-button">
               View Action
             </Button>
           )
@@ -658,6 +657,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            color="grey"
             onClick={() => {
               onActionCancel();
               setOpen(false);

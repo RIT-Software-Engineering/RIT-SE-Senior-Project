@@ -10,10 +10,10 @@ import DashboardPage from "./components/pages/DashboardPage";
 import Header from "./components/shared/allPages/Header";
 import Footer from "./components/shared/allPages/Footer";
 import { UserContextProvider } from "./components/util/functions/UserContext";
-import "./App.css";
 import { Container } from "semantic-ui-react";
 import ErrorBoundary from "./components/shared/allPages/ErrorBoundary";
 import StackTraceErrorPage from "./components/pages/StackTraceErrorPage";
+import "./css/utils/helpers.css";
 
 function App() {
   return (

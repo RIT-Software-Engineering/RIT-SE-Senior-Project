@@ -1,0 +1,200 @@
+@import "./../base/variables.css";
+
+button.ui.button,
+.ui.icon.button,
+.ui.icon.buttons,
+.button,
+a.ui.button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.ui.dimmer .ui.workaround.loader {
+  color: var(--text-primary);
+}
+
+.ui.dimmer .ui.workaround.loader:before {
+  border-color: var(--shadow-color);
+}
+
+.ui.dimmer .ui.workaround.loader:after {
+  border-color: #767676 transparent transparent;
+}
+
+/* Dark mode styles for pagination */
+
+.dark-mode .ui.sortable.table thead th:hover {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.pagination.menu {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.pagination.menu .item {
+  background-color: var(--menu-item);
+  color: var(--text-primary);
+  margin: 0;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+body.dark-mode .ui.pagination.menu .item:hover {
+  background-color: var(--menu-item-hover);
+}
+
+body.dark-mode .ui.pagination.menu .active.item {
+  background-color: var(--menu-item-active);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+body.dark-mode .ui.message {
+  background-color: var(--bg-primary);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.dark-mode .ui.button {
+  background-color: var(--bg-button);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-primary);
+}
+
+.dark-mode .ui.button:hover {
+  background-color: var(--bg-hover);
+}
+
+.dark-mode .ui.active.button:hover {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.header {
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.segment,
+.dark-mode .ui.tab {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.menu {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.tabular.menu .item {
+  color: var(--text-primary);
+  background-color: var(--menu-item);
+}
+
+.dark-mode .ui.tabular.menu .active.item {
+  background-color: var(--menu-item-active);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.pane {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .semester-editor {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.modal {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.table {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.table td,
+body.dark-mode .ui.table th {
+  border-color: var(--bg-secondary);
+}
+
+.dark-mode .ui.input > input {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .header,
+body.dark-mode .ui.modal .content,
+body.dark-mode .ui.modal .actions {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .button {
+  background-color: var(--bg-button);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-primary);
+}
+
+body.dark-mode .ui.modal .button:hover {
+  background-color: var(--bg-button-hover);
+}
+
+body.dark-mode .ui.segment.stackable.padded.grid {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+body.dark-mode .ui.container.stackable.grid {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .actions {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--bg-footer-header);
+}
+
+body.dark-mode .ui.segment .column {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .ui.small.header {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .column h3,
+body.dark-mode .ui.segment .column h4,
+body.dark-mode .ui.segment .column h5,
+body.dark-mode .ui.segment .column p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal label,
+body.dark-mode .ui.form .field > label {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.rating .active.icon {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.positive.message {
+  background-color: #1f2d1f;
+  color: #a3c293 !important;
+  box-shadow:
+    0 0 0 1px #3c6142 inset,
+    0 0 0 0 transparent;
+}

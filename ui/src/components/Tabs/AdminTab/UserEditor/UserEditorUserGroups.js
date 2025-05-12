@@ -24,6 +24,16 @@ export default function UserEditorUserGroups(props) {
   let projectMap = {};
   let semesterAccordions = [];
 
+  const [activeIndexes, setActiveIndexes] = useState([]);
+
+  const handleAccordionClick = (semesterId) => {
+    setActiveIndexes((prev) =>
+      prev.includes(semesterId)
+        ? prev.filter((id) => id !== semesterId)
+        : [...prev, semesterId],
+    );
+  };
+
   function groupUsers(studentData, userData, projectMap) {
     let semesterMap = { semesters: [] };
 
@@ -210,7 +220,10 @@ export default function UserEditorUserGroups(props) {
   groupings = groupUsers(props.studentData, props.userData, projectMap);
 
   semesterAccordions = Object.keys(groupings["semesters"]).map((semesterId) => {
-    let active = isSemesterActive(semesterMap[semesterId]["start_date"], semesterMap[semesterId]["end_date"]);
+    let active = isSemesterActive(
+      semesterMap[semesterId]["start_date"],
+      semesterMap[semesterId]["end_date"],
+    );
 
     return {
       endDate: semesterMap[semesterId]?.end_date,
@@ -220,19 +233,21 @@ export default function UserEditorUserGroups(props) {
           key={semesterId}
           fluid
           styled
-
+          defaultActiveIndex={active ? 0 : false}
           panels={[
             {
               key: "StudentsTab-semester-selector-" + semesterId,
-              title: `${semesterMap[semesterId]["name"]} (${Object.keys(groupings["semesters"][semesterId])?.length})`,
-              active: active,
+              title: `${semesterMap[semesterId]["name"]} (${
+                Object.keys(groupings["semesters"][semesterId])?.length
+              })`,
               content: {
-                content: createSemesterAccordion(
-                  groupings["semesters"][semesterId],
-                ),
+                content: activeIndexes.includes(semesterId)
+                  ? createSemesterAccordion(groupings.semesters[semesterId])
+                  : null,
               },
             },
           ]}
+          onTitleClick={() => handleAccordionClick(semesterId)}
         />
       ),
     };

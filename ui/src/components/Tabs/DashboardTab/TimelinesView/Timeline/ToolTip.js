@@ -15,6 +15,9 @@ const submissionTypeMap = {
   [ACTION_TARGETS.team]: "Team",
   [ACTION_TARGETS.coach]: "Coach",
   [ACTION_TARGETS.admin]: "Admin",
+  [ACTION_TARGETS.student_announcement]: "Student Announcement",
+  [ACTION_TARGETS.coach_announcement]: "Coach Announcement",
+  [ACTION_TARGETS.peer_evaluation]: "Peer Evaluation",
 };
 
 export default function ToolTip(props) {

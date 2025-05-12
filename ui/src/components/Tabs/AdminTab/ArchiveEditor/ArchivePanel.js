@@ -11,6 +11,8 @@ import { decode } from "html-entities";
  *      Notable props: newArchive, indicates whether a project has been added to archives or not
  */
 export default function ArchivePanel(props) {
+  const [errors, setErrors] = useState([]);
+
   const [projectMembers, setProjectMembers] = useState({
     students: [],
     coaches: [],
@@ -156,16 +158,19 @@ export default function ArchivePanel(props) {
     submissionModalMessages = {
       SUCCESS: "The project has been archived.",
       FAIL: "Could not archive the project.",
+      SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
     };
   } else {
     submissionModalMessages = props.create
       ? {
           SUCCESS: "The archive project has been created.",
           FAIL: "We were unable to add to archive.",
+          SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
         }
       : {
           SUCCESS: "The archived project has been edited.",
           FAIL: "Could not make edits.",
+          SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
         };
   }
 
@@ -321,6 +326,45 @@ export default function ArchivePanel(props) {
     },
   ];
 
+  // get a list of archived project names
+  const getArchiveNames = () => {
+    const currentArchiveId = props.project?.archive_id;
+
+    const projectNames = props.archiveData
+      ?.filter((proj) => proj?.archive_id !== currentArchiveId)
+      .map((proj) => proj?.name); // check all other semesters for unique names
+
+    return projectNames;
+  };
+
+  const validateForm = (data) => {
+    // TODO: Add validations for all other inputs
+    const errorsFound = [];
+
+    // handle unique archive names
+    const projectNames = getArchiveNames();
+    if (projectNames?.includes(data.name?.trim())) {
+      errorsFound.push({
+        name: "name",
+        message: "Name is taken. Please choose a different name",
+      });
+    }
+
+    return errorsFound;
+  };
+
+  const preSubmit = (data) => {
+    const validationErrors = validateForm(data);
+    setErrors(validationErrors);
+
+    if (validationErrors.length > 0) {
+      return null;
+    }
+
+    setErrors([]);
+    return data;
+  };
+
   return (
     <DatabaseTableEditor
       initialState={initialState}
@@ -330,6 +374,8 @@ export default function ArchivePanel(props) {
       header={props.header}
       button={props.buttonIcon || (props.create ? "plus" : "edit")}
       callback={props.callback}
+      preSubmit={preSubmit}
+      errors={errors}
     />
   );
 }

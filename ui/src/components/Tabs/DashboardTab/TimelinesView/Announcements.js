@@ -1,6 +1,7 @@
 import React from "react";
 import { ACTION_TARGETS } from "../../../util/functions/constants";
 import { formatDateNoOffset } from "../../../util/functions/utils";
+import "./../../../../css/components/announcement.css";
 
 export default function Announcements(props) {
   return (

@@ -1,0 +1,98 @@
+@import "./../base/variables.css";
+
+.admin-menu {
+  width: 100%;
+}
+
+.hidden {
+  visibility: collapse;
+}
+
+.fake-a {
+  color: #1e70bf;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.pagination-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.overviewText {
+  font-size: 16pt;
+}
+
+*:not(i) {
+  font-family: var(--fonts) !important;
+}
+
+#page {
+  min-height: calc(
+    100vh - var(--header-footer-height) - var(--header-footer-height) -
+      var(--helpers-page-padding) - var(--helpers-page-padding)
+  );
+  margin: var(--helpers-page-padding) 0 3em 0;
+}
+
+.pagination-container {
+  padding-top: 1em;
+}
+
+.clickable-student-name {
+  cursor: pointer;
+  color: #4183c4;
+  text-decoration: underline;
+}
+
+.sponsor-note-actions {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.tabular.menu {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.submission-errors {
+  color: red;
+}
+
+/* Dark Mode Styles */
+
+.dark-mode a {
+  color: #90caf9;
+}
+
+.dark-mode .fake-a {
+  color: #1e70bf;
+}
+
+.dark-mode #page {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.dark-mode table,
+body.dark-mode th,
+body.dark-mode td {
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .clickable-student-name {
+  cursor: pointer;
+  color: #90caf9;
+  text-decoration: underline;
+}
+
+/* Dark mode styles for submission errors */
+body.dark-mode .submission-errors {
+  color: #ff4444;
+}

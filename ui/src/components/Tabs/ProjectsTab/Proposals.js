@@ -13,10 +13,12 @@ import ProjectEditorModal from "./ProjectEditorModal";
 import ProjectArchivePanel from "./ProjectArchivePanel";
 import _ from "lodash";
 import { config, PROJECT_STATUSES } from "../../util/functions/constants";
-import "../../../css/dashboard-proposal.css";
 import ProjectViewerModal from "./ProjectViewerModal";
 import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
+import "./../../../css/components/proposal.css";
+import "./../../../css/containers/accordion.css";
+import "./../../../css/components/modal.css";
 
 const COLUMNS = {
   SEMESTER: "semester",
@@ -120,7 +122,10 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
-                  <ProjectArchivePanel project={proposal} />
+                  <ProjectArchivePanel
+                    viewOnly={props.viewOnlyArchive}
+                    project={proposal}
+                  />
                   <WebsiteViewerModal project={proposal} />
                 </>
               ) : (

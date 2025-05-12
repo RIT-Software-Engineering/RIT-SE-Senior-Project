@@ -24,13 +24,22 @@ const isAdmin = (req, res, next) => {
   res.sendStatus(401);
 };
 
+const canWrite = (req, res, next) => {
+  if (testCanWrite(req)) {
+    next();
+    return;
+  }
+
+  res.sendStatus(401);
+};
+
 const isCoachOrAdmin = (req, res, next) => {
   if (testIsAdmin(req) || testIsCoach(req)) {
     next();
     return true;
   }
 
-  const error = new Error(err);
+  const error = new Error("Coach or Admin required");
   error.statusCode = 401;
   return next(error);
 };
@@ -65,6 +74,7 @@ const mockUser = (req, res, next) => {
           : req.cookies.semester_group,
       project: req.cookies.project === "null" ? null : req.cookies.project,
       active: req.cookies.active,
+      view_only: req.cookies.view_only,
     };
   }
 
@@ -97,6 +107,11 @@ const testIsAdmin = (req) => {
   return req.user && req.user.type === ROLES.ADMIN;
 };
 
+const testCanWrite = (req) => {
+  console.log(req.user);
+  return req.user && req.user.view_only === "FALSE";
+};
+
 const testIsCoach = (req) => {
   return req.user && req.user.type === ROLES.COACH;
 };
@@ -104,6 +119,7 @@ const testIsCoach = (req) => {
 module.exports = {
   isSignedIn,
   isAdmin,
+  canWrite,
   isCoachOrAdmin,
   mockUser,
 };

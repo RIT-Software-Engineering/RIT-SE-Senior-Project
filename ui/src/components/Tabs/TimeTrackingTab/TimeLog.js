@@ -54,13 +54,11 @@ export default function TimeLog(props) {
   const [students, setStudentsData] = useState([]);
   const { eachWeekOfInterval, set } = require("date-fns");
   useEffect(() => {
-    console.log(userContext);
     setActionLogs([]);
     SecureFetch(config.url.API_GET_MY_PROJECTS)
       .then((response) => response.json())
       .then((project) => {
         if (project.length !== 0) {
-          console.log(project);
           //Get list of semesters
           const tracker = [];
           for (let x of project) {
@@ -97,7 +95,6 @@ export default function TimeLog(props) {
   }, [userContext]);
 
   const resetKey = () => {
-    console.log("hi");
     setKey(Math.random());
   };
   const getTimeData = () => {
@@ -178,7 +175,10 @@ export default function TimeLog(props) {
       {semesters.length > 0 && <h3>Time Log</h3>}
       {semesters.map((sem) => {
         const isActive = isSemesterActive(sem?.start_date, sem?.end_date);
-        const isAccordionActive = activeSemesters[sem.semester_id] === undefined ? isActive : activeSemesters[sem.semester_id];
+        const isAccordionActive =
+          activeSemesters[sem.semester_id] === undefined
+            ? isActive
+            : activeSemesters[sem.semester_id];
 
         return (
           <>
@@ -211,6 +211,7 @@ export default function TimeLog(props) {
                                   studentData={students}
                                   timeStats={timeStats}
                                   timeLogs={timeLogs}
+                                  viewOnly={props.viewOnly}
                                 ></ProjectTime>
                               );
                             })}

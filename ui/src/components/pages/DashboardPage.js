@@ -10,7 +10,6 @@ import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
 import AdminView from "../util/components/AdminView";
 import { UserContext } from "../util/functions/UserContext";
-import "./../../css/dashboard.css";
 import UserEditor from "../Tabs/AdminTab/UserEditor/UserEditor";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { config } from "../util/functions/constants";
@@ -19,6 +18,7 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
+import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
@@ -40,7 +40,20 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
+          view_only: responseUser.view_only == "TRUE" ? true : false,
         });
+        if (responseUser.system_id) {
+          SecureFetch(
+            config.url.API_GET_DARK_MODE +
+              `?system_id=${responseUser.system_id}`,
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              const darkPref = ["1", 1, true, "true"].includes(data.dark_mode);
+              document.body.classList.toggle("dark-mode", darkPref);
+            })
+            .catch((err) => console.error("Failed to fetch dark mode:", err));
+        }
       });
     SecureFetch(config.url.API_GET_SEMESTERS)
       .then((response) => response.json())
@@ -53,27 +66,28 @@ export default function DashboardPage() {
   }, []);
 
   let panes = [];
-
   switch (user.role) {
     case "admin":
-      panes.push({
-        menuItem: {
-          key: "Admin-Tab",
-          content: "Admin",
-          href: "#",
-        },
-        render: () => (
-          <Tab.Pane>
-            <SemesterEditor />
-            <ActionEditor semesterData={semesterData} />
-            <ProjectEditor semesterData={semesterData} />
-            <ArchiveEditor />
-            <UserEditor />
-            <SponsorEditorAccordion />
-            <FileEditor />
-          </Tab.Pane>
-        ),
-      });
+      if (!user.view_only && !user.mockUser.view_only) {
+        panes.push({
+          menuItem: {
+            key: "Admin-Tab",
+            content: "Admin",
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <SemesterEditor />
+              <ActionEditor semesterData={semesterData} />
+              <ProjectEditor semesterData={semesterData} />
+              <ArchiveEditor />
+              <UserEditor />
+              <SponsorEditorAccordion />
+              <FileEditor />
+            </Tab.Pane>
+          ),
+        });
+      }
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
     case "coach":
@@ -86,7 +100,9 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SponsorsTab />
+              <SponsorsTab
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -127,7 +143,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <ProjectsTab semesterData={semesterData} />
+              <ProjectsTab
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
             </Tab.Pane>
           ),
         },
@@ -139,7 +158,10 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <TimeLog semesterData={semesterData} />
+              <TimeLog
+                semesterData={semesterData}
+                viewOnly={user.view_only || user.mockUser.view_only}
+              />
               <ActionLogs semesterData={semesterData} />
             </Tab.Pane>
           ),

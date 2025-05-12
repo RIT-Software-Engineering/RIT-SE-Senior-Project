@@ -1,6 +1,7 @@
 import moment from "moment-timezone";
 import _ from "lodash";
 import { SERVER_TIMEZONE } from "./constants";
+import { useState, useEffect } from "react";
 
 export const parseDateNoOffset = (dateTime) => {
   return moment(dateTime);
@@ -141,4 +142,65 @@ export const slugify = (str) => {
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
+};
+
+export function applyDarkModeClass(isDark) {
+  if (isDark) {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
+}
+
+/**
+ * A React hook that provides a way to store and retrieve state in
+ * `sessionStorage`, and synchronize it across tabs.
+ *
+ * @param {string} key The key to store the value under
+ * @param {*} initialValue The initial value to use if the key is not present
+ * @returns {[*, (newValue: *) => void]} A tuple containing the current value,
+ * and an `updateValue` function that can be used to update the value.
+ *
+ * The `updateValue` function will cause the value to be updated in all tabs, and
+ * will trigger a re-render of the component.
+ *
+ * This is currently being used to handle the gantt chart view
+ */
+export const useSessionStorage = (key, initialValue) => {
+  const [value, setValue] = useState(() => {
+    const storedValue = sessionStorage.getItem(key);
+    return storedValue !== null ? JSON.parse(storedValue) : initialValue;
+  });
+
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === key) {
+        setValue(JSON.parse(e.newValue));
+      }
+    };
+
+    // Listen for storage changes (including cross-tab)
+    window.addEventListener("storage", handleStorageChange);
+
+    // Manually trigger update for same-tab changes
+    const manualSync = () => {
+      const newValue = sessionStorage.getItem(key);
+      setValue(JSON.parse(newValue));
+    };
+    window.addEventListener("sessionStorageSync", manualSync);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("sessionStorageSync", manualSync);
+    };
+  }, [key]);
+
+  const updateValue = (newValue) => {
+    sessionStorage.setItem(key, JSON.stringify(newValue));
+    // Dispatch custom event for same-tab sync
+    window.dispatchEvent(new Event("sessionStorageSync"));
+    setValue(newValue);
+  };
+
+  return [value, updateValue];
 };
