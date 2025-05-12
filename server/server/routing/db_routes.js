@@ -3057,14 +3057,15 @@ module.exports = (db) => {
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
-                    WHERE project_coaches.coach_id = ?`;
-        params = [req.user.system_id];
+                    WHERE actions.action_id = ? AND project_coaches.coach_id = ?`;
+        params = [req.query.action_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
         getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date
                     FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template`;
-        params = [];
+                    JOIN actions ON actions.action_id = action_log.action_template
+                    WHERE actions.action_id = ?`;
+        params = [req.query.action_id];
         break;
       default:
         const error = new Error("Unknown Role");

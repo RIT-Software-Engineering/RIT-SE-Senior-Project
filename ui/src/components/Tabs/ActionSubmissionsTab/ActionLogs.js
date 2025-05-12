@@ -23,6 +23,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import _, { isNull } from "lodash";
 import TimeLogProjects from "./TimeLogProjects";
 import SubmissionsTable from "./SubmissionsTable";
+import ActionSubmissions from "./ActionSubmissions";
 
 const LOGS_PER_PAGE = 50;
 const TIME_LOGS_PER_PAGE = 5;
@@ -48,42 +49,7 @@ export default function ActionLogs(props) {
   const [myProjects, setMyProjectsData] = useState([]);
   const [activeSemesters, setActiveSemesters] = useState({});
   const [actionsData, setActionsData] = useState([]);
-  const [submissions, setSubmissions] = useState([]);
-
   const unassignedStudentsStr = "Unassigned students";
-
-  // const getSubmissions = () => {
-  //   if(userContext.user?.role !== USERTYPES.STUDENT) {
-  //     SecureFetch(config.url.API_GET_SUBMISSIONS)
-  //       .then((response) => response.json())
-  //       .then((submissions) => {
-  //         if (submissions.length > 0) {
-  //           // const formData = JSON.parse(submission[0].form_data.toString());
-  //           // const fileData = submission[0].files?.split(",");
-  //           // setSubmission(formData);
-  //           // setFiles(fileData);
-  //           // setNoSubmission(formData.length === 0 && files.length === 0);
-            
-  //           let actionSubmissions = [];
-  //           for(let i=0; i<submissions.length; i++) {
-  //             let submissionsData = [];
-  //             let formData = JSON.parse(submissions[i].form_data.toString());
-  //             let fileData = submissions[i].files?.split(",");
-  //             let logId = submissions[i].action_log_id;
-  //             let actionId = submissions[i].action_id;
-  //             let dueDate = new Date(submissions[i].due_date);
-  //             dueDate.setDate(dueDate.getDate()+1);
-  //             submissionsData.push([formData, fileData, logId, actionId, dueDate]);
-  //             actionSubmissions.push(submissionsData);
-  //           }
-  //           setSubmissions(actionSubmissions);
-  //         }
-  //     })
-  //     .catch((error) => {
-  //         alert("Failed to get submission data " + error);
-  //     });
-  //   }
-  // }
 
   const getPaginationData = (page) => {
     SecureFetch(
@@ -189,10 +155,6 @@ export default function ActionLogs(props) {
         alert("Failed to get time log data " + error);
       });
   };
-
-  // useEffect(() => {
-  //   getSubmissions();
-  // }, []);
 
   useEffect(() => {
     getPaginationData(0);
@@ -563,36 +525,20 @@ export default function ActionLogs(props) {
                                     actionSubmissions.push(log);
                                   }
                                 })
-                                // console.log(submissions)
                                 if(action.semester === semester.semester_id && actionSubmissions.length > 0) {
                                   return (
-                                    <div className="accordion-button-group">
-                                      <Accordion
-                                        key={"ACTION"}
-                                        fluid
-                                        styled
-                                        panels={[
-                                          {
-                                            key: "Action",
-                                            title: `${action.action_title} (${getActionTarget(action.action_target)})`,
-                                            content: {
-                                              content: 
-                                                <SubmissionsTable
-                                                  semesterMap={semesterMap}
-                                                  actionLogs={actionLogs}
-                                                  prevLogin={prevLogin}
-                                                  userContext={userContext}
-                                                  projects={projects}
-                                                  target={action?.action_target}
-                                                  actionSubmissions={actionSubmissions}
-                                                  // submissions={submissions}
-                                                  isOpenCallback={() => {}}
-                                                />
-                                            }
-                                          }
-                                        ]}
-                                      />
-                                    </div>
+                                    <ActionSubmissions
+                                      semesterMap={semesterMap}
+                                      actionLogs={actionLogs}
+                                      prevLogin={prevLogin}
+                                      userContext={userContext}
+                                      actionTitle={action.action_title}
+                                      projects={projects}
+                                      target={action?.action_target}
+                                      action={action}
+                                      actionSubmissions={actionSubmissions}
+                                      isOpenCallback={() => {}}
+                                    />
                                   );
                                 }
                               })}

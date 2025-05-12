@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -9,7 +9,6 @@ import {
 } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
-import { UserContext } from "../../util/functions/UserContext";
 import { formatDateTime, formatDate } from "../../util/functions/utils";
 import SubmissionsFileData from "./SubmissionsFileData";
 import _ from "lodash";
@@ -19,16 +18,11 @@ export default function SubmissionsTable(props) {
 
   const getSubmissions = () => {
     if(props.userContext.user?.role !== USERTYPES.STUDENT) {
-      SecureFetch(config.url.API_GET_SUBMISSIONS)
+      SecureFetch(
+        `${config.url.API_GET_SUBMISSIONS}?action_id=${props.action.action_id}`)
         .then((response) => response.json())
         .then((submissions) => {
           if (submissions.length > 0) {
-            // const formData = JSON.parse(submission[0].form_data.toString());
-            // const fileData = submission[0].files?.split(",");
-            // setSubmission(formData);
-            // setFiles(fileData);
-            // setNoSubmission(formData.length === 0 && files.length === 0);
-            
             let actionSubmissions = [];
             for(let i=0; i<submissions.length; i++) {
               let submissionsData = [];
