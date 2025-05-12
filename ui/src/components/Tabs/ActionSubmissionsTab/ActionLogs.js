@@ -297,6 +297,26 @@ export default function ActionLogs(props) {
     return hoursPerWeek;
   }
 
+
+  const getActionTarget = (target) => {
+    switch(target) {
+      case "individual":
+        return "Individual";
+      case "coach":
+        return "Coach";
+      case "team":
+        return "Team";
+      case "admin":
+        return "Admin";
+      case "peer_evaluation":
+        return "Peer Evaluation";
+      case "break_period":
+        return "Break Period";
+      default:
+        return target;
+    }
+  }
+
   function generateMappedData(studentData, semesterData, projectData, actionData) {
     let projectMap = {};
     projectData.forEach((project) => {
@@ -555,7 +575,7 @@ export default function ActionLogs(props) {
                                         panels={[
                                           {
                                             key: "Action",
-                                            title: `${action.action_title} (${action.action_target})`,
+                                            title: `${action.action_title} (${getActionTarget(action.action_target)})`,
                                             content: {
                                               content: 
                                                 <SubmissionsTable
