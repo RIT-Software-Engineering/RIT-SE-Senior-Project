@@ -2784,6 +2784,76 @@ module.exports = (db) => {
     },
   );
 
+
+
+
+
+  db_router.get("/getAllActionLogsNoLimit", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
+    let getActionLogQuery = "";
+    let queryParams = [];
+    let getActionLogCount = "";
+    let countParams = [];
+
+    switch (req.user.type) {
+      case ROLES.COACH:
+        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+                  actions.action_target, actions.action_title, actions.semester,
+                  projects.display_name, projects.title,
+                  (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                  (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+                  FROM action_log
+                      JOIN actions ON actions.action_id = action_log.action_template
+                      JOIN projects ON projects.project_id = action_log.project
+                      WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
+                      ORDER BY submission_datetime DESC`;
+        queryParams = [req.user.system_id];
+        getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+        countParams = [req.user.system_id];
+        break;
+      case ROLES.ADMIN:
+        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+              actions.action_target, actions.action_title, actions.semester,
+              projects.display_name, projects.title,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              FROM action_log
+                  JOIN actions ON actions.action_id = action_log.action_template
+                  JOIN projects ON projects.project_id = action_log.project
+                  ORDER BY submission_datetime DESC`;
+        queryParams = [];
+        getActionLogCount = `SELECT COUNT(*) FROM action_log`;
+        break;
+      default:
+        const error = new Error("Unknown Role");
+        error.statusCode = 401;
+        return next(error);
+    }
+
+    const actionLogsPromise = db.query(getActionLogQuery, queryParams);
+    const actionLogsCountPromise = db.query(getActionLogCount, countParams);
+    Promise.all([actionLogsCountPromise, actionLogsPromise])
+      .then(([[actionLogCount], projects]) => {
+        res.send({
+          actionLogCount: actionLogCount[Object.keys(actionLogCount)[0]],
+          actionLogs: projects,
+        });
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+    },
+  );
+
+
+
+
+
+
+
+
+
   db_router.get(
     "/getTimeLogs",
     [UserAuth.isSignedIn],

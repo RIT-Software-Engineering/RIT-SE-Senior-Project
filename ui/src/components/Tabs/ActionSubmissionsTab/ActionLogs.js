@@ -36,6 +36,8 @@ export default function ActionLogs(props) {
 
   const [actionLogs, setActionLogs] = useState([]);
   const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
+  const [allActionLogs, setAllActionLogs] = useState([]);
+  const [allActionLogCount, setAllActionLogCount] = useState(0);
   const [timeLogs, setTimeLogs] = useState([]);
   const [timeLogCount, setTimeLogCount] = useState(TIME_LOGS_PER_PAGE);
   const userContext = useContext(UserContext);
@@ -64,6 +66,18 @@ export default function ActionLogs(props) {
       })
       .catch((error) => {
         alert("Failed to get action log data " + error);
+      });
+  };
+
+  const getAllActionLogs = () => {
+    SecureFetch(config.url.API_GET_ALL_ACTION_LOGS_NO_LIMIT)
+      .then((response) => response.json())
+      .then((action_logs) => {
+        setAllActionLogs(action_logs.actionLogs);
+        setAllActionLogCount(action_logs.actionLogCount);
+      })
+      .catch((error) => {
+        alert("Failed to get all action log data " + error);
       });
   };
 
@@ -159,6 +173,10 @@ export default function ActionLogs(props) {
   useEffect(() => {
     getPaginationData(0);
     // getTimeData(0);
+  }, []);
+
+  useEffect(() => {
+    getAllActionLogs();
   }, []);
 
   useEffect(() => {
@@ -278,6 +296,9 @@ export default function ActionLogs(props) {
         return target;
     }
   }
+
+  console.log("action logs", actionLogs);
+  console.log("all action logs", allActionLogs);
 
   function generateMappedData(studentData, semesterData, projectData, actionData) {
     let projectMap = {};
@@ -520,7 +541,7 @@ export default function ActionLogs(props) {
                             <>
                               {actionsData.map((action, counter) => {
                                 let actionSubmissions = []
-                                actionLogs.map((log) => {
+                                allActionLogs.map((log) => {
                                   if(log.action_template === action.action_id && log.semester === semester.semester_id) {
                                     actionSubmissions.push(log);
                                   }
@@ -529,7 +550,7 @@ export default function ActionLogs(props) {
                                   return (
                                     <ActionSubmissions
                                       semesterMap={semesterMap}
-                                      actionLogs={actionLogs}
+                                      actionLogs={allActionLogs}
                                       prevLogin={prevLogin}
                                       userContext={userContext}
                                       actionTitle={action.action_title}

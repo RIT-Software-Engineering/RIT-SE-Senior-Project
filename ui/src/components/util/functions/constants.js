@@ -60,6 +60,7 @@ export const config = {
     API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
     API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
+    API_GET_ALL_ACTION_LOGS_NO_LIMIT: `${BASE_API_URL}/db/getAllActionLogsNoLimit`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
     API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
