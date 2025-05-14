@@ -37,7 +37,6 @@ export default function ActionLogs(props) {
   const [actionLogs, setActionLogs] = useState([]);
   const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
   const [allActionLogs, setAllActionLogs] = useState([]);
-  const [allActionLogCount, setAllActionLogCount] = useState(0);
   const [timeLogs, setTimeLogs] = useState([]);
   const [timeLogCount, setTimeLogCount] = useState(TIME_LOGS_PER_PAGE);
   const userContext = useContext(UserContext);
@@ -72,8 +71,7 @@ export default function ActionLogs(props) {
       SecureFetch(config.url.API_GET_ALL_ACTION_LOGS_NO_LIMIT)
         .then((response) => response.json())
         .then((action_logs) => {
-          setAllActionLogs(action_logs.actionLogs);
-          setAllActionLogCount(action_logs.actionLogCount);
+          setAllActionLogs(action_logs);
         })
         .catch((error) => {
           alert("Failed to get all action log data " + error);
@@ -536,18 +534,18 @@ export default function ActionLogs(props) {
                         content: {
                           content: 
                             <>
-                              {actionsData.map((action, counter) => {
-                                let actionSubmissions = []
-                                allActionLogs.map((log) => {
-                                  if(log.action_template === action.action_id && log.semester === semester.semester_id) {
-                                    actionSubmissions.push(log);
+                              {actions.map((action, counter) => {
+                                let actionSubmissions = false;
+                                for(let i=0; i<allActionLogs.length; i++) {
+                                  if(allActionLogs[i].action_template === action.action_id && allActionLogs[i].semester === semester.semester_id) {
+                                    actionSubmissions = true;
+                                    break;
                                   }
-                                })
-                                if(action.semester === semester.semester_id && actionSubmissions.length > 0) {
+                                }
+                                if(action.semester === semester.semester_id && actionSubmissions === true) {
                                   return (
                                     <ActionSubmissions
                                       semesterMap={semesterMap}
-                                      actionLogs={allActionLogs}
                                       prevLogin={prevLogin}
                                       userContext={userContext}
                                       actionTitle={action.action_title}

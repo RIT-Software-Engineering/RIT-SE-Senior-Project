@@ -47,7 +47,6 @@ export default function ActionSubmissions(props) {
                             {isOpen && 
                                 (<SubmissionsTable
                                 semesterMap={props.semesterMap}
-                                actionLogs={props.actionLogs}
                                 prevLogin={props.prevLogin}
                                 userContext={props.userContext}
                                 projects={props.projects}
