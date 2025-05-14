@@ -297,9 +297,6 @@ export default function ActionLogs(props) {
     }
   }
 
-  console.log("action logs", actionLogs);
-  console.log("all action logs", allActionLogs);
-
   function generateMappedData(studentData, semesterData, projectData, actionData) {
     let projectMap = {};
     projectData.forEach((project) => {
