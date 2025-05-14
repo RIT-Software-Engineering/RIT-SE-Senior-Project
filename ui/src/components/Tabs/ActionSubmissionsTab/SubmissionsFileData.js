@@ -60,7 +60,7 @@ export default function SubmissionsFileData(props) {
                     return (
                     <div key={file}>
                         <a
-                        href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.log.action_log_id}&project=${props.log.project}`}
+                        href={`${config.url.API_GET_SUBMISSION_FILE}?file=${file}&log_id=${props.logId}&project=${props.project}`}
                         target="_blank"
                         rel="noreferrer"
                         >
@@ -95,7 +95,7 @@ export default function SubmissionsFileData(props) {
                                 </Button>
                             }
                             header={`Submissions for ${
-                                props.log.action_title
+                                props.actionTitle
                             } (${props.target[0]?.toUpperCase()}${props.target?.substring(
                                 1,
                             )} Action)`}

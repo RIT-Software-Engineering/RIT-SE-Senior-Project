@@ -2784,10 +2784,6 @@ module.exports = (db) => {
     },
   );
 
-
-
-
-
   db_router.get("/getAllActionLogsNoLimit", [UserAuth.isCoachOrAdmin], async (req, res, next) => {
     let getActionLogQuery = "";
     let queryParams = [];
@@ -2845,14 +2841,6 @@ module.exports = (db) => {
       });
     },
   );
-
-
-
-
-
-
-
-
 
   db_router.get(
     "/getTimeLogs",
@@ -3118,24 +3106,47 @@ module.exports = (db) => {
   );
 
   db_router.get("/getSubmissions", [UserAuth.isCoachOrAdmin], (req, res, next) => {
+    const { resultLimit, offset } = req.query;
     let getSubmissionsQuery = "";
-    let params = [];
+    let queryParams = [];
+    let getSubmissionsCount = "";
+    let countParams = [];
 
     switch (req.user.type) {
       case ROLES.COACH:
-        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date
+        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date,
+                    action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,
+                    action_log.project, actions.action_target, actions.action_title, actions.semester, projects.display_name, projects.title,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
+                    JOIN projects ON projects.project_id = action_log.project
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
-                    WHERE actions.action_id = ? AND project_coaches.coach_id = ?`;
-        params = [req.query.action_id, req.user.system_id];
+                    WHERE actions.action_id = ? AND project_coaches.coach_id = ?
+                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                        ORDER BY submission_datetime DESC LIMIT ?)
+                    ORDER BY submission_datetime DESC LIMIT ?`;
+        queryParams = [req.query.action_id, req.user.system_id, offset || 0, resultLimit || 0];
+        getSubmissionsCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
+        countParams = [req.user.system_id];
         break;
       case ROLES.ADMIN:
-        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date
+        getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date,
+                    action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,
+                    action_log.project, actions.action_target, actions.action_title, actions.semester, projects.display_name, projects.title,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                     FROM action_log
+                    JOIN projects ON projects.project_id = action_log.project
                     JOIN actions ON actions.action_id = action_log.action_template
-                    WHERE actions.action_id = ?`;
-        params = [req.query.action_id];
+                    WHERE actions.action_id = ?
+                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                        ORDER BY submission_datetime DESC LIMIT ?)
+                    ORDER BY submission_datetime DESC LIMIT ?`;
+        queryParams = [req.query.action_id, offset || 0, resultLimit || 0];
+        getSubmissionsCount = `SELECT COUNT(*) FROM action_log JOIN actions ON actions.action_id = action_log.action_template WHERE actions.action_id = ?`;
+        countParams = [req.query.action_id];
         break;
       default:
         const error = new Error("Unknown Role");
@@ -3143,12 +3154,27 @@ module.exports = (db) => {
         return next(error);
     }
 
-    db.query(getSubmissionsQuery, params)
-      .then((submissions) => {
-        res.send(submissions);
+    // db.query(getSubmissionsQuery, queryParams)
+    //   .then((submissions) => {
+    //     res.send(submissions);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     const error = new Error(err);
+    //     error.statusCode = 500;
+    //     return next(error);
+    //   });
+
+    const submissionsPromise = db.query(getSubmissionsQuery, queryParams);
+    const submissionsCountPromise = db.query(getSubmissionsCount, countParams);
+    Promise.all([submissionsCountPromise, submissionsPromise])
+      .then(([[submissionsCount], submissions]) => {
+        res.send({
+          submissionsCount: submissionsCount[Object.keys(submissionsCount)[0]],
+          submissions: submissions,
+        });
       })
       .catch((err) => {
-        console.error(err);
         const error = new Error(err);
         error.statusCode = 500;
         return next(error);

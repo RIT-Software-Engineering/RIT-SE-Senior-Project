@@ -55,9 +55,7 @@ export default function ActionLogs(props) {
 
   const getPaginationData = (page) => {
     SecureFetch(
-      `${
-        config.url.API_GET_ALL_ACTION_LOGS
-      }/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`,
+      `${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`,
     )
       .then((response) => response.json())
       .then((action_logs) => {
@@ -70,15 +68,17 @@ export default function ActionLogs(props) {
   };
 
   const getAllActionLogs = () => {
-    SecureFetch(config.url.API_GET_ALL_ACTION_LOGS_NO_LIMIT)
-      .then((response) => response.json())
-      .then((action_logs) => {
-        setAllActionLogs(action_logs.actionLogs);
-        setAllActionLogCount(action_logs.actionLogCount);
-      })
-      .catch((error) => {
-        alert("Failed to get all action log data " + error);
-      });
+    if(userContext.user?.role !== USERTYPES.STUDENT) {
+      SecureFetch(config.url.API_GET_ALL_ACTION_LOGS_NO_LIMIT)
+        .then((response) => response.json())
+        .then((action_logs) => {
+          setAllActionLogs(action_logs.actionLogs);
+          setAllActionLogCount(action_logs.actionLogCount);
+        })
+        .catch((error) => {
+          alert("Failed to get all action log data " + error);
+        });
+    }
   };
 
   const getActionData = () => {
@@ -557,7 +557,6 @@ export default function ActionLogs(props) {
                                       projects={projects}
                                       target={action?.action_target}
                                       action={action}
-                                      actionSubmissions={actionSubmissions}
                                       isOpenCallback={() => {}}
                                     />
                                   );
