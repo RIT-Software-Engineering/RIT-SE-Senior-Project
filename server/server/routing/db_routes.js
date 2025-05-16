@@ -2719,10 +2719,13 @@ module.exports = (db) => {
                         JOIN actions ON actions.action_id = action_log.action_template
                         JOIN projects ON projects.project_id = action_log.project
                         WHERE action_log.project = ?
-                        AND action_log.oid NOT IN (SELECT oid FROM action_log
+                        AND action_log.action_log_id NOT IN (SELECT action_log_id FROM action_log
+                            JOIN actions ON actions.action_id = action_log.action_template
+                            JOIN projects ON projects.project_id = action_log.project
+                            WHERE action_log.project = ?
                             ORDER BY submission_datetime DESC LIMIT ?)
                         ORDER BY submission_datetime DESC LIMIT ?`;
-          queryParams = [req.user.project, offset || 0, resultLimit || 0];
+          queryParams = [req.user.project, req.user.project, offset || 0, resultLimit || 0];
           getActionLogCount = `SELECT COUNT(*) FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.project = ?
@@ -2739,10 +2742,13 @@ module.exports = (db) => {
                         JOIN actions ON actions.action_id = action_log.action_template
                         JOIN projects ON projects.project_id = action_log.project
                         WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
-                        AND action_log.oid NOT IN (SELECT oid FROM action_log
+                        AND action_log.action_log_id NOT IN (SELECT action_log_id FROM action_log
+                            JOIN actions ON actions.action_id = action_log.action_template
+                            JOIN projects ON projects.project_id = action_log.project
+                            WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
                             ORDER BY submission_datetime DESC LIMIT ?)
                         ORDER BY submission_datetime DESC LIMIT ?`;
-          queryParams = [req.user.system_id, offset || 0, resultLimit || 0];
+          queryParams = [req.user.system_id, req.user.system_id, offset || 0, resultLimit || 0];
           getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
           countParams = [req.user.system_id];
           break;
