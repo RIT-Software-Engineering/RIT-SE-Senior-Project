@@ -3102,12 +3102,18 @@ module.exports = (db) => {
                     JOIN projects ON projects.project_id = action_log.project
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE actions.action_id = ? AND project_coaches.coach_id = ?
-                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                    AND action_log.action_log_id NOT IN (SELECT action_log_id FROM action_log
+                        JOIN actions ON actions.action_id = action_log.action_template
+                        JOIN project_coaches ON project_coaches.project_id = action_log.project
+                        WHERE actions.action_id = ? AND project_coaches.coach_id = ?
                         ORDER BY submission_datetime DESC LIMIT ?)
                     ORDER BY submission_datetime DESC LIMIT ?`;
-        queryParams = [req.query.action_id, req.user.system_id, offset || 0, resultLimit || 0];
-        getSubmissionsCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
-        countParams = [req.user.system_id];
+        queryParams = [req.query.action_id, req.user.system_id, req.query.action_id, req.user.system_id, offset || 0, resultLimit || 0];
+        getSubmissionsCount = `SELECT COUNT(*) FROM action_log
+                                JOIN actions ON actions.action_id = action_log.action_template
+                                JOIN project_coaches ON project_coaches.project_id = action_log.project
+                                WHERE actions.action_id = ? AND project_coaches.coach_id = ?`;
+        countParams = [req.query.action_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
         getSubmissionsQuery = `SELECT action_log.form_data, action_log.files, action_log.action_log_id, actions.action_id, actions.due_date,
@@ -3116,14 +3122,18 @@ module.exports = (db) => {
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
                     FROM action_log
-                    JOIN projects ON projects.project_id = action_log.project
                     JOIN actions ON actions.action_id = action_log.action_template
+                    JOIN projects ON projects.project_id = action_log.project
                     WHERE actions.action_id = ?
-                    AND action_log.oid NOT IN (SELECT oid FROM action_log
+                    AND action_log.action_log_id NOT IN (SELECT action_log_id FROM action_log
+                        JOIN actions ON actions.action_id = action_log.action_template
+                        WHERE actions.action_id = ?
                         ORDER BY submission_datetime DESC LIMIT ?)
                     ORDER BY submission_datetime DESC LIMIT ?`;
-        queryParams = [req.query.action_id, offset || 0, resultLimit || 0];
-        getSubmissionsCount = `SELECT COUNT(*) FROM action_log JOIN actions ON actions.action_id = action_log.action_template WHERE actions.action_id = ?`;
+        queryParams = [req.query.action_id, req.query.action_id, offset || 0, resultLimit || 0];
+        getSubmissionsCount = `SELECT COUNT(*) FROM action_log
+                                JOIN actions ON actions.action_id = action_log.action_template
+                                WHERE actions.action_id = ?`;
         countParams = [req.query.action_id];
         break;
       default:
@@ -3131,17 +3141,6 @@ module.exports = (db) => {
         error.statusCode = 401;
         return next(error);
     }
-
-    // db.query(getSubmissionsQuery, queryParams)
-    //   .then((submissions) => {
-    //     res.send(submissions);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     const error = new Error(err);
-    //     error.statusCode = 500;
-    //     return next(error);
-    //   });
 
     const submissionsPromise = db.query(getSubmissionsQuery, queryParams);
     const submissionsCountPromise = db.query(getSubmissionsCount, countParams);

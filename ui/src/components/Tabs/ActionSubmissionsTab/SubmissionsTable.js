@@ -57,6 +57,7 @@ export default function SubmissionsTable(props) {
       .catch((error) => {
           alert("Failed to get submission data " + error);
       });
+      // console.log("submissions", submissions)
     }
   }
 
@@ -147,6 +148,9 @@ export default function SubmissionsTable(props) {
           totalPages={Math.ceil(submissionsCount / SUBMISSIONS_PER_PAGE)}
           onPageChange={(event, data) => {
             getSubmissions(data.activePage - 1);
+            console.log("active page", data.activePage)
+            console.log("submissions count", submissionsCount)
+            console.log("submissions", submissions)
           }}
         />
       </div>

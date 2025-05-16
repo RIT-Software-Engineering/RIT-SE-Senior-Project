@@ -52,7 +52,6 @@ export default function ActionSubmissions(props) {
                                 projects={props.projects}
                                 target={props.target}
                                 action={props.action}
-                                actionSubmissions={props.actionSubmissions}
                                 isOpenCallback={props.isOpenCallback}
                             />)}
                         </>
