@@ -669,20 +669,20 @@ VALUES
         'Initiate Project Brief',
         '',
         'Initiation & Planning: Initiate Project Brief',
-        'general',
+        'team',
         -- starts one month before now
         DATE(DATE('now'), '-1 MONTH'),
         -- ends one day later
         DATE(DATE('now'), '-1 MONTH', '+1 DAYS'),
         '<h1>Initiate Project Brief</h1><p>Define project goals and scope.</p>',
-        ''
+        '.docx,.pdf'
     ),
     (
         5,
         'Conduct Stakeholder Alignment',
         '',
         'Initiation & Planning: Conduct Stakeholder Alignment',
-        'general',
+        'team',
         -- starts the day after the previous due_date
         DATE(DATE('now'), '-1 MONTH', '+1 DAYS'),
         -- runs one more day
@@ -695,31 +695,31 @@ VALUES
         'Sign Confidentiality Agreement',
         '',
         'Initiation & Planning: Sign Confidentiality Agreement',
-        'general',
+        'individual',
         DATE(DATE('now'), '+2 DAYS'),
         DATE(DATE('now'), '+9 DAYS'),
         '<h1>Sign Confidentiality Agreement</h1>
         <p>Agree on confidentiality terms.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Define Team Structure & Roles',
         '',
         'Initiation & Planning: Define Team Structure & Roles',
-        'general',
+        'team',
         DATE(DATE('now'), '+3 DAYS'),
         DATE(DATE('now'), '+10 DAYS'),
         '<h1>Define Team Structure & Roles</h1>
         <p>Assign team roles and responsibilities.</p>',
-        ''
+        '.csv,.xlsx'
     ),
     (
         5,
         'Kickoff Meeting Coordination',
         '',
         'Initiation & Planning: Kickoff Meeting Coordination',
-        'general',
+        'coach',
         DATE(DATE('now'), '+4 DAYS'),
         DATE(DATE('now'), '+11 DAYS'),
         '<h1>Kickoff Meeting Coordination</h1>
@@ -728,38 +728,60 @@ VALUES
     ),
     (
         5,
-        'Set Up Project Workspace/Tools',
+        'Coach - Contact Sponsor, Schedule Initial Meeting, and Setup Non-Disclosure Forms',
         '',
-        'Initiation & Planning: Set Up Project Workspace/Tools',
-        'general',
-        DATE(DATE('now'), '+5 DAYS'),
-        DATE(DATE('now'), '+12 DAYS'),
-        '<h1>Set Up Project Workspace/Tools</h1>
-        <p>Configure development environment.</p>',
+        'Prior to the start of the term, coaches will need to complete some kickoff activities including contacting sponsors, scheduling initial meetings, and uploading completed Non-Disclosure agreements.',
+        'coach',
+        '2024-08-29',
+        '2024-09-03',
+        '<h1>Coach - Contact Sponsor, Schedule Initial Meeting, and Setup Non-Disclosure Forms</h1>
+        <p>Prior to the start of the term, coaches will need to complete some kickoff activities including contacting sponsors, scheduling initial meetings, and uploading completed Non-Disclosure agreements.</p>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="nda">Upload Non-Disclosure Agreement</label>
+            <input name="nda" type="file" required/>
+        </form>',
         ''
     ),
     (
         5,
-        'Establish Communication Protocols',
+        'Coach - Confirm and Approve Project Kick-Off Artifacts',
         '',
-        'Initiation & Planning: Establish Communication Protocols',
-        'general',
-        DATE(DATE('now'), '+6 DAYS'),
-        DATE(DATE('now'), '+13 DAYS'),
-        '<h1>Establish Communication Protocols</h1>
-        <p>Define channels and cadences.</p>',
-        ''
-    ),
-    (
-        5,
-        'Develop Initial Project Roadmap',
-        '',
-        'Initiation & Planning: Develop Initial Project Roadmap',
-        'general',
-        DATE(DATE('now'), '+7 DAYS'),
-        DATE(DATE('now'), '+14 DAYS'),
-        '<h1>Develop Initial Project Roadmap</h1>
-        <p>Create timeline of milestones.</p>',
+        'The coach needs to confirm and approve the team''s Project Synopsis, Time Tracking, Project Website, and Agendas/4-Ups.',
+        'coach',
+        '2024-09-16',
+        '2024-09-21',
+        '<h1>Coach - Confirm and Approve Project Kick-Off Artifacts</h1>
+        <p>The coach needs to confirm and approve the team''s Project Synopsis, Time Tracking, Project Website, and Agendas/4-Ups.</p>
+        <form class="ui form" action="/db/submitAction" method="POST">
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="website" required/>
+                    <label>The team''s published website meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="synopsis" required/>
+                    <label>The team''s synopsis meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="time_tracking" required/>
+                    <label>The team''s time tracking meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="agendas" required/>
+                    <label>The team''s weekly agendas and 4-Ups have met my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Comments and Notes</label>
+                <textarea name="comments" rows="3" required></textarea>
+            </div>
+        </form>',
         ''
     ),
     (
@@ -767,19 +789,19 @@ VALUES
         'Approve Project Charter',
         '',
         'Initiation & Planning: Approve Project Charter',
-        'general',
+        'coach',
         DATE(DATE('now'), '+8 DAYS'),
         DATE(DATE('now'), '+15 DAYS'),
         '<h1>Approve Project Charter</h1>
         <p>Obtain formal approval for project charter.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Finalize Toolchain & Workflow',
         '',
         'Execution & Development: Finalize Toolchain & Workflow',
-        'general',
+        'team',
         DATE(DATE('now'), '+9 DAYS'),
         DATE(DATE('now'), '+16 DAYS'),
         '<h1>Finalize Toolchain & Workflow</h1>
@@ -791,67 +813,67 @@ VALUES
         'Draft Functional Requirements',
         '',
         'Execution & Development: Draft Functional Requirements',
-        'general',
+        'team',
         DATE(DATE('now'), '+10 DAYS'),
         DATE(DATE('now'), '+17 DAYS'),
         '<h1>Draft Functional Requirements</h1>
         <p>Document key functionalities.</p>',
-        ''
+        '.docx,.pdf'
     ),
     (
         5,
         'Create System Architecture Plan',
         '',
         'Execution & Development: Create System Architecture Plan',
-        'general',
+        'team',
         DATE(DATE('now'), '+11 DAYS'),
         DATE(DATE('now'), '+18 DAYS'),
         '<h1>Create System Architecture Plan</h1>
         <p>Outline system components.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Develop Methodology Guidelines',
         '',
         'Execution & Development: Develop Methodology Guidelines',
-        'general',
+        'team',
         DATE(DATE('now'), '+12 DAYS'),
         DATE(DATE('now'), '+19 DAYS'),
         '<h1>Develop Methodology Guidelines</h1>
         <p>Define development standards.</p>',
-        ''
+        '.docx,.pdf'
     ),
     (
         5,
         'Establish Key Performance Metrics',
         '',
         'Execution & Development: Establish Key Performance Metrics',
-        'general',
+        'team',
         DATE(DATE('now'), '+13 DAYS'),
         DATE(DATE('now'), '+20 DAYS'),
         '<h1>Establish Key Performance Metrics</h1>
         <p>Agree on success metrics.</p>',
-        ''
+        '.csv,.xlsx'
     ),
     (
         5,
         'Build Domain/Data Models',
         '',
         'Execution & Development: Build Domain/Data Models',
-        'general',
+        'team',
         DATE(DATE('now'), '+14 DAYS'),
         DATE(DATE('now'), '+21 DAYS'),
         '<h1>Build Domain/Data Models</h1>
         <p>Design data schemas.</p>',
-        ''
+        '.sql,.json'
     ),
     (
         5,
         'Implement Initial Features/Modules',
         '',
         'Execution & Development: Implement Initial Features/Modules',
-        'general',
+        'team',
         DATE(DATE('now'), '+15 DAYS'),
         DATE(DATE('now'), '+22 DAYS'),
         '<h1>Implement Initial Features/Modules</h1>
@@ -863,7 +885,7 @@ VALUES
         'Conduct Weekly Progress Check-ins',
         '',
         'Execution & Development: Conduct Weekly Progress Check-ins',
-        'general',
+        'coach',
         DATE(DATE('now'), '+16 DAYS'),
         DATE(DATE('now'), '+23 DAYS'),
         '<h1>Conduct Weekly Progress Check-ins</h1>
@@ -875,19 +897,19 @@ VALUES
         'Submit Interim Progress Report',
         '',
         'Review & Evaluation: Submit Interim Progress Report',
-        'general',
+        'team',
         DATE(DATE('now'), '+17 DAYS'),
         DATE(DATE('now'), '+24 DAYS'),
         '<h1>Submit Interim Progress Report</h1>
         <p>Provide interim status update.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Schedule Midpoint Retrospective',
         '',
         'Review & Evaluation: Schedule Midpoint Retrospective',
-        'general',
+        'coach',
         DATE(DATE('now'), '+18 DAYS'),
         DATE(DATE('now'), '+25 DAYS'),
         '<h1>Schedule Midpoint Retrospective</h1>
@@ -899,7 +921,7 @@ VALUES
         'Conduct Sponsor Feedback Session',
         '',
         'Review & Evaluation: Conduct Sponsor Feedback Session',
-        'general',
+        'coach',
         DATE(DATE('now'), '+20 DAYS'),
         DATE(DATE('now'), '+27 DAYS'),
         '<h1>Conduct Sponsor Feedback Session</h1>
@@ -911,60 +933,204 @@ VALUES
         'Compile Lessons Learned Document',
         '',
         'Review & Evaluation: Compile Lessons Learned Document',
-        'general',
+        'team',
         DATE(DATE('now'), '+21 DAYS'),
         DATE(DATE('now'), '+28 DAYS'),
         '<h1>Compile Lessons Learned Document</h1>
         <p>Document key learnings.</p>',
-        ''
+        '.docx,.pdf'
     ),
     (
         5,
         'Review Quality Assurance Findings',
         '',
         'Review & Evaluation: Review Quality Assurance Findings',
-        'general',
+        'team',
         DATE(DATE('now'), '+22 DAYS'),
         DATE(DATE('now'), '+29 DAYS'),
         '<h1>Review Quality Assurance Findings</h1>
         <p>Analyze QA results.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Prepare Technical Documentation',
         '',
         'Documentation & Reporting: Prepare Technical Documentation',
-        'general',
+        'team',
         DATE(DATE('now'), '+24 DAYS'),
         DATE(DATE('now'), '+31 DAYS'),
         '<h1>Prepare Technical Documentation</h1>
         <p>Create API and system docs.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Draft Business/Market Analysis',
         '',
         'Documentation & Reporting: Draft Business/Market Analysis',
-        'general',
+        'team',
         DATE(DATE('now'), '+25 DAYS'),
         DATE(DATE('now'), '+32 DAYS'),
         '<h1>Draft Business/Market Analysis</h1>
         <p>Analyze market context.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Submit Final Project Report',
         '',
         'Documentation & Reporting: Submit Final Project Report',
-        'general',
+        'team',
         DATE(DATE('now'), '+27 DAYS'),
         DATE(DATE('now'), '+34 DAYS'),
         '<h1>Submit Final Project Report</h1>
         <p>Deliver final project report.</p>',
+        '.pdf'
+    ),
+    (
+        5,
+        'Submit Grading/Evaluation Worksheets',
+        '',
+        'Closure & Feedback: Submit Grading/Evaluation Worksheets',
+        'coach',
+        DATE(DATE('now'), '+39 DAYS'),
+        DATE(DATE('now'), '+2 MONTH'),
+        '<h1>Submit Grading/Evaluation Worksheets</h1>
+        <p>Provide grading worksheets.</p>',
+        '.xlsx'
+    ),
+    (
+        5,
+        'Upload Final Presentation Materials',
+        '',
+        'Documentation & Reporting: Upload Final Presentation Materials',
+        'team',
+        DATE(DATE('now'), '+28 DAYS'),
+        DATE(DATE('now'), '+35 DAYS'),
+        '<h1>Upload Final Presentation Materials</h1>
+        <p>Share slides and videos.</p>',
+        '.pptx,.pdf'
+    ),
+    (
+        5,
+        'Plan Stakeholder Demo Event',
+        '',
+        'Presentation & Outreach: Plan Stakeholder Demo Event',
+        'team',
+        DATE(DATE('now'), '+29 DAYS'),
+        DATE(DATE('now'), '+36 DAYS'),
+        '<h1>Plan Stakeholder Demo Event</h1>
+        <p>Organize demo logistics.</p>',
         ''
+    ),
+    (
+        5,
+        'Record Project Overview Video',
+        '',
+        'Presentation & Outreach: Record Project Overview Video',
+        'team',
+        DATE(DATE('now'), '+30 DAYS'),
+        DATE(DATE('now'), '+37 DAYS'),
+        '<h1>Record Project Overview Video</h1>
+        <p>Capture project walkthrough.</p>',
+        '.mp4'
+    ),
+    (
+        5,
+        'Deliver Midterm Presentation',
+        '',
+        'Presentation & Outreach: Deliver Midterm Presentation',
+        'team',
+        DATE(DATE('now'), '+31 DAYS'),
+        DATE(DATE('now'), '+38 DAYS'),
+        '<h1>Deliver Midterm Presentation</h1>
+        <p>Present interim results.</p>',
+        '.pptx'
+    ),
+    (
+        5,
+        'Deliver Final Project Presentation',
+        '',
+        'Presentation & Outreach: Deliver Final Project Presentation',
+        'team',
+        DATE(DATE('now'), '+32 DAYS'),
+        DATE(DATE('now'), '+39 DAYS'),
+        '<h1>Deliver Final Project Presentation</h1>
+        <p>Showcase final成果(chinese mix!)</p>',
+        '.pptx'
+    ),
+    (
+        5,
+        'Submit for Awards/Recognition',
+        '',
+        'Presentation & Outreach: Submit for Awards/Recognition',
+        'team',
+        DATE(DATE('now'), '+33 DAYS'),
+        DATE(DATE('now'), '+40 DAYS'),
+        '<h1>Submit for Awards/Recognition</h1>
+        <p>Nominate project for awards.</p>',
+        ''
+    ),
+    (
+        5,
+        'Submit Final Peer Evaluations',
+        '',
+        'Closure & Feedback: Submit Final Peer Evaluations',
+        'peer_evaluation',
+        DATE(DATE('now'), '+34 DAYS'),
+        DATE(DATE('now'), '+41 DAYS'),
+        '<h1>Submit Final Peer Evaluations</h1>
+        <p>Collect final peer feedback.</p>',
+        '.xlsx'
+    ),
+    (
+        5,
+        'Conduct Final Retrospective Meeting',
+        '',
+        'Closure & Feedback: Conduct Final Retrospective Meeting',
+        'team',
+        DATE(DATE('now'), '+35 DAYS'),
+        DATE(DATE('now'), '+42 DAYS'),
+        '<h1>Conduct Final Retrospective Meeting</h1>
+        <p>Review project outcomes.</p>',
+        ''
+    ),
+    (
+        5,
+        'Archive Project Assets',
+        '',
+        'Closure & Feedback: Archive Project Assets',
+        'team',
+        DATE(DATE('now'), '+36 DAYS'),
+        DATE(DATE('now'), '+43 DAYS'),
+        '<h1>Archive Project Assets</h1>
+        <p>Store final assets.</p>',
+        ''
+    ),
+    (
+        5,
+        'Complete Project Satisfaction Survey',
+        '',
+        'Closure & Feedback: Complete Project Satisfaction Survey',
+        'individual',
+        DATE(DATE('now'), '+37 DAYS'),
+        DATE(DATE('now'), '+44 DAYS'),
+        '<h1>Complete Project Satisfaction Survey</h1>
+        <p>Gather satisfaction feedback.</p>',
+        ''
+    ),
+    (
+        5,
+        'Provide Sponsor Feedback Summary',
+        '',
+        'Closure & Feedback: Provide Sponsor Feedback Summary',
+        'coach',
+        DATE(DATE('now'), '+38 DAYS'),
+        DATE(DATE('now'), '+45 DAYS'),
+        '<h1>Provide Sponsor Feedback Summary</h1>
+        <p>Summarize sponsor feedback.</p>',
+        '.pdf'
     ),
     (
         5,
@@ -980,70 +1146,320 @@ VALUES
     ),
     (
         5,
+        'Social Event, Team Name, and More',
+        '',
+        'Some activities and deliverables for Week 1 as a team',
+        'team',
+        '2024-08-29',
+        '2024-09-05',
+        '<h1>Social Event, Team Name, and More</h1>
+        <p>Some activities and deliverables for Week 1 as a team.</p>',
+        ''
+    ),
+    (
+        5,
+        'Team Roles, Sponsor Meetings, Weekly 4-Up, and Other Startup Tasks',
+        '',
+        'Expectations regarding team roles, your weekly 4-Up artifact, sponsor meetings, and beginning to build your environment',
+        'team',
+        '2024-09-07',
+        '2024-09-13',
+        '<h1>Team Roles, Sponsor Meetings, Weekly 4-Up, and Other Startup Tasks</h1>
+        <p>Expectations regarding team roles, your weekly 4-Up artifact, sponsor meetings, and beginning to build your environment.</p>',
+        ''
+    ),
+    (
+        5,
+        'Coach - Contact Sponsor, Schedule Initial Meeting, and Setup Non-Disclosure Forms',
+        '',
+        'Prior to the start of the term, coaches will need to complete some kickoff activities including contacting sponsors, scheduling initial meetings, and uploading completed Non-Disclosure agreements.',
+        'coach',
+        '2024-08-29',
+        '2024-09-03',
+        '<h1>Coach - Contact Sponsor, Schedule Initial Meeting, and Setup Non-Disclosure Forms</h1>
+        <p>Prior to the start of the term, coaches will need to complete some kickoff activities including contacting sponsors, scheduling initial meetings, and uploading completed Non-Disclosure agreements.</p>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="nda">Upload Non-Disclosure Agreement</label>
+            <input name="nda" type="file" required/>
+        </form>',
+        ''
+    ),
+    (
+        5,
+        'Coach - Confirm and Approve Project Kick-Off Artifacts',
+        '',
+        'The coach needs to confirm and approve the team''s Project Synopsis, Time Tracking, Project Website, and Agendas/4-Ups.',
+        'coach',
+        '2024-09-16',
+        '2024-09-21',
+        '<h1>Coach - Confirm and Approve Project Kick-Off Artifacts</h1>
+        <p>The coach needs to confirm and approve the team''s Project Synopsis, Time Tracking, Project Website, and Agendas/4-Ups.</p>
+        <form class="ui form" action="/db/submitAction" method="POST">
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="website" required/>
+                    <label>The team''s published website meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="synopsis" required/>
+                    <label>The team''s synopsis meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="time_tracking" required/>
+                    <label>The team''s time tracking meets my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="required field">
+                <div class="ui checkbox">
+                    <input type="checkbox" name="agendas" required/>
+                    <label>The team''s weekly agendas and 4-Ups have met my approval per the details laid out in the project action.</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Comments and Notes</label>
+                <textarea name="comments" rows="3" required></textarea>
+            </div>
+        </form>',
+        ''
+    ),
+    (
+        5,
+        'Approve Project Charter',
+        '',
+        'Initiation & Planning: Approve Project Charter',
+        'coach',
+        DATE(DATE('now'), '+8 DAYS'),
+        DATE(DATE('now'), '+15 DAYS'),
+        '<h1>Approve Project Charter</h1>
+        <p>Obtain formal approval for project charter.</p>',
+        '.pdf'
+    ),
+    (
+        5,
+        'Finalize Toolchain & Workflow',
+        '',
+        'Execution & Development: Finalize Toolchain & Workflow',
+        'team',
+        DATE(DATE('now'), '+9 DAYS'),
+        DATE(DATE('now'), '+16 DAYS'),
+        '<h1>Finalize Toolchain & Workflow</h1>
+        <p>Lock in tools and processes.</p>',
+        ''
+    ),
+    (
+        5,
+        'Draft Functional Requirements',
+        '',
+        'Execution & Development: Draft Functional Requirements',
+        'team',
+        DATE(DATE('now'), '+10 DAYS'),
+        DATE(DATE('now'), '+17 DAYS'),
+        '<h1>Draft Functional Requirements</h1>
+        <p>Document key functionalities.</p>',
+        '.docx,.pdf'
+    ),
+    (
+        5,
+        'Create System Architecture Plan',
+        '',
+        'Execution & Development: Create System Architecture Plan',
+        'team',
+        DATE(DATE('now'), '+11 DAYS'),
+        DATE(DATE('now'), '+18 DAYS'),
+        '<h1>Create System Architecture Plan</h1>
+        <p>Outline system components.</p>',
+        '.pdf'
+    ),
+    (
+        5,
+        'Develop Methodology Guidelines',
+        '',
+        'Execution & Development: Develop Methodology Guidelines',
+        'team',
+        DATE(DATE('now'), '+12 DAYS'),
+        DATE(DATE('now'), '+19 DAYS'),
+        '<h1>Develop Methodology Guidelines</h1>
+        <p>Define development standards.</p>',
+        '.docx,.pdf'
+    ),
+    (
+        5,
+        'Establish Key Performance Metrics',
+        '',
+        'Execution & Development: Establish Key Performance Metrics',
+        'team',
+        DATE(DATE('now'), '+13 DAYS'),
+        DATE(DATE('now'), '+20 DAYS'),
+        '<h1>Establish Key Performance Metrics</h1>
+        <p>Agree on success metrics.</p>',
+        '.csv,.xlsx'
+    ),
+    (
+        5,
+        'Build Domain/Data Models',
+        '',
+        'Execution & Development: Build Domain/Data Models',
+        'team',
+        DATE(DATE('now'), '+14 DAYS'),
+        DATE(DATE('now'), '+21 DAYS'),
+        '<h1>Build Domain/Data Models</h1>
+        <p>Design data schemas.</p>',
+        '.sql,.json'
+    ),
+    (
+        5,
+        'Implement Initial Features/Modules',
+        '',
+        'Execution & Development: Implement Initial Features/Modules',
+        'team',
+        DATE(DATE('now'), '+15 DAYS'),
+        DATE(DATE('now'), '+22 DAYS'),
+        '<h1>Implement Initial Features/Modules</h1>
+        <p>Start development sprint.</p>',
+        ''
+    ),
+    (
+        5,
+        'Conduct Weekly Progress Check-ins',
+        '',
+        'Execution & Development: Conduct Weekly Progress Check-ins',
+        'coach',
+        DATE(DATE('now'), '+16 DAYS'),
+        DATE(DATE('now'), '+23 DAYS'),
+        '<h1>Conduct Weekly Progress Check-ins</h1>
+        <p>Review weekly status.</p>',
+        ''
+    ),
+    (
+        5,
+        'Submit Interim Progress Report',
+        '',
+        'Review & Evaluation: Submit Interim Progress Report',
+        'team',
+        DATE(DATE('now'), '+17 DAYS'),
+        DATE(DATE('now'), '+24 DAYS'),
+        '<h1>Submit Interim Progress Report</h1>
+        <p>Provide interim status update.</p>',
+        '.pdf'
+    ),
+    (
+        5,
+        'Schedule Midpoint Retrospective',
+        '',
+        'Review & Evaluation: Schedule Midpoint Retrospective',
+        'coach',
+        DATE(DATE('now'), '+18 DAYS'),
+        DATE(DATE('now'), '+25 DAYS'),
+        '<h1>Schedule Midpoint Retrospective</h1>
+        <p>Plan mid-project review.</p>',
+        ''
+    ),
+    (
+        5,
+        'Conduct Sponsor Feedback Session',
+        '',
+        'Review & Evaluation: Conduct Sponsor Feedback Session',
+        'coach',
+        DATE(DATE('now'), '+20 DAYS'),
+        DATE(DATE('now'), '+27 DAYS'),
+        '<h1>Conduct Sponsor Feedback Session</h1>
+        <p>Gather sponsor input.</p>',
+        ''
+    ),
+    (
+        5,
+        'Compile Lessons Learned Document',
+        '',
+        'Review & Evaluation: Compile Lessons Learned Document',
+        'team',
+        DATE(DATE('now'), '+21 DAYS'),
+        DATE(DATE('now'), '+28 DAYS'),
+        '<h1>Compile Lessons Learned Document</h1>
+        <p>Document key learnings.</p>',
+        '.docx,.pdf'
+    ),
+    (
+        5,
+        'Review Quality Assurance Findings',
+        '',
+        'Review & Evaluation: Review Quality Assurance Findings',
+        'team',
+        DATE(DATE('now'), '+22 DAYS'),
+        DATE(DATE('now'), '+29 DAYS'),
+        '<h1>Review Quality Assurance Findings</h1>
+        <p>Analyze QA results.</p>',
+        '.pdf'
+    ),
+    (
+        5,
         'Prepare Technical Documentation',
         '',
         'Documentation & Reporting: Prepare Technical Documentation',
-        'general',
+        'team',
         DATE(DATE('now'), '+24 DAYS'),
         DATE(DATE('now'), '+31 DAYS'),
         '<h1>Prepare Technical Documentation</h1>
         <p>Create API and system docs.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Draft Business/Market Analysis',
         '',
         'Documentation & Reporting: Draft Business/Market Analysis',
-        'general',
+        'team',
         DATE(DATE('now'), '+25 DAYS'),
         DATE(DATE('now'), '+32 DAYS'),
         '<h1>Draft Business/Market Analysis</h1>
         <p>Analyze market context.</p>',
-        ''
-    ),
-    (
-        5,
-        'Create Project Poster/One-Pager',
-        '',
-        'Documentation & Reporting: Create Project Poster/One-Pager',
-        'general',
-        DATE(DATE('now'), '+26 DAYS'),
-        DATE(DATE('now'), '+33 DAYS'),
-        '<h1>Create Project Poster/One-Pager</h1>
-        <p>Design project summary poster.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,
         'Submit Final Project Report',
         '',
         'Documentation & Reporting: Submit Final Project Report',
-        'general',
+        'team',
         DATE(DATE('now'), '+27 DAYS'),
         DATE(DATE('now'), '+34 DAYS'),
         '<h1>Submit Final Project Report</h1>
         <p>Deliver final project report.</p>',
-        ''
+        '.pdf'
+    ),
+    (
+        5,
+        'Submit Grading/Evaluation Worksheets',
+        '',
+        'Closure & Feedback: Submit Grading/Evaluation Worksheets',
+        'coach',
+        DATE(DATE('now'), '+39 DAYS'),
+        DATE(DATE('now'), '+2 MONTH'),
+        '<h1>Submit Grading/Evaluation Worksheets</h1>
+        <p>Provide grading worksheets.</p>',
+        '.xlsx'
     ),
     (
         5,
         'Upload Final Presentation Materials',
         '',
         'Documentation & Reporting: Upload Final Presentation Materials',
-        'general',
+        'team',
         DATE(DATE('now'), '+28 DAYS'),
         DATE(DATE('now'), '+35 DAYS'),
         '<h1>Upload Final Presentation Materials</h1>
         <p>Share slides and videos.</p>',
-        ''
+        '.pptx,.pdf'
     ),
     (
         5,
         'Plan Stakeholder Demo Event',
         '',
         'Presentation & Outreach: Plan Stakeholder Demo Event',
-        'general',
+        'team',
         DATE(DATE('now'), '+29 DAYS'),
         DATE(DATE('now'), '+36 DAYS'),
         '<h1>Plan Stakeholder Demo Event</h1>
@@ -1055,43 +1471,43 @@ VALUES
         'Record Project Overview Video',
         '',
         'Presentation & Outreach: Record Project Overview Video',
-        'general',
+        'team',
         DATE(DATE('now'), '+30 DAYS'),
         DATE(DATE('now'), '+37 DAYS'),
         '<h1>Record Project Overview Video</h1>
         <p>Capture project walkthrough.</p>',
-        ''
+        '.mp4'
     ),
     (
         5,
         'Deliver Midterm Presentation',
         '',
         'Presentation & Outreach: Deliver Midterm Presentation',
-        'general',
+        'team',
         DATE(DATE('now'), '+31 DAYS'),
         DATE(DATE('now'), '+38 DAYS'),
         '<h1>Deliver Midterm Presentation</h1>
         <p>Present interim results.</p>',
-        ''
+        '.pptx'
     ),
     (
         5,
         'Deliver Final Project Presentation',
         '',
         'Presentation & Outreach: Deliver Final Project Presentation',
-        'general',
+        'team',
         DATE(DATE('now'), '+32 DAYS'),
         DATE(DATE('now'), '+39 DAYS'),
         '<h1>Deliver Final Project Presentation</h1>
         <p>Showcase final成果(chinese mix!)</p>',
-        ''
+        '.pptx'
     ),
     (
         5,
         'Submit for Awards/Recognition',
         '',
         'Presentation & Outreach: Submit for Awards/Recognition',
-        'general',
+        'team',
         DATE(DATE('now'), '+33 DAYS'),
         DATE(DATE('now'), '+40 DAYS'),
         '<h1>Submit for Awards/Recognition</h1>
@@ -1103,19 +1519,19 @@ VALUES
         'Submit Final Peer Evaluations',
         '',
         'Closure & Feedback: Submit Final Peer Evaluations',
-        'general',
+        'peer_evaluation',
         DATE(DATE('now'), '+34 DAYS'),
         DATE(DATE('now'), '+41 DAYS'),
         '<h1>Submit Final Peer Evaluations</h1>
         <p>Collect final peer feedback.</p>',
-        ''
+        '.xlsx'
     ),
     (
         5,
         'Conduct Final Retrospective Meeting',
         '',
         'Closure & Feedback: Conduct Final Retrospective Meeting',
-        'general',
+        'team',
         DATE(DATE('now'), '+35 DAYS'),
         DATE(DATE('now'), '+42 DAYS'),
         '<h1>Conduct Final Retrospective Meeting</h1>
@@ -1127,7 +1543,7 @@ VALUES
         'Archive Project Assets',
         '',
         'Closure & Feedback: Archive Project Assets',
-        'general',
+        'team',
         DATE(DATE('now'), '+36 DAYS'),
         DATE(DATE('now'), '+43 DAYS'),
         '<h1>Archive Project Assets</h1>
@@ -1139,7 +1555,7 @@ VALUES
         'Complete Project Satisfaction Survey',
         '',
         'Closure & Feedback: Complete Project Satisfaction Survey',
-        'general',
+        'individual',
         DATE(DATE('now'), '+37 DAYS'),
         DATE(DATE('now'), '+44 DAYS'),
         '<h1>Complete Project Satisfaction Survey</h1>
@@ -1151,12 +1567,12 @@ VALUES
         'Provide Sponsor Feedback Summary',
         '',
         'Closure & Feedback: Provide Sponsor Feedback Summary',
-        'general',
+        'coach',
         DATE(DATE('now'), '+38 DAYS'),
         DATE(DATE('now'), '+45 DAYS'),
         '<h1>Provide Sponsor Feedback Summary</h1>
         <p>Summarize sponsor feedback.</p>',
-        ''
+        '.pdf'
     ),
     (
         5,

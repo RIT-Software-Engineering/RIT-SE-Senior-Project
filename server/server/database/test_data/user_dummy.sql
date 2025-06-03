@@ -18,6 +18,8 @@ VALUES
     ('coachB', 'SomeCoach', 'BBB', 'coachB@rit.edu', 'coach', NULL, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('cds123', 'Cameron', 'Smith', 'cds123@rit.edu', 'coach', NULL, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('mlg123', 'Marianna', 'Gardner', 'mlg123@rit.edu', 'coach', NULL, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
+    ('BigBoss', 'Big', 'Boss', 'bigboss@rit.edu', 'coach', NULL, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
+    ('coachD', 'SomeCoach', 'DDD', 'coachD@rit.edu', 'coach', NULL, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('mjh123', 'Moss', 'Hooper', 'mjh123@rit.edu', 'student', 1, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('jlp123', 'Jimmy', 'Post', 'jlp123@rit.edu', 'student', 1, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('jkg123', 'Jacob', 'Garnett', 'jkg123@rit.edu', 'student', 1, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
@@ -34,6 +36,8 @@ VALUES
     ('tww123', 'Tori', 'Waterman', 'tww123@rit.edu', 'student', 5, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('bmt123', 'Beth', 'Thorn', 'bmt123@rit.edu', 'student', 5, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
     ('vcl123', 'Vicki', 'Leigh', 'vcl123@rit.edu', 'student', 6, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
-    ('kjs123', 'Kelly', 'Simon', 'kjs123@rit.edu', 'student', 7, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}')
+    ('kjs123', 'Kelly', 'Simon', 'kjs123@rit.edu', 'student', 7, NULL, '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
+    ('js1234', 'Jahn', 'Smitherson', 'js1234@rit.edu', 'student', 5, '2021-5-14_RUM5kpFxW_doOsiApkdri', '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}'),
+    ('jd1234', 'Jane', 'Doe', 'jd1234@rit.edu', 'student', 5, '2021-5-14_RUM5kpFxW_doOsiApkdri', '', 'FALSE', '{"additional_info":"", "dark_mode":false, "gantt_view":true}')
 ;
 
