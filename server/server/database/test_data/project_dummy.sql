@@ -41,6 +41,13 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
     ),
 
     (
+        '2021-5-14_RUM5kpFxW_doOsiApkdri', 'in progress', 'Cool Project name', 'Lenel S2', 'Damian', 'xxx1234@lenel.com', '333 333 3333', NULL, 
+        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
+        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'Drop Table Admin',
+        6, NULL, NULL, NULL, NULL, 5
+    ),
+
+    (
         '2021-10-4_da80mGtCgojqWElAItowB','submitted', 'Project title 1', 'Project Company1', 'project manager 1', 'person@project1.com', '123 456 7890', NULL,
         'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
