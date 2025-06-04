@@ -3,78 +3,21 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
     sponsor_provided_resources, project_search_keywords, sponsor_deliverables, proprietary_info, sponsor_avail_checked,
     sponsor_alternate_time, project_agreements_checked, assignment_of_rights, team_name,
     sponsor, poster, video, website, synopsis, semester)
-    VALUES
+VALUES
+    ('1', 'in progress', 'GrowEasy: Sustainable Business Blitz', 'EcoCorp', 'Jane Doe', 'jane.doe@ecocorp.com', '555-0101', 'proposal.pdf',
+     'EcoCorp focuses on sustainability', 'Develop a green marketing strategy', 'Create campaign for eco-products', 'Market saturation', 'Budget under $10k',
+     'Marketing materials', 'sustainability, marketing, eco-friendly', 'Campaign plan, report', 'None', 1, '2025-06-05 10:00:00', 1, 'standard', 'Green Innovators',
+     1, 'poster1.jpg', 'video1.mp4', 'greenwave.com', 'Eco-friendly campaign plan', 1),
 
-    (
-        '2021-5-14_COsK8qGZxdMOfGLmzPHGK','submitted', 'Once upon a project', 'Storytime', 'Narratorman', 'narratorman@storytime.com', '333 333 3333', NULL, 
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL
-    ),
+    ('2', 'submitted', 'TechTitan: Innovate to Celebrate', 'TechTrend Inc.', 'John Smith', 'john.smith@techtrend.com', '555-0102', 'techplan.pdf',
+     'TechTrend leads in tech solutions', 'Build an app for customer engagement', 'App prototype development', 'Tight timeline', 'Team size limited to 5',
+     'Development tools', 'app development, tech, engagement', 'App prototype, user guide', 'Confidential API data', 1, '2025-06-06 14:00:00', 1, 'shared', 'Tech Titans',
+     2, 'poster2.jpg', 'video2.mp4', 'techtrend.app', 'Customer engagement app', 2),
 
-    (
-        '2021-5-14_4kQZZwNzM3v0eoteo64Vb','in progress', 'I need revision', 'REvision inc', 'Revisor', 'revisor@ revision.com', '454 454 4545', NULL, 
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', 'Alternate time stuff', 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, 2
-    ),
-    
-    (
-        '2021-5-14_da90mGtCgojqWElAItowB', 'in progress', 'In Progress Project', 'Progress LLC', 'Progressor', 'progressor@progress.com', '555 555 5454', NULL, 
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'The Null Pointers',
-        1, NULL, NULL, NULL, NULL, 3
-    ),
-
-    (
-        '2021-5-14_RUM5kpFxW_doOsiZpkdri', 'in progress', 'Lenel onGuard Datawarehouse', 'Lenel S2', 'Damian', 'xxx1234@lenel.com', '333 333 3333', NULL, 
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'Drop Table Admin',
-        6, NULL, NULL, NULL, NULL, 4
-    ),
-
-    (
-        '2021-5-14__GGA7ysLaY3WsZ-3Fffa6','completed', 'Completed project', 'Completion Solutions', 'Completer person', 'completer@completion.com', '565 565 5656', NULL,
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        2, NULL, NULL, NULL, NULL, 4
-    ),
-
-    (
-        '2021-5-14_RUM5kpFxW_doOsiApkdri', 'in progress', 'Cool Project name', 'Lenel S2', 'Damian', 'xxx1234@lenel.com', '333 333 3333', NULL, 
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', 'Drop Table Admin',
-        6, NULL, NULL, NULL, NULL, 5
-    ),
-
-    (
-        '2021-10-4_da80mGtCgojqWElAItowB','submitted', 'Project title 1', 'Project Company1', 'project manager 1', 'person@project1.com', '123 456 7890', NULL,
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL
-    ),
-
-    (
-        '2021-10-4_da70mGtCgojqWElAItowB','submitted', 'Project title 2', 'Project Company2', 'project manager 2', 'person@project2.com', '123 456 7891', NULL,
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL
-    ),
-
-    (
-        '2021-10-4_da60mGtCgojqWElAItowB','submitted', 'Project title 3', 'Project Company3', 'project manager 3', 'person@project3.com', '123 456 7892', NULL,
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL
-    ),
-
-    (
-        '2021-10-4_da50mGtCgojqWElAItowB','submitted', 'Project title 4', 'Project Company4', 'project manager 4', 'person@project4.com', '123 456 7893', NULL,
-        'Some background info', 'A projct description', 'A narrow scope', 'Some challenges', 'some constraints', NULL,
-        'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL
-    )
-
+    ('3', 'candidate', 'CareCraze: Wellness Wonders', 'HealthNow', 'Mary Johnson', 'mary.johnson@healthnow.org', '555-0103', 'healthprop.pdf',
+     'HealthNow promotes wellness', 'Design a wellness program', 'Program for employee health', 'Scalability issues', 'Must be low-cost',
+     'Training materials', 'wellness, health, program', 'Program outline, metrics', 'None', 0, '2025-06-07 09:00:00', 0, 'none', 'Health Heroes',
+     3, 'poster3.jpg', 'video3.mp4', 'healthboost.org', 'Employee wellness program', 3)
 
 --     (
 --         'projectid','submitted', 'title', 'organization', 'primary-contact', 'contact-email', 'contact-phone', NULL,
@@ -82,6 +25,4 @@ INSERT INTO projects (project_id, status, title, organization, primary_contact, 
 --         'key, word, stuff', 'a list of deliverables', 'proprietary info here', 'on', NULL, 'on', 'full-rights', NULL,
 --         NULL, NULL, NULL, NULL, NULL, NULL
 --     ),
-
-
 ;
