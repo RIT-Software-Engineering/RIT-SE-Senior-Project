@@ -2,16 +2,19 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.2"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
     "*.{js,css,md}": "prettier --write"
   },
   "scripts": {
-    "prepare": "husky && husky install"
+    "prepare": "husky && husky install",
+    "ui": "cd ui && npm start",
+    "server": "cd server && npm start"
   },
   "dependencies": {
+    "ajv": "^8.17.1",
     "html-to-text": "^9.0.5"
   }
 }
