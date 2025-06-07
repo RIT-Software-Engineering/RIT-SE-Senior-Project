@@ -1,37 +1,27 @@
 INSERT INTO archive (name, title, team_name, members, sponsor, coach, poster_thumb, synopsis, inactive, featured)
 VALUES 
-    ('Name 1', 'Business Action Tracking', 'BAT Team', 'Shayde Nofziger, Chris Jones, Alex Parrill, Corban Mailloux, Adam McCarthy', 'Lockheed Martin - Enterprise Business Services', 'Sam Malachowsky', 'BAT-Thumb.jpg',
-    'Developed for Lockheed Martin, the Business Action Tracking system is a highly-integrated, user-friendly task management tool to be used across teams in a corporate setting. The system can be 
-    used to create, update, and monitor actions to their completion. Actions can be hierarchical, associated with a project, and/or interdepartmental. An action is assigned to an actor and contains basic fields, including name, description, due date, and status. 
-    Additional notes or custom fields can be included.Seamless integration with existing workflows and tools (e.g. Outlook, iPhone, and possibly others) is a core part of the tool. Users can enter and update actions without leaving their existing workflows. The tool will add value without impeding on existing business processes. 
-    Because of this, the system is designed to be intuitively usable with little instruction or training.
-    To encourage adoption and use, users may manage and update tasks with the tool from a number of devices, including laptops, desktops, and iPhones. All supported devices must have access to useful functionality, and 
-    feature intuitive interfaces to ensure that users can easily manage tasks.The system also includes a management interface, allowing administrators to view overall statistics and concerns in a dashboard view. This is especially useful when estimating time to 
-    completion for similar tasks, seeing where teams are falling behind, and for managing risks. To encourage user engagement, the system will reward users for completing actions.', '', 1
+
+    ('GrowEasy Analytics', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doe', 'dummy/groweasy_thumb.png',
+    'GrowEasy Analytics is a project aimed at developing an analytics platform for small businesses. The platform will focus on providing a user-friendly dashboard that allows
+    businesses to analyze their market expansion strategies effectively. The project will address challenges such as data integration issues and the need for a limited budget and tight timeline.
+    The team will work on creating a prototype of the dashboard, which will include features for market analysis and reporting. The platform will also ensure compliance with data privacy regulations
+    and will be designed to handle confidential client data. The project will involve collaboration with GrowEasy Inc. to ensure that the final product meets their needs and expectations.',
+    '', 1
     ),
 
-    ('Name 2', 'RaceChipper 2.0', 'The Chipper Racers', 'Caitlin Li, Colton Dennis, Matthew Crawford, Sam Shiffman', 'Trillium Health', 'Bruce Herring', 'ChipperRacers-Thumb.jpg',
-    'RaceChipper is a web and mobile project sponsored by Trillium Health that aims to provide a way to track race participants, while offering viewers and racers a platform 
-    to enjoy the race through social media. This is done through an inexpensive Bluetooth device given to each race participant that acts as a tracking beacon, which is tracked
-    by event admins equipped with iOS devices along the route.This project is an existing project that continues off the work of a previous senior SE team, so many of the 
-    baseline features have already been implemented. Existing features include participant check in/out logs, location estimation, a chat room for staff, and a comprehensive 
-    overview showing participant location and status. While the application does these basic things, polishing up existing functionality will be a high priority.
-
-    Additional work on this project will focus on fixing bugs, adding missing features, enhancing the UI, supporting both iPhone and iPad as well as different user types,
-    moving current web features to the mobile app, adding social media functionality, and monetization through ads. To ensure we’re creating an application that will satisfy 
-    Trillium Health’s needs, we will have weekly meetings with our liaison, AJ Blythe, to discuss their needs and possible solutions.', '', 0
+    ('SmartSpark Marketing', 'SmartSpark Marketing', 'SparkGenix', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png',
+    'SmartSpark Marketing is an AI-driven marketing campaign tool designed to automate targeted ad campaigns for small businesses. The project will focus on developing a platform that utilizes AI
+    to analyze social media trends and optimize ad placements. The team will work on training AI models to ensure accurate predictions and effective campaign management. Challenges include resource
+    constraints and the need for a robust AI model. The final deliverables will include a campaign tool prototype and a case study demonstrating its effectiveness. The project will also involve
+    collaboration with SparkVibe Agency to ensure that the platform meets industry standards and client expectations.',
+    '', 1
     ),
 
-    ('Name 3', 'Wegmans Organic Farm', 'Team Woof', 'Luke Harrold, Colton Venditto, Courtney McGorrill, Derick Yung', 'Wegmans Food Markets', 'Kenn Martinez', 'WOOF-Thumb.jpg',
-    'Wegmans Organic Farm and Orchard in Canandaigua is a functioning and productive farm where best practices and methods in modern farming are put to the test. Day to day 
-    activities on the farm are managed largely through excel spreadsheets and paper-trails. The team will create farm management software. The goal is to streamline data-entry 
-    and create an easily accessible history of previously completed plantings and harvests. With existing historical data and mathematical formulas, the software will be able 
-    to provide users with yield projections for various plots of land and crops. The software will capture data from the entire lifecycle of crop-plantings on the farm. 
-    Data points of interest at this time include, crop, date of planting, plot location, number of beds, materials used during growth (i.e. a spray or treatment), yield 
-    amount, harvest date, quality, final case count, and sales and distributions. This data will be sortable, searchable, and potentially visualized in for optimized 
-    readability. Additional features may include seed and material calculations when planning a new crop-planting, the ability to record notes and documentation about
-    planting practices, a task list generated by current planting plans and labor standards, tracking labor hours on the farm, and any others the sponsor may think of. 
-    Key non-functional requirements for this project include data management and traceability, accessibility due to varying levels of literacy with technology among users, 
-    and a streamlined user experience to provide maximum efficiency when using the software.', '', 1
+    ('TechTitan Solutions', 'TechTitan Solutions', 'TitanCoders', 'Mario Jumpman, Neon Glow, Solid Snake, Teto Kasane', 'Tech Titan Corp.', 'David Lee', 'dummy/techtitan_thumb.png',
+    'TechTitan Solutions is focused on creating a scalable CRM system for tech startups. The project aims to develop a customizable platform that can adapt to the needs of small and medium-sized enterprises (SMEs).
+    The team will address challenges related to scalability and user adoption, ensuring that the CRM system is cloud-based and easy to use. Key deliverables will include a prototype of the CRM system
+    and a user guide to help businesses implement the solution effectively. The project will involve close collaboration with TechTitan Corp. to ensure that the final product aligns with their business goals and
+    technical requirements.',
+    '', 1
     )
 ;
