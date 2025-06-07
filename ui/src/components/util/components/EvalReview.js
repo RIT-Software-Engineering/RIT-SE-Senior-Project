@@ -23,7 +23,9 @@ export default function EvalReview(props) {
 
   useEffect(() => {
     let sortedFeedback = [];
-
+    if (!coachFeedback || !coachFeedback.Students) {
+      return;
+    }
     sortedFeedback.push(
       Object.fromEntries(
         Object.entries(coachFeedback.Students).filter(

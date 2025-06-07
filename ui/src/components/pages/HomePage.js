@@ -11,7 +11,7 @@ const PROJECTS_PER_PAGE = 5;
 function HomePage() {
   const history = useHistory();
   const [projects, setProjects] = useState([]);
-  const [html, setHtml] = useState("");
+  const [homeHtml, setHomeHtml] = useState("");
 
   /*
    * When the page initially loads, fetches random featured archives.
@@ -38,14 +38,20 @@ function HomePage() {
     SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-        setHtml(htmlData[0]?.html);
+        setHomeHtml(htmlData[0]?.html);
       });
   }, []);
 
   return (
     <>
       <div className="content">
-        <InnerHTML html={html} />
+        {homeHtml && (
+          <InnerHTML
+            html={homeHtml}
+            className="ui segment"
+            style={{ marginBottom: "20px" }}
+          />
+        )}
       </div>
       <div className="ui hidden divider"></div>
       <div className="ui divider"></div>
