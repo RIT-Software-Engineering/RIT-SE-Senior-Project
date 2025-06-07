@@ -1,0 +1,34 @@
+{
+  "name": "RITSESP Container",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node",
+
+  "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    },
+    // for later, if we want to containerize the entire stack
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+
+  "postCreateCommand": "./install.ps1 -CleanInstall", // using -CleanInstall fixes the "string spec" issue...
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "42Crunch.vscode-openapi"
+      ]
+    }
+  },
+
+  "forwardPorts": [3001, 3000]
+}
