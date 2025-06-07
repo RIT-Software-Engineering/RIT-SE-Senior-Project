@@ -33,3 +33,5 @@ if (-not $SkipUI) {
 } else {
     Write-Host "⚠️ Skipping UI package installation."
 }
+
+Set-Location "$PSScriptRoot"
