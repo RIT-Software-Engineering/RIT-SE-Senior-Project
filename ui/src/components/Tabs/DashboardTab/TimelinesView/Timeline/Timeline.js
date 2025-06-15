@@ -9,17 +9,18 @@ import TimelineCheckboxes from "./TimelineCheckboxes";
 import { Dropdown } from "semantic-ui-react";
 import { Calendar } from "../../../../util/components/Calendar";
 import { element } from "prop-types";
-import { useSessionStorage } from "../../../../util/functions/utils";
 
 export default function Timeline(props) {
   const [actions, setActions] = useState([]);
   const userContext = useContext(UserContext);
-
   const storedMilestoneView = sessionStorage.getItem(
     props.elementData?.project_id + " milestone",
   );
   const storedGanttView = sessionStorage.getItem(
     props.elementData?.project_id + " gantt",
+  );
+  const storedCalendarView = sessionStorage.getItem(
+    props.elementData?.project_id + " calendar",
   );
   const [milestoneVisible, setMilestoneVisible] = useState(
     storedMilestoneView ? storedMilestoneView === "true" : true,
@@ -31,7 +32,9 @@ export default function Timeline(props) {
         ? false
         : true,
   );
-  const [displayPreference] = useSessionStorage("displayPreference", "gantt");
+  const [calendarVisible, setCalendarVisible] = useState(
+    storedCalendarView ? storedCalendarView === "true" : false,
+  );
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(
@@ -53,7 +56,6 @@ export default function Timeline(props) {
       <div className="project-header">
         <h2>{props.elementData?.display_name || props.elementData?.title}</h2>
       </div>
-
       {userContext.user?.role !== USERTYPES.ADMIN && (
         <>
           <h3>Relevant Actions</h3>
@@ -73,14 +75,16 @@ export default function Timeline(props) {
         </>
       )}
       <div className="checkbox-container">
-        <h3>All Actions</h3>
+        <h3>All Actions</h3>{" "}
         <TimelineCheckboxes
           projectId={props.elementData.project_id}
           role={userContext.user?.role}
           setMilestoneVisible={setMilestoneVisible}
           setGanttVisible={setGanttVisible}
+          setCalendarVisible={setCalendarVisible}
           milestoneVisible={milestoneVisible}
           ganttVisible={ganttVisible}
+          calendarVisible={calendarVisible}
         />
       </div>
       <div
@@ -101,54 +105,57 @@ export default function Timeline(props) {
             loadTimelineActions(props.elementData?.project_id);
           }}
         />
-      </div>
+      </div>{" "}
       <div
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
       >
-        <label htmlFor="time-line-view">
-          <h3>{displayPreference ? "Calendar" : "Gantt Chart"}</h3>
-        </label>
+        <h3>Gantt Chart</h3>
         <div className="timeline-action-block">
-          {displayPreference ? (
-            <Calendar
-              projectName={
-                props.elementData.display_name || props.elementData.title
+          <GanttChart
+            projectName={
+              props.elementData.display_name || props.elementData.title
+            }
+            projectId={props.elementData.project_id}
+            semesterName={props.elementData.semester_name}
+            projectStart={props.elementData.start_date}
+            projectEnd={props.elementData.end_date}
+            actions={actions.map((action) => {
+              if (action.action_target === "break_period") {
+                return { ...action, state: "purple" };
               }
-              projectId={props.elementData.project_id}
-              semesterName={props.elementData.semester_name}
-              reloadTimelineActions={() => {
-                loadTimelineActions(props.elementData?.project_id);
-              }}
-              actions={actions.map((action) => {
-                if (action.action_target === "break_period") {
-                  return { ...action, state: "purple" };
-                }
-                return action;
-              })}
-              initialDate={new Date()}
-            />
-          ) : (
-            <GanttChart
-              projectName={
-                props.elementData.display_name || props.elementData.title
+              return action;
+            })}
+            isOpen={ganttVisible}
+            reloadTimelineActions={() => {
+              loadTimelineActions(props.elementData?.project_id);
+            }}
+          />
+        </div>
+      </div>
+      <div
+        className="timeline-action-block"
+        style={{ display: calendarVisible ? "block" : "none" }}
+      >
+        <h3>Calendar</h3>
+        <div className="timeline-action-block">
+          <Calendar
+            projectName={
+              props.elementData.display_name || props.elementData.title
+            }
+            projectId={props.elementData.project_id}
+            semesterName={props.elementData.semester_name}
+            reloadTimelineActions={() => {
+              loadTimelineActions(props.elementData?.project_id);
+            }}
+            actions={actions.map((action) => {
+              if (action.action_target === "break_period") {
+                return { ...action, state: "purple" };
               }
-              projectId={props.elementData.project_id}
-              semesterName={props.elementData.semester_name}
-              projectStart={props.elementData.start_date}
-              projectEnd={props.elementData.end_date}
-              actions={actions.map((action) => {
-                if (action.action_target === "break_period") {
-                  return { ...action, state: "purple" };
-                }
-                return action;
-              })}
-              isOpen={ganttVisible}
-              reloadTimelineActions={() => {
-                loadTimelineActions(props.elementData?.project_id);
-              }}
-            />
-          )}
+              return action;
+            })}
+            initialDate={new Date()}
+          />
         </div>
       </div>
     </div>

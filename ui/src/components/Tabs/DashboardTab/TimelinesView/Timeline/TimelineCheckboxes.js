@@ -11,6 +11,11 @@ export default function TimelineCheckboxes(props) {
     sessionStorage.setItem(props.projectId + " gantt", data.checked);
   };
 
+  const calendarChange = (e, data) => {
+    props.setCalendarVisible(data.checked);
+    sessionStorage.setItem(props.projectId + " calendar", data.checked);
+  };
+
   return (
     <div>
       <Checkbox
@@ -26,6 +31,13 @@ export default function TimelineCheckboxes(props) {
         label="Gantt"
         defaultChecked={props.ganttVisible}
         onChange={ganttChange}
+      />
+      <Checkbox
+        toggle
+        className="timeline-checkbox"
+        label="Calendar"
+        defaultChecked={props.calendarVisible}
+        onChange={calendarChange}
       />
     </div>
   );
