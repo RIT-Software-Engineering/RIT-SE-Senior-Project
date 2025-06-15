@@ -22,18 +22,34 @@ export default function Timeline(props) {
   const storedCalendarView = sessionStorage.getItem(
     props.elementData?.project_id + " calendar",
   );
+
+  // Get default preferences from profile settings
+  const defaultMilestoneView = sessionStorage.getItem("defaultMilestoneView");
+  const defaultGanttView = sessionStorage.getItem("defaultGanttView");
+  const defaultCalendarView = sessionStorage.getItem("defaultCalendarView");
+
   const [milestoneVisible, setMilestoneVisible] = useState(
-    storedMilestoneView ? storedMilestoneView === "true" : true,
+    storedMilestoneView
+      ? storedMilestoneView === "true"
+      : defaultMilestoneView
+        ? defaultMilestoneView === "true"
+        : true,
   );
   const [ganttVisible, setGanttVisible] = useState(
     storedGanttView
       ? storedGanttView === "true"
-      : userContext.user?.role === USERTYPES.ADMIN
-        ? false
-        : true,
+      : defaultGanttView
+        ? defaultGanttView === "true"
+        : userContext.user?.role === USERTYPES.ADMIN
+          ? false
+          : true,
   );
   const [calendarVisible, setCalendarVisible] = useState(
-    storedCalendarView ? storedCalendarView === "true" : false,
+    storedCalendarView
+      ? storedCalendarView === "true"
+      : defaultCalendarView
+        ? defaultCalendarView === "true"
+        : false,
   );
 
   const loadTimelineActions = (project_id) => {

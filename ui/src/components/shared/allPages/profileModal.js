@@ -6,13 +6,20 @@ import { useSessionStorage } from "../../util/functions/utils";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
-  const [preference, setPreference] = useSessionStorage(
-    "displayPreference",
-    "gantt",
+  const [milestonePreference, setMilestonePreference] = useSessionStorage(
+    "defaultMilestoneView",
+    true,
+  );
+  const [ganttPreference, setGanttPreference] = useSessionStorage(
+    "defaultGanttView",
+    true,
+  );
+  const [calendarPreference, setCalendarPreference] = useSessionStorage(
+    "defaultCalendarView",
+    false,
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     if (open && user?.user) {
       SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${user.user}`)
@@ -23,14 +30,24 @@ const ProfileModal = ({ open, onClose, user }) => {
         })
         .catch((err) => console.error("Failed to fetch dark mode:", err));
 
-      SecureFetch(config.url.API_GET_GANTT_VIEW + `?system_id=${user.user}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const gantt = ["1", 1, true, "true"].includes(data.gantt_view);
-          setPreference(gantt);
-          sessionStorage.setItem("ganttView", gantt);
-        })
-        .catch((err) => console.error("Failed to fetch gantt view:", err));
+      // Load default preferences from sessionStorage (these will be used as defaults for new projects)
+      const storedMilestoneDefault = sessionStorage.getItem(
+        "defaultMilestoneView",
+      );
+      const storedGanttDefault = sessionStorage.getItem("defaultGanttView");
+      const storedCalendarDefault = sessionStorage.getItem(
+        "defaultCalendarView",
+      );
+
+      if (storedMilestoneDefault !== null) {
+        setMilestonePreference(storedMilestoneDefault === "true");
+      }
+      if (storedGanttDefault !== null) {
+        setGanttPreference(storedGanttDefault === "true");
+      }
+      if (storedCalendarDefault !== null) {
+        setCalendarPreference(storedCalendarDefault === "true");
+      }
 
       SecureFetch(
         config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
@@ -62,27 +79,22 @@ const ProfileModal = ({ open, onClose, user }) => {
       console.error("Error updating dark mode:", err);
     }
   };
+  const toggleMilestonePreference = () => {
+    const newPreference = !milestonePreference;
+    setMilestonePreference(newPreference);
+    sessionStorage.setItem("defaultMilestoneView", newPreference);
+  };
 
-  const toggleGanttView = async () => {
-    const newPreference = !preference;
+  const toggleGanttPreference = () => {
+    const newPreference = !ganttPreference;
+    setGanttPreference(newPreference);
+    sessionStorage.setItem("defaultGanttView", newPreference);
+  };
 
-    try {
-      const res = await SecureFetch(config.url.API_POST_SET_GANTT_VIEW, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system_id: user.user,
-          gantt_view: newPreference,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Failed to update gantt view preference");
-
-      setPreference(newPreference);
-      sessionStorage.setItem("ganttView", newPreference);
-    } catch (err) {
-      console.error("Error updating gantt view:", err);
-    }
+  const toggleCalendarPreference = () => {
+    const newPreference = !calendarPreference;
+    setCalendarPreference(newPreference);
+    sessionStorage.setItem("defaultCalendarView", newPreference);
   };
 
   const handleSaveAdditionalInfo = async () => {
@@ -192,7 +204,6 @@ const ProfileModal = ({ open, onClose, user }) => {
         {/* --- Preferences Section --- */}
         <div style={{ borderTop: "1px solid #ccc", paddingTop: "1em" }}>
           <h4 style={{ marginBottom: "1em" }}>Preferences:</h4>
-
           <div style={{ marginBottom: "1em" }}>
             <p>
               <strong>Dark Mode:</strong>
@@ -200,14 +211,41 @@ const ProfileModal = ({ open, onClose, user }) => {
             <Button toggle active={darkMode} onClick={toggleDarkMode}>
               {darkMode ? "Dark Mode On" : "Dark Mode Off"}
             </Button>
+          </div>{" "}
+          <div style={{ marginBottom: "1em" }}>
+            <p>
+              <strong>Default Milestones View:</strong>
+            </p>
+            <Button
+              toggle
+              active={milestonePreference}
+              onClick={toggleMilestonePreference}
+            >
+              {milestonePreference ? "Show by Default" : "Hide by Default"}
+            </Button>
           </div>
-
+          <div style={{ marginBottom: "1em" }}>
+            <p>
+              <strong>Default Gantt View:</strong>
+            </p>
+            <Button
+              toggle
+              active={ganttPreference}
+              onClick={toggleGanttPreference}
+            >
+              {ganttPreference ? "Show by Default" : "Hide by Default"}
+            </Button>
+          </div>
           <div>
             <p>
-              <strong>Gantt or Calendar View:</strong>
+              <strong>Default Calendar View:</strong>
             </p>
-            <Button toggle active={preference} onClick={toggleGanttView}>
-              {preference ? "Viewing Calendar" : "Viewing Gantt"}
+            <Button
+              toggle
+              active={calendarPreference}
+              onClick={toggleCalendarPreference}
+            >
+              {calendarPreference ? "Show by Default" : "Hide by Default"}
             </Button>
           </div>
         </div>
