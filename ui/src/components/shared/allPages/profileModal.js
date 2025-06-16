@@ -28,26 +28,39 @@ const ProfileModal = ({ open, onClose, user }) => {
           const isDark = ["1", 1, true, "true"].includes(data.dark_mode);
           setDarkMode(isDark);
         })
-        .catch((err) => console.error("Failed to fetch dark mode:", err));
+        .catch((err) => console.error("Failed to fetch dark mode:", err)); // Load user-specific view preferences from the backend
+      SecureFetch(config.url.API_GET_GANTT_VIEW + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const ganttPref = data.gantt_view === true;
+          setGanttPreference(ganttPref);
+          sessionStorage.setItem("defaultGanttView", ganttPref.toString());
+        })
+        .catch((err) => console.error("Failed to fetch gantt view:", err));
 
-      // Load default preferences from sessionStorage (these will be used as defaults for new projects)
-      const storedMilestoneDefault = sessionStorage.getItem(
-        "defaultMilestoneView",
-      );
-      const storedGanttDefault = sessionStorage.getItem("defaultGanttView");
-      const storedCalendarDefault = sessionStorage.getItem(
-        "defaultCalendarView",
-      );
+      SecureFetch(config.url.API_GET_CALENDAR_VIEW + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const calendarPref = data.calendar_view === true;
+          setCalendarPreference(calendarPref);
+          sessionStorage.setItem(
+            "defaultCalendarView",
+            calendarPref.toString(),
+          );
+        })
+        .catch((err) => console.error("Failed to fetch calendar view:", err));
 
-      if (storedMilestoneDefault !== null) {
-        setMilestonePreference(storedMilestoneDefault === "true");
-      }
-      if (storedGanttDefault !== null) {
-        setGanttPreference(storedGanttDefault === "true");
-      }
-      if (storedCalendarDefault !== null) {
-        setCalendarPreference(storedCalendarDefault === "true");
-      }
+      SecureFetch(config.url.API_GET_MILESTONE_VIEW + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const milestonePref = data.milestone_view === true;
+          setMilestonePreference(milestonePref);
+          sessionStorage.setItem(
+            "defaultMilestoneView",
+            milestonePref.toString(),
+          );
+        })
+        .catch((err) => console.error("Failed to fetch milestone view:", err));
 
       SecureFetch(
         config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
@@ -79,22 +92,68 @@ const ProfileModal = ({ open, onClose, user }) => {
       console.error("Error updating dark mode:", err);
     }
   };
-  const toggleMilestonePreference = () => {
+  const toggleMilestonePreference = async () => {
     const newPreference = !milestonePreference;
-    setMilestonePreference(newPreference);
-    sessionStorage.setItem("defaultMilestoneView", newPreference);
+
+    try {
+      const res = await SecureFetch(config.url.API_POST_SET_MILESTONE_VIEW, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_id: user.user,
+          milestone_view: newPreference,
+        }),
+      });
+
+      if (!res.ok)
+        throw new Error("Failed to update milestone view preference");
+      setMilestonePreference(newPreference);
+      sessionStorage.setItem("defaultMilestoneView", newPreference.toString());
+    } catch (err) {
+      console.error("Error updating milestone view:", err);
+    }
   };
 
-  const toggleGanttPreference = () => {
+  const toggleGanttPreference = async () => {
     const newPreference = !ganttPreference;
-    setGanttPreference(newPreference);
-    sessionStorage.setItem("defaultGanttView", newPreference);
+
+    try {
+      const res = await SecureFetch(config.url.API_POST_SET_GANTT_VIEW, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_id: user.user,
+          gantt_view: newPreference,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update gantt view preference");
+      setGanttPreference(newPreference);
+      sessionStorage.setItem("defaultGanttView", newPreference.toString());
+    } catch (err) {
+      console.error("Error updating gantt view:", err);
+    }
   };
 
-  const toggleCalendarPreference = () => {
+  const toggleCalendarPreference = async () => {
     const newPreference = !calendarPreference;
-    setCalendarPreference(newPreference);
-    sessionStorage.setItem("defaultCalendarView", newPreference);
+
+    try {
+      const res = await SecureFetch(config.url.API_POST_SET_CALENDAR_VIEW, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_id: user.user,
+          calendar_view: newPreference,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update calendar view preference");
+      setCalendarPreference(newPreference);
+      sessionStorage.setItem("defaultCalendarView", newPreference.toString());
+    } catch (err) {
+      console.error("Error updating calendar view:", err);
+    }
   };
 
   const handleSaveAdditionalInfo = async () => {

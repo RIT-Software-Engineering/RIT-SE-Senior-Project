@@ -28,29 +28,89 @@ export default function Timeline(props) {
   const defaultGanttView = sessionStorage.getItem("defaultGanttView");
   const defaultCalendarView = sessionStorage.getItem("defaultCalendarView");
 
+  // Initialize with project-specific preferences if available, otherwise use default fallbacks temporarily
   const [milestoneVisible, setMilestoneVisible] = useState(
     storedMilestoneView
       ? storedMilestoneView === "true"
-      : defaultMilestoneView
+      : defaultMilestoneView !== null
         ? defaultMilestoneView === "true"
-        : true,
+        : true, // temporary fallback until user prefs load
   );
   const [ganttVisible, setGanttVisible] = useState(
     storedGanttView
       ? storedGanttView === "true"
-      : defaultGanttView
+      : defaultGanttView !== null
         ? defaultGanttView === "true"
         : userContext.user?.role === USERTYPES.ADMIN
           ? false
-          : true,
+          : true, // temporary fallback until user prefs load
   );
   const [calendarVisible, setCalendarVisible] = useState(
     storedCalendarView
       ? storedCalendarView === "true"
-      : defaultCalendarView
+      : defaultCalendarView !== null
         ? defaultCalendarView === "true"
-        : false,
+        : false, // temporary fallback until user prefs load
   );
+  // Load user-specific preferences when user changes
+  useEffect(() => {
+    if (userContext.user?.user) {
+      // Clear any existing project-specific preferences when user changes
+      if (props.elementData?.project_id) {
+        sessionStorage.removeItem(props.elementData.project_id + " milestone");
+        sessionStorage.removeItem(props.elementData.project_id + " gantt");
+        sessionStorage.removeItem(props.elementData.project_id + " calendar");
+      }
+
+      // Load user preferences from backend and update defaults in sessionStorage
+      SecureFetch(
+        config.url.API_GET_GANTT_VIEW + `?system_id=${userContext.user.user}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const ganttPref = data.gantt_view === true;
+          sessionStorage.setItem("defaultGanttView", ganttPref.toString());
+
+          // Always apply user's default preference when switching users
+          setGanttVisible(ganttPref);
+        })
+        .catch((err) => console.error("Failed to fetch gantt view:", err));
+
+      SecureFetch(
+        config.url.API_GET_CALENDAR_VIEW +
+          `?system_id=${userContext.user.user}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const calendarPref = data.calendar_view === true;
+          sessionStorage.setItem(
+            "defaultCalendarView",
+            calendarPref.toString(),
+          );
+
+          // Always apply user's default preference when switching users
+          setCalendarVisible(calendarPref);
+        })
+        .catch((err) => console.error("Failed to fetch calendar view:", err));
+
+      SecureFetch(
+        config.url.API_GET_MILESTONE_VIEW +
+          `?system_id=${userContext.user.user}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const milestonePref = data.milestone_view === true;
+          sessionStorage.setItem(
+            "defaultMilestoneView",
+            milestonePref.toString(),
+          );
+
+          // Always apply user's default preference when switching users
+          setMilestoneVisible(milestonePref);
+        })
+        .catch((err) => console.error("Failed to fetch milestone view:", err));
+    }
+  }, [userContext.user?.user, props.elementData?.project_id]);
 
   const loadTimelineActions = (project_id) => {
     SecureFetch(

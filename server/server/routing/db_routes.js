@@ -4186,13 +4186,13 @@ module.exports = (db) => {
       try {
         await db.query(updateQuery, [gantt_view, system_id]);
         console.log(
-          "Dark mode preference updated successfully",
+          "Gantt view preference updated successfully",
           gantt_view,
           system_id,
         );
         res
           .status(200)
-          .send({ message: "Dark mode preference updated successfully" });
+          .send({ message: "Gantt view preference updated successfully" });
       } catch (err) {
         const error = new Error("Database update failed");
         error.statusCode = 500;
@@ -4224,9 +4224,154 @@ module.exports = (db) => {
         }
 
         const ganttViewRaw = result[0].gantt_view;
-        const gantt_view = Boolean(ganttViewRaw);
+        // Handle both boolean and string values from JSON
+        const gantt_view =
+          ganttViewRaw === true ||
+          ganttViewRaw === "true" ||
+          ganttViewRaw === 1 ||
+          ganttViewRaw === "1";
 
         res.status(200).send({ gantt_view });
+      } catch (err) {
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  // Calendar View preferences
+  db_router.post(
+    "/setCalendarView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, calendar_view } = req.body;
+
+      const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(profile_info, '$.calendar_view', ?)
+        WHERE system_id = ?
+    `;
+
+      try {
+        await db.query(updateQuery, [calendar_view, system_id]);
+        console.log(
+          "Calendar view preference updated successfully",
+          calendar_view,
+          system_id,
+        );
+        res
+          .status(200)
+          .send({ message: "Calendar view preference updated successfully" });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.get(
+    "/getCalendarView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id } = req.query;
+
+      const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.calendar_view') AS calendar_view
+      FROM users
+      WHERE system_id = ?
+    `;
+
+      try {
+        const result = await db.query(query, [system_id]);
+
+        if (result.length === 0) {
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+        const calendarViewRaw = result[0].calendar_view;
+        // Handle both boolean and string values from JSON
+        const calendar_view =
+          calendarViewRaw === true ||
+          calendarViewRaw === "true" ||
+          calendarViewRaw === 1 ||
+          calendarViewRaw === "1";
+
+        res.status(200).send({ calendar_view });
+      } catch (err) {
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  // Milestone View preferences
+  db_router.post(
+    "/setMilestoneView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, milestone_view } = req.body;
+
+      const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(profile_info, '$.milestone_view', ?)
+        WHERE system_id = ?
+    `;
+
+      try {
+        await db.query(updateQuery, [milestone_view, system_id]);
+        console.log(
+          "Milestone view preference updated successfully",
+          milestone_view,
+          system_id,
+        );
+        res
+          .status(200)
+          .send({ message: "Milestone view preference updated successfully" });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.get(
+    "/getMilestoneView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id } = req.query;
+
+      const query = `
+      SELECT JSON_EXTRACT(profile_info, '$.milestone_view') AS milestone_view
+      FROM users
+      WHERE system_id = ?
+    `;
+
+      try {
+        const result = await db.query(query, [system_id]);
+
+        if (result.length === 0) {
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+        const milestoneViewRaw = result[0].milestone_view;
+        // Handle both boolean and string values from JSON
+        const milestone_view =
+          milestoneViewRaw === true ||
+          milestoneViewRaw === "true" ||
+          milestoneViewRaw === 1 ||
+          milestoneViewRaw === "1";
+
+        res.status(200).send({ milestone_view });
       } catch (err) {
         const error = new Error("Database query failed");
         error.statusCode = 500;
