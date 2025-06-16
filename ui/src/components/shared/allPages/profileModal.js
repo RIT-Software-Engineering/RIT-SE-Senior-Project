@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "semantic-ui-react";
+import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
@@ -263,49 +263,63 @@ const ProfileModal = ({ open, onClose, user }) => {
         {/* --- Preferences Section --- */}
         <div style={{ borderTop: "1px solid #ccc", paddingTop: "1em" }}>
           <h4 style={{ marginBottom: "1em" }}>Preferences:</h4>
-          <div style={{ marginBottom: "1em" }}>
-            <p>
-              <strong>Dark Mode:</strong>
-            </p>
-            <Button toggle active={darkMode} onClick={toggleDarkMode}>
-              {darkMode ? "Dark Mode On" : "Dark Mode Off"}
-            </Button>
-          </div>{" "}
-          <div style={{ marginBottom: "1em" }}>
-            <p>
-              <strong>Default Milestones View:</strong>
-            </p>
-            <Button
-              toggle
-              active={milestonePreference}
-              onClick={toggleMilestonePreference}
-            >
-              {milestonePreference ? "Show by Default" : "Hide by Default"}
-            </Button>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Dark Mode:
+            </strong>
+            <Checkbox toggle checked={darkMode} onChange={toggleDarkMode} />
           </div>
-          <div style={{ marginBottom: "1em" }}>
-            <p>
-              <strong>Default Gantt View:</strong>
-            </p>
-            <Button
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Milestones View:
+            </strong>
+            <Checkbox
               toggle
-              active={ganttPreference}
-              onClick={toggleGanttPreference}
-            >
-              {ganttPreference ? "Show by Default" : "Hide by Default"}
-            </Button>
+              checked={milestonePreference}
+              onChange={toggleMilestonePreference}
+            />
           </div>
-          <div>
-            <p>
-              <strong>Default Calendar View:</strong>
-            </p>
-            <Button
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Gantt View:
+            </strong>
+            <Checkbox
               toggle
-              active={calendarPreference}
-              onClick={toggleCalendarPreference}
-            >
-              {calendarPreference ? "Show by Default" : "Hide by Default"}
-            </Button>
+              checked={ganttPreference}
+              onChange={toggleGanttPreference}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Calendar View:
+            </strong>
+            <Checkbox
+              toggle
+              checked={calendarPreference}
+              onChange={toggleCalendarPreference}
+            />
           </div>
         </div>
       </Modal.Content>
