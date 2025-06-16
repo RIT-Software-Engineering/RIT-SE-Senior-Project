@@ -198,3 +198,39 @@ body.dark-mode .ui.positive.message {
     0 0 0 1px #3c6142 inset,
     0 0 0 0 transparent;
 }
+
+/* Toggle switch styles for better visibility and consistency */
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ label:before {
+  border: 1px solid var(--border-light) !important;
+}
+
+.ui.toggle.checkbox .box:before,
+.ui.toggle.checkbox label:before {
+  border: 1px solid var(--border-light) !important;
+}
+
+/* Dark mode specific toggle switch styles */
+body.dark-mode .ui.toggle.checkbox input:checked ~ .box:before,
+body.dark-mode .ui.toggle.checkbox input:checked ~ label:before {
+  background-color: var(--action-bar-proposal-blue) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox .box:before,
+body.dark-mode .ui.toggle.checkbox label:before {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox input:checked ~ .box:after,
+body.dark-mode .ui.toggle.checkbox input:checked ~ label:after {
+  border: 1px solid var(--border-light) !important;
+  background-color: var(--text-primary) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox .box:after,
+body.dark-mode .ui.toggle.checkbox label:after {
+  border: 1px solid var(--border-light) !important;
+  background-color: var(--text-primary) !important;
+}
