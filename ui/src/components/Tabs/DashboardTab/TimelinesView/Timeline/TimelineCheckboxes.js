@@ -22,21 +22,21 @@ export default function TimelineCheckboxes(props) {
         toggle
         className="timeline-checkbox"
         label="Milestones"
-        defaultChecked={props.milestoneVisible}
+        checked={props.milestoneVisible}
         onChange={milestonesChange}
       />
       <Checkbox
         toggle
         className="timeline-checkbox"
         label="Gantt"
-        defaultChecked={props.ganttVisible}
+        checked={props.ganttVisible}
         onChange={ganttChange}
       />
       <Checkbox
         toggle
         className="timeline-checkbox"
         label="Calendar"
-        defaultChecked={props.calendarVisible}
+        checked={props.calendarVisible}
         onChange={calendarChange}
       />
     </div>
