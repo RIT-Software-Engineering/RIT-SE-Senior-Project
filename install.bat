@@ -6,4 +6,4 @@ call npm install
 cd server
 call npm install
 cd ../ui
-call npm install
+call npm install --legacy-peer-deps

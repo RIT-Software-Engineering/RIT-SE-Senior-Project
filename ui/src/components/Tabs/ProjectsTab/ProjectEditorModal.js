@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import {
@@ -49,6 +49,7 @@ export default function ProjectEditorModal(props) {
     contact_email: props.project.contact_email || "",
     contact_phone: props.project.contact_phone || "",
     attachments: formattedAttachments(props.project) || [],
+
     background_info:
       decode(props.project.background_info).replace(/\r\n|\r/g, "\n") || "",
     project_description:
@@ -65,6 +66,7 @@ export default function ProjectEditorModal(props) {
         /\r\n|\r/g,
         "\n",
       ) || "",
+
     project_search_keywords:
       decode(props.project.project_search_keywords) || "",
     sponsor_deliverables:
@@ -73,6 +75,7 @@ export default function ProjectEditorModal(props) {
     proprietary_info:
       decode(props.project.proprietary_info).replace(/\r\n|\r/g, "\n") || "",
     sponsor_avail_checked: props.project.sponsor_avail_checked || "",
+
     sponsor_alternate_time: props.project.sponsor_alternate_time || "",
     project_agreements_checked: props.project.project_agreements_checked || "",
     assignment_of_rights: props.project.assignment_of_rights || "",
@@ -80,14 +83,19 @@ export default function ProjectEditorModal(props) {
     poster: decode(props.project.poster) || "",
     video: decode(props.project.video) || "",
     website: props.project.website || "",
+
     synopsis: decode(props.project.synopsis).replace(/\r\n|\r/g, "\n") || "",
-    sponsor: decode(props.project.sponsor) || "",
+    sponsor: props.project.sponsor || "",
     semester: props.project.semester || "",
     date: props.project.date || "",
     status: props.project.status || "",
   });
 
   useEffect(() => {
+    if (!props.project) {
+      return;
+    }
+
     SecureFetch(
       `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`,
     )
@@ -141,7 +149,7 @@ export default function ProjectEditorModal(props) {
         noSponsMembers.sponsor = sponsor;
         setProjectMembers(noSponsMembers);
       });
-  }, [props.project, props.viewOnly]);
+  }, [projectMembers, props.project, props.viewOnly]);
 
   let submissionModalMessages = {
     SUCCESS: "The project has been updated.",

@@ -7,6 +7,9 @@ const BarGraph = ({ data }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
+    if (!data || !data.Students) {
+      return;
+    }
     const sortedFeedback = Object.entries(data.Students).map(
       ([student, feedback]) => [student, feedback.AverageRatings],
     );
