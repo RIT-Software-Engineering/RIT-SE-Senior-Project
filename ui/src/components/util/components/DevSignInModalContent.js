@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { config } from "../functions/constants";
+import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
 import { Button, Container } from "semantic-ui-react";
+import _ from "lodash";
 
 /**
  * NOTE: THIS SHOULD ONLY BE USED FOR DEVELOPMENT PURPOSES ONLY
@@ -10,6 +11,9 @@ import { Button, Container } from "semantic-ui-react";
 export default function DevSignInModalContent() {
   const history = useHistory();
   const [users, setUsers] = useState([]);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [coachUsers, setCoachUsers] = useState([]);
+  const [studentUsers, setStudentUsers] = useState([]);
   const selectedUserIdx = useRef(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,6 +23,24 @@ export default function DevSignInModalContent() {
         .then((response) => response.json())
         .then((users) => {
           setUsers(users);
+
+          // Group users by type and sort alphabetically within each group
+          const admins = _.sortBy(
+            users.filter((user) => user.type === USERTYPES.ADMIN),
+            ["fname", "lname"],
+          );
+          const coaches = _.sortBy(
+            users.filter((user) => user.type === USERTYPES.COACH),
+            ["fname", "lname"],
+          );
+          const students = _.sortBy(
+            users.filter((user) => user.type === USERTYPES.STUDENT),
+            ["fname", "lname"],
+          );
+
+          setAdminUsers(admins);
+          setCoachUsers(coaches);
+          setStudentUsers(students);
         });
     }
   }, []);
@@ -27,12 +49,36 @@ export default function DevSignInModalContent() {
     <Container textAlign="center">
       <h3>Sign in as</h3>
       <select className="ui dropdown labeled" ref={selectedUserIdx}>
-        {users.map((user, idx) => (
-          <option
-            value={idx}
-            key={idx}
-          >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
-        ))}
+        {adminUsers.length > 0 && (
+          <optgroup label="Admins">
+            {adminUsers.map((user, idx) => (
+              <option
+                value={users.findIndex((u) => u.system_id === user.system_id)}
+                key={`admin-${user.system_id}`}
+              >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
+            ))}
+          </optgroup>
+        )}
+        {coachUsers.length > 0 && (
+          <optgroup label="Coaches">
+            {coachUsers.map((user, idx) => (
+              <option
+                value={users.findIndex((u) => u.system_id === user.system_id)}
+                key={`coach-${user.system_id}`}
+              >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
+            ))}
+          </optgroup>
+        )}
+        {studentUsers.length > 0 && (
+          <optgroup label="Students">
+            {studentUsers.map((user, idx) => (
+              <option
+                value={users.findIndex((u) => u.system_id === user.system_id)}
+                key={`student-${user.system_id}`}
+              >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
+            ))}
+          </optgroup>
+        )}
       </select>
       <br />
       <Button
