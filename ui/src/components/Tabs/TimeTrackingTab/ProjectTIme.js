@@ -44,7 +44,7 @@ export default function ProjectTime(props) {
         end: new Date(props.semester.end_date),
       }),
     );
-  }, [userContext]);
+  }, [userContext, props.timeLogs, props.timeStats]);
 
   const resetKey = () => {
     props.reset();
