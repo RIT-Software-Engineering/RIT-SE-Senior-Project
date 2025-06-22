@@ -111,34 +111,42 @@ export default function TimeTableEditor(props) {
         setError1([...error1, "You must enter a valid Time in minutes."]);
       }
       invalid = true;
-    }
-
+    } // Validate hours range (0-10)
     if (
-      dataToSubmit["time_amount_hours"] < 1 ||
+      dataToSubmit["time_amount_hours"] < 0 ||
       dataToSubmit["time_amount_hours"] > 10
     ) {
-      if (
-        !error1.includes("You need to enter a Time ranging from 1-10 hours.")
-      ) {
-        setError1([
-          ...error1,
-          "You need to enter a Time ranging from 1-10 hours.",
-        ]);
+      if (!error1.includes("You need to enter hours ranging from 0-10.")) {
+        setError1([...error1, "You need to enter hours ranging from 0-10."]);
       }
       invalid = true;
     }
 
+    // Validate minutes range (0-59)
     if (
       dataToSubmit["time_amount_mins"] < 0 ||
       dataToSubmit["time_amount_mins"] > 59
     ) {
-      if (
-        !error1.includes("You need to enter a Time ranging from 0-59 minutes.")
-      ) {
-        setError1([
-          ...error1,
-          "You need to enter a Time ranging from 0-59 minutes.",
-        ]);
+      if (!error1.includes("You need to enter minutes ranging from 0-59.")) {
+        setError1([...error1, "You need to enter minutes ranging from 0-59."]);
+      }
+      invalid = true;
+    }
+
+    // Validate total time is at least 1 minute and at most 10 hours
+    const totalMinutes =
+      dataToSubmit["time_amount_hours"] * 60 + dataToSubmit["time_amount_mins"];
+    if (totalMinutes < 1) {
+      if (!error1.includes("You need to enter at least 1 minute of time.")) {
+        setError1([...error1, "You need to enter at least 1 minute of time."]);
+      }
+      invalid = true;
+    }
+
+    if (totalMinutes > 600) {
+      // 10 hours = 600 minutes
+      if (!error1.includes("You cannot enter more than 10 hours of time.")) {
+        setError1([...error1, "You cannot enter more than 10 hours of time."]);
       }
       invalid = true;
     }
