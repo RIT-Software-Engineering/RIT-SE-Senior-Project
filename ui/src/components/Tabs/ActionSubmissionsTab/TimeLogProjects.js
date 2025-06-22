@@ -73,7 +73,7 @@ export default function TimeLogProjects(props) {
                               <TableRow>
                                 <TableHeaderCell>Name</TableHeaderCell>
                                 <TableHeaderCell>Date</TableHeaderCell>
-                                <TableHeaderCell>Time (hrs)</TableHeaderCell>
+                                <TableHeaderCell>Time (hours)</TableHeaderCell>
                                 <TableHeaderCell>Comment</TableHeaderCell>
                                 <TableHeaderCell>
                                   Submission Date
@@ -219,9 +219,11 @@ export default function TimeLogProjects(props) {
                             <TableRow>
                               <TableHeaderCell>Name</TableHeaderCell>
                               <TableHeaderCell>{pastWeek}</TableHeaderCell>
-                              <TableHeaderCell>{currentWeek}</TableHeaderCell>
-                              <TableHeaderCell>Average (hrs)</TableHeaderCell>
-                              <TableHeaderCell>Total (hrs)</TableHeaderCell>
+                              <TableHeaderCell>
+                                {currentWeek}
+                              </TableHeaderCell>{" "}
+                              <TableHeaderCell>Average Hours</TableHeaderCell>
+                              <TableHeaderCell>Total Hours</TableHeaderCell>
                             </TableRow>
                           </TableHeader>
                           <TableBody>

@@ -67,7 +67,7 @@ export default function ProjectTime(props) {
                         {/*Headers for the table */}
                         <TableHeaderCell>Name</TableHeaderCell>
                         <TableHeaderCell>Date of Work</TableHeaderCell>
-                        <TableHeaderCell>Time(hrs)</TableHeaderCell>
+                        <TableHeaderCell>Time (hours)</TableHeaderCell>
                         <TableHeaderCell>Comment</TableHeaderCell>
                         <TableHeaderCell>Submission Date</TableHeaderCell>
                         <TableHeaderCell>View</TableHeaderCell>
@@ -159,8 +159,8 @@ export default function ProjectTime(props) {
                       <TableRow>
                         {/*Headers for the table */}
                         <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Average(hrs)</TableHeaderCell>
-                        <TableHeaderCell>Total(hrs)</TableHeaderCell>
+                        <TableHeaderCell>Average Hours</TableHeaderCell>
+                        <TableHeaderCell>Total Hours</TableHeaderCell>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
