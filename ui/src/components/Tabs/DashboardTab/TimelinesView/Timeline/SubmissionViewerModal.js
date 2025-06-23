@@ -16,7 +16,6 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
 
 export default function SubmissionViewerModal(props) {
-  const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState({});
   const [files, setFiles] = useState([]);
   const [noSubmission, setNoSubmission] = useState(true);
@@ -89,17 +88,14 @@ export default function SubmissionViewerModal(props) {
 
   return (
     <Modal
+      open={props.open}
+      onClose={props.onClose}
       closeOnDimmerClick={false}
+      closeOnEscape={false}
       className={"sticky"}
-      onClose={() => {
-        setOpen(false);
-        props?.isOpenCallback(false);
-      }}
       onOpen={() => {
-        setOpen(true);
         props?.isOpenCallback(true);
       }}
-      open={open}
       trigger={
         <div onClick={loadSubmission}>
           {props.trigger || (

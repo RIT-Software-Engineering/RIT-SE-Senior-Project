@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Button } from "semantic-ui-react";
 import {
   formatDateTime,
   formatDate,
@@ -45,6 +45,7 @@ export default function ActionLogs(props) {
   // const [projects, setProjectsData] = useState([]);
   const [myProjects, setMyProjectsData] = useState([]);
   const [activeSemesters, setActiveSemesters] = useState({});
+  const [openSubmissionIdx, setOpenSubmissionIdx] = useState(null);
 
   const unassignedStudentsStr = "Unassigned students";
 
@@ -408,15 +409,26 @@ export default function ActionLogs(props) {
                     {formatDateTime(action.submission_datetime)}
                   </TableCell>
                   <TableCell>
-                    {
+                    <>
+                      <Button
+                        icon="eye"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenSubmissionIdx(idx);
+                        }}
+                        size="small"
+                        content="View"
+                      />
                       <SubmissionViewerModal
                         projectName={action.display_name || action.title}
                         semesterName={onlySemesters[action.semester]?.name}
                         action={action}
                         target={action?.action_target}
+                        open={openSubmissionIdx === idx}
+                        onClose={() => setOpenSubmissionIdx(null)}
                         isOpenCallback={() => {}}
                       />
-                    }
+                    </>
                   </TableCell>
                 </TableRow>
               );
