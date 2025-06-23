@@ -1,6 +1,5 @@
 import React from "react";
 import { config } from "../../util/functions/constants";
-import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import TimeTableEditor from "./TimeTableEditor";
 
 export default function TimeLogPanel(props) {
