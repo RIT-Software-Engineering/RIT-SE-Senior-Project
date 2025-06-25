@@ -96,15 +96,7 @@ export default function SubmissionViewerModal(props) {
       onOpen={() => {
         props?.isOpenCallback(true);
       }}
-      trigger={
-        <div onClick={loadSubmission}>
-          {props.trigger || (
-            <Button icon>
-              <Icon name="eye" />
-            </Button>
-          )}
-        </div>
-      }
+      trigger={<div onClick={loadSubmission}>{props.trigger}</div>}
       header={`Submission for ${
         props.action.action_title
       } (${props.target[0]?.toUpperCase()}${props.target?.substring(

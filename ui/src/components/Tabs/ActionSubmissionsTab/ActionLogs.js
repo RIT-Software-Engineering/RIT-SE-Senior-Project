@@ -411,13 +411,12 @@ export default function ActionLogs(props) {
                   <TableCell>
                     <>
                       <Button
-                        icon="eye"
+                        icon="eye" // new
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenSubmissionIdx(idx);
                         }}
                         size="small"
-                        content="View"
                       />
                       <SubmissionViewerModal
                         projectName={action.display_name || action.title}
