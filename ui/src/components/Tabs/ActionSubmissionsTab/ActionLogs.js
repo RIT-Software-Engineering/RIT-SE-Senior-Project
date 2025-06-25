@@ -22,7 +22,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
 import TimeLogProjects from "./TimeLogProjects";
 
-const LOGS_PER_PAGE = 50;
+const LOGS_PER_PAGE = 10;
 const TIME_LOGS_PER_PAGE = 5;
 
 export default function ActionLogs(props) {
