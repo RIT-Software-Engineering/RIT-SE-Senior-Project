@@ -1,60 +1,29 @@
-import React, { act, useContext, useEffect, useRef, useState } from "react";
-import {
-  Accordion,
-  Icon,
-  Pagination,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-} from "semantic-ui-react";
-import { formatDate, formatDateTime } from "../../util/functions/utils";
+import { useContext, useEffect, useState } from "react";
+import { Accordion } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
-import TimeLogPanel from "./TimeLogPanel";
-import IndividualTimeModal from "./IndividualTimeModal";
-import WeeklyHoursViewer from "./WeeklyHourViewer";
-import moment from "moment-timezone";
 import { isSemesterActive } from "../../util/functions/utils";
-
 import ProjectTime from "./ProjectTIme";
 
 const LOGS_PER_PAGE = 50;
 
 export default function TimeLog(props) {
-  const newData = {};
-  const time = 0;
   const semesterMap = {};
   props.semesterData.forEach(
     (semester) => (semesterMap[semester.semester_id] = semester),
   );
-  const [actionLogs, setActionLogs] = useState([]);
-  const [actionLogCount, setActionLogCount] = useState(LOGS_PER_PAGE);
   const [timeLogs, setTimeLogs] = useState([]);
-  const [timeLogCount, setTimeLogCount] = useState(LOGS_PER_PAGE);
   const [timeStats, setTimeStats] = useState([]);
   const userContext = useContext(UserContext);
-  const prevLogin = new Date(userContext.user.prev_login);
   const [projects, setProjects] = useState([]);
-  const [currProj, setCurrProject] = useState({});
-  const [currSem, setCurrSem] = useState({});
-  const [avgTime, setAvgTime] = useState({});
-  const [isOpen, setOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [postsPerPage, setPostsPerPage] = useState(7);
-  const [totalEntries, setTotalEntries] = useState(0);
-  const [weeks, setWeeks] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [key, setKey] = useState(Math.random());
   const [activeSemesters, setActiveSemesters] = useState({});
+  const [students] = useState([]);
+  const { eachWeekOfInterval } = require("date-fns");
 
-  const [students, setStudentsData] = useState([]);
-  const { eachWeekOfInterval, set } = require("date-fns");
   useEffect(() => {
-    setActionLogs([]);
     SecureFetch(config.url.API_GET_MY_PROJECTS)
       .then((response) => response.json())
       .then((project) => {
@@ -67,24 +36,12 @@ export default function TimeLog(props) {
             }
           }
           const tracker2 = [];
-          const tracker3 = [];
           for (let x of props.semesterData) {
             if (tracker.includes(x.semester_id)) {
               tracker2.push(x);
-              tracker3.push(
-                setWeeks(
-                  eachWeekOfInterval({
-                    start: new Date(
-                      props.semesterData[x.semester_id].start_date,
-                    ),
-                    end: new Date(props.semesterData[x.semester_id].end_date),
-                  }),
-                ),
-              );
             }
           }
           setSemesters(tracker2);
-          setWeeks(tracker3);
           //Get projects
           setProjects(project);
         }
@@ -92,7 +49,7 @@ export default function TimeLog(props) {
       .catch((error) => {
         alert("Failed to get proposal data " + error);
       });
-  }, [userContext]);
+  }, [userContext, eachWeekOfInterval, props.semesterData]);
 
   const resetKey = () => {
     setKey(Math.random());
@@ -104,7 +61,6 @@ export default function TimeLog(props) {
       .then((response) => response.json())
       .then((time_logs) => {
         setTimeLogs(time_logs.timeLogs);
-        setTimeLogCount(time_logs.timeLogCount);
         var userNames = [];
         for (var i = 0; i < time_logs.timeLogs.length; i++) {
           let timeLog = time_logs.timeLogs[i];
