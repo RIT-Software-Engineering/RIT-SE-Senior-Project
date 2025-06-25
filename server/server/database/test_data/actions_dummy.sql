@@ -1,247 +1,539 @@
-INSERT INTO actions (semester, action_title, date_deleted, short_desc, action_target, start_date, due_date, page_html, file_types)
+INSERT INTO
+    actions (
+        semester,
+        action_title,
+        date_deleted,
+        short_desc,
+        action_target,
+        start_date,
+        due_date,
+        page_html,
+        file_types
+    )
 VALUES
-    -- Semester 1: 2023-08-27 to 2024-05-08
-    (1, 'Submit Project Proposal', '', 'Submit initial project proposal', 'team', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-09-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-09-15'), 
-     '<h1>Project Proposal</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="proposal">Proposal</label><input name="proposal" type="file"/></form>', 
-     '.pdf'),
-    (1, 'Individual Progress Report', '', 'Submit personal progress update', 'individual', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-10-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-10-15'), 
-     '<h1>Progress Report</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="report">Report</label><textarea name="report"></textarea></form>', 
-     ''),
-    (1, 'Coach Team Review', '', 'Review team progress', 'coach', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-10-05'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-10-20'), 
-     '<h1>Team Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="review">Feedback</label><textarea name="review"></textarea></form>', 
-     ''),
-    (1, 'Peer Feedback Survey', '', 'Evaluate team members', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-11-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-11-15'), 
-     '<h1>Peer Feedback</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionTable questions=''["Teamwork","Effort","Communication"]'' scale=''5'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (1, 'Team Milestone Submission', '', 'Submit milestone report', 'team', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-11-20'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-12-05'), 
-     '<h1>Milestone Submission</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="milestone">Report</label><input name="milestone" type="file"/></form>', 
-     '.pdf'),
-    (1, 'Individual Reflection', '', 'Reflect on contributions', 'individual', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-12-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-12-15'), 
-     '<h1>Reflection</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="reflection">Reflection</label><textarea name="reflection"></textarea></form>', 
-     ''),
-    (1, 'Coach Feedback Form', '', 'Provide feedback to teams', 'coach', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-01-10'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-01-25'), 
-     '<h1>Coach Feedback</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="feedback">Feedback</label><textarea name="feedback"></textarea></form>', 
-     ''),
-    (1, 'Midterm Peer Review', '', 'Midterm team evaluation', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-12-20'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-01-05'), 
-     '<h1>Midterm Peer Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionMoodRating question="Collaboration" levels=''["Poor","Fair","Good","Excellent"]'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (1, 'Team Deliverable Draft', '', 'Submit draft deliverables', 'team', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-02-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-02-15'), 
-     '<h1>Deliverable Draft</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="deliverables">Deliverables</label><input name="deliverables" type="file"/></form>', 
-     '.zip,.pdf'),
-    (1, 'Individual Task Log', '', 'Log weekly tasks', 'individual', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-09-10'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-09-25'), 
-     '<h1>Task Log</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="tasks">Tasks</label><textarea name="tasks"></textarea></form>', 
-     ''),
-    (1, 'Team Presentation Slides', '', 'Submit presentation slides', 'team', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-03-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-03-15'), 
-     '<h1>Presentation Slides</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="slides">Slides</label><input name="slides" type="file"/></form>', 
-     '.pptx,.pdf'),
-    (1, 'Individual Skill Assessment', '', 'Assess personal skills', 'individual', 
-     DATE(strftime('%Y', 'now', '-2 years') || '-04-01'), 
-     DATE(strftime('%Y', 'now', '-2 years') || '-04-15'), 
-     '<h1>Skill Assessment</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="skills">Skills</label><textarea name="skills"></textarea></form>', 
-     ''),
-    -- Semester 2: 2024-01-13 to 2024-08-07
-    (2, 'Team Charter Submission', '', 'Submit team charter', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-01-15'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-01-30'), 
-     '<h1>Team Charter</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="charter">Charter</label><input name="charter" type="file"/></form>', 
-     '.pdf'),
-    (2, 'Individual Goal Setting', '', 'Set personal project goals', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-02-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-02-15'), 
-     '<h1>Goal Setting</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="goals">Goals</label><textarea name="goals"></textarea></form>', 
-     ''),
-    (2, 'Coach Milestone Review', '', 'Review team milestones', 'coach', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-15'), 
-     '<h1>Milestone Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="review">Review</label><textarea name="review"></textarea></form>', 
-     ''),
-    (2, 'Peer Collaboration Survey', '', 'Assess team collaboration', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-04-05'), 
-     '<h1>Collaboration Survey</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionTable questions=''["Communication","Effort","Leadership"]'' scale=''5'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (2, 'Team Progress Report', '', 'Submit progress report', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-04-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-04-15'), 
-     '<h1>Progress Report</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="report">Report</label><input name="report" type="file"/></form>', 
-     '.pdf'),
-    (2, 'Individual Contribution Log', '', 'Log individual contributions', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-02-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-05'), 
-     '<h1>Contribution Log</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="contributions">Contributions</label><textarea name="contributions"></textarea></form>', 
-     ''),
-    (2, 'Coach Sponsor Feedback', '', 'Provide sponsor feedback', 'coach', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-05-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-05-15'), 
-     '<h1>Sponsor Feedback</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="feedback">Feedback</label><textarea name="feedback"></textarea></form>', 
-     ''),
-    (2, 'Midterm Peer Evaluation', '', 'Midterm team assessment', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-05-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-06-05'), 
-     '<h1>Midterm Peer Evaluation</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionMoodRating question="Responsibility" levels=''["Poor","Fair","Good","Excellent"]'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (2, 'Team Deliverable Plan', '', 'Submit deliverable plan', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-06-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-06-15'), 
-     '<h1>Deliverable Plan</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="plan">Plan</label><input name="plan" type="file"/></form>', 
-     '.pdf'),
-    (2, 'Individual Skill Log', '', 'Log skill development', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-10'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-03-25'), 
-     '<h1>Skill Log</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="skills">Skills</label><textarea name="skills"></textarea></form>', 
-     ''),
-    (2, 'Team Risk Assessment', '', 'Identify project risks', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-07-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-07-15'), 
-     '<h1>Risk Assessment</h1><form class="ui form" action="/db/submitAction" method litho="POST" enctype="multipart/form-data"><label for="risks">Risks</label><textarea name="risks"></textarea></form>', 
-     ''),
-    (2, 'Individual Reflection Report', '', 'Reflect on semester progress', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-06-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-07-05'), 
-     '<h1>Reflection Report</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="reflection">Reflection</label><textarea name="reflection"></textarea></form>', 
-     ''),
-    -- Semester 3: 2024-08-27 to 2024-12-21
-    (3, 'Project Scope Submission', '', 'Submit project scope document', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-09-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-09-15'), 
-     '<h1>Project Scope</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="scope">Scope</label><input name="scope" type="file"/></form>', 
-     '.pdf'),
-    (3, 'Individual Task Plan', '', 'Submit personal task plan', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-09-05'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-09-20'), 
-     '<h1>Task Plan</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="plan">Plan</label><textarea name="plan"></textarea></form>', 
-     ''),
-    (3, 'Coach Team Assessment', '', 'Assess team performance', 'coach', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-10-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-10-15'), 
-     '<h1>Team Assessment</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="assessment">Assessment</label><textarea name="assessment"></textarea></form>', 
-     ''),
-    (3, 'Peer Performance Review', '', 'Review team performance', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-10-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-05'), 
-     '<h1>Performance Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionTable questions=''["Initiative","Teamwork","Quality"]'' scale=''5'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (3, 'Team Prototype Submission', '', 'Submit project prototype', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-10-10'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-10-25'), 
-     '<h1>Prototype Submission</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="prototype">Prototype</label><input name="prototype" type="file"/></form>', 
-     '.zip,.pdf'),
-    (3, 'Individual Progress Log', '', 'Log project progress', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-15'), 
-     '<h1>Progress Log</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="progress">Progress</label><textarea name="progress"></textarea></form>', 
-     ''),
-    (3, 'Coach Sponsor Review', '', 'Review sponsor interactions', 'coach', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-20'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-05'), 
-     '<h1>Sponsor Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="review">Review</label><textarea name="review"></textarea></form>', 
-     ''),
-    (3, 'Mid-Semester Peer Review', '', 'Mid-semester team evaluation', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-10'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-25'), 
-     '<h1>Mid-Semester Peer Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionMoodRating question="Responsibility" levels=''["Poor","Fair","Good","Excellent"]'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (3, 'Team Deliverable Draft', '', 'Submit deliverable draft', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-01'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-15'), 
-     '<h1>Deliverable Draft</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="deliverables">Deliverables</label><input name="deliverables" type="file"/></form>', 
-     '.zip,.pdf'),
-    (3, 'Individual Reflection Report', '', 'Reflect on semester progress', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-05'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-20'), 
-     '<h1>Reflection Report</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="reflection">Reflection</label><textarea name="reflection"></textarea></form>', 
-     ''),
-    (3, 'Team Presentation Slides', '', 'Submit presentation slides', 'team', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-10'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-12-20'), 
-     '<h1>Presentation Slides</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="slides">Slides</label><input name="slides" type="file"/></form>', 
-     '.pptx,.pdf'),
-    (3, 'Individual Skill Assessment', '', 'Assess personal skills', 'individual', 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-15'), 
-     DATE(strftime('%Y', 'now', '-1 years') || '-11-30'), 
-     '<h1>Skill Assessment</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="skills">Skills</label><textarea name="skills"></textarea></form>', 
-     ''),
-    -- Semester 4: 2025-01-13 to 2025-08-07 (up to 2025-06-06)
-    (4, 'Project Kickoff Form', '', 'Complete project kickoff details', 'team', 
-     DATE(strftime('%Y', 'now') || '-01-15'), 
-     DATE(strftime('%Y', 'now') || '-01-30'), 
-     '<h1>Project Kickoff</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="details">Details</label><textarea name="details"></textarea></form>', 
-     ''),
-    (4, 'Individual Project Goals', '', 'Set individual project goals', 'individual', 
-     DATE(strftime('%Y', 'now') || '-01-20'), 
-     DATE(strftime('%Y', 'now') || '-02-05'), 
-     '<h1>Project Goals</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="goals">Goals</label><textarea name="goals"></textarea></form>', 
-     ''),
-    (4, 'Coach Team Progress Review', '', 'Review team progress', 'coach', 
-     DATE(strftime('%Y', 'now') || '-02-01'), 
-     DATE(strftime('%Y', 'now') || '-02-15'), 
-     '<h1>Team Progress Review</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="review">Review</label><textarea name="review"></textarea></form>', 
-     ''),
-    (4, 'Peer Teamwork Survey', '', 'Evaluate team dynamics', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now') || '-02-20'), 
-     DATE(strftime('%Y', 'now') || '-03-05'), 
-     '<h1>Teamwork Survey</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionTable questions=''["Communication","Effort","Leadership"]'' scale=''5'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (4, 'Team Prototype Draft', '', 'Submit prototype draft', 'team', 
-     DATE(strftime('%Y', 'now') || '-03-01'), 
-     DATE(strftime('%Y', 'now') || '-03-15'), 
-     '<h1>Prototype Draft</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="prototype">Prototype</label><input name="prototype" type="file"/></form>', 
-     '.zip,.pdf'),
-    (4, 'Individual Task Summary', '', 'Summarize weekly tasks', 'individual', 
-     DATE(strftime('%Y', 'now') || '-03-10'), 
-     DATE(strftime('%Y', 'now') || '-03-25'), 
-     '<h1>Task Summary</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="summary">Summary</label><textarea name="summary"></textarea></form>', 
-     ''),
-    (4, 'Coach Sponsor Feedback', '', 'Provide sponsor feedback', 'coach', 
-     DATE(strftime('%Y', 'now') || '-04-01'), 
-     DATE(strftime('%Y', 'now') || '-04-15'), 
-     '<h1>Sponsor Feedback</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="feedback">Feedback</label><textarea name="feedback"></textarea></form>', 
-     ''),
-    (4, 'Midterm Peer Evaluation', '', 'Midterm team assessment', 'peer_evaluation', 
-     DATE(strftime('%Y', 'now') || '-04-20'), 
-     DATE(strftime('%Y', 'now') || '-05-05'), 
-     '<h1>Midterm Peer Evaluation</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><div><QuestionMoodRating question="Contribution" levels=''["Poor","Fair","Good","Excellent"]'' required=''true'' includeStudents=''true''/></div></form>', 
-     ''),
-    (4, 'Team Deliverable Submission', '', 'Submit final deliverables', 'team', 
-     DATE(strftime('%Y', 'now') || '-05-01'), 
-     DATE(strftime('%Y', 'now') || '-05-15'), 
-     '<h1>Deliverable Submission</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="deliverables">Deliverables</label><input name="deliverables" type="file"/></form>', 
-     '.zip,.pdf'),
-    (4, 'Individual Reflection Log', '', 'Log personal reflections', 'individual', 
-     DATE(strftime('%Y', 'now') || '-05-10'), 
-     DATE(strftime('%Y', 'now') || '-05-25'), 
-     '<h1>Reflection Log</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="reflection">Reflection</label><textarea name="reflection"></textarea></form>', 
-     ''),
-    (4, 'Team Presentation Draft', '', 'Submit presentation draft', 'team', 
-     DATE(strftime('%Y', 'now') || '-05-20'), 
-     DATE(strftime('%Y', 'now') || '-06-05'), 
-     '<h1>Presentation Draft</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="slides">Slides</label><input name="slides" type="file"/></form>', 
-     '.pptx,.pdf'),
-    (4, 'Individual Skill Assessment', '', 'Assess skill development', 'individual', 
-     DATE(strftime('%Y', 'now') || '-04-10'), 
-     DATE(strftime('%Y', 'now') || '-04-25'), 
-     '<h1>Skill Assessment</h1><form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"><label for="skills">Skills</label><textarea name="skills"></textarea></form>', 
-     '')
-;
+    (
+        1,
+        'Team Name Submission',
+        '',
+        'Come up with team name',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-20'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-01'
+        ),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+        </form>',
+        ''
+    ),
+    (
+        1,
+        'Project Proposal',
+        '',
+        'Submit your project proposal',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-10'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-20'
+        ),
+        '<h1>Submit Project Proposal</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="proposal">Proposal File</label>
+            <input name="proposal" type="file" accept=".pdf,.docx"/>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Project Timeline',
+        '',
+        'Create and submit a project timeline with milestones',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-15'
+        ),
+        '<h1>Submit Project Timeline</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="timeline">Timeline File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        1,
+        'Report Submission',
+        '',
+        'Turn in your interim report',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-05'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-20'
+        ),
+        '<h1>Submit your interim report</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="report">Report File</label>
+        </form>',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        1,
+        'Market Research Survey',
+        '',
+        'Conduct a survey to identify target market needs',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-05-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-05-15'
+        ),
+        '<h1>Submit Market Research Survey Results</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="survey">Survey Results File</label>
+        </form>',
+        '.pdf,.csv'
+    ),
+    (
+        1,
+        'Business Model Canvas',
+        '',
+        'Develop and submit your business model canvas',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-06-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-06-30'
+        ),
+        '<h1>Submit Business Model Canvas</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="canvas">Business Model Canvas File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Prototype Feedback',
+        '',
+        'Collect feedback on your application prototype',
+        'coach',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-06-10'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-07-15'
+        ),
+        '<h1>Submit Prototype Feedback</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="feedback">Feedback Summary</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Team Member Roles',
+        '',
+        'Assign and submit team member roles and responsibilities',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-08-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-08-15'
+        ),
+        '<h1>Submit Team Roles</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="roles">Team Roles Document</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Competitor Analysis',
+        '',
+        'Analyze competitors and submit findings',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-09-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-09-15'
+        ),
+        '<h1>Submit Competitor Analysis</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="analysis">Competitor Analysis File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        1,
+        'Risk Assessment',
+        '',
+        'Identify and submit potential project risks',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-09-20'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-10-05'
+        ),
+        '<h1>Submit Risk Assessment</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="risks">Risk Assessment File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Marketing Plan',
+        '',
+        'Develop and submit a marketing strategy',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-10-10'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-10-25'
+        ),
+        '<h1>Submit Marketing Plan</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="marketing">Marketing Plan File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        1,
+        'Financial Projections',
+        '',
+        'Submit projected financials for the project',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-11-01'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-11-15'
+        ),
+        '<h1>Submit Financial Projections</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="financials">Financial Projections File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        1,
+        'Final Presentation',
+        '',
+        'Prepare and submit the final project presentation',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-11-20'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-12-01'
+        ),
+        '<h1>Submit Final Presentation</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="presentation">Presentation File</label>
+        </form>',
+        '.pdf,.pptx'
+    ),
+    (
+        1,
+        'Peer Evaluation Form',
+        '',
+        'Evaluate your team members',
+        'peer_evaluation',
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-12-02'
+        ),
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-12-04'
+        ),
+        '<h1>Peer Evaluation</h1>
+        <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <h2>Instructions</h2>
+            <p>
+              Rate every member of the team, including yourself, in each category on a scale of 1 to 5.
+              <br /><br />
+              <b>Cooperation and Attitude:</b> being motivated and interested in working on the project. Working harmoniously with others to meet group responsibilities.
+              <br /><br />
+              <b>Quantity of Work:</b> Comparing the actual work output of the team member to the project. Quality of Work: Demonstrating accuracy, completeness, and neatness of work.
+              <br /><br />
+              <b>Initiative:</b> Planning work and going ahead with a task without being told every detail. Willingness to add own ideas to the project.
+              <br /><br />
+              <b>Dependability:</b> Being relied upon and trusted to handle work assignments. Work is completed on time.
+              <br /><br />
+              <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
+              <h2>Question Matrix Showcase</h2>
+              <div>
+                <QuestionTable questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' scale=''5'' required=''false'' icon=''default'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <h2>Question Mood Ratings Showcase</h2>
+              <div>
+                <QuestionMoodRating question="Dependability" levels=''["Not Dependable","Somewhat Dependable","Dependable","Very Dependable","Extremely Dependable"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <div>
+                <QuestionMoodRating question="Group Maintenance" levels=''["Extremely Dissatisfied","Dissatisfied","Neutral","Satisfied","Extremely Satisfied"]'' required=''false'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <div>
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+              </div>
+              <br/>
+              <div>
+                <QuestionPeerFeedback title="Question Title" questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+            </p>
+        </form>',
+        ''
+    ),
+    (
+        2,
+        'Team Name Submission',
+        '',
+        'Come up with team name',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-01-20'),
+        DATE(strftime('%Y', DATE('now')) || '-02-01'),
+        '<h1>Take the individual test form</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="name">Name</label>
+            <input name="name" type="text"/>
+            <label for="email">Email</label>
+            <input name="email" type="text"/>
+        </form>',
+        ''
+    ),
+    (
+        2,
+        'Project Proposal',
+        '',
+        'Submit your project proposal',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-02-10'),
+        DATE(strftime('%Y', DATE('now')) || '-02-20'),
+        '<h1>Submit Project Proposal</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="proposal">Proposal File</label>
+            <input name="proposal" type="file" accept=".pdf,.docx"/>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Project Timeline',
+        '',
+        'Create and submit a project timeline with milestones',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-03-01'),
+        DATE(strftime('%Y', DATE('now')) || '-03-15'),
+        '<h1>Submit Project Timeline</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="timeline">Timeline File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        2,
+        'Report Submission',
+        '',
+        'Turn in your interim report',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-04-05'),
+        DATE(strftime('%Y', DATE('now')) || '-04-20'),
+        '<h1>Submit your interim report</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="report">Report File</label>
+        </form>',
+        '.png,.pdf,.jpg'
+    ),
+    (
+        2,
+        'Market Research Survey',
+        '',
+        'Conduct a survey to identify target market needs',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-05-01'),
+        DATE(strftime('%Y', DATE('now')) || '-05-15'),
+        '<h1>Submit Market Research Survey Results</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="survey">Survey Results File</label>
+        </form>',
+        '.pdf,.csv'
+    ),
+    (
+        2,
+        'Business Model Canvas',
+        '',
+        'Develop and submit your business model canvas',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-06-01'),
+        DATE(strftime('%Y', DATE('now')) || '-06-30'),
+        '<h1>Submit Business Model Canvas</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="canvas">Business Model Canvas File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Prototype Feedback',
+        '',
+        'Collect feedback on your application prototype',
+        'coach',
+        DATE(strftime('%Y', DATE('now')) || '-06-10'),
+        DATE(strftime('%Y', DATE('now')) || '-07-15'),
+        '<h1>Submit Prototype Feedback</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="feedback">Feedback Summary</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Team Member Roles',
+        '',
+        'Assign and submit team member roles and responsibilities',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-08-01'),
+        DATE(strftime('%Y', DATE('now')) || '-08-15'),
+        '<h1>Submit Team Roles</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="roles">Team Roles Document</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Competitor Analysis',
+        '',
+        'Analyze competitors and submit findings',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-09-01'),
+        DATE(strftime('%Y', DATE('now')) || '-09-15'),
+        '<h1>Submit Competitor Analysis</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="analysis">Competitor Analysis File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        2,
+        'Risk Assessment',
+        '',
+        'Identify and submit potential project risks',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-09-20'),
+        DATE(strftime('%Y', DATE('now')) || '-10-05'),
+        '<h1>Submit Risk Assessment</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="risks">Risk Assessment File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Marketing Plan',
+        '',
+        'Develop and submit a marketing strategy',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-10-10'),
+        DATE(strftime('%Y', DATE('now')) || '-10-25'),
+        '<h1>Submit Marketing Plan</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="marketing">Marketing Plan File</label>
+        </form>',
+        '.pdf,.docx'
+    ),
+    (
+        2,
+        'Financial Projections',
+        '',
+        'Submit projected financials for the project',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-11-01'),
+        DATE(strftime('%Y', DATE('now')) || '-11-15'),
+        '<h1>Submit Financial Projections</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="financials">Financial Projections File</label>
+        </form>',
+        '.pdf,.xlsx'
+    ),
+    (
+        2,
+        'Final Presentation',
+        '',
+        'Prepare and submit the final project presentation',
+        'team',
+        DATE(strftime('%Y', DATE('now')) || '-11-20'),
+        DATE(strftime('%Y', DATE('now')) || '-12-01'),
+        '<h1>Submit Final Presentation</h1>
+        <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <label for="presentation">Presentation File</label>
+        </form>',
+        '.pdf,.pptx'
+    ),
+    (
+        2,
+        'Peer Evaluation Form',
+        '',
+        'Evaluate your team members',
+        'peer_evaluation',
+        DATE(strftime('%Y', DATE('now')) || '-12-02'),
+        DATE(strftime('%Y', DATE('now')) || '-12-04'),
+        '<h1>Peer Evaluation</h1>
+        <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
+            <h2>Instructions</h2>
+            <p>
+              Rate every member of the team, including yourself, in each category on a scale of 1 to 5.
+              <br /><br />
+              <b>Cooperation and Attitude:</b> being motivated and interested in working on the project. Working harmoniously with others to meet group responsibilities.
+              <br /><br />
+              <b>Quantity of Work:</b> Comparing the actual work output of the team member to the project. Quality of Work: Demonstrating accuracy, completeness, and neatness of work.
+              <br /><br />
+              <b>Initiative:</b> Planning work and going ahead with a task without being told every detail. Willingness to add own ideas to the project.
+              <br /><br />
+              <b>Dependability:</b> Being relied upon and trusted to handle work assignments. Work is completed on time.
+              <br /><br />
+              <b>Group Maintenance:</b> Contributing to the effective functioning of the team, i.e., utilizing interpersonal skills to manage conflicts, giving and taking directions, and using appropriate management skills to meet project tasks.
+              <h2>Question Matrix Showcase</h2>
+              <div>
+                <QuestionTable questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' scale=''5'' required=''false'' icon=''default'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <h2>Question Mood Ratings Showcase</h2>
+              <div>
+                <QuestionMoodRating question="Dependability" levels=''["Not Dependable","Somewhat Dependable","Dependable","Very Dependable","Extremely Dependable"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <div>
+                <QuestionMoodRating question="Group Maintenance" levels=''["Extremely Dissatisfied","Dissatisfied","Neutral","Satisfied","Extremely Satisfied"]'' required=''false'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+              <div>
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+              </div>
+              <br/>
+              <div>
+                <QuestionPeerFeedback title="Question Title" questions=''["Cooperation and Attitude","Quantity of Work","Initiative"]'' required=''true'' selfFeedback=''false'' includeStudents=''true''/>
+              </div>
+              <br/>
+            </p>
+        </form>',
+        ''
+    );

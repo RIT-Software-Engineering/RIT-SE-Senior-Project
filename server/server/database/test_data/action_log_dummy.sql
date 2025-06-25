@@ -1,139 +1,46 @@
-INSERT INTO action_log (action_template, system_id, mock_id, project, form_data, files)
+INSERT INTO
+    action_log (
+        action_template, system_id, mock_id, project, form_data, files
+    )
 VALUES
-    -- Semester 1: Completed Projects (GrowEasy1234567890, SmartSpark777888999)
-    -- GrowEasy1234567890 (GrowMasters, Coach: jod1234, Students: miku99, cs1290, bt1293, til345)
-    (1, 'miku99', NULL, '2025-06-06_GrowEasy1234567890', '{"proposal": "GrowEasy Proposal.pdf"}', NULL),
-    (2, 'cs1290', NULL, '2025-06-06_GrowEasy1234567890', '{"report": "Progress update"}', NULL),
-    (3, 'jod1234', NULL, '2025-06-06_GrowEasy1234567890', '{"review": "Team is on track"}', NULL),
-    (4, 'bt1293', NULL, '2025-06-06_GrowEasy1234567890', '{"Students":{"Cloud Strife":{"Ratings":{"Teamwork":4,"Effort":5,"Communication":3}}}}', NULL),
-    (5, 'til345', NULL, '2025-06-06_GrowEasy1234567890', '{"milestone": "Milestone1.pdf"}', NULL),
-    (6, 'miku99', NULL, '2025-06-06_GrowEasy1234567890', '{"reflection": "Learned analytics"}', NULL),
-    (7, 'jod1234', NULL, '2025-06-06_GrowEasy1234567890', '{"feedback": "Good progress"}', NULL),
-    (8, 'cs1290', NULL, '2025-06-06_GrowEasy1234567890', '{"Students":{"Miku Hatsune":{"Ratings":{"Collaboration":4}}}}', NULL),
-    (9, 'bt1293', NULL, '2025-06-06_GrowEasy1234567890', '{"deliverables": "Draft.zip"}', NULL),
-    (10, 'til345', NULL, '2025-06-06_GrowEasy1234567890', '{"tasks": "Weekly tasks logged"}', NULL),
-    (11, 'miku99', NULL, '2025-06-06_GrowEasy1234567890', '{"slides": "Presentation.pptx"}', NULL),
-    (12, 'cs1290', NULL, '2025-06-06_GrowEasy1234567890', '{"skills": "Improved coding"}', NULL),
-    -- SmartSpark777888999 (SparkGenix, Coach: jod1234, Students: pb1233, sos339, ls2198, zfa894)
-    (1, 'pb1233', NULL, '2025-06-06_SmartSpark777888999', '{"proposal": "SmartSpark Proposal.pdf"}', NULL),
-    (2, 'sos339', NULL, '2025-06-06_SmartSpark777888999', '{"report": "Marketing progress"}', NULL),
-    (3, 'jod1234', NULL, '2025-06-06_SmartSpark777888999', '{"review": "Solid AI model"}', NULL),
-    (4, 'ls2198', NULL, '2025-06-06_SmartSpark777888999', '{"Students":{"Sonic Speed":{"Ratings":{"Teamwork":5,"Effort":4,"Communication":4}}}}', NULL),
-    (5, 'zfa894', NULL, '2025-06-06_SmartSpark777888999', '{"milestone": "Milestone2.pdf"}', NULL),
-    (6, 'pb1233', NULL, '2025-06-06_SmartSpark777888999', '{"reflection": "Learned AI"}', NULL),
-    (7, 'jod1234', NULL, '2025-06-06_SmartSpark777888999', '{"feedback": "Needs UI polish"}', NULL),
-    (8, 'sos339', NULL, '2025-06-06_SmartSpark777888999', '{"Students":{"Pixel Blaze":{"Ratings":{"Collaboration":3}}}}', NULL),
-    (9, 'ls2198', NULL, '2025-06-06_SmartSpark777888999', '{"deliverables": "Draft.zip"}', NULL),
-    (10, 'zfa894', NULL, '2025-06-06_SmartSpark777888999', '{"tasks": "Tasks completed"}', NULL),
-    (11, 'pb1233', NULL, '2025-06-06_SmartSpark777888999', '{"slides": "Marketing.pptx"}', NULL),
-    (12, 'sos339', NULL, '2025-06-06_SmartSpark777888999', '{"skills": "Improved design"}', NULL),
-    -- Semester 2: Completed Projects (TechTitan987654321, BuzzBoost2425262728, VitaVibe3435363738)
-    -- TechTitan987654321 (TitanCoders, Coach: del1234, Students: mj3281, ng1312, ss7238, sf7493)
-    (13, 'mj3281', NULL, '2025-06-06_TechTitan987654321', '{"charter": "TitanCoders Charter.pdf"}', NULL),
-    (14, 'ng1312', NULL, '2025-06-06_TechTitan987654321', '{"goals": "CRM development"}', NULL),
-    (15, 'del1234', NULL, '2025-06-06_TechTitan987654321', '{"review": "Good scalability"}', NULL),
-    (16, 'ss7238', NULL, '2025-06-06_TechTitan987654321', '{"Students":{"Mario Jumpman":{"Ratings":{"Communication":4,"Effort":5}}}}', NULL),
-    (17, 'sf7493', NULL, '2025-06-06_TechTitan987654321', '{"report": "Progress.pdf"}', NULL),
-    (18, 'mj3281', NULL, '2025-06-06_TechTitan987654321', '{"contributions": "Coded backend"}', NULL),
-    (19, 'del1234', NULL, '2025-06-06_TechTitan987654321', '{"feedback": "Sponsor satisfied"}', NULL),
-    (20, 'ng1312', NULL, '2025-06-06_TechTitan987654321', '{"Students":{"Neon Glow":{"Ratings":{"Responsibility":4}}}}', NULL),
-    (21, 'ss7238', NULL, '2025-06-06_TechTitan987654321', '{"plan": "Deliverable.pdf"}', NULL),
-    (22, 'sf7493', NULL, '2025-06-06_TechTitan987654321', '{"skills": "Learned cloud"}', NULL),
-    (23, 'mj3281', NULL, '2025-06-06_TechTitan987654321', '{"risks": "Integration risks"}', NULL),
-    (24, 'ng1312', NULL, '2025-06-06_TechTitan987654321', '{"reflection": "Teamwork improved"}', NULL),
-    -- BuzzBoost2425262728 (BuzzMakers, Coach: del1234, Students: lh7488, gs9947, zh7558, cr8473)
-    (13, 'lh7488', NULL, '2025-06-06_BuzzBoost2425262728', '{"charter": "BuzzMakers Charter.pdf"}', NULL),
-    (14, 'gs9947', NULL, '2025-06-06_BuzzBoost2425262728', '{"goals": "Social media tool"}', NULL),
-    (15, 'del1234', NULL, '2025-06-06_BuzzBoost2425262728', '{"review": "Good progress"}', NULL),
-    (16, 'zh7558', NULL, '2025-06-06_BuzzBoost2425262728', '{"Students":{"Link Hero":{"Ratings":{"Communication":5,"Effort":4}}}}', NULL),
-    (17, 'cr8473', NULL, '2025-06-06_BuzzBoost2425262728', '{"report": "Progress.pdf"}', NULL),
-    (18, 'lh7488', NULL, '2025-06-06_BuzzBoost2425262728', '{"contributions": "Coded scheduler"}', NULL),
-    (19, 'del1234', NULL, '2025-06-06_BuzzBoost2425262728', '{"feedback": "Needs testing"}', NULL),
-    (20, 'gs9947', NULL, '2025-06-06_BuzzBoost2425262728', '{"Students":{"Glimmer Star":{"Ratings":{"Responsibility":3}}}}', NULL),
-    (21, 'zh7558', NULL, '2025-06-06_BuzzBoost2425262728', '{"plan": "Deliverable.pdf"}', NULL),
-    (22, 'cr8473', NULL, '2025-06-06_BuzzBoost2425262728', '{"skills": "Learned algorithms"}', NULL),
-    (23, 'lh7488', NULL, '2025-06-06_BuzzBoost2425262728', '{"risks": "Platform issues"}', NULL),
-    (24, 'gs9947', NULL, '2025-06-06_BuzzBoost2425262728', '{"reflection": "Improved skills"}', NULL),
-    -- VitaVibe3435363738 (VibeTrackers, Coach: jod1234, Students: kp2872, viv910, pt7786, bno009)
-    (13, 'kp2872', NULL, '2025-06-06_VitaVibe3435363738', '{"charter": "VibeTrackers Charter.pdf"}', NULL),
-    (14, 'viv910', NULL, '2025-06-06_VitaVibe3435363738', '{"goals": "Wellness app"}', NULL),
-    (15, 'jod1234', NULL, '2025-06-06_VitaVibe3435363738', '{"review": "Solid design"}', NULL),
-    (16, 'pt7786', NULL, '2025-06-06_VitaVibe3435363738', '{"Students":{"Kirby Puff":{"Ratings":{"Communication":4,"Effort":5}}}}', NULL),
-    (17, 'bno009', NULL, '2025-06-06_VitaVibe3435363738', '{"report": "Progress.pdf"}', NULL),
-    (18, 'kp2872', NULL, '2025-06-06_VitaVibe3435363738', '{"contributions": "Coded dashboard"}', NULL),
-    (19, 'jod1234', NULL, '2025-06-06_VitaVibe3435363738', '{"feedback": "Good engagement"}', NULL),
-    (20, 'viv910', NULL, '2025-06-06_VitaVibe3435363738', '{"Students":{"Vivid Volt":{"Ratings":{"Responsibility":4}}}}', NULL),
-    (21, 'pt7786', NULL, '2025-06-06_VitaVibe3435363738', '{"plan": "Deliverable.pdf"}', NULL),
-    (22, 'bno009', NULL, '2025-06-06_VitaVibe3435363738', '{"skills": "Learned UX"}', NULL),
-    (23, 'kp2872', NULL, '2025-06-06_VitaVibe3435363738', '{"risks": "API limitations"}', NULL),
-    (24, 'viv910', NULL, '2025-06-06_VitaVibe3435363738', '{"reflection": "Learned teamwork"}', NULL),
-    -- Semester 3: Completed Projects (ProfitPulse101112131, NextWave1920212223, FlexFlow3940414243)
-    -- ProfitPulse101112131 (PulsePlanners, Coach: lam4821, Students: saa384, sv3824, yd8537, rr2397)
-    (25, 'saa384', NULL, '2025-06-06_ProfitPulse101112131', '{"scope": "Scope.pdf"}', NULL),
-    (26, 'sv3824', NULL, '2025-06-06_ProfitPulse101112131', '{"plan": "Task plan"}', NULL),
-    (27, 'lam4821', NULL, '2025-06-06_ProfitPulse101112131', '{"assessment": "Team is focused"}', NULL),
-    (28, 'yd8537', NULL, '2025-06-06_ProfitPulse101112131', '{"Students":{"Samus Aran":{"Ratings":{"Initiative":5,"Teamwork":4}}}}', NULL),
-    (29, 'rr2397', NULL, '2025-06-06_ProfitPulse101112131', '{"prototype": "Prototype.zip"}', NULL),
-    (30, 'saa384', NULL, '2025-06-06_ProfitPulse101112131', '{"progress": "Logged progress"}', NULL),
-    (31, 'lam4821', NULL, '2025-06-06_ProfitPulse101112131', '{"review": "Sponsor happy"}', NULL),
-    (32, 'sv3824', NULL, '2025-06-06_ProfitPulse101112131', '{"Students":{"Spark Vibe":{"Ratings":{"Responsibility":4}}}}', NULL),
-    (33, 'yd8537', NULL, '2025-06-06_ProfitPulse101112131', '{"deliverables": "Draft.pdf"}', NULL),
-    (34, 'rr2397', NULL, '2025-06-06_ProfitPulse101112131', '{"reflection": "Learned finance"}', NULL),
-    (35, 'saa384', NULL, '2025-06-06_ProfitPulse101112131', '{"slides": "Presentation.pptx"}', NULL),
-    (36, 'sv3824', NULL, '2025-06-06_ProfitPulse101112131', '{"skills": "Improved modeling"}', NULL),
-    -- NextWave1920212223 (WaveRiders, Coach: joh1234, Students: lac743, ns2127, dk8008, fb7283)
-    (25, 'lac743', NULL, '2025-06-06_NextWave1920212223', '{"scope": "Scope.pdf"}', NULL),
-    (26, 'ns2127', NULL, '2025-06-06_NextWave1920212223', '{"plan": "Task plan"}', NULL),
-    (27, 'joh1234', NULL, '2025-06-06_NextWave1920212223', '{"assessment": "AR tech promising"}', NULL),
-    (28, 'dk8008', NULL, '2025-06-06_NextWave1920212223', '{"Students":{"Lara Croft":{"Ratings":{"Initiative":4,"Teamwork":5}}}}', NULL),
-    (29, 'fb7283', NULL, '2025-06-06_NextWave1920212223', '{"prototype": "Prototype.zip"}', NULL),
-    (30, 'lac743', NULL, '2025-06-06_NextWave1920212223', '{"progress": "Logged progress"}', NULL),
-    (31, 'joh1234', NULL, '2025-06-06_NextWave1920212223', '{"review": "Sponsor feedback positive"}', NULL),
-    (32, 'ns2127', NULL, '2025-06-06_NextWave1920212223', '{"Students":{"Nix Storm":{"Ratings":{"Responsibility":3}}}}', NULL),
-    (33, 'dk8008', NULL, '2025-06-06_NextWave1920212223', '{"deliverables": "Draft.pdf"}', NULL),
-    (34, 'fb7283', NULL, '2025-06-06_NextWave1920212223', '{"reflection": "Learned AR"}', NULL),
-    (35, 'lac743', NULL, '2025-06-06_NextWave1920212223', '{"slides": "Presentation.pptx"}', NULL),
-    (36, 'ns2127', NULL, '2025-06-06_NextWave1920212223', '{"skills": "Improved design"}', NULL),
-    -- FlexFlow3940414243 (FlowOptimizers, Coach: del1234, Students: ks6237, ag6726, bk6334, zef827)
-    (25, 'ks6237', NULL, '2025-06-06_FlexFlow3940414243', '{"scope": "Scope.pdf"}', NULL),
-    (26, 'ag6726', NULL, '2025-06-06_FlexFlow3940414243', '{"plan": "Task plan"}', NULL),
-    (27, 'del1234', NULL, '2025-06-06_FlexFlow3940414243', '{"assessment": "Workflow optimized"}', NULL),
-    (28, 'bk6334', NULL, '2025-06-06_FlexFlow3940414243', '{"Students":{"Kratos Spartan":{"Ratings":{"Initiative":5,"Teamwork":4}}}}', NULL),
-    (29, 'zef827', NULL, '2025-06-06_FlexFlow3940414243', '{"prototype": "Prototype.zip"}', NULL),
-    (30, 'ks6237', NULL, '2025-06-06_FlexFlow3940414243', '{"progress": "Logged progress"}', NULL),
-    (31, 'del1234', NULL, '2025-06-06_FlexFlow3940414243', '{"review": "Sponsor approved"}', NULL),
-    (32, 'ag6726', NULL, '2025-06-06_FlexFlow3940414243', '{"Students":{"Aurora Glow":{"Ratings":{"Responsibility":4}}}}', NULL),
-    (33, 'bk6334', NULL, '2025-06-06_FlexFlow3940414243', '{"deliverables": "Draft.pdf"}', NULL),
-    (34, 'zef827', NULL, '2025-06-06_FlexFlow3940414243', '{"reflection": "Learned automation"}', NULL),
-    (35, 'ks6237', NULL, '2025-06-06_FlexFlow3940414243', '{"slides": "Presentation.pptx"}', NULL),
-    (36, 'ag6726', NULL, '2025-06-06_FlexFlow3940414243', '{"skills": "Improved logistics"}', NULL),
-    -- Semester 4: In-Progress Projects (CareCraze111222333, DataForge444555666, EcoEdge1415161718, TrendTide2930313233)
-    -- CareCraze111222333 (CareCoders, Coach: lam4821, Students: aeg836, vw9474, sb9047, nb9374)
-    (37, 'aeg836', NULL, '2025-06-06_CareCraze111222333', '{"details": "Kickoff details"}', NULL),
-    (38, 'vw9474', NULL, '2025-06-06_CareCraze111222333', '{"goals": "Patient care goals"}', NULL),
-    (39, 'lam4821', NULL, '2025-06-06_CareCraze111222333', '{"review": "Team progressing"}', NULL),
-    (40, 'sb9047', NULL, '2025-06-06_CareCraze111222333', '{"Students":{"Aerith Gainsborough":{"Ratings":{"Communication":4,"Effort":5}}}}', NULL),
-    (41, 'nb9374', NULL, '2025-06-06_CareCraze111222333', '{"prototype": "Prototype.zip"}', NULL),
-    (42, 'aeg836', NULL, '2025-06-06_CareCraze111222333', '{"summary": "Weekly tasks"}', NULL),
-    -- DataForge444555666 (ForgeAnalysts, Coach: rth4567, Students: pks286, bs6764, mps823, sc8924)
-    (37, 'pks286', NULL, '2025-06-06_DataForge444555666', '{"details": "Kickoff details"}', NULL),
-    (38, 'bs6764', NULL, '2025-06-06_DataForge444555666', '{"goals": "Analytics goals"}', NULL),
-    (40, 'mps823', NULL, '2025-06-06_DataForge444555666', '{"Students":{"Pikachu Spark":{"Ratings":{"Communication":3,"Effort":4}}}}', NULL),
-    (41, 'sc8924', NULL, '2025-06-06_DataForge444555666', '{"prototype": "Prototype.zip"}', NULL),
-    (42, 'pks286', NULL, '2025-06-06_DataForge444555666', '{"summary": "Task summary"}', NULL),
-    (43, 'rth4567', NULL, '2025-06-06_DataForge444555666', '{"feedback": "Sponsor input noted"}', NULL),
-    -- EcoEdge1415161718 (EcoTrackers, Coach: joh1234, Students: rf9472, ef9474, cl9346, sv9373)
-    (37, 'rf9472', NULL, '2025-06-06_EcoEdge1415161718', '{"details": "Kickoff details"}', NULL),
-    (38, 'ef9474', NULL, '2025-06-06_EcoEdge1415161718', '{"goals": "Sustainability goals"}', NULL),
-    (39, 'joh1234', NULL, '2025-06-06_EcoEdge1415161718', '{"review": "Good metrics"}', NULL),
-    (40, 'cl9346', NULL, '2025-06-06_EcoEdge1415161718', '{"Students":{"Ryu Fighter":{"Ratings":{"Communication":5,"Effort":4}}}}', NULL),
-    (41, 'sv9373', NULL, '2025-06-06_EcoEdge1415161718', '{"prototype": "Prototype.zip"}', NULL),
-    (42, 'rf9472', NULL, '2025-06-06_EcoEdge1415161718', '{"summary": "Task summary"}', NULL),
-    (43, 'joh1234', NULL, '2025-06-06_EcoEdge1415161718', '{"feedback": "Sponsor satisfied"}', NULL),
-    -- TrendTide2930313233 (TideTrackers, Coach: rth4567, Students: sor8362, fc9723, rid732, bs9047)
-    (37, 'sor8362', NULL, '2025-06-06_TrendTide2930313233', '{"details": "Kickoff details"}', NULL),
-    (38, 'fc9723', NULL, '2025-06-06_TrendTide2930313233', '{"goals": "Trend analysis goals"}', NULL),
-    (39, 'rth4567', NULL, '2025-06-06_TrendTide2930313233', '{"review": "Dashboard on track"}', NULL),
-    (40, 'rid732', NULL, '2025-06-06_TrendTide2930313233', '{"Students":{"Sora Keyblade":{"Ratings":{"Communication":4,"Effort":5}}}}', NULL),
-    (41, 'bs9047', NULL, '2025-06-06_TrendTide2930313233', '{"prototype": "Prototype.zip"}', NULL)
-;
+    -- Team Name Submission 
+    (15, 'zh7558', NULL, '4_buzzboost', '{"team_name":"BuzzBoost", "email":"test"}', NULL),
+    (15, 'saa384', NULL, '5_profitpulse', '{"team_name":"ProfitPulse", "email":"test"}', NULL),
+    (15, 'aeg836', NULL, '7_carecraze', '{"team_name":"CareCraze", "email":"test"}', NULL),
+    (15, 'pks286', NULL, '8_dataforge', '{"team_name":"DataForge", "email":"test"}', NULL),
+    (15, 'rf9472', NULL, '9_ecoedge', '{"team_name":"EcoEdge", "email":"test"}', NULL),
+
+    -- Project Proposal
+    (16,  'zh7558', NULL, '4_buzzboost', '{"proposal" :"BuzzBoost marketing strategy proposal"}', 'proposal_zh7558.pdf'),
+    (16, 'lh7488', NULL, '4_buzzboost', '{"proposal":"BuzzBoost marketing strategy proposal"}', 'proposal_lh7488.pdf'),
+    (16, 'gs9947', NULL, '4_buzzboost', '{"proposal":"BuzzBoost marketing strategy proposal"}', 'proposal_gs9947.pdf'),
+    (16, 'cr8473', NULL, '4_buzzboost', '{"proposal":"BuzzBoost marketing strategy proposal"}', 'proposal_cr8473.pdf'),
+
+    -- project timeline
+    (17, 'zh7558', NULL, '4_buzzboost', '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}', 'timeline_zh7558.pdf'),
+    (17, 'lh7488', NULL, '4_buzzboost', '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}', 'timeline_lh7488.pdf'),
+    (17, 'gs9947', NULL, '4_buzzboost', '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}', 'timeline_gs9947.pdf'),
+    (17, 'cr8473', NULL, '4_buzzboost', '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}', 'timeline_cr8473.pdf'),
+
+    -- report submission
+    (18, 'zh7558', NULL, '4_buzzboost', '{"report":"BuzzBoost final report"}', 'report_zh7558.pdf'),
+    (18, 'lh7488', NULL, '4_buzzboost', '{"report":"BuzzBoost final report"}', 'report_lh7488.pdf'),
+    (18, 'gs9947', NULL, '4_buzzboost', '{"report":"BuzzBoost final report"}', 'report_gs9947.pdf'),
+    (18, 'cr8473', NULL, '4_buzzboost', '{"report":"BuzzBoost final report"}', 'report_cr8473.pdf'),
+   
+    -- Prototype Feedback
+    (21, 'del1234', NULL, '4_buzzboost', '{"feedback":"Prototype shows promise, needs UI improvements"}', 'feedback_del1234.pdf'),
+   
+    -- Team Member Roles
+    (22, 'rf9472', NULL, '9_ecoedge', '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}', 'roles_rf9472.pdf'),
+    (22, 'ef9474', NULL, '9_ecoedge', '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}', 'roles_ef9474.pdf'),
+
+    -- for buzzboost
+    (22, 'zh7558', NULL, '4_buzzboost', '{"roles":"Zelda: Project Lead, Link: Designer, Glimmer: Developer, Comet: Analyst"}', 'roles_zh7558.pdf'),
+
+        -- Peer Evaluation Form
+    (28, 'zh7558', NULL, '4_buzzboost', '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Zelda contributed innovative ideas","Identify Disputes Or Problems That Happened And How They Were Handled.":"Minor disagreement on timeline, resolved through discussion","Yap Yap Yap":"Team collaborated well"},"Students":{"Link Hero":{"Feedback":{"Cooperation And Attitude":"Very cooperative","Quantity Of Work":"Consistently high output","Initiative":"Proactive leader"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":5}},"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Positive attitude","Quantity Of Work":"Met expectations","Initiative":"Could take more initiative"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":3,"Initiative":3,"Dependability":4,"Group Maintenance":4}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Team player","Quantity Of Work":"Good effort","Initiative":"Needs prompting"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":3,"Dependability":3,"Group Maintenance":4}}},"Submitter":"Zelda Hyrule"}', ''),
+    (28, 'lh7488', NULL, '4_buzzboost', '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Link led meetings effectively","Identify Disputes Or Problems That Happened And How They Were Handled.":"Scheduling conflicts resolved amicably","Yap Yap Yap":"Strong team dynamics"},"Students":{"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Highly collaborative","Quantity Of Work":"Exceptional work","Initiative":"Creative thinker"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Supportive","Quantity Of Work":"Adequate","Initiative":"Room for growth"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":3,"Initiative":3,"Dependability":3,"Group Maintenance":4}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Good team member","Quantity Of Work":"Consistent","Initiative":"Follows direction"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":3,"Dependability":3,"Group Maintenance":4}}},"Submitter":"Link Hero"}', ''),
+    (28, 'gs9947', NULL, '4_buzzboost', '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Glimmer provided key visuals","Identify Disputes Or Problems That Happened And How They Were Handled.":"Resource allocation discussed and settled","Yap Yap Yap":"Team morale high"},"Students":{"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Inspiring","Quantity Of Work":"High quality","Initiative":"Drives progress"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5","Initiative":":5,"Dependability":5,"Group Maintenance":5}"},"Link Hero":{"Feedback":"Cooperation And Attitude":"Strong leader","Quantity Of Work":"Reliable output","Initiative":"Takes charge"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":5}"},"Comet Rush":{"Feedback":"Cooperation And Attitude":"Friendly","Quantity Of Work":"Meets deadlines","Initiative":"Needs encouragement"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":3,"Dependability":3,"Group Maintenance":4}}},"Submitter":"Glimmer Star"}', ''),
+    (28, 'cr8473', NULL, '4_buzzboost', '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Comet adapted quickly","Identify Disputes Or Problems That Happened And How They Were Handled.":"Task overlap resolved by reassigning","Yap Yap Yap":"Good progress"},"Students":{"Zelda Hyrule":{"Feedback":"Cooperation And Attitude":"Team-focused","Quantity Of Work":"Outstanding","Initiative":"Innovative"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}"},"Link Hero":{"Feedback":"Cooperation And Attitude":"Motivates team","Quantity Of Work":"High volume","Initiative":"Proactive"},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":5}"},"Glimmer Star":{"Feedback":"Cooperation And Attitude":"Helpful","Quantity Of Work":"Satisfactory","Initiative":"Can improve"},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":3,"Initiative":3,"Dependability":3,"Group Maintenance":4}}},"Submitter":"Comet Rush"}', '')
+    ;
