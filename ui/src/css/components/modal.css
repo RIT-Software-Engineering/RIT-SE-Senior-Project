@@ -191,6 +191,23 @@ body.dark-mode .ui.rating .active.icon {
   color: var(--text-primary);
 }
 
+/* Dark mode rating stars outline for better visibility */
+body.dark-mode .ui.rating .icon {
+  text-shadow:
+    -1px -1px 0 var(--border-light),
+    1px -1px 0 var(--border-light),
+    -1px 1px 0 var(--border-light),
+    1px 1px 0 var(--border-light);
+}
+
+body.dark-mode .ui.rating .active.icon {
+  text-shadow:
+    -1px -1px 0 var(--border-light),
+    1px -1px 0 var(--border-light),
+    -1px 1px 0 var(--border-light),
+    1px 1px 0 var(--border-light);
+}
+
 body.dark-mode .ui.positive.message {
   background-color: #1f2d1f;
   color: #a3c293 !important;
