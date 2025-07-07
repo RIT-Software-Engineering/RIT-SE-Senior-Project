@@ -2867,7 +2867,8 @@ module.exports = (db) => {
                     (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                     FROM time_log
                         JOIN projects ON projects.project_id = time_log.project
-                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?) `;
+                        WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
+                        ORDER BY time_log.work_date DESC`;
           queryParams = [req.user.system_id];
           getTimeLogCount = `SELECT COUNT(*) FROM time_log WHERE time_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
           countParams = [req.user.system_id];
@@ -2878,7 +2879,8 @@ module.exports = (db) => {
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
                 (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
                 FROM time_log
-                    JOIN projects ON projects.project_id = time_log.project `;
+                    JOIN projects ON projects.project_id = time_log.project
+                    ORDER BY time_log.work_date DESC`;
           queryParams = [];
           getTimeLogCount = `SELECT COUNT(*) FROM time_log`;
           break;
@@ -4186,13 +4188,13 @@ module.exports = (db) => {
       try {
         await db.query(updateQuery, [gantt_view, system_id]);
         console.log(
-          "Dark mode preference updated successfully",
+          "Gantt view preference updated successfully",
           gantt_view,
           system_id,
         );
         res
           .status(200)
-          .send({ message: "Dark mode preference updated successfully" });
+          .send({ message: "Gantt view preference updated successfully" });
       } catch (err) {
         const error = new Error("Database update failed");
         error.statusCode = 500;
@@ -4224,7 +4226,12 @@ module.exports = (db) => {
         }
 
         const ganttViewRaw = result[0].gantt_view;
-        const gantt_view = Boolean(ganttViewRaw);
+        // Handle both boolean and string values from JSON
+        const gantt_view =
+          ganttViewRaw === true ||
+          ganttViewRaw === "true" ||
+          ganttViewRaw === 1 ||
+          ganttViewRaw === "1";
 
         res.status(200).send({ gantt_view });
       } catch (err) {

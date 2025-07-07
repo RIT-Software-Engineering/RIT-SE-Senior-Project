@@ -99,46 +99,57 @@ export default function TimeTableEditor(props) {
       invalid = true;
     }
 
-    if (isNaN(dataToSubmit["time_amount_hours"])) {
+    if (
+      isNaN(dataToSubmit["time_amount_hours"]) ||
+      dataToSubmit["time_amount_hours"] === "" ||
+      dataToSubmit["time_amount_hours"] === null
+    ) {
       if (!error1.includes("You must enter a valid Time in hours.")) {
         setError1([...error1, "You must enter a valid Time in hours."]);
       }
       invalid = true;
     }
 
-    if (isNaN(dataToSubmit["time_amount_mins"])) {
-      if (!error1.includes("You must enter a valid Time in minutes.")) {
-        setError1([...error1, "You must enter a valid Time in minutes."]);
+    // Default minutes to 0 if empty or not a number
+    if (
+      isNaN(dataToSubmit["time_amount_mins"]) ||
+      dataToSubmit["time_amount_mins"] === "" ||
+      dataToSubmit["time_amount_mins"] === null
+    ) {
+      dataToSubmit["time_amount_mins"] = 0;
+    } // Validate hours range (0-10)
+    const hoursValue = parseFloat(dataToSubmit["time_amount_hours"] || 0);
+    if (hoursValue < 0 || hoursValue > 10) {
+      if (!error1.includes("You need to enter hours ranging from 0-10.")) {
+        setError1([...error1, "You need to enter hours ranging from 0-10."]);
       }
       invalid = true;
     }
 
-    if (
-      dataToSubmit["time_amount_hours"] < 1 ||
-      dataToSubmit["time_amount_hours"] > 10
-    ) {
-      if (
-        !error1.includes("You need to enter a Time ranging from 1-10 hours.")
-      ) {
-        setError1([
-          ...error1,
-          "You need to enter a Time ranging from 1-10 hours.",
-        ]);
+    // Validate minutes range (0-59) only if a value is provided
+    const minutesValue = parseFloat(dataToSubmit["time_amount_mins"] || 0);
+    if (minutesValue < 0 || minutesValue > 59) {
+      if (!error1.includes("You need to enter minutes ranging from 0-59.")) {
+        setError1([...error1, "You need to enter minutes ranging from 0-59."]);
       }
       invalid = true;
     }
 
-    if (
-      dataToSubmit["time_amount_mins"] < 0 ||
-      dataToSubmit["time_amount_mins"] > 59
-    ) {
-      if (
-        !error1.includes("You need to enter a Time ranging from 0-59 minutes.")
-      ) {
-        setError1([
-          ...error1,
-          "You need to enter a Time ranging from 0-59 minutes.",
-        ]);
+    // Validate total time is at least 1 minute and at most 10 hours
+    const totalMinutes =
+      parseFloat(dataToSubmit["time_amount_hours"] || 0) * 60 +
+      parseFloat(dataToSubmit["time_amount_mins"] || 0);
+    if (totalMinutes < 1) {
+      if (!error1.includes("You need to enter at least 1 minute of time.")) {
+        setError1([...error1, "You need to enter at least 1 minute of time."]);
+      }
+      invalid = true;
+    }
+
+    if (totalMinutes > 600) {
+      // 10 hours = 600 minutes
+      if (!error1.includes("You cannot enter more than 10 hours of time.")) {
+        setError1([...error1, "You cannot enter more than 10 hours of time."]);
       }
       invalid = true;
     }
@@ -222,7 +233,7 @@ export default function TimeTableEditor(props) {
       };
       setFormData({
         ...formData,
-        ["changed_fields"]: changedMap,
+        changed_fields: changedMap,
         [name]: value,
       });
     }

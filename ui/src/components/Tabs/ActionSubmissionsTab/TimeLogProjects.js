@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Accordion,
   Table,
@@ -7,17 +7,13 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
   Divider,
-  Icon,
 } from "semantic-ui-react";
 import { formatDateTime, formatDate } from "../../util/functions/utils";
 import TimeLogPanel from "./TimeLogPanel";
 import TimeLogDelete from "./TimeLogDelete";
 import WeeklyHoursViewer from "./WeeklyHoursViewer";
 import { USERTYPES } from "../../util/functions/constants";
-
-const TIME_LOGS_PER_PAGE = 5;
 
 export default function TimeLogProjects(props) {
   const semesters = props.semesters;
@@ -26,13 +22,12 @@ export default function TimeLogProjects(props) {
   const pastWeek = props.pastWeek;
   const currentWeek = props.currentWeek;
   const userLogs = props.userLogs;
-  const timeLogCount = props.timeLogCount;
 
   function getAverageHours(sum, hoursPerWeek) {
     let avg = 0;
-    const filtered = hoursPerWeek.filter((item) => item != 0);
+    const filtered = hoursPerWeek.filter((item) => item !== 0);
 
-    if (filtered.length !== 0 && sum != 0) {
+    if (filtered.length !== 0 && sum !== 0) {
       avg = sum / filtered.length;
     }
     return avg.toFixed(2);
@@ -41,7 +36,7 @@ export default function TimeLogProjects(props) {
   const content = (semesters) => {
     let semesterprojects = [];
 
-    Object.keys(semesters.projects).map((projectKey, idx) => {
+    Object.keys(semesters.projects).forEach((projectKey, idx) => {
       if (
         semesters.projects[projectKey].students.length > 0 &&
         semesters.projects[projectKey].name !== undefined
@@ -73,7 +68,7 @@ export default function TimeLogProjects(props) {
                               <TableRow>
                                 <TableHeaderCell>Name</TableHeaderCell>
                                 <TableHeaderCell>Date</TableHeaderCell>
-                                <TableHeaderCell>Time (hrs)</TableHeaderCell>
+                                <TableHeaderCell>Time (hours)</TableHeaderCell>
                                 <TableHeaderCell>Comment</TableHeaderCell>
                                 <TableHeaderCell>
                                   Submission Date
@@ -219,9 +214,11 @@ export default function TimeLogProjects(props) {
                             <TableRow>
                               <TableHeaderCell>Name</TableHeaderCell>
                               <TableHeaderCell>{pastWeek}</TableHeaderCell>
-                              <TableHeaderCell>{currentWeek}</TableHeaderCell>
-                              <TableHeaderCell>Average (hrs)</TableHeaderCell>
-                              <TableHeaderCell>Total (hrs)</TableHeaderCell>
+                              <TableHeaderCell>
+                                {currentWeek}
+                              </TableHeaderCell>{" "}
+                              <TableHeaderCell>Average Hours</TableHeaderCell>
+                              <TableHeaderCell>Total Hours</TableHeaderCell>
                             </TableRow>
                           </TableHeader>
                           <TableBody>

@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "semantic-ui-react";
+import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
-  const [preference, setPreference] = useSessionStorage(
-    "displayPreference",
-    "gantt",
+  const [milestonePreference, setMilestonePreference] = useSessionStorage(
+    "defaultMilestoneView",
+    true,
+  );
+  const [ganttPreference, setGanttPreference] = useSessionStorage(
+    "defaultGanttView",
+    true,
+  );
+  const [calendarPreference, setCalendarPreference] = useSessionStorage(
+    "defaultCalendarView",
+    false,
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     if (open && user?.user) {
       SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${user.user}`)
@@ -21,16 +28,39 @@ const ProfileModal = ({ open, onClose, user }) => {
           const isDark = ["1", 1, true, "true"].includes(data.dark_mode);
           setDarkMode(isDark);
         })
-        .catch((err) => console.error("Failed to fetch dark mode:", err));
-
+        .catch((err) => console.error("Failed to fetch dark mode:", err)); // Load user-specific view preferences from the backend
       SecureFetch(config.url.API_GET_GANTT_VIEW + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
-          const gantt = ["1", 1, true, "true"].includes(data.gantt_view);
-          setPreference(gantt);
-          sessionStorage.setItem("ganttView", gantt);
+          const ganttPref = data.gantt_view === true;
+          setGanttPreference(ganttPref);
+          sessionStorage.setItem("defaultGanttView", ganttPref.toString());
         })
         .catch((err) => console.error("Failed to fetch gantt view:", err));
+
+      SecureFetch(config.url.API_GET_CALENDAR_VIEW + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const calendarPref = data.calendar_view === true;
+          setCalendarPreference(calendarPref);
+          sessionStorage.setItem(
+            "defaultCalendarView",
+            calendarPref.toString(),
+          );
+        })
+        .catch((err) => console.error("Failed to fetch calendar view:", err));
+
+      SecureFetch(config.url.API_GET_MILESTONE_VIEW + `?system_id=${user.user}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const milestonePref = data.milestone_view === true;
+          setMilestonePreference(milestonePref);
+          sessionStorage.setItem(
+            "defaultMilestoneView",
+            milestonePref.toString(),
+          );
+        })
+        .catch((err) => console.error("Failed to fetch milestone view:", err));
 
       SecureFetch(
         config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
@@ -62,9 +92,30 @@ const ProfileModal = ({ open, onClose, user }) => {
       console.error("Error updating dark mode:", err);
     }
   };
+  const toggleMilestonePreference = async () => {
+    const newPreference = !milestonePreference;
 
-  const toggleGanttView = async () => {
-    const newPreference = !preference;
+    try {
+      const res = await SecureFetch(config.url.API_POST_SET_MILESTONE_VIEW, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_id: user.user,
+          milestone_view: newPreference,
+        }),
+      });
+
+      if (!res.ok)
+        throw new Error("Failed to update milestone view preference");
+      setMilestonePreference(newPreference);
+      sessionStorage.setItem("defaultMilestoneView", newPreference.toString());
+    } catch (err) {
+      console.error("Error updating milestone view:", err);
+    }
+  };
+
+  const toggleGanttPreference = async () => {
+    const newPreference = !ganttPreference;
 
     try {
       const res = await SecureFetch(config.url.API_POST_SET_GANTT_VIEW, {
@@ -77,11 +128,31 @@ const ProfileModal = ({ open, onClose, user }) => {
       });
 
       if (!res.ok) throw new Error("Failed to update gantt view preference");
-
-      setPreference(newPreference);
-      sessionStorage.setItem("ganttView", newPreference);
+      setGanttPreference(newPreference);
+      sessionStorage.setItem("defaultGanttView", newPreference.toString());
     } catch (err) {
       console.error("Error updating gantt view:", err);
+    }
+  };
+
+  const toggleCalendarPreference = async () => {
+    const newPreference = !calendarPreference;
+
+    try {
+      const res = await SecureFetch(config.url.API_POST_SET_CALENDAR_VIEW, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_id: user.user,
+          calendar_view: newPreference,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update calendar view preference");
+      setCalendarPreference(newPreference);
+      sessionStorage.setItem("defaultCalendarView", newPreference.toString());
+    } catch (err) {
+      console.error("Error updating calendar view:", err);
     }
   };
 
@@ -193,22 +264,62 @@ const ProfileModal = ({ open, onClose, user }) => {
         <div style={{ borderTop: "1px solid #ccc", paddingTop: "1em" }}>
           <h4 style={{ marginBottom: "1em" }}>Preferences:</h4>
 
-          <div style={{ marginBottom: "1em" }}>
-            <p>
-              <strong>Dark Mode:</strong>
-            </p>
-            <Button toggle active={darkMode} onClick={toggleDarkMode}>
-              {darkMode ? "Dark Mode On" : "Dark Mode Off"}
-            </Button>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Dark Mode:
+            </strong>
+            <Checkbox toggle checked={darkMode} onChange={toggleDarkMode} />
           </div>
 
-          <div>
-            <p>
-              <strong>Gantt or Calendar View:</strong>
-            </p>
-            <Button toggle active={preference} onClick={toggleGanttView}>
-              {preference ? "Viewing Calendar" : "Viewing Gantt"}
-            </Button>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Milestones View:
+            </strong>
+            <Checkbox
+              toggle
+              checked={milestonePreference}
+              onChange={toggleMilestonePreference}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.8em",
+            }}
+          >
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Gantt View:
+            </strong>
+            <Checkbox
+              toggle
+              checked={ganttPreference}
+              onChange={toggleGanttPreference}
+            />
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+              Default Calendar View:
+            </strong>
+            <Checkbox
+              toggle
+              checked={calendarPreference}
+              onChange={toggleCalendarPreference}
+            />
           </div>
         </div>
       </Modal.Content>
