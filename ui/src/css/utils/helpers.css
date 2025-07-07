@@ -96,3 +96,22 @@ body.dark-mode .clickable-student-name {
 body.dark-mode .submission-errors {
   color: #ff4444;
 }
+
+Button,
+Label,
+a,
+.fadeTransition {
+  animation: fadeIn 0.1s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.5;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
