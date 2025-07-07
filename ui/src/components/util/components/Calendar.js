@@ -37,9 +37,9 @@ export function Calendar(props) {
       .then((res) => res.json())
       .then((specialDates) => {
         specialDates.forEach((date) => {
-          const dateObj = new Date(date.date_on);
+          const dateObj = new Date(`2025-${date.date_on}`);
           for (let i = 1; i <= date.duration; i++) {
-            const key = dateObj.toISOString().slice(5, 10);
+            const key = dateObj.toISOString().slice(0, 10).slice(5, 10);
             This_Years_Holidays[key] = date.name;
             dateObj.setDate(dateObj.getDate() + 1);
             // console.log(`Adding special date: ${date.name} on ${key}`);
