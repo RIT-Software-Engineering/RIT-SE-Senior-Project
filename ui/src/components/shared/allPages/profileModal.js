@@ -3,6 +3,7 @@ import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 const ProfileModal = ({ open, onClose, user }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -197,133 +198,159 @@ const ProfileModal = ({ open, onClose, user }) => {
         left: "0%",
       }}
     >
-      <Modal.Header>Hi, {user.fname}!</Modal.Header>
+      <Modal.Header>Your Profile</Modal.Header>
       <Modal.Content>
-        {/* --- User Info --- */}
-        <div style={{ marginBottom: "2em" }}>
-          <p>
-            <strong>Name:</strong> {user.fname} {user.lname}
-          </p>
-          <p>
-            <strong>Username:</strong> {user.user}
-          </p>
-          <p>
-            <strong>Last Login:</strong>{" "}
-            {user.last_login
-              ? new Date(user.last_login).toLocaleString()
-              : "Never Logged In"}
-          </p>
-        </div>
+        <div style={{ display: "flex", gap: "2em" }}>
+          <div style={{ flex: 1, borderRight: "1px solid #ccc" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "1.5em",
+              }}
+            >
+              <ProfileCircle
+                user={user}
+                size="huge"
+                style={{ marginBottom: "1em" }}
+              />
+            </div>
+            {/* User Info */}
+            <div style={{ marginBottom: "2em" }}>
+              <p>
+                <strong>Name:</strong> {user.fname} {user.lname}
+              </p>
+              <p>
+                <strong>Username:</strong> {user.user}
+              </p>
+              <p>
+                <strong>Last Login:</strong>{" "}
+                {user.last_login
+                  ? new Date(user.last_login).toLocaleString()
+                  : "Never Logged In"}
+              </p>
+            </div>
 
-        {/* --- Additional Info (Students Only) --- */}
-        {user.role === USERTYPES.STUDENT && (
-          <div style={{ marginBottom: "2em" }}>
-            <strong>Additional Info:</strong>
-            {isEditing ? (
-              <>
-                <textarea
-                  value={additionalInfo}
-                  onChange={(e) => setAdditionalInfo(e.target.value)}
-                  rows={4}
-                  style={{ width: "100%" }}
-                />
-                <Button
-                  onClick={handleSaveAdditionalInfo}
-                  primary
-                  size="small"
-                  style={{ marginTop: "0.5em" }}
-                >
-                  Save
-                </Button>
-                <Button
-                  onClick={() => setIsEditing(false)}
-                  size="small"
-                  style={{ marginLeft: "0.5em", marginTop: "0.5em" }}
-                >
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <>
-                <span style={{ marginLeft: "0.5em" }}>
-                  {additionalInfo || "No additional info available"}
-                </span>
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  size="small"
-                  style={{ marginLeft: "0.5em" }}
-                >
-                  Edit
-                </Button>
-              </>
+            {/* Additional Info (Students Only) */}
+            {user.role === USERTYPES.STUDENT && (
+              <div style={{ marginBottom: "2em" }}>
+                <strong>Additional Info:</strong>
+                {isEditing ? (
+                  <>
+                    <textarea
+                      value={additionalInfo}
+                      onChange={(e) => setAdditionalInfo(e.target.value)}
+                      rows={4}
+                      style={{ width: "100%" }}
+                    />
+                    <Button
+                      onClick={handleSaveAdditionalInfo}
+                      primary
+                      size="small"
+                      style={{ marginTop: "0.5em" }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => setIsEditing(false)}
+                      size="small"
+                      style={{ marginLeft: "0.5em", marginTop: "0.5em" }}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ marginLeft: "0.5em" }}>
+                      {additionalInfo || "No additional info available"}
+                    </span>
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      size="small"
+                      style={{ marginLeft: "0.5em" }}
+                    >
+                      Edit
+                    </Button>
+                  </>
+                )}
+              </div>
             )}
           </div>
-        )}
-
-        {/* --- Preferences Section --- */}
-        <div style={{ borderTop: "1px solid #ccc", paddingTop: "1em" }}>
-          <h4 style={{ marginBottom: "1em" }}>Preferences:</h4>
 
           <div
             style={{
+              flex: 1,
               display: "flex",
-              alignItems: "center",
-              marginBottom: "0.8em",
+              flexDirection: "column",
+              gap: "2em",
             }}
           >
-            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-              Dark Mode:
-            </strong>
-            <Checkbox toggle checked={darkMode} onChange={toggleDarkMode} />
-          </div>
+            {/* Preferences Section */}
+            <div>
+              <h3 style={{ marginBottom: "1em" }}>Preferences</h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "0.8em",
+                }}
+              >
+                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+                  Dark Mode
+                </strong>
+                <Checkbox toggle checked={darkMode} onChange={toggleDarkMode} />
+              </div>
+            </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "0.8em",
-            }}
-          >
-            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-              Default Milestones View:
-            </strong>
-            <Checkbox
-              toggle
-              checked={milestonePreference}
-              onChange={toggleMilestonePreference}
-            />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "0.8em",
-            }}
-          >
-            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-              Default Gantt View:
-            </strong>
-            <Checkbox
-              toggle
-              checked={ganttPreference}
-              onChange={toggleGanttPreference}
-            />
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-              Default Calendar View:
-            </strong>
-            <Checkbox
-              toggle
-              checked={calendarPreference}
-              onChange={toggleCalendarPreference}
-            />
+            {/* Dashboard Defaults Section */}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ marginBottom: "1em" }}>Dashboard Defaults</h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "0.8em",
+                }}
+              >
+                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+                  Milestones View
+                </strong>
+                <Checkbox
+                  toggle
+                  checked={milestonePreference}
+                  onChange={toggleMilestonePreference}
+                />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "0.8em",
+                }}
+              >
+                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+                  Gantt View
+                </strong>
+                <Checkbox
+                  toggle
+                  checked={ganttPreference}
+                  onChange={toggleGanttPreference}
+                />
+              </div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
+                  Calendar View
+                </strong>
+                <Checkbox
+                  toggle
+                  checked={calendarPreference}
+                  onChange={toggleCalendarPreference}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </Modal.Content>
-
       <Modal.Actions>
         <Button onClick={handleClose}>Close</Button>
       </Modal.Actions>
