@@ -4236,5 +4236,21 @@ module.exports = (db) => {
     },
   );
 
+  db_router.get("/getSpecialDates", async (req, res, next) => {
+    const query = `
+      SELECT * FROM special_dates;
+    `;
+
+    try {
+      const result = await db.query(query);
+      res.status(200).send(result);
+    } catch (err) {
+      const error = new Error("Database query failed");
+      error.statusCode = 500;
+      error.details = err.message;
+      next(error);
+    }
+  });
+
   return db_router;
 };

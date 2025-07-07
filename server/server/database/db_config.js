@@ -17,6 +17,7 @@ module.exports = {
     time_logs: "time_log",
     users: "users",
     project_coaches: "project_coaches",
+    special_dates: "special_dates",
   },
   senior_project_proposal_keys: {
     title: "Title",

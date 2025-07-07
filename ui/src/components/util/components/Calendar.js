@@ -5,16 +5,8 @@ import { max } from "moment";
 import { Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
-
-const SPECIAL_DATES = {
-  "01-01": "New Year's Day",
-  "06-19": "Juneteenth",
-  "07-04": "Independence Day",
-  "12-24": "Christmas Eve",
-  "12-25": "Christmas Day",
-  "12-26": "St. Stephen's Day",
-  "12-31": "New Year's Eve",
-};
+import { SecureFetch } from "../functions/secureFetch.js";
+import { config } from "../functions/constants";
 
 // this holds the holidays for the year, gets reset when the year changes
 var This_Years_Holidays = {};
@@ -36,13 +28,28 @@ export function Calendar(props) {
   // only want re-calculation on year change
   useEffect(() => {
     getVariableHolidays(currentYear);
+    getConstSpecialDates();
   }, [currentYear]);
 
-  function getVariableHolidays(year) {
-    // reset this year's holidays NOTE: This_Years_Holidays = SPECIAL_DATES COPIES THE MEM ADDRESS of SPECIAL_DATES use spreading instead
-    This_Years_Holidays = { ...SPECIAL_DATES };
-    //console.log("reset holidays", This_Years_Holidays);
+  function getConstSpecialDates() {
+    // load special dates from the database
+    SecureFetch(config.url.API_GET_SPECIAL_DATES)
+      .then((res) => res.json())
+      .then((specialDates) => {
+        specialDates.forEach((date) => {
+          const dateObj = new Date(date.date_on);
+          for (let i = 1; i <= date.duration; i++) {
+            const key = dateObj.toISOString().slice(5, 10);
+            This_Years_Holidays[key] = date.name;
+            dateObj.setDate(dateObj.getDate() + 1);
+            // console.log(`Adding special date: ${date.name} on ${key}`);
+          }
+        });
+      });
+    return null;
+  }
 
+  function getVariableHolidays(year) {
     function getNthDayOfMonth(n, day, month) {
       let date = new Date(year, month, 1);
       let count = 0;
