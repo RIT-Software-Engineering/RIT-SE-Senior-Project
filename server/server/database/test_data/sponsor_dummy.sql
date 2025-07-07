@@ -1,14 +1,14 @@
 INSERT INTO sponsors (fname, lname, company, division, email, phone)
 VALUES 
-    ('Michael', 'Anderson', 'Bluewave Dynamics', NULL, 'michael.anderson@bluewavedyn.com', '+1 555 123 456'),
-    ('Sarah', 'Williams', 'Nexara Solutions', NULL, 'sarah.williams@nexarasol.com', '+1 565 565 56567'),
-    ('Thomas', 'Baker', 'Quantix Labs', 'Research', 'thomas.baker@quantixlabs.com', '+1 555 555 555'),
+    ('Michael', 'Anderson', 'GrowEasy Inc.', NULL, 'michael.anderson@bgroweasy.com', '+1 555 123 456'),
+    ('Thomas', 'Baker', 'Tech Titans', 'Research', 'thomas.baker@techtitans.com', '+1 555 555 555'),
     ('Joseph', 'Smith', 'Veridian Systems', 'Development', 'joseph.smith@veridiansys.com', '+1 555 555 66666'),
     ('Philip', 'Martin', 'Redpine Group', 'Marketing', 'philip.martin@redpinegrp.com', '555-7777'),
+    ('Sarah', 'Williams', 'SmartSpark Industries', NULL, 'sarah.williams@smartspark.com', '+1 565 565 56567'),
     ('Damian', 'Keller', 'Cobalt Edge', NULL, 'damian.keller@cobaltedge.com', '+1 333 333 33'),
     ('William', 'Turner', 'Silverline Tech', NULL, 'william.turner@silverlinetech.com', '+1 111 111 11112'),
     ('Andrew', 'Kim', 'Orionis Ventures', NULL, 'andrew.kim@orionisv.com', '111-111-111'),
-    ('Kenneth', 'Lambert', 'LuminaCore', NULL, 'kenneth.lambert@luminacore.com', '+1 111 111 111111'),
+    ('Kenneth', 'Lambert', 'BuzzBoost Corporation', NULL, 'kenneth.lambert@buzzboost.com', '+1 111 111 111111'),
     ('Emily', 'Foster', 'Skyward Innovations', NULL, 'emily.foster@skywardinnov.com', '+1 111 111 11'),
     ('Isabella', 'Brooks', 'Pinnacle Forge', NULL, 'isabella.brooks@pinnacleforge.com', '+1 111 111 11113'),
     ('Morgan', 'Davis', 'Aventisys', NULL, 'morgan.davis@aventisys.com', '111-1111'),
