@@ -9,6 +9,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
 import ProfileModal from "./profileModal";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 function Header() {
   const history = useHistory();
@@ -24,6 +25,7 @@ function Header() {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
+  const devSignInBtnText = signedIn ? `DEV Sign out` : "DEV Sign in";
   const signInOut = () => {
     if (signedIn) {
       SecureFetch(config.url.API_LOGOUT)
@@ -80,13 +82,19 @@ function Header() {
           )}
           {process.env.REACT_APP_NODE_ENV === "production" ? (
             <button className="ui button" onClick={signInOut}>
+              <Icon name="sign-in" />
               {signInOutBtnText}
             </button>
           ) : (
             <Modal
               closeOnDimmerClick={false}
               className={"sticky"}
-              trigger={<Button>Dev Sign in/out</Button>}
+              trigger={
+                <Button>
+                  <Icon name="sign-in" />
+                  {devSignInBtnText}
+                </Button>
+              }
               header="Dev Sign in/out"
               content={{
                 content: <DevSignInModalContent />,
@@ -99,7 +107,12 @@ function Header() {
               className="ui button"
               onClick={() => setProfileModalOpen(true)}
             >
-              Profile
+              <span style={{ display: "inline-flex", alignItems: "center" }}>
+                <ProfileCircle user={user} size="tiny" />
+                <span style={{ marginLeft: "8px", paddingTop: "2px" }}>
+                  Profile
+                </span>
+              </span>
             </button>
           )}
         </div>
