@@ -9,7 +9,9 @@ INSERT INTO
         project,
         active,
         view_only,
-        profile_info
+        profile_info,
+        last_login,
+        prev_login
     )
 VALUES
     (
@@ -22,9 +24,11 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-12-15 10:23:45',
+        '2025-11-30 09:12:34'
+        ),
+        (
         'cave',
         'View Only',
         'Admin',
@@ -34,9 +38,11 @@ VALUES
         NULL,
         '',
         'TRUE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-10 14:05:12',
+        '2025-12-20 16:45:00'
+        ),
+        (
         'wheatley',
         'View Only',
         'Student',
@@ -46,9 +52,11 @@ VALUES
         NULL,
         '',
         'TRUE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-02-02 08:30:00',
+        '2025-01-15 07:20:10'
+        ),
+        (
         'ViewOnlyCoach',
         'View Only',
         'Coach',
@@ -58,9 +66,11 @@ VALUES
         NULL,
         '',
         'TRUE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-25 12:00:00',
+        '2025-01-10 11:11:11'
+        ),
+        (
         'jod1234',
         'John',
         'Doe',
@@ -70,9 +80,11 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-18 09:45:00',
+        '2025-12-28 08:30:00'
+        ),
+        (
         'del1234',
         'David',
         'Lee',
@@ -82,9 +94,11 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-12 13:22:10',
+        '2025-12-30 10:10:10'
+        ),
+        (
         'lam4821',
         'Laura',
         'Martin',
@@ -94,9 +108,11 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-20 15:00:00',
+        '2025-12-25 14:00:00'
+        ),
+        (
         'joh1234',
         'John',
         'Smith',
@@ -106,9 +122,11 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-05 11:11:11',
+        '2025-12-15 10:10:10'
+        ),
+        (
         'rth4567',
         'Rachel',
         'Thompson',
@@ -118,12 +136,14 @@ VALUES
         NULL,
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-28 17:30:00',
+        '2025-01-10 16:00:00'
+        ),
 
-    -- students
+        -- students
 
-    (
+        (
         'miku99',
         'Miku',
         'Hatsune',
@@ -133,9 +153,11 @@ VALUES
         '1_groweasy',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-15 08:00:00',
+        '2025-12-20 07:00:00'
+        ),
+        (
         'cs1290',
         'Cloud',
         'Strife',
@@ -145,9 +167,11 @@ VALUES
         '1_groweasy',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-17 09:30:00',
+        '2025-12-22 08:30:00'
+        ),
+        (
         'bt1293',
         'Blaze',
         'Thunder',
@@ -157,9 +181,11 @@ VALUES
         '1_groweasy',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-19 10:45:00',
+        '2025-12-24 09:45:00'
+        ),
+        (
         'til345',
         'Tifa',
         'Lockhart',
@@ -169,9 +195,11 @@ VALUES
         '1_groweasy',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-21 11:15:00',
+        '2025-12-26 10:15:00'
+        ),
+        (
         'pb1233',
         'Pixel',
         'Blaze',
@@ -181,9 +209,11 @@ VALUES
         '2_smartspark',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-23 12:30:00',
+        '2025-12-28 11:30:00'
+        ),
+        (
         'sos339',
         'Sonic',
         'Speed',
@@ -193,9 +223,11 @@ VALUES
         '2_smartspark',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-25 13:45:00',
+        '2025-12-30 12:45:00'
+        ),
+        (
         'ls2198',
         'Luna',
         'Sparkle',
@@ -205,9 +237,11 @@ VALUES
         '2_smartspark',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-27 14:00:00',
+        '2025-01-02 13:00:00'
+        ),
+        (
         'zfa894',
         'Zack',
         'Fair',
@@ -217,9 +251,11 @@ VALUES
         '2_smartspark',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-29 15:15:00',
+        '2025-01-04 14:15:00'
+        ),
+        (
         'mj3281',
         'Mario',
         'Jumpman',
@@ -229,9 +265,11 @@ VALUES
         '3_techtitan',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-31 16:30:00',
+        '2025-01-06 15:30:00'
+        ),
+        (
         'ng1312',
         'Neon',
         'Glow',
@@ -241,9 +279,11 @@ VALUES
         '3_techtitan',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-02-02 17:45:00',
+        '2025-01-08 16:45:00'
+        ),
+        (
         'ss7238',
         'Solid',
         'Snake',
@@ -253,9 +293,11 @@ VALUES
         '3_techtitan',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-02-04 18:00:00',
+        '2025-01-10 17:00:00'
+        ),
+        (
         'sf7493',
         'Teto',
         'Kasane',
@@ -265,10 +307,12 @@ VALUES
         '3_techtitan',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-02-06 19:15:00',
+        '2025-01-12 18:15:00'
+        ),
 
-    (
+        (
         'lh7488',
         'Link',
         'Hero',
@@ -278,9 +322,11 @@ VALUES
         '4_buzzboost',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-13 08:30:00',
+        '2025-12-18 07:30:00'
+        ),
+        (
         'gs9947',
         'Glimmer',
         'Star',
@@ -290,9 +336,11 @@ VALUES
         '4_buzzboost',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-15 09:45:00',
+        '2025-12-20 08:45:00'
+        ),
+        (
         'zh7558',
         'Zelda',
         'Hyrule',
@@ -302,9 +350,11 @@ VALUES
         '4_buzzboost',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-17 10:00:00',
+        '2025-12-22 09:00:00'
+        ),
+        (
         'cr8473',
         'Comet',
         'Rush',
@@ -314,10 +364,12 @@ VALUES
         '4_buzzboost',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-19 11:15:00',
+        '2025-12-24 10:15:00'
+        ),
 
-    (
+        (
         'kp2872',
         'Kirby',
         'Puff',
@@ -327,9 +379,11 @@ VALUES
         '11_vitavibe',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-21 12:30:00',
+        '2025-12-26 11:30:00'
+        ),
+        (
         'viv910',
         'Vivid',
         'Volt',
@@ -339,9 +393,11 @@ VALUES
         '11_vitavibe',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-23 13:45:00',
+        '2025-12-28 12:45:00'
+        ),
+        (
         'pt7786',
         'Peach',
         'Toadstool',
@@ -351,9 +407,11 @@ VALUES
         '11_vitavibe',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-25 14:00:00',
+        '2025-12-30 13:00:00'
+        ),
+        (
         'bno009',
         'Blitz',
         'Nova',
@@ -363,10 +421,12 @@ VALUES
         '11_vitavibe',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-27 15:15:00',
+        '2025-01-02 14:15:00'
+        ),
 
-    (
+        (
         'saa384',
         'Samus',
         'Aran',
@@ -376,9 +436,11 @@ VALUES
         '5_profitpulse',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-29 16:30:00',
+        '2025-01-04 15:30:00'
+        ),
+        (
         'sv3824',
         'Spark',
         'Vibe',
@@ -388,9 +450,11 @@ VALUES
         '5_profitpulse',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-31 17:45:00',
+        '2025-01-06 16:45:00'
+        ),
+        (
         'yd8537',
         'Yoshi',
         'Dino',
@@ -400,9 +464,11 @@ VALUES
         '5_profitpulse',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-02-02 18:00:00',
+        '2025-01-08 17:00:00'
+        ),
+        (
         'rr2397',
         'Radiant',
         'Ray',
@@ -412,10 +478,12 @@ VALUES
         '5_profitpulse',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-02-04 19:15:00',
+        '2025-01-10 18:15:00'
+        ),
 
-    (
+        (
         'lac743',
         'Lara',
         'Croft',
@@ -425,9 +493,11 @@ VALUES
         '6_nextwave',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-13 08:30:00',
+        '2025-12-18 07:30:00'
+        ),
+        (
         'ns2127',
         'Nix',
         'Storm',
@@ -437,9 +507,11 @@ VALUES
         '6_nextwave',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-15 09:45:00',
+        '2025-12-20 08:45:00'
+        ),
+        (
         'dk8008',
         'Donkey',
         'Kong',
@@ -449,9 +521,11 @@ VALUES
         '6_nextwave',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-17 10:00:00',
+        '2025-12-22 09:00:00'
+        ),
+        (
         'fb7283',
         'Flash',
         'Bolt',
@@ -461,10 +535,12 @@ VALUES
         '6_nextwave',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-19 11:15:00',
+        '2025-12-24 10:15:00'
+        ),
 
-    (
+        (
         'ks6237',
         'Kratos',
         'Spartan',
@@ -474,9 +550,11 @@ VALUES
         '12_flexflow',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-21 12:30:00',
+        '2025-12-26 11:30:00'
+        ),
+        (
         'ag6726',
         'Aurora',
         'Glow',
@@ -486,9 +564,11 @@ VALUES
         '12_flexflow',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-23 13:45:00',
+        '2025-12-28 12:45:00'
+        ),
+        (
         'bk6334',
         'Bowser',
         'King',
@@ -498,9 +578,11 @@ VALUES
         '12_flexflow',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-25 14:00:00',
+        '2025-12-30 13:00:00'
+        ),
+        (
         'zef827',
         'Zest',
         'Flicker',
@@ -510,10 +592,12 @@ VALUES
         '12_flexflow',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-27 15:15:00',
+        '2025-01-02 14:15:00'
+        ),
 
-    (
+        (
         'aeg836',
         'Aerith',
         'Gainsborough',
@@ -523,9 +607,11 @@ VALUES
         '7_carecraze',
         'TRUE',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-29 16:30:00',
+        '2025-01-04 15:30:00'
+        ),
+        (
         'vw9474',
         'Vapor',
         'Wave',
@@ -535,9 +621,11 @@ VALUES
         '7_carecraze',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-31 17:45:00',
+        '2025-01-06 16:45:00'
+        ),
+        (
         'sb9047',
         'Sephiroth',
         'Blade',
@@ -547,9 +635,11 @@ VALUES
         '7_carecraze',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-02-02 18:00:00',
+        '2025-01-08 17:00:00'
+        ),
+        (
         'nb9374',
         'Nova',
         'Bright',
@@ -559,10 +649,12 @@ VALUES
         '7_carecraze',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-02-04 19:15:00',
+        '2025-01-10 18:15:00'
+        ),
 
-    (
+        (
         'pks286',
         'Pikachu',
         'Spark',
@@ -572,9 +664,11 @@ VALUES
         '8_dataforge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-13 08:30:00',
+        '2025-12-18 07:30:00'
+        ),
+        (
         'bs6764',
         'Glint',
         'Surge',
@@ -584,9 +678,11 @@ VALUES
         '8_dataforge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-15 09:45:00',
+        '2025-12-20 08:45:00'
+        ),
+        (
         'mps823',
         'Mewtwo',
         'Psi',
@@ -596,9 +692,11 @@ VALUES
         '8_dataforge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-17 10:00:00',
+        '2025-12-22 09:00:00'
+        ),
+        (
         'sc8924',
         'Shine',
         'Crest',
@@ -608,10 +706,12 @@ VALUES
         '8_dataforge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-19 11:15:00',
+        '2025-12-24 10:15:00'
+        ),
 
-    (
+        (
         'rf9472',
         'Ryu',
         'Fighter',
@@ -621,9 +721,11 @@ VALUES
         '9_ecoedge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-21 12:30:00',
+        '2025-12-26 11:30:00'
+        ),
+        (
         'ef9474',
         'Ember',
         'Flame',
@@ -633,9 +735,11 @@ VALUES
         '9_ecoedge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-23 13:45:00',
+        '2025-12-28 12:45:00'
+        ),
+        (
         'cl9346',
         'Chun',
         'Li',
@@ -645,9 +749,11 @@ VALUES
         '9_ecoedge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-25 14:00:00',
+        '2025-12-30 13:00:00'
+        ),
+        (
         'sv9373',
         'Sparkle',
         'Vibe',
@@ -657,10 +763,12 @@ VALUES
         '9_ecoedge',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-27 15:15:00',
+        '2025-01-02 14:15:00'
+        ),
+        
+        (
         'sor8362',
         'Sora',
         'Keyblade',
@@ -670,9 +778,11 @@ VALUES
         '10_trendtide',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-01-29 16:30:00',
+        '2025-01-04 15:30:00'
+        ),
+        (
         'fc9723',
         'Teto',
         'Comet',
@@ -682,9 +792,11 @@ VALUES
         '10_trendtide',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-01-31 17:45:00',
+        '2025-01-06 16:45:00'
+        ),
+        (
         'rid732',
         'Riku',
         'Dawn',
@@ -694,9 +806,11 @@ VALUES
         '10_trendtide',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true}'
-    ),
-    (
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true}',
+        '2025-02-02 18:00:00',
+        '2025-01-08 17:00:00'
+        ),
+        (
         'bs9047',
         'Blaze',
         'Star',
@@ -706,5 +820,7 @@ VALUES
         '10_trendtide',
         '',
         'FALSE',
-        '{"additional_info":"", "dark_mode":false, "gantt_view":true}'
-    );
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true}',
+        '2025-02-04 19:15:00',
+        '2025-01-10 18:15:00'
+        );
