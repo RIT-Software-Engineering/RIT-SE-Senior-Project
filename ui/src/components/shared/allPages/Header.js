@@ -95,7 +95,7 @@ function Header() {
                   {devSignInBtnText}
                 </Button>
               }
-              header="Dev Sign in/out"
+              header="Developer Menu"
               content={{
                 content: <DevSignInModalContent />,
               }}
