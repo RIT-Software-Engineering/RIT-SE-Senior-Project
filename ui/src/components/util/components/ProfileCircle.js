@@ -1,7 +1,13 @@
 import React from "react";
 
 export default function ProfileCircle(props) {
-  const { user, size = "small", style = {}, className = "" } = props;
+  const {
+    user,
+    size = "small",
+    style = {},
+    className = "",
+    bgImage = null,
+  } = props;
 
   const sizes = {
     tiny: {
@@ -55,8 +61,23 @@ export default function ProfileCircle(props) {
         ...style,
       }}
     >
-      {user?.fname?.charAt(0).toUpperCase()}
-      {user?.lname?.charAt(0).toUpperCase()}
+      {bgImage ? (
+        <img
+          src={bgImage}
+          alt="Profile Background"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "50%",
+            objectFit: "cover",
+          }}
+        />
+      ) : (
+        <>
+          {user?.fname?.charAt(0).toUpperCase()}
+          {user?.lname?.charAt(0).toUpperCase()}
+        </>
+      )}
     </div>
   );
 }
