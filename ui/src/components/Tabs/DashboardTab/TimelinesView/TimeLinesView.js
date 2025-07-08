@@ -104,7 +104,16 @@ export default function TimeLinesView(props) {
         <Accordion
           fluid
           styled
-          panels={semester}
+          panels={semester.map((panel) => ({
+            ...panel,
+            content: {
+              content: activeSemesters[panel.title] ? (
+                <React.Suspense fallback="Loading...">
+                  {panel.content.content}
+                </React.Suspense>
+              ) : null,
+            },
+          }))}
           key={idx}
           onTitleClick={handleTitleClick}
         />
