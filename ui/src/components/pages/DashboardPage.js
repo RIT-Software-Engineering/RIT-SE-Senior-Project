@@ -72,7 +72,12 @@ export default function DashboardPage() {
         panes.push({
           menuItem: {
             key: "Admin-Tab",
-            content: "Admin",
+            content: (
+              <>
+                <i className="cog icon" style={{ marginRight: 5 }} />
+                Admin
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -95,7 +100,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Sponsors-Tab",
-            content: "Sponsors",
+            content: (
+              <>
+                <i className="handshake icon" style={{ marginRight: 5 }} />
+                Sponsors
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -109,7 +119,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Coaches-Tab",
-            content: "Coaches",
+            content: (
+              <>
+                <i className="graduation cap icon" style={{ marginRight: 5 }} />
+                Coaches
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -126,7 +141,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Students-Tab",
-            content: "Students",
+            content: (
+              <>
+                <i className="users icon" style={{ marginRight: 5 }} />
+                Students
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -138,7 +158,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Projects-Tab",
-            content: "Projects",
+            content: (
+              <>
+                <i className="folder open icon" style={{ marginRight: 5 }} />
+                Projects
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -153,7 +178,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Logging-Tab",
-            content: "Logging",
+            content: (
+              <>
+                <i className="clock outline icon" style={{ marginRight: 5 }} />
+                Logging
+              </>
+            ),
             href: "#",
           },
           render: () => (
@@ -169,7 +199,12 @@ export default function DashboardPage() {
         {
           menuItem: {
             key: "Dashboard-Tab",
-            content: "Dashboard",
+            content: (
+              <>
+                <i className="dashboard icon" style={{ marginRight: 5 }} />
+                Dashboard
+              </>
+            ),
             href: "#",
           },
           render: () => (
