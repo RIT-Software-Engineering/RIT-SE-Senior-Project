@@ -29,6 +29,9 @@ export default function DashboardPage() {
     SecureFetch(config.url.API_WHO_AM_I)
       .then((response) => response.json())
       .then((responseUser) => {
+        const parsedProfileInfo = JSON.parse(
+          responseUser.profile_info.toString(),
+        );
         setUser({
           user: responseUser.system_id,
           role: responseUser.type,
@@ -41,10 +44,11 @@ export default function DashboardPage() {
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
           view_only: responseUser.view_only === "TRUE" ? true : false,
-          profile_info: responseUser.profile_info.toString(),
+          profile_info: parsedProfileInfo,
         });
         if (responseUser.system_id) {
-          const darkPref = responseUser.profile_info.includes('"dark_mode":1');
+          const darkPref =
+            parsedProfileInfo.dark_mode.toString().trim() === "1";
           document.body.classList.toggle("dark-mode", darkPref);
         }
       });
