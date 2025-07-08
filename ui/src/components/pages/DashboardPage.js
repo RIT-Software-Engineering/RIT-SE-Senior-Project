@@ -63,7 +63,8 @@ export default function DashboardPage() {
       .catch((error) => {
         console.error("Failed to get semestersData data" + error);
       });
-  }, [setUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   let panes = [];
   switch (user.role) {
