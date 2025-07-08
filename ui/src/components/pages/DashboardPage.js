@@ -47,8 +47,9 @@ export default function DashboardPage() {
           profile_info: parsedProfileInfo,
         });
         if (responseUser.system_id) {
-          const darkPref =
-            parsedProfileInfo.dark_mode.toString().trim() === "1";
+          const darkPref = ["1", "true"].includes(
+            parsedProfileInfo.dark_mode.toString().trim().toLowerCase(),
+          );
           document.body.classList.toggle("dark-mode", darkPref);
         }
       });
