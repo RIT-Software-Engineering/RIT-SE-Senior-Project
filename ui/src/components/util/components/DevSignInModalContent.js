@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
-import { Button, Container, Icon, Label } from "semantic-ui-react";
+import { Button, Container, Icon } from "semantic-ui-react";
 import _ from "lodash";
 
 /**

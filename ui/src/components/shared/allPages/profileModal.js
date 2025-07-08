@@ -70,7 +70,13 @@ const ProfileModal = ({ open, onClose, user }) => {
         .then((data) => setAdditionalInfo(data?.additional_info || ""))
         .catch((err) => console.error("Failed to fetch additional info:", err));
     }
-  }, [open, user]);
+  }, [
+    open,
+    setCalendarPreference,
+    setGanttPreference,
+    setMilestonePreference,
+    user,
+  ]);
 
   const toggleDarkMode = async () => {
     const newDarkMode = !darkMode;

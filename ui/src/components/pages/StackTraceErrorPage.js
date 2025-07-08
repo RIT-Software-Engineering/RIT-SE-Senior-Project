@@ -13,10 +13,6 @@ const StackTraceErrorPage = () => {
 
   const [userFeedback, setUserFeedback] = useState("");
 
-  const handleTryAgain = () => {
-    window.location.reload();
-  };
-
   const handleGoBack = () => {
     window.history.back();
   };

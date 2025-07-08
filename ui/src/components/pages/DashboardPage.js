@@ -40,7 +40,7 @@ export default function DashboardPage() {
           mockUser: responseUser.mock,
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
-          view_only: responseUser.view_only == "TRUE" ? true : false,
+          view_only: responseUser.view_only === "TRUE" ? true : false,
         });
         if (responseUser.system_id) {
           SecureFetch(
@@ -63,7 +63,7 @@ export default function DashboardPage() {
       .catch((error) => {
         console.error("Failed to get semestersData data" + error);
       });
-  }, []);
+  }, [setUser]);
 
   let panes = [];
   switch (user.role) {
