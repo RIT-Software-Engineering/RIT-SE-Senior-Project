@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
-import { Button, Container, Icon } from "semantic-ui-react";
+import { Button, Container, Icon, Label } from "semantic-ui-react";
 import _ from "lodash";
 
 /**
@@ -46,8 +46,8 @@ export default function DevSignInModalContent() {
   }, []);
 
   return (
-    <Container textAlign="center" style={{ maxWidth: 600, padding: "20px" }}>
-      <div className="ui stackable grid">
+    <Container textAlign="center" style={{ maxWidth: 600 }}>
+      <div className="ui container stackable grid">
         <div className="two column row">
           <div className="column">
             {/* Left Section: Sign In */}
@@ -189,6 +189,11 @@ export default function DevSignInModalContent() {
               >
                 DANGER
               </div>
+              <div style={{ marginBottom: 12 }}>
+                This will reset the entire database and delete all cookies.
+                Please proceed with caution.
+              </div>
+
               <Button
                 color="red"
                 onClick={async () => {
@@ -232,9 +237,19 @@ export default function DevSignInModalContent() {
                 style={{ marginTop: 12, width: "100%" }}
                 size="large"
               >
-                {" "}
-                <Icon name="database" />
-                {loading ? "Resetting..." : "Reset Database"}
+                {loading ? (
+                  <div
+                    className="loading-bar"
+                    style={{ margin: "-10px -20px", padding: "10px 20px" }}
+                  >
+                    <Icon name="database" />
+                    Resetting...
+                  </div>
+                ) : (
+                  <>
+                    <Icon name="database" /> Reset Database
+                  </>
+                )}
               </Button>
             </div>
           </div>

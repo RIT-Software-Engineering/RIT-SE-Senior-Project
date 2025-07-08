@@ -100,7 +100,7 @@ body.dark-mode .submission-errors {
 Button,
 Label,
 a,
-.fadeTransition {
+.fade-transition {
   animation: fadeIn 0.2s ease-in-out;
   animation-fill-mode: both;
 }
@@ -113,5 +113,25 @@ a,
   to {
     opacity: 1;
     transform: translateY(0px);
+  }
+}
+
+.loading-bar {
+  background: linear-gradient(
+    120deg,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(0, 0, 0, 0.1) 70%
+  );
+  background-size: 200% 100%;
+  animation: loadingBarAnimation 1.2s infinite linear;
+}
+
+@keyframes loadingBarAnimation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }

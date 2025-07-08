@@ -251,3 +251,9 @@ body.dark-mode .ui.toggle.checkbox label:after {
   border: 1px solid var(--border-light) !important;
   background-color: var(--text-primary) !important;
 }
+
+.ui.modal {
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+}
