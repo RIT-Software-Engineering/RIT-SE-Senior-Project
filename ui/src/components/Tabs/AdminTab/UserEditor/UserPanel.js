@@ -12,6 +12,7 @@ export default function UserPanel(props) {
     email: props.userData?.email || "",
     type: props.userData?.type || "",
     semester_group: props.userData?.semester_group || "",
+    project: props.userData?.project || "",
     active: props.userData?.active || "",
     viewOnly: props.userData?.viewOnly || "",
   };
@@ -36,12 +37,19 @@ export default function UserPanel(props) {
 
   // helper function; get all current users'
   const getUsersId = () => {
-    const coachAdminArray = Object.entries(props.userData); // coach & admins types
-    const studentsArray = Object.entries(props.studentData); // student types
+    // Ensure we have arrays to work with
+    const userData = Array.isArray(props.userData) ? props.userData : [];
+    const studentData = Array.isArray(props.studentData)
+      ? props.studentData
+      : [];
 
-    // get system_ids
-    const studentsID = studentsArray.map((student) => student[1]?.system_id);
-    const coachAdminID = coachAdminArray.map((user) => user[1]?.system_id);
+    // get system_ids directly from arrays
+    const studentsID = studentData
+      .map((student) => student?.system_id)
+      .filter(Boolean);
+    const coachAdminID = userData
+      .map((user) => user?.system_id)
+      .filter(Boolean);
 
     const usersId = [...studentsID, ...coachAdminID]; // all users ID
     console.log(usersId);

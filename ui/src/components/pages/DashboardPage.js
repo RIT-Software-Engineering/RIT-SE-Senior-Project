@@ -29,9 +29,20 @@ export default function DashboardPage() {
     SecureFetch(config.url.API_WHO_AM_I)
       .then((response) => response.json())
       .then((responseUser) => {
-        const parsedProfileInfo = JSON.parse(
-          responseUser.profile_info.toString(),
-        );
+        // Handle cases where profile_info might be null or empty
+        let parsedProfileInfo;
+        try {
+          parsedProfileInfo = responseUser.profile_info
+            ? JSON.parse(responseUser.profile_info.toString())
+            : { additional_info: "", dark_mode: false, gantt_view: true };
+        } catch (error) {
+          console.error("Error parsing profile_info:", error);
+          parsedProfileInfo = {
+            additional_info: "",
+            dark_mode: false,
+            gantt_view: true,
+          };
+        }
         setUser({
           user: responseUser.system_id,
           role: responseUser.type,

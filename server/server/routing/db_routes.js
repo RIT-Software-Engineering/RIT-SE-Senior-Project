@@ -293,8 +293,8 @@ module.exports = (db) => {
       let body = req.body;
 
       const sql = `INSERT INTO ${DB_CONFIG.tableNames.users}
-                (system_id, fname, lname, email, type, semester_group, project, active, view_only)
-                VALUES (?,?,?,?,?,?,?,?,?)`;
+                (system_id, fname, lname, email, type, semester_group, project, active, view_only, profile_info)
+                VALUES (?,?,?,?,?,?,?,?,?,?)`;
 
       const active =
         body.active === "false"
@@ -303,16 +303,24 @@ module.exports = (db) => {
 
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
+      // Default profile_info with required fields
+      const defaultProfileInfo = JSON.stringify({
+        additional_info: "",
+        dark_mode: false,
+        gantt_view: true,
+      });
+
       const params = [
         body.system_id,
         body.fname,
         body.lname,
         body.email,
         body.type,
-        body.semester_group,
-        body.project,
+        body.semester_group === "" ? null : body.semester_group,
+        body.project === "" ? null : body.project,
         active,
         viewOnly,
+        defaultProfileInfo,
       ];
       db.query(sql, params)
         .then(() => {
@@ -341,6 +349,13 @@ module.exports = (db) => {
         const successUsers = [];
 
         for (const user of users) {
+          // Default profile_info with required fields
+          const defaultProfileInfo = JSON.stringify({
+            additional_info: "",
+            dark_mode: false,
+            gantt_view: true,
+          });
+
           const values = [
             user.system_id,
             user.fname,
@@ -351,13 +366,14 @@ module.exports = (db) => {
             user.active.toLocaleLowerCase() === "false"
               ? moment().format(CONSTANTS.datetime_format)
               : "",
+            defaultProfileInfo,
           ];
 
           try {
             await db.query(
               `INSERT INTO ${DB_CONFIG.tableNames.users} 
-              (system_id, fname, lname, email, type, semester_group, active) 
-              VALUES (?, ?, ?, ?, ?, ?, ?)`,
+              (system_id, fname, lname, email, type, semester_group, active, profile_info) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
               values,
             );
             successUsers.push(user);
