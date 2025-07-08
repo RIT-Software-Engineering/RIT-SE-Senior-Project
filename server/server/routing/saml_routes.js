@@ -84,6 +84,7 @@ module.exports = (app, db) => {
       last_login: user.last_login,
       prev_login: user.prev_login,
       view_only: user.view_only,
+      profile_info: user.profile_info,
 
       mock: {
         // TODO: It might make sense to change how this works and how it interacts with user_auth.mockUser in the future once Shibboleth is working.

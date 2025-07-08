@@ -41,18 +41,11 @@ export default function DashboardPage() {
           last_login: responseUser.last_login,
           prev_login: responseUser.prev_login,
           view_only: responseUser.view_only === "TRUE" ? true : false,
+          profile_info: responseUser.profile_info.toString(),
         });
         if (responseUser.system_id) {
-          SecureFetch(
-            config.url.API_GET_DARK_MODE +
-              `?system_id=${responseUser.system_id}`,
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              const darkPref = ["1", 1, true, "true"].includes(data.dark_mode);
-              document.body.classList.toggle("dark-mode", darkPref);
-            })
-            .catch((err) => console.error("Failed to fetch dark mode:", err));
+          const darkPref = responseUser.profile_info.includes('"dark_mode":1');
+          document.body.classList.toggle("dark-mode", darkPref);
         }
       });
     SecureFetch(config.url.API_GET_SEMESTERS)
