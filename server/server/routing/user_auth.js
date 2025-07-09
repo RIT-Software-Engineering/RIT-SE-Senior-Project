@@ -109,7 +109,10 @@ const testIsAdmin = (req) => {
 
 const testCanWrite = (req) => {
   console.log(req.user);
-  return req.user && req.user.view_only === "FALSE";
+  return (
+    req.user &&
+    ["false", "0"].includes(req.user.view_only.toString().trim().toLowerCase())
+  );
 };
 
 const testIsCoach = (req) => {
