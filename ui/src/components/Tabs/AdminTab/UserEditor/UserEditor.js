@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Loader } from "semantic-ui-react";
 import { config } from "../../../util/functions/constants";
 import UserEditorUserGroups from "./UserEditorUserGroups";
 import UserPanel from "./UserPanel";
@@ -62,7 +62,7 @@ export default function UserEditor(props) {
   }, []);
 
   if (!students || !semesters || !Object.keys(projects).length) {
-    return <>loading...</>;
+    return <Loader active inline="centered" />;
   }
 
   //the empty user panel should trigger user creation

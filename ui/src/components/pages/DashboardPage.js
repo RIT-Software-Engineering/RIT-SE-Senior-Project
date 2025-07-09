@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Tab } from "semantic-ui-react";
+import { Loader, Tab } from "semantic-ui-react";
 import TimeLinesView from "../Tabs/DashboardTab/TimelinesView/TimeLinesView";
 import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
 import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
@@ -234,7 +234,7 @@ export default function DashboardPage() {
         },
         render: () => (
           <Tab.Pane>
-            <p>Loading...</p>
+            <Loader active inline="centered" />
           </Tab.Pane>
         ),
       });

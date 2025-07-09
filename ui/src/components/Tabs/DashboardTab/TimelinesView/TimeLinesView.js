@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Loader } from "semantic-ui-react";
 import { config, USERTYPES } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { UserContext } from "../../../util/functions/UserContext";
@@ -124,7 +124,7 @@ export default function TimeLinesView(props) {
   };
 
   if (loading) {
-    return "Loading...";
+    return <Loader active inline="centered" />;
   }
 
   return generateTimeLines();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
+import { Accordion, Loader } from "semantic-ui-react";
 import { USERTYPES } from "../../../util/functions/constants";
 import _ from "lodash";
 import StudentTeamTable from "../../StudentsTab/StudentTeamTable";
@@ -142,7 +142,7 @@ export default function UserEditorUserGroups(props) {
   }, [props.studentData, props.userData, props.projectData]);
 
   if (!groupings) {
-    return <div>Loading...</div>;
+    return <Loader active inline="centered" />;
   }
 
   const semesterAccordions = props.semesterData.map((semester) => {

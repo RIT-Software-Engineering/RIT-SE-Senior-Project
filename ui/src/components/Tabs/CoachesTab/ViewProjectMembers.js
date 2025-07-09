@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Button,
   Icon,
+  Loader,
   Modal,
   Table,
   TableBody,
@@ -53,7 +54,7 @@ export default function ViewProjectMembers(props) {
 
   const content = () => {
     if (projectUsers === null) {
-      return <p>loading...</p>;
+      return <Loader active inline="centered" />;
     } else if (projectUsers.length === 0) {
       return <p>No Users</p>;
     }
