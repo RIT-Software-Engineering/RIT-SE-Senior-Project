@@ -59,7 +59,7 @@ export default function UserEditor(props) {
 
   useEffect(() => {
     getSemesters();
-  }, []);
+  }, [setSemestersData]);
 
   if (!students || !semesters || !Object.keys(projects).length) {
     return <Loader active inline="centered" />;
