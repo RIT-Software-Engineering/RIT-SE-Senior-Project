@@ -250,7 +250,7 @@ export default function DatabaseTableEditor(props) {
       };
       setFormData({
         ...formData,
-        ["changed_fields"]: changedMap,
+        changed_fields: changedMap,
         [name]: value,
       });
     }

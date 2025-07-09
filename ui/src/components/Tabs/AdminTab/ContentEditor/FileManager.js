@@ -92,6 +92,7 @@ export default function FileManager() {
       .catch((error) => {
         alert("Failed to get files " + error);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getFilesInDirectory]);
 
   /**
