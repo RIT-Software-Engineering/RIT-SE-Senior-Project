@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DatabaseTableEditor from "../../../shared/editors/DatabaseTableEditor";
 import { config, DROPDOWN_ITEMS } from "../../../util/functions/constants";
 
