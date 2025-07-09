@@ -153,9 +153,9 @@ export default function FileManager() {
         });
         const uniqueNewFiles = [];
         // Check that each of the new uploaded files are not already there (duplicated)
-        newFiles.map((newFile) => {
+        newFiles.forEach((newFile) => {
           let exists = false;
-          myFiles.map((existingFile) => {
+          myFiles.forEach((existingFile) => {
             // Already existing file found
             if (existingFile.key === newFile.key) {
               exists = true;
@@ -187,7 +187,7 @@ export default function FileManager() {
       .then((response) => response.json())
       .then(() => {
         const newFiles = [];
-        myFiles.map((file) => {
+        myFiles.forEach((file) => {
           if (file.key.substring(0, oldKey.length) === oldKey) {
             newFiles.push({
               ...file,
@@ -220,7 +220,7 @@ export default function FileManager() {
       .then((response) => response.json())
       .then(() => {
         const newFiles = [];
-        myFiles.map((file) => {
+        myFiles.forEach((file) => {
           if (file.key === oldKey) {
             newFiles.push({
               ...file,
@@ -257,7 +257,7 @@ export default function FileManager() {
           );
           let fileCount = 0;
           const newFiles = [];
-          myFiles.map((file) => {
+          myFiles.forEach((file) => {
             // Keep count of items in parent directory so that if it's empty, we add the empty directory
             // to myFiles and is displayed properly to the user
             if (file.key.substring(0, parent.length) === folderKey[0]) {
@@ -305,7 +305,7 @@ export default function FileManager() {
         else {
           let fileCount = 0;
           const newFiles = [];
-          myFiles.map((file) => {
+          myFiles.forEach((file) => {
             // File to be deleted found, don't add to newFiles and keep track of files in parent directory
             if (file.key === fileKey[0]) {
               fileCount++;
