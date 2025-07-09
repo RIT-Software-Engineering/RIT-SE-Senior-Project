@@ -60,7 +60,7 @@ module.exports = class DBHandler {
       this.openReadWrite();
       if (this.seniorProjectsDB) {
         this.seniorProjectsDB.all(sql, values, (err, rows) => {
-          if (err) reject(err);
+          if (err) throw err;
           else resolve(rows);
         });
       }
@@ -80,7 +80,7 @@ module.exports = class DBHandler {
 
         this.seniorProjectsDB.all(sql, [], (err, rows) => {
           this.closeDB();
-          if (err) reject(err);
+          if (err) throw err;
           else resolve(rows);
         });
       }
