@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Icon } from "semantic-ui-react";
 import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
@@ -16,6 +16,58 @@ export default function FileManager() {
       size: 0,
     },
   ]);
+
+  /**
+   * Given a string, checks if it is a file based on if it has a period to represent the file type
+   * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
+   * Based on the assumption that given files / directories do not contain any periods
+   * @param str string to be checked
+   * @returns {boolean} true if is a file, false otherwise
+   */
+  const isDirectory = useCallback((str) => {
+    const strSplit = str.split(".");
+    return strSplit.length === 1;
+  }, []);
+
+  /**
+   * Gets files from desired directory and adds it to the newFilesToSet array
+   * @param directory Directory to get files from
+   * @param newFilesToSet array to add files to
+   */
+  const getFilesInDirectory = useCallback(
+    (directory, newFilesToSet) => {
+      SecureFetch(`${config.url.API_GET_FILES}?path=${directory}`)
+        .then((response) => response.json())
+        .then((fileData) => {
+          if (fileData?.length !== 0) {
+            fileData.forEach((pathData) => {
+              if (isDirectory(pathData["file"]))
+                getFilesInDirectory(
+                  directory + pathData["file"] + "/",
+                  newFilesToSet,
+                );
+              else
+                newFilesToSet.push({
+                  key: directory + pathData["file"],
+                  modified: Moment(pathData["lastModified"]).toDate(),
+                  size: pathData["size"],
+                });
+            });
+            // Empty directory
+          } else {
+            newFilesToSet.push({
+              key: directory,
+              modified: 0,
+              size: 0,
+            });
+          }
+        })
+        .catch((error) => {
+          alert("Failed to get files " + error);
+        });
+    },
+    [isDirectory],
+  );
 
   // Grabs all files and directories from /resource and adds it to set to "myFiles" front end array
   useEffect(() => {
@@ -40,56 +92,7 @@ export default function FileManager() {
       .catch((error) => {
         alert("Failed to get files " + error);
       });
-  }, []);
-
-  /**
-   * Gets files from desired directory and adds it to the newFilesToSet array
-   * @param directory Directory to get files from
-   * @param newFilesToSet array to add files to
-   */
-  const getFilesInDirectory = (directory, newFilesToSet) => {
-    SecureFetch(`${config.url.API_GET_FILES}?path=${directory}`)
-      .then((response) => response.json())
-      .then((fileData) => {
-        if (fileData?.length !== 0) {
-          fileData.forEach((pathData) => {
-            if (isDirectory(pathData["file"]))
-              getFilesInDirectory(
-                directory + pathData["file"] + "/",
-                newFilesToSet,
-              );
-            else
-              newFilesToSet.push({
-                key: directory + pathData["file"],
-                modified: Moment(pathData["lastModified"]).toDate(),
-                size: pathData["size"],
-              });
-          });
-          // Empty directory
-        } else {
-          newFilesToSet.push({
-            key: directory,
-            modified: 0,
-            size: 0,
-          });
-        }
-      })
-      .catch((error) => {
-        alert("Failed to get files " + error);
-      });
-  };
-
-  /**
-   * Given a string, checks if it is a file based on if it has a period to represent the file type
-   * ex: picture vs picture.jpeg vs picture.png, first one is NOT a file because it does not have a file type ending
-   * Based on the assumption that given files / directories do not contain any periods
-   * @param str string to be checked
-   * @returns {boolean} true if is a file, false otherwise
-   */
-  const isDirectory = (str) => {
-    const strSplit = str.split(".");
-    return strSplit.length === 1;
-  };
+  }, [getFilesInDirectory]);
 
   /**
    * Creates a new folder in given directory
@@ -153,9 +156,9 @@ export default function FileManager() {
         });
         const uniqueNewFiles = [];
         // Check that each of the new uploaded files are not already there (duplicated)
-        newFiles.map((newFile) => {
+        newFiles.forEach((newFile) => {
           let exists = false;
-          myFiles.map((existingFile) => {
+          myFiles.forEach((existingFile) => {
             // Already existing file found
             if (existingFile.key === newFile.key) {
               exists = true;
@@ -187,7 +190,7 @@ export default function FileManager() {
       .then((response) => response.json())
       .then(() => {
         const newFiles = [];
-        myFiles.map((file) => {
+        myFiles.forEach((file) => {
           if (file.key.substring(0, oldKey.length) === oldKey) {
             newFiles.push({
               ...file,
@@ -220,7 +223,7 @@ export default function FileManager() {
       .then((response) => response.json())
       .then(() => {
         const newFiles = [];
-        myFiles.map((file) => {
+        myFiles.forEach((file) => {
           if (file.key === oldKey) {
             newFiles.push({
               ...file,
@@ -257,7 +260,7 @@ export default function FileManager() {
           );
           let fileCount = 0;
           const newFiles = [];
-          myFiles.map((file) => {
+          myFiles.forEach((file) => {
             // Keep count of items in parent directory so that if it's empty, we add the empty directory
             // to myFiles and is displayed properly to the user
             if (file.key.substring(0, parent.length) === folderKey[0]) {
@@ -305,7 +308,7 @@ export default function FileManager() {
         else {
           let fileCount = 0;
           const newFiles = [];
-          myFiles.map((file) => {
+          myFiles.forEach((file) => {
             // File to be deleted found, don't add to newFiles and keep track of files in parent directory
             if (file.key === fileKey[0]) {
               fileCount++;

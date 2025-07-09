@@ -1884,8 +1884,8 @@ module.exports = (db) => {
     const formattedPath =
       req.query.path === "" ? `resource/` : `resource/${req.query.path}`;
     const baseURL = path.join(__dirname, `../../${formattedPath}`);
-    if (!fs.existsSync(baseURL)) {
-      fs.mkdirSync(baseURL, { recursive: true });
+
+    if (fs.existsSync(baseURL)) {
       // Get the files in the directory
       fs.readdir(baseURL, function (err, files) {
         if (err) {
