@@ -37,7 +37,7 @@ VALUES
         NULL,
         NULL,
         '',
-        1,
+        'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-10 14:05:12',
         '2025-12-20 16:45:00'
@@ -51,7 +51,7 @@ VALUES
         NULL,
         NULL,
         '',
-        1,
+        'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-02 08:30:00',
         '2025-01-15 07:20:10'
@@ -65,7 +65,7 @@ VALUES
         NULL,
         NULL,
         '',
-        '',
+        'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-25 12:00:00',
         '2025-01-10 11:11:11'
