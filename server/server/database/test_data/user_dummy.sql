@@ -23,7 +23,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":false, "milestone_view":true, "calendar_view":false}',
         '2025-12-15 10:23:45',
         '2025-11-30 09:12:34'
@@ -37,7 +37,7 @@ VALUES
         NULL,
         NULL,
         '',
-        '',
+        1,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-10 14:05:12',
         '2025-12-20 16:45:00'
@@ -51,7 +51,7 @@ VALUES
         NULL,
         NULL,
         '',
-        '',
+        1,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-02 08:30:00',
         '2025-01-15 07:20:10'
@@ -79,7 +79,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-18 09:45:00',
         '2025-12-28 08:30:00'
@@ -93,7 +93,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-12 13:22:10',
         '2025-12-30 10:10:10'
@@ -107,7 +107,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-20 15:00:00',
         '2025-12-25 14:00:00'
@@ -121,7 +121,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-05 11:11:11',
         '2025-12-15 10:10:10'
@@ -135,7 +135,7 @@ VALUES
         NULL,
         NULL,
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-28 17:30:00',
         '2025-01-10 16:00:00'
@@ -152,7 +152,7 @@ VALUES
         1,
         '1_groweasy',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-15 08:00:00',
         '2025-12-20 07:00:00'
@@ -166,7 +166,7 @@ VALUES
         1,
         '1_groweasy',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-17 09:30:00',
         '2025-12-22 08:30:00'
@@ -180,7 +180,7 @@ VALUES
         1,
         '1_groweasy',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-19 10:45:00',
         '2025-12-24 09:45:00'
@@ -194,7 +194,7 @@ VALUES
         1,
         '1_groweasy',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-21 11:15:00',
         '2025-12-26 10:15:00'
@@ -208,7 +208,7 @@ VALUES
         1,
         '2_smartspark',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-23 12:30:00',
         '2025-12-28 11:30:00'
@@ -222,7 +222,7 @@ VALUES
         1,
         '2_smartspark',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-25 13:45:00',
         '2025-12-30 12:45:00'
@@ -236,7 +236,7 @@ VALUES
         1,
         '2_smartspark',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-27 14:00:00',
         '2025-01-02 13:00:00'
@@ -250,7 +250,7 @@ VALUES
         1,
         '2_smartspark',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-29 15:15:00',
         '2025-01-04 14:15:00'
@@ -264,7 +264,7 @@ VALUES
         1,
         '3_techtitan',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-31 16:30:00',
         '2025-01-06 15:30:00'
@@ -278,7 +278,7 @@ VALUES
         1,
         '3_techtitan',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-02-02 17:45:00',
         '2025-01-08 16:45:00'
@@ -292,7 +292,7 @@ VALUES
         1,
         '3_techtitan',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-02-04 18:00:00',
         '2025-01-10 17:00:00'
@@ -306,7 +306,7 @@ VALUES
         1,
         '3_techtitan',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-02-06 19:15:00',
         '2025-01-12 18:15:00'
@@ -321,7 +321,7 @@ VALUES
         2,
         '4_buzzboost',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-13 08:30:00',
         '2025-12-18 07:30:00'
@@ -335,7 +335,7 @@ VALUES
         2,
         '4_buzzboost',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-15 09:45:00',
         '2025-12-20 08:45:00'
@@ -349,7 +349,7 @@ VALUES
         2,
         '4_buzzboost',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-17 10:00:00',
         '2025-12-22 09:00:00'
@@ -363,7 +363,7 @@ VALUES
         2,
         '4_buzzboost',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-19 11:15:00',
         '2025-12-24 10:15:00'
@@ -378,7 +378,7 @@ VALUES
         3,
         '11_vitavibe',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-21 12:30:00',
         '2025-12-26 11:30:00'
@@ -392,7 +392,7 @@ VALUES
         3,
         '11_vitavibe',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-23 13:45:00',
         '2025-12-28 12:45:00'
@@ -406,7 +406,7 @@ VALUES
         3,
         '11_vitavibe',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-25 14:00:00',
         '2025-12-30 13:00:00'
@@ -420,7 +420,7 @@ VALUES
         3,
         '11_vitavibe',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-27 15:15:00',
         '2025-01-02 14:15:00'
@@ -435,7 +435,7 @@ VALUES
         1,
         '5_profitpulse',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-29 16:30:00',
         '2025-01-04 15:30:00'
@@ -449,7 +449,7 @@ VALUES
         1,
         '5_profitpulse',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-31 17:45:00',
         '2025-01-06 16:45:00'
@@ -463,7 +463,7 @@ VALUES
         1,
         '5_profitpulse',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-02-02 18:00:00',
         '2025-01-08 17:00:00'
@@ -477,7 +477,7 @@ VALUES
         1,
         '5_profitpulse',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-02-04 19:15:00',
         '2025-01-10 18:15:00'
@@ -492,7 +492,7 @@ VALUES
         3,
         '6_nextwave',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-13 08:30:00',
         '2025-12-18 07:30:00'
@@ -506,7 +506,7 @@ VALUES
         3,
         '6_nextwave',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-15 09:45:00',
         '2025-12-20 08:45:00'
@@ -520,7 +520,7 @@ VALUES
         3,
         '6_nextwave',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         '2025-01-17 10:00:00',
         '2025-12-22 09:00:00'
@@ -534,7 +534,7 @@ VALUES
         3,
         '6_nextwave',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         '2025-01-19 11:15:00',
         '2025-12-24 10:15:00'
@@ -549,7 +549,7 @@ VALUES
         3,
         '12_flexflow',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         '2025-01-21 12:30:00',
         '2025-12-26 11:30:00'
@@ -563,7 +563,7 @@ VALUES
         3,
         '12_flexflow',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-23 13:45:00',
         '2025-12-28 12:45:00'
@@ -577,7 +577,7 @@ VALUES
         3,
         '12_flexflow',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-25 14:00:00',
         '2025-12-30 13:00:00'
@@ -591,7 +591,7 @@ VALUES
         3,
         '12_flexflow',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-27 15:15:00',
         '2025-01-02 14:15:00'
@@ -606,7 +606,7 @@ VALUES
         2,
         '7_carecraze',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-29 16:30:00',
         '2025-01-04 15:30:00'
@@ -620,7 +620,7 @@ VALUES
         2,
         '7_carecraze',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-31 17:45:00',
         '2025-01-06 16:45:00'
@@ -634,7 +634,7 @@ VALUES
         2,
         '7_carecraze',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-02 18:00:00',
         '2025-01-08 17:00:00'
@@ -648,7 +648,7 @@ VALUES
         2,
         '7_carecraze',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-04 19:15:00',
         '2025-01-10 18:15:00'
@@ -663,7 +663,7 @@ VALUES
         2,
         '8_dataforge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-13 08:30:00',
         '2025-12-18 07:30:00'
@@ -677,7 +677,7 @@ VALUES
         2,
         '8_dataforge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-15 09:45:00',
         '2025-12-20 08:45:00'
@@ -691,7 +691,7 @@ VALUES
         2,
         '8_dataforge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-17 10:00:00',
         '2025-12-22 09:00:00'
@@ -705,7 +705,7 @@ VALUES
         2,
         '8_dataforge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-19 11:15:00',
         '2025-12-24 10:15:00'
@@ -720,7 +720,7 @@ VALUES
         2,
         '9_ecoedge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-21 12:30:00',
         '2025-12-26 11:30:00'
@@ -734,7 +734,7 @@ VALUES
         2,
         '9_ecoedge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-23 13:45:00',
         '2025-12-28 12:45:00'
@@ -748,7 +748,7 @@ VALUES
         2,
         '9_ecoedge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-25 14:00:00',
         '2025-12-30 13:00:00'
@@ -762,7 +762,7 @@ VALUES
         2,
         '9_ecoedge',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-27 15:15:00',
         '2025-01-02 14:15:00'
@@ -777,7 +777,7 @@ VALUES
         2,
         '10_trendtide',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-29 16:30:00',
         '2025-01-04 15:30:00'
@@ -791,7 +791,7 @@ VALUES
         2,
         '10_trendtide',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-31 17:45:00',
         '2025-01-06 16:45:00'
@@ -805,7 +805,7 @@ VALUES
         2,
         '10_trendtide',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-02 18:00:00',
         '2025-01-08 17:00:00'
@@ -819,7 +819,7 @@ VALUES
         2,
         '10_trendtide',
         '',
-        'FALSE',
+        0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-02-04 19:15:00',
         '2025-01-10 18:15:00'
