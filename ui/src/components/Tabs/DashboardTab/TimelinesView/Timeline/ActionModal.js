@@ -257,7 +257,8 @@ export default function ActionModal(props) {
       const formDataInputs = document.forms[0].elements;
 
       const isRequiredAndEmpty = (input) =>
-        formDataInputs[input]?.required &
+        formDataInputs[input]?.required &&
+        formDataInputs[input]?.name && // Only check elements with names
         (!formDataInputs[input]?.value ||
           !formDataInputs[formDataInputs[input].name]?.value ||
           (formDataInputs[input]?.name.startsWith("Table") &&
@@ -345,6 +346,10 @@ export default function ActionModal(props) {
         }
 
         if (formDataInputs[x].type === "radio") {
+          // Skip radio inputs without names
+          if (!formDataInputs[x].name) {
+            continue;
+          }
           if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
             errors.push(
               `radio option selection "${formDataInputs[x].name}" is required`,
@@ -354,6 +359,11 @@ export default function ActionModal(props) {
           formData[formDataInputs[x].name] =
             formDataInputs[formDataInputs[x].name]?.value;
         } else {
+          // Skip file inputs and inputs without names
+          if (formDataInputs[x].type === "file" || !formDataInputs[x].name) {
+            continue;
+          }
+
           if (isRequiredAndEmpty(x)) {
             errors.push(`'${formDataInputs[x].name}' can not be empty`);
           }
