@@ -199,10 +199,32 @@ export default function DevSignInModalContent() {
                 onClick={async () => {
                   setLoading(true);
 
-                  // Delete all cookies
-                  document.cookie.split(";").forEach((cookie) => {
-                    document.cookie = cookie + ";max-age=0";
-                  });
+                  // Clear all browser storage
+                  try {
+                    // Delete all cookies
+                    document.cookie.split(";").forEach((cookie) => {
+                      const eqPos = cookie.indexOf("=");
+                      const name =
+                        eqPos > -1
+                          ? cookie.substr(0, eqPos).trim()
+                          : cookie.trim();
+                      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                    });
+
+                    // Clear session storage
+                    sessionStorage.clear();
+
+                    // Clear local storage
+                    localStorage.clear();
+
+                    console.log("Browser storage cleared");
+                  } catch (storageError) {
+                    console.warn(
+                      "Failed to clear some browser storage:",
+                      storageError,
+                    );
+                  }
 
                   try {
                     const response = await SecureFetch(
