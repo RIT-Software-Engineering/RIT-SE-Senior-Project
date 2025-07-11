@@ -32,7 +32,7 @@ INSERT INTO
 VALUES
     (
         '1_groweasy',
-        'complete',
+        'completed',
         'GrowEasy Analytics Platform for Small Business Growth',
         'GrowEasy Inc.',
         'John Doe',
@@ -62,7 +62,7 @@ VALUES
     ),
     (
         '2_smartspark',
-        'complete',
+        'completed',
         'SmartSpark AI-Driven Marketing Campaign Tool',
         'SparkVibe Agency',
         'John Doe',
@@ -92,7 +92,7 @@ VALUES
     ),
     (
         '3_techtitan',
-        'complete',
+        'completed',
         'TechTitan Scalable CRM System for Startups',
         'TechTitan Corp.',
         'David Lee',
@@ -152,7 +152,7 @@ VALUES
     ),
     (
         '5_profitpulse',
-        'complete',
+        'completed',
         'ProfitPulse Strategic Planning and Forecasting Tool',
         'PulseConsulting',
         'Laura Martin',
