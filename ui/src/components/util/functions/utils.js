@@ -135,7 +135,7 @@ export const isSemesterActive = (start_date, end_date) => {
  * @returns {string} slug
  */
 export const slugify = (str) => {
-  if (str === undefined) return "";
+  if (str === undefined || str === null) return "";
   return str
     .toLowerCase()
     .trim()

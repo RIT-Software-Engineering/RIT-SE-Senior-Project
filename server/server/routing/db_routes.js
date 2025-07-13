@@ -1889,32 +1889,47 @@ module.exports = (db) => {
       // Get the files in the directory
       fs.readdir(baseURL, function (err, files) {
         if (err) {
-          console.error(err);
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
+          console.error(`Error reading directory ${baseURL}:`, err);
+          // Return empty array instead of throwing error for missing directories
+          res.send(fileData);
+          return;
         }
-        const info = fs.statSync(baseURL);
-        files.forEach(function (file) {
-          // Only files have sizes, directories do not. Send file size if it is a file
-          const fileInfo = fs.statSync(baseURL + file);
-          if (fileInfo.isFile()) {
-            fileData.push({
-              file: file,
-              size: fileInfo.size,
-              lastModified: fileInfo.ctime,
-            });
-          } else {
-            fileData.push({
-              file: file,
-              size: 0,
-              lastModified: info.ctime,
-            });
-          }
-        });
+
+        try {
+          const info = fs.statSync(baseURL);
+          files.forEach(function (file) {
+            try {
+              // Only files have sizes, directories do not. Send file size if it is a file
+              const fileInfo = fs.statSync(path.join(baseURL, file));
+              if (fileInfo.isFile()) {
+                fileData.push({
+                  file: file,
+                  size: fileInfo.size,
+                  lastModified: fileInfo.ctime,
+                });
+              } else {
+                fileData.push({
+                  file: file,
+                  size: 0,
+                  lastModified: info.ctime,
+                });
+              }
+            } catch (fileErr) {
+              console.error(`Error processing file ${file}:`, fileErr);
+              // Skip files that can't be processed
+            }
+          });
+        } catch (statErr) {
+          console.error(
+            `Error getting directory stats for ${baseURL}:`,
+            statErr,
+          );
+        }
+
         res.send(fileData);
       });
     } else {
+      console.log(`Directory does not exist: ${baseURL}`);
       res.send(fileData);
     }
   });

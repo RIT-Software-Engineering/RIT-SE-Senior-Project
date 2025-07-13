@@ -137,7 +137,10 @@ export default function ArchivePanel(props) {
     poster_thumb: decode(props?.project?.poster_thumb) || "",
     poster_full: decode(props?.project?.poster_full) || "",
     archive_image: decode(props?.project?.archive_image) || "",
-    synopsis: decode(props?.project?.synopsis).replace(/\r\n|\r/g, "\n") || "",
+    synopsis: (decode(props?.project?.synopsis) || "").replace(
+      /\r\n|\r/g,
+      "\n",
+    ),
     video: decode(props?.project?.video) || "",
     name: decode(props?.project?.name) || "",
     dept: props?.project?.dept || "",
@@ -146,9 +149,10 @@ export default function ArchivePanel(props) {
     keywords: decode(props?.project?.keywords) || "",
     // suggest a slug if this is a new archive project and the project already exists before archival
     url_slug:
-      props?.project?.url_slug || props.newArchive
+      props?.project?.url_slug ||
+      (props.newArchive && props?.project?.title
         ? slugify(props?.project?.title)
-        : "",
+        : ""),
     inactive: props.project?.inactive || "",
     locked: props.project?.locked || "",
   });
