@@ -230,7 +230,7 @@ function Header() {
         }}
       >
         <img
-          src={modeContext.darkMode ? SELogoLightMode : SELogoDarkMode}
+          src={modeContext.darkMode ? SELogoDarkMode : SELogoLightMode}
           alt="Department of Software Engineering"
           style={{
             maxWidth: "400px",

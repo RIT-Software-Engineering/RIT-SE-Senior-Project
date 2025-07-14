@@ -97,7 +97,6 @@ const ProfileModal = ({ open, onClose, user }) => {
 
       setDarkMode(newDarkMode);
       modeContext.setDarkMode(newDarkMode);
-      document.body.classList.toggle("dark-mode", newDarkMode);
     } catch (err) {
       console.error("Error updating dark mode:", err);
     }
