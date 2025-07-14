@@ -2,10 +2,9 @@
 
 #header {
   height: var(--header-footer-height);
-  padding-bottom: 3em;
-  margin-bottom: 2em;
   background-color: white;
   transition: background-color 0.3s ease;
+  box-shadow: 0 2px 10px black;
 }
 
 #header .container {

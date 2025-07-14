@@ -11,6 +11,7 @@ import SELogoLightMode from "../../../Assets/RIT_rgb_hor_k.png";
 import SELogoDarkMode from "../../../Assets/RIT_rgb_hor_w.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import { ModeContext } from "../../util/functions/ModeContext";
 
 function Header() {
   const history = useHistory();
@@ -22,7 +23,7 @@ function Header() {
     // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
-  const [darkMode, setDarkMode] = useState(false);
+  const modeContext = useContext(ModeContext);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
@@ -224,12 +225,12 @@ function Header() {
         style={{
           display: "flex",
           alignItems: "center",
-          height: "4em",
-          padding: "0 1em",
+          padding: "1em",
+          borderTop: "2px solid rgba(255,255,255, 0.2)",
         }}
       >
         <img
-          src={darkMode ? SELogoDarkMode : SELogoLightMode}
+          src={modeContext.darkMode ? SELogoLightMode : SELogoDarkMode}
           alt="Department of Software Engineering"
           style={{
             maxWidth: "400px",
