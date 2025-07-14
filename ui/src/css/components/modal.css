@@ -120,9 +120,15 @@ body.dark-mode .ui.header {
   color: var(--text-primary);
 }
 
+.dark-mode .ui.table th {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
 body.dark-mode .ui.table td,
 body.dark-mode .ui.table th {
   border-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .dark-mode .ui.input > input {
