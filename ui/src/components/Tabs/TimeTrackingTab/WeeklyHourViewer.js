@@ -176,6 +176,10 @@ export default function WeeklyHourViewer(props) {
                                 zIndex: 0,
                                 borderRadius: "4px",
                                 opacity: 0.2,
+                                borderBottom:
+                                  percent > 0
+                                    ? "0px solid transparent"
+                                    : "5px solid #2185d0",
                               }}
                             />
                             <div
