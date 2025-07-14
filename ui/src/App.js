@@ -16,32 +16,35 @@ import StackTraceErrorPage from "./components/pages/StackTraceErrorPage";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./css/utils/helpers.css";
+import { ModeContextProvider } from "./components/util/functions/ModeContext";
 
 function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <UserContextProvider>
-        <ErrorBoundary>
-          <Header />
-          <div id="page">
-            <Container>
-              <Switch>
-                <Route path="/" component={HomePage} exact />
-                <Route
-                  path="/projects/:url_slug"
-                  component={UniqueProjectPage}
-                />
-                <Route path="/projects" component={ProjectsPage} />
-                <Route path="/sponsor" component={SponsorPage} />
-                <Route path="/proposal-form" component={ProposalPage} />
-                <Route path="/dashboard" component={DashboardPage} />
-                <Route path="/error" component={StackTraceErrorPage} />
-                <Route component={ErrorPage} />
-              </Switch>
-            </Container>
-          </div>
-          <Footer />
-        </ErrorBoundary>
+        <ModeContextProvider>
+          <ErrorBoundary>
+            <Header />
+            <div id="page">
+              <Container>
+                <Switch>
+                  <Route path="/" component={HomePage} exact />
+                  <Route
+                    path="/projects/:url_slug"
+                    component={UniqueProjectPage}
+                  />
+                  <Route path="/projects" component={ProjectsPage} />
+                  <Route path="/sponsor" component={SponsorPage} />
+                  <Route path="/proposal-form" component={ProposalPage} />
+                  <Route path="/dashboard" component={DashboardPage} />
+                  <Route path="/error" component={StackTraceErrorPage} />
+                  <Route component={ErrorPage} />
+                </Switch>
+              </Container>
+            </div>
+            <Footer />
+          </ErrorBoundary>
+        </ModeContextProvider>
       </UserContextProvider>
     </DndProvider>
   );
