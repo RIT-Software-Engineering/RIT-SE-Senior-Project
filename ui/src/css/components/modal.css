@@ -5,7 +5,6 @@ button.ui.button,
 .ui.icon.buttons,
 .button,
 a.ui.button {
-  background-color: var(--bg-primary);
   color: var(--text-primary);
   padding: 10px 20px;
   margin-top: 0.5em;

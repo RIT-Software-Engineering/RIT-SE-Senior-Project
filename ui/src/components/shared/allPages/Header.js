@@ -7,7 +7,8 @@ import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import SELogo from "../../../Assets/GCCIS_Dept of Software Engineering_LOGO.jpg";
+import SELogoLightMode from "../../../Assets/RIT_rgb_hor_k.png";
+import SELogoDarkMode from "../../../Assets/RIT_rgb_hor_w.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
@@ -51,46 +52,43 @@ function Header() {
         <div id="nav-buttons" className="ui right floated buttons">
           {!signedIn && (
             <>
-              <a
-                href={"/"}
+              <Button
                 className="ui button"
                 onClick={() => {
                   history.push("/");
                 }}
               >
                 Home
-              </a>
-              <a
-                href={"/projects"}
+              </Button>
+              <Button
                 className="ui button"
                 onClick={() => {
                   history.push("/projects");
                 }}
               >
                 Projects
-              </a>
-              <a
-                href={"/sponsor"}
+              </Button>
+              <Button
                 className="ui button"
                 onClick={() => {
                   history.push("/sponsor");
                 }}
               >
                 Sponsor a Project
-              </a>
+              </Button>
             </>
           )}
           {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <button className="ui button" onClick={signInOut}>
+            <Button onClick={signInOut} className="ui button">
               <Icon name="sign-in" />
               {signInOutBtnText}
-            </button>
+            </Button>
           ) : (
             <Modal
               closeOnDimmerClick={false}
               className={"sticky"}
               trigger={
-                <Button>
+                <Button className="ui button">
                   <Icon name="sign-in" />
                   {devSignInBtnText}
                 </Button>
@@ -103,7 +101,7 @@ function Header() {
             />
           )}
           {signedIn && (
-            <button
+            <Button
               className="ui button"
               onClick={() => setProfileModalOpen(true)}
             >
@@ -113,11 +111,15 @@ function Header() {
                   Profile
                 </span>
               </span>
-            </button>
+            </Button>
           )}
         </div>
-        <div id="hamburger-menu">
-          <Button icon onClick={() => setVisible(true)}>
+        <div id="hamburger-menu" className="ui right floated buttons">
+          <Button
+            style={{ backgroundColor: "black", color: "white" }}
+            icon
+            onClick={() => setVisible(true)}
+          >
             <Icon name="bars" />
           </Button>
         </div>
@@ -130,53 +132,70 @@ function Header() {
           vertical
           inverted
         >
-          <Menu.Item
-            as="a"
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            Home
-          </Menu.Item>
-          <Menu.Item
-            as="a"
-            href={"/projects"}
-            onClick={() => {
-              history.push("/projects");
-            }}
-          >
-            Projects
-          </Menu.Item>
-          {signedIn && (
-            <Menu.Item
-              as="a"
-              href={"/dashboard"}
+          <Menu.Item>
+            <Button
+              fluid
               onClick={() => {
-                history.push("/dashboard");
+                setVisible(false);
+                history.push("/");
               }}
             >
-              Dashboard
+              Home
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button
+              fluid
+              onClick={() => {
+                setVisible(false);
+                history.push("/projects");
+              }}
+            >
+              Projects
+            </Button>
+          </Menu.Item>
+          {signedIn && (
+            <Menu.Item>
+              <Button
+                fluid
+                onClick={() => {
+                  setVisible(false);
+                  history.push("/dashboard");
+                }}
+              >
+                Dashboard
+              </Button>
             </Menu.Item>
           )}
-          <Menu.Item
-            as="a"
-            href={"/sponsor"}
-            onClick={() => {
-              history.push("/sponsor");
-            }}
-          >
-            Sponsor a Project
+          <Menu.Item>
+            <Button
+              fluid
+              onClick={() => {
+                setVisible(false);
+                history.push("/sponsor");
+              }}
+            >
+              Sponsor a Project
+            </Button>
           </Menu.Item>
           {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <Menu.Item as="a" href={void 0} onClick={signInOut}>
-              {signInOutBtnText}
+            <Menu.Item>
+              <Button
+                fluid
+                onClick={() => {
+                  setVisible(false);
+                  signInOut();
+                }}
+              >
+                {signInOutBtnText}
+              </Button>
             </Menu.Item>
           ) : (
-            <Menu.Item as="a" href={void 0}>
+            <Menu.Item>
               <Modal
                 closeOnDimmerClick={false}
                 className={"sticky"}
-                trigger={<div>Dev Sign in/out</div>}
+                trigger={<Button fluid>Dev Sign in/out</Button>}
                 header="Sign in/Sign Out"
                 content={{
                   content: <DevSignInModalContent />,
@@ -192,53 +211,8 @@ function Header() {
 
   return (
     <div id="header">
-      <div className="ui container">
-        <h1
-          className="ui header"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <img
-            src={SELogo}
-            alt="Department of Software Engineering"
-            style={{
-              maxWidth: "150px",
-              height: "auto",
-              marginRight: "15px",
-              flexShrink: 0,
-              cursor: "pointer",
-            }}
-            href={"/"}
-            onClick={() => {
-              history.push("/");
-              // Delete all cookies
-              let cookies = document.cookie.split(";");
-              cookies.forEach(
-                (cookie) => (document.cookie = cookie + ";max-age=0"),
-              );
-              window.location.reload();
-            }}
-          />
-          <span
-            style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
-            href={"/"}
-            onClick={() => {
-              history.push("/");
-              // Delete all cookies
-              let cookies = document.cookie.split(";");
-              cookies.forEach(
-                (cookie) => (document.cookie = cookie + ";max-age=0"),
-              );
-              window.location.reload();
-            }}
-          >
-            Senior Project
-          </span>
-        </h1>
-
+      <div id="navbar">
+        <span>Software Engineering Senior Project</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
@@ -246,6 +220,50 @@ function Header() {
           user={user}
         />
       </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: "4em",
+          padding: "0 1em",
+        }}
+      >
+        <img
+          src={darkMode ? SELogoDarkMode : SELogoLightMode}
+          alt="Department of Software Engineering"
+          style={{
+            maxWidth: "400px",
+            height: "auto",
+            marginRight: "15px",
+            flexShrink: 0,
+            cursor: "pointer",
+          }}
+          href={"/"}
+          onClick={() => {
+            history.push("/");
+            // Delete all cookies
+            let cookies = document.cookie.split(";");
+            cookies.forEach(
+              (cookie) => (document.cookie = cookie + ";max-age=0"),
+            );
+            window.location.reload();
+          }}
+        />
+        <span
+          style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
+          href={"/"}
+          onClick={() => {
+            history.push("/");
+            // Delete all cookies
+            let cookies = document.cookie.split(";");
+            cookies.forEach(
+              (cookie) => (document.cookie = cookie + ";max-age=0"),
+            );
+            window.location.reload();
+          }}
+        ></span>
+      </div>
+      <div className="header-divider" />
     </div>
   );
 }

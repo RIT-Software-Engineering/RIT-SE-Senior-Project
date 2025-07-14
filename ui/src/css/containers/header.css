@@ -1,19 +1,19 @@
-@import './../base/variables.css';
+@import "./../base/variables.css";
 
 #header {
-    height: var(--header-footer-height);
-    padding-top: 2em;
-    padding-bottom: 1em;
-    background-color: var(--gantt-today);
-    transition: background-color 0.3s ease;
+  height: var(--header-footer-height);
+  padding-bottom: 3em;
+  margin-bottom: 2em;
+  background-color: white;
+  transition: background-color 0.3s ease;
 }
 
 #header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    transition: color 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  transition: color 0.3s ease;
 }
 
 #subHeader {
@@ -23,10 +23,34 @@
 
 /* Dark Mode Styles */
 .dark-mode #header {
-    background-color: var(--bg-footer-header); 
+  background-color: black;
 }
 
 .dark-mode #header .container,
 .dark-mode #subHeader {
-    color: var(--bg-primary);
+  color: var(--bg-primary);
+}
+
+.header-divider {
+  width: 100vw;
+  height: 0.5em;
+  background-color: var(--gantt-today);
+}
+
+#navbar {
+  width: 100vw;
+  height: 43px;
+  background-color: black;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  padding-left: 1em;
+  font-size: 1.2em;
+}
+
+#navbar .ui.button {
+  color: white;
+  background-color: transparent;
+  border: none;
 }
