@@ -20,7 +20,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
-import TimeLogProjects from "./TimeLogProjects";
 
 const LOGS_PER_PAGE = 10;
 const TIME_LOGS_PER_PAGE = 5;

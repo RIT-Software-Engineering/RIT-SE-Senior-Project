@@ -1,12 +1,9 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 
 import {
   Button,
-  Divider,
   Icon,
-  Label,
   Modal,
-  ModalActions,
   Segment,
   Table,
   TableBody,
@@ -15,17 +12,13 @@ import {
   TableHeaderCell,
   TableRow,
 } from "semantic-ui-react";
-import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import InnerHTML from "dangerously-set-html-content";
-import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
 
 const { isSameWeek, addDays } = require("date-fns");
 
 export default function WeeklyHourViewer(props) {
   const [open, setOpen] = useState(false);
-  const [index, setIndex] = useState(0);
 
   // Check if dark mode is active
   const isDarkMode = document.body.classList.contains("dark-mode");
@@ -48,6 +41,12 @@ export default function WeeklyHourViewer(props) {
     border: `1px solid ${isDarkMode ? "#444444" : "#dee2e6"}`,
     color: isDarkMode ? "#ffffff" : "#333333",
   };
+
+  let maxTime = props.timeLog.reduce(
+    (max, log) => Math.max(max, log.time_amount),
+    0,
+  );
+
   const handleDelete = async function (e) {
     let body = new FormData();
     body.append("id", e);
@@ -79,7 +78,7 @@ export default function WeeklyHourViewer(props) {
       0,
     );
 
-    if (total == 0 || parseFloat(total) / parseInt(total) == 1) {
+    if (total === 0 || parseFloat(total) / parseInt(total) === 1) {
       return total;
     }
     return total.toFixed(2);
@@ -131,9 +130,9 @@ export default function WeeklyHourViewer(props) {
               <TableHeader>
                 <TableRow>
                   <TableHeaderCell>Name</TableHeaderCell>
-                  {props.weeks != undefined &&
+                  {props.weeks !== undefined &&
                     props.weeks.map((week) => (
-                      <TableHeaderCell>
+                      <TableHeaderCell key={week.toISOString()}>
                         {week.toLocaleDateString()} to{" "}
                         {addDays(week, 7).toLocaleDateString()}
                       </TableHeaderCell>
@@ -143,12 +142,55 @@ export default function WeeklyHourViewer(props) {
 
               <TableBody>
                 {props.students.map((stu) => (
-                  <TableRow>
+                  <TableRow key={stu.name}>
                     <TableCell>{stu.name} </TableCell>
-                    {props.weeks != undefined &&
-                      props.weeks.map((week) => (
-                        <TableCell>{getTotalTime(week, stu.name)}</TableCell>
-                      ))}
+                    {props.weeks !== undefined &&
+                      props.weeks.map((week) => {
+                        const total = getTotalTime(week, stu.name);
+                        const percent =
+                          maxTime > 0
+                            ? Math.min(100, (parseFloat(total) / maxTime) * 100)
+                            : 0;
+                        return (
+                          <TableCell
+                            key={week.toISOString() + stu.name}
+                            style={{
+                              position: "relative",
+                              background: "none",
+                              padding: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                background:
+                                  percent > 0
+                                    ? `linear-gradient(to top, #2185d0 ${percent}%, transparent ${percent}%)`
+                                    : "transparent",
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                zIndex: 0,
+                                borderRadius: "4px",
+                                opacity: 0.2,
+                              }}
+                            />
+                            <div
+                              style={{
+                                position: "relative",
+                                zIndex: 1,
+                                padding: "0.5em",
+                                textAlign: "center",
+                              }}
+                            >
+                              {total}
+                            </div>
+                          </TableCell>
+                        );
+                      })}
                   </TableRow>
                 ))}
               </TableBody>

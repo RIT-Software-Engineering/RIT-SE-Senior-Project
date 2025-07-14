@@ -17,9 +17,6 @@ import { UserContext } from "../../util/functions/UserContext";
 import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
-import moment from "moment-timezone";
-
-const LOGS_PER_PAGE = 50;
 
 export default function ProjectTime(props) {
   const userContext = useContext(UserContext);
@@ -75,7 +72,7 @@ export default function ProjectTime(props) {
                     </TableHeader>
                     <TableBody>
                       {props.timeLogs
-                        ?.filter((log) => log.project == props.proj.project_id)
+                        ?.filter((log) => log.project === props.proj.project_id)
                         .map((timeLog, idx) => {
                           let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
                           if (timeLog.mock_id) {
@@ -165,13 +162,13 @@ export default function ProjectTime(props) {
                     </TableHeader>
                     <TableBody>
                       {props.timeStats
-                        ?.filter((log) => log.project == props.proj.project_id)
+                        ?.filter((log) => log.project === props.proj.project_id)
                         .map((timeStat, idx) => {
                           let totalHours;
                           if (
-                            timeStat.total == 0 ||
+                            timeStat.total === 0 ||
                             parseFloat(timeStat.total) /
-                              parseInt(timeStat.total) ==
+                              parseInt(timeStat.total) ===
                               1
                           ) {
                             totalHours = timeStat.total;
@@ -196,9 +193,11 @@ export default function ProjectTime(props) {
                       semesterName={props.semester.name}
                       weeks={weeks}
                       timeLog={props.timeLogs.filter(
-                        (log) => log.project == props.proj.project_id,
+                        (log) => log.project === props.proj.project_id,
                       )}
-                      students={props.timeStats}
+                      students={props.timeStats.filter(
+                        (log) => log.project === props.proj.project_id,
+                      )}
                     />
                   </div>
                 </div>
