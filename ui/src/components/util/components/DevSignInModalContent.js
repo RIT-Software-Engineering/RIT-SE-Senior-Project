@@ -2,7 +2,17 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
-import { Button, Container, Icon } from "semantic-ui-react";
+import {
+  Button,
+  Container,
+  Icon,
+  Input,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownDivider,
+  DropdownHeader,
+} from "semantic-ui-react";
 import _ from "lodash";
 
 /**
@@ -10,20 +20,22 @@ import _ from "lodash";
  */
 export default function DevSignInModalContent() {
   const history = useHistory();
-  const [users, setUsers] = useState([]);
   const [adminUsers, setAdminUsers] = useState([]);
   const [coachUsers, setCoachUsers] = useState([]);
   const [studentUsers, setStudentUsers] = useState([]);
-  const selectedUserIdx = useRef(null);
+  const [searchAdminUsers, setSearchAdminUsers] = useState([]);
+  const [searchCoachUsers, setSearchCoachUsers] = useState([]);
+  const [searchStudentUsers, setSearchStudentUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     if (process.env.REACT_APP_NODE_ENV === "development") {
       SecureFetch(config.url.DEV_ONLY_API_GET_ALL_USERS)
         .then((response) => response.json())
         .then((users) => {
-          setUsers(users);
-
           // Group users by type and sort alphabetically within each group
           const admins = _.sortBy(
             users.filter((user) => user.type === USERTYPES.ADMIN),
@@ -41,9 +53,93 @@ export default function DevSignInModalContent() {
           setAdminUsers(admins);
           setCoachUsers(coaches);
           setStudentUsers(students);
+          setSearchAdminUsers(admins);
+          setSearchCoachUsers(coaches);
+          setSearchStudentUsers(students);
         });
     }
-  }, []);
+
+    // Handle click outside to close dropdown
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        isDropdownOpen
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  const handleSearch = (searchVal) => {
+    if (searchVal === "") {
+      setSearchAdminUsers(adminUsers);
+      setSearchCoachUsers(coachUsers);
+      setSearchStudentUsers(studentUsers);
+      return;
+    }
+
+    const filterUsers = (usersList) => {
+      return usersList.filter((user) => {
+        return (
+          user.fname.toLowerCase().includes(searchVal.toLowerCase()) ||
+          user.lname.toLowerCase().includes(searchVal.toLowerCase()) ||
+          user.system_id.toLowerCase().includes(searchVal.toLowerCase())
+        );
+      });
+    };
+
+    setSearchAdminUsers(filterUsers(adminUsers));
+    setSearchCoachUsers(filterUsers(coachUsers));
+    setSearchStudentUsers(filterUsers(studentUsers));
+  };
+
+  const handleDropdownOpen = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+    handleSearch("");
+  };
+
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    setIsDropdownOpen(false);
+  };
+
+  const signInAsUser = () => {
+    if (!selectedUser) {
+      alert("Please select a user to sign in as");
+      return;
+    }
+
+    document.cookie = `system_id=${selectedUser.system_id}`;
+    document.cookie = `fname=${selectedUser.fname}`;
+    document.cookie = `lname=${selectedUser.lname}`;
+    document.cookie = `email=${selectedUser.email}`;
+    document.cookie = `type=${selectedUser.type}`;
+    document.cookie = `semester_group=${selectedUser.semester_group}`;
+    document.cookie = `project=${selectedUser.project}`;
+    document.cookie = `active=${selectedUser.active}`;
+    document.cookie = `view_only=${selectedUser.view_only}`;
+
+    SecureFetch(config.url.DEV_ONLY_API_POST_EDIT_LAST_LOGIN, {
+      method: "post",
+    })
+      .then(() => {
+        // Simulate redirect from Shibboleth
+        history.push("/dashboard");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  // Check if dark mode is active
+  const isDarkMode = document.body.classList.contains("dark-mode");
 
   return (
     <Container textAlign="center" style={{ maxWidth: 600 }}>
@@ -53,93 +149,108 @@ export default function DevSignInModalContent() {
             {/* Left Section: Sign In */}
             <div
               style={{
-                background: "rgba(0,0,0,0.1)",
+                background: isDarkMode
+                  ? "var(--bg-secondary)"
+                  : "rgba(0,0,0,0.1)",
                 borderRadius: 8,
                 boxShadow: "0 1px 6px rgba(0,0,0,0.1)",
                 padding: 32,
                 justifyContent: "center",
                 minHeight: 250,
+                border: isDarkMode ? "1px solid var(--border-color)" : "none",
               }}
             >
-              <h2 style={{ marginBottom: 24 }}>Sign In As</h2>
-              <select
-                className="ui dropdown labeled"
-                ref={selectedUserIdx}
+              <h2
                 style={{
                   marginBottom: 24,
-                  padding: 8,
-                  fontSize: 16,
-                  borderRadius: 4,
-                  border: "1px solid #ccc",
-                  width: 250,
+                  color: isDarkMode ? "var(--text-primary)" : "inherit",
                 }}
               >
-                {adminUsers.length > 0 && (
-                  <optgroup label="Admins">
-                    {adminUsers.map((user) => (
-                      <option
-                        value={users.findIndex(
-                          (u) => u.system_id === user.system_id,
-                        )}
-                        key={`admin-${user.system_id}`}
-                      >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
-                    ))}
-                  </optgroup>
-                )}
-                {coachUsers.length > 0 && (
-                  <optgroup label="Coaches">
-                    {coachUsers.map((user) => (
-                      <option
-                        value={users.findIndex(
-                          (u) => u.system_id === user.system_id,
-                        )}
-                        key={`coach-${user.system_id}`}
-                      >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
-                    ))}
-                  </optgroup>
-                )}
-                {studentUsers.length > 0 && (
-                  <optgroup label="Students">
-                    {studentUsers.map((user) => (
-                      <option
-                        value={users.findIndex(
-                          (u) => u.system_id === user.system_id,
-                        )}
-                        key={`student-${user.system_id}`}
-                      >{`${user.fname} ${user.lname} (${user.system_id})`}</option>
-                    ))}
-                  </optgroup>
-                )}
-              </select>
-              <div>
-                <Button
-                  color="orange"
-                  onClick={() => {
-                    const user = users[selectedUserIdx.current.value];
-
-                    document.cookie = `system_id=${user.system_id}`;
-                    document.cookie = `fname=${user.fname}`;
-                    document.cookie = `lname=${user.lname}`;
-                    document.cookie = `email=${user.email}`;
-                    document.cookie = `type=${user.type}`;
-                    document.cookie = `semester_group=${user.semester_group}`;
-                    document.cookie = `project=${user.project}`;
-                    document.cookie = `active=${user.active}`;
-                    document.cookie = `view_only=${user.view_only}`;
-                    //TODO: MAKE ADJUSTMENTS FOR PRODUCTION, BUT DO NOT REMOVE THIS. UPDATES LOGIN TIMES.
-                    SecureFetch(config.url.DEV_ONLY_API_POST_EDIT_LAST_LOGIN, {
-                      method: "post",
-                    })
-                      .then(() => {
-                        // Simulate redirect from Shibboleth
-                        history.push("/dashboard");
-                        window.location.reload();
-                      })
-                      .catch((err) => {
-                        console.error(err);
-                      });
+                Sign In As
+              </h2>
+              <div ref={dropdownRef} style={{ marginBottom: 24 }}>
+                <Dropdown
+                  onClick={handleDropdownOpen}
+                  floating
+                  button
+                  className="ui button"
+                  text={
+                    selectedUser
+                      ? `${selectedUser.fname} ${selectedUser.lname} (${selectedUser.system_id})`
+                      : "Select User..."
+                  }
+                  open={isDropdownOpen}
+                  style={{
+                    width: 250,
+                    fontSize: 16,
                   }}
                 >
+                  {isDropdownOpen ? (
+                    <DropdownMenu>
+                      <Input
+                        icon="search"
+                        iconPosition="left"
+                        placeholder="Search User..."
+                        input={{ onClick: (e) => e.stopPropagation() }}
+                        onChange={(e) => {
+                          handleSearch(e.target.value);
+                        }}
+                        autoFocus
+                      />
+                      {searchAdminUsers.length > 0 && (
+                        <>
+                          <DropdownDivider />
+                          <DropdownHeader content="Admins" />
+                          <DropdownMenu scrolling>
+                            {searchAdminUsers.map((user) => (
+                              <DropdownItem
+                                key={`admin-${user.system_id}`}
+                                text={`${user.fname} ${user.lname} (${user.system_id})`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              />
+                            ))}
+                          </DropdownMenu>
+                        </>
+                      )}
+                      {searchCoachUsers.length > 0 && (
+                        <>
+                          <DropdownDivider />
+                          <DropdownHeader content="Coaches" />
+                          <DropdownMenu scrolling>
+                            {searchCoachUsers.map((user) => (
+                              <DropdownItem
+                                key={`coach-${user.system_id}`}
+                                text={`${user.fname} ${user.lname} (${user.system_id})`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              />
+                            ))}
+                          </DropdownMenu>
+                        </>
+                      )}
+                      {searchStudentUsers.length > 0 && (
+                        <>
+                          <DropdownDivider />
+                          <DropdownHeader content="Students" />
+                          <DropdownMenu scrolling>
+                            {searchStudentUsers.map((user) => (
+                              <DropdownItem
+                                key={`student-${user.system_id}`}
+                                text={`${user.fname} ${user.lname} (${user.system_id})`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              />
+                            ))}
+                          </DropdownMenu>
+                        </>
+                      )}
+                    </DropdownMenu>
+                  ) : null}
+                </Dropdown>
+              </div>
+              <div>
+                <Button color="orange" onClick={signInAsUser}>
                   {" "}
                   <Icon name="sign-in" />
                   Sign In
@@ -189,7 +300,12 @@ export default function DevSignInModalContent() {
               >
                 DANGER
               </div>
-              <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  marginBottom: 12,
+                  color: isDarkMode ? "var(--text-primary)" : "inherit",
+                }}
+              >
                 This will reset the entire database and delete all cookies.
                 Please proceed with caution.
               </div>
