@@ -29,7 +29,16 @@ export default function DevSignInModalContent() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const dropdownRef = useRef(null);
+
+  // Calculate dynamic dropdown height based on screen size
+  const getDropdownMaxHeight = () => {
+    // Base height that adapts to screen size
+    const baseHeight = Math.min(windowHeight * 0.6, 500); // 60% of screen height, max 500px
+    const minHeight = 350; // Minimum height for usability
+    return Math.max(baseHeight, minHeight);
+  };
 
   useEffect(() => {
     if (process.env.REACT_APP_NODE_ENV === "development") {
@@ -59,6 +68,11 @@ export default function DevSignInModalContent() {
         });
     }
 
+    // Handle window resize for dynamic dropdown height
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+
     // Handle click outside to close dropdown
     const handleClickOutside = (event) => {
       if (
@@ -70,8 +84,11 @@ export default function DevSignInModalContent() {
       }
     };
 
+    window.addEventListener("resize", handleResize);
     document.addEventListener("click", handleClickOutside);
+
     return () => {
+      window.removeEventListener("resize", handleResize);
       document.removeEventListener("click", handleClickOutside);
     };
   }, [isDropdownOpen]);
@@ -186,7 +203,17 @@ export default function DevSignInModalContent() {
                   }}
                 >
                   {isDropdownOpen ? (
-                    <DropdownMenu>
+                    <DropdownMenu
+                      style={{
+                        maxHeight: `${getDropdownMaxHeight()}px`,
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        position: "absolute",
+                        zIndex: 1000,
+                        width: "100%",
+                        minWidth: "250px",
+                      }}
+                    >
                       <Input
                         icon="search"
                         iconPosition="left"
@@ -201,48 +228,42 @@ export default function DevSignInModalContent() {
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Admins" />
-                          <DropdownMenu scrolling>
-                            {searchAdminUsers.map((user) => (
-                              <DropdownItem
-                                key={`admin-${user.system_id}`}
-                                text={`${user.fname} ${user.lname} (${user.system_id})`}
-                                value={user.system_id}
-                                onClick={(e, target) => handleSelectUser(user)}
-                              />
-                            ))}
-                          </DropdownMenu>
+                          {searchAdminUsers.map((user) => (
+                            <DropdownItem
+                              key={`admin-${user.system_id}`}
+                              text={`${user.fname} ${user.lname} (${user.system_id})`}
+                              value={user.system_id}
+                              onClick={(e, target) => handleSelectUser(user)}
+                            />
+                          ))}
                         </>
                       )}
                       {searchCoachUsers.length > 0 && (
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Coaches" />
-                          <DropdownMenu scrolling>
-                            {searchCoachUsers.map((user) => (
-                              <DropdownItem
-                                key={`coach-${user.system_id}`}
-                                text={`${user.fname} ${user.lname} (${user.system_id})`}
-                                value={user.system_id}
-                                onClick={(e, target) => handleSelectUser(user)}
-                              />
-                            ))}
-                          </DropdownMenu>
+                          {searchCoachUsers.map((user) => (
+                            <DropdownItem
+                              key={`coach-${user.system_id}`}
+                              text={`${user.fname} ${user.lname} (${user.system_id})`}
+                              value={user.system_id}
+                              onClick={(e, target) => handleSelectUser(user)}
+                            />
+                          ))}
                         </>
                       )}
                       {searchStudentUsers.length > 0 && (
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Students" />
-                          <DropdownMenu scrolling>
-                            {searchStudentUsers.map((user) => (
-                              <DropdownItem
-                                key={`student-${user.system_id}`}
-                                text={`${user.fname} ${user.lname} (${user.system_id})`}
-                                value={user.system_id}
-                                onClick={(e, target) => handleSelectUser(user)}
-                              />
-                            ))}
-                          </DropdownMenu>
+                          {searchStudentUsers.map((user) => (
+                            <DropdownItem
+                              key={`student-${user.system_id}`}
+                              text={`${user.fname} ${user.lname} (${user.system_id})`}
+                              value={user.system_id}
+                              onClick={(e, target) => handleSelectUser(user)}
+                            />
+                          ))}
                         </>
                       )}
                     </DropdownMenu>
