@@ -193,6 +193,23 @@ export default function CoachFeedback(props) {
     }));
   };
 
+  const copyToClipboard = async (student) => {
+    try {
+      const textToCopy = aiSummaryText[student] || "";
+      await navigator.clipboard.writeText(textToCopy);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = aiSummaryText[student] || "";
+      document.body.appendChild(textArea);
+      textArea.select();
+      textArea.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    }
+  };
+
   useEffect(() => {
     fetchStudentList();
     fetchSubmissions();
@@ -504,15 +521,25 @@ export default function CoachFeedback(props) {
                 >
                   {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
                 </Button>
-                <Button
-                  onClick={(_) => OpenPopup(student)}
-                  color="grey"
-                  content={
-                    customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
-                      ? "Generate AI Summarization with Custom Prompt"
-                      : "Generate AI Summarization"
-                  }
-                />
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {aiSummaryText[student] && (
+                    <Button
+                      color="blue"
+                      icon="copy"
+                      content="Copy AI Summary"
+                      onClick={() => copyToClipboard(student)}
+                    />
+                  )}
+                  <Button
+                    onClick={(_) => OpenPopup(student)}
+                    color="grey"
+                    content={
+                      customPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                        ? "Generate AI Summarization with Custom Prompt"
+                        : "Generate AI Summarization"
+                    }
+                  />
+                </div>
               </div>
               <Confirm
                 style={{

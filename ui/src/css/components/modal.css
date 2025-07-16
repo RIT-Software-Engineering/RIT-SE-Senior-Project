@@ -135,6 +135,48 @@ body.dark-mode .ui.table th {
   color: var(--text-primary);
 }
 
+/* Dark mode styles for dropdown components */
+body.dark-mode .ui.dropdown {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu {
+  background-color: var(--bg-footer-header);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .item {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .item:hover {
+  background-color: var(--menu-item-hover);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.dropdown .menu .header {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.dropdown .menu .divider {
+  border-top: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .input input {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .input input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 body.dark-mode .ui.modal .header,
 body.dark-mode .ui.modal .content,
 body.dark-mode .ui.modal .actions {
