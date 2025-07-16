@@ -787,7 +787,7 @@ module.exports = (db) => {
           break;
         case ROLES.ADMIN:
           query =
-            "SELECT * FROM projects WHERE projects.status NOT IN ('in progress', 'completed', 'rejected', 'archive');";
+            "SELECT * FROM projects WHERE projects.status NOT IN ('completed', 'rejected', 'archive');";
           params = [];
           break;
         default:
