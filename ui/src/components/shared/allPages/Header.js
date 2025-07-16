@@ -7,23 +7,25 @@ import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import SELogoLightMode from "../../../Assets/RIT_rgb_hor_k.png";
-import SELogoDarkMode from "../../../Assets/RIT_rgb_hor_w.png";
+import SELogoLightMode from "../../../Assets/gccis_light.png";
+import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
-import { ModeContext } from "../../util/functions/ModeContext";
 
 function Header() {
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const { user } = useContext(UserContext);
+  const [darkMode, setDarkMode] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   useEffect(() => {
     // A user is considered signed in if the user object has a value
     // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
+    setDarkMode(
+      ["true", "1"].includes(user?.profile_info?.dark_mode.toString().trim()),
+    );
   }, [user]);
-  const modeContext = useContext(ModeContext);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
@@ -217,6 +219,7 @@ function Header() {
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
+          darkModeCallback={setDarkMode}
           onClose={() => setProfileModalOpen(false)}
           user={user}
         />
@@ -230,7 +233,7 @@ function Header() {
         }}
       >
         <img
-          src={modeContext.darkMode ? SELogoDarkMode : SELogoLightMode}
+          src={darkMode ? SELogoDarkMode : SELogoLightMode}
           alt="Department of Software Engineering"
           style={{
             maxWidth: "400px",

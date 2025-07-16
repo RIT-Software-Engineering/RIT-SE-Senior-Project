@@ -4,9 +4,9 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
-import { ModeContext } from "../../util/functions/ModeContext";
+import { UserContext } from "../../util/functions/UserContext";
 
-const ProfileModal = ({ open, onClose, user }) => {
+const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [milestonePreference, setMilestonePreference] = useSessionStorage(
     "defaultMilestoneView",
@@ -22,7 +22,6 @@ const ProfileModal = ({ open, onClose, user }) => {
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const modeContext = React.useContext(ModeContext);
   useEffect(() => {
     if (open && user?.user) {
       SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${user.user}`)
@@ -96,7 +95,8 @@ const ProfileModal = ({ open, onClose, user }) => {
       if (!res.ok) throw new Error("Failed to update dark mode preference");
 
       setDarkMode(newDarkMode);
-      modeContext.setDarkMode(newDarkMode);
+      darkModeCallback(newDarkMode);
+      document.body.classList.toggle("dark-mode", newDarkMode);
     } catch (err) {
       console.error("Error updating dark mode:", err);
     }
