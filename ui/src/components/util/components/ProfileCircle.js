@@ -7,6 +7,8 @@ export default function ProfileCircle(props) {
     style = {},
     className = "",
     bgImage = null,
+    showFullName = false,
+    pill = false,
   } = props;
 
   const sizes = {
@@ -48,35 +50,57 @@ export default function ProfileCircle(props) {
 
   return (
     <div
-      className={`profile-circle ${className}`}
       style={{
-        width: sizes[size]?.width || sizes["small"].width,
-        height: sizes[size]?.height || sizes["small"].height,
-        borderRadius: "50%",
-        backgroundColor: randColorFromName(user?.fname || "User"),
         display: "flex",
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
-        fontSize: sizes[size]?.fontSize || sizes["small"].fontSize,
+        backgroundColor: pill ? "var(--bg-primary)" : "transparent",
+        padding: pill ? "5px 10px" : "0",
+        borderRadius: pill ? "20px" : "0",
         ...style,
       }}
     >
-      {bgImage ? (
-        <img
-          src={bgImage}
-          alt="Profile Background"
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "50%",
-            objectFit: "cover",
-          }}
-        />
-      ) : (
-        <>
-          {user?.fname?.charAt(0).toUpperCase()}
-          {user?.lname?.charAt(0).toUpperCase()}
-        </>
+      <div
+        className={`profile-circle ${className}`}
+        style={{
+          width: sizes[size]?.width || sizes["small"].width,
+          height: sizes[size]?.height || sizes["small"].height,
+          borderRadius: "50%",
+          backgroundColor: !["admin", "coach"].includes(user?.role)
+            ? randColorFromName(user?.fname || "User")
+            : "var(--bg-secondary)",
+          border: ["admin", "coach"].includes(user?.role)
+            ? `2px solid ${randColorFromName(user?.fname || "User")}`
+            : "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: sizes[size]?.fontSize || sizes["small"].fontSize,
+          ...style,
+        }}
+      >
+        {bgImage ? (
+          <img
+            src={bgImage}
+            alt="Profile Background"
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <>
+            {user?.fname?.charAt(0).toUpperCase()}
+            {user?.lname?.charAt(0).toUpperCase()}
+          </>
+        )}
+      </div>
+      {showFullName && (
+        <span style={{ marginLeft: "8px" }}>
+          {user?.fname} {user?.lname}
+        </span>
       )}
     </div>
   );
