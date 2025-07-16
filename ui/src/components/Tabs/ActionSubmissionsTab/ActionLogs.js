@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Accordion, Button } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import {
   formatDateTime,
   formatDate,

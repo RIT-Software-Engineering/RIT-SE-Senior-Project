@@ -4,7 +4,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
-import { UserContext } from "../../util/functions/UserContext";
 
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   const [darkMode, setDarkMode] = useState(false);

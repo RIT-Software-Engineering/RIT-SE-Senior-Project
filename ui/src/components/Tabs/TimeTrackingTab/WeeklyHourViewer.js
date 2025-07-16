@@ -166,7 +166,7 @@ export default function WeeklyHourViewer(props) {
                                 height: "100%",
                                 background:
                                   percent > 0
-                                    ? `linear-gradient(to top, #2185d0 ${percent}%, transparent ${percent}%)`
+                                    ? `linear-gradient(to top, var(--action-bar-proposal-blue) ${percent}%, transparent ${percent}%)`
                                     : "transparent",
                                 position: "absolute",
                                 top: 0,
@@ -179,7 +179,7 @@ export default function WeeklyHourViewer(props) {
                                 borderBottom:
                                   percent > 0
                                     ? "0px solid transparent"
-                                    : "5px solid #2185d0",
+                                    : "5px solid var(--action-bar-proposal-blue)",
                               }}
                             />
                             <div
