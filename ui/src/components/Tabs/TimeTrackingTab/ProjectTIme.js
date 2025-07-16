@@ -17,6 +17,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 export default function ProjectTime(props) {
   const userContext = useContext(UserContext);
@@ -95,7 +96,28 @@ export default function ProjectTime(props) {
                                 }}
                                 key={idx}
                               >
-                                <TableCell>{submittedBy}</TableCell>
+                                <TableCell>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5em",
+                                    }}
+                                  >
+                                    <ProfileCircle
+                                      user={{
+                                        fname: timeLog.name
+                                          .toString()
+                                          .split(" ")[0],
+                                        lname: timeLog.name
+                                          .toString()
+                                          .split(" ")[1],
+                                      }}
+                                      size="tiny"
+                                    />
+                                    {submittedBy}
+                                  </div>
+                                </TableCell>
                                 <TableCell>
                                   {formatDate(timeLog.work_date)}
                                 </TableCell>
@@ -177,7 +199,28 @@ export default function ProjectTime(props) {
                           }
                           return (
                             <TableRow key={idx}>
-                              <TableCell>{timeStat.name}</TableCell>
+                              <TableCell>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5em",
+                                  }}
+                                >
+                                  <ProfileCircle
+                                    user={{
+                                      fname: timeStat.name
+                                        .toString()
+                                        .split(" ")[0],
+                                      lname: timeStat.name
+                                        .toString()
+                                        .split(" ")[1],
+                                    }}
+                                    size="tiny"
+                                  />
+                                  {timeStat.name}
+                                </div>
+                              </TableCell>
                               <TableCell>
                                 {avgTime[idx]?.avgTime ?? 0}
                               </TableCell>

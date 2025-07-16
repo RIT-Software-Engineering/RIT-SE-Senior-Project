@@ -474,8 +474,7 @@ export default function TimeTableEditor(props) {
   let trigger = (
     <Button>
       {" "}
-      <Icon name={props.button} />
-      Log Project Time
+      <Icon name={props.button} /> Log Project Time
     </Button>
   );
   if (props.trigger) {

@@ -9,6 +9,7 @@ import {
 import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
 import DOMpurify from "dompurify";
+import ProfileCircle from "../../../../util/components/ProfileCircle";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -95,34 +96,56 @@ export default function ToolTip(props) {
             )}
             {submissions?.map((submission) => {
               return (
-                <SubmissionViewerModal
-                  key={submission.action_log_id}
-                  action={submission}
-                  title={props.action?.action_title}
-                  target={props.action?.action_target}
-                  semesterName={props.semesterName}
-                  projectName={props.projectName}
-                  isOpenCallback={isOpenCallback}
-                  trigger={
-                    <div className="fake-a">
-                      {longSubmissionTitle ? (
-                        <>
-                          {submission.mock_id &&
-                            `${submission.mock_name} (${submission.mock_id}) as `}
-                          {`${submission.name} (${submission.system_id})`}{" "}
-                          {formatDateTime(submission.submission_datetime)}{" "}
-                        </>
-                      ) : (
-                        <>
-                          <i>
-                            {formatDateTime(submission.submission_datetime)}
-                          </i>{" "}
-                          Submission
-                        </>
-                      )}
-                    </div>
-                  }
-                />
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5em",
+                  }}
+                >
+                  <SubmissionViewerModal
+                    key={submission.action_log_id}
+                    action={submission}
+                    title={props.action?.action_title}
+                    target={props.action?.action_target}
+                    semesterName={props.semesterName}
+                    projectName={props.projectName}
+                    isOpenCallback={isOpenCallback}
+                    trigger={
+                      <div
+                        className="fake-a"
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        {longSubmissionTitle ? (
+                          <>
+                            {submission.mock_id &&
+                              `${submission.mock_name} (${submission.mock_id}) as `}
+                            <ProfileCircle
+                              user={{
+                                fname: submission.name.toString().split(" ")[0],
+                                lname: submission.name.toString().split(" ")[1],
+                              }}
+                              showFullName
+                              size="tiny"
+                              pill
+                            />
+                            {`(${submission.system_id})`}{" "}
+                            {formatDateTime(
+                              submission.submission_datetime,
+                            )}{" "}
+                          </>
+                        ) : (
+                          <>
+                            <i>
+                              {formatDateTime(submission.submission_datetime)}
+                            </i>{" "}
+                            Submission
+                          </>
+                        )}
+                      </div>
+                    }
+                  />
+                </span>
               );
             })}
           </div>

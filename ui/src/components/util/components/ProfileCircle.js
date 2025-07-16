@@ -9,6 +9,7 @@ export default function ProfileCircle(props) {
     bgImage = null,
     showFullName = false,
     pill = false,
+    pillColor = "var(--bg-primary)",
   } = props;
 
   const sizes = {
@@ -54,8 +55,8 @@ export default function ProfileCircle(props) {
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: pill ? "var(--bg-primary)" : "transparent",
-        padding: pill ? "5px 10px" : "0",
+        backgroundColor: pill ? pillColor : "transparent",
+        padding: pill ? "5px 5px" : "0",
         borderRadius: pill ? "20px" : "0",
         ...style,
       }}
@@ -76,7 +77,6 @@ export default function ProfileCircle(props) {
           alignItems: "center",
           justifyContent: "center",
           fontSize: sizes[size]?.fontSize || sizes["small"].fontSize,
-          ...style,
         }}
       >
         {bgImage ? (

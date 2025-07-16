@@ -15,6 +15,7 @@ import { config } from "../../util/functions/constants";
 import { formatDateTime } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 dayjs.extend(utc);
 
@@ -259,7 +260,11 @@ export default function StudentRow(props) {
               className="clickable-student-name"
               onClick={() => setOpenModal(true)}
             >
-              {props.student.fname} {props.student.lname}
+              {props.isStudent ? (
+                <ProfileCircle user={props.student} size="tiny" showFullName />
+              ) : (
+                props.student.fname + " " + props.student.lname
+              )}
             </TableCell>
           ) : (
             <TableCell>
