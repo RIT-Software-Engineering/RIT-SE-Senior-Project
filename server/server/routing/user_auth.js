@@ -111,7 +111,9 @@ const testCanWrite = (req) => {
   console.log(req.user);
   return (
     req.user &&
-    ["false", "0"].includes(req.user.view_only.toString().trim().toLowerCase())
+    !["false", "0"].includes(
+      req.user?.view_only?.toString().trim().toLowerCase(),
+    )
   );
 };
 

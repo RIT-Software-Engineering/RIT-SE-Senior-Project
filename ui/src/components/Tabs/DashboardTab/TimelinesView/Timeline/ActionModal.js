@@ -274,10 +274,13 @@ export default function ActionModal(props) {
             inputName = formDataInputs[x].name,
             inputType = formDataInputs[x].type;
 
-          formData[inputName] =
-            inputType === "radio"
-              ? String(parseInt(formDataInputs[inputName]?.value) + 1)
-              : String(input?.value);
+          if (inputType === "radio") {
+            if (input.checked) {
+              formData[inputName] = String(parseInt(input.value) + 1);
+            }
+          } else {
+            formData[inputName] = String(input?.value);
+          }
 
           // Error Handling
           const [questionType, questionName, studentName] =
@@ -343,9 +346,7 @@ export default function ActionModal(props) {
           }
 
           continue;
-        }
-
-        if (formDataInputs[x].type === "radio") {
+        } else {
           // Skip radio inputs without names
           if (!formDataInputs[x].name) {
             continue;
@@ -358,16 +359,15 @@ export default function ActionModal(props) {
           }
           formData[formDataInputs[x].name] =
             formDataInputs[formDataInputs[x].name]?.value;
-        } else {
-          // Skip file inputs and inputs without names
-          if (formDataInputs[x].type === "file" || !formDataInputs[x].name) {
-            continue;
-          }
+        }
+      }
 
-          if (isRequiredAndEmpty(x)) {
-            errors.push(`'${formDataInputs[x].name}' can not be empty`);
+      if (isPeerEval) {
+        for (let x = 0; x < formDataInputs.length; x++) {
+          const input = formDataInputs[x];
+          if (input.type === "radio" && input.checked) {
+            formData[input.name] = input.value;
           }
-          formData[formDataInputs[x].name] = String(formDataInputs[x]?.value);
         }
       }
 
@@ -435,6 +435,10 @@ export default function ActionModal(props) {
         .catch((error) => {
           // TODO: Redirect to failed page or handle errors
           console.error(error);
+          setSubmissionModalResponse(
+            "We were unable to receive your submission.",
+          );
+          setSubmissionModalOpen(MODAL_STATUS.FAIL);
         });
     }
   }
@@ -487,7 +491,7 @@ export default function ActionModal(props) {
     );
 
   const renderSubmitButton = () => {
-    if (user.view_only || user.mockUser.view_only == "TRUE") {
+    if (user.view_only || user.mockUser.view_only === "TRUE") {
       return "View Only Role";
     }
     switch (props.action_target) {
