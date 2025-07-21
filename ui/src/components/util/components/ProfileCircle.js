@@ -70,12 +70,12 @@ export default function ProfileCircle(props) {
           height: sizes[size]?.height || sizes["small"].height,
           borderRadius: "50%",
           backgroundColor:
-            !["admin", "coach"].includes(user?.role) || !isStudent
+            isStudent && !["admin", "coach"].includes(user?.role)
               ? randColorFromName(user?.fname || name.split(" ")[0] || "User")
               : "var(--bg-secondary)",
           border:
-            ["admin", "coach"].includes(user?.role) || !isStudent
-              ? `2px solid ${randColorFromName(user?.fname || "User")}`
+            !isStudent || ["admin", "coach"].includes(user?.role)
+              ? `2px solid ${randColorFromName(user?.fname || name.split(" ")[0] || "User")}`
               : "none",
           display: "flex",
           alignItems: "center",
@@ -98,8 +98,8 @@ export default function ProfileCircle(props) {
           <div
             style={{
               color:
-                ["admin", "coach"].includes(user?.role) || !isStudent
-                  ? "var(--text-secondary)"
+                !isStudent || ["admin", "coach"].includes(user?.role)
+                  ? "var(--text-primary)"
                   : "black",
               fontWeight: "bold",
             }}

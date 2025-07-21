@@ -20,6 +20,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 const LOGS_PER_PAGE = 10;
 const TIME_LOGS_PER_PAGE = 5;
@@ -403,7 +404,13 @@ export default function ActionLogs(props) {
                   )}
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>{action.action_target}</TableCell>
-                  <TableCell>{submittedBy}</TableCell>
+                  <TableCell>
+                    <ProfileCircle
+                      name={action.name ?? ""}
+                      size="tiny"
+                      showFullName
+                    />
+                  </TableCell>
                   <TableCell>
                     {formatDateTime(action.submission_datetime)}
                   </TableCell>

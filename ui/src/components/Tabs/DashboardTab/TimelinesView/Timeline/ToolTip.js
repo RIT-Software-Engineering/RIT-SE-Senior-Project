@@ -121,13 +121,11 @@ export default function ToolTip(props) {
                             {submission.mock_id &&
                               `${submission.mock_name} (${submission.mock_id}) as `}
                             <ProfileCircle
-                              user={{
-                                fname: submission.name.toString().split(" ")[0],
-                                lname: submission.name.toString().split(" ")[1],
-                              }}
+                              name={submission.name}
                               showFullName
                               size="tiny"
                               pill
+                              isStudent={submission.user_type === "student"}
                             />
                             {`(${submission.system_id})`}{" "}
                             {formatDateTime(
