@@ -388,7 +388,7 @@ VALUES
               </div>
               <br/>
               <div>
-                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled."]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
               </div>
               <br/>
               <div>
@@ -764,7 +764,7 @@ VALUES
               </div>
               <br/>
               <div>
-                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled."]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
               </div>
               <br/>
               <div>
@@ -782,10 +782,10 @@ VALUES
         'Evaluate your team members',
         'peer_evaluation',
         DATE(
-            strftime('%Y', DATE('now')) || '-07-21'
+            strftime('%Y', DATE('now')) || '-06-21'
         ),
         DATE(
-            strftime('%Y', DATE('now')) || '-07-30'
+            strftime('%Y', DATE('now')) || '-07-22'
         ),
         '<h1>Peer Evaluation</h1>
         <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
@@ -817,7 +817,7 @@ VALUES
               </div>
               <br/>
               <div>
-                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled.","Yap yap yap"]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
+                <QuestionFeedback title="Feedback" questions=''["Provide specific comments about any members or situations","Identify disputes or problems that happened and how they were handled."]'' ordered=''true'' required=''false'' includeStudents=''false'' selfFeedback=''false'' />
               </div>
               <br/>
               <div>
