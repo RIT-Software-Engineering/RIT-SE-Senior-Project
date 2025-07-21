@@ -2694,7 +2694,9 @@ module.exports = (db) => {
         getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
                         actions.action_title,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
                     FROM action_log
                         JOIN actions ON actions.action_id = action_log.action_template
                         WHERE action_log.action_template = ? AND action_log.project = ?`;
@@ -2704,7 +2706,9 @@ module.exports = (db) => {
       case ROLES.ADMIN:
         getActionLogQuery = `SELECT action_log.*, actions.action_title,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) AS name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) AS mock_name
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) AS mock_name,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.action_template = ? AND action_log.project = ?`;
