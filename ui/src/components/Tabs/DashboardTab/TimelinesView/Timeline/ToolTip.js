@@ -134,10 +134,18 @@ export default function ToolTip(props) {
                           </>
                         ) : (
                           <>
-                            <i>
+                            <i
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <ProfileCircle
+                                name={submission.name}
+                                showFullName
+                                size="tiny"
+                                pill
+                                isStudent={submission.user_type === "student"}
+                              />
                               {formatDateTime(submission.submission_datetime)}
-                            </i>{" "}
-                            Submission
+                            </i>
                           </>
                         )}
                       </div>
@@ -192,8 +200,10 @@ export default function ToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
-      closeOnEscape={false}
-      style={{ zIndex: 100 }}
+      closeOnEscape={true}
+      wide
+      inverted={document.body.classList.contains("dark-mode")}
+      style={{ zIndex: 100, boxShadow: "0 0 20px rgba(0,0,0,0.5)" }}
       offset={[offsetX, 0]}
       trigger={props.trigger}
       on="click"
