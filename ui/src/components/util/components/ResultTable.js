@@ -18,6 +18,7 @@ import {
   Card,
   Popup,
 } from "semantic-ui-react";
+import ProfileCircle from "./ProfileCircle";
 
 function roundDec(number, places) {
   return Math.round(number * Math.pow(10, places)) / Math.pow(10, places);
@@ -45,6 +46,8 @@ export default function ResultTable(props) {
       ...(hasSelfRating ? Object.keys(props.SelfFeedback.Ratings) : []),
     ]),
   );
+
+  const darkMode = document.body.classList.contains("dark-mode");
 
   return (
     <Container fluid>
@@ -129,7 +132,10 @@ export default function ResultTable(props) {
               {expandedRows.includes(index) && (
                 <TableRow>
                   <TableCell colSpan="3">
-                    <Card fluid>
+                    <Card
+                      fluid
+                      style={{ backgroundColor: "var(--bg-primary)" }}
+                    >
                       <CardContent>
                         <CardHeader>
                           {camelCaseToSentence(category) +
@@ -149,7 +155,11 @@ export default function ResultTable(props) {
                             {props.OthersFeedback.map((student, otherIndex) => (
                               <ListItem key={otherIndex}>
                                 <Label ribbon size="large" color="grey">
-                                  {student.From}
+                                  <ProfileCircle
+                                    name={student.From}
+                                    size="tiny"
+                                    showFullName
+                                  />
                                 </Label>
                                 {student.Ratings[category] !== undefined ? (
                                   <Rating
@@ -162,6 +172,7 @@ export default function ResultTable(props) {
                                 )}
                                 <TextArea
                                   disabled
+                                  style={{ color: "var(--text-primary)" }}
                                   value={
                                     student.Feedback[category] ||
                                     "No Feedback Given"

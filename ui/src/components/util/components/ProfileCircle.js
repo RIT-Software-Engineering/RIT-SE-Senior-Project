@@ -3,6 +3,8 @@ import React from "react";
 export default function ProfileCircle(props) {
   const {
     user,
+    name,
+    isStudent = true,
     size = "small",
     style = {},
     className = "",
@@ -67,12 +69,14 @@ export default function ProfileCircle(props) {
           width: sizes[size]?.width || sizes["small"].width,
           height: sizes[size]?.height || sizes["small"].height,
           borderRadius: "50%",
-          backgroundColor: !["admin", "coach"].includes(user?.role)
-            ? randColorFromName(user?.fname || "User")
-            : "var(--bg-secondary)",
-          border: ["admin", "coach"].includes(user?.role)
-            ? `2px solid ${randColorFromName(user?.fname || "User")}`
-            : "none",
+          backgroundColor:
+            !["admin", "coach"].includes(user?.role) || !isStudent
+              ? randColorFromName(user?.fname || name.split(" ")[0] || "User")
+              : "var(--bg-secondary)",
+          border:
+            ["admin", "coach"].includes(user?.role) || !isStudent
+              ? `2px solid ${randColorFromName(user?.fname || "User")}`
+              : "none",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -91,15 +95,29 @@ export default function ProfileCircle(props) {
             }}
           />
         ) : (
-          <>
-            {user?.fname?.charAt(0).toUpperCase()}
-            {user?.lname?.charAt(0).toUpperCase()}
-          </>
+          <div
+            style={{
+              color:
+                ["admin", "coach"].includes(user?.role) || !isStudent
+                  ? "var(--text-secondary)"
+                  : "black",
+              fontWeight: "bold",
+            }}
+          >
+            {user?.fname?.charAt(0).toUpperCase() +
+              user?.lname?.charAt(0).toUpperCase() ||
+              (name
+                ? name
+                    .split(" ")
+                    .map((n) => n.charAt(0).toUpperCase())
+                    .join("")
+                : "NA")}
+          </div>
         )}
       </div>
       {showFullName && (
         <span style={{ marginLeft: "8px" }}>
-          {user?.fname} {user?.lname}
+          {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
       )}
     </div>

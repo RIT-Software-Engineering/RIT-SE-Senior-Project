@@ -15,11 +15,13 @@ import {
   Loader,
   Popup,
   Radio,
+  TextArea,
 } from "semantic-ui-react";
 import { SecureFetch } from "../functions/secureFetch";
 import { config } from "../functions/constants";
 import ResultTable from "./ResultTable";
 import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
+import ProfileCircle from "./ProfileCircle";
 
 export default function CoachFeedback(props) {
   const [studentList, setStudentList] = useState([]);
@@ -200,13 +202,13 @@ export default function CoachFeedback(props) {
     } catch (err) {
       console.error("Failed to copy text: ", err);
       // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = aiSummaryText[student] || "";
-      document.body.appendChild(textArea);
-      textArea.select();
-      textArea.setSelectionRange(0, 99999);
+      const TextArea = document.createElement("TextArea");
+      TextArea.value = aiSummaryText[student] || "";
+      document.body.appendChild(TextArea);
+      TextArea.select();
+      TextArea.setSelectionRange(0, 99999);
       document.execCommand("copy");
-      document.body.removeChild(textArea);
+      document.body.removeChild(TextArea);
     }
   };
 
@@ -314,8 +316,18 @@ export default function CoachFeedback(props) {
     return (
       <div key={index}>
         <Divider section />
-        <Header size={"huge"} block inverted>
-          {student}
+        <Header
+          size={"huge"}
+          block
+          inverted
+          style={{
+            backgroundColor: "var(--bg-secondary)",
+            border: "none",
+            borderRadius: "10px",
+            padding: "20px 15px",
+          }}
+        >
+          <ProfileCircle name={student} showFullName />
         </Header>
 
         {/*NOTE: Coach Feedback View*/}
@@ -334,10 +346,18 @@ export default function CoachFeedback(props) {
                   return (
                     <Grid.Row columns={2} key={index}>
                       <Grid.Column>
-                        <Label as="h2">
+                        <Label
+                          style={{
+                            minHeight: "40px",
+                            minWidth: "100%",
+                            backgroundColor: "var(--menu-item)",
+                            color: "var(--text-primary)",
+                          }}
+                          as="h2"
+                        >
                           {Object.keys(CoachFeedback)[index]}
                         </Label>
-                        <textarea
+                        <TextArea
                           rows={4}
                           value={
                             CoachFeedback[Object.keys(CoachFeedback)[index]] ||
@@ -348,10 +368,18 @@ export default function CoachFeedback(props) {
                       </Grid.Column>
                       {Object.keys(CoachFeedback)[index + 1] && (
                         <Grid.Column>
-                          <Label as="h2">
+                          <Label
+                            style={{
+                              minHeight: "40px",
+                              minWidth: "100%",
+                              backgroundColor: "var(--menu-item)",
+                              color: "var(--text-primary)",
+                            }}
+                            as="h2"
+                          >
                             {Object.keys(CoachFeedback)[index + 1]}
                           </Label>
-                          <textarea
+                          <TextArea
                             rows={4}
                             value={
                               CoachFeedback[
@@ -418,7 +446,7 @@ export default function CoachFeedback(props) {
                             >
                               {From}
                             </Label>
-                            <textarea
+                            <TextArea
                               rows={4}
                               value={Feedback}
                               readOnly={true}
@@ -474,7 +502,7 @@ export default function CoachFeedback(props) {
               content={"Visible to  Evaluated Student"}
             />
           </Header>
-          <textarea
+          <TextArea
             placeholder={`Enter your feedback to ${student} here based from the other students'`}
             name={"CoachFeedback-Final-" + student}
             key={"coach-feedback" + index}
@@ -493,7 +521,7 @@ export default function CoachFeedback(props) {
                 />
               </Dimmer>
               {aiSummaryText[student] && (
-                <textarea
+                <TextArea
                   placeholder={`Generate AI Summary of all peer feedback given to ${student} here to aid in your feedback.`}
                   key={"coach-feedback-ai" + index}
                   rows={5}
@@ -568,7 +596,7 @@ export default function CoachFeedback(props) {
               <div>
                 {isEditingPrompt && (
                   <div>
-                    <textarea
+                    <TextArea
                       value={tempPrompt}
                       onChange={(e) => setTempPrompt(e.target.value)}
                       rows={8}

@@ -135,3 +135,9 @@ a,
     background-position: -200% 0;
   }
 }
+
+.ui.form textarea {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  outline: none;
+}
