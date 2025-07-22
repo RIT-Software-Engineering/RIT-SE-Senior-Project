@@ -141,11 +141,11 @@ const BarGraph = ({ data }) => {
                 <text
                   x={xPos + individualBarWidth / 2}
                   y={yPos - 5}
-                  fontSize={12}
+                  fontSize={20}
                   textAnchor="middle"
                   fill={textColor}
                 >
-                  {d}
+                  {parseFloat(d).toFixed(1)}
                 </text>
               </g>
             );
