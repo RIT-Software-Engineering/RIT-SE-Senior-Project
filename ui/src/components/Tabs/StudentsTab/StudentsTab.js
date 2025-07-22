@@ -471,37 +471,45 @@ export default function StudentsTab(props) {
           />
         );
 
-        semesterPanels.push(
-          <div key={"PeerEval" + projectKey}>
-            <Accordion
-              key={"PEEREVAL" + projectKey}
-              fluid
-              styled
-              //defaultActiveIndex={isSemesterActive(semester.start_date, semester.end_date) ? 0 : -1}
-              panels={[
-                {
-                  key: "eval",
-                  title: `${project.name} - ${semester.name}`,
-                  content: {
-                    content: hasSubmissions ? (
-                      submissions.map((submission, index) =>
-                        subAccordion(submission, index),
-                      )
-                    ) : (
-                      <Message>
-                        <Icon name="info circle" />
-                        <b>
-                          No coach feedback for peer-evaluations given at this
-                          time.
-                        </b>
-                      </Message>
-                    ),
+        if (
+          userContext.user.role === USERTYPES.ADMIN ||
+          userContext.user.role === USERTYPES.COACH ||
+          semester.projects[projectKey].students
+            .map((student) => `${student.system_id}`)
+            .includes(userContext.user.user)
+        ) {
+          semesterPanels.push(
+            <div key={"PeerEval" + projectKey}>
+              <Accordion
+                key={"PEEREVAL" + projectKey}
+                fluid
+                styled
+                //defaultActiveIndex={isSemesterActive(semester.start_date, semester.end_date) ? 0 : -1}
+                panels={[
+                  {
+                    key: "eval",
+                    title: `${project.name} - ${semester.name}`,
+                    content: {
+                      content: hasSubmissions ? (
+                        submissions.map((submission, index) =>
+                          subAccordion(submission, index),
+                        )
+                      ) : (
+                        <Message>
+                          <Icon name="info circle" />
+                          <b>
+                            No coach feedback for peer-evaluations given at this
+                            time.
+                          </b>
+                        </Message>
+                      ),
+                    },
                   },
-                },
-              ]}
-            />
-          </div>,
-        );
+                ]}
+              />
+            </div>,
+          );
+        }
       });
     });
 
