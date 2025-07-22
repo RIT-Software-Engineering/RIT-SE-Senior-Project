@@ -260,15 +260,11 @@ export default function StudentRow(props) {
               className="clickable-student-name"
               onClick={() => setOpenModal(true)}
             >
-              {props.isStudent ? (
-                <ProfileCircle user={props.student} size="tiny" showFullName />
-              ) : (
-                props.student.fname + " " + props.student.lname
-              )}
+              <ProfileCircle user={props.student} size="tiny" showFullName />
             </TableCell>
           ) : (
             <TableCell>
-              {props.student.fname} {props.student.lname}
+              <ProfileCircle user={props.student} size="tiny" showFullName />
             </TableCell>
           )}
           <TableCell>{project}</TableCell>
