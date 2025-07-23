@@ -116,7 +116,7 @@ export default function ProfileCircle(props) {
         )}
       </div>
       {showFullName && (
-        <span style={{ marginLeft: "8px" }}>
+        <span style={{ marginLeft: "8px", marginRight: "5px" }}>
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
       )}

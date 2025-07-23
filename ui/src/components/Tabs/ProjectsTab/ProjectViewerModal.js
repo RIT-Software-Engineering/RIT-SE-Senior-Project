@@ -5,6 +5,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { formattedAttachments } from "./ProjectEditorModal";
 import { decode } from "he";
 import { convert } from "html-to-text";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 export default function ProjectViewerModal(props) {
   const [projectMembers, setProjectMembers] = useState({
@@ -79,8 +80,27 @@ export default function ProjectViewerModal(props) {
                 `}
         </style>
         <h3>Team members</h3>
-        <b>Students:</b> {projectMembers.students?.join(", ")} <br />
-        <b>Coaches:</b> {projectMembers.coaches?.join(", ")} <br />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <b>Students:</b>{" "}
+          {projectMembers.students?.map((s) => (
+            <ProfileCircle key={s} name={s} showFullName size="tiny" />
+          ))}{" "}
+          <br />
+        </div>
+        <br />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <b>Coaches:</b>{" "}
+          {projectMembers.coaches?.map((c) => (
+            <ProfileCircle
+              key={c}
+              name={c}
+              isStudent={false}
+              showFullName
+              size="tiny"
+            />
+          ))}{" "}
+          <br />
+        </div>
         <h3>Website</h3>
         <b>URL:</b> {URL} <br />
         <h3>Sponsor Info</h3>
