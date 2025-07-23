@@ -592,7 +592,7 @@ VALUES
         'Assign and submit team member roles and responsibilities',
         'team',
         DATE(
-            strftime('%Y', DATE('now')) || '-08-01'
+            strftime('%Y', DATE('now')) || '-07-23'
         ),
         DATE(
             strftime('%Y', DATE('now')) || '-08-15'
@@ -616,7 +616,7 @@ VALUES
         'Analyze competitors and submit findings',
         'team',
         DATE(
-            strftime('%Y', DATE('now')) || '-09-01'
+            strftime('%Y', DATE('now')) || '-08-05'
         ),
         DATE(
             strftime('%Y', DATE('now')) || '-09-15'
@@ -782,7 +782,7 @@ VALUES
         'Evaluate your team members',
         'peer_evaluation',
         DATE(
-            strftime('%Y', DATE('now')) || '-06-21'
+            strftime('%Y', DATE('now')) || '-06-28'
         ),
         DATE(
             strftime('%Y', DATE('now')) || '-07-22'
