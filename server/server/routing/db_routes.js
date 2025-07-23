@@ -378,7 +378,26 @@ module.exports = (db) => {
             );
             successUsers.push(user);
           } catch (err) {
-            failedUsers.push({ user, error: err.message });
+            let errorMessage = err.message;
+
+            // Provide more user-friendly error messages for common constraint violations
+            if (err.code === "SQLITE_CONSTRAINT") {
+              if (
+                err.message.includes(
+                  "UNIQUE constraint failed: users.system_id",
+                )
+              ) {
+                errorMessage = `System ID '${user.system_id}' already exists`;
+              } else if (
+                err.message.includes("UNIQUE constraint failed: users.email")
+              ) {
+                errorMessage = `Email '${user.email}' already exists`;
+              } else {
+                errorMessage = "Duplicate data - user may already exist";
+              }
+            }
+
+            failedUsers.push({ user, error: errorMessage });
           }
         }
 
