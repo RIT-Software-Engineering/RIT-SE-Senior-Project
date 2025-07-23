@@ -37,6 +37,7 @@ export default function ActionLogs(props) {
   const [timeLogCount, setTimeLogCount] = useState(TIME_LOGS_PER_PAGE);
   const userContext = useContext(UserContext);
   const prevLogin = new Date(userContext.user.prev_login);
+  const [activePage, setActivePage] = useState(0);
   const [currentWeek, setCurrentWeek] = useState("");
   const [pastWeek, setPastWeek] = useState("");
   const [timeStats, setTimeStats] = useState({});
@@ -49,12 +50,9 @@ export default function ActionLogs(props) {
 
   const unassignedStudentsStr = "Unassigned students";
 
-  const getPaginationData = (page) => {
-    SecureFetch(
-      `${
-        config.url.API_GET_ALL_ACTION_LOGS
-      }/?resultLimit=${LOGS_PER_PAGE}&offset=${LOGS_PER_PAGE * page}`,
-    )
+  const getPaginationData = () => {
+    const apiUrl = `${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${activePage}`;
+    SecureFetch(apiUrl)
       .then((response) => response.json())
       .then((action_logs) => {
         setActionLogs(action_logs.actionLogs);
@@ -137,8 +135,11 @@ export default function ActionLogs(props) {
   };
 
   useEffect(() => {
-    getPaginationData(0);
-    // getTimeData(0);
+    getPaginationData();
+  }, [activePage]);
+
+  useEffect(() => {
+    setActivePage(0); // Reset to first page on mount
   }, []);
 
   useEffect(() => {
@@ -443,15 +444,14 @@ export default function ActionLogs(props) {
 
         <div className="pagination-container">
           <Pagination
-            defaultActivePage={1}
-            ellipsisItem={null}
             firstItem={null}
             lastItem={null}
             prevItem={{ content: <Icon name="angle left" />, icon: true }}
             nextItem={{ content: <Icon name="angle right" />, icon: true }}
+            activePage={activePage + 1}
             totalPages={Math.ceil(actionLogCount / LOGS_PER_PAGE)}
             onPageChange={(event, data) => {
-              getPaginationData(data.activePage - 1);
+              setActivePage(data.activePage - 1);
             }}
           />
         </div>

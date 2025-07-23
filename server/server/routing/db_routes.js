@@ -2765,54 +2765,51 @@ module.exports = (db) => {
       switch (req.user.type) {
         case ROLES.STUDENT:
           getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
-                        actions.action_target, actions.action_title, actions.semester,
-                        projects.display_name, projects.title,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
-                    FROM action_log
-                        JOIN actions ON actions.action_id = action_log.action_template
-                        JOIN projects ON projects.project_id = action_log.project
-                        WHERE action_log.project = ?
-                        AND action_log.oid NOT IN (SELECT oid FROM action_log
-                            ORDER BY submission_datetime DESC LIMIT ?)
-                        ORDER BY submission_datetime DESC LIMIT ?`;
-          queryParams = [req.user.project, offset || 0, resultLimit || 0];
+            actions.action_target, actions.action_title, actions.semester,
+            projects.display_name, projects.title,
+            (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+            (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              FROM action_log
+            JOIN actions ON actions.action_id = action_log.action_template
+            JOIN projects ON projects.project_id = action_log.project
+            WHERE action_log.project = ?
+            ORDER BY submission_datetime DESC
+            LIMIT ? OFFSET ?`;
+          queryParams = [req.user.project, resultLimit, offset];
           getActionLogCount = `SELECT COUNT(*) FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
-                    WHERE action_log.project = ?
-                    AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
+              JOIN actions ON actions.action_id = action_log.action_template
+              WHERE action_log.project = ?
+              AND action_log.system_id in (SELECT users.system_id FROM users WHERE users.project = ?)`;
           countParams = [req.user.project, req.user.project];
           break;
         case ROLES.COACH:
           getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
-                    actions.action_target, actions.action_title, actions.semester,
-                    projects.display_name, projects.title,
-                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                    (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
-                    FROM action_log
-                        JOIN actions ON actions.action_id = action_log.action_template
-                        JOIN projects ON projects.project_id = action_log.project
-                        WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
-                        AND action_log.oid NOT IN (SELECT oid FROM action_log
-                            ORDER BY submission_datetime DESC LIMIT ?)
-                        ORDER BY submission_datetime DESC LIMIT ?`;
-          queryParams = [req.user.system_id, offset || 0, resultLimit || 0];
+              actions.action_target, actions.action_title, actions.semester,
+              projects.display_name, projects.title,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              FROM action_log
+            JOIN actions ON actions.action_id = action_log.action_template
+            JOIN projects ON projects.project_id = action_log.project
+            WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
+            ORDER BY submission_datetime DESC
+            LIMIT ? OFFSET ?`;
+          queryParams = [req.user.system_id, resultLimit, offset];
           getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
           countParams = [req.user.system_id];
           break;
         case ROLES.ADMIN:
           getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
-                actions.action_target, actions.action_title, actions.semester,
-                projects.display_name, projects.title,
-                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
-                FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
-                    JOIN projects ON projects.project_id = action_log.project
-                    AND action_log.oid NOT IN (SELECT oid FROM action_log
-                        ORDER BY submission_datetime DESC LIMIT ?)
-                    ORDER BY submission_datetime DESC LIMIT ?`;
-          queryParams = [offset || 0, resultLimit || 0];
+              actions.action_target, actions.action_title, actions.semester,
+              projects.display_name, projects.title,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              FROM action_log
+                JOIN actions ON actions.action_id = action_log.action_template
+                JOIN projects ON projects.project_id = action_log.project
+              ORDER BY submission_datetime DESC
+              LIMIT ? OFFSET ?`;
+          queryParams = [resultLimit, offset];
           getActionLogCount = `SELECT COUNT(*) FROM action_log`;
           break;
         default:
