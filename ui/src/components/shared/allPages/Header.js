@@ -237,7 +237,7 @@ function Header() {
           alt="Department of Software Engineering"
           style={{
             maxWidth: "400px",
-            height: "auto",
+            height: "40px",
             marginRight: "15px",
             flexShrink: 0,
             cursor: "pointer",
