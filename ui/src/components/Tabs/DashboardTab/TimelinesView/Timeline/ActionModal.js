@@ -492,7 +492,8 @@ export default function ActionModal(props) {
 
   const renderSubmitButton = () => {
     if (user.view_only || user.mockUser.view_only === "TRUE") {
-      return <Button content={"View Only Role"} />;
+      // render plain text for view-only role instead of a button
+      return " View Only Role";
     }
     switch (props.action_target) {
       case ACTION_TARGETS.admin:
