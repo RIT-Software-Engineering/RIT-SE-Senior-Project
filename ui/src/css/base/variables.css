@@ -48,6 +48,9 @@
   --bg-button: #424242;
   --bg-button-hover: #3a3a3a;
   --bg-footer-header: #333333;
+  --bg-unfinished-action: #4d1c1c;
+  --bg-inprogress-action: #665c40;
+  --bg-finished-action: #2c3e2c;
 
   --menu-item: #444;
   --menu-item-hover: #555;
