@@ -201,6 +201,12 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
+    // Check if the field is disabled before allowing changes
+    const field = formFieldArray.find((f) => f.name === name);
+    if (field && field.disabled) {
+      return; // Don't allow changes to disabled fields
+    }
+
     if (errorSubmitted) {
       // remove errors if changes made after first submission.
       setErrors((prevErrors) => {
@@ -377,13 +383,18 @@ export default function DatabaseTableEditor(props) {
           } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
               <Form.Field key={field.name} required>
-                <label>{field.label}</label>
+                <label style={{ color: field.disabled ? "lightgray" : "" }}>
+                  {field.label}
+                </label>
                 <Form.TextArea
                   label={field.label}
                   as={ReactCodeMirror}
                   theme={modifiedEclipse}
-                  onChange={(value) =>
-                    handleChange(null, { name: field.name, value: value })
+                  onChange={
+                    field.disabled
+                      ? undefined
+                      : (value) =>
+                          handleChange(null, { name: field.name, value: value })
                   }
                   value={formData[field.name]}
                   maxHeight={"700px"}
@@ -394,7 +405,10 @@ export default function DatabaseTableEditor(props) {
                     padding: "10px",
                     minHeight: "200px",
                     backgroundColor: hasError(field.name) ? "#fab9b4" : "",
+                    opacity: field.disabled ? 0.6 : 1,
+                    pointerEvents: field.disabled ? "none" : "auto",
                   }}
+                  readOnly={field.disabled}
                   required
                 />
               </Form.Field>,
@@ -617,6 +631,18 @@ export default function DatabaseTableEditor(props) {
         },
       ];
     }
+
+    if (isProjectLocked) {
+      return [
+        {
+          key: "cancel",
+          content: "Cancel",
+          onClick: (event) => handleCancel(event),
+          color: "grey",
+        },
+      ];
+    }
+
     return [
       {
         key: "cancel",
@@ -641,6 +667,11 @@ export default function DatabaseTableEditor(props) {
   if (props.trigger) {
     trigger = props.trigger;
   }
+
+  // Check if the form is locked by checking if any field with name "synopsis" is disabled
+  const isProjectLocked = formFieldArray.some(
+    (field) => field.name === "synopsis" && field.disabled,
+  );
 
   if (props.isOpenCallback) {
     return (
