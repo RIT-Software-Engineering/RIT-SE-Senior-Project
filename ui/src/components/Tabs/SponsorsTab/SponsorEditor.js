@@ -11,6 +11,7 @@ import { formatPhoneNumber } from "react-phone-number-input/input";
 export default function SponsorEditor(props) {
   const [sponsorProjectData, setSponsorProjectData] = useState([]);
   const [semesterData, setSemestersData] = useState([]);
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     SecureFetch(
@@ -56,6 +57,128 @@ export default function SponsorEditor(props) {
   //submit route for if editing a sponsor
   let submitRoute = config.url.API_POST_EDIT_SPONSOR;
 
+  // validation for the sponsor form
+  const validateForm = (data) => {
+    const errorsFound = [];
+
+    // First Name
+    if (!data.fname?.trim()) {
+      errorsFound.push({
+        name: "fname",
+        message: "First Name must be provided",
+      });
+    } else if (data.fname.trim().length > 50) {
+      errorsFound.push({
+        name: "fname",
+        message: `First Name must be less than 50 characters [currently: ${data.fname.trim().length} characters]`,
+      });
+    }
+
+    // Last Name
+    if (!data.lname?.trim()) {
+      errorsFound.push({
+        name: "lname",
+        message: "Last Name must be provided",
+      });
+    } else if (data.lname.trim().length > 50) {
+      errorsFound.push({
+        name: "lname",
+        message: `Last Name must be less than 50 characters [currently: ${data.lname.trim().length} characters]`,
+      });
+    }
+
+    // Company
+    if (!data.company?.trim()) {
+      errorsFound.push({
+        name: "company",
+        message: "Sponsor's Company must be provided",
+      });
+    } else if (data.company.trim().length > 100) {
+      errorsFound.push({
+        name: "company",
+        message: `Sponsor's Company must be less than 100 characters [currently: ${data.company.trim().length} characters]`,
+      });
+    }
+
+    // Division (optional but length validation if provided)
+    if (data.division && data.division.trim().length > 100) {
+      errorsFound.push({
+        name: "division",
+        message: `Sponsor's Division must be less than 100 characters [currently: ${data.division.trim().length} characters]`,
+      });
+    }
+
+    // Email
+    if (!data.email?.trim()) {
+      errorsFound.push({
+        name: "email",
+        message: "Email must be provided",
+      });
+    } else if (data.email.trim().length > 50) {
+      errorsFound.push({
+        name: "email",
+        message: `Email must be less than 50 characters [currently: ${data.email.trim().length} characters]`,
+      });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) {
+      errorsFound.push({
+        name: "email",
+        message: "Please enter a valid email address",
+      });
+    }
+
+    // Type
+    if (!data.type?.trim()) {
+      errorsFound.push({
+        name: "type",
+        message: "Type must be provided",
+      });
+    } else if (data.type.trim().length > 50) {
+      errorsFound.push({
+        name: "type",
+        message: `Type must be less than 50 characters [currently: ${data.type.trim().length} characters]`,
+      });
+    }
+
+    // Phone (optional but format validation if provided)
+    if (
+      data.phone &&
+      data.phone.trim() &&
+      !/^\+?[\d\s\-\(\)]+$/.test(data.phone.trim())
+    ) {
+      errorsFound.push({
+        name: "phone",
+        message: "Please enter a valid phone number",
+      });
+    }
+
+    // Association (optional but length validation if provided)
+    if (data.association && data.association.trim().length > 100) {
+      errorsFound.push({
+        name: "association",
+        message: `Association must be less than 100 characters [currently: ${data.association.trim().length} characters]`,
+      });
+    }
+
+    return errorsFound;
+  };
+
+  const preSubmit = (data) => {
+    // Format phone number if provided
+    if (data.phone) {
+      data.phone = formatPhoneNumber(data.phone);
+    }
+
+    const validationErrors = validateForm(data);
+    setErrors(validationErrors);
+
+    if (validationErrors.length > 0) {
+      return null;
+    }
+
+    setErrors([]);
+    return data;
+  };
+
   let formFieldArray = [
     {
       type: "input",
@@ -63,6 +186,7 @@ export default function SponsorEditor(props) {
       placeHolder: "First Name",
       name: "fname",
       disabled: false,
+      required: true,
     },
     {
       type: "input",
@@ -70,6 +194,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Last Name",
       name: "lname",
       disabled: false,
+      required: true,
     },
     {
       type: "input",
@@ -77,6 +202,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Sponsor's Company",
       name: "company",
       disabled: false,
+      required: true,
     },
     {
       type: "input",
@@ -84,6 +210,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Sponsor's Division",
       name: "division",
       disabled: false,
+      required: false,
     },
     {
       type: "input",
@@ -91,6 +218,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Email",
       name: "email",
       disabled: false,
+      required: true,
     },
     {
       type: "phoneInput",
@@ -98,6 +226,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Phone Number",
       name: "phone",
       disabled: false,
+      required: false,
     },
     {
       type: "input",
@@ -105,6 +234,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Association",
       name: "association",
       disabled: false,
+      required: false,
     },
     {
       type: "input",
@@ -112,6 +242,7 @@ export default function SponsorEditor(props) {
       placeHolder: "Type",
       name: "type",
       disabled: false,
+      required: true,
     },
     {
       type: "checkbox",
@@ -153,19 +284,14 @@ export default function SponsorEditor(props) {
   //Editor component if we are editing or viewing a specific sponsor.
   let editor = (
     <DatabaseTableEditor
-      preSubmit={(formData, name, value, checked, isActiveField, e) => {
-        if (name === "phone") {
-          formData["phone"] = formatPhoneNumber(value);
-          return formData;
-        }
-        return formData;
-      }}
+      preSubmit={preSubmit}
       initialState={initialState}
       submissionModalMessages={submissionModalMessages}
       submitRoute={submitRoute}
       formFieldArray={formFieldArray}
       header={props.header}
       trigger={trigger}
+      errors={errors}
       childComponents={[
         <Proposals
           noAccordion

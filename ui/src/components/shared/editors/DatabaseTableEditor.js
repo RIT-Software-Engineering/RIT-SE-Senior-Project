@@ -329,7 +329,7 @@ export default function DatabaseTableEditor(props) {
                     value={formData[field.name]}
                     onChange={handleChange}
                     disabled={field.disabled}
-                    required
+                    required={field.required}
                     error={hasError(field.name)}
                   />
                 </Form.Field>,
@@ -339,7 +339,7 @@ export default function DatabaseTableEditor(props) {
           break;
         case "phoneInput":
           fieldComponents.push(
-            <Form.Field key={field.name}>
+            <Form.Field key={field.name} required={field.required}>
               <label>{field.label}</label>
               <PhoneInput
                 onChange={(value) => {
@@ -348,13 +348,14 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 labels={us}
                 placeholder={field.placeholder}
+                error={hasError(field.name)}
               />
             </Form.Field>,
           );
           break;
         case "date":
           fieldComponents.push(
-            <Form.Field key={field.name} required>
+            <Form.Field key={field.name} required={field.required}>
               <Form.Input
                 label={field.label}
                 type="date"
@@ -363,7 +364,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                required
+                required={field.required}
                 error={hasError(field.name)}
               />
             </Form.Field>,
@@ -382,7 +383,7 @@ export default function DatabaseTableEditor(props) {
             // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
           } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
-              <Form.Field key={field.name} required>
+              <Form.Field key={field.name} required={field.required}>
                 <label style={{ color: field.disabled ? "lightgray" : "" }}>
                   {field.label}
                 </label>
@@ -408,8 +409,8 @@ export default function DatabaseTableEditor(props) {
                     opacity: field.disabled ? 0.6 : 1,
                     pointerEvents: field.disabled ? "none" : "auto",
                   }}
+                  required={field.required}
                   readOnly={field.disabled}
-                  required
                 />
               </Form.Field>,
             );
