@@ -422,8 +422,12 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          if (field.name === "type") {
-            // User Type is always required
+          if (
+            (formData.type === "coach" || formData.type === "admin") &&
+            (field.label === "Semester/Project" || field.label === "Semester")
+          ) {
+          } else if (field.name === "semester_group" || field.name === "type") {
+            // required dropdowns; used for user creation.
             fieldComponents.push(
               <Form.Field
                 key={field.name}
