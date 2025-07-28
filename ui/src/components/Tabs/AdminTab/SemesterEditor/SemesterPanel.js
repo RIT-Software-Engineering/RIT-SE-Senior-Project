@@ -30,24 +30,28 @@ export default function SemesterPanel(props) {
       label: "Semester Name",
       placeHolder: "Semester Name",
       name: "name",
+      required: true,
     },
     {
       type: "input",
       label: "Department",
       placeHolder: "Department",
       name: "dept",
+      required: true,
     },
     {
       type: "date",
       label: "Start Date",
       placeHolder: "Start Date",
       name: "start_date",
+      required: true,
     },
     {
       type: "date",
       label: "End Date",
       placeHolder: "End Date",
       name: "end_date",
+      required: true,
     },
   ];
 
