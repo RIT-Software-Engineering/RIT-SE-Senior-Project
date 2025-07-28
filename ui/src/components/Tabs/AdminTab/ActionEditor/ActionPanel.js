@@ -66,6 +66,7 @@ export default function ActionPanel(props) {
       label: "Action Title",
       placeHolder: "Action Title",
       name: "action_title",
+      required: true,
     },
     {
       type: "dropdown",
@@ -82,6 +83,7 @@ export default function ActionPanel(props) {
       placeHolder: "Action Target",
       name: action_target,
       options: DROPDOWN_ITEMS.actionTarget,
+      required: true,
     },
     {
       type: "input",
@@ -89,18 +91,21 @@ export default function ActionPanel(props) {
         "Short Desc (allows HTML styling for bold and italics (<b>,<i>,<strong>,<em>) (Not used for announcements);",
       placeHolder: "Short Desc",
       name: short_desc,
+      required: true,
     },
     {
       type: "date",
       label: "Start Date",
       placeHolder: "Start Date",
       name: "start_date",
+      required: true,
     },
     {
       type: "date",
       label: "Due Date / Announcement End Date",
       placeHolder: "Due Date / Announcement End Date",
       name: "due_date",
+      required: true,
     },
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
     // Or add a taggle to switch bettwen the html and the form builder
@@ -109,6 +114,7 @@ export default function ActionPanel(props) {
       label: "Page Html",
       placeHolder: "Page Html",
       name: "page_html",
+      required: true,
     },
     {
       type: "input",
@@ -136,6 +142,22 @@ export default function ActionPanel(props) {
   const validateForm = (data) => {
     const errorsFound = [];
 
+    // check for action title
+    if (!data.action_title?.trim()) {
+      errorsFound.push({
+        name: "action_title",
+        message: "Please provide the Action Title",
+      });
+    }
+
+    // check for action target
+    if (!data.action_target?.trim()) {
+      errorsFound.push({
+        name: "action_target",
+        message: "Please select the Action Target",
+      });
+    }
+
     if (
       data.action_target !== "peer_evaluation" &&
       data.action_target !== "student_announcement" &&
@@ -148,14 +170,6 @@ export default function ActionPanel(props) {
           message: "Please provide a Short Description (Short Desc)",
         });
       }
-    }
-
-    // check for action title
-    if (!data.action_title?.trim()) {
-      errorsFound.push({
-        name: "action_title",
-        message: "Please provide the Action Title",
-      });
     }
 
     // check for page_html

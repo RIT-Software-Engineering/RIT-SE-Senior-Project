@@ -321,7 +321,11 @@ export default function DatabaseTableEditor(props) {
               );
             } else {
               fieldComponents.push(
-                <Form.Field key={field.name}>
+                <Form.Field
+                  key={field.name}
+                  required={field.required}
+                  error={hasError(field.name)}
+                >
                   <Form.Input
                     label={field.label}
                     placeholder={field.placeholder}
@@ -449,6 +453,8 @@ export default function DatabaseTableEditor(props) {
               <Form.Field
                 key={field.name}
                 disabled={field.loading || field.disabled}
+                required={field.required}
+                error={hasError(field.name)}
               >
                 <label>{field.label}</label>
                 <Dropdown
