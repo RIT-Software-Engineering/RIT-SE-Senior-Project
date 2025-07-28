@@ -7,6 +7,7 @@ import {
 } from "../../util/functions/utils";
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { decode } from "html-entities";
+import { canEditProject } from "../../util/functions/projectPermissions";
 
 const PROJECT_STATUSES = {
   SUBMITTED: "submitted",

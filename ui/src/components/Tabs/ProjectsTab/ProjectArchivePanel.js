@@ -4,6 +4,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { slugify } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
+import { canEditProjectWebsite } from "../../util/functions/projectPermissions";
 
 /**
  * Represents an archived project in the Admin Tab -> Archive Editor
@@ -13,6 +14,46 @@ import { UserContext } from "../../util/functions/UserContext";
 export default function ProjectArchivePanel(props) {
   const [newArchive, setNewArchive] = useState({});
   const isStudent = useContext(UserContext).user?.role === USERTYPES.STUDENT;
+  const userContext = useContext(UserContext);
+  const [canEdit, setCanEdit] = useState(false);
+
+  // Check if this component should allow editing
+  const shouldAllowEditing = () => {
+    console.log("ProjectArchivePanel shouldAllowEditing check:", {
+      project_id: props.project?.project_id,
+      userType: userContext.user?.type,
+      isCandidateProject: props.isCandidateProject,
+      canEditProject: props.canEditProject,
+      viewOnly: props.viewOnly,
+    });
+
+    // If viewOnly is set, no editing
+    if (props.viewOnly) {
+      console.log("shouldAllowEditing: false (viewOnly)");
+      return false;
+    }
+
+    // Admin can always edit
+    if (userContext.user?.role === USERTYPES.ADMIN) {
+      console.log(
+        "ProjectArchivePanel: Admin user, allowing edit",
+        props.project?.project_id,
+      );
+      return true;
+    }
+
+    // If it's a candidate project, only allow editing if explicitly permitted
+    if (props.isCandidateProject) {
+      const canEdit = props.canEditProject === true;
+      console.log("shouldAllowEditing (candidate):", canEdit);
+      return canEdit;
+    }
+
+    // For non-candidate projects, check if user has edit permission
+    const canEdit = props.canEditProject === true;
+    console.log("shouldAllowEditing (non-candidate):", canEdit);
+    return canEdit;
+  };
 
   const [initialState, setInitialState] = useState({
     archive_id: "",
@@ -167,7 +208,16 @@ export default function ProjectArchivePanel(props) {
   //This is for checking for existing archives and assigning their values as defaults.
   useEffect(() => {
     loadArchiveData(props.project);
-  }, [props.project]);
+
+    // Set whether editing is allowed
+    setCanEdit(shouldAllowEditing());
+  }, [
+    props.project,
+    props.isCandidateProject,
+    props.requireMembershipCheck,
+    props.canEdit,
+    props.permissionsLoaded,
+  ]);
 
   let submissionModalMessages;
   if (newArchive) {
@@ -256,17 +306,21 @@ export default function ProjectArchivePanel(props) {
   ];
 
   return (
-    <DatabaseTableEditor
-      initialState={initialState}
-      submissionModalMessages={submissionModalMessages}
-      submitRoute={submitRouter}
-      formFieldArray={formFieldArray}
-      header={newArchive ? "Create Website" : "Edit Website"}
-      button={newArchive ? "plus" : "edit"}
-      callback={() => {
-        loadArchiveData(props.project);
-      }}
-      viewOnly={props.viewOnly}
-    />
+    <>
+      {canEdit && (
+        <DatabaseTableEditor
+          initialState={initialState}
+          submissionModalMessages={submissionModalMessages}
+          submitRoute={submitRouter}
+          formFieldArray={formFieldArray}
+          header={newArchive ? "Create Website" : "Edit Website"}
+          button={newArchive ? "plus" : "edit"}
+          callback={() => {
+            loadArchiveData(props.project);
+          }}
+          viewOnly={props.viewOnly}
+        />
+      )}
+    </>
   );
 }
