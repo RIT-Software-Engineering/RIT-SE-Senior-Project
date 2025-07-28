@@ -422,12 +422,8 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          if (
-            (formData.type === "coach" || formData.type === "admin") &&
-            (field.label === "Semester/Project" || field.label === "Semester")
-          ) {
-          } else if (field.name === "semester_group" || field.name === "type") {
-            // required dropdowns; used for user creation.
+          if (field.name === "type") {
+            // User Type is always required
             fieldComponents.push(
               <Form.Field
                 key={field.name}
@@ -442,6 +438,29 @@ export default function DatabaseTableEditor(props) {
                   loading={field.loading}
                   disabled={field.loading || field.disabled}
                   value={formData[field.name] || field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>,
+            );
+            break;
+          } else if (field.name === "semester_group") {
+            // Semester is conditionally required (only for students)
+            const isRequired = formData.type === "student";
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
+                disabled={field.loading || field.disabled}
+                required={isRequired}
+                error={hasError(field.name)}
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] ?? field.nullValue}
                   name={field.name}
                   onChange={handleChange}
                 />

@@ -11,7 +11,12 @@ export default function UserPanel(props) {
     lname: props.userData?.lname || "",
     email: props.userData?.email || "",
     type: props.userData?.type || "",
-    semester_group: props.userData?.semester_group || "",
+    semester_group:
+      props.userData?.semester_group !== undefined
+        ? props.userData.semester_group === ""
+          ? "no-project"
+          : props.userData.semester_group
+        : "no-project",
     project: props.userData?.project || "",
     active: props.userData?.active || "",
     viewOnly: props.userData?.viewOnly || "",
@@ -62,24 +67,28 @@ export default function UserPanel(props) {
       label: "User ID",
       placeHolder: "User ID",
       name: "system_id",
+      required: true,
     },
     {
       type: "input",
       label: "First Name",
       placeHolder: "First Name",
       name: "fname",
+      required: true,
     },
     {
       type: "input",
       label: "Last Name",
       placeHolder: "Last Name",
       name: "lname",
+      required: true,
     },
     {
       type: "input",
       label: "Email",
       placeHolder: "Email",
       name: "email",
+      required: true,
     },
     {
       type: "dropdown",
@@ -87,15 +96,29 @@ export default function UserPanel(props) {
       placeHolder: "Type",
       name: "type",
       options: DROPDOWN_ITEMS.userTypes,
+      required: true,
     },
     {
       type: "dropdown",
       label: "Semester",
       placeHolder: "Semester",
       name: "semester_group",
-      options: Object.keys(semesterMap).map((semester_id, idx) => {
-        return { key: idx, text: semesterMap[semester_id], value: semester_id };
-      }),
+      options: [
+        {
+          key: "no-semester",
+          text: "No Project/Semester",
+          value: "no-project",
+        },
+        ...Object.keys(semesterMap).map((semester_id, idx) => {
+          return {
+            key: idx,
+            text: semesterMap[semester_id],
+            value: semester_id,
+          };
+        }),
+      ],
+      nullValue: "no-project",
+      defaultValue: "no-project",
       loading: props.semesterData?.loading,
     },
     {
@@ -189,7 +212,11 @@ export default function UserPanel(props) {
     // Semester
     if (data.type !== "admin" && data.type !== "coach") {
       // only check for student type
-      if (!data.semester_group) {
+      if (
+        !data.semester_group ||
+        data.semester_group === null ||
+        data.semester_group === undefined
+      ) {
         errorsFound.push({
           name: "semester_group",
           message: "Please select a Semester",
@@ -209,7 +236,15 @@ export default function UserPanel(props) {
     }
 
     setErrors([]);
-    return data;
+
+    // Transform "no-project" back to empty string for server
+    const transformedData = {
+      ...data,
+      semester_group:
+        data.semester_group === "no-project" ? "" : data.semester_group,
+    };
+
+    return transformedData;
   };
 
   return (
