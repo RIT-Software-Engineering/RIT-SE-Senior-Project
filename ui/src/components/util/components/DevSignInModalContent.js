@@ -32,6 +32,21 @@ export default function DevSignInModalContent() {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const dropdownRef = useRef(null);
 
+  // Helper function to get user status text
+  const getUserStatusText = (user) => {
+    const isDeactivated = user.active && user.active !== "";
+    const isViewOnly = user.view_only === "TRUE";
+
+    if (isDeactivated && isViewOnly) {
+      return "(Deactivated, View Only)";
+    } else if (isDeactivated) {
+      return "(Deactivated)";
+    } else if (isViewOnly) {
+      return "(View Only)";
+    }
+    return "";
+  };
+
   // Calculate dynamic dropdown height based on screen size
   const getDropdownMaxHeight = () => {
     // Base height that adapts to screen size
@@ -228,42 +243,93 @@ export default function DevSignInModalContent() {
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Admins" />
-                          {searchAdminUsers.map((user) => (
-                            <DropdownItem
-                              key={`admin-${user.system_id}`}
-                              text={`${user.fname} ${user.lname} (${user.system_id})`}
-                              value={user.system_id}
-                              onClick={(e, target) => handleSelectUser(user)}
-                            />
-                          ))}
+                          {searchAdminUsers.map((user) => {
+                            const statusText = getUserStatusText(user);
+                            return (
+                              <DropdownItem
+                                key={`admin-${user.system_id}`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              >
+                                <div>
+                                  <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
+                                  {statusText && (
+                                    <div
+                                      style={{
+                                        fontSize: "0.9em",
+                                        color: "#999",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {statusText}
+                                    </div>
+                                  )}
+                                </div>
+                              </DropdownItem>
+                            );
+                          })}
                         </>
                       )}
                       {searchCoachUsers.length > 0 && (
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Coaches" />
-                          {searchCoachUsers.map((user) => (
-                            <DropdownItem
-                              key={`coach-${user.system_id}`}
-                              text={`${user.fname} ${user.lname} (${user.system_id})`}
-                              value={user.system_id}
-                              onClick={(e, target) => handleSelectUser(user)}
-                            />
-                          ))}
+                          {searchCoachUsers.map((user) => {
+                            const statusText = getUserStatusText(user);
+                            return (
+                              <DropdownItem
+                                key={`coach-${user.system_id}`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              >
+                                <div>
+                                  <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
+                                  {statusText && (
+                                    <div
+                                      style={{
+                                        fontSize: "0.9em",
+                                        color: "#999",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {statusText}
+                                    </div>
+                                  )}
+                                </div>
+                              </DropdownItem>
+                            );
+                          })}
                         </>
                       )}
                       {searchStudentUsers.length > 0 && (
                         <>
                           <DropdownDivider />
                           <DropdownHeader content="Students" />
-                          {searchStudentUsers.map((user) => (
-                            <DropdownItem
-                              key={`student-${user.system_id}`}
-                              text={`${user.fname} ${user.lname} (${user.system_id})`}
-                              value={user.system_id}
-                              onClick={(e, target) => handleSelectUser(user)}
-                            />
-                          ))}
+                          {searchStudentUsers.map((user) => {
+                            const statusText = getUserStatusText(user);
+                            return (
+                              <DropdownItem
+                                key={`student-${user.system_id}`}
+                                value={user.system_id}
+                                onClick={(e, target) => handleSelectUser(user)}
+                              >
+                                <div>
+                                  <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
+                                  {statusText && (
+                                    <div
+                                      style={{
+                                        fontSize: "0.9em",
+                                        color: "#999",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {statusText}
+                                    </div>
+                                  )}
+                                </div>
+                              </DropdownItem>
+                            );
+                          })}
                         </>
                       )}
                     </DropdownMenu>

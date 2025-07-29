@@ -207,9 +207,35 @@ export default function StudentRow(props) {
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
   if (!props.studentsTab) {
+    // Helper function to get user status text
+    const getUserStatusText = () => {
+      const isDeactivated = props.student.active && props.student.active !== "";
+      const isViewOnly =
+        props.student.view_only === "TRUE" || props.student.view_only === true;
+
+      let statusText = "";
+      if (isDeactivated && isViewOnly) {
+        statusText = " (Deactivated, View Only)";
+      } else if (isDeactivated) {
+        statusText = " (Deactivated)";
+      } else if (isViewOnly) {
+        statusText = " (View Only)";
+      }
+      return statusText;
+    };
+
+    const statusText = getUserStatusText();
+
     student_cells.push(
       <TableCell key={"student-id-" + props.student.system_id}>
         {props.student.system_id}
+        {statusText && (
+          <div
+            style={{ fontSize: "0.9em", color: "#999", fontStyle: "italic" }}
+          >
+            {statusText}
+          </div>
+        )}
       </TableCell>,
     );
     student_cells.push(
@@ -244,6 +270,7 @@ export default function StudentRow(props) {
               header={`Currently Editing "${props.student.system_id}"`}
               key={"editStudent-" + props.student.system_id}
               projectsData={props.projectsData}
+              callback={props.callback}
             />
           </TableCell>
         )}
