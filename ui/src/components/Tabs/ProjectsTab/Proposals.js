@@ -8,6 +8,7 @@ import {
   TableHeaderCell,
   TableRow,
   Accordion,
+  Button,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
 import ProjectArchivePanel from "./ProjectArchivePanel";
@@ -144,6 +145,15 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
+                  <WebsiteViewerModal project={proposal} />
+                  <a
+                    href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                    className="ui icon button"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon name="download" />
+                  </a>
                   <ProjectArchivePanel
                     viewOnly={props.viewOnlyArchive}
                     project={proposal}
@@ -154,10 +164,22 @@ export default function Proposals(props) {
                         : undefined
                     }
                   />
-                  <WebsiteViewerModal project={proposal} />
                 </>
               ) : (
                 <>
+                  <ProjectViewerModal
+                    project={proposal}
+                    semesterMap={semesterMap}
+                  />
+                  <WebsiteViewerModal project={proposal} />
+                  <a
+                    href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                    className="ui icon button"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon name="download" />
+                  </a>
                   {(!props.requireMembershipCheck ||
                     projectPermissions[proposal.project_id] ||
                     userContext.user?.role === USERTYPES.ADMIN) && (
@@ -172,14 +194,6 @@ export default function Proposals(props) {
                   )}
                 </>
               )}
-              <a
-                href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
-                className="ui icon button"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Icon name="download" />
-              </a>
             </div>
           </TableCell>
         </TableRow>

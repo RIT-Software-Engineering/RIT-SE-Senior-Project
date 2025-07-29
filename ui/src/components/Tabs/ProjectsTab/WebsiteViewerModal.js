@@ -196,7 +196,7 @@ export default function WebsiteViewerModal(props) {
     <Modal
       closeOnDimmerClick={false}
       className={"sticky"}
-      trigger={<Button icon="archive" />}
+      trigger={<Button icon="bullhorn" />}
       header={`Viewing "${props.project.display_name || props.project.title}"`}
       onOpen={updateData}
       content={{ content: generateModalContent() }}
