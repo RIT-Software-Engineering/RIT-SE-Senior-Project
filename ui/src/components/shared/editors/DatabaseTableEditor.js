@@ -201,6 +201,12 @@ export default function DatabaseTableEditor(props) {
   // PLANNING: Replicate this idea in the student view of editing
   // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
+    // Check if the field is disabled before allowing changes
+    const field = formFieldArray.find((f) => f.name === name);
+    if (field && field.disabled) {
+      return; // Don't allow changes to disabled fields
+    }
+
     if (errorSubmitted) {
       // remove errors if changes made after first submission.
       setErrors((prevErrors) => {
@@ -315,7 +321,11 @@ export default function DatabaseTableEditor(props) {
               );
             } else {
               fieldComponents.push(
-                <Form.Field key={field.name}>
+                <Form.Field
+                  key={field.name}
+                  required={field.required}
+                  error={hasError(field.name)}
+                >
                   <Form.Input
                     label={field.label}
                     placeholder={field.placeholder}
@@ -323,7 +333,7 @@ export default function DatabaseTableEditor(props) {
                     value={formData[field.name]}
                     onChange={handleChange}
                     disabled={field.disabled}
-                    required
+                    required={field.required}
                     error={hasError(field.name)}
                   />
                 </Form.Field>,
@@ -333,7 +343,7 @@ export default function DatabaseTableEditor(props) {
           break;
         case "phoneInput":
           fieldComponents.push(
-            <Form.Field key={field.name}>
+            <Form.Field key={field.name} required={field.required}>
               <label>{field.label}</label>
               <PhoneInput
                 onChange={(value) => {
@@ -342,13 +352,14 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 labels={us}
                 placeholder={field.placeholder}
+                error={hasError(field.name)}
               />
             </Form.Field>,
           );
           break;
         case "date":
           fieldComponents.push(
-            <Form.Field key={field.name} required>
+            <Form.Field key={field.name} required={field.required}>
               <Form.Input
                 label={field.label}
                 type="date"
@@ -357,7 +368,7 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
-                required
+                required={field.required}
                 error={hasError(field.name)}
               />
             </Form.Field>,
@@ -376,14 +387,19 @@ export default function DatabaseTableEditor(props) {
             // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
           } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
-              <Form.Field key={field.name} required>
-                <label>{field.label}</label>
+              <Form.Field key={field.name} required={field.required}>
+                <label style={{ color: field.disabled ? "lightgray" : "" }}>
+                  {field.label}
+                </label>
                 <Form.TextArea
                   label={field.label}
                   as={ReactCodeMirror}
                   theme={modifiedEclipse}
-                  onChange={(value) =>
-                    handleChange(null, { name: field.name, value: value })
+                  onChange={
+                    field.disabled
+                      ? undefined
+                      : (value) =>
+                          handleChange(null, { name: field.name, value: value })
                   }
                   value={formData[field.name]}
                   maxHeight={"700px"}
@@ -394,8 +410,11 @@ export default function DatabaseTableEditor(props) {
                     padding: "10px",
                     minHeight: "200px",
                     backgroundColor: hasError(field.name) ? "#fab9b4" : "",
+                    opacity: field.disabled ? 0.6 : 1,
+                    pointerEvents: field.disabled ? "none" : "auto",
                   }}
-                  required
+                  required={field.required}
+                  readOnly={field.disabled}
                 />
               </Form.Field>,
             );
@@ -429,11 +448,36 @@ export default function DatabaseTableEditor(props) {
               </Form.Field>,
             );
             break;
+          } else if (field.name === "semester_group") {
+            // Semester is conditionally required (only for students)
+            const isRequired = formData.type === "student";
+            fieldComponents.push(
+              <Form.Field
+                key={field.name}
+                disabled={field.loading || field.disabled}
+                required={isRequired}
+                error={hasError(field.name)}
+              >
+                <label>{field.label}</label>
+                <Dropdown
+                  selection
+                  options={field.options}
+                  loading={field.loading}
+                  disabled={field.loading || field.disabled}
+                  value={formData[field.name] ?? field.nullValue}
+                  name={field.name}
+                  onChange={handleChange}
+                />
+              </Form.Field>,
+            );
+            break;
           } else {
             fieldComponents.push(
               <Form.Field
                 key={field.name}
                 disabled={field.loading || field.disabled}
+                required={field.required}
+                error={hasError(field.name)}
               >
                 <label>{field.label}</label>
                 <Dropdown
@@ -617,6 +661,18 @@ export default function DatabaseTableEditor(props) {
         },
       ];
     }
+
+    if (isProjectLocked) {
+      return [
+        {
+          key: "cancel",
+          content: "Cancel",
+          onClick: (event) => handleCancel(event),
+          color: "grey",
+        },
+      ];
+    }
+
     return [
       {
         key: "cancel",
@@ -641,6 +697,11 @@ export default function DatabaseTableEditor(props) {
   if (props.trigger) {
     trigger = props.trigger;
   }
+
+  // Check if the form is locked by checking if any field with name "synopsis" is disabled
+  const isProjectLocked = formFieldArray.some(
+    (field) => field.name === "synopsis" && field.disabled,
+  );
 
   if (props.isOpenCallback) {
     return (

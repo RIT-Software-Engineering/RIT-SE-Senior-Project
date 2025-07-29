@@ -49,6 +49,7 @@ export default function ProjectsTab(props) {
             viewOnly
             proposalData={candidateProjects}
             semesterData={props.semesterData}
+            isCandidateProject={true}
           />
           <br />
         </>
@@ -61,6 +62,8 @@ export default function ProjectsTab(props) {
         proposalData={myProposalData}
         semesterData={props.semesterData}
         reloadSemesters={props.reloadSemesters}
+        isCandidateProject={false}
+        userProjects={myProposalData}
       />
       <br />
       {userContext.user?.role !== USERTYPES.STUDENT && (

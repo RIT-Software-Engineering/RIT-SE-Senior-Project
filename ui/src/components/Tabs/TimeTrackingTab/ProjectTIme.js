@@ -88,8 +88,11 @@ export default function ProjectTime(props) {
                             return (
                               <TableRow
                                 style={{
-                                  background:
-                                    timeLog.active === 0 ? "#FF999C" : "none",
+                                  background: showNewSubmissionHighlight
+                                    ? "var(--bg-inprogress-action)"
+                                    : timeLog.active === 0
+                                      ? "#FF999C"
+                                      : "none",
                                   fontWeight: showNewSubmissionHighlight
                                     ? "bold"
                                     : "none",

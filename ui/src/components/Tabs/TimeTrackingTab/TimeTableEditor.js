@@ -507,7 +507,8 @@ export default function TimeTableEditor(props) {
             Cancel
           </Button>
           {props.viewOnly ? (
-            <Button content={"View Only Role"} />
+            // render plain text for view-only in time logs
+            " View Only Role"
           ) : (
             <Button
               content={

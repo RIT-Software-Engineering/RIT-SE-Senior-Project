@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Icon,
   Table,
@@ -12,10 +12,16 @@ import {
 import ProjectEditorModal from "./ProjectEditorModal";
 import ProjectArchivePanel from "./ProjectArchivePanel";
 import _ from "lodash";
-import { config, PROJECT_STATUSES } from "../../util/functions/constants";
+import {
+  config,
+  PROJECT_STATUSES,
+  USERTYPES,
+} from "../../util/functions/constants";
 import ProjectViewerModal from "./ProjectViewerModal";
 import WebsiteViewerModal from "./WebsiteViewerModal";
 import { isSemesterActive } from "../../util/functions/utils";
+import { UserContext } from "../../util/functions/UserContext";
+import { canEditProject } from "../../util/functions/projectPermissions";
 import "./../../../css/components/proposal.css";
 import "./../../../css/containers/accordion.css";
 import "./../../../css/components/modal.css";
@@ -37,6 +43,8 @@ export default function Proposals(props) {
   const [active, setActive] = useState(
     isSemesterActive(props.semester?.start_date, props.semester?.end_date),
   );
+  const [projectPermissions, setProjectPermissions] = useState({});
+  const userContext = useContext(UserContext);
 
   let semesterMap = { undefined: "No semester", null: "No semester" };
   props.semesterData?.forEach((semester) => {
@@ -53,7 +61,21 @@ export default function Proposals(props) {
       COLUMNS.DATE,
     ]);
     setProposalData(newProposalData);
-  }, [props.proposalData]);
+
+    // For All Projects view with user projects list, create simple permissions map
+    if (props.userProjects && props.proposalData) {
+      const permissions = {};
+      const userProjectIds = props.userProjects.map((p) => p.project_id);
+
+      props.proposalData.forEach((proposal) => {
+        permissions[proposal.project_id] = userProjectIds.includes(
+          proposal.project_id,
+        );
+      });
+
+      setProjectPermissions(permissions);
+    }
+  }, [props.proposalData, props.userProjects]);
 
   /*const changeSort = (column) => {
     if (proposalData.column === column) {
@@ -125,19 +147,29 @@ export default function Proposals(props) {
                   <ProjectArchivePanel
                     viewOnly={props.viewOnlyArchive}
                     project={proposal}
+                    isCandidateProject={props.isCandidateProject}
+                    canEditProject={
+                      props.userProjects
+                        ? projectPermissions[proposal.project_id]
+                        : undefined
+                    }
                   />
                   <WebsiteViewerModal project={proposal} />
                 </>
               ) : (
                 <>
-                  <ProjectEditorModal
-                    viewOnly={props.viewOnly}
-                    project={proposal}
-                    semesterData={props.semesterData}
-                    activeCoaches={props.activeCoaches}
-                    activeSponsors={props.activeSponsors}
-                    callback={props.callback}
-                  />
+                  {(!props.requireMembershipCheck ||
+                    projectPermissions[proposal.project_id] ||
+                    userContext.user?.role === USERTYPES.ADMIN) && (
+                    <ProjectEditorModal
+                      viewOnly={props.viewOnly}
+                      project={proposal}
+                      semesterData={props.semesterData}
+                      activeCoaches={props.activeCoaches}
+                      activeSponsors={props.activeSponsors}
+                      callback={props.callback}
+                    />
+                  )}
                 </>
               )}
               <a

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Accordion } from "semantic-ui-react";
 import Proposals from "../ProjectsTab/Proposals";
-import { config } from "../../util/functions/constants";
+import { config, USERTYPES } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import { UserContext } from "../../util/functions/UserContext";
 
 /**
  * This is the project accordion builder inside the admin tab.
@@ -11,6 +12,8 @@ export default function ProjectEditor(props) {
   const [proposalData, setProposalData] = useState({});
   const [activeCoaches, setActiveCoaches] = useState([]);
   const [activeSponsors, setActiveSponsors] = useState([]);
+  const [userProjects, setUserProjects] = useState([]);
+  const userContext = useContext(UserContext);
   let semesters = {};
 
   if (!!props.semesterData) {
@@ -36,6 +39,8 @@ export default function ProjectEditor(props) {
             activeCoaches={activeCoaches}
             activeSponsors={activeSponsors}
             callback={getProjectInformation}
+            isAllProjectsView={true}
+            userProjects={userProjects}
           />
         );
       });
@@ -57,6 +62,16 @@ export default function ProjectEditor(props) {
       })
       .catch((error) => {
         alert("Failed to get proposal data " + error);
+      });
+
+    // Get user's projects for permission checking
+    SecureFetch(config.url.API_GET_MY_PROJECTS)
+      .then((response) => response.json())
+      .then((projects) => {
+        setUserProjects(projects);
+      })
+      .catch((error) => {
+        console.error("Failed to get user projects:", error);
       });
 
     SecureFetch(config.url.API_GET_ACTIVE_COACHES)

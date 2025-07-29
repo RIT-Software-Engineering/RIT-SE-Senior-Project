@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Loader, Tab } from "semantic-ui-react";
+import { useHistory } from "react-router-dom";
 import TimeLinesView from "../Tabs/DashboardTab/TimelinesView/TimeLinesView";
 import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
 import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
@@ -23,12 +24,27 @@ import "./../../css/utils/helpers.css";
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
+  const [authError, setAuthError] = useState(false);
+  const history = useHistory();
 
   // When dashboard loads, check who is currently signed in
   useEffect(() => {
     SecureFetch(config.url.API_WHO_AM_I)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          // Handle authentication errors (401, 403)
+          if (response.status === 401 || response.status === 403) {
+            setAuthError(true);
+            history.push("/auth-error");
+            return;
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((responseUser) => {
+        if (!responseUser) return; // Exit if response was null (auth error case)
+
         // Handle cases where profile_info might be null or empty
         let parsedProfileInfo;
         try {
@@ -63,7 +79,13 @@ export default function DashboardPage() {
           );
           document.body.classList.toggle("dark-mode", darkPref);
         }
+      })
+      .catch((error) => {
+        console.error("Authentication error:", error);
+        setAuthError(true);
+        history.push("/auth-error");
       });
+
     SecureFetch(config.url.API_GET_SEMESTERS)
       .then((response) => response.json())
       .then((semestersData) => {
@@ -241,6 +263,11 @@ export default function DashboardPage() {
   }
 
   panes.reverse();
+
+  // Don't render dashboard if there's an authentication error
+  if (authError) {
+    return null; // The useEffect will handle redirecting to auth-error page
+  }
 
   return (
     <>
