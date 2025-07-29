@@ -750,7 +750,7 @@ VALUES
     -- 3_techtitan
     (
         1,
-        'mj2381',
+        'mj3281',
         NULL,
         '3_techtitan',
         '{"team_name":"TechTitan", "email":"techtitan1@example.com"}',
@@ -759,7 +759,7 @@ VALUES
     ),
     (
         2,
-        'mj2381',
+        'mj3281',
         NULL,
         '3_techtitan',
         '{"proposal":"TechTitan project proposal"}',
@@ -795,7 +795,7 @@ VALUES
     ),
     (
         6,
-        'mj2381',
+        'mj3281',
         NULL,
         '3_techtitan',
         '{"canvas":"TechTitan business model canvas"}',
@@ -840,7 +840,7 @@ VALUES
     ),
     (
         11,
-        'mj2381',
+        'mj3281',
         NULL,
         '3_techtitan',
         '{"marketing":"TechTitan marketing plan"}',
@@ -876,7 +876,7 @@ VALUES
     ),
     (
         14,
-        'mj2381',
+        'mj3281',
         NULL,
         '3_techtitan',
         '{"peer_evaluation":"TechTitan peer evaluation"}',
