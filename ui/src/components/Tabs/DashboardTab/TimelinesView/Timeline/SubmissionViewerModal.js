@@ -14,6 +14,7 @@ import {
 import { formatDate } from "../../../../util/functions/utils";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
+import ProfileCircle from "../../../../util/components/ProfileCircle";
 
 export default function SubmissionViewerModal(props) {
   const [submission, setSubmission] = useState({});
@@ -110,14 +111,51 @@ export default function SubmissionViewerModal(props) {
               <b>Semester/Project:</b> {props.semesterName} -{" "}
               {props.projectName}
             </p>
-            <p>
+            <p style={{ display: "flex", alignItems: "center" }}>
               <b>Submitted:</b>
-              {props.action.mock_id &&
-                ` ${props.action.mock_name} (${props.action.mock_id}) as `}
-              {` ${props.action.name} (${props.action.system_id}) `}
-              {formatDate(props.action.submission_datetime)}
+              {props.action.mock_id ? (
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "5px",
+                  }}
+                >
+                  <ProfileCircle
+                    name={props.action.mock_name}
+                    showFullName
+                    isStudent={false}
+                    size="tiny"
+                  />{" "}
+                  {`(${props.action.mock_id}) as `}
+                </span>
+              ) : (
+                ""
+              )}
+              <ProfileCircle
+                name={props.action.name}
+                showFullName
+                isStudent={
+                  props.action.action_target !== ACTION_TARGETS.admin &&
+                  props.action.action_target !== ACTION_TARGETS.coach
+                }
+                size="tiny"
+                style={{ marginLeft: "5px" }}
+              />{" "}
+              {`(${props.action.system_id}) `}
+              {` on ${formatDate(props.action.submission_datetime)}`}
               {` (Due ${formatDate(due)})`}
-              {late && ` ${day} days' late`}
+              {late && (
+                <span
+                  style={{
+                    color: "red",
+                    marginLeft: "5px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {` ${day} days late`}
+                </span>
+              )}
             </p>
             <Divider />
             <h3>Submission</h3>
