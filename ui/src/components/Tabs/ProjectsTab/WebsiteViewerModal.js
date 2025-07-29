@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Icon } from "semantic-ui-react";
+import { Button, Modal, Icon, Message, Header } from "semantic-ui-react";
 import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
@@ -14,6 +14,9 @@ const CONTENT_HEIGHT = 250;
 
 export default function WebsiteViewerModal(props) {
   const [archive, setArchive] = useState();
+  const [loading, setLoading] = useState(false);
+  const [noArchiveFound, setNoArchiveFound] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const nodeRef = React.useRef(null);
   const [posterOpen, setPosterOpen] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
@@ -32,23 +35,120 @@ export default function WebsiteViewerModal(props) {
   }, [props.project?.project_id]);
 
   const updateData = () => {
+    setLoading(true);
+    setNoArchiveFound(false);
+    setHasError(false);
+    setArchive(undefined);
+
     SecureFetch(
       `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`,
     )
-      .then((response) => response.json())
-      .then((archives) => {
-        if (archives.length > 0) {
-          setArchive(archives[0]);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        return response.json();
+      })
+      .then((archives) => {
+        setLoading(false);
+        if (archives && archives.length > 0) {
+          setArchive(archives[0]);
+          setNoArchiveFound(false);
+        } else {
+          setNoArchiveFound(true);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setHasError(true);
+        setNoArchiveFound(false);
+        console.error("Error fetching archive:", error);
       });
+  };
+
+  /**
+   * Component to display when no archive is found for the project
+   */
+  const NoArchiveFoundMessage = () => {
+    return (
+      <div style={{ padding: "3rem 2rem", minHeight: "400px" }}>
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <Icon
+            name="bullhorn"
+            size="huge"
+            color="grey"
+            style={{ marginBottom: "1rem" }}
+          />
+          <Header as="h2" color="grey" style={{ margin: "0 0 1rem 0" }}>
+            No Archive Available
+          </Header>
+        </div>
+
+        <Message info style={{ fontSize: "1.1em", lineHeight: "1.6" }}>
+          <Message.Header style={{ fontSize: "1.3em", marginBottom: "1rem" }}>
+            Archive Not Found
+          </Message.Header>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <p style={{ marginBottom: "1rem" }}>
+              This project doesn't have an archive or showcase materials
+              available yet. Archives typically include project posters, videos,
+              images, and detailed information about the project's scope, team,
+              and outcomes.
+            </p>
+            <p style={{ marginBottom: "0" }}>
+              Archives are usually created after project completion. If you wish
+              to add an archive to this project, and are a member of the project
+              team press the "+" button. If you are not a member of the project
+              team, please contact the project coach to request an archive.
+            </p>
+          </div>
+        </Message>
+      </div>
+    );
+  };
+
+  /**
+   * Component to display while loading archive data
+   */
+  const LoadingMessage = () => {
+    return (
+      <div
+        style={{
+          padding: "3rem 2rem",
+          textAlign: "center",
+          minHeight: "400px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Icon
+          loading
+          name="spinner"
+          size="huge"
+          style={{ marginBottom: "2rem" }}
+        />
+        <Header as="h3" color="grey" style={{ margin: "0", fontSize: "1.3em" }}>
+          Loading project archive...
+        </Header>
+        <p style={{ color: "#6c757d", marginTop: "1rem", fontSize: "1.1em" }}>
+          Please wait while we fetch the project details.
+        </p>
+      </div>
+    );
   };
 
   const generateModalContent = () => {
     return (
       <>
-        {archive === undefined ? (
+        {loading ? (
+          <LoadingMessage />
+        ) : hasError ? (
           <ErrorPage />
-        ) : (
+        ) : noArchiveFound ? (
+          <NoArchiveFoundMessage />
+        ) : archive ? (
           <div ref={nodeRef}>
             <h1 className="ui header">{archive.title} </h1>
             {archive?.outstanding === 1 && (
@@ -187,6 +287,8 @@ export default function WebsiteViewerModal(props) {
               </div>
             </div>
           </div>
+        ) : (
+          <LoadingMessage />
         )}
       </>
     );
