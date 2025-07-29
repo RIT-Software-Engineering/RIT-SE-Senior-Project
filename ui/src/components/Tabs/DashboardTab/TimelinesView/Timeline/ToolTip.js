@@ -118,8 +118,16 @@ export default function ToolTip(props) {
                       >
                         {longSubmissionTitle ? (
                           <>
+                            {submission.mock_id && (
+                              <ProfileCircle
+                                name={submission.mock_name}
+                                showFullName
+                                isStudent={false}
+                                size="tiny"
+                              />
+                            )}{" "}
                             {submission.mock_id &&
-                              `${submission.mock_name} (${submission.mock_id}) as `}
+                              `(${submission.mock_id}) as `}
                             <ProfileCircle
                               name={submission.name}
                               showFullName
@@ -135,16 +143,54 @@ export default function ToolTip(props) {
                         ) : (
                           <>
                             <i
-                              style={{ display: "flex", alignItems: "center" }}
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "0.5rem",
+                                marginLeft: submission.mock_id ? "1.5rem" : "0",
+                              }}
                             >
-                              <ProfileCircle
-                                name={submission.name}
-                                showFullName
-                                size="tiny"
-                                pill
-                                isStudent={submission.user_type === "student"}
-                              />
-                              {formatDateTime(submission.submission_datetime)}
+                              {submission.mock_id && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <ProfileCircle
+                                    name={submission.mock_name}
+                                    showFullName
+                                    isStudent={false}
+                                    size="tiny"
+                                    style={{ marginLeft: "-1.5rem" }}
+                                  />
+                                  as
+                                </div>
+                              )}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <ProfileCircle
+                                  name={submission.name}
+                                  showFullName
+                                  size="tiny"
+                                  isStudent={submission.user_type === "student"}
+                                />
+                                on
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {formatDateTime(submission.submission_datetime)}
+                              </div>
                             </i>
                           </>
                         )}
