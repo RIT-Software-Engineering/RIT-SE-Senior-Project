@@ -16,6 +16,7 @@ export default function ProjectArchivePanel(props) {
   const isStudent = useContext(UserContext).user?.role === USERTYPES.STUDENT;
   const userContext = useContext(UserContext);
   const [canEdit, setCanEdit] = useState(false);
+  const [errors, setErrors] = useState([]);
 
   // Check if this component should allow editing
   const shouldAllowEditing = () => {
@@ -246,6 +247,7 @@ export default function ProjectArchivePanel(props) {
       placeholder: "Team Name",
       name: "team_name",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
+      required: true,
     },
     {
       type: "input",
@@ -253,6 +255,7 @@ export default function ProjectArchivePanel(props) {
       placeholder: "Keywords",
       name: "keywords",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
+      required: true,
     },
     {
       type: "upload",
@@ -260,6 +263,7 @@ export default function ProjectArchivePanel(props) {
       accept: ".png",
       name: "poster_full",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
+      required: true,
     },
     {
       type: "upload",
@@ -274,6 +278,7 @@ export default function ProjectArchivePanel(props) {
       placeholder: "Synopsis",
       name: "synopsis",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
+      required: true,
     },
     {
       type: "upload",
@@ -305,6 +310,68 @@ export default function ProjectArchivePanel(props) {
     },
   ];
 
+  // Validation functions
+  const validateForm = (data) => {
+    const errorsFound = [];
+
+    // Required field validations
+    // Team Name
+    if (!data.team_name?.trim()) {
+      errorsFound.push({
+        name: "team_name",
+        message: "Team Name must be provided",
+      });
+    }
+
+    // Keywords
+    if (!data.keywords?.trim()) {
+      errorsFound.push({
+        name: "keywords",
+        message: "Keywords must be provided",
+      });
+    }
+
+    // Poster Full (only validate if it's a new archive or if no existing poster)
+    // For upload fields, check if the file exists or if there's an existing poster
+    const hasNewPoster =
+      data.poster_full &&
+      ((typeof data.poster_full === "string" && data.poster_full.trim()) ||
+        (typeof data.poster_full === "object" && data.poster_full.name));
+    const hasExistingPoster =
+      initialState.poster_full &&
+      typeof initialState.poster_full === "string" &&
+      initialState.poster_full.trim();
+
+    if (!hasNewPoster && !hasExistingPoster) {
+      errorsFound.push({
+        name: "poster_full",
+        message: "Poster must be provided",
+      });
+    }
+
+    // Synopsis
+    if (!data.synopsis?.trim()) {
+      errorsFound.push({
+        name: "synopsis",
+        message: "Synopsis must be provided",
+      });
+    }
+
+    return errorsFound;
+  };
+
+  const preSubmit = (data) => {
+    const validationErrors = validateForm(data);
+    setErrors(validationErrors);
+
+    if (validationErrors.length > 0) {
+      return null;
+    }
+
+    setErrors([]);
+    return data;
+  };
+
   return (
     <>
       {canEdit && (
@@ -319,6 +386,8 @@ export default function ProjectArchivePanel(props) {
             loadArchiveData(props.project);
           }}
           viewOnly={props.viewOnly}
+          preSubmit={preSubmit}
+          errors={errors}
         />
       )}
     </>

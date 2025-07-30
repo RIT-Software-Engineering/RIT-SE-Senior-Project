@@ -204,6 +204,7 @@ export default function ArchivePanel(props) {
       label: "Team Name",
       placeholder: "Team Name",
       name: "team_name",
+      required: true,
     },
     {
       type: "input",
@@ -216,6 +217,7 @@ export default function ArchivePanel(props) {
       label: "Keywords",
       placeholder: "Keywords",
       name: "keywords",
+      required: true,
     },
     {
       type: "input",
@@ -240,6 +242,7 @@ export default function ArchivePanel(props) {
       label: "Poster Full",
       placeholder: "Poster Full",
       name: "poster_full",
+      required: true,
     },
     {
       type: "input",
@@ -252,6 +255,7 @@ export default function ArchivePanel(props) {
       label: "Synopsis",
       placeholder: "Synopsis",
       name: "synopsis",
+      required: true,
     },
     {
       type: "input",
@@ -342,7 +346,6 @@ export default function ArchivePanel(props) {
   };
 
   const validateForm = (data) => {
-    // TODO: Add validations for all other inputs
     const errorsFound = [];
 
     // handle unique archive names
@@ -351,6 +354,48 @@ export default function ArchivePanel(props) {
       errorsFound.push({
         name: "name",
         message: "Name is taken. Please choose a different name",
+      });
+    }
+
+    // Required field validations
+    // Team Name
+    if (!data.team_name?.trim()) {
+      errorsFound.push({
+        name: "team_name",
+        message: "Team Name must be provided",
+      });
+    }
+
+    // Keywords
+    if (!data.keywords?.trim()) {
+      errorsFound.push({
+        name: "keywords",
+        message: "Keywords must be provided",
+      });
+    }
+
+    // Poster Full - handle both string values and file uploads
+    const hasNewPoster =
+      data.poster_full &&
+      ((typeof data.poster_full === "string" && data.poster_full.trim()) ||
+        (typeof data.poster_full === "object" && data.poster_full.name));
+    const hasExistingPoster =
+      props?.project?.poster_full &&
+      typeof props?.project?.poster_full === "string" &&
+      props?.project?.poster_full.trim();
+
+    if (!hasNewPoster && !hasExistingPoster) {
+      errorsFound.push({
+        name: "poster_full",
+        message: "Poster must be provided",
+      });
+    }
+
+    // Synopsis
+    if (!data.synopsis?.trim()) {
+      errorsFound.push({
+        name: "synopsis",
+        message: "Synopsis must be provided",
       });
     }
 
