@@ -11,6 +11,7 @@ import {
   Accordion,
 } from "semantic-ui-react";
 import { UserContext } from "../functions/UserContext";
+import ProfileCircle from "./ProfileCircle";
 
 export default function EvalReview(props) {
   const [userFeedback, setUserFeedback] = useState([]);
@@ -64,8 +65,15 @@ export default function EvalReview(props) {
                     [student_name]: !studentExpanded[student_name],
                   }));
                 }}
+                style={{
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
               >
                 <Icon name="dropdown" />
+                <ProfileCircle name={student_name} size="tiny" />
                 {userIsStudent ? "Your" : `${student_name}'s`} Feedback Summary
               </Accordion.Title>
               {(studentExpanded[student_name] || userIsStudent) && (
