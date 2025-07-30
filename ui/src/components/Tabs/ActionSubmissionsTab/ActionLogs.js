@@ -409,10 +409,24 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>{action.action_target}</TableCell>
                   <TableCell>
+                    {action.mock_id ? (
+                      <>
+                        <ProfileCircle
+                          name={action.mock_name ?? ""}
+                          size="tiny"
+                          isStudent={false}
+                          showFullName
+                        />
+                        <span style={{ marginLeft: "25px" }}>as</span>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <ProfileCircle
                       name={action.name ?? ""}
                       size="tiny"
                       showFullName
+                      style={{ marginTop: "4px" }}
                     />
                   </TableCell>
                   <TableCell>

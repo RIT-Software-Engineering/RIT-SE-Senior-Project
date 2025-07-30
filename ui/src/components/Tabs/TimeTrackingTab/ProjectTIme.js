@@ -107,18 +107,26 @@ export default function ProjectTime(props) {
                                       gap: "0.5em",
                                     }}
                                   >
+                                    {timeLog.mock_id ? (
+                                      <>
+                                        <ProfileCircle
+                                          name={timeLog.mock_name ?? ""}
+                                          size="tiny"
+                                          isStudent={false}
+                                          showFullName
+                                        />
+                                        <span style={{ marginLeft: "-0.5em" }}>
+                                          as
+                                        </span>
+                                      </>
+                                    ) : (
+                                      ""
+                                    )}
                                     <ProfileCircle
-                                      user={{
-                                        fname: timeLog.name
-                                          .toString()
-                                          .split(" ")[0],
-                                        lname: timeLog.name
-                                          .toString()
-                                          .split(" ")[1],
-                                      }}
+                                      name={timeLog.name ?? ""}
                                       size="tiny"
+                                      showFullName
                                     />
-                                    {submittedBy}
                                   </div>
                                 </TableCell>
                                 <TableCell>
