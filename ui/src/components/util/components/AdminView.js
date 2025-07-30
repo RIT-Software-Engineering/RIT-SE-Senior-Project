@@ -25,6 +25,21 @@ export default function AdminView(props) {
   const { user } = useContext(UserContext);
   const ref = useRef(null);
 
+  // Helper function to get user status text
+  const getUserStatusText = (user) => {
+    const isDeactivated = user.active && user.active !== "";
+    const isViewOnly = user.view_only === "TRUE";
+
+    if (isDeactivated && isViewOnly) {
+      return "(Deactivated, View Only)";
+    } else if (isDeactivated) {
+      return "(Deactivated)";
+    } else if (isViewOnly) {
+      return "(View Only)";
+    }
+    return "";
+  };
+
   useEffect(() => {
     if (user.role === USERTYPES.ADMIN) {
       SecureFetch(config.url.API_GET_ACTIVE_USERS)
@@ -97,6 +112,7 @@ export default function AdminView(props) {
     document.cookie = `mock_semester_group=${users[selectedUser].semester_group}`;
     document.cookie = `mock_project=${users[selectedUser].project}`;
     document.cookie = `mock_active=${users[selectedUser].active}`;
+    document.cookie = `mock_view_only=${users[selectedUser].view_only}`;
     //refresh as new user
     window.location.reload();
   };
@@ -116,6 +132,7 @@ export default function AdminView(props) {
           document.cookie = `mock_semester_group=;max-age=0`;
           document.cookie = `mock_project=;max-age=0`;
           document.cookie = `mock_active=;max-age=0`;
+          document.cookie = `mock_view_only=;max-age=0`;
           window.location.reload();
         }}
       />
@@ -133,7 +150,11 @@ export default function AdminView(props) {
             onClick={handleOpen}
             floating
             button
-            text={selectedUser}
+            text={
+              selectedUser && users[selectedUser]
+                ? `${users[selectedUser].fname} ${users[selectedUser].lname} (${selectedUser}) ${getUserStatusText(users[selectedUser])}`
+                : selectedUser || "Select User..."
+            }
             direction="left"
             open={isOpen}
           >
@@ -155,14 +176,31 @@ export default function AdminView(props) {
                   {_.sortBy(Object.values(searchCoaches), [
                     "fname",
                     "lname",
-                  ]).map((coach) => (
-                    <DropdownItem
-                      key={coach.system_id}
-                      text={`${coach.fname} ${coach.lname} (${coach.system_id})`}
-                      value={coach.system_id}
-                      onClick={(e, target) => handleSelectUser(target.value)}
-                    />
-                  ))}
+                  ]).map((coach) => {
+                    const statusText = getUserStatusText(coach);
+                    return (
+                      <DropdownItem
+                        key={coach.system_id}
+                        value={coach.system_id}
+                        onClick={(e, target) => handleSelectUser(target.value)}
+                      >
+                        <div>
+                          <div>{`${coach.fname} ${coach.lname} (${coach.system_id})`}</div>
+                          {statusText && (
+                            <div
+                              style={{
+                                fontSize: "0.9em",
+                                color: "#999",
+                                marginTop: "2px",
+                              }}
+                            >
+                              {statusText}
+                            </div>
+                          )}
+                        </div>
+                      </DropdownItem>
+                    );
+                  })}
                 </DropdownMenu>
                 <DropdownDivider />
                 <DropdownHeader content="Students" />
@@ -170,14 +208,31 @@ export default function AdminView(props) {
                   {_.sortBy(Object.values(searchStudents), [
                     "fname",
                     "lname",
-                  ]).map((student) => (
-                    <DropdownItem
-                      key={student.system_id}
-                      text={`${student.fname} ${student.lname} (${student.system_id})`}
-                      value={student.system_id}
-                      onClick={(e, target) => handleSelectUser(target.value)}
-                    />
-                  ))}
+                  ]).map((student) => {
+                    const statusText = getUserStatusText(student);
+                    return (
+                      <DropdownItem
+                        key={student.system_id}
+                        value={student.system_id}
+                        onClick={(e, target) => handleSelectUser(target.value)}
+                      >
+                        <div>
+                          <div>{`${student.fname} ${student.lname} (${student.system_id})`}</div>
+                          {statusText && (
+                            <div
+                              style={{
+                                fontSize: "0.9em",
+                                color: "#999",
+                                marginTop: "2px",
+                              }}
+                            >
+                              {statusText}
+                            </div>
+                          )}
+                        </div>
+                      </DropdownItem>
+                    );
+                  })}
                 </DropdownMenu>
               </DropdownMenu>
             ) : null}
@@ -199,8 +254,9 @@ export default function AdminView(props) {
     handleSearch("");
   };
 
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
+  const handleSelectUser = (userId) => {
+    const selectedUserObj = users[userId];
+    setSelectedUser(userId);
     setIsOpen(false);
   };
 
