@@ -45,6 +45,24 @@ export default function ToolTip(props) {
     return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   };
 
+  let renderIsLate = (submission) => {
+    return (
+      <>
+        {isLate(submission.due_date, submission.submission_datetime) && (
+          <span
+            style={{
+              color: "red",
+              marginLeft: "5px",
+              fontWeight: "bold",
+            }}
+          >
+            {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
+          </span>
+        )}
+      </>
+    );
+  };
+
   // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
   // clicking elements on the modal
   let isOpenCallback = function (isOpen) {
@@ -136,7 +154,11 @@ export default function ToolTip(props) {
                     trigger={
                       <div
                         className="fake-a"
-                        style={{ display: "flex", alignItems: "center" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
+                        }}
                       >
                         {longSubmissionTitle ? (
                           <>
@@ -148,19 +170,22 @@ export default function ToolTip(props) {
                                 size="tiny"
                               />
                             )}{" "}
-                            {submission.mock_id &&
-                              `(${submission.mock_id}) as `}
+                            {submission.mock_id && (
+                              <span style={{ marginRight: "0.5rem" }}>
+                                {`(${submission.mock_id}) as`}
+                              </span>
+                            )}
                             <ProfileCircle
                               name={submission.name}
                               showFullName
                               size="tiny"
-                              pill
                               isStudent={submission.user_type === "student"}
                             />
-                            {`(${submission.system_id})`}{" "}
+                            {`(${submission.system_id}) on `}
                             {formatDateTime(
                               submission.submission_datetime,
                             )}{" "}
+                            {renderIsLate(submission)}
                           </>
                         ) : (
                           <>
@@ -209,23 +234,13 @@ export default function ToolTip(props) {
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
+                                  marginLeft: submission.mock_id
+                                    ? "0.3rem"
+                                    : "1.6rem",
                                 }}
                               >
                                 {formatDateTime(submission.submission_datetime)}
-                                {isLate(
-                                  submission.due_date,
-                                  submission.submission_datetime,
-                                ) && (
-                                  <span
-                                    style={{
-                                      color: "red",
-                                      marginLeft: "5px",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
-                                  </span>
-                                )}
+                                {renderIsLate(submission)}
                               </div>
                             </i>
                           </>
@@ -285,7 +300,11 @@ export default function ToolTip(props) {
       closeOnEscape={true}
       wide={hasMockedSubmission}
       inverted={document.body.classList.contains("dark-mode")}
-      style={{ zIndex: 100, boxShadow: "0 0 20px rgba(0,0,0,0.5)" }}
+      style={{
+        zIndex: 100,
+        boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+        minWidth: "280px",
+      }}
       offset={[offsetX, 0]}
       trigger={props.trigger}
       on="click"

@@ -77,7 +77,7 @@ export default function SubmissionViewerModal(props) {
     }
   };
 
-  const daysLate = (due, submitted) => {
+  let daysLate = (due, submitted) => {
     const dueDate = formatDate(due);
     const submitDate = formatDate(submitted);
     const diffInMs = new Date(submitDate) - new Date(dueDate);
@@ -153,7 +153,7 @@ export default function SubmissionViewerModal(props) {
                     fontWeight: "bold",
                   }}
                 >
-                  {` ${day} days late`}
+                  {` ${day + 1} days late`}
                 </span>
               )}
             </p>
