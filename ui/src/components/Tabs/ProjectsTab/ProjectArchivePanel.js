@@ -251,7 +251,7 @@ export default function ProjectArchivePanel(props) {
     },
     {
       type: "input",
-      label: "Keywords",
+      label: "Project Keywords",
       placeholder: "Keywords",
       name: "keywords",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
@@ -263,7 +263,6 @@ export default function ProjectArchivePanel(props) {
       accept: ".png",
       name: "poster_full",
       disabled: (initialState.locked || initialState.inactive) && isStudent,
-      required: true,
     },
     {
       type: "upload",
@@ -328,24 +327,6 @@ export default function ProjectArchivePanel(props) {
       errorsFound.push({
         name: "keywords",
         message: "Keywords must be provided",
-      });
-    }
-
-    // Poster Full (only validate if it's a new archive or if no existing poster)
-    // For upload fields, check if the file exists or if there's an existing poster
-    const hasNewPoster =
-      data.poster_full &&
-      ((typeof data.poster_full === "string" && data.poster_full.trim()) ||
-        (typeof data.poster_full === "object" && data.poster_full.name));
-    const hasExistingPoster =
-      initialState.poster_full &&
-      typeof initialState.poster_full === "string" &&
-      initialState.poster_full.trim();
-
-    if (!hasNewPoster && !hasExistingPoster) {
-      errorsFound.push({
-        name: "poster_full",
-        message: "Poster must be provided",
       });
     }
 

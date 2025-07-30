@@ -242,7 +242,6 @@ export default function ArchivePanel(props) {
       label: "Poster Full",
       placeholder: "Poster Full",
       name: "poster_full",
-      required: true,
     },
     {
       type: "input",
@@ -371,23 +370,6 @@ export default function ArchivePanel(props) {
       errorsFound.push({
         name: "keywords",
         message: "Keywords must be provided",
-      });
-    }
-
-    // Poster Full - handle both string values and file uploads
-    const hasNewPoster =
-      data.poster_full &&
-      ((typeof data.poster_full === "string" && data.poster_full.trim()) ||
-        (typeof data.poster_full === "object" && data.poster_full.name));
-    const hasExistingPoster =
-      props?.project?.poster_full &&
-      typeof props?.project?.poster_full === "string" &&
-      props?.project?.poster_full.trim();
-
-    if (!hasNewPoster && !hasExistingPoster) {
-      errorsFound.push({
-        name: "poster_full",
-        message: "Poster must be provided",
       });
     }
 
