@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
 
-const BarGraph = ({ data }) => {
+const BarGraph = ({ data, width, height }) => {
   const userContext = useContext(UserContext);
   const [userFeedback, setUserFeedback] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -36,10 +36,60 @@ const BarGraph = ({ data }) => {
     return () => observer.disconnect();
   }, [data, userContext]);
 
-  const { width, height } = { width: 800, height: 400 };
   const padding = 50;
   const maxScore = 5;
-  const colors = ["#D81B60", "#1E88E5", "#FFC107", "#004D40"];
+
+  const generateColor = (index) => {
+    const hue = (index * 137.5) % 360; // Nice angle for distinct hues
+    return `hsl(${hue}, 70%, 50%)`;
+  };
+
+  const generatePattern = (index) => {
+    const patterns = [
+      // Diagonal lines
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <path d="M0,16 L16,0" stroke="rgba(255,255,255,1)" stroke-width="3"/>
+      <path d="M-8,16 L8,0" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+      </pattern>`,
+      // Dots grid
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <circle cx="4" cy="4" r="3" fill="rgba(0,0,0,1)"/>
+      <circle cx="12" cy="12" r="3" fill="rgba(0,0,0,1)"/>
+      </pattern>`,
+      // Zigzag
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <polyline points="0,16 4,8 8,16 12,8 16,16" fill="none" stroke="rgba(255,255,255,1)" stroke-width="3"/>
+      </pattern>`,
+      // Crosshatch
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <line x1="0" y1="0" x2="16" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
+      <line x1="16" y1="0" x2="0" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
+      </pattern>`,
+      // Squares grid
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <rect x="2" y="2" width="4" height="4" fill="rgba(0,0,0,1)"/>
+      <rect x="10" y="10" width="4" height="4" fill="rgba(0,0,0,0.2)"/>
+      </pattern>`,
+      // Horizontal lines
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <line x1="0" y1="4" x2="16" y2="4" stroke="rgba(255,255,255,1)" stroke-width="3"/>
+      <line x1="0" y1="12" x2="16" y2="12" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+      </pattern>`,
+      // Vertical lines
+      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="16" height="16" fill="none"/>
+      <line x1="4" y1="0" x2="4" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
+      <line x1="12" y1="0" x2="12" y2="16" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+      </pattern>`,
+    ];
+    return patterns[index % patterns.length];
+  };
 
   // Define text color based on dark mode
   const textColor = isDarkMode ? "#ffffff" : "#000000";
@@ -68,25 +118,40 @@ const BarGraph = ({ data }) => {
             key={person[0]}
             style={{ display: "flex", alignItems: "center", margin: "5px" }}
           >
-            <div
-              style={{
-                width: "15px",
-                height: "15px",
-                backgroundColor: colors[index % colors.length],
-                marginRight: "5px",
-              }}
-            ></div>
+            <svg width="15" height="15" style={{ marginRight: "5px" }}>
+              <rect
+                x="0"
+                y="0"
+                width="15"
+                height="15"
+                fill={generateColor(index)}
+              />
+              <rect
+                x="0"
+                y="0"
+                width="15"
+                height="15"
+                fill={`url(#pattern${index})`}
+              />
+            </svg>
             <span style={{ color: textColor }}>{person[0]}</span>
           </div>
         ))}
       </div>
 
       <svg
-        viewBox="0 0 1000 500"
+        viewBox={`0 0 ${width * 1.1} ${height * 1.1}`}
         preserveAspectRatio="xMidYMid meet"
-        width="100%"
-        height="100%"
       >
+        <defs>
+          {userFeedback.map((_, index) => (
+            <svg
+              key={index}
+              dangerouslySetInnerHTML={{ __html: generatePattern(index) }}
+            />
+          ))}
+        </defs>
+
         {[...Array(6).keys()].map((i) => {
           const yPosition =
             height - padding - (i * (height - 2 * padding)) / maxScore;
@@ -136,7 +201,14 @@ const BarGraph = ({ data }) => {
                   y={yPos}
                   width={individualBarWidth}
                   height={barHeight}
-                  fill={colors[personIdx % colors.length]}
+                  fill={generateColor(personIdx)}
+                />
+                <rect
+                  x={xPos}
+                  y={yPos}
+                  width={individualBarWidth}
+                  height={barHeight}
+                  fill={`url(#pattern${personIdx})`}
                 />
                 <text
                   x={xPos + individualBarWidth / 2}
@@ -153,26 +225,29 @@ const BarGraph = ({ data }) => {
         })}
 
         {userFeedback.length > 0 &&
-          Object.keys(userFeedback[0][1]).map((label, categoryIdx) => (
-            <text
-              key={label}
-              x={
-                padding +
-                categoryIdx *
-                  ((width - 2 * padding) /
-                    Object.keys(userFeedback[0][1]).length) +
-                (width - 2 * padding) /
-                  Object.keys(userFeedback[0][1]).length /
-                  2
-              }
-              y={height - padding + 20}
-              fontSize={12}
-              textAnchor="middle"
-              fill={textColor}
-            >
-              {label}
-            </text>
-          ))}
+          Object.keys(userFeedback[0][1]).map((label, categoryIdx) => {
+            const x =
+              padding +
+              categoryIdx *
+                ((width - 2 * padding) /
+                  Object.keys(userFeedback[0][1]).length) +
+              (width - 2 * padding) /
+                Object.keys(userFeedback[0][1]).length /
+                2;
+            const y = height - padding + 20;
+            return (
+              <text
+                key={label}
+                x={x}
+                y={y + 20}
+                fontSize={14}
+                textAnchor="middle"
+                fill={textColor}
+              >
+                {label}
+              </text>
+            );
+          })}
       </svg>
     </div>
   );

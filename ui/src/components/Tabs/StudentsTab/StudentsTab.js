@@ -453,7 +453,19 @@ export default function StudentsTab(props) {
                         // only show bar graph if admin or coach
                         userContext.user.role === USERTYPES.ADMIN ||
                         userContext.user.role === USERTYPES.COACH ? (
-                          <BarGraph data={submission} />
+                          <div
+                            style={{
+                              height: "350px",
+                              maxWidth: "100%",
+                              overflowX: "auto",
+                            }}
+                          >
+                            <BarGraph
+                              data={submission}
+                              width={window.innerWidth * 0.9}
+                              height={250}
+                            />
+                          </div>
                         ) : (
                           ""
                         )
