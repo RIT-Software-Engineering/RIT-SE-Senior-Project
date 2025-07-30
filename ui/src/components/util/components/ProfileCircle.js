@@ -68,6 +68,8 @@ export default function ProfileCircle(props) {
         style={{
           width: sizes[size]?.width || sizes["small"].width,
           height: sizes[size]?.height || sizes["small"].height,
+          minWidth: sizes[size]?.width || sizes["small"].width,
+          minHeight: sizes[size]?.height || sizes["small"].height,
           borderRadius: "50%",
           backgroundColor:
             isStudent && !["admin", "coach"].includes(user?.role)
