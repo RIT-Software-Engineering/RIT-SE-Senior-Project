@@ -558,7 +558,11 @@ export default function DatabaseTableEditor(props) {
             );
           } else {
             fieldComponents.push(
-              <Form.Field key={field["name"]}>
+              <Form.Field
+                key={field["name"]}
+                required={field.required}
+                error={hasError(field.name)}
+              >
                 <label>{field.label}</label>
                 <input
                   type="file"
