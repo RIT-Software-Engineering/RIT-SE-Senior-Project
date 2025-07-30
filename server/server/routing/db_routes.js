@@ -2711,7 +2711,7 @@ module.exports = (db) => {
         // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
         getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
-                        actions.action_title,
+                        actions.action_title, actions.due_date,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
                         (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
@@ -2723,7 +2723,7 @@ module.exports = (db) => {
         break;
       case ROLES.COACH:
       case ROLES.ADMIN:
-        getActionLogQuery = `SELECT action_log.*, actions.action_title,
+        getActionLogQuery = `SELECT action_log.*, actions.action_title, actions.due_date,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) AS name,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) AS mock_name,
                         (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,

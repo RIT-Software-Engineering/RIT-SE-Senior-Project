@@ -10,6 +10,7 @@ import ActionModal from "./ActionModal";
 import SubmissionViewerModal from "./SubmissionViewerModal";
 import DOMpurify from "dompurify";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
+import { formatDate } from "../../../../util/functions/utils";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -28,6 +29,22 @@ export default function ToolTip(props) {
   const [submissions, setSubmissions] = useState(null);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
 
+  var [hasMockedSubmission, setHasMockedSubmission] = useState(false);
+
+  let isLate = (due, submitted) => {
+    if (!due || !submitted) return false;
+    const dueDate = formatDate(due);
+    const submitDate = formatDate(submitted);
+    return new Date(submitDate) > new Date(dueDate);
+  };
+
+  let daysLate = (due, submitted) => {
+    const dueDate = formatDate(due);
+    const submitDate = formatDate(submitted);
+    const diffInMs = new Date(submitDate) - new Date(dueDate);
+    return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  };
+
   // solely exists as a weird workaround so that when a modal is open the tooltip popup doesn't close when
   // clicking elements on the modal
   let isOpenCallback = function (isOpen) {
@@ -43,6 +60,11 @@ export default function ToolTip(props) {
       .then((actionLogs) => {
         setSubmissions(actionLogs);
         setLoadingSubmissions(false);
+        if (actionLogs.length > 0) {
+          setHasMockedSubmission(
+            actionLogs.some((submission) => submission.mock_id),
+          );
+        }
       })
       .catch((err) => {
         console.error("FAILED TO GET SUBMISSIONS: ", err);
@@ -190,6 +212,20 @@ export default function ToolTip(props) {
                                 }}
                               >
                                 {formatDateTime(submission.submission_datetime)}
+                                {isLate(
+                                  submission.due_date,
+                                  submission.submission_datetime,
+                                ) && (
+                                  <span
+                                    style={{
+                                      color: "red",
+                                      marginLeft: "5px",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
+                                  </span>
+                                )}
                               </div>
                             </i>
                           </>
@@ -247,7 +283,7 @@ export default function ToolTip(props) {
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
       closeOnEscape={true}
-      wide
+      wide={hasMockedSubmission}
       inverted={document.body.classList.contains("dark-mode")}
       style={{ zIndex: 100, boxShadow: "0 0 20px rgba(0,0,0,0.5)" }}
       offset={[offsetX, 0]}
