@@ -458,12 +458,13 @@ export default function StudentsTab(props) {
                               height: "350px",
                               maxWidth: "100%",
                               overflowX: "auto",
+                              overflowY: "hidden",
                             }}
                           >
                             <BarGraph
                               data={submission}
                               width={window.innerWidth * 0.9}
-                              height={250}
+                              height={300}
                             />
                           </div>
                         ) : (

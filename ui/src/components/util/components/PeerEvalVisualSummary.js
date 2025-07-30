@@ -240,7 +240,7 @@ const BarGraph = ({ data, width, height }) => {
                 key={label}
                 x={x}
                 y={y + 20}
-                fontSize={14}
+                fontSize={16}
                 textAnchor="middle"
                 fill={textColor}
               >
