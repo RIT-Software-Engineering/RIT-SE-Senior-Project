@@ -3077,7 +3077,9 @@ module.exports = (db) => {
     [UserAuth.isCoachOrAdmin],
     (req, res, next) => {
       let getSponsorNotesQuery = `
-            SELECT * , users.fname, users.lname, users.email
+            SELECT sponsor_notes.*, 
+                   users.fname, users.lname, users.email,
+                   (SELECT users.fname || ' ' || users.lname FROM users WHERE users.system_id = sponsor_notes.mock_id) AS mock_name
             FROM sponsor_notes
             JOIN users
             ON users.system_id = sponsor_notes.author
@@ -3737,8 +3739,8 @@ module.exports = (db) => {
   async function createSponsorNote(queryParams) {
     let insertQuery = `
             INSERT into sponsor_notes
-                (note_content, sponsor, author, previous_note)
-            values (?, ?, ?, ?)`;
+                (note_content, sponsor, author, mock_id, previous_note)
+            values (?, ?, ?, ?, ?)`;
 
     let status = 500;
     let error = null;
@@ -3760,11 +3762,13 @@ module.exports = (db) => {
     [UserAuth.isCoachOrAdmin, UserAuth.canWrite, body("page_html").unescape()],
     (req, res, next) => {
       let body = req.body;
+      let mock_id = req.user.mock ? req.user.mock.system_id : null;
 
       params = [
         body.note_content,
         body.sponsor_id,
         req.user.system_id,
+        mock_id,
         body.previous_note,
       ];
 

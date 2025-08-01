@@ -79,7 +79,16 @@ export default function SponsorNote(props) {
   let content = (
     <Segment float={"left"} basic>
       <h5>
-        {props.note.fname} {props.note.lname}, &nbsp;{props.note.email}, &nbsp;
+        {props.note.mock_id ? (
+          <>
+            {props.note.mock_name} as {props.note.fname} {props.note.lname}
+          </>
+        ) : (
+          <>
+            {props.note.fname} {props.note.lname}
+          </>
+        )}
+        , &nbsp;{props.note.email}, &nbsp;
         {props.note.creation_date}
       </h5>
       {props.note.note_content}
