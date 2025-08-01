@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
@@ -20,9 +20,13 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
     false,
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const [originalAdditionalInfo, setOriginalAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const textareaRef = useRef(null);
+  const hasFetchedData = useRef(false);
   useEffect(() => {
-    if (open && user?.user) {
+    if (open && user?.user && !hasFetchedData.current) {
+      hasFetchedData.current = true;
       SecureFetch(config.url.API_GET_DARK_MODE + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
@@ -67,16 +71,27 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
       )
         .then((res) => res.json())
-        .then((data) => setAdditionalInfo(data?.additional_info || ""))
+        .then((data) => {
+          const info = data?.additional_info || "";
+          console.log("Fetched additional info:", info);
+          setAdditionalInfo(info);
+          setOriginalAdditionalInfo(info);
+        })
         .catch((err) => console.error("Failed to fetch additional info:", err));
     }
-  }, [
-    open,
-    setCalendarPreference,
-    setGanttPreference,
-    setMilestonePreference,
-    user,
-  ]);
+
+    // Reset flag when modal closes
+    if (!open) {
+      hasFetchedData.current = false;
+    }
+  }, [open, user]);
+
+  // Focus textarea when entering edit mode
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isEditing]);
 
   const toggleDarkMode = async () => {
     const newDarkMode = !darkMode;
@@ -181,6 +196,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
 
       if (!response.ok) throw new Error("Failed to update additional info");
 
+      setOriginalAdditionalInfo(additionalInfo);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating additional info:", error);
@@ -246,10 +262,20 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                   {isEditing ? (
                     <>
                       <textarea
+                        ref={textareaRef}
                         value={additionalInfo}
-                        onChange={(e) => setAdditionalInfo(e.target.value)}
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          console.log("Textarea onChange:", newValue);
+                          console.log(
+                            "Current additionalInfo state:",
+                            additionalInfo,
+                          );
+                          setAdditionalInfo(newValue);
+                        }}
                         rows={4}
                         style={{ width: "100%" }}
+                        placeholder="Enter additional information..."
                       />
                       <Button
                         onClick={handleSaveAdditionalInfo}
@@ -260,7 +286,10 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         Save
                       </Button>
                       <Button
-                        onClick={() => setIsEditing(false)}
+                        onClick={() => {
+                          setAdditionalInfo(originalAdditionalInfo);
+                          setIsEditing(false);
+                        }}
                         size="small"
                         style={{ marginLeft: "0.5em", marginTop: "0.5em" }}
                       >
