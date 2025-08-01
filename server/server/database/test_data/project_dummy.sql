@@ -56,7 +56,7 @@ VALUES
         1,
         NULL,
         NULL,
-        NULL,
+        'groweasy-analytics',
         'Platform for business growth',
         1
     ),
@@ -86,7 +86,7 @@ VALUES
         5,
         NULL,
         NULL,
-        NULL,
+        'smartspark-marketing',
         'AI marketing automation',
         1
     ),
@@ -116,7 +116,7 @@ VALUES
         2,
         NULL,
         NULL,
-        NULL,
+        'techtitan-solutions',
         'Scalable CRM for startups',
         1
     ),
