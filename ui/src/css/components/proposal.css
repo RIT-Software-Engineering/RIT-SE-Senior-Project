@@ -18,6 +18,66 @@ h3.required-field::after {
   color: #ff6b6b;
 }
 
+/* Error styling for QuillEditor fields */
+.ui.form .field.error .ql-editor {
+  border-color: #e0b4b4;
+  background: #fff6f6;
+  color: #9f3a38;
+}
+
+.ui.form .field.error .ql-toolbar {
+  border-color: #e0b4b4;
+}
+
+/* Dark mode error styling for QuillEditor fields */
+.dark-mode .ui.form .field.error .ql-editor {
+  border-color: #ff6b6b;
+  background: #2c1a1a;
+  color: #ff8080;
+}
+
+.dark-mode .ui.form .field.error .ql-toolbar {
+  border-color: #ff6b6b;
+}
+
+/* Hide validation messages for hidden inputs */
+input[id^="hidden_"]:invalid {
+  box-shadow: none;
+}
+
+/* Style QuillEditor to look more like a standard input when invalid */
+.ui.form .field.required .ql-container {
+  position: relative;
+}
+
+.ui.form .field.required .ql-editor:empty::before {
+  color: #999;
+  font-style: italic;
+}
+
+/* Custom validation tooltip styling */
+.custom-validation-tooltip {
+  position: absolute !important;
+  background: #323232 !important;
+  color: white !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  white-space: nowrap !important;
+  z-index: 10000 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  pointer-events: none !important;
+}
+
+/* Dark mode custom tooltip styling */
+.dark-mode .custom-validation-tooltip {
+  background: #1a1a1a !important;
+  color: #ff6b6b !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
 .proposal-submit-buttons {
   display: flex;
   justify-content: space-between;

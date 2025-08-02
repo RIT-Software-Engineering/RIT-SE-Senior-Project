@@ -56,11 +56,130 @@ function ProposalPage() {
     setFormData({ target: { type: "radio", value: value, name: name } });
   };
 
+  // Function to strip HTML tags and check if content is empty
+  const isContentEmpty = (htmlContent) => {
+    if (!htmlContent) return true;
+    const textContent = htmlContent.replace(/<[^>]*>/g, "").trim();
+    return textContent === "";
+  };
+
+  // Update hidden inputs for HTML5 validation (keeping for other field validation)
+  const updateHiddenInput = (fieldName, value) => {
+    // This function is kept for compatibility but not used for QuillEditor validation
+  };
+
+  // Custom validation with proper positioning
+  const validateAndShowTooltip = (fieldName) => {
+    const quillContainer = document.querySelector(
+      `#quill_${fieldName} .ql-editor`,
+    );
+
+    if (quillContainer) {
+      // Remove any existing custom tooltips
+      const existingTooltip = document.querySelector(
+        ".custom-validation-tooltip",
+      );
+      if (existingTooltip) {
+        existingTooltip.remove();
+      }
+
+      // Create custom tooltip
+      const tooltip = document.createElement("div");
+      tooltip.className = "custom-validation-tooltip";
+      tooltip.textContent = "Please fill out this field.";
+
+      // Style the tooltip to look like native browser validation
+      tooltip.style.cssText = `
+        position: absolute;
+        background: #323232;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        white-space: nowrap;
+        z-index: 10000;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        pointer-events: none;
+      `;
+
+      // Add arrow to tooltip
+      const arrow = document.createElement("div");
+      arrow.style.cssText = `
+        position: absolute;
+        top: -5px;
+        left: 20px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid #323232;
+      `;
+      tooltip.appendChild(arrow);
+
+      // Position the tooltip relative to the QuillEditor
+      const rect = quillContainer.getBoundingClientRect();
+      tooltip.style.left = `${rect.left + window.scrollX}px`;
+      tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+
+      document.body.appendChild(tooltip);
+
+      // Focus the QuillEditor
+      quillContainer.focus();
+
+      // Scroll to the field
+      quillContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Remove tooltip after 5 seconds or when user interacts
+      const removeTooltip = () => {
+        if (tooltip && tooltip.parentNode) {
+          tooltip.remove();
+        }
+      };
+
+      setTimeout(removeTooltip, 5000);
+
+      // Remove tooltip when user starts typing in any QuillEditor
+      const quillEditors = document.querySelectorAll(".ql-editor");
+      quillEditors.forEach((editor) => {
+        editor.addEventListener("input", removeTooltip, { once: true });
+        editor.addEventListener("focus", removeTooltip, { once: true });
+      });
+
+      // Remove tooltip when clicking elsewhere
+      document.addEventListener("click", removeTooltip, { once: true });
+    }
+  };
+
   const submitProposal = async (event) => {
     event.preventDefault();
 
     if (modalOpen) {
       console.warn("Trying to submit proposal form while modal is open.");
+      return;
+    }
+
+    // Check each required QuillEditor field and show tooltips
+    const requiredFields = [
+      "background_info",
+      "project_description",
+      "project_scope",
+      "project_challenges",
+      "constraints_assumptions",
+      "sponsor_deliverables",
+    ];
+
+    for (const field of requiredFields) {
+      if (isContentEmpty(formData[field])) {
+        validateAndShowTooltip(field);
+        return; // Stop at first empty field
+      }
+    }
+
+    // Let HTML5 validation handle other fields
+    const form = event.target;
+    if (!form.checkValidity()) {
+      form.reportValidity();
       return;
     }
 
@@ -132,7 +251,9 @@ function ProposalPage() {
   const closeModal = () => {
     switch (modalOpen) {
       case MODAL_STATUS.SUCCESS:
-        setActualFormData({});
+        setActualFormData({
+          assignment_of_rights: "full_rights",
+        });
         setFormFiles(null);
         setModalOpen(MODAL_STATUS.CLOSED);
         setErrors({});
@@ -253,117 +374,197 @@ function ProposalPage() {
           />
         </Form.Field>
 
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.background_info && {
+              content: errors.background_info,
+              pointing: "below",
+            }
+          }
         >
-          Project Background Information
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.background_info || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["background_info"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Project Background Information
+          </label>
+          <div id="quill_background_info">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.background_info || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  background_info: value,
+                });
+                updateHiddenInput("background_info", value);
+                // Clear error when user starts typing
+                if (errors.background_info) {
+                  setErrors({ ...errors, background_info: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
         <br />
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.project_description && {
+              content: errors.project_description,
+              pointing: "below",
+            }
+          }
         >
-          Project Description
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.project_description || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["project_description"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Project Description
+          </label>
+          <div id="quill_project_description">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.project_description || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  project_description: value,
+                });
+                updateHiddenInput("project_description", value);
+                // Clear error when user starts typing
+                if (errors.project_description) {
+                  setErrors({ ...errors, project_description: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
         <br />
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.project_scope && {
+              content: errors.project_scope,
+              pointing: "below",
+            }
+          }
         >
-          Project Scope
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.project_scope || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["project_scope"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Project Scope
+          </label>
+          <div id="quill_project_scope">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.project_scope || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  project_scope: value,
+                });
+                updateHiddenInput("project_scope", value);
+                // Clear error when user starts typing
+                if (errors.project_scope) {
+                  setErrors({ ...errors, project_scope: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
         <br />
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.project_challenges && {
+              content: errors.project_challenges,
+              pointing: "below",
+            }
+          }
         >
-          Project Challenges
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.project_challenges || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["project_challenges"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Project Challenges
+          </label>
+          <div id="quill_project_challenges">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.project_challenges || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  project_challenges: value,
+                });
+                updateHiddenInput("project_challenges", value);
+                // Clear error when user starts typing
+                if (errors.project_challenges) {
+                  setErrors({ ...errors, project_challenges: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
         <br />
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.constraints_assumptions && {
+              content: errors.constraints_assumptions,
+              pointing: "below",
+            }
+          }
         >
-          Constraints & Assumptions
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.constraints_assumptions || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["constraints_assumptions"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Constraints & Assumptions
+          </label>
+          <div id="quill_constraints_assumptions">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.constraints_assumptions || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  constraints_assumptions: value,
+                });
+                updateHiddenInput("constraints_assumptions", value);
+                // Clear error when user starts typing
+                if (errors.constraints_assumptions) {
+                  setErrors({ ...errors, constraints_assumptions: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
@@ -380,7 +581,7 @@ function ProposalPage() {
           onChange={(value) => {
             setActualFormData({
               ...formData,
-              ["sponsor_provided_resources"]: value,
+              sponsor_provided_resources: value,
             });
           }}
         />
@@ -404,25 +605,41 @@ function ProposalPage() {
         />
 
         <br />
-        <div
-          className="required-field"
-          style={{ fontWeight: "bold", fontSize: "13px" }}
+        <Form.Field
+          required
+          error={
+            errors.sponsor_deliverables && {
+              content: errors.sponsor_deliverables,
+              pointing: "below",
+            }
+          }
         >
-          Sponsor and Project Specific Deliverables
-        </div>
-        <br />
-        <QuillEditor
-          ref={(el) => (quill.current = el)}
-          value={formData.sponsor_deliverables || ""}
-          formats={formats}
-          style={{ height: "150px" }}
-          onChange={(value) => {
-            setActualFormData({
-              ...formData,
-              ["sponsor_deliverables"]: value,
-            });
-          }}
-        />
+          <label
+            className="required-field"
+            style={{ fontWeight: "bold", fontSize: "13px" }}
+          >
+            Sponsor and Project Specific Deliverables
+          </label>
+          <div id="quill_sponsor_deliverables">
+            <QuillEditor
+              ref={(el) => (quill.current = el)}
+              value={formData.sponsor_deliverables || ""}
+              formats={formats}
+              style={{ height: "150px" }}
+              onChange={(value) => {
+                setActualFormData({
+                  ...formData,
+                  sponsor_deliverables: value,
+                });
+                updateHiddenInput("sponsor_deliverables", value);
+                // Clear error when user starts typing
+                if (errors.sponsor_deliverables) {
+                  setErrors({ ...errors, sponsor_deliverables: undefined });
+                }
+              }}
+            />
+          </div>
+        </Form.Field>
         <br />
         <br />
 
@@ -439,7 +656,7 @@ function ProposalPage() {
           onChange={(value) => {
             setActualFormData({
               ...formData,
-              ["proprietary_info"]: value,
+              proprietary_info: value,
             });
           }}
         />
