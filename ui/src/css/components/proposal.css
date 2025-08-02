@@ -1,5 +1,23 @@
 @import "./../base/variables.css";
 
+/* Required field asterisk styling */
+.required-field::after,
+.ui.form .required.field > label::after,
+.ui.form .field.required > label::after,
+h3.required-field::after {
+  content: " *";
+  color: #db2828;
+  font-weight: bold;
+}
+
+/* Dark mode required field styling */
+.dark-mode .required-field::after,
+.dark-mode .ui.form .required.field > label::after,
+.dark-mode .ui.form .field.required > label::after,
+.dark-mode h3.required-field::after {
+  color: #ff6b6b;
+}
+
 .proposal-submit-buttons {
   display: flex;
   justify-content: space-between;
@@ -18,7 +36,7 @@
 }
 
 .proposal-row-UNHANDLED-CASE {
-  background: var(--action-bar-proposal-blue);;
+  background: var(--action-bar-proposal-blue);
   color: var(--action-bar-proposal-red);
 }
 

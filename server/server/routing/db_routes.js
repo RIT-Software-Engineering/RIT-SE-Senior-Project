@@ -2171,7 +2171,10 @@ module.exports = (db) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
-        const error = new Error(result.errors);
+        const errorMessages = result.errors
+          .map((error) => `${error.param}: ${error.msg}`)
+          .join(", ");
+        const error = new Error(`Validation failed: ${errorMessages}`);
         error.statusCode = 400;
         return next(error);
       }
@@ -3976,9 +3979,11 @@ module.exports = (db) => {
       let result = validationResult(req);
 
       if (result.errors.length !== 0) {
-        const error = new Error(result.errors);
+        const errorMessages = result.errors
+          .map((error) => `${error.param}: ${error.msg}`)
+          .join(", ");
+        const error = new Error(`Error Creating Semester: ${errorMessages}`);
         error.statusCode = 400;
-        error.message = `Error Creating Semester: ${result.errors}`;
         return next(error);
       }
 

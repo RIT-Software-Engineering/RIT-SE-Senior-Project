@@ -541,8 +541,8 @@ function ProposalPage() {
 
         <br />
 
-        <Form.Field required>
-          <h3>Assignment of Rights</h3>
+        <Form.Field>
+          <h3 className="required-field">Assignment of Rights</h3>
           <p>
             Select one of the following approaches for assignment of the rights
             to the project artifacts and intellectual property, and the
