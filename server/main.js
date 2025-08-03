@@ -23,6 +23,7 @@ const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./server/error_handler");
+const path = require("path");
 // Constants
 const port = process.env.PORT;
 
@@ -56,6 +57,9 @@ app.use(
     preserveExtension: 4,
   }),
 );
+
+// Fix for the Content Editor on local development TODO/Important check if there is a better fix and if it breaks in live live
+app.use("/resource", express.static(path.join(__dirname, "resource")));
 
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
 const routing = require("./server/routing/index");
