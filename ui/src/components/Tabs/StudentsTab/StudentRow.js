@@ -254,7 +254,7 @@ export default function StudentRow(props) {
           ? dayjs(props.student.last_login)
               .utc(true)
               .local()
-              .format("DD/MM/YYYY HH:mm:ss")
+              .format("MM/DD/YYYY HH:mm:ss")
           : "Never Logged in"}
       </TableCell>,
     );
@@ -304,7 +304,7 @@ export default function StudentRow(props) {
                 ? dayjs(props.student.last_login)
                     .utc(true)
                     .local()
-                    .format("DD/MM/YYYY HH:mm:ss")
+                    .format("MM/DD/YYYY HH:mm:ss")
                 : "Never Logged in"}
             </TableCell>
           )}
@@ -336,7 +336,7 @@ export default function StudentRow(props) {
                 ? dayjs(props.student.last_login)
                     .utc(true)
                     .local()
-                    .format("DD/MM/YYYY HH:mm:ss")
+                    .format("MM/DD/YYYY HH:mm:ss")
                 : "Never Logged in"}
             </p>
             <p>
