@@ -109,6 +109,53 @@ export default function ArchivePanel(props) {
     return `${projectPart}${dateSuffix}`;
   };
 
+  // Generate a unique URL slug by checking existing archives
+  const generateUniqueSlug = async (baseTitle) => {
+    if (!baseTitle) return "";
+
+    const baseSlug = slugify(baseTitle);
+
+    try {
+      // Fetch existing archives with proper parameters to avoid datatype mismatch
+      const response = await SecureFetch(
+        `${config.url.API_GET_ARCHIVES}?resultLimit=1000&offset=0`,
+      );
+      const data = await response.json();
+
+      // Handle both array and object responses
+      const archiveList = Array.isArray(data)
+        ? data
+        : data.projects
+          ? data.projects
+          : [];
+
+      // Get all existing URL slugs
+      const existingSlugs = archiveList
+        .map((archive) => archive?.url_slug)
+        .filter(Boolean);
+
+      // If base slug doesn't exist, return it
+      if (!existingSlugs.includes(baseSlug)) {
+        return baseSlug;
+      }
+
+      // Find next available numbered slug
+      let counter = 2;
+      let uniqueSlug = `${baseSlug}${counter.toString().padStart(2, "0")}`;
+
+      while (existingSlugs.includes(uniqueSlug)) {
+        counter++;
+        uniqueSlug = `${baseSlug}${counter.toString().padStart(2, "0")}`;
+      }
+
+      return uniqueSlug;
+    } catch (error) {
+      console.error("Error generating unique slug:", error);
+      // Fallback to basic slug with timestamp if API fails
+      return `${baseSlug}-${Date.now()}`;
+    }
+  };
+
   const assignSponsor = () => {
     //finds the sponsor name inside the list of sponsor objects.
     if (props.activeSponsors !== undefined) {
@@ -212,6 +259,32 @@ export default function ArchivePanel(props) {
     }
   }, [props.project]);
 
+  // Generate unique URL slug for new archives
+  useEffect(() => {
+    if (
+      props.newArchive &&
+      props?.project?.title &&
+      !props?.project?.url_slug
+    ) {
+      generateUniqueSlug(props.project.title)
+        .then((uniqueSlug) => {
+          setInitialState((prevInitialState) => {
+            return {
+              ...prevInitialState,
+              url_slug: uniqueSlug,
+            };
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "Error generating unique slug, keeping basic slug:",
+            error,
+          );
+          // Keep the basic slug as fallback - no need to update state
+        });
+    }
+  }, [props.newArchive, props?.project?.title, props?.project?.url_slug]);
+
   const [initialState, setInitialState] = useState({
     featured: props?.project?.featured || "",
     outstanding: props?.project?.outstanding || "",
@@ -249,7 +322,7 @@ export default function ArchivePanel(props) {
     url_slug:
       props?.project?.url_slug ||
       (props.newArchive && props?.project?.title
-        ? slugify(props?.project?.title)
+        ? slugify(props?.project?.title) // This will be updated to unique slug in useEffect
         : ""),
     inactive: props.project?.inactive || "",
     locked: props.project?.locked || "",
