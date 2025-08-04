@@ -65,7 +65,11 @@ export default function IndividualTimeModal(props) {
         </div>
       }
     >
-      <Modal.Header>Time Submission For {props.user}</Modal.Header>
+      <Modal.Header
+        style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
+      >
+        Time Submission For {props.user}
+      </Modal.Header>
       <Modal.Content>
         <Modal.Description>
           <p>

@@ -26,7 +26,7 @@ export default function ProjectTime(props) {
   const [postsPerPage, setPostsPerPage] = useState(7);
   const [avgTime, setAvgTime] = useState([]);
   const [weeks, setWeeks] = useState([]);
-  const { eachWeekOfInterval } = require("date-fns");
+  const { eachWeekOfInterval, sub } = require("date-fns");
 
   useEffect(() => {
     SecureFetch(
@@ -75,9 +75,35 @@ export default function ProjectTime(props) {
                       {props.timeLogs
                         ?.filter((log) => log.project === props.proj.project_id)
                         .map((timeLog, idx) => {
-                          let submittedBy = `${timeLog.name} (${timeLog.system_id})`;
+                          let submittedBy = (
+                            <span
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <ProfileCircle name={timeLog.name} showFullName />
+                              ({timeLog.system_id})
+                            </span>
+                          );
                           if (timeLog.mock_id) {
-                            submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`;
+                            //submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`;
+                            submittedBy = (
+                              <span
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <ProfileCircle
+                                  name={timeLog.mock_name}
+                                  showFullName
+                                />
+                                ({timeLog.mock_id}) as&nbsp;
+                                <ProfileCircle
+                                  name={timeLog.name}
+                                  showFullName
+                                />
+                                ({timeLog.system_id})
+                              </span>
+                            );
                           }
                           let showNewSubmissionHighlight =
                             new Date(timeLog.submission_datetime) > prevLogin;
