@@ -17,7 +17,9 @@ VALUES
         '4_buzzboost',
         '{"team_name":"BuzzBoost", "email":"test"}',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-25'
+        )
     ),
     (
         15,
@@ -26,7 +28,9 @@ VALUES
         '5_profitpulse',
         '{"team_name":"ProfitPulse", "email":"test"}',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-27'
+        )
     ),
     (
         15,
@@ -35,7 +39,9 @@ VALUES
         '7_carecraze',
         '{"team_name":"CareCraze", "email":"test"}',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-29'
+        )
     ),
     (
         15,
@@ -44,7 +50,9 @@ VALUES
         '8_dataforge',
         '{"team_name":"DataForge", "email":"test"}',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-30'
+        )
     ),
     (
         15,
@@ -53,7 +61,9 @@ VALUES
         '9_ecoedge',
         '{"team_name":"EcoEdge", "email":"test"}',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-01-31'
+        )
     ),
     -- Project Proposal
     (
@@ -63,7 +73,9 @@ VALUES
         '4_buzzboost',
         '{"proposal" :"BuzzBoost marketing strategy proposal"}',
         'proposal_zh7558.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-15'
+        )
     ),
     (
         16,
@@ -72,7 +84,9 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_lh7488.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-16'
+        )
     ),
     (
         16,
@@ -81,7 +95,9 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_gs9947.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-17'
+        )
     ),
     (
         16,
@@ -90,7 +106,9 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_cr8473.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-02-18'
+        )
     ),
     -- project timeline
     (
@@ -100,7 +118,9 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_zh7558.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-08'
+        )
     ),
     (
         17,
@@ -109,7 +129,9 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_lh7488.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-09'
+        )
     ),
     (
         17,
@@ -118,7 +140,9 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_gs9947.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-10'
+        )
     ),
     (
         17,
@@ -127,7 +151,9 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_cr8473.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-03-11'
+        )
     ),
     -- report submission
     (
@@ -137,7 +163,9 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_zh7558.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-12'
+        )
     ),
     (
         18,
@@ -146,7 +174,9 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_lh7488.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-13'
+        )
     ),
     (
         18,
@@ -155,7 +185,9 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_gs9947.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-14'
+        )
     ),
     (
         18,
@@ -164,7 +196,9 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_cr8473.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now', '-1 years')) || '-04-15'
+        )
     ),
     -- Team Member Roles
     (
@@ -174,7 +208,9 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_rf9472.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-05'
+        )
     ),
     (
         22,
@@ -183,7 +219,9 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_ef9474.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-06'
+        )
     ),
     (
         22,
@@ -192,7 +230,9 @@ VALUES
         '4_buzzboost',
         '{"roles":"Zelda: Project Lead, Link: Designer, Glimmer: Developer, Comet: Analyst"}',
         'roles_zh7558.pdf',
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-07'
+        )
     ),
     -- Midterm Peer Evaluation Form
     (
@@ -252,7 +292,9 @@ VALUES
         "Submitter": "Zelda Hyrule"
         }',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-01'
+        )
     ),
     (
         29,
@@ -320,7 +362,9 @@ VALUES
             "Submitter": "Glimmer Star"
         }',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-02'
+        )
     ),
 
     (
@@ -380,7 +424,9 @@ VALUES
         "Submitter": "Comet Rush"
         }',
         NULL,
-        DATE('now')
+        DATE(
+            strftime('%Y', DATE('now')) || '-07-23'
+        )
     ),
 
     (

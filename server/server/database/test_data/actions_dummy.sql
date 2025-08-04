@@ -47,7 +47,7 @@ VALUES
         'Project Proposal',
         '',
         'Submit your project proposal',
-        'team',
+        'individual',
         DATE(
             strftime('%Y', DATE('now', '-1 years')) || '-02-10'
         ),
@@ -99,7 +99,7 @@ VALUES
         'Report Submission',
         '',
         'Turn in your interim report',
-        'team',
+        'individual',
         DATE(
             strftime('%Y', DATE('now', '-1 years')) || '-04-05'
         ),
@@ -435,7 +435,7 @@ VALUES
         'Project Proposal',
         '',
         'Submit your project proposal',
-        'team',
+        'individual',
         DATE(
             strftime('%Y', DATE('now')) || '-02-10'
         ),
@@ -487,7 +487,7 @@ VALUES
         'Report Submission',
         '',
         'Turn in your interim report',
-        'team',
+        'individual',
         DATE(
             strftime('%Y', DATE('now')) || '-04-05'
         ),
