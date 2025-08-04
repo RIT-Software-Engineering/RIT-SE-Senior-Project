@@ -104,6 +104,7 @@ export default function ProfileCircle(props) {
                   ? "var(--text-primary)"
                   : "black",
               fontWeight: "bold",
+              fontStyle: "normal",
             }}
           >
             {user?.fname?.charAt(0).toUpperCase() +
@@ -118,7 +119,9 @@ export default function ProfileCircle(props) {
         )}
       </div>
       {showFullName && (
-        <span style={{ marginLeft: "5px", marginRight: "5px" }}>
+        <span
+          style={{ marginLeft: "5px", marginRight: "5px", fontStyle: "normal" }}
+        >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
       )}
