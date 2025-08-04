@@ -434,22 +434,12 @@ export default function ActionLogs(props) {
                   </TableCell>
                   <TableCell>
                     <>
-                      <Button
-                        icon="eye" // new
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenSubmissionIdx(idx);
-                        }}
-                        size="small"
-                      />
                       <SubmissionViewerModal
                         projectName={action.display_name || action.title}
                         semesterName={onlySemesters[action.semester]?.name}
                         action={action}
                         target={action?.action_target}
-                        open={openSubmissionIdx === idx}
-                        onClose={() => setOpenSubmissionIdx(null)}
-                        isOpenCallback={() => {}}
+                        trigger={<Button icon="eye" />}
                       />
                     </>
                   </TableCell>

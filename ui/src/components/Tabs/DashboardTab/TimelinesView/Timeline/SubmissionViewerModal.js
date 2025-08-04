@@ -94,9 +94,6 @@ export default function SubmissionViewerModal(props) {
       closeOnDimmerClick={false}
       closeOnEscape={false}
       className={"sticky"}
-      onOpen={() => {
-        props?.isOpenCallback(true);
-      }}
       trigger={<div onClick={loadSubmission}>{props.trigger}</div>}
       header={`Submission for ${
         props.action.action_title
@@ -153,7 +150,7 @@ export default function SubmissionViewerModal(props) {
                     fontWeight: "bold",
                   }}
                 >
-                  {` ${day + 1} days late`}
+                  {` ${day} days late`}
                 </span>
               )}
             </p>
