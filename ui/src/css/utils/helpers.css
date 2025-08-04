@@ -44,12 +44,6 @@
   padding-top: 1em;
 }
 
-.clickable-student-name {
-  cursor: pointer;
-  color: #4183c4;
-  text-decoration: underline;
-}
-
 .sponsor-note-actions {
   display: flex;
   align-items: center;

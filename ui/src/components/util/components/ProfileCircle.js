@@ -12,6 +12,8 @@ export default function ProfileCircle(props) {
     showFullName = false,
     pill = false,
     pillColor = "var(--bg-primary)",
+    textUnderlined = false,
+    clickable = false,
   } = props;
 
   const sizes = {
@@ -60,6 +62,7 @@ export default function ProfileCircle(props) {
         backgroundColor: pill ? pillColor : "transparent",
         padding: pill ? "5px 5px" : "0",
         borderRadius: pill ? "20px" : "0",
+        cursor: clickable ? "pointer" : "default",
         ...style,
       }}
     >
@@ -120,7 +123,12 @@ export default function ProfileCircle(props) {
       </div>
       {showFullName && (
         <span
-          style={{ marginLeft: "5px", marginRight: "5px", fontStyle: "normal" }}
+          style={{
+            marginLeft: "5px",
+            marginRight: "5px",
+            fontStyle: "normal",
+            textDecoration: textUnderlined ? "underline" : "none",
+          }}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
