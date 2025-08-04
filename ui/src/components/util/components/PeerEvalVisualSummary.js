@@ -39,57 +39,14 @@ const BarGraph = ({ data, width, height }) => {
   const padding = 50;
   const maxScore = 5;
 
-  const generateColor = (index) => {
-    const hue = (index * 137.5) % 360; // Nice angle for distinct hues
-    return `hsl(${hue}, 70%, 50%)`;
-  };
-
-  const generatePattern = (index) => {
-    const patterns = [
-      // Diagonal lines
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <path d="M0,16 L16,0" stroke="rgba(255,255,255,1)" stroke-width="3"/>
-      <path d="M-8,16 L8,0" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
-      </pattern>`,
-      // Dots grid
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <circle cx="4" cy="4" r="3" fill="rgba(0,0,0,1)"/>
-      <circle cx="12" cy="12" r="3" fill="rgba(0,0,0,1)"/>
-      </pattern>`,
-      // Zigzag
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <polyline points="0,16 4,8 8,16 12,8 16,16" fill="none" stroke="rgba(255,255,255,1)" stroke-width="3"/>
-      </pattern>`,
-      // Crosshatch
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <line x1="0" y1="0" x2="16" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
-      <line x1="16" y1="0" x2="0" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
-      </pattern>`,
-      // Squares grid
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <rect x="2" y="2" width="4" height="4" fill="rgba(0,0,0,1)"/>
-      <rect x="10" y="10" width="4" height="4" fill="rgba(0,0,0,0.2)"/>
-      </pattern>`,
-      // Horizontal lines
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <line x1="0" y1="4" x2="16" y2="4" stroke="rgba(255,255,255,1)" stroke-width="3"/>
-      <line x1="0" y1="12" x2="16" y2="12" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
-      </pattern>`,
-      // Vertical lines
-      `<pattern id="pattern${index}" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="16" height="16" fill="none"/>
-      <line x1="4" y1="0" x2="4" y2="16" stroke="rgba(0,0,0,1)" stroke-width="3"/>
-      <line x1="12" y1="0" x2="12" y2="16" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
-      </pattern>`,
-    ];
-    return patterns[index % patterns.length];
-  };
+  function randColorFromName(name) {
+    const hash = Array.from(name).reduce(
+      (acc, char) => acc + char.charCodeAt(0),
+      0,
+    );
+    const hue = hash % 360;
+    return `hsl(${hue}, 70%, 70%)`;
+  }
 
   // Define text color based on dark mode
   const textColor = isDarkMode ? "#ffffff" : "#000000";
@@ -124,14 +81,7 @@ const BarGraph = ({ data, width, height }) => {
                 y="0"
                 width="15"
                 height="15"
-                fill={generateColor(index)}
-              />
-              <rect
-                x="0"
-                y="0"
-                width="15"
-                height="15"
-                fill={`url(#pattern${index})`}
+                fill={randColorFromName(person[0].split(" ")[0])}
               />
             </svg>
             <span style={{ color: textColor }}>{person[0]}</span>
@@ -143,15 +93,6 @@ const BarGraph = ({ data, width, height }) => {
         viewBox={`0 0 ${width * 1.1} ${height * 1.1}`}
         preserveAspectRatio="xMidYMid meet"
       >
-        <defs>
-          {userFeedback.map((_, index) => (
-            <svg
-              key={index}
-              dangerouslySetInnerHTML={{ __html: generatePattern(index) }}
-            />
-          ))}
-        </defs>
-
         {[...Array(6).keys()].map((i) => {
           const yPosition =
             height - padding - (i * (height - 2 * padding)) / maxScore;
@@ -191,7 +132,9 @@ const BarGraph = ({ data, width, height }) => {
             const xPos =
               padding +
               categoryIdx * categoryWidth +
-              personIdx * individualBarWidth;
+              personIdx * individualBarWidth +
+              2 * personIdx +
+              2 * categoryIdx;
             const yPos = height - padding - barHeight;
 
             return (
@@ -201,15 +144,33 @@ const BarGraph = ({ data, width, height }) => {
                   y={yPos}
                   width={individualBarWidth}
                   height={barHeight}
-                  fill={generateColor(personIdx)}
+                  fill={randColorFromName(personName.split(" ")[0])}
                 />
-                <rect
-                  x={xPos}
-                  y={yPos}
-                  width={individualBarWidth}
-                  height={barHeight}
-                  fill={`url(#pattern${personIdx})`}
+                <circle
+                  cx={xPos + individualBarWidth / 2}
+                  cy={yPos + individualBarWidth * 0.5}
+                  r={individualBarWidth * 0.47}
+                  fill={"black"}
                 />
+                <circle
+                  cx={xPos + individualBarWidth / 2}
+                  cy={yPos + individualBarWidth * 0.5}
+                  r={individualBarWidth * 0.42}
+                  fill={randColorFromName(personName.split(" ")[0])}
+                />
+                <text
+                  x={xPos + individualBarWidth / 2}
+                  y={yPos + individualBarWidth * 0.5 + 5}
+                  fontSize={15}
+                  textAnchor="middle"
+                  fill="black"
+                  style={{ fontWeight: "bold" }}
+                >
+                  {personName
+                    .split(" ")
+                    .map((n) => n.charAt(0).toUpperCase())
+                    .join("")}
+                </text>
                 <text
                   x={xPos + individualBarWidth / 2}
                   y={yPos - 5}
