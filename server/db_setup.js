@@ -63,6 +63,7 @@ function createAllTables() {
 
       files
         .filter((file) => file.toString() != "create_all_tables.sql")
+        .filter((file) => file.toString().endsWith(".sql"))
         .forEach((file) => {
           fs.readFile(path.join(table_sql_path, file), "utf8", (_err, sql) => {
             Promise.resolve(
@@ -88,6 +89,7 @@ function populateDummyData() {
 
       files
         .filter((file) => file.toString() != "fill_test_data.sql")
+        .filter((file) => file.toString().endsWith(".sql"))
         .forEach((file) => {
           fs.readFile(path.join(dummy_data_path, file), "utf8", (_err, sql) => {
             Promise.resolve(
