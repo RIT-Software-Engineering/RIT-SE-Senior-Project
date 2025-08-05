@@ -98,7 +98,7 @@ export function Calendar(props) {
       color: (() => {
         switch (action.state) {
           case "yellow":
-            return "#885601";
+            return isDarkMode ? "#e6b800" : "#f2dca00";
           case "red":
             return "#fd2723";
           case "green":
@@ -274,6 +274,12 @@ export function Calendar(props) {
             ? "13px"
             : "0",
         left: "0",
+
+        backgroundImage: actionStartsOnDay(action, day)
+          ? `linear-gradient(to right, ${action.color}, transparent)`
+          : actionEndsOnDay(action, day)
+            ? `linear-gradient(to left, ${action.color}, transparent)`
+            : "none",
       };
 
       const showLeftArrow =
