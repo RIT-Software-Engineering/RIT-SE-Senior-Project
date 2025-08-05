@@ -306,30 +306,31 @@ export default function GanttChart(props) {
           <span className="gantt-header">
             <h3>
               {selectedTimeSpan === "week"
-                ? `Week of ${today.toLocaleDateString()}`
+                ? `Week Timeline`
                 : selectedTimeSpan === "month"
-                  ? `${today.toLocaleString("default", {
-                      month: "long",
-                    })} ${today.getFullYear()}`
+                  ? `Month Timeline`
                   : `Project Timeline`}
             </h3>
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <label htmlFor="TimeSpan">Time Span</label>
-            <div className="ui button" style={{ padding: "10px" }}>
-              <Dropdown
-                name="TimeSpan"
-                defaultValue={selectedTimeSpan}
-                onChange={onTimeSpanChange}
-                options={[
-                  { key: "week", text: "Week", value: "week" },
-                  { key: "month", text: "Month", value: "month" },
-                  { key: "project", text: "Project", value: "project" },
-                ]}
-                compact
-                style={{ zIndex: 1050, position: "relative" }}
-              />
-            </div>
+            <Dropdown
+              name="TimeSpan"
+              className="ui button"
+              defaultValue={selectedTimeSpan}
+              onChange={onTimeSpanChange}
+              options={[
+                { key: "week", text: "Week", value: "week" },
+                { key: "month", text: "Month", value: "month" },
+                { key: "project", text: "Project", value: "project" },
+              ]}
+              compact
+              style={{
+                zIndex: 100,
+                position: "relative",
+                backgroundColor: "var(--bg-button)",
+              }}
+            />
           </span>
         </div>
         <div

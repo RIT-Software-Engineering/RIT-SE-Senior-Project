@@ -1,4 +1,4 @@
-import { Checkbox } from "semantic-ui-react";
+import { Checkbox, Divider } from "semantic-ui-react";
 
 export default function TimelineCheckboxes(props) {
   const milestonesChange = (e, data) => {
@@ -17,7 +17,7 @@ export default function TimelineCheckboxes(props) {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", gap: "10px" }}>
       <Checkbox
         toggle
         className="timeline-checkbox"
@@ -25,6 +25,7 @@ export default function TimelineCheckboxes(props) {
         checked={props.milestoneVisible}
         onChange={milestonesChange}
       />
+      <Divider orientation="vertical" />
       <Checkbox
         toggle
         className="timeline-checkbox"
@@ -32,6 +33,7 @@ export default function TimelineCheckboxes(props) {
         checked={props.ganttVisible}
         onChange={ganttChange}
       />
+      <Divider orientation="vertical" />
       <Checkbox
         toggle
         className="timeline-checkbox"

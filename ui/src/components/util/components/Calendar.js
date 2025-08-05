@@ -515,7 +515,7 @@ export function Calendar(props) {
                 onChange={(e, { value }) => setCurrentMonth(value)}
                 style={{
                   backgroundColor: "transparent",
-                  zIndex: 1050,
+                  zIndex: 100,
                   position: "relative",
                 }}
               />
@@ -530,7 +530,7 @@ export function Calendar(props) {
                 onChange={(e, { value }) => setCurrentYear(value)}
                 style={{
                   backgroundColor: "transparent",
-                  zIndex: 1050,
+                  zIndex: 100,
                   position: "relative",
                 }}
               />
