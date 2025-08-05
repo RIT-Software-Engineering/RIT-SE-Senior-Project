@@ -212,7 +212,6 @@ export default function Timeline(props) {
         className="timeline-action-block"
         style={{ display: calendarVisible ? "block" : "none" }}
       >
-        <h3>Calendar</h3>
         <div className="timeline-action-block">
           <Calendar
             projectName={

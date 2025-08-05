@@ -474,75 +474,78 @@ export function Calendar(props) {
   };
 
   return (
-    <div className="action-calendar">
-      <div className="calendar-header">
-        <div>
-          <h3 style={{ display: "flex", gap: "10px" }}>
-            <Dropdown
-              options={monthNames.map((name, i) => ({
-                key: i,
-                text: name,
-                value: i,
-              }))}
-              value={currentMonth}
-              onChange={(e, { value }) => setCurrentMonth(value)}
-              style={{
-                backgroundColor: "transparent",
-                zIndex: 1050,
-                position: "relative",
-              }}
-            />
-            <Dropdown
-              options={Array.from({ length: 10 }, (_, i) => ({
-                key: currentYear - i + 5,
-                text: currentYear - i + 5,
-                value: currentYear - i + 5,
-              }))}
-              placeholder="Year"
-              value={currentYear}
-              onChange={(e, { value }) => setCurrentYear(value)}
-              style={{
-                backgroundColor: "transparent",
-                zIndex: 1050,
-                position: "relative",
-              }}
-            />
-          </h3>
+    <>
+      <h3>Calendar</h3>
+      <div className="action-calendar">
+        <div className="calendar-header">
+          <div>
+            <h3 style={{ display: "flex", gap: "10px" }}>
+              <Dropdown
+                options={monthNames.map((name, i) => ({
+                  key: i,
+                  text: name,
+                  value: i,
+                }))}
+                value={currentMonth}
+                onChange={(e, { value }) => setCurrentMonth(value)}
+                style={{
+                  backgroundColor: "transparent",
+                  zIndex: 1050,
+                  position: "relative",
+                }}
+              />
+              <Dropdown
+                options={Array.from({ length: 10 }, (_, i) => ({
+                  key: currentYear - i + 5,
+                  text: currentYear - i + 5,
+                  value: currentYear - i + 5,
+                }))}
+                placeholder="Year"
+                value={currentYear}
+                onChange={(e, { value }) => setCurrentYear(value)}
+                style={{
+                  backgroundColor: "transparent",
+                  zIndex: 1050,
+                  position: "relative",
+                }}
+              />
+            </h3>
+          </div>
+          <div style={{ display: "flex", gap: "5px" }}>
+            <Button
+              icon
+              className={prevHovered ? "hovered" : ""}
+              onClick={prevMonth}
+              onMouseEnter={() => setPrevHovered(true)}
+              onMouseLeave={() => setPrevHovered(false)}
+            >
+              <Icon name="chevron left" />
+            </Button>
+            <Button
+              icon
+              className={nextHovered ? "hovered" : ""}
+              onClick={nextMonth}
+              onMouseEnter={() => setNextHovered(true)}
+              onMouseLeave={() => setNextHovered(false)}
+            >
+              <Icon name="chevron right" />
+            </Button>
+          </div>
         </div>
-        <div style={{ display: "flex", gap: "5px" }}>
-          <Button
-            icon
-            className={prevHovered ? "hovered" : ""}
-            onClick={prevMonth}
-            onMouseEnter={() => setPrevHovered(true)}
-            onMouseLeave={() => setPrevHovered(false)}
-          >
-            <Icon name="chevron left" />
-          </Button>
-          <Button
-            icon
-            className={nextHovered ? "hovered" : ""}
-            onClick={nextMonth}
-            onMouseEnter={() => setNextHovered(true)}
-            onMouseLeave={() => setNextHovered(false)}
-          >
-            <Icon name="chevron right" />
-          </Button>
+
+        <div className="calendar-days-header">
+          <div className="day-name">Sunday</div>
+          <div className="day-name">Monday</div>
+          <div className="day-name">Tuesday</div>
+          <div className="day-name">Wednesday</div>
+          <div className="day-name">Thursday</div>
+          <div className="day-name">Friday</div>
+          <div className="day-name">Saturday</div>
         </div>
-      </div>
 
-      <div className="calendar-days-header">
-        <div className="day-name">Sunday</div>
-        <div className="day-name">Monday</div>
-        <div className="day-name">Tuesday</div>
-        <div className="day-name">Wednesday</div>
-        <div className="day-name">Thursday</div>
-        <div className="day-name">Friday</div>
-        <div className="day-name">Saturday</div>
+        <div className="calendar-grid">{generateCalendarDays()}</div>
       </div>
-
-      <div className="calendar-grid">{generateCalendarDays()}</div>
-    </div>
+    </>
   );
 }
 
