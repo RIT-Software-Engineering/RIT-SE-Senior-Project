@@ -19,6 +19,143 @@ export default function ArchivePanel(props) {
     sponsor: "",
   });
 
+  // Generate a team name based on project title and keywords
+  const generateTeamName = (projectTitle, projectKeywords, semester) => {
+    if (!projectTitle && !projectKeywords) {
+      return "Project Team";
+    }
+
+    let baseNameSource = projectTitle || projectKeywords;
+
+    // Split the source into words and filter out common words
+    const commonWords = [
+      "a",
+      "an",
+      "the",
+      "and",
+      "or",
+      "but",
+      "in",
+      "on",
+      "at",
+      "to",
+      "for",
+      "of",
+      "with",
+      "by",
+      "system",
+      "platform",
+      "application",
+      "tool",
+      "project",
+    ];
+    const words = baseNameSource
+      .toLowerCase()
+      .replace(/[^\w\s]/g, "") // Remove punctuation
+      .split(/\s+/)
+      .filter((word) => word.length > 2 && !commonWords.includes(word))
+      .slice(0, 2); // Take first 2 meaningful words
+
+    if (words.length === 0) {
+      return "ProjectTeam";
+    }
+
+    // Capitalize first letter of each word and join
+    const projectPart = words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join("");
+
+    // Generate project semester suffix (e.g., "Summer2025")
+    let dateSuffix = "";
+    if (semester) {
+      const semesterMatch = semester.toString().match(/(\d{4})-(\d{2})/);
+      if (semesterMatch) {
+        const year = semesterMatch[1];
+        const month = parseInt(semesterMatch[2]);
+        // Determine season based on month
+        let season;
+        if (month >= 8) {
+          season = "Fall";
+        } else if (month >= 1 && month <= 5) {
+          season = "Spring";
+        } else {
+          season = "Summer";
+        }
+        dateSuffix = `${season}${year}`;
+      }
+    }
+
+    // If no semester info, fall back to current date
+    if (!dateSuffix) {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
+      const currentYear = currentDate.getFullYear();
+
+      let season;
+      if (currentMonth >= 5 && currentMonth <= 7) {
+        season = "Summer";
+      } else if (currentMonth >= 8 && currentMonth <= 11) {
+        season = "Fall";
+      } else if (currentMonth >= 12 || currentMonth <= 2) {
+        season = "Winter";
+      } else {
+        season = "Spring";
+      }
+
+      dateSuffix = `${season}${currentYear}`;
+    }
+
+    // Combine: ProjectPart + ProjectSemester (e.g., "BuzzboostAnalyticsSummer2025")
+    return `${projectPart}${dateSuffix}`;
+  };
+
+  // Generate a unique URL slug by checking existing archives
+  const generateUniqueSlug = async (baseTitle) => {
+    if (!baseTitle) return "";
+
+    const baseSlug = slugify(baseTitle);
+
+    try {
+      // Fetch existing archives with proper parameters to avoid datatype mismatch
+      const response = await SecureFetch(
+        `${config.url.API_GET_ARCHIVES}?resultLimit=1000&offset=0`,
+      );
+      const data = await response.json();
+
+      // Handle both array and object responses
+      const archiveList = Array.isArray(data)
+        ? data
+        : data.projects
+          ? data.projects
+          : [];
+
+      // Get all existing URL slugs
+      const existingSlugs = archiveList
+        .map((archive) => archive?.url_slug)
+        .filter(Boolean);
+
+      // If base slug doesn't exist, return it
+      if (!existingSlugs.includes(baseSlug)) {
+        return baseSlug;
+      }
+
+      // Find next available numbered slug
+      let counter = 2;
+      let uniqueSlug = `${baseSlug}${counter.toString().padStart(2, "0")}`;
+
+      while (existingSlugs.includes(uniqueSlug)) {
+        counter++;
+        uniqueSlug = `${baseSlug}${counter.toString().padStart(2, "0")}`;
+      }
+
+      return uniqueSlug;
+    } catch (error) {
+      console.error("Error generating unique slug:", error);
+      // Fallback to basic slug with timestamp if API fails
+      return `${baseSlug}-${Date.now()}`;
+    }
+  };
+
   const assignSponsor = () => {
     //finds the sponsor name inside the list of sponsor objects.
     if (props.activeSponsors !== undefined) {
@@ -122,6 +259,32 @@ export default function ArchivePanel(props) {
     }
   }, [props.project]);
 
+  // Generate unique URL slug for new archives
+  useEffect(() => {
+    if (
+      props.newArchive &&
+      props?.project?.title &&
+      !props?.project?.url_slug
+    ) {
+      generateUniqueSlug(props.project.title)
+        .then((uniqueSlug) => {
+          setInitialState((prevInitialState) => {
+            return {
+              ...prevInitialState,
+              url_slug: uniqueSlug,
+            };
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "Error generating unique slug, keeping basic slug:",
+            error,
+          );
+          // Keep the basic slug as fallback - no need to update state
+        });
+    }
+  }, [props.newArchive, props?.project?.title, props?.project?.url_slug]);
+
   const [initialState, setInitialState] = useState({
     featured: props?.project?.featured || "",
     outstanding: props?.project?.outstanding || "",
@@ -130,7 +293,15 @@ export default function ArchivePanel(props) {
     archive_id: props?.project?.archive_id || "",
     project_id: props?.project?.project_id || "",
     title: decode(props?.project?.title) || "",
-    team_name: decode(props?.project?.team_name) || "",
+    team_name:
+      decode(props?.project?.team_name) ||
+      (props.newArchive
+        ? generateTeamName(
+            props?.project?.title,
+            props?.project?.keywords,
+            props?.project?.semester,
+          )
+        : ""),
     members: decode(props?.project?.members) || "",
     sponsor: decode(props?.project?.sponsor) || "",
     coach: decode(props?.project?.coach) || "",
@@ -151,7 +322,7 @@ export default function ArchivePanel(props) {
     url_slug:
       props?.project?.url_slug ||
       (props.newArchive && props?.project?.title
-        ? slugify(props?.project?.title)
+        ? slugify(props?.project?.title) // This will be updated to unique slug in useEffect
         : ""),
     inactive: props.project?.inactive || "",
     locked: props.project?.locked || "",
