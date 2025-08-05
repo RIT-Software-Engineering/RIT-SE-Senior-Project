@@ -212,6 +212,24 @@ export function Calendar(props) {
     );
   };
 
+  const isFirstDayOfMonth = (day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    return date.getDate() === 1 && date.getMonth() === currentMonth;
+  };
+
+  const isLastDayOfMonth = (day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    return (
+      date.getDate() === new Date(currentYear, currentMonth + 1, 0).getDate() &&
+      date.getMonth() === currentMonth
+    );
+  };
+
+  const dayIndex = (day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    return date.getDay();
+  };
+
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
@@ -229,44 +247,47 @@ export function Calendar(props) {
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
       const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`;
 
+      const isFirst = isFirstDayOfMonth(day);
+      const isLast = isLastDayOfMonth(day);
+      const starts = actionStartsOnDay(action, day);
+      const ends = actionEndsOnDay(action, day);
+
       let actionStyle = {
         top: `${position.top}px`,
         backgroundColor: "inherit",
 
         borderTop: `3px solid ${action.color}`,
         borderBottom: `3px solid ${action.color}`,
-        borderLeft:
-          actionStartsOnDay(action, day) || inPopup
-            ? `3px solid ${action.color}`
-            : "none",
-        borderRight:
-          actionEndsOnDay(action, day) || inPopup
-            ? `3px solid ${action.color}`
-            : "none",
-
-        borderTopLeftRadius:
-          actionStartsOnDay(action, day) || inPopup ? "13px" : "0",
-        borderBottomLeftRadius:
-          actionStartsOnDay(action, day) || inPopup ? "13px" : "0",
-        borderTopRightRadius:
-          actionEndsOnDay(action, day) || inPopup ? "13px" : "0",
-        borderBottomRightRadius:
-          actionEndsOnDay(action, day) || inPopup ? "13px" : "0",
+        borderLeft: starts || inPopup ? `3px solid ${action.color}` : "none",
+        borderRight: ends || inPopup ? `3px solid ${action.color}` : "none",
+        borderTopLeftRadius: starts || inPopup ? "13px" : "0",
+        borderBottomLeftRadius: starts || inPopup ? "13px" : "0",
+        borderTopRightRadius: ends || inPopup ? "13px" : "0",
+        borderBottomRightRadius: ends || inPopup ? "13px" : "0",
         left: "0",
 
-        backgroundImage: actionStartsOnDay(action, day)
+        backgroundImage: starts
           ? `linear-gradient(to right, ${action.color}, transparent)`
-          : actionEndsOnDay(action, day)
+          : ends
             ? `linear-gradient(to left, ${action.color}, transparent)`
             : "none",
       };
 
-      const showLeftArrow =
-        actionEndsOnDay(action, day) && !actionStartsOnDay(action, day);
-      const showRightArrow =
-        actionStartsOnDay(action, day) && !actionEndsOnDay(action, day);
-      const showBothArrows =
-        !actionStartsOnDay(action, day) && !actionEndsOnDay(action, day);
+      if (!starts && !ends) {
+        if (isFirst || dayIndex(day) === 0) {
+          actionStyle.borderImage = `linear-gradient(to bottom, ${action.color} 90%, transparent 100%) 1`;
+          actionStyle.borderImageSource = `linear-gradient(to left, ${action.color} 90%, transparent 100%)`;
+          actionStyle.borderImageSlice = 1;
+        } else if (isLast || dayIndex(day) === 6) {
+          actionStyle.borderImage = `linear-gradient(to bottom, ${action.color} 90%, transparent 100%) 1`;
+          actionStyle.borderImageSource = `linear-gradient(to right, ${action.color} 90%, transparent 100%)`;
+          actionStyle.borderImageSlice = 1;
+        }
+      }
+
+      const showLeftArrow = ends && !starts;
+      const showRightArrow = starts && !ends;
+      const showBothArrows = !starts && !ends;
 
       const maxTitleLength = inPopup ? 19 : 14;
       let truncatedTitle = action.action_title;
