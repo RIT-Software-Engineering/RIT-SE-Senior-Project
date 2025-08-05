@@ -164,12 +164,14 @@
 .action-bar.proposal-row-yellow {
   border: 2px var(--action-bar-proposal-yellow) solid;
   color: var(--border-color);
+  font-weight: bold;
   grid-column: span 3 / auto;
 }
 
 .action-bar.proposal-row-red {
   border: 2px var(--action-bar-proposal-red) solid;
   color: var(--border-color);
+  font-weight: bold;
   grid-column: span 3 / auto;
 }
 
@@ -185,7 +187,6 @@
   border: 2px var(--action-bar-proposal-green) solid;
   color: var(--border-color);
   grid-column: span 2 / auto;
-  font-weight: bold;
   text-decoration: line-through;
 }
 
