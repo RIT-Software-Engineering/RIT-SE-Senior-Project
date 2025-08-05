@@ -212,19 +212,6 @@ export function Calendar(props) {
     );
   };
 
-  const isFirstDayOfMonth = (day) => {
-    const date = new Date(currentYear, currentMonth, day);
-    return date.getDate() === 1 && date.getMonth() === currentMonth;
-  };
-
-  const isLastDayOfMonth = (day) => {
-    const date = new Date(currentYear, currentMonth, day);
-    return (
-      date.getDate() === new Date(currentYear, currentMonth + 1, 0).getDate() &&
-      date.getMonth() === currentMonth
-    );
-  };
-
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
@@ -242,37 +229,29 @@ export function Calendar(props) {
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
       const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`;
 
-      const actionStyle = {
+      let actionStyle = {
         top: `${position.top}px`,
         backgroundColor: "inherit",
 
         borderTop: `3px solid ${action.color}`,
         borderBottom: `3px solid ${action.color}`,
         borderLeft:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
+          actionStartsOnDay(action, day) || inPopup
             ? `3px solid ${action.color}`
             : "none",
         borderRight:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
+          actionEndsOnDay(action, day) || inPopup
             ? `3px solid ${action.color}`
             : "none",
 
         borderTopLeftRadius:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
-            ? "13px"
-            : "0",
+          actionStartsOnDay(action, day) || inPopup ? "13px" : "0",
         borderBottomLeftRadius:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
-            ? "13px"
-            : "0",
+          actionStartsOnDay(action, day) || inPopup ? "13px" : "0",
         borderTopRightRadius:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
-            ? "13px"
-            : "0",
+          actionEndsOnDay(action, day) || inPopup ? "13px" : "0",
         borderBottomRightRadius:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
-            ? "13px"
-            : "0",
+          actionEndsOnDay(action, day) || inPopup ? "13px" : "0",
         left: "0",
 
         backgroundImage: actionStartsOnDay(action, day)
@@ -347,7 +326,6 @@ export function Calendar(props) {
       );
 
       return (
-        // Add ToolTip to each action for the popup
         <ToolTip
           zIndex={10 + index}
           autoLoadSubmissions={props.autoLoadSubmissions}
@@ -542,7 +520,7 @@ export function Calendar(props) {
               />
             </h3>
           </div>
-          <div style={{ display: "flex", gap: "5px" }}>
+          <div style={{ display: "flex" }}>
             <Button
               icon
               className={prevHovered ? "hovered" : ""}

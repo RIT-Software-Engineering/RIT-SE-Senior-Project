@@ -82,10 +82,6 @@
     margin: 1px;
   }
 
-  .calendar-grid {
-    gap: 1px;
-  }
-
   .day-name {
     font-size: 0.7rem;
   }
