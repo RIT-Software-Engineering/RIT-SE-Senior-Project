@@ -72,26 +72,20 @@
 /* Calendar day */
 .calendar-day {
   position: relative;
-  height: 100px;
+  height: 120px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   cursor: pointer;
-  border-radius: 4px;
-  margin: 2px;
-  padding: 2px;
   background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
   overflow: hidden;
   touch-action: manipulation;
+  border-radius: 4px;
 }
 
 .calendar-day.empty {
-  height: 100px;
-  margin: 2px;
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
+  height: 120px;
   background-color: var(--bg-secondary);
   cursor: default;
 }
@@ -115,9 +109,16 @@
 
 /* Day number */
 .day-number {
-  margin-bottom: 2px;
+  margin: 4px;
   align-self: flex-start;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 8px;
+  font-size: 16px;
+  text-overflow: ellipsis;
 }
 
 .day-number.today {
@@ -136,27 +137,14 @@
 .calendar-action {
   display: flex;
   align-items: center;
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: absolute;
-  border-radius: 1em;
-  border-radius: 1em;
+  padding: 4px;
   right: 0;
-  height: 18px;
-  color: black;
-  padding: 6px;
-  color: black;
-  padding: 6px;
+  height: 26px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   z-index: 1;
-  margin-right: 1px;
-  box-sizing: border-box;
   cursor: pointer;
-  opacity: 1 !important; /* Ensure opacity is always 1 */
 }
 
 .calendar-action:hover {

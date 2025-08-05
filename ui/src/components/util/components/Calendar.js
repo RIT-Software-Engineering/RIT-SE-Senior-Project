@@ -18,6 +18,7 @@ export function Calendar(props) {
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [selectedPopUp, setSelectedPopUp] = useState(false);
+  let isDarkMode = document.body.classList.contains("dark-mode");
 
   // want reload on date change
   useEffect(() => {
@@ -101,7 +102,7 @@ export function Calendar(props) {
           case "red":
             return "#fd2723";
           case "green":
-            return "#0000ff";
+            return "#00b300";
           case "grey":
             return "#484848";
           case "purple":
@@ -180,17 +181,6 @@ export function Calendar(props) {
         date <= new Date(actionEnd.setHours(23, 59, 59, 999))
       );
     });
-    if (This_Years_Holidays[monthDay]) {
-      // add special holiday
-      actions.unshift({
-        action_title: This_Years_Holidays[monthDay],
-        start_date: date,
-        due_date: date,
-        color: "#b66dff",
-        state: "purple",
-        action_target: "break_period",
-      });
-    }
     return actions.sort((a, b) => {
       if (a.action_target === "break_period") return -1;
       if (b.action_target === "break_period") return 1;
@@ -222,12 +212,25 @@ export function Calendar(props) {
     );
   };
 
+  const isFirstDayOfMonth = (day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    return date.getDate() === 1 && date.getMonth() === currentMonth;
+  };
+
+  const isLastDayOfMonth = (day) => {
+    const date = new Date(currentYear, currentMonth, day);
+    return (
+      date.getDate() === new Date(currentYear, currentMonth + 1, 0).getDate() &&
+      date.getMonth() === currentMonth
+    );
+  };
+
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
     // This ensures consistent display even for multi-day events
     return {
-      top: index * 20, // 20px per action
+      top: index * 27, // 20px per action
       isStart: actionStartsOnDay(action, new Date(action.start_date).getDate()),
     };
   };
@@ -242,32 +245,64 @@ export function Calendar(props) {
       const actionStyle = {
         top: `${position.top}px`,
         backgroundColor: "inherit",
-        border: `2px solid ${action.color}`,
+
+        borderTop: `2px solid ${action.color}`,
+        borderBottom: `2px solid ${action.color}`,
+        borderLeft:
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+            ? `2px solid ${action.color}`
+            : "none",
+        borderRight:
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day)
+            ? `2px solid ${action.color}`
+            : "none",
+
+        borderTopLeftRadius:
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+            ? "13px"
+            : "0",
+        borderBottomLeftRadius:
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+            ? "13px"
+            : "0",
+        borderTopRightRadius:
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day) ? "13px" : "0",
+        borderBottomRightRadius:
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day) ? "13px" : "0",
         left: "0",
       };
 
-      // checks conditions for action arrows which signify the duration of the action
-      // if the selected year, month and day are inbetween the start and end dates of the action, add an arrow to the right and left of the action
-      // there is a little formating magic taking place, full space characters(　) are added to the string to make them all the same width
-      let actionTitleWithArrows = action.action_title;
-      if (actionStartsOnDay(action, day) && !actionEndsOnDay(action, day)) {
-        actionTitleWithArrows = `　${actionTitleWithArrows} ►`;
-      } else if (
-        actionEndsOnDay(action, day) &&
-        !actionStartsOnDay(action, day)
-      ) {
-        actionTitleWithArrows = `◄ ${actionTitleWithArrows}　`;
-      } else {
-        actionTitleWithArrows = `◄ ${actionTitleWithArrows} ►`;
+      const showLeftArrow =
+        actionEndsOnDay(action, day) && !actionStartsOnDay(action, day);
+      const showRightArrow =
+        actionStartsOnDay(action, day) && !actionEndsOnDay(action, day);
+      const showBothArrows =
+        !actionStartsOnDay(action, day) && !actionEndsOnDay(action, day);
+
+      const maxTitleLength = 14;
+      let truncatedTitle = action.action_title;
+      if (truncatedTitle.length > maxTitleLength) {
+        truncatedTitle = truncatedTitle.slice(0, maxTitleLength - 1) + "…";
       }
 
-      // for strikethrough (completed actions)
-      const actionContent =
-        action.state === "green" ? (
-          <s>{actionTitleWithArrows}</s>
-        ) : (
-          actionTitleWithArrows
-        );
+      const actionContent = (
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            minWidth: "100%",
+          }}
+        >
+          {(showLeftArrow || showBothArrows) && (
+            <Icon name="triangle left" size="large" />
+          )}
+          {action.state === "green" ? <s>{truncatedTitle}</s> : truncatedTitle}
+          {(showRightArrow || showBothArrows) && (
+            <Icon name="triangle right" size="large" />
+          )}
+        </span>
+      );
 
       const trigger = (
         <div
@@ -282,6 +317,7 @@ export function Calendar(props) {
           {actionContent}
         </div>
       );
+
       return (
         // Add ToolTip to each action for the popup
         <ToolTip
@@ -342,7 +378,59 @@ export function Calendar(props) {
           }}
         >
           <div className={`day-number ${isCurrentDay ? "today" : ""}`}>
-            {day}
+            <span
+              style={
+                This_Years_Holidays[
+                  `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                ]
+                  ? {
+                      color: "var(--action-bar-proposal-purple)",
+                      fontWeight: "bold",
+                    }
+                  : {}
+              }
+            >
+              {day}
+            </span>
+            {This_Years_Holidays[
+              `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+            ] && (
+              <Popup
+                content={
+                  This_Years_Holidays[
+                    `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                  ]
+                }
+                inverted={isDarkMode}
+                position="top center"
+                hoverable
+                trigger={
+                  <span
+                    style={{
+                      color: "var(--action-bar-proposal-purple)",
+                      display: "inline-block",
+                      maxWidth: "120px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      verticalAlign: "bottom",
+                      cursor: "pointer",
+                    }}
+                    title={
+                      This_Years_Holidays[
+                        `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                      ]
+                    }
+                  >
+                    {
+                      This_Years_Holidays[
+                        `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+                      ]
+                    }
+                  </span>
+                }
+              />
+            )}
           </div>
           <div className="action-container">
             {actionsForDay.length > maxVisibleActions ? (
@@ -388,13 +476,7 @@ export function Calendar(props) {
 
   return (
     <div className="action-calendar">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="calendar-header">
         <div>
           <h3 style={{ display: "flex", gap: "10px" }}>
             <Dropdown
@@ -405,7 +487,11 @@ export function Calendar(props) {
               }))}
               value={currentMonth}
               onChange={(e, { value }) => setCurrentMonth(value)}
-              style={{ backgroundColor: "transparent" }}
+              style={{
+                backgroundColor: "transparent",
+                zIndex: 1050,
+                position: "relative",
+              }}
             />
             <Dropdown
               options={Array.from({ length: 10 }, (_, i) => ({
@@ -416,7 +502,11 @@ export function Calendar(props) {
               placeholder="Year"
               value={currentYear}
               onChange={(e, { value }) => setCurrentYear(value)}
-              style={{ backgroundColor: "transparent" }}
+              style={{
+                backgroundColor: "transparent",
+                zIndex: 1050,
+                position: "relative",
+              }}
             />
           </h3>
         </div>
