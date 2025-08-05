@@ -6,6 +6,7 @@ import _ from "lodash";
 import ToolTip from "./ToolTip";
 import ActionToolTip from "../../../AdminTab/ActionEditor/ActionToolTip";
 import "./../../../../../css/components/gantt.css";
+import { Dropdown } from "semantic-ui-react";
 
 export default function GanttChart(props) {
   const containerRef = useRef(null);
@@ -64,8 +65,8 @@ export default function GanttChart(props) {
     }
   }, [props.actions, selectedTimeSpan, props.isOpen]);
 
-  function onTimeSpanChange(e) {
-    setSelectedTimeSpan(e.target.value);
+  function onTimeSpanChange(e, { value }) {
+    setSelectedTimeSpan(value);
   }
 
   // Function to check if a user a on a mobile device.
@@ -137,6 +138,7 @@ export default function GanttChart(props) {
           gridColumn: barStart + " / span " + barSpan,
           textWrap: "nowrap",
           overflow: "visible",
+          paddingLeft: "0px",
         }}
         key={idx}
       >
@@ -275,17 +277,31 @@ export default function GanttChart(props) {
   // ---------------- RENDER ------------------
   return (
     <div>
-      <div>
-        <label htmlFor="TimeSpan">Time Span </label>
-        <select
-          name="TimeSpan"
-          defaultValue={selectedTimeSpan}
-          onChange={onTimeSpanChange}
-        >
-          <option value="week">2 weeks</option>
-          <option value="month">month</option>
-          <option value="project">project</option>
-        </select>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          margin: "10px 0",
+        }}
+      >
+        <h3>Gantt Chart</h3>
+        <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <label htmlFor="TimeSpan">Time Span</label>
+          <Dropdown
+            name="TimeSpan"
+            defaultValue={selectedTimeSpan}
+            onChange={onTimeSpanChange}
+            options={[
+              { key: "week", text: "Week", value: "week" },
+              { key: "month", text: "Month", value: "month" },
+              { key: "project", text: "Project", value: "project" },
+            ]}
+            selection
+            compact
+            style={{ zIndex: 1050, position: "relative" }}
+          />
+        </span>
       </div>
       <div
         className={containerClassname}

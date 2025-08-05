@@ -186,7 +186,6 @@ export default function Timeline(props) {
         className="timeline-action-block"
         style={{ display: ganttVisible ? "block" : "none" }}
       >
-        <h3>Gantt Chart</h3>
         <div className="timeline-action-block">
           <GanttChart
             projectName={
