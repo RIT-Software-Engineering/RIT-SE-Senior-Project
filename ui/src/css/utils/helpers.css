@@ -146,3 +146,7 @@ a,
   background-color: var(--bg-secondary);
   color: var(--text-secondary);
 }
+
+.icon {
+  background-color: inherit;
+}
