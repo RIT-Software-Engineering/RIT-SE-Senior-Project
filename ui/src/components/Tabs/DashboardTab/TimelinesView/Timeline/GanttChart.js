@@ -7,6 +7,7 @@ import ToolTip from "./ToolTip";
 import ActionToolTip from "../../../AdminTab/ActionEditor/ActionToolTip";
 import "./../../../../../css/components/gantt.css";
 import { Dropdown } from "semantic-ui-react";
+import { MiniActionTooltip } from "../../../../util/components/MiniActionTooltip";
 
 export default function GanttChart(props) {
   const containerRef = useRef(null);
@@ -142,7 +143,22 @@ export default function GanttChart(props) {
         }}
         key={idx}
       >
-        <p style={{ left: sidebarWidth + "px" }}>{action.action_title}</p>
+        <MiniActionTooltip
+          trigger={
+            <p
+              style={{
+                left: sidebarWidth + "px",
+                width: "100%",
+                textAlign: "left",
+              }}
+            >
+              {action.action_title}
+            </p>
+          }
+          action={action}
+          start={action.start_date}
+          end={action.due_date}
+        />
       </button>
     );
     let ganttBar;

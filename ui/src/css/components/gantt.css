@@ -128,7 +128,7 @@
   text-align: left;
   border: none;
   border-right: var(--border-color) 1px solid;
-  border-bottom: var(--border-color) 2px solid;
+  border-bottom: var(--border-color) 3px solid;
   position: sticky;
   top: 0;
 }

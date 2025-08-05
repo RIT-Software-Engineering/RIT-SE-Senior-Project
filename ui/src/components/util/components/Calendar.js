@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
 import _ from "lodash";
-import { max } from "moment";
 import { Button, Dropdown, Icon, Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
 import { SecureFetch } from "../functions/secureFetch.js";
 import { config } from "../functions/constants";
+import { MiniActionTooltip } from "./MiniActionTooltip.js";
 
 // this holds the holidays for the year, gets reset when the year changes
 var This_Years_Holidays = {};
@@ -246,15 +246,15 @@ export function Calendar(props) {
         top: `${position.top}px`,
         backgroundColor: "inherit",
 
-        borderTop: `2px solid ${action.color}`,
-        borderBottom: `2px solid ${action.color}`,
+        borderTop: `3px solid ${action.color}`,
+        borderBottom: `3px solid ${action.color}`,
         borderLeft:
           actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
-            ? `2px solid ${action.color}`
+            ? `3px solid ${action.color}`
             : "none",
         borderRight:
           actionEndsOnDay(action, day) || isLastDayOfMonth(day)
-            ? `2px solid ${action.color}`
+            ? `3px solid ${action.color}`
             : "none",
 
         borderTopLeftRadius:
@@ -309,12 +309,16 @@ export function Calendar(props) {
           key={`action-${action.action_id}-${day}`}
           className="calendar-action"
           style={actionStyle}
-          title={`${action.action_title} (${start} - ${end})`}
           onClick={(e) => {
             e.stopPropagation(); // Prevent day click
           }}
         >
-          {actionContent}
+          <MiniActionTooltip
+            trigger={actionContent}
+            action={action}
+            start={start}
+            end={end}
+          />
         </div>
       );
 
@@ -416,11 +420,6 @@ export function Calendar(props) {
                       verticalAlign: "bottom",
                       cursor: "pointer",
                     }}
-                    title={
-                      This_Years_Holidays[
-                        `${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                      ]
-                    }
                   >
                     {
                       This_Years_Holidays[
