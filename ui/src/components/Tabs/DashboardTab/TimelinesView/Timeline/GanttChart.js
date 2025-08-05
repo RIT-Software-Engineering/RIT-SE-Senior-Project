@@ -6,7 +6,7 @@ import _ from "lodash";
 import ToolTip from "./ToolTip";
 import ActionToolTip from "../../../AdminTab/ActionEditor/ActionToolTip";
 import "./../../../../../css/components/gantt.css";
-import { Dropdown } from "semantic-ui-react";
+import { Button, Dropdown } from "semantic-ui-react";
 import { MiniActionTooltip } from "../../../../util/components/MiniActionTooltip";
 
 export default function GanttChart(props) {
@@ -293,46 +293,60 @@ export default function GanttChart(props) {
   // ---------------- RENDER ------------------
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          margin: "10px 0",
-        }}
-      >
-        <h3>Gantt Chart</h3>
-        <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label htmlFor="TimeSpan">Time Span</label>
-          <Dropdown
-            name="TimeSpan"
-            defaultValue={selectedTimeSpan}
-            onChange={onTimeSpanChange}
-            options={[
-              { key: "week", text: "Week", value: "week" },
-              { key: "month", text: "Month", value: "month" },
-              { key: "project", text: "Project", value: "project" },
-            ]}
-            selection
-            compact
-            style={{ zIndex: 1050, position: "relative" }}
-          />
-        </span>
-      </div>
-      <div
-        className={containerClassname}
-        ref={containerRef}
-        style={{
-          gridAutoColumns:
-            100 /
-              (timeSpans[selectedTimeSpan] > 200
-                ? 200
-                : timeSpans[selectedTimeSpan]) +
-            "%",
-        }}
-      >
-        {ganttSideContainer}
-        {ganttContainer}
+      <h3>Gantt Chart</h3>
+      <div className="action-calendar">
+        <div
+          className="calendar-header"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span className="gantt-header">
+            <h3>
+              {selectedTimeSpan === "week"
+                ? `Week of ${today.toLocaleDateString()}`
+                : selectedTimeSpan === "month"
+                  ? `${today.toLocaleString("default", {
+                      month: "long",
+                    })} ${today.getFullYear()}`
+                  : `Project Timeline`}
+            </h3>
+          </span>
+          <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <label htmlFor="TimeSpan">Time Span</label>
+            <div className="ui button" style={{ padding: "10px" }}>
+              <Dropdown
+                name="TimeSpan"
+                defaultValue={selectedTimeSpan}
+                onChange={onTimeSpanChange}
+                options={[
+                  { key: "week", text: "Week", value: "week" },
+                  { key: "month", text: "Month", value: "month" },
+                  { key: "project", text: "Project", value: "project" },
+                ]}
+                compact
+                style={{ zIndex: 1050, position: "relative" }}
+              />
+            </div>
+          </span>
+        </div>
+        <div
+          className={containerClassname}
+          ref={containerRef}
+          style={{
+            gridAutoColumns:
+              100 /
+                (timeSpans[selectedTimeSpan] > 200
+                  ? 200
+                  : timeSpans[selectedTimeSpan]) +
+              "%",
+          }}
+        >
+          {ganttSideContainer}
+          {ganttContainer}
+        </div>
       </div>
     </div>
   );

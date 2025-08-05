@@ -17,6 +17,7 @@ export function MiniActionTooltip({ trigger, action, start, end }) {
       position="top center"
       on="hover"
       hideOnScroll
+      hideOnDocumentClick
       inverted={isDarkMode}
     />
   );

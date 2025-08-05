@@ -236,7 +236,7 @@ export function Calendar(props) {
   };
 
   // Creates and styles the actions for that particular day
-  const generateActionsForDay = (actionsForDay, day) => {
+  const generateActionsForDay = (actionsForDay, day, inPopup) => {
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index);
       const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
@@ -249,26 +249,30 @@ export function Calendar(props) {
         borderTop: `3px solid ${action.color}`,
         borderBottom: `3px solid ${action.color}`,
         borderLeft:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
             ? `3px solid ${action.color}`
             : "none",
         borderRight:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day)
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
             ? `3px solid ${action.color}`
             : "none",
 
         borderTopLeftRadius:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
             ? "13px"
             : "0",
         borderBottomLeftRadius:
-          actionStartsOnDay(action, day) || isFirstDayOfMonth(day)
+          actionStartsOnDay(action, day) || isFirstDayOfMonth(day) || inPopup
             ? "13px"
             : "0",
         borderTopRightRadius:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day) ? "13px" : "0",
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
+            ? "13px"
+            : "0",
         borderBottomRightRadius:
-          actionEndsOnDay(action, day) || isLastDayOfMonth(day) ? "13px" : "0",
+          actionEndsOnDay(action, day) || isLastDayOfMonth(day) || inPopup
+            ? "13px"
+            : "0",
         left: "0",
       };
 
@@ -279,10 +283,14 @@ export function Calendar(props) {
       const showBothArrows =
         !actionStartsOnDay(action, day) && !actionEndsOnDay(action, day);
 
-      const maxTitleLength = 14;
+      const maxTitleLength = inPopup ? 19 : 14;
       let truncatedTitle = action.action_title;
       if (truncatedTitle.length > maxTitleLength) {
         truncatedTitle = truncatedTitle.slice(0, maxTitleLength - 1) + "…";
+      } else {
+        if (!inPopup) {
+          truncatedTitle = truncatedTitle.padEnd(maxTitleLength, "　");
+        }
       }
 
       const actionContent = (
@@ -294,13 +302,23 @@ export function Calendar(props) {
             minWidth: "100%",
           }}
         >
-          {(showLeftArrow || showBothArrows) && (
-            <Icon name="triangle left" size="large" />
-          )}
+          <Icon
+            name="triangle left"
+            size="large"
+            style={{
+              visibility:
+                showLeftArrow || showBothArrows ? "visible" : "hidden",
+            }}
+          />
           {action.state === "green" ? <s>{truncatedTitle}</s> : truncatedTitle}
-          {(showRightArrow || showBothArrows) && (
-            <Icon name="triangle right" size="large" />
-          )}
+          <Icon
+            name="triangle right"
+            size="large"
+            style={{
+              visibility:
+                showRightArrow || showBothArrows ? "visible" : "hidden",
+            }}
+          />
         </span>
       );
 
@@ -435,14 +453,21 @@ export function Calendar(props) {
             {actionsForDay.length > maxVisibleActions ? (
               <Popup
                 on="click"
-                flowing={true}
                 exclusive={false}
+                basic
                 keepInViewPort={true}
-                closeOnDocumentClick={false}
+                inverted={isDarkMode}
                 className="calendar-day"
-                style={{ width: "150px", overflow: "auto", zIndex: 10 }}
-                content={generateActionsForDay(actionsForDay, day)}
-                basic={true}
+                style={{
+                  width: "250px",
+                  overflow: "auto",
+                  zIndex: 10,
+                  boxShadow: "0 0 10px rgba(0,0,0,1)",
+                  backgroundColor: "var(--border-color)",
+                  padding: "20px",
+                }}
+                content={generateActionsForDay(actionsForDay, day, true)}
+                position="bottom center"
                 trigger={
                   <div
                     key={`action-${1}-${day}`}
@@ -463,7 +488,7 @@ export function Calendar(props) {
                 }
               />
             ) : (
-              generateActionsForDay(actionsForDay, day)
+              generateActionsForDay(actionsForDay, day, false)
             )}
           </div>
         </div>,
