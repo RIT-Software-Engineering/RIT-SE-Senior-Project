@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
 import _ from "lodash";
 import { max } from "moment";
-import { Popup } from "semantic-ui-react";
+import { Button, Dropdown, Icon, Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
 import { SecureFetch } from "../functions/secureFetch.js";
@@ -388,47 +388,58 @@ export function Calendar(props) {
 
   return (
     <div className="action-calendar">
-      <div className="calendar-header">
-        <button
-          className={`nav-button ${prevHovered ? "hovered" : ""}`}
-          onClick={prevMonth}
-          onMouseEnter={() => setPrevHovered(true)}
-          onMouseLeave={() => setPrevHovered(false)}
-        >
-          {"<"}
-        </button>
-        <div className="current-month">
-          {" "}
-          {/* DROP DOWN for month and year */}
-          <select
-            value={currentMonth}
-            onChange={(e) => setCurrentMonth(parseInt(e.target.value))}
-          >
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i} value={i}>
-                {monthNames[i]}
-              </option>
-            ))}
-          </select>
-          <select
-            value={currentYear}
-            onChange={(e) => setCurrentYear(parseInt(e.target.value))}
-          >
-            {Array.from({ length: 10 }, (_, i) => (
-              <option key={i} value={currentYear - 5 + i}>
-                {currentYear - 5 + i}
-              </option>
-            ))}
-          </select>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <h3 style={{ display: "flex", gap: "10px" }}>
+            <Dropdown
+              options={monthNames.map((name, i) => ({
+                key: i,
+                text: name,
+                value: i,
+              }))}
+              value={currentMonth}
+              onChange={(e, { value }) => setCurrentMonth(value)}
+              style={{ backgroundColor: "transparent" }}
+            />
+            <Dropdown
+              options={Array.from({ length: 10 }, (_, i) => ({
+                key: currentYear - i + 5,
+                text: currentYear - i + 5,
+                value: currentYear - i + 5,
+              }))}
+              placeholder="Year"
+              value={currentYear}
+              onChange={(e, { value }) => setCurrentYear(value)}
+              style={{ backgroundColor: "transparent" }}
+            />
+          </h3>
         </div>
-        <button
-          className={`nav-button ${nextHovered ? "hovered" : ""}`}
-          onClick={nextMonth}
-          onMouseEnter={() => setNextHovered(true)}
-          onMouseLeave={() => setNextHovered(false)}
-        >
-          {">"}
-        </button>
+        <div style={{ display: "flex", gap: "5px" }}>
+          <Button
+            icon
+            className={prevHovered ? "hovered" : ""}
+            onClick={prevMonth}
+            onMouseEnter={() => setPrevHovered(true)}
+            onMouseLeave={() => setPrevHovered(false)}
+          >
+            <Icon name="chevron left" />
+          </Button>
+          <Button
+            icon
+            className={nextHovered ? "hovered" : ""}
+            onClick={nextMonth}
+            onMouseEnter={() => setNextHovered(true)}
+            onMouseLeave={() => setNextHovered(false)}
+          >
+            <Icon name="chevron right" />
+          </Button>
+        </div>
       </div>
 
       <div className="calendar-days-header">
