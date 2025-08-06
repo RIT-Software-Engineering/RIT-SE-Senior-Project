@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
@@ -102,13 +102,9 @@ function UniqueProjectPage({ projectData }) {
             project.url_slug !== null && project?.url_slug !== "" && (
               <div>
                 <Icon name="linkify" />{" "}
-                <a
-                  href={`${baseProjectURL}${project.url_slug}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Link to={`/projects/${project.url_slug}`}>
                   {`${baseProjectURL}${project.url_slug}`}
-                </a>
+                </Link>
               </div>
             )
           }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Icon, Message, Header } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
@@ -186,13 +187,9 @@ export default function WebsiteViewerModal(props) {
               archive.url_slug !== null && archive?.url_slug !== "" && (
                 <div>
                   <Icon name="linkify" />{" "}
-                  <a
-                    href={`${baseProjectURL}${archive.url_slug}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Link to={`/projects/${archive.url_slug}`}>
                     {`${baseProjectURL}${archive.url_slug}`}
-                  </a>
+                  </Link>
                 </div>
               )
             }
