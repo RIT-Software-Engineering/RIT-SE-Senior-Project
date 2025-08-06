@@ -246,12 +246,11 @@ export default function StudentsTab(props) {
     semesterMap.forEach((semester) => {
       if (semester.name !== unassignedStudentsStr) {
         let studentsData = [];
-        Object.keys(semester.projects).map((projectKey) => {
+        Object.keys(semester.projects).forEach((projectKey) => {
           let studentsList = semester.projects[projectKey].students;
           studentsList.forEach((student) => {
             studentsData.push(student);
           });
-          return true;
         });
 
         const semesterSort = sortBy[semester.semester_id];
@@ -275,7 +274,7 @@ export default function StudentsTab(props) {
           studentsData = studentsData.reverse(); // latest login at top
         }
 
-        Object.keys(semester.projects).map((projectKey) => {
+        Object.keys(semester.projects).forEach((projectKey) => {
           if (
             semester.projects[projectKey].students.length > 0 &&
             projectKey !== "noProject" &&
@@ -287,9 +286,8 @@ export default function StudentsTab(props) {
               ["fname", "lname", "email"],
             );
             activeProjects.push(
-              <div className="accordion-button-group">
+              <div className="accordion-button-group" key={projectKey}>
                 <Accordion
-                  key={projectKey}
                   fluid
                   styled
                   onTitleClick={() => {
@@ -343,15 +341,11 @@ export default function StudentsTab(props) {
               </div>,
             );
           }
-          return true;
         });
 
-        activeProjects.reverse();
-
         semesterPanels.push(
-          <div className="accordion-button-group">
+          <div className="accordion-button-group" key={semester.semester_id}>
             <Accordion
-              key={semester.semester_id}
               fluid
               styled
               onTitleClick={() => {
@@ -399,8 +393,6 @@ export default function StudentsTab(props) {
                 text="Sort By"
                 direction="left"
                 floating
-                // button
-                // compact
                 value={sortBy[semester.semester_id] || null}
                 onChange={(e, { value }) =>
                   setSortBy((prev) => ({
@@ -410,7 +402,6 @@ export default function StudentsTab(props) {
                 }
                 options={sortOptions}
               />
-
               <a
                 href={`mailTo:${studentsData
                   ?.map((student) => student.email)
@@ -429,104 +420,195 @@ export default function StudentsTab(props) {
 
     semesterPanels.push(<h3>All Students</h3>);
 
-    // Peer Evaluations
-    semesterMap.forEach((semester) => {
-      Object.keys(semester.projects).forEach((projectKey) => {
-        const project = semester.projects[projectKey];
-        const submissions = coachFeedback[projectKey];
-        if (!submissions) return true;
-        const hasSubmissions = submissions.length > 0;
+    // Admin and Coaches Peer Eval view (separated by semesters)
+    if (
+      userContext.user.role === USERTYPES.ADMIN ||
+      userContext.user.role === USERTYPES.COACH
+    ) {
+      let peerEvalSemesterPanels = [];
+      semesterMap.forEach((semester) => {
+        if (semester.name === unassignedStudentsStr) return;
 
-        const subAccordion = (submission, index) => (
-          <Accordion
-            key={"Peer-Eval" + projectKey + submission.ActionData.id}
-            fluid
-            styled
-            panels={[
-              {
-                key: `${projectKey}eval${submission.ActionData.id}`,
-                title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
-                content: {
-                  content: (
-                    <>
-                      {
-                        // only show bar graph if admin or coach
-                        userContext.user.role === USERTYPES.ADMIN ||
-                        userContext.user.role === USERTYPES.COACH ? (
-                          <div
-                            style={{
-                              height: "350px",
-                              maxWidth: "100%",
-                              overflowX: "auto",
-                              overflowY: "hidden",
-                            }}
-                          >
-                            <BarGraph
-                              data={submission}
-                              width={window.innerWidth * 0.9}
-                              height={300}
-                            />
-                          </div>
-                        ) : (
-                          ""
-                        )
-                      }
+        let peerEvalPanels = [];
+        Object.keys(semester.projects).forEach((projectKey) => {
+          const project = semester.projects[projectKey];
+          const submissions = coachFeedback[projectKey];
+          if (!submissions || projectKey === "noProject") return;
+          const hasSubmissions = submissions.length > 0;
+
+          const subAccordion = (submission, index) => (
+            <Accordion
+              key={"Peer-Eval" + projectKey + submission.ActionData.id}
+              fluid
+              styled
+              panels={[
+                {
+                  key: `${projectKey}eval${submission.ActionData.id}`,
+                  title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
+                  content: {
+                    content: (
+                      <>
+                        <div
+                          style={{
+                            height: "350px",
+                            maxWidth: "100%",
+                            overflowX: "auto",
+                            overflowY: "hidden",
+                          }}
+                        >
+                          <BarGraph
+                            data={submission}
+                            width={window.innerWidth * 0.9}
+                            height={300}
+                          />
+                        </div>
+                        <EvalReview
+                          forms={submission}
+                          isSub={submission?.Submitter === "COACH"}
+                          id={projectKey + semester.name}
+                        />
+                      </>
+                    ),
+                  },
+                },
+              ]}
+            />
+          );
+
+          peerEvalPanels.push(
+            <Accordion
+              key={"PEEREVAL" + projectKey}
+              fluid
+              styled
+              panels={[
+                {
+                  key: `eval-${projectKey}`,
+                  title: `${project.name}`,
+                  content: {
+                    content: hasSubmissions ? (
+                      submissions.map((submission, index) =>
+                        subAccordion(submission, index),
+                      )
+                    ) : (
+                      <Message>
+                        <Icon name="info circle" />
+                        <b>
+                          No coach feedback for peer-evaluations given at this
+                          time.
+                        </b>
+                      </Message>
+                    ),
+                  },
+                },
+              ]}
+            />,
+          );
+        });
+
+        if (peerEvalPanels.length > 0) {
+          peerEvalSemesterPanels.push(
+            <Accordion
+              key={`peer-evals-semester-${semester.semester_id}`}
+              fluid
+              styled
+              onTitleClick={() => {
+                setActiveSemesters({
+                  ...activeSemesters,
+                  [semester.semester_id]:
+                    !activeSemesters[semester.semester_id],
+                });
+              }}
+              panels={[
+                {
+                  key: `peer-evals-${semester.semester_id}`,
+                  title: `${semester.name}`,
+                  active: activeSemesters[semester.semester_id],
+                  content: {
+                    content: peerEvalPanels,
+                  },
+                },
+              ]}
+            />,
+          );
+        }
+      });
+
+      if (peerEvalSemesterPanels.length > 0) {
+        semesterPanels.push(peerEvalSemesterPanels, <h3>Peer Evaluations</h3>);
+      }
+    }
+
+    // Students Peer Eval View (not separated by semesters)
+    if (userContext.user.role === USERTYPES.STUDENT) {
+      semesterMap.forEach((semester) => {
+        Object.keys(semester.projects).forEach((projectKey) => {
+          const project = semester.projects[projectKey];
+          const submissions = coachFeedback[projectKey];
+          if (!submissions) return;
+          const hasSubmissions = submissions.length > 0;
+
+          const subAccordion = (submission, index) => (
+            <Accordion
+              key={"Peer-Eval" + projectKey + submission.ActionData.id}
+              fluid
+              styled
+              panels={[
+                {
+                  key: `${projectKey}eval${submission.ActionData.id}`,
+                  title: `${submission.ActionData.title} - ${submission.ActionData.start_date}`,
+                  content: {
+                    content: (
                       <EvalReview
                         forms={submission}
                         isSub={submission?.Submitter === "COACH"}
                         id={projectKey + semester.name}
                       />
-                    </>
-                  ),
-                },
-              },
-            ]}
-          />
-        );
-
-        if (
-          userContext.user.role === USERTYPES.ADMIN ||
-          userContext.user.role === USERTYPES.COACH ||
-          semester.projects[projectKey].students
-            .map((student) => `${student.system_id}`)
-            .includes(userContext.user.user)
-        ) {
-          semesterPanels.push(
-            <div key={"PeerEval" + projectKey}>
-              <Accordion
-                key={"PEEREVAL" + projectKey}
-                fluid
-                styled
-                //defaultActiveIndex={isSemesterActive(semester.start_date, semester.end_date) ? 0 : -1}
-                panels={[
-                  {
-                    key: "eval",
-                    title: `${project.name} - ${semester.name}`,
-                    content: {
-                      content: hasSubmissions ? (
-                        submissions.map((submission, index) =>
-                          subAccordion(submission, index),
-                        )
-                      ) : (
-                        <Message>
-                          <Icon name="info circle" />
-                          <b>
-                            No coach feedback for peer-evaluations given at this
-                            time.
-                          </b>
-                        </Message>
-                      ),
-                    },
+                    ),
                   },
-                ]}
-              />
-            </div>,
+                },
+              ]}
+            />
           );
-        }
-      });
-    });
 
-    semesterPanels.push(<h3>Peer Evaluations</h3>);
+          if (
+            semester.projects[projectKey].students
+              .map((student) => `${student.system_id}`)
+              .includes(userContext.user.user)
+          ) {
+            semesterPanels.push(
+              <div key={"PeerEval" + projectKey}>
+                <Accordion
+                  fluid
+                  styled
+                  panels={[
+                    {
+                      key: `eval-${projectKey}`,
+                      title: `${project.name} - ${semester.name}`,
+                      content: {
+                        content: hasSubmissions ? (
+                          submissions.map((submission, index) =>
+                            subAccordion(submission, index),
+                          )
+                        ) : (
+                          <Message>
+                            <Icon name="info circle" />
+                            <b>
+                              No coach feedback for peer-evaluations given at
+                              this time.
+                            </b>
+                          </Message>
+                        ),
+                      },
+                    },
+                  ]}
+                />
+              </div>,
+            );
+          }
+        });
+      });
+      semesterPanels.push(<h3>Peer Evaluations</h3>);
+    }
 
     // My Teams
     if (
