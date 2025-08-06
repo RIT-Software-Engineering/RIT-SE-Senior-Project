@@ -47,7 +47,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
   let isProjectStart;
   let isProjectEnd;
 
-  if (props.timeSpan == "week") {
+  if (props.timeSpan === "week") {
     ganttHeader.push(
       <div
         key={props.timeSpan + "first" + 0}
@@ -59,7 +59,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         </p>
       </div>,
     );
-  } else if (props.timeSpan == "month") {
+  } else if (props.timeSpan === "month") {
     ganttHeader.push(
       <div
         key={props.timeSpan + "first" + 0}
@@ -97,32 +97,32 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
   // columns
   for (let i = 1; i < cols; i++) {
     isToday = semesterActive
-      ? today.getUTCDate() == currDate &&
-        today.getUTCMonth() == currMonth &&
-        today.getUTCFullYear() == currYear
+      ? today.getUTCDate() === currDate &&
+        today.getUTCMonth() === currMonth &&
+        today.getUTCFullYear() === currYear
       : false;
     isProjectStart =
-      props.projectStart.getUTCDate() == currDate &&
-      props.projectStart.getUTCMonth() == currMonth &&
-      props.projectStart.getUTCFullYear() == currYear;
+      props.projectStart.getUTCDate() === currDate &&
+      props.projectStart.getUTCMonth() === currMonth &&
+      props.projectStart.getUTCFullYear() === currYear;
     isProjectEnd =
-      props.projectEnd.getUTCDate() == currDate &&
-      props.projectEnd.getUTCMonth() == currMonth &&
-      props.projectEnd.getUTCFullYear() == currYear;
+      props.projectEnd.getUTCDate() === currDate &&
+      props.projectEnd.getUTCMonth() === currMonth &&
+      props.projectEnd.getUTCFullYear() === currYear;
 
-    if (props.timeSpan == "week") {
+    if (props.timeSpan === "week") {
       // if new month
-      if (currDate == monthLength + 1) {
+      if (currDate === monthLength + 1) {
         currDate = 1;
         currMonth = currMonth + 1;
-        if (currMonth == 12) {
+        if (currMonth === 12) {
           currMonth = 0;
           currYear++;
         }
         monthLength = daysInMonth(currMonth, currYear);
       }
 
-      if ((startCol.getDay() + i - 1) % 7 == 0) {
+      if ((startCol.getDay() + i - 1) % 7 === 0) {
         ganttHeader.push(
           <div
             key={props.timeSpan + "first" + i}
@@ -148,12 +148,12 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
           </p>
         </div>,
       ); // days of week
-    } else if (props.timeSpan == "month") {
+    } else if (props.timeSpan === "month") {
       // if new month
-      if (currDate == monthLength + 1) {
+      if (currDate === monthLength + 1) {
         currDate = 1;
         currMonth = currMonth + 1;
-        if (currMonth == 12) {
+        if (currMonth === 12) {
           currMonth = 0;
           currYear++;
         }
@@ -190,10 +190,10 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
     } else {
       // project
       // if new month
-      if (currDate == monthLength + 1) {
+      if (currDate === monthLength + 1) {
         currDate = 1;
         currMonth = currMonth + 1;
-        if (currMonth == 12) {
+        if (currMonth === 12) {
           currMonth = 0;
           currYear++;
 
@@ -206,7 +206,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                   i +
                   " / span " +
                   ((currYear % 4 === 0 && currYear % 100 > 0) ||
-                  currYear % 400 == 0
+                  currYear % 400 === 0
                     ? 366
                     : 365),
               }}
@@ -245,8 +245,8 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
               ? "gantt-col projectStart"
               : isProjectEnd
                 ? "gantt-col projectEnd"
-                : (startCol.getUTCDay() + i - 1) % 7 == 0 ||
-                    (startCol.getUTCDay() + i - 1) % 7 == 6
+                : (startCol.getUTCDay() + i - 1) % 7 === 0 ||
+                    (startCol.getUTCDay() + i - 1) % 7 === 6
                   ? "gantt-col weekend"
                   : "gantt-col weekday"
         }

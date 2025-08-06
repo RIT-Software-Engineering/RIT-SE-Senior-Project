@@ -76,7 +76,11 @@
 }
 
 .gantt-col.today {
-  background-color: var(--gantt-today);
+  background-color: color-mix(
+    in srgb,
+    var(--action-bar-proposal-blue) 40%,
+    transparent
+  );
 }
 
 .gantt-col.projectStart {
@@ -288,10 +292,6 @@ body.dark-mode .gantt-col.weekday {
 
 body.dark-mode .gantt-col.weekend {
   background-color: var(--bg-secondary);
-}
-
-body.dark-mode .gantt-col.today {
-  background-color: var(--bg-today);
 }
 
 body.dark-mode .sidebar {
