@@ -126,7 +126,7 @@ export default function GanttChart(props) {
     const barSpan = dateDiff(startDate, dueDate) + 1 + 1; // plus 1 for an action's reach (midnight of day 1 looks like start of day 2)
 
     let admin = false;
-    if (props.admin && props.admin == "true") {
+    if (props.admin && props.admin === "true") {
       admin = true;
     }
 
@@ -144,20 +144,9 @@ export default function GanttChart(props) {
         key={idx}
       >
         <MiniActionTooltip
-          trigger={
-            <p
-              style={{
-                left: sidebarWidth + "px",
-                width: "100%",
-                textAlign: "left",
-              }}
-            >
-              {action.action_title}
-            </p>
-          }
+          trigger={<p>{action.action_title}</p>}
           action={action}
-          start={action.start_date}
-          end={action.due_date}
+          containerRef={containerRef}
         />
       </button>
     );
@@ -303,7 +292,7 @@ export default function GanttChart(props) {
             justifyContent: "space-between",
           }}
         >
-          <span className="gantt-header">
+          <span>
             <h3>
               {selectedTimeSpan === "week"
                 ? `Week Timeline`
