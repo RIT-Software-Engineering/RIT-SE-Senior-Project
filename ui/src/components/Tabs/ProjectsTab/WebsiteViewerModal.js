@@ -280,12 +280,14 @@ export default function WebsiteViewerModal(props) {
                   <p>
                     {archive?.start_date} - {archive?.end_date}
                   </p>
-                  {archive?.team_name && archive?.team_name !== "null" && (
-                    <>
-                      <div className="ui small header">Team Name</div>
-                      <p>{archive?.team_name}</p>
-                    </>
-                  )}
+                  {archive?.team_name &&
+                    archive?.team_name !== "null" &&
+                    archive?.team_name.trim() !== "" && (
+                      <>
+                        <div className="ui small header">Team Name</div>
+                        <p>{archive?.team_name}</p>
+                      </>
+                    )}
                   <div className="ui small header">Students</div>
                   <p>{formatNameList(archive?.members)}</p>
                 </div>

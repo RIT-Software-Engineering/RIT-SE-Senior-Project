@@ -89,6 +89,14 @@ function ExemplaryProject({ project }) {
             <p>
               {project.start_date} - {project.end_date}
             </p>
+            {project?.team_name &&
+              project?.team_name !== "null" &&
+              project?.team_name.trim() !== "" && (
+                <>
+                  <div className="ui small header">Team Name</div>
+                  <p>{project.team_name}</p>
+                </>
+              )}
             <div className="ui small header">Students</div>
             <p>{formatNameList(project.members)}</p>
           </div>
