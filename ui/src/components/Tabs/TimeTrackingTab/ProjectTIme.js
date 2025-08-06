@@ -55,7 +55,7 @@ export default function ProjectTime(props) {
         panels={[
           {
             key: "Project Here",
-            title: props.proj.title,
+            title: props.proj.display_name || props.proj.title,
             content: {
               content: (
                 <div>
@@ -170,7 +170,10 @@ export default function ProjectTime(props) {
                                 </TableCell>
                                 <TableCell>
                                   <IndividualTimeModal
-                                    projectName={props.proj.title}
+                                    projectName={
+                                      props.proj.display_name ||
+                                      props.proj.title
+                                    }
                                     semesterName={props.semester.name}
                                     user={submittedBy}
                                     timeLog={timeLog}
@@ -269,7 +272,7 @@ export default function ProjectTime(props) {
                   </Table>
                   <div>
                     <WeeklyHoursViewer
-                      projectName={props.proj.title}
+                      projectName={props.proj.display_name || props.proj.title}
                       semesterName={props.semester.name}
                       weeks={weeks}
                       timeLog={props.timeLogs.filter(

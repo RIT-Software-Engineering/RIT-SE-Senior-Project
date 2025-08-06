@@ -64,7 +64,9 @@ function UniqueProjectPage({ projectData }) {
         <ErrorPage />
       ) : (
         <div ref={nodeRef}>
-          <h1 className="ui header">{project.title} </h1>
+          <h1 className="ui header">
+            {project.display_name || project.title}{" "}
+          </h1>
           {project?.outstanding === 1 && (
             <Icon
               name="trophy"
