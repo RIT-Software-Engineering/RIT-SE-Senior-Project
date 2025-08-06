@@ -4,6 +4,16 @@ import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
+// Helper function to format comma-separated name lists with proper spacing
+const formatNameList = (nameString) => {
+  if (!nameString) return "";
+  return nameString
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name)
+    .join(", ");
+};
+
 /**
  * Represents a project component
  */
@@ -80,13 +90,13 @@ function ExemplaryProject({ project }) {
               {project.start_date} - {project.end_date}
             </p>
             <div className="ui small header">Students</div>
-            <p>{project.members}</p>
+            <p>{formatNameList(project.members)}</p>
           </div>
           <div className="column">
             <div className="ui small header">Sponsor</div>
             <p>{project.sponsor}</p>
             <div className="ui small header">Faculty Coach</div>
-            <p>{project.coach}</p>
+            <p>{formatNameList(project.coach)}</p>
           </div>
         </div>
       </div>

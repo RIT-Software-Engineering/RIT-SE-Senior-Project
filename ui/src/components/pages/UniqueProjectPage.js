@@ -13,6 +13,16 @@ const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 const CONTENT_HEIGHT = 250;
 
+// Helper function to format comma-separated name lists with proper spacing
+const formatNameList = (nameString) => {
+  if (!nameString) return "";
+  return nameString
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name)
+    .join(", ");
+};
+
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
   const { url_slug } = useParams();
@@ -183,13 +193,13 @@ function UniqueProjectPage({ projectData }) {
                   {project?.start_date} - {project?.end_date}
                 </p>
                 <div className="ui small header">Students</div>
-                <p>{project?.members}</p>
+                <p>{formatNameList(project?.members)}</p>
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
                 <p>{project?.sponsor}</p>
                 <div className="ui small header">Faculty Coach</div>
-                <p>{project?.coach}</p>
+                <p>{formatNameList(project?.coach)}</p>
               </div>
             </div>
           </div>

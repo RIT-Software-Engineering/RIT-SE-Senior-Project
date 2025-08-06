@@ -22,6 +22,20 @@ export default function WebsiteViewerModal(props) {
   const [imageOpen, setImageOpen] = useState(false);
 
   /**
+   * Formats a comma-separated list of names to ensure consistent spacing
+   * @param {string} nameList - The comma-separated list of names
+   * @returns {string} Formatted name list with consistent spacing
+   */
+  const formatNameList = (nameList) => {
+    if (!nameList) return "";
+    return nameList
+      .split(",")
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0)
+      .join(", ");
+  };
+
+  /**
    * Decodes sanitized text so that it is readable without ugly letters
    * @param synopsis archive synopsis
    * @returns {string} sanitized synopsis
@@ -273,13 +287,13 @@ export default function WebsiteViewerModal(props) {
                     </>
                   )}
                   <div className="ui small header">Students</div>
-                  <p>{archive?.members}</p>
+                  <p>{formatNameList(archive?.members)}</p>
                 </div>
                 <div className="column">
                   <div className="ui small header">Sponsor</div>
                   <p>{archive?.sponsor}</p>
                   <div className="ui small header">Faculty Coach</div>
-                  <p>{archive?.coach}</p>
+                  <p>{formatNameList(archive?.coach)}</p>
                 </div>
               </div>
             </div>

@@ -20,6 +20,20 @@ function UniqueProjectPage({ projectData }) {
   const [imageOpen, setImageOpen] = useState(false);
   const nodeRef = React.useRef(null);
 
+  /**
+   * Formats a comma-separated list of names to ensure consistent spacing
+   * @param {string} nameList - The comma-separated list of names
+   * @returns {string} Formatted name list with consistent spacing
+   */
+  const formatNameList = (nameList) => {
+    if (!nameList) return "";
+    return nameList
+      .split(",")
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0)
+      .join(", ");
+  };
+
   useEffect(() => {
     /* Renders the project page client side */
     if (project === undefined) {
@@ -183,13 +197,13 @@ function UniqueProjectPage({ projectData }) {
                   {project?.start_date} - {project?.end_date}
                 </p>
                 <div className="ui small header">Students</div>
-                <p>{project?.members}</p>
+                <p>{formatNameList(project?.members)}</p>
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
                 <p>{project?.sponsor}</p>
                 <div className="ui small header">Faculty Coach</div>
-                <p>{project?.coach}</p>
+                <p>{formatNameList(project?.coach)}</p>
               </div>
             </div>
           </div>
