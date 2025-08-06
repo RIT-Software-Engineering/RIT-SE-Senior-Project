@@ -96,20 +96,7 @@ export function Calendar(props) {
     props.actions.map((action) => ({
       ...action,
       color: (() => {
-        switch (action.state) {
-          case "yellow":
-            return isDarkMode ? "#e6b800" : "#f2dca00";
-          case "red":
-            return "#fd2723";
-          case "green":
-            return "#00b300";
-          case "grey":
-            return "#484848";
-          case "purple":
-            return "#b66dff";
-          default: //defaults to grey
-            return `#484848`;
-        }
+        return "var(--action-bar-proposal-" + action.state + ")";
       })(),
     })),
     ["due_date", "start_date", "action_title"],
