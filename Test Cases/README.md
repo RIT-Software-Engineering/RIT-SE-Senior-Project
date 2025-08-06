@@ -4,7 +4,16 @@ This document outlines general test cases and their workflow procedures to ensur
 
 ## Table of Contents
 
--
+- [Authentication](authentication.md) - User Sign In, Resetting Data, User Preferences, Last Login
+- [User Management](users.md) - Adding Users, Editing Users, Deactivation, View Only Users
+- [Projects](projects.md) - Status, Sponsoring, Editing, Featuring, Member Assignment
+- [Actions](actions.md) - Types & Colors, Creating, Editing, Deactivating, Late Submissions, Submission Visibility Rules
+- [Logging](logging.md) - Time logs, Action Logs, Sponsor Notes
+- [Administrative Tools](admin.md) - Mocking Users, Admin Tab, Semesters, Archive Editor, Content Editor
+- [Sponsors](sponsors.md) - Adding, Editing, Notes, Visibility
+- [Announcements & Breaks](announcements.md) - Visibility, Creating, Editing, Deactivating,
+- [AI-Driven Integration](ai.md) - API Key, Student Progress Summarization, AI Coach Feedback Generation
+- [Peer Evaluations](evals.md) - Creation, Student & Coach Processes, Feedback Management
 
 ## Terminology
 
