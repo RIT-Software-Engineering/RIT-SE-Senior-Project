@@ -172,7 +172,6 @@ export function Calendar(props) {
   // Actions are displayed in a hierarchical order: TOP (Holidays, breaks, tasks) BOTTOM
   const getActionsForDay = (day) => {
     const date = new Date(currentYear, currentMonth, day);
-    const monthDay = `${date.toLocaleString("default", { month: "2-digit" })}-${date.toLocaleString("default", { day: "2-digit" })}`;
     const actions = sortedActions.filter((action) => {
       const actionStart = new Date(action.start_date);
       const actionEnd = new Date(action.due_date);
@@ -224,12 +223,6 @@ export function Calendar(props) {
       date.getMonth() === currentMonth
     );
   };
-
-  const dayIndex = (day) => {
-    const date = new Date(currentYear, currentMonth, day);
-    return date.getDay();
-  };
-
   // Calculate action display position (for overlapping actions)
   const calculateActionPosition = (action, index) => {
     // Always position actions in order, regardless of start date
@@ -244,8 +237,6 @@ export function Calendar(props) {
   const generateActionsForDay = (actionsForDay, day, inPopup) => {
     return actionsForDay.slice(0, actionsForDay.length).map((action, index) => {
       const position = calculateActionPosition(action, index);
-      const start = `${new Date(action.start_date).getMonth() + 1}/${new Date(action.start_date).getDate()}`;
-      const end = `${new Date(action.due_date).getMonth() + 1}/${new Date(action.due_date).getDate()}`;
 
       const isFirst = isFirstDayOfMonth(day);
       const isLast = isLastDayOfMonth(day);
@@ -274,11 +265,11 @@ export function Calendar(props) {
       };
 
       if (!starts && !ends) {
-        if (isFirst || dayIndex(day) === 0) {
+        if (isFirst) {
           actionStyle.borderImage = `linear-gradient(to bottom, ${action.color} 90%, transparent 100%) 1`;
           actionStyle.borderImageSource = `linear-gradient(to left, ${action.color} 90%, transparent 100%)`;
           actionStyle.borderImageSlice = 1;
-        } else if (isLast || dayIndex(day) === 6) {
+        } else if (isLast) {
           actionStyle.borderImage = `linear-gradient(to bottom, ${action.color} 90%, transparent 100%) 1`;
           actionStyle.borderImageSource = `linear-gradient(to right, ${action.color} 90%, transparent 100%)`;
           actionStyle.borderImageSlice = 1;
@@ -288,16 +279,6 @@ export function Calendar(props) {
       const showLeftArrow = ends && !starts;
       const showRightArrow = starts && !ends;
       const showBothArrows = !starts && !ends;
-
-      const maxTitleLength = inPopup ? 19 : 14;
-      let truncatedTitle = action.action_title;
-      if (truncatedTitle.length > maxTitleLength) {
-        truncatedTitle = truncatedTitle.slice(0, maxTitleLength - 1) + "…";
-      } else {
-        if (!inPopup) {
-          truncatedTitle = truncatedTitle.padEnd(maxTitleLength, "　");
-        }
-      }
 
       const actionContent = (
         <span
@@ -316,7 +297,21 @@ export function Calendar(props) {
                 showLeftArrow || showBothArrows ? "visible" : "hidden",
             }}
           />
-          {action.state === "green" ? <s>{truncatedTitle}</s> : truncatedTitle}
+          <p
+            style={{
+              maxWidth: "90%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              marginTop: "12px",
+            }}
+          >
+            {action.state === "green" ? (
+              <s>{action.action_title}</s>
+            ) : (
+              action.action_title
+            )}
+          </p>
           <Icon
             name="triangle right"
             size="large"
@@ -337,12 +332,7 @@ export function Calendar(props) {
             e.stopPropagation(); // Prevent day click
           }}
         >
-          <MiniActionTooltip
-            trigger={actionContent}
-            action={action}
-            start={start}
-            end={end}
-          />
+          <MiniActionTooltip trigger={actionContent} action={action} />
         </div>
       );
 
@@ -429,7 +419,7 @@ export function Calendar(props) {
                   ]
                 }
                 inverted={isDarkMode}
-                position="top center"
+                position="top right"
                 hoverable
                 trigger={
                   <span
@@ -522,6 +512,7 @@ export function Calendar(props) {
                   backgroundColor: "transparent",
                   zIndex: 100,
                   position: "relative",
+                  border: "none",
                 }}
               />
               <Dropdown
@@ -537,29 +528,26 @@ export function Calendar(props) {
                   backgroundColor: "transparent",
                   zIndex: 100,
                   position: "relative",
+                  border: "none",
                 }}
               />
             </h3>
           </div>
           <div style={{ display: "flex" }}>
             <Button
-              icon
+              icon="chevron left"
               className={prevHovered ? "hovered" : ""}
               onClick={prevMonth}
               onMouseEnter={() => setPrevHovered(true)}
               onMouseLeave={() => setPrevHovered(false)}
-            >
-              <Icon name="chevron left" />
-            </Button>
+            />
             <Button
-              icon
+              icon="chevron right"
               className={nextHovered ? "hovered" : ""}
               onClick={nextMonth}
               onMouseEnter={() => setNextHovered(true)}
               onMouseLeave={() => setNextHovered(false)}
-            >
-              <Icon name="chevron right" />
-            </Button>
+            />
           </div>
         </div>
 

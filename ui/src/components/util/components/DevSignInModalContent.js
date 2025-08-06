@@ -203,32 +203,21 @@ export default function DevSignInModalContent() {
               <div ref={dropdownRef} style={{ marginBottom: 24 }}>
                 <Dropdown
                   onClick={handleDropdownOpen}
-                  floating
-                  button
                   className="ui button"
+                  search
                   text={
                     selectedUser
                       ? `${selectedUser.fname} ${selectedUser.lname} (${selectedUser.system_id})`
                       : "Select User..."
                   }
                   open={isDropdownOpen}
+                  fluid
                   style={{
-                    width: 250,
                     fontSize: 16,
                   }}
                 >
                   {isDropdownOpen ? (
-                    <DropdownMenu
-                      style={{
-                        maxHeight: `${getDropdownMaxHeight()}px`,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        position: "absolute",
-                        zIndex: 1000,
-                        width: "100%",
-                        minWidth: "250px",
-                      }}
-                    >
+                    <DropdownMenu>
                       <Input
                         icon="search"
                         iconPosition="left"
