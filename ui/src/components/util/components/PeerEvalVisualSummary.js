@@ -7,21 +7,20 @@ const BarGraph = ({ data, width, height }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    if (!data || !data.Students) {
-      return;
-    }
-    const sortedFeedback = Object.entries(data.Students).map(
-      ([student, feedback]) => [student, feedback.AverageRatings],
-    );
-    setUserFeedback(sortedFeedback);
-
-    // Check for dark mode
     const checkDarkMode = () => {
       setIsDarkMode(document.body.classList.contains("dark-mode"));
     };
 
-    // Initial check
     checkDarkMode();
+
+    if (!data || !data.Students) {
+      return;
+    }
+
+    const sortedFeedback = Object.entries(data.Students).map(
+      ([student, feedback]) => [student, feedback.AverageRatings],
+    );
+    setUserFeedback(sortedFeedback);
 
     // TODO CHANGE THIS SO THAT DARK MODE WORKS, THIS IS JUST A WORK AROUND
 
