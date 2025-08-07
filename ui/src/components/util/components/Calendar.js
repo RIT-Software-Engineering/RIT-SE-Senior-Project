@@ -445,7 +445,7 @@ export function Calendar(props) {
                   overflow: "auto",
                   zIndex: 10,
                   boxShadow: "0 0 10px rgba(0,0,0,1)",
-                  backgroundColor: "var(--border-color)",
+                  backgroundColor: "var(--bg-secondary)",
                   padding: "20px",
                 }}
                 content={generateActionsForDay(actionsForDay, day, true)}
@@ -460,6 +460,11 @@ export function Calendar(props) {
                       borderLeft: "none",
                       left: "0",
                       zIndex: 10,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      color: "white",
                     }}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent day click
