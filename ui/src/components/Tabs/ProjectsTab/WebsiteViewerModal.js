@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Icon, Message, Header } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
@@ -20,6 +21,20 @@ export default function WebsiteViewerModal(props) {
   const nodeRef = React.useRef(null);
   const [posterOpen, setPosterOpen] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
+
+  /**
+   * Formats a comma-separated list of names to ensure consistent spacing
+   * @param {string} nameList - The comma-separated list of names
+   * @returns {string} Formatted name list with consistent spacing
+   */
+  const formatNameList = (nameList) => {
+    if (!nameList) return "";
+    return nameList
+      .split(",")
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0)
+      .join(", ");
+  };
 
   /**
    * Decodes sanitized text so that it is readable without ugly letters
@@ -172,13 +187,9 @@ export default function WebsiteViewerModal(props) {
               archive.url_slug !== null && archive?.url_slug !== "" && (
                 <div>
                   <Icon name="linkify" />{" "}
-                  <a
-                    href={`${baseProjectURL}${archive.url_slug}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Link to={`/projects/${archive.url_slug}`}>
                     {`${baseProjectURL}${archive.url_slug}`}
-                  </a>
+                  </Link>
                 </div>
               )
             }
@@ -266,14 +277,22 @@ export default function WebsiteViewerModal(props) {
                   <p>
                     {archive?.start_date} - {archive?.end_date}
                   </p>
+                  {archive?.team_name &&
+                    archive?.team_name !== "null" &&
+                    archive?.team_name.trim() !== "" && (
+                      <>
+                        <div className="ui small header">Team Name</div>
+                        <p>{archive?.team_name}</p>
+                      </>
+                    )}
                   <div className="ui small header">Students</div>
-                  <p>{archive?.members}</p>
+                  <p>{formatNameList(archive?.members)}</p>
                 </div>
                 <div className="column">
                   <div className="ui small header">Sponsor</div>
                   <p>{archive?.sponsor}</p>
                   <div className="ui small header">Faculty Coach</div>
-                  <p>{archive?.coach}</p>
+                  <p>{formatNameList(archive?.coach)}</p>
                 </div>
               </div>
             </div>

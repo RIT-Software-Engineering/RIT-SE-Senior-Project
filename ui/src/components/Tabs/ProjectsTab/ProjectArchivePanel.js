@@ -79,96 +79,6 @@ export default function ProjectArchivePanel(props) {
     locked: "",
   });
 
-  // Generate a team name based on project title and keywords
-  const generateTeamName = (projectTitle, projectKeywords, semester) => {
-    if (!projectTitle && !projectKeywords) {
-      return "Project Team";
-    }
-
-    let baseNameSource = projectTitle || projectKeywords;
-
-    // Split the source into words and filter out common words
-    const commonWords = [
-      "a",
-      "an",
-      "the",
-      "and",
-      "or",
-      "but",
-      "in",
-      "on",
-      "at",
-      "to",
-      "for",
-      "of",
-      "with",
-      "by",
-      "system",
-      "platform",
-      "application",
-      "tool",
-      "project",
-    ];
-    const words = baseNameSource
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "") // Remove punctuation
-      .split(/\s+/)
-      .filter((word) => word.length > 2 && !commonWords.includes(word))
-      .slice(0, 2); // Take first 2 meaningful words
-
-    if (words.length === 0) {
-      return "ProjectTeam";
-    }
-
-    // Capitalize first letter of each word and join
-    const projectPart = words
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("");
-
-    // Generate project semester suffix (e.g., "Summer2025")
-    let dateSuffix = "";
-    if (semester) {
-      const semesterMatch = semester.toString().match(/(\d{4})-(\d{2})/);
-      if (semesterMatch) {
-        const year = semesterMatch[1];
-        const month = parseInt(semesterMatch[2]);
-        // Determine season based on month
-        let season;
-        if (month >= 8) {
-          season = "Fall";
-        } else if (month >= 1 && month <= 5) {
-          season = "Spring";
-        } else {
-          season = "Summer";
-        }
-        dateSuffix = `${season}${year}`;
-      }
-    }
-
-    // If no semester info, fall back to current date
-    if (!dateSuffix) {
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
-      const currentYear = currentDate.getFullYear();
-
-      let season;
-      if (currentMonth >= 6 && currentMonth <= 8) {
-        season = "Summer";
-      } else if (currentMonth >= 9 && currentMonth <= 11) {
-        season = "Fall";
-      } else if (currentMonth >= 12 || currentMonth <= 2) {
-        season = "Winter";
-      } else {
-        season = "Spring";
-      }
-
-      dateSuffix = `${season}${currentYear}`;
-    }
-
-    // Combine: ProjectPart + ProjectSemester (e.g., "BuzzboostAnalyticsSummer2025")
-    return `${projectPart}${dateSuffix}`;
-  };
-
   // Generate a unique URL slug by checking existing archives
   const generateUniqueSlug = async (baseTitle) => {
     if (!baseTitle) return "";
@@ -252,11 +162,7 @@ export default function ProjectArchivePanel(props) {
           });
         } else {
           setNewArchive(true);
-          const generatedTeamName = generateTeamName(
-            props.project?.title,
-            props.project?.project_search_keywords,
-            props.project?.semester,
-          );
+          const generatedTeamName = props.project?.display_name;
 
           // Generate unique URL slug
           generateUniqueSlug(props.project?.title)
@@ -415,7 +321,6 @@ export default function ProjectArchivePanel(props) {
       disabled:
         userContext.user?.role !== USERTYPES.ADMIN ||
         ((initialState.locked || initialState.inactive) && isStudent),
-      required: true,
     },
     {
       type: "input",
@@ -482,14 +387,6 @@ export default function ProjectArchivePanel(props) {
     const errorsFound = [];
 
     // Required field validations
-    // Team Name
-    if (!data.team_name?.trim()) {
-      errorsFound.push({
-        name: "team_name",
-        message: "Team Name must be provided",
-      });
-    }
-
     // Keywords
     if (!data.keywords?.trim()) {
       errorsFound.push({

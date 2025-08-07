@@ -48,20 +48,26 @@ export default function SemesterCoaches({ coaches, semesterId }) {
                         ?.map((project) => {
                           return (
                             <TableRow key={project.project_id}>
-                              <TableCell>{project.title}</TableCell>
+                              <TableCell>
+                                {project.display_name || project.title}
+                              </TableCell>
                               <TableCell>{project.organization}</TableCell>
                               <TableCell>{project.status}</TableCell>
                               <TableCell>
                                 <ViewProjectMembers
                                   projectId={project.project_id}
-                                  projectName={project.title}
+                                  projectName={
+                                    project.display_name || project.title
+                                  }
                                   type={USERTYPES.COACH}
                                 />
                               </TableCell>
                               <TableCell>
                                 <ViewProjectMembers
                                   projectId={project.project_id}
-                                  projectName={project.title}
+                                  projectName={
+                                    project.display_name || project.title
+                                  }
                                   type={USERTYPES.STUDENT}
                                 />
                               </TableCell>

@@ -4,6 +4,16 @@ import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
+// Helper function to format comma-separated name lists with proper spacing
+const formatNameList = (nameString) => {
+  if (!nameString) return "";
+  return nameString
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name)
+    .join(", ");
+};
+
 /**
  * Represents a project component
  */
@@ -45,7 +55,9 @@ function ExemplaryProject({ project }) {
       >
         <div className="two column row" style={{ display: "flex" }}>
           <div className="column">
-            <h3 className="ui header">{project.title}</h3>
+            <h3 className="ui header">
+              {project.display_name || project.title}
+            </h3>
           </div>
           <div className="column">
             {awards.length !== 0 && (
@@ -77,14 +89,22 @@ function ExemplaryProject({ project }) {
             <p>
               {project.start_date} - {project.end_date}
             </p>
+            {project?.team_name &&
+              project?.team_name !== "null" &&
+              project?.team_name.trim() !== "" && (
+                <>
+                  <div className="ui small header">Team Name</div>
+                  <p>{project.team_name}</p>
+                </>
+              )}
             <div className="ui small header">Students</div>
-            <p>{project.members}</p>
+            <p>{formatNameList(project.members)}</p>
           </div>
           <div className="column">
             <div className="ui small header">Sponsor</div>
             <p>{project.sponsor}</p>
             <div className="ui small header">Faculty Coach</div>
-            <p>{project.coach}</p>
+            <p>{formatNameList(project.coach)}</p>
           </div>
         </div>
       </div>

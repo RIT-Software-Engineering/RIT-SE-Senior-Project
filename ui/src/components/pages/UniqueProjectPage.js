@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
@@ -12,6 +12,16 @@ const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 
 const CONTENT_HEIGHT = 250;
+
+// Helper function to format comma-separated name lists with proper spacing
+const formatNameList = (nameString) => {
+  if (!nameString) return "";
+  return nameString
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name)
+    .join(", ");
+};
 
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
@@ -64,7 +74,9 @@ function UniqueProjectPage({ projectData }) {
         <ErrorPage />
       ) : (
         <div ref={nodeRef}>
-          <h1 className="ui header">{project.title} </h1>
+          <h1 className="ui header">
+            {project.display_name || project.title}{" "}
+          </h1>
           {project?.outstanding === 1 && (
             <Icon
               name="trophy"
@@ -86,13 +98,9 @@ function UniqueProjectPage({ projectData }) {
             project.url_slug !== null && project?.url_slug !== "" && (
               <div>
                 <Icon name="linkify" />{" "}
-                <a
-                  href={`${baseProjectURL}${project.url_slug}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Link to={`/projects/${project.url_slug}`}>
                   {`${baseProjectURL}${project.url_slug}`}
-                </a>
+                </Link>
               </div>
             )
           }
@@ -180,14 +188,22 @@ function UniqueProjectPage({ projectData }) {
                 <p>
                   {project?.start_date} - {project?.end_date}
                 </p>
+                {project?.team_name &&
+                  project?.team_name !== "null" &&
+                  project?.team_name.trim() !== "" && (
+                    <>
+                      <div className="ui small header">Team Name</div>
+                      <p>{project?.team_name}</p>
+                    </>
+                  )}
                 <div className="ui small header">Students</div>
-                <p>{project?.members}</p>
+                <p>{formatNameList(project?.members)}</p>
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
                 <p>{project?.sponsor}</p>
                 <div className="ui small header">Faculty Coach</div>
-                <p>{project?.coach}</p>
+                <p>{formatNameList(project?.coach)}</p>
               </div>
             </div>
           </div>
