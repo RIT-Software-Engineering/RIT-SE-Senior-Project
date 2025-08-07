@@ -8,6 +8,7 @@
 - [Resetting Data](#resetting-data)
 - [User Preferences](#user-preferences)
 - [Last Login](#last-login)
+- [User Profile Circle](#user-profile-circle)
 
 ## User Sign In
 

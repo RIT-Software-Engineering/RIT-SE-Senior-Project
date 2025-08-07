@@ -8,7 +8,6 @@ Project Sponsors are external industry representatives responsible for the propo
 
 - [Adding](#adding)
 - [Editing](#editing)
-- [Notes](#notes)
 - [Visibility](#visibility)
 
 ## Adding

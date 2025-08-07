@@ -6,8 +6,7 @@ In the portal, announcements and break periods can be made by [admins](authentic
 
 ## Covers
 
-- [Visibility](#visibility)
-- [Creating](#creating)
+- [Creating and Visibility](#creating-and-visibility)
 - [Editing](#editing)
 - [Deactivating](#deactivating)
 - [Breaks](#breaks)
