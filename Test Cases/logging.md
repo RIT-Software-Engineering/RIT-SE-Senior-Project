@@ -65,3 +65,26 @@
 3. Similarly to [time logs](#time-logs), these submissions also have visibility locks on their submission details. Students can only see the details of their own submissions and team submissions. Coaches can see all submissions details in their project, and admins can see everything.
 
 ## Sponsor Notes
+
+1. Sponsor notes can be added by [admins](authentication.md#validating-admin-sign-in) and [coaches](authentication.md#validating-coach-sign-in) alike. For this example, we will first start by adding a note from a signed-in coach. As a signed in coach navigate to the Sponsors tab and select a sponsor of your choice and press the view button to bring up the sponsor's details.
+   ![Sponsor Notes 1](images/sponsornotes1.png)
+   ![Sponsor Notes 2](images/sponsornotes2.png)
+
+2. In the summary view of the sponsor add a new recognizable Sponsor Note like “This Sponsor has no projects” by clicking on the “+” button and submitting a new note.
+   ![Sponsor Notes 3](images/sponsornotes3.png)
+
+3. A successful pop-up should appear, and the new note should be visible in the modal (you should not need to close and press view to see the updated note).
+   ![Sponsor Notes 4](images/sponsornotes4.png)
+   ![Sponsor Notes 5](images/sponsornotes5.png)
+
+4. Now sign out of the coach and sign in as an admin. If we go to the same sponsor under the same sponsors tab we should be able to see the new note alongside the respective coach that had made the note.
+   ![Sponsor Notes 6](images/sponsornotes6.png)
+
+5. Additionally if we navigate to the admin tab and edit the sponsor, we should see the same note.
+   ![Sponsor Notes 7](images/sponsornotes7.png)
+
+6. Before closing out of the editing modal add a new note as an admin in the editing sponsor modal and verify that it can be seen in the editing modal.
+   ![Sponsor Notes 8](images/sponsornotes8.png)
+
+7. Now sign back in as a coach and verify that the admin created note can be seen by the coach.
+   ![Sponsor Notes 9](images/sponsornotes9.png)
