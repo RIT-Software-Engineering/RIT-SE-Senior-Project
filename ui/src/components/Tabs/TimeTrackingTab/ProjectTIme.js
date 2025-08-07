@@ -95,6 +95,7 @@ export default function ProjectTime(props) {
                                 <ProfileCircle
                                   name={timeLog.mock_name}
                                   showFullName
+                                  isStudent={false}
                                 />
                                 ({timeLog.mock_id}) as&nbsp;
                                 <ProfileCircle

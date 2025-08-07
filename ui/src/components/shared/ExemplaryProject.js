@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
+import ProfileCircle from "../util/components/ProfileCircle";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
-const formatNameList = (nameString) => {
+const listNames = (nameString) => {
   if (!nameString) return "";
   return nameString
     .split(",")
     .map((name) => name.trim())
-    .filter((name) => name)
-    .join(", ");
+    .filter((name) => name);
 };
 
 /**
@@ -43,6 +43,30 @@ function ExemplaryProject({ project }) {
   };
 
   const awards = makeAwards();
+
+  let generateProfiles = (stringUsers, isStudent = true) => {
+    if (!stringUsers) return [];
+    return (
+      <p
+        style={{
+          display: "flex",
+          gap: "0.5em",
+          width: "100%",
+          flexWrap: "wrap",
+        }}
+      >
+        {listNames(stringUsers).map((user, idx) => (
+          <ProfileCircle
+            key={idx}
+            name={user}
+            showFullName
+            size="tiny"
+            isStudent={isStudent}
+          />
+        ))}
+      </p>
+    );
+  };
 
   return (
     <div>
@@ -98,13 +122,13 @@ function ExemplaryProject({ project }) {
                 </>
               )}
             <div className="ui small header">Students</div>
-            <p>{formatNameList(project.members)}</p>
+            {generateProfiles(project.members, true)}
           </div>
           <div className="column">
             <div className="ui small header">Sponsor</div>
             <p>{project.sponsor}</p>
             <div className="ui small header">Faculty Coach</div>
-            <p>{formatNameList(project.coach)}</p>
+            {generateProfiles(project.coach, false)}
           </div>
         </div>
       </div>
