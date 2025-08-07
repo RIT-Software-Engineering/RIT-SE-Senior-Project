@@ -859,6 +859,38 @@ VALUES
         </div>',
         ''
     ),
+        (
+        2,
+        'Plan Meeting',
+        '',
+        'Schedule a meeting to discuss project progress',
+        'team',
+        DATE(
+            strftime('%Y', DATE('now')) || '-07-09'
+        ),
+        DATE(
+            strftime('%Y', DATE('now')) || '-07-15'
+        ),
+        '<h1>Submit Meeting Plan</h1>
+        <p>
+            Create a plan for your upcoming meeting. Your submission should include:
+            <ul>
+                <li>Meeting Location</li>
+                <li>Meeting Date and Time</li>
+            </ul>
+            <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data" data-dashlane-classification="identity">
+                <div class="required field">
+                    <label for="Meeting_Location">Meeting Location</label>
+                    <input required="" name="Meeting_Location" type="text">
+                </div>
+                <div class="required field">
+                    <label for="Meeting_Date_Time">Meeting Date and Time</label>
+                    <input required="" name="Meeting_Date_Time" type="text">
+                </div>
+            </form>
+        </p>',
+        ''
+    ),
 
     -- coach announcements
     (
