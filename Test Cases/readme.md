@@ -1,4 +1,4 @@
-# TEST CASES And WORKFLOWS
+# TEST CASES
 
 This document outlines general test cases and their workflow procedures to ensure correct application functionality.
 
