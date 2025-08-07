@@ -5,6 +5,7 @@
 ## Covers
 
 - [Types & Colors](#types--colors)
+- [Completing](#completing)
 - [Creating](#creating)
 - [Editing](#editing)
 - [Deactivating](#deactivating)
@@ -12,6 +13,8 @@
 - [Submission Visibility Rules](#submission-visibility-rules)
 
 ## Types & Colors
+
+## Completing
 
 ## Creating
 
