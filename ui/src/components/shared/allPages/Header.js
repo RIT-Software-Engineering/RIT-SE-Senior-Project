@@ -28,8 +28,8 @@ function Header() {
   }, [user]);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
 
-  const signInOutBtnText = signedIn ? `Sign out, ${user.fname}` : "RIT Login";
-  const devSignInBtnText = signedIn ? `DEV Sign out` : "DEV Sign in";
+  const signInOutBtnText = signedIn ? `Sign Out, ${user.fname}` : "RIT Login";
+  const devSignInBtnText = signedIn ? `DEV Sign Out` : "DEV Sign In";
   const signInOut = () => {
     if (signedIn) {
       SecureFetch(config.url.API_LOGOUT)
