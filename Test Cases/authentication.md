@@ -141,3 +141,21 @@ For users' preferences, like dark mode and milestone/gantt/calendar default view
 
 5. Additionally, when signed in as an admin last login times can be found type sorted in the Admin tab. Here you can see all user last login times including admins and coaches (as shown below)
    ![Last Login 4](images/lastlogin4.png)
+
+## User Profile Circle
+
+1. All signed in users have a profile circle tied to their account to help improve visibility within the system. A user’s own profile circle can be visible on the top right corner alongside the “Profile” button.
+   ![Profile Modal](images/profilemodal.png)
+
+2. Admins and coaches have an hollow outline profile circle while students have filled out profile circle
+   ![Profile Circle](images/profilecircle.png)
+
+3. Profile circles of other users can be seen with submitted actions alongside the submission’s time, date, and submitter.
+   ![Profile Circle in Action](images/profilecircleinaction.png)
+   ![Profile Circle in Action 2](images/profilecircleinaction2.png)
+
+4. They will also appear the [time logging](logging.md#time-logs) of projects as an extra layer of user differentiation.
+   ![Profile Circle in Time Logging](images/profilecircleintimelogging.png)
+
+5. Additionally in the students tab profile circles will be attached to every visible student which can be helpful for associating students and their profile circles later in the semester.
+   ![Profile Circle in Action 3](images/profilecircleinaction3.png)
