@@ -8,6 +8,7 @@
 - [Creating](#creating)
 - [Editing](#editing)
 - [Deactivating](#deactivating)
+- [Breaks](#breaks)
 
 ## Visibility
 
@@ -16,3 +17,5 @@
 ## Editing
 
 ## Deactivating
+
+## Breaks
