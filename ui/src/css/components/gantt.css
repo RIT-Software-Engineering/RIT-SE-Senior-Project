@@ -41,6 +41,7 @@
   border: none;
   border-left: var(--border-color) solid 1px;
   border-bottom: var(--border-color) solid 1px;
+  background-color: var(--bg-primary);
   z-index: 99;
 }
 
