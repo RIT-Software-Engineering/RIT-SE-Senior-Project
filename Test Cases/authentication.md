@@ -8,6 +8,7 @@
 - [Resetting Data](#resetting-data)
 - [User Preferences](#user-preferences)
 - [Last Login](#last-login)
+- [User Profile Circle](#user-profile-circle)
 
 ## User Sign In
 
@@ -74,4 +75,88 @@ The page will refresh and load a set of mocked data for the application.
 
 ## User Preferences
 
+For users' preferences, like dark mode and milestone/gantt/calendar default view toggles, switch buttons can be found by pressing the profile button in the top right corner of the webpage, which will bring up a modal with a similar look and information as seen below.
+![Profile in the Top Right](images/profiletopright.png)
+![Profile Modal](images/profilemodal.png)
+
+### Dark Mode
+
+1. Following the same procedure outlined in [above](#user-sign-in), sign in as any user of your choice.
+
+2. Once logged in, click on the “Profile” button in the top right corner of the portal. This will open the user specific modal shown below
+   ![Profile Modal](images/profilemodal.png)
+
+3. In this modal, click on the button labeled “Dark Mode
+
+4. Doing so will toggle the dark mode state of the site and should be visible across all tabs of the site.
+   ![Dark Mode Toggle](images/darkmodetoggle.png)
+
+### Dashboard Views
+
+1. The Milestone, Gantt, and Calendar views represent different perspectives for deliverables and events within a semester. They can be toggled on and off per project, and they can also be set to be shown by default with each login.
+
+2. The toggle switches on the all actions bar within a project are project-specific, and they toggle their respective perspectives accordingly.
+   ![Dashboard Views 1](images/dashboardviews1.png)
+   ![Dashboard Views 2](images/dashboardviews2.png)
+   ![Dashboard Views 3](images/dashboardviews3.png)
+   ![Dashboard Views 4](images/dashboardviews4.png)
+
+3. Default preferences for these views can be found within the profile menu.
+   ![Profile Modal](images/profilemodal.png)
+
+4. When pressing these switches, the toggled-on views should be displayed upon the **next sign-in**. To test this, sign in as any user and toggle any of the switches and sign out, and sign in again. In the following images, all switches (besides dark mode) were toggled, and thus all views are present for the respective user.
+
+### Additional Account Information
+
+1. Additional account information can be added and tied to students to help capture a layer of preferences like pronouns, time availability, currency availability, and other variables that have not been implemented into the system.
+
+2. To add or edit additional account information, sign in as a [student](#validating-student-sign-in), press the profile button in the top right corner. There should be an “additional info” field with an edit button.
+   ![Profile Modal](images/profilemodal.png)
+
+3. Pressing the edit button should display a text box, and here you can add information that could be relevant to any projects. Pressing save will save the changes and they should display automatically before closing the modal.
+   ![Profile Modal Additional Info](images/profilemodaladditionalinfo.png)
+   ![Profile Modal Additional Info 2](images/profilemodaladditionalinfo2.png)
+   ![Profile Modal Additional Info 3](images/profilemodaladditionalinfo3.png)
+
+4. Once the modal is closed verify that this can be seen by signing in as another student, or as the coach, within the same project.
+
+5. Navigate to the “Students” tab and press on the name of the corresponding student whose additional information was just edited.
+
+6. This should bring up a modal of the students details which should also display the correct and updated additional information.
+   ![Student Details Modal](images/studentdetailsmodal.png)
+
 ## Last Login
+
+1. Last Login dates and times are stored for each user whenever they sign into the application. From a signed-in user’s perspective, this information can be found within the profile modal under the last login field.
+   ![Profile Modal](images/profilemodal.png)
+
+2. When signed in as a student, the last login times of other students within the same project should be visible. These times can be seen in both the “My Teams” table within the “Students” tab, or through the individually linked profiles of each user.
+   ![Last Login 1](images/lastlogin1.png)
+   ![Student Details Modal](images/studentdetailsmodal.png)
+
+3. When [coaches](#validating-coach-sign-in) sign in, last login times of all students within their projects can be seen under the “Students” tab. And again individually linked profile times should be displayed correctly.
+   ![Last Login 2](images/lastlogin2.png)
+
+4. From an [admin](#validating-admin-sign-in) sign-in perspective, all student sign-ins can be seen in the “Students” tab.
+   ![Last Login 3](images/lastlogin3.png)
+
+5. Additionally, when signed in as an admin last login times can be found type sorted in the Admin tab. Here you can see all user last login times including admins and coaches (as shown below)
+   ![Last Login 4](images/lastlogin4.png)
+
+## User Profile Circle
+
+1. All signed in users have a profile circle tied to their account to help improve visibility within the system. A user’s own profile circle can be visible on the top right corner alongside the “Profile” button.
+   ![Profile Modal](images/profilemodal.png)
+
+2. Admins and coaches have an hollow outline profile circle while students have filled out profile circle
+   ![Profile Circle](images/profilecircle.png)
+
+3. Profile circles of other users can be seen with submitted actions alongside the submission’s time, date, and submitter.
+   ![Profile Circle in Action](images/profilecircleinaction.png)
+   ![Profile Circle in Action 2](images/profilecircleinaction2.png)
+
+4. They will also appear the [time logging](logging.md#time-logs) of projects as an extra layer of user differentiation.
+   ![Profile Circle in Time Logging](images/profilecircleintimelogging.png)
+
+5. Additionally in the students tab profile circles will be attached to every visible student which can be helpful for associating students and their profile circles later in the semester.
+   ![Profile Circle in Action 3](images/profilecircleinaction3.png)

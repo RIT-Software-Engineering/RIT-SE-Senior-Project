@@ -125,6 +125,42 @@
 
 ### View Only Admins
 
+1. In addition to a normal admin role, there is a view-only admin role, which as the title suggests is a user with administrator read access but no write access (a use case would be like a dept chair and or advisors). One aspect of this is the lack of the Admin tab in the main tab selection.
+   ![View Only Admins](images/viewonlyadmins.png)
+
+2. View-only admins can still [mock users](admin.md#mocking-users) like coaches and students however, when trying to complete specific actions within a semester as a view-only admin, the submit button is replaced with “view only role” text. Verify this for both coach and student-specific actions.
+   ![View Only Admins 2](images/viewonlyadmins2.png)
+
+3. View only admins can see all of the sponsors like regular admins and view their respective projects and information, however they cannot add sponsor notes to a sponsor.
+   ![View Only Admins 3](images/viewonlyadmins3.png)
+
+4. View-only admins can still see all students and coaches, and the [mail-to-all](users.md#mail-to-all) button still functions correctly, but again, no fields or attributes can be edited by the admin.
+   ![View Only Admins 4](images/viewonlyadmins4.png)
+   ![View Only Admins 5](images/viewonlyadmins5.png)
+
 ### View Only Coaches
 
+1. View-only coaches are users with coach-level access but with zero post privileges. By default, a new view-only coach cannot see anything on their dashboard because by default, they have not been assigned to any project however they still have access to all of the tabs that coaches normally do.
+   ![View Only Coaches](images/viewonlycoaches.png)
+
+2. The view only coach can see all of the projects and their sponsors however, they cannot add any notes or modify any attributes to the projects or sponsors.
+
+3. Similarly to a view only admin, a view only coach can access the list of all coaches and the “mail-to-all” functionality still works.
+
+4. Assigning a view-only coach to a project will fill out their empty tabs.
+
+5. Once the view only coach is assigned to a project, sign back in as them and verify that the “Dashboard” tab is now filled in with the correct project details.
+   ![View Only Coaches 2](images/viewonlycoaches2.png)
+
+6. In a project, view only coaches have the same visibility access as normal coaches however if we try to submit an action, regardless of type, the submit button will be blocked by a “View Only Role” text.
+
+7. This also applies to sponsor notes as view only coaches can view preexisting notes but the submission of new notes is blocked
+
 ### View Only Students
+
+1. Similar to view only coaches and view only admins, view only students are users with student levels of access but cannot make changes or write any information.
+
+2. If a view only student is not assigned to any project they can view all candidate projects in the system under the “Projects” tab.
+   ![View Only Students](images/viewonlystudents.png)
+
+3. If a view only student is assigned to a project they are again blocked from making any submissions to any action or time log via a “View Only Role” text.

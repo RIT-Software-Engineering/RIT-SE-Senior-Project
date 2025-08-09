@@ -1,19 +1,19 @@
-# TEST CASES And WORKFLOWS
+# TEST CASES
 
 This document outlines general test cases and their workflow procedures to ensure correct application functionality.
 
 ## Table of Contents
 
-- [Authentication](authentication.md) - User Sign In, Resetting Data, User Preferences, Last Login
-- [User Management](users.md) - Adding Users, Editing Users, Deactivation, View Only Users
+- [Authentication](authentication.md) - User Sign In, Resetting Data, User Preferences, Last Login, User Profile Circle
+- [User Management](users.md) - Adding Users, Mail-to-All, Editing Users, Reassigning Users, Deactivation, View Only Users
 - [Projects](projects.md) - Status, Sponsoring, Editing, Featuring, Member Assignment
-- [Actions](actions.md) - Types & Colors, Creating, Editing, Deactivating, Late Submissions, Submission Visibility Rules
+- [Actions](actions.md) - Types & Colors, Completing, Individual Actions, Team Actions, Coach Actions, Admin Actions, Late Submissions, Creating, Editing, Deactivating
 - [Logging](logging.md) - Time logs, Action Logs, Sponsor Notes
-- [Administrative Tools](admin.md) - Mocking Users, Admin Tab, Semesters, Archive Editor, Content Editor
-- [Sponsors](sponsors.md) - Adding, Editing, Notes, Visibility
-- [Announcements & Breaks](announcements.md) - Visibility, Creating, Editing, Deactivating,
+- [Administrative Tools](admin.md) - Mocking Users, Admin Tab, Creating Semesters, Editing Semesters, Archive Editor, Content Editor
+- [Sponsors](sponsors.md) - Adding, Editing, Visibility
+- [Announcements & Breaks](announcements.md) - Visibility, Creating, Editing, Deactivating, Breaks
 - [AI-Driven Integration](ai.md) - API Key, Student Progress Summarization, AI Coach Feedback Generation
-- [Peer Evaluations](evals.md) - Creation, Student & Coach Processes, Feedback Management
+- [Peer Evaluations](evals.md) - Creation, Student & Coach Processes
 
 ## Terminology
 
@@ -27,7 +27,7 @@ Tabs
 ![Tab Bar](images/tabbar.png)
 
 Accordions
-![Accordions](accordions.png)
+![Accordions](images/accordions.png)
 Like dropdowns but better, accordions are used frequently in this application, and there are plenty of nested accordions that will be referenced from outside to inside.
 
 ActionsActions are essential for the deliverable tracking and collecting process of projects within this portal. They can capture text inputs, files, peer-to-peer evaluations, and they even encapsulate break periods and holidays. Actions that encapsulate deliverables like text inputs and files are separated by user types: Students get team and individual actions, Coaches get coach actions, and Admins get admin actions. These user specific actions are visible to all members of a project however, the ability to submit and the submission itself are limited to the user type. Additionally Coaches can view all submissions with their respective projects, and Admins can view all submissions.Outside of deliverable encapsulation, there are additional types of actions available like:
