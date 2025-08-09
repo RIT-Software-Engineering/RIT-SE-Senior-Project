@@ -9,4 +9,3 @@
 .read table_sql/users.sql
 .read table_sql/sponsor_notes.sql
 .read table_sql/page_html.sql
-.read table_sql/special_dates.sql

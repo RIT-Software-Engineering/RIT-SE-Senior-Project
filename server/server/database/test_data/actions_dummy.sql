@@ -922,4 +922,127 @@ VALUES
             <p>The term review is coming up soon. The review will start a week from now.</p>
         </div>',
         ''
+    ),
+
+    -- breaks
+    (
+        2,
+        "New Years Day",
+        '',
+        "New Years Day",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-01-01",
+        strftime("%Y", DATE("now")) || "-01-01",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Juneteenth",
+        '',
+        "Juneteenth",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-06-19",
+        strftime("%Y", DATE("now")) || "-06-19",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Independence Day",
+        '',
+        "Independence Day",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-07-04",
+        strftime("%Y", DATE("now")) || "-07-04",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Labor Day",
+        '',
+        "Labor Day",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-09-01",
+        strftime("%Y", DATE("now")) || "-09-01",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Thanksgiving Break",
+        '',
+        "Thanksgiving Break",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-11-27",
+        strftime("%Y", DATE("now")) || "-11-30",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Christmas Break",
+        '',
+        "Christmas Break",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-12-20",
+        strftime("%Y", DATE("now", "+1 year")) || "-01-04",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Christmas Eve",
+        '',
+        "Christmas Eve",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-12-24",
+        strftime("%Y", DATE("now")) || "-12-24",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Christmas Day",
+        '',
+        "Christmas Day",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-12-25",
+        strftime("%Y", DATE("now")) || "-12-25",
+        "",
+        ""
+    ),
+    (
+        2,
+        "St. Stephens Day",
+        '',
+        "St. Stephens Day",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-12-26",
+        strftime("%Y", DATE("now")) || "-12-26",
+        "",
+        ""
+    ),
+    (
+        2,
+        "New Years Eve",
+        '',
+        "New Years Eve",
+        "break_period",
+        strftime("%Y", DATE("now")) || "-12-31",
+        strftime("%Y", DATE("now")) || "-12-31",
+        "",
+        ""
+    ),
+    (
+        2,
+        "Short break",
+        '',
+        "Short break",
+        "break_period",
+        strftime("%Y-%m-%d", date("now", "+7 days")),
+        strftime("%Y-%m-%d", date("now", "+12 days")),
+        "",
+        ""
     );

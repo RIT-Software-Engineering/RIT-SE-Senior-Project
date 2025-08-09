@@ -36,7 +36,6 @@ export const config = {
     API_POST_EDIT_ARCHIVE_STUDENT: `${BASE_API_URL}/db/editArchiveStudent`,
     API_POST_CREATE_ARCHIVE_STUDENT: `${BASE_API_URL}/db/createArchiveStudent`,
     API_POST_UPLOAD_FILES_STUDENT: `${BASE_API_URL}/db/uploadFilesStudent`,
-    API_GET_SPECIAL_DATES: `${BASE_API_URL}/db/getSpecialDates`,
 
     // GET - Auth needed
     API_WHO_AM_I: `${BASE_API_URL}/saml/whoami`,
