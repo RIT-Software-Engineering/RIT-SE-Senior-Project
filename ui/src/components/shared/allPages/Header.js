@@ -181,6 +181,17 @@ function Header() {
               Sponsor a Project
             </Button>
           </Menu.Item>
+          <Menu.Item>
+            <Button
+              fluid
+              onClick={() => {
+                setVisible(false);
+                setProfileModalOpen(true);
+              }}
+            >
+              Profile
+            </Button>
+          </Menu.Item>
           {process.env.REACT_APP_NODE_ENV === "production" ? (
             <Menu.Item>
               <Button
