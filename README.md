@@ -34,17 +34,25 @@ _**On first login, new user must change password by using the `passwd` command**
 
 ## Install/Develop locally
 
-Run `install.bat` to get dependencies set up locally
+- ### Using Dev Container
 
-Please install the Prettier extension on your IDE ([VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) ([Intelij](https://plugins.jetbrains.com/plugin/10456-prettier)).
+  - Install [Docker](https://docs.docker.com/get-docker/)
+  - Install [VSCode](https://code.visualstudio.com/) and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  - Open the project in VSCode and select "Reopen in Container" from the command palette (Ctrl+Shift+P)
+  - The project will automatically initialize and all necessary dependencies will be installed. (see `install.ps1` and `devcontainer.json`)
+  - VSCode will also automatically configure the development environment, including setting up the necessary extensions and settings.
+
+- ### Using Local Setup
+  - Run `install.ps1` or `install.bat` or `install.sh` to get dependencies set up locally
+  - You will need to manually install the Prettier extension on your IDE ([for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) ([for IntelliJ](https://plugins.jetbrains.com/plugin/10456-prettier)).
 
 ## Run locally
 
-In order to get things running locally, you'll need to run `npm start` in both the `./server` and `./ui` folders
+In order to get things running locally, you'll need to run `npm start ui` and `npm start server` in the root of the project.
 
-## Deploying to prod
+## Deploying to production
 
-After sshing into the server, cd into either prod or test project. Then run according deploy.sh script
+After sshing into the server, cd into either prod or test project. Then run respective `deploy_{prod|sandbox}.sh` script
 
 ## Technical Information
 
@@ -58,13 +66,18 @@ After sshing into the server, cd into either prod or test project. Then run acco
 
 ## Project File Structure Info
 
-- Root level (not in /nginx, /server, or /ui) contains files important for deployment of code onto the production and sandbox servers
+- Root level (not in `/nginx`, `/server`, or `/ui`) contains files important for deployment of code onto the production and sandbox servers
 
-- /nginx configuration info for the nginx server/reverse proxy
+- `/nginx` configuration info for the nginx server/reverse proxy
 
-- /server files for the backend
+- `/server` files for the backend
 
-- /ui files for the REACT based frontend
+  - Note that test data is stored in `/server/server/database/test_data`
+
+- `/ui` files for the REACT based frontend
+
+- `/test_cases` location of the comprehensive test case workflows which should be verified before deployment to ensure everything is working as expected. (see `test_cases\readme.md`)
 
 ## Backend Documentation
+
 [Swagger Link](https://petstore.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIT-Software-Engineering%2FRIT-SE-Senior-Project%2Frefs%2Fheads%2Fdev%2Fui%2Fpublic%2Fapi-docs%2Fserver_doc.yaml)
