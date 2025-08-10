@@ -43,7 +43,9 @@ _**On first login, new user must change password by using the `passwd` command**
   - VSCode will also automatically configure the development environment, including setting up the necessary extensions and settings.
 
 - ### Using Local Setup
-  - Run `install.ps1` or `install.bat` or `install.sh` to get dependencies set up locally
+  - Run `install.ps1` (recommended) or `install.bat` (legacy) or `install.sh` (on linux) to get dependencies set up locally
+    - `install.ps1` supports performing a clean installation by using the `-CleanInstall` flag. Use this if you encounter a `npm install` failure.
+    - `install.ps1` also supports skipping initializing the server or the ui, using the `-SkipServer` and `-SkipUI` flags.
   - You will need to manually install the Prettier extension on your IDE ([for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) ([for IntelliJ](https://plugins.jetbrains.com/plugin/10456-prettier)).
 
 ## Run locally
