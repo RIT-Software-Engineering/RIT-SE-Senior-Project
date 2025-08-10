@@ -409,25 +409,33 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>{action.action_target}</TableCell>
                   <TableCell>
-                    {action.mock_id ? (
-                      <>
-                        <ProfileCircle
-                          name={action.mock_name ?? ""}
-                          size="tiny"
-                          isStudent={false}
-                          showFullName
-                        />
-                        <span style={{ marginLeft: "25px" }}>as</span>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    <ProfileCircle
-                      name={action.name ?? ""}
-                      size="tiny"
-                      showFullName
-                      style={{ marginTop: "4px" }}
-                    />
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      {action.mock_id ? (
+                        <>
+                          <ProfileCircle
+                            name={action.mock_name ?? ""}
+                            size="tiny"
+                            isStudent={false}
+                            showFullName
+                          />
+                          as
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      <ProfileCircle
+                        name={action.name ?? ""}
+                        size="tiny"
+                        showFullName
+                        style={{ marginLeft: "4px" }}
+                      />
+                    </span>
                   </TableCell>
                   <TableCell>
                     {formatDateTime(action.submission_datetime)}

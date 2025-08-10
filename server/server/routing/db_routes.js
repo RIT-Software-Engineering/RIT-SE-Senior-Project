@@ -2778,7 +2778,7 @@ module.exports = (db) => {
             WHERE action_log.project = ?
             ORDER BY submission_datetime DESC
             LIMIT ? OFFSET ?`;
-          queryParams = [req.user.project, resultLimit, offset];
+          queryParams = [req.user.project, resultLimit, offset * resultLimit];
           getActionLogCount = `SELECT COUNT(*) FROM action_log
               JOIN actions ON actions.action_id = action_log.action_template
               WHERE action_log.project = ?
@@ -2797,7 +2797,7 @@ module.exports = (db) => {
             WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)
             ORDER BY submission_datetime DESC
             LIMIT ? OFFSET ?`;
-          queryParams = [req.user.system_id, resultLimit, offset];
+          queryParams = [req.user.system_id, resultLimit, offset * resultLimit];
           getActionLogCount = `SELECT COUNT(*) FROM action_log WHERE action_log.project IN (SELECT project_id FROM project_coaches WHERE coach_id = ?)`;
           countParams = [req.user.system_id];
           break;
@@ -2812,7 +2812,7 @@ module.exports = (db) => {
                 JOIN projects ON projects.project_id = action_log.project
               ORDER BY submission_datetime DESC
               LIMIT ? OFFSET ?`;
-          queryParams = [resultLimit, offset];
+          queryParams = [resultLimit, offset * resultLimit];
           getActionLogCount = `SELECT COUNT(*) FROM action_log`;
           break;
         default:
