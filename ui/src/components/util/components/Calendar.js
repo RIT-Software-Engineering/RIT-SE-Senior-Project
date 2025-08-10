@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import ToolTip from "../../Tabs/DashboardTab/TimelinesView/Timeline/ToolTip.js";
-import _, { get } from "lodash";
+import _ from "lodash";
 import { Button, Dropdown, Icon, Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
@@ -364,7 +364,9 @@ export function Calendar(props) {
             )}
           </div>
           <div className="action-container">
-            {actionsForDay.length > maxVisibleActions ? (
+            {actionsForDay.filter(
+              (action) => action.action_target !== "break_period",
+            ).length > maxVisibleActions ? (
               <Popup
                 on="click"
                 exclusive={false}
