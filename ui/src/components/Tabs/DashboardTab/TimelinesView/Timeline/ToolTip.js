@@ -158,6 +158,7 @@ export default function ToolTip(props) {
                           display: "flex",
                           alignItems: "center",
                           marginBottom: "0.5rem",
+                          gap: "0.5rem",
                         }}
                       >
                         {longSubmissionTitle ? (
@@ -171,9 +172,7 @@ export default function ToolTip(props) {
                               />
                             )}{" "}
                             {submission.mock_id && (
-                              <span style={{ marginRight: "0.5rem" }}>
-                                {`(${submission.mock_id}) as`}
-                              </span>
+                              <>{`(${submission.mock_id}) as`}</>
                             )}
                             <ProfileCircle
                               name={submission.name}

@@ -63,6 +63,7 @@ export default function ProfileCircle(props) {
         padding: pill ? "5px 5px" : "0",
         borderRadius: pill ? "20px" : "0",
         cursor: clickable ? "pointer" : "default",
+        marginRight: "5px",
         ...style,
       }}
     >
@@ -125,9 +126,13 @@ export default function ProfileCircle(props) {
         <span
           style={{
             marginLeft: "5px",
-            marginRight: "5px",
             fontStyle: "normal",
             textDecoration: textUnderlined ? "underline" : "none",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "120px",
+            display: "inline-block",
           }}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
