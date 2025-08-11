@@ -10,8 +10,8 @@ const DBHandler = require("./server/database/db");
 let db = new DBHandler();
 const Logger = require("./server/logger");
 
-const table_sql_path = "./server/database/table_sql";
-const dummy_data_path = "./server/database/test_data";
+const table_sql_path = path.join(__dirname, "server/database/table_sql");
+const dummy_data_path = path.join(__dirname, "server/database/test_data");
 
 // Define dummy files that should be preserved during reset
 const PRESERVE_FILES = [
@@ -33,19 +33,17 @@ function dropAllTables() {
                 name NOT LIKE 'sqlite_%';
         `;
     db.query(sql)
-      .then((values) => {
-        let delString = "";
-        for (let obj of values) {
-          delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`;
-          Promise.resolve(
-            db.query(delString).catch((err) => {
-              reject(`${obj["name"]} : ${err}`);
-            }),
-          );
-        }
-        setTimeout(() => {
+      .then(async (values) => {
+        try {
+          for (const obj of values) {
+            const dropSql = `DROP TABLE IF EXISTS ${obj["name"]};`;
+            await db.query(dropSql);
+            Logger.log(`Dropped table ${obj["name"]}`);
+          }
           resolve();
-        }, 1000);
+        } catch (error) {
+          reject(error);
+        }
       })
       .catch((err) => {
         reject(err);
@@ -55,53 +53,68 @@ function dropAllTables() {
 
 function createAllTables() {
   return new Promise((resolve, reject) => {
-    fs.readdir(table_sql_path, (err, files) => {
+    fs.readdir(table_sql_path, async (err, files) => {
       if (err) {
         reject(err);
         return;
       }
 
-      files
-        .filter((file) => file.toString() != "create_all_tables.sql")
-        .filter((file) => file.toString().endsWith(".sql"))
-        .forEach((file) => {
-          fs.readFile(path.join(table_sql_path, file), "utf8", (_err, sql) => {
-            Promise.resolve(
-              db.query(sql).catch((err) => {
-                reject(`${file} : ${err}`);
-              }),
+      try {
+        const sqlFiles = files
+          .filter((file) => file.toString() != "create_all_tables.sql")
+          .filter((file) => file.toString().endsWith(".sql"));
+
+        for (const file of sqlFiles) {
+          try {
+            const sql = fs.readFileSync(
+              path.join(table_sql_path, file),
+              "utf8",
             );
-          });
-        });
-      setTimeout(() => {
+            await db.query(sql);
+            Logger.log(`Created table from ${file}`);
+          } catch (error) {
+            reject(`${file} : ${error}`);
+            return;
+          }
+        }
         resolve();
-      }, 1000);
+      } catch (error) {
+        reject(error);
+      }
     });
   });
 }
 
 function populateDummyData() {
   return new Promise((resolve, reject) => {
-    fs.readdir(dummy_data_path, (err, files) => {
+    fs.readdir(dummy_data_path, async (err, files) => {
       if (err) {
         reject(err);
+        return;
       }
 
-      files
-        .filter((file) => file.toString() != "fill_test_data.sql")
-        .filter((file) => file.toString().endsWith(".sql"))
-        .forEach((file) => {
-          fs.readFile(path.join(dummy_data_path, file), "utf8", (_err, sql) => {
-            Promise.resolve(
-              db.query(sql).catch((err) => {
-                reject(`${file} : ${err}`);
-              }),
+      try {
+        const sqlFiles = files
+          .filter((file) => file.toString() != "fill_test_data.sql")
+          .filter((file) => file.toString().endsWith(".sql"));
+
+        for (const file of sqlFiles) {
+          try {
+            const sql = fs.readFileSync(
+              path.join(dummy_data_path, file),
+              "utf8",
             );
-          });
-        });
-      setTimeout(() => {
+            await db.query(sql);
+            Logger.log(`Populated data from ${file}`);
+          } catch (error) {
+            reject(`${file} : ${error}`);
+            return;
+          }
+        }
         resolve();
-      }, 3000);
+      } catch (error) {
+        reject(error);
+      }
     });
   });
 }
@@ -234,8 +247,13 @@ async function redeployDatabase() {
     await clearUploadedFiles(); // Clear uploaded files before populating dummy data
     await populateDummyData();
     Logger.log("Done redeploying database");
+
+    // Close the database connection after reset is complete
+    db.closeDB();
   } catch (error) {
     console.error(error);
+    // Make sure to close database even on error
+    db.closeDB();
     throw error; // Re-throw to ensure the API route can handle the error properly
   }
 }

@@ -44,8 +44,14 @@ module.exports = class DBHandler {
    */
   closeDB() {
     if (this.seniorProjectsDB) {
-      this.seniorProjectsDB.close();
-      Logger.log("Closed database");
+      this.seniorProjectsDB.close((err) => {
+        if (err) {
+          Logger.error("Error closing database:", err);
+        } else {
+          Logger.log("Closed database");
+        }
+      });
+      this.seniorProjectsDB = null;
     }
   }
 
@@ -57,12 +63,17 @@ module.exports = class DBHandler {
    */
   query(sql, values = []) {
     return new Promise((resolve, reject) => {
-      this.openReadWrite();
+      if (!this.seniorProjectsDB) {
+        this.openReadWrite();
+      }
+
       if (this.seniorProjectsDB) {
         this.seniorProjectsDB.all(sql, values, (err, rows) => {
           if (err) reject(err);
           else resolve(rows);
         });
+      } else {
+        reject(new Error("Database connection failed"));
       }
     });
   }
