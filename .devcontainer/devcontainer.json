@@ -1,6 +1,6 @@
 {
   "name": "RITSESP Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:dev-24-bookworm",
 
   "features": {
     "ghcr.io/devcontainers/features/powershell:1": {
@@ -17,11 +17,13 @@
       "version": "latest"
     }
   },
-
-  "postCreateCommand": "./install.ps1 -CleanInstall", // using -CleanInstall fixes the "string spec" issue...
+  "postCreateCommand": "pwsh ./install.ps1 -CleanInstall", // using -CleanInstall fixes the "string spec" issue...
 
   "customizations": {
     "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/usr/bin/pwsh"
+      },
       "extensions": [
         "ms-azuretools.vscode-docker",
         "esbenp.prettier-vscode",
