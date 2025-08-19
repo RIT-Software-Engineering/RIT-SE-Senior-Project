@@ -515,6 +515,38 @@ module.exports = (db) => {
         return next(error);
       }
 
+      // Validate that the work date is not in the future
+      // This prevents users from logging time for dates that haven't occurred yet
+      const workDate = new Date(req.body.date);
+      const currentDate = new Date();
+      const currentDateOnly = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
+      );
+      const workDateOnly = new Date(
+        workDate.getFullYear(),
+        workDate.getMonth(),
+        workDate.getDate(),
+      );
+
+      if (workDateOnly > currentDateOnly) {
+        const error = new Error("Cannot log time for future dates");
+        error.statusCode = 400;
+        return next(error);
+      }
+
+      // Validate that the work date is within the past 14 days (2 weeks)
+      // This maintains the existing business rule about recent time logging
+      const twoWeeksAgo = new Date(currentDateOnly);
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+      if (workDateOnly < twoWeeksAgo) {
+        const error = new Error("Cannot log time for dates older than 14 days");
+        error.statusCode = 400;
+        return next(error);
+      }
+
       let mock_id = req.user.mock ? req.user.mock.system_id : "";
 
       const sql = `INSERT INTO time_log

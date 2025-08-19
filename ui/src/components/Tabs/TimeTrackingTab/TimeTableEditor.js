@@ -82,19 +82,36 @@ export default function TimeTableEditor(props) {
         );
       }
     }
+    // Validate date is not empty, within past 14 days, and not in the future
+    const workDate = new Date(dataToSubmit["date"]);
+    const currentDate = new Date();
+    const currentDateOnly = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    const workDateOnly = new Date(
+      workDate.getFullYear(),
+      workDate.getMonth(),
+      workDate.getDate(),
+    );
+
     if (
       !dataToSubmit["date"] ||
-      differenceInWeeks(new Date(), new Date(dataToSubmit["date"])) >= 2
+      differenceInWeeks(currentDateOnly, workDateOnly) >= 2 ||
+      workDateOnly > currentDateOnly
     ) {
-      if (
-        !error1.includes(
-          "You must enter a Date of Work within the past 14 days.",
-        )
-      ) {
-        setError1([
-          ...error1,
-          "You must enter a Date of Work within the past 14 days.",
-        ]);
+      let errorMessage;
+      if (!dataToSubmit["date"]) {
+        errorMessage = "You must enter a Date of Work.";
+      } else if (workDateOnly > currentDateOnly) {
+        errorMessage = "You cannot log time for future dates.";
+      } else {
+        errorMessage = "You must enter a Date of Work within the past 14 days.";
+      }
+
+      if (!error1.includes(errorMessage)) {
+        setError1([...error1, errorMessage]);
       }
       invalid = true;
     }
@@ -318,6 +335,8 @@ export default function TimeTableEditor(props) {
           );
           break;
         case "date":
+          // Get today's date in YYYY-MM-DD format for max attribute
+          const today = new Date().toISOString().split("T")[0];
           fieldComponents.push(
             <Form.Field key={field.name}>
               <Form.Input
@@ -328,6 +347,7 @@ export default function TimeTableEditor(props) {
                 value={formData[field.name]}
                 onChange={handleChange}
                 disabled={field.disabled}
+                max={today}
               />
             </Form.Field>,
           );
