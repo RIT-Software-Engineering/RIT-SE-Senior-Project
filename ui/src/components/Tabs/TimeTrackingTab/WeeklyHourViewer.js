@@ -14,6 +14,7 @@ import {
 } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 const { isSameWeek, addDays } = require("date-fns");
 
@@ -143,7 +144,15 @@ export default function WeeklyHourViewer(props) {
               <TableBody>
                 {props.students.map((stu) => (
                   <TableRow key={stu.name}>
-                    <TableCell>{stu.name} </TableCell>
+                    <TableCell>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <ProfileCircle
+                          name={stu.name}
+                          showFullName
+                          size="tiny"
+                        />
+                      </div>
+                    </TableCell>
                     {props.weeks !== undefined &&
                       props.weeks.map((week) => {
                         const total = getTotalTime(week, stu.name);
