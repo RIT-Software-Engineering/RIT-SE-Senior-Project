@@ -4268,8 +4268,9 @@ module.exports = (db) => {
           }
 
           let getPeerEvalLogsQuery = `
-          SELECT * 
+          SELECT action_log.*, users.fname, users.lname, users.type
           FROM action_log
+          LEFT JOIN users ON action_log.system_id = users.system_id
           WHERE action_template IN (${actionIds.join(",")})
           ORDER BY submission_datetime DESC
         `;
