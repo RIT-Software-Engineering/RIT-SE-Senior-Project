@@ -2,6 +2,7 @@ import { Button, Modal, Segment } from "semantic-ui-react";
 import React from "react";
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config } from "../../util/functions/constants";
+import ProfileCircle from "../../util/components/ProfileCircle";
 
 export default function SponsorNote(props) {
   let modalButton = <div></div>;
@@ -78,19 +79,35 @@ export default function SponsorNote(props) {
 
   let content = (
     <Segment float={"left"} basic>
-      <h5>
-        {props.note.mock_id ? (
-          <>
-            {props.note.mock_name} as {props.note.fname} {props.note.lname}
-          </>
-        ) : (
-          <>
-            {props.note.fname} {props.note.lname}
-          </>
-        )}
-        , &nbsp;{props.note.email}, &nbsp;
-        {props.note.creation_date}
-      </h5>
+      <div
+        style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
+      >
+        <ProfileCircle
+          user={{
+            fname: props.note.fname,
+            lname: props.note.lname,
+            type: props.note.type,
+          }}
+          isStudent={props.note.type === "student"}
+          size="tiny"
+          style={{ marginRight: "10px" }}
+        />
+        <div>
+          <h5 style={{ margin: "0", lineHeight: "1.2" }}>
+            {props.note.mock_id ? (
+              <>
+                {props.note.mock_name} as {props.note.fname} {props.note.lname}
+              </>
+            ) : (
+              <>
+                {props.note.fname} {props.note.lname}
+              </>
+            )}
+            , &nbsp;{props.note.email}, &nbsp;
+            {props.note.creation_date}
+          </h5>
+        </div>
+      </div>
       {props.note.note_content}
       <br />
     </Segment>

@@ -3136,7 +3136,7 @@ module.exports = (db) => {
     (req, res, next) => {
       let getSponsorNotesQuery = `
             SELECT sponsor_notes.*, 
-                   users.fname, users.lname, users.email,
+                   users.fname, users.lname, users.email, users.type,
                    (SELECT users.fname || ' ' || users.lname FROM users WHERE users.system_id = sponsor_notes.mock_id) AS mock_name
             FROM sponsor_notes
             JOIN users
