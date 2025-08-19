@@ -22,7 +22,7 @@ INSERT INTO page_html (name, html) VALUES
                          <div class="row">
                              <p>
                                  Please reference the&nbsp
-                                 <a href="../doc/ProposalInstructions.pdf" target="_blank">
+                                 <a href="__SERVER_BASE_URL__/doc/ProposalInstructions.pdf" target="_blank">
                                      proposal instructions
                                  </a>&nbsp
                                  as you prepare your project proposal.

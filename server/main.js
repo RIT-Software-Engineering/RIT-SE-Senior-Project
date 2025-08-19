@@ -61,6 +61,9 @@ app.use(
 // Fix for the Content Editor on local development TODO/Important check if there is a better fix and if it breaks in live live
 app.use("/resource", express.static(path.join(__dirname, "resource")));
 
+// Serve static files from doc directory TODO/check if this is needed
+app.use("/doc", express.static(path.join(__dirname, "doc")));
+
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
 const routing = require("./server/routing/index");
 // Attach route handlers

@@ -2564,6 +2564,29 @@ module.exports = (db) => {
     }
     db.query(getHtmlQuery, queryParams)
       .then((html) => {
+        // Replace placeholder with actual server base URL
+        const serverBaseUrl =
+          process.env.NODE_ENV === "production"
+            ? process.env.PRODUCTION_SERVER_URL ||
+              process.env.BASE_URL ||
+              `${req.protocol}://${req.get("host")}`
+            : `${req.protocol}://${req.get("host")}`;
+
+        // Process HTML to replace placeholders
+        if (Array.isArray(html)) {
+          html = html.map((item) => {
+            if (item.html) {
+              item.html = item.html.replace(
+                /__SERVER_BASE_URL__/g,
+                serverBaseUrl,
+              );
+            }
+            return item;
+          });
+        } else if (html && html.html) {
+          html.html = html.html.replace(/__SERVER_BASE_URL__/g, serverBaseUrl);
+        }
+
         res.send(html);
       })
       .catch((err) => {
