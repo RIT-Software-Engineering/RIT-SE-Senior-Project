@@ -110,7 +110,7 @@ export default function SubmissionViewerModal(props) {
             </p>
             <p style={{ display: "flex", alignItems: "center" }}>
               <b>Submitted:</b>
-              {props.action.mock_id ? (
+              {props.action.mock_id && (
                 <span
                   style={{
                     display: "flex",
@@ -120,28 +120,35 @@ export default function SubmissionViewerModal(props) {
                 >
                   <ProfileCircle
                     name={props.action.mock_name}
-                    showFullName
                     isStudent={false}
                     size="tiny"
-                  />{" "}
-                  {`(${props.action.mock_id}) as `}
+                  />
+                  <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+                    {props.action.mock_name} ({props.action.mock_id}) as
+                  </span>
                 </span>
-              ) : (
-                ""
               )}
               <ProfileCircle
                 name={props.action.name}
-                showFullName
                 isStudent={
                   props.action.action_target !== ACTION_TARGETS.admin &&
                   props.action.action_target !== ACTION_TARGETS.coach
                 }
                 size="tiny"
                 style={{ marginLeft: "5px" }}
-              />{" "}
-              {`(${props.action.system_id}) `}
-              {` on ${formatDate(props.action.submission_datetime)}`}
-              {` (Due ${formatDate(due)})`}
+              />
+              {/* Full name and ID */}
+              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+                {props.action.name} ({props.action.system_id})
+              </span>
+              {/* Submission date with spacing */}
+              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+                on {formatDate(props.action.submission_datetime)}
+              </span>
+              {/* Due date with spacing */}
+              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+                (Due {formatDate(due)})
+              </span>
               {late && (
                 <span
                   style={{
