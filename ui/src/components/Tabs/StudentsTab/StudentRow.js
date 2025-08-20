@@ -335,8 +335,22 @@ export default function StudentRow(props) {
         >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
-            <p>
-              <strong>Name:</strong> {props.student.fname} {props.student.lname}
+            <p
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "1em",
+              }}
+            >
+              <strong>Name:</strong>
+              <ProfileCircle
+                name={`${props.student.fname} ${props.student.lname}`}
+                size="tiny"
+                style={{ marginLeft: "0.5em", marginRight: "0.5em" }}
+              />
+              <span>
+                {props.student.fname} {props.student.lname}
+              </span>
             </p>
             <p>
               <strong>Email:</strong> {props.student.email}
