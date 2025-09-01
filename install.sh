@@ -6,4 +6,4 @@ npm install
 cd server
 npm install
 cd ../ui
-npm installl --legacy-peer-deps
+npm install --legacy-peer-deps
