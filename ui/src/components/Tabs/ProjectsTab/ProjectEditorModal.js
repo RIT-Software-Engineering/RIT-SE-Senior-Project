@@ -150,7 +150,7 @@ export default function ProjectEditorModal(props) {
         noSponsMembers.sponsor = sponsor;
         setProjectMembers(noSponsMembers);
       });
-  }, [projectMembers, props.project, props.viewOnly]);
+  }, []);
 
   let submissionModalMessages = {
     SUCCESS: "The project has been updated.",
