@@ -47,7 +47,7 @@ function ExemplaryProject({ project }) {
   let generateProfiles = (stringUsers, isStudent = true) => {
     if (!stringUsers) return [];
     return (
-      <p
+      <div
         style={{
           display: "flex",
           gap: "0.5em",
@@ -64,7 +64,7 @@ function ExemplaryProject({ project }) {
             isStudent={isStudent}
           />
         ))}
-      </p>
+      </div>
     );
   };
 
@@ -110,15 +110,15 @@ function ExemplaryProject({ project }) {
           </div>
           <div className="column">
             <div className="ui small header">Dates</div>
-            <p>
+            <div>
               {project.start_date} - {project.end_date}
-            </p>
+            </div>
             {project?.team_name &&
               project?.team_name !== "null" &&
               project?.team_name.trim() !== "" && (
                 <>
                   <div className="ui small header">Team Name</div>
-                  <p>{project.team_name}</p>
+                  <div>{project.team_name}</div>
                 </>
               )}
             <div className="ui small header">Students</div>
@@ -126,7 +126,7 @@ function ExemplaryProject({ project }) {
           </div>
           <div className="column">
             <div className="ui small header">Sponsor</div>
-            <p>{project.sponsor}</p>
+            <div>{project.sponsor}</div>
             <div className="ui small header">Faculty Coach</div>
             {generateProfiles(project.coach, false)}
           </div>
