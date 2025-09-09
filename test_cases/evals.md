@@ -55,8 +55,9 @@ Peer evaluation is an in-house student-to-student evaluation system. To fully co
 
 1. After all of the [students](#for-students) in a project have completed their work in a peer evaluation, sign in as a coach and press “View Action” on the almost completed peer evaluation.
    ![Peer Evaluation Coach 0](images/peerevalcoach0.png)
-   This should display the coach's perspective of the peer evaluation action and the dates and viewable details of the students' submissions should match what has been inputted by the students and what was already visible in the previous step.
-   ![Peer Evaluation Coach 1](images/peerevalcoach1.png)
+
+This should display the coach's perspective of the peer evaluation action and the dates and viewable details of the students' submissions should match what has been inputted by the students and what was already visible in the previous step.
+![Peer Evaluation Coach 1](images/peerevalcoach1.png)
 
 2. In the “Peer Evaluation Summary” section of the peer evaluation, there should be a section for each student that contains the student’s respective inputs for the peer evaluation, their received rankings/inputs from other students, and a “Coach Summarization + Feedback” field.
    ![Peer Evaluation Coach 2](images/peerevalcoach2.png)
