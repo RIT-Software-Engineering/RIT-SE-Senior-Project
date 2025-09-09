@@ -13,7 +13,7 @@
 1. The AI system in this portal utilizes Google’s Gemini API Studio and it can run within the free tier bounds. To set this up within local development, create [Gemini API](https://aistudio.google.com/apikey) key through Google, the website’s links and setup process is fairly straightforward, and paste the key into the .env file in the server directory.
    ![API Key 1](images/apikey1.png)
 
-2. To quickly test if the API is working, sign in as an admin, navigate to the “Students” tab, press on a student’s name link to view their details, and press the “Generate AI Summerization” button. It should take a second but an AI summarization like below should appear.
+2. To quickly test if the API is working, sign in as an admin, navigate to the “Students” tab, press on a student’s name link to view their details, and press the “Generate AI Summarization” button. It should take a second but an AI summarization like below should appear.
    ![API Key 2](images/apikey2.png)
 
 3. If the API key is empty or invalid the generated AI summarization should output similar to below.
@@ -47,10 +47,11 @@
 
 1. [Peer evaluations](evals.md) have the added functionality of AI generated summarizations for coaches to easily copy and paste into feedback boxes for students to see. If this feature is utilized Students will see AI tooltips so they can know when feedback utilized AI and when it didn’t. For this example we will need at least one student to have completed a [peer evaluation](evals.md#student--coach-processes).
 
-2. If we analyze the results of that peer evaluation by pressing the view action button while signed in as the [coach](authentication.md#validating-coach-sign-in) of the respective project, we can see a “Generate AI Summerization” button at the button within the “Coach Summarization + Feedback” Section. Each student will have this feedback section but since only one student submitted this so far, this section will appear at the bottom of the modal.
+2. If we analyze the results of that peer evaluation by pressing the view action button while signed in as the [coach](authentication.md#validating-coach-sign-in) of the respective project, we can see a “Generate AI Summarization” button at the button within the “Coach Summarization + Feedback” Section. Each student will have this feedback section but since only one student submitted this so far, this section will appear at the bottom of the modal.
    ![AI Coach Feedback Generation 1](images/aicoachfeedback1.png)
+   **Note:** If the "Edit Prompt" and or the "Generate AI Summarization" buttons are not present, the API key may be missing or invalid. Please refer to the [API Key](#api-key) section to set up the API key. If issues persist there may be a problem with the [peer evaluation](evals.md) component itself.
 
-3. Pressing on the “Generate AI Summerization” will bring up an informational warning just in case the coach miss clicked. For now press “ok”.
+3. Pressing on the “Generate AI Summarization” will bring up an informational warning just in case the coach miss clicked. For now press “ok”.
    ![AI Coach Feedback Generation 2](images/aicoachfeedback2.png)
 
 4. After a second or two a summarization should appear alongside a “Copy AI Summary” button which we can use to paste the text into the “Coach Summarization + Feedback” field.
