@@ -515,6 +515,38 @@ module.exports = (db) => {
         return next(error);
       }
 
+      // Validate that the work date is not in the future
+      // This prevents users from logging time for dates that haven't occurred yet
+      const workDate = new Date(req.body.date);
+      const currentDate = new Date();
+      const currentDateOnly = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
+      );
+      const workDateOnly = new Date(
+        workDate.getFullYear(),
+        workDate.getMonth(),
+        workDate.getDate(),
+      );
+
+      if (workDateOnly > currentDateOnly) {
+        const error = new Error("Cannot log time for future dates");
+        error.statusCode = 400;
+        return next(error);
+      }
+
+      // Validate that the work date is within the past 14 days (2 weeks)
+      // This maintains the existing business rule about recent time logging
+      const twoWeeksAgo = new Date(currentDateOnly);
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+      if (workDateOnly < twoWeeksAgo) {
+        const error = new Error("Cannot log time for dates older than 14 days");
+        error.statusCode = 400;
+        return next(error);
+      }
+
       let mock_id = req.user.mock ? req.user.mock.system_id : "";
 
       const sql = `INSERT INTO time_log
@@ -2353,7 +2385,7 @@ module.exports = (db) => {
     (req, res, next) => {
       calculateActiveTimelines(req.user)
         .then((timelines) => {
-          res.send(timelines);
+          res.json(timelines);
         })
         .catch((err) => {
           console.error(err);
@@ -2564,6 +2596,29 @@ module.exports = (db) => {
     }
     db.query(getHtmlQuery, queryParams)
       .then((html) => {
+        // Replace placeholder with actual server base URL
+        const serverBaseUrl =
+          process.env.NODE_ENV === "production"
+            ? process.env.PRODUCTION_SERVER_URL ||
+              process.env.BASE_URL ||
+              `${req.protocol}://${req.get("host")}`
+            : `${req.protocol}://${req.get("host")}`;
+
+        // Process HTML to replace placeholders
+        if (Array.isArray(html)) {
+          html = html.map((item) => {
+            if (item.html) {
+              item.html = item.html.replace(
+                /__SERVER_BASE_URL__/g,
+                serverBaseUrl,
+              );
+            }
+            return item;
+          });
+        } else if (html && html.html) {
+          html.html = html.html.replace(/__SERVER_BASE_URL__/g, serverBaseUrl);
+        }
+
         res.send(html);
       })
       .catch((err) => {
@@ -3081,7 +3136,7 @@ module.exports = (db) => {
     (req, res, next) => {
       let getSponsorNotesQuery = `
             SELECT sponsor_notes.*, 
-                   users.fname, users.lname, users.email,
+                   users.fname, users.lname, users.email, users.type,
                    (SELECT users.fname || ' ' || users.lname FROM users WHERE users.system_id = sponsor_notes.mock_id) AS mock_name
             FROM sponsor_notes
             JOIN users
@@ -4213,8 +4268,9 @@ module.exports = (db) => {
           }
 
           let getPeerEvalLogsQuery = `
-          SELECT * 
+          SELECT action_log.*, users.fname, users.lname, users.type
           FROM action_log
+          LEFT JOIN users ON action_log.system_id = users.system_id
           WHERE action_template IN (${actionIds.join(",")})
           ORDER BY submission_datetime DESC
         `;

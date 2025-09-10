@@ -35,7 +35,11 @@ _**On first login, new user must change password by using the `passwd` command**
 ## Install/Develop locally
 
 - ### Using Dev Container
-
+  - You *may* need to add the following to your hosts file (`C:\Windows\System32\drivers\etc\hosts`):
+    ```
+    150.171.69.10 mcr.microsoft.com
+    150.171.69.10 eastus.data.mcr.microsoft.com
+    ```
   - Install [Docker](https://docs.docker.com/get-docker/)
   - Install [VSCode](https://code.visualstudio.com/) and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
   - Open the project in VSCode and select "Reopen in Container" from the command palette (Ctrl+Shift+P)

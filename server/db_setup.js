@@ -10,8 +10,8 @@ const DBHandler = require("./server/database/db");
 let db = new DBHandler();
 const Logger = require("./server/logger");
 
-const table_sql_path = "./server/database/table_sql";
-const dummy_data_path = "./server/database/test_data";
+const table_sql_path = path.join(__dirname, "server", "database", "table_sql");
+const dummy_data_path = path.join(__dirname, "server", "database", "test_data");
 
 // Define dummy files that should be preserved during reset
 const PRESERVE_FILES = [

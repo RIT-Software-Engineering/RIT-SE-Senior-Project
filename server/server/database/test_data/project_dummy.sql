@@ -182,7 +182,7 @@ VALUES
     ),
     (
         '6_nextwave',
-        'sumbitted',
+        'submitted',
         'NextWave AR-Based Shopping Assistant for Retail Innovation',
         'WaveTech Innovations',
         'John Smith',

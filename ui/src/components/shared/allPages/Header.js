@@ -247,8 +247,8 @@ function Header() {
           src={darkMode ? SELogoDarkMode : SELogoLightMode}
           alt="Department of Software Engineering"
           style={{
-            maxWidth: "450px",
-            height: "auto",
+            height: "35px",
+            width: "auto",
             marginRight: "15px",
             flexShrink: 0,
             cursor: "pointer",

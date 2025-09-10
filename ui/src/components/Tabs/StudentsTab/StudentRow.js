@@ -86,10 +86,18 @@ export default function StudentRow(props) {
       try {
         const form = JSON.parse(rest.form_data);
 
-        if (form.CoachFeedback) {
-          delete form.CoachFeedback;
+        // Handle coach feedback - keep only the selected student's feedback
+        if (form.CoachFeedback && review.type === "coach") {
+          if (form.CoachFeedback.hasOwnProperty(selectedStudentName)) {
+            form.CoachFeedback = {
+              [selectedStudentName]: form.CoachFeedback[selectedStudentName],
+            };
+          } else {
+            delete form.CoachFeedback;
+          }
         }
 
+        // Handle peer feedback
         if (form.Students) {
           if (form.Students.hasOwnProperty(selectedStudentName)) {
             form.Students = {
@@ -106,6 +114,11 @@ export default function StudentRow(props) {
         rest.form_data = "";
       }
     }
+
+    // Preserve reviewer information for AI summary
+    rest.reviewer_name = `${review.fname} ${review.lname}`;
+    rest.reviewer_type = review.type;
+
     return rest;
   };
 
@@ -322,8 +335,22 @@ export default function StudentRow(props) {
         >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
-            <p>
-              <strong>Name:</strong> {props.student.fname} {props.student.lname}
+            <p
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "1em",
+              }}
+            >
+              <strong>Name:</strong>
+              <ProfileCircle
+                name={`${props.student.fname} ${props.student.lname}`}
+                size="tiny"
+                style={{ marginLeft: "0.5em", marginRight: "0.5em" }}
+              />
+              <span>
+                {props.student.fname} {props.student.lname}
+              </span>
             </p>
             <p>
               <strong>Email:</strong> {props.student.email}
@@ -396,9 +423,17 @@ export default function StudentRow(props) {
                       try {
                         const form = JSON.parse(review.form_data);
                         const studentName = `${props.student.fname} ${props.student.lname}`;
-                        studentReview = form.Students
-                          ? form.Students[studentName] || {}
-                          : {};
+
+                        // Check if this is coach feedback or peer feedback
+                        if (review.type === "coach" && form.CoachFeedback) {
+                          // Handle coach feedback structure
+                          studentReview = form.CoachFeedback[studentName] || {};
+                        } else {
+                          // Handle regular peer feedback structure
+                          studentReview = form.Students
+                            ? form.Students[studentName] || {}
+                            : {};
+                        }
                       } catch (e) {
                         console.error("Error parsing review form_data:", e);
                       }
@@ -408,9 +443,27 @@ export default function StudentRow(props) {
                             active={activeIndex === index}
                             index={index}
                             onClick={() => handleAccordionClick(index)}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              padding: "10px",
+                            }}
                           >
                             <Icon name="dropdown" />
-                            Review by {review.system_id} on{" "}
+                            <ProfileCircle
+                              user={{
+                                fname: review.fname,
+                                lname: review.lname,
+                                type: review.type,
+                              }}
+                              isStudent={review.type === "student"}
+                              size="tiny"
+                              style={{
+                                marginLeft: "10px",
+                                marginRight: "10px",
+                              }}
+                            />
+                            Review by {review.fname} {review.lname} on{" "}
                             {formatDateTime(review.submission_datetime)}
                           </Accordion.Title>
                           <Accordion.Content active={activeIndex === index}>
@@ -421,13 +474,64 @@ export default function StudentRow(props) {
                                     <p>
                                       <strong>Feedback:</strong>
                                     </p>
-                                    {Object.entries(studentReview.Feedback).map(
-                                      ([question, answer]) => (
-                                        <p key={question}>
-                                          <strong>{question}:</strong> {answer}
-                                        </p>
-                                      ),
-                                    )}
+                                    {(() => {
+                                      // Handle different feedback data types
+                                      const feedback = studentReview.Feedback;
+
+                                      if (typeof feedback === "string") {
+                                        return (
+                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                            {feedback}
+                                          </p>
+                                        );
+                                      } else if (Array.isArray(feedback)) {
+                                        // If it's an array, join it back to a string
+                                        return (
+                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                            {feedback.join("")}
+                                          </p>
+                                        );
+                                      } else if (
+                                        typeof feedback === "object" &&
+                                        feedback !== null
+                                      ) {
+                                        // If it's an object, check if it's array-like (numeric keys)
+                                        const keys = Object.keys(feedback);
+                                        const isArrayLike =
+                                          keys.every(
+                                            (key) => !isNaN(parseInt(key)),
+                                          ) && keys.length > 0;
+
+                                        if (isArrayLike) {
+                                          // Convert array-like object back to string
+                                          const sortedKeys = keys.sort(
+                                            (a, b) => parseInt(a) - parseInt(b),
+                                          );
+                                          const reconstructedString = sortedKeys
+                                            .map((key) => feedback[key])
+                                            .join("");
+                                          return (
+                                            <p
+                                              style={{ whiteSpace: "pre-wrap" }}
+                                            >
+                                              {reconstructedString}
+                                            </p>
+                                          );
+                                        } else {
+                                          // Regular object with key-value pairs
+                                          return Object.entries(feedback).map(
+                                            ([question, answer]) => (
+                                              <p key={question}>
+                                                <strong>{question}:</strong>{" "}
+                                                {answer}
+                                              </p>
+                                            ),
+                                          );
+                                        }
+                                      } else {
+                                        return <p>No feedback available.</p>;
+                                      }
+                                    })()}
                                   </div>
                                 )}
                                 {studentReview.Ratings && (
@@ -435,12 +539,19 @@ export default function StudentRow(props) {
                                     <p>
                                       <strong>Ratings:</strong>
                                     </p>
-                                    {Object.entries(studentReview.Ratings).map(
-                                      ([question, rating]) => (
-                                        <p key={question}>
-                                          <strong>{question}:</strong> {rating}
-                                        </p>
-                                      ),
+                                    {typeof studentReview.Ratings ===
+                                      "object" &&
+                                    studentReview.Ratings !== null ? (
+                                      Object.entries(studentReview.Ratings).map(
+                                        ([question, rating]) => (
+                                          <p key={question}>
+                                            <strong>{question}:</strong>{" "}
+                                            {rating}
+                                          </p>
+                                        ),
+                                      )
+                                    ) : (
+                                      <p>{studentReview.Ratings}</p>
                                     )}
                                   </div>
                                 )}

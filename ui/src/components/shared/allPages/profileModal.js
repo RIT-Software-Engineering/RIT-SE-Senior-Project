@@ -241,18 +241,18 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               </div>
               {/* User Info */}
               <div style={{ marginBottom: "2em" }}>
-                <p>
+                <div>
                   <strong>Name:</strong> {user.fname} {user.lname}
-                </p>
-                <p>
+                </div>
+                <div>
                   <strong>Username:</strong> {user.user}
-                </p>
-                <p>
+                </div>
+                <div>
                   <strong>Last Login:</strong>{" "}
                   {user.last_login
                     ? new Date(user.last_login).toLocaleString()
                     : "Never Logged In"}
-                </p>
+                </div>
               </div>
 
               {/* Additional Info (Students Only) */}

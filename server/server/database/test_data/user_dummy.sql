@@ -29,6 +29,20 @@ VALUES
         '2025-11-30 09:12:34'
         ),
         (
+        'myeyes',
+        'Light',
+        'Mode',
+        'lma@admin.edu',
+        'admin',
+        NULL,
+        NULL,
+        '',
+        0,
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '2025-01-10 14:05:12',
+        '2025-12-20 16:45:00'
+        ),
+        (
         'cave',
         'View Only',
         'Admin',

@@ -65,7 +65,7 @@ export default function ProjectTime(props) {
                         {/*Headers for the table */}
                         <TableHeaderCell>Name</TableHeaderCell>
                         <TableHeaderCell>Date of Work</TableHeaderCell>
-                        <TableHeaderCell>Time (hours)</TableHeaderCell>
+                        <TableHeaderCell>Time in Hours</TableHeaderCell>
                         <TableHeaderCell>Comment</TableHeaderCell>
                         <TableHeaderCell>Submission Date</TableHeaderCell>
                         <TableHeaderCell>View</TableHeaderCell>

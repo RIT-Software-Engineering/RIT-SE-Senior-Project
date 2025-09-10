@@ -11,6 +11,7 @@ cp "$PSScriptRoot/server/server/config/seniorproject-key.pem.sample" "$PSScriptR
 npm install -g prettier
 
 if ($CleanInstall) {
+    git restore . && git clean -fd
     Write-Host "🧹 Cleaning up all installed packages..."
     Write-Host "This can take a while..."
     Remove-Item -Recurse -Force "$PSScriptRoot/server/node_modules" -ErrorAction SilentlyContinue

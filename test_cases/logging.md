@@ -52,8 +52,11 @@
 1. When signed in as an admin, all time logs across all projects should be visible within the logging tab.  
    ![Admin Time Log visibility 1](images/admintimelogvisibility1.png)
 
-2. When [mock signing](admin.md#mocking-users) in as an admin the page should refresh automatically with and only display the time logs and action submissions of the respective coach’s or student’s projects.
+2. When [mock signing](admin.md#mocking-users) in as an admin the page should refresh automatically with and only display the time logs and action submissions of the respective coach’s or student’s projects. Below is an example of mock signing in as a coach who is currently coaching two in progress projects and as we can see only the time logs of those two projects are visible.
    ![Admin Time Log visibility 2](images/admintimelogvisibility2.png)
+
+This should also apply to mock signing in as a student. Below is an example of mock signing in as a student who is currently in one in progress project and as we can see only the time logs of that one project are visible.
+![Admin Time Log visibility 3](images/admintimelogvisibility3.png)
 
 ## Action Logs
 

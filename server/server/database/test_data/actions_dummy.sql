@@ -960,17 +960,6 @@ VALUES
     ),
     (
         2,
-        "Labor Day",
-        '',
-        "Labor Day",
-        "break_period",
-        strftime("%Y", DATE("now")) || "-09-01",
-        strftime("%Y", DATE("now")) || "-09-01",
-        "",
-        ""
-    ),
-    (
-        2,
         "Thanksgiving Break",
         '',
         "Thanksgiving Break",
