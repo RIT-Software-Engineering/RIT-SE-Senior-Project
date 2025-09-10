@@ -2385,7 +2385,7 @@ module.exports = (db) => {
     (req, res, next) => {
       calculateActiveTimelines(req.user)
         .then((timelines) => {
-          res.send(timelines);
+          res.json(timelines);
         })
         .catch((err) => {
           console.error(err);
