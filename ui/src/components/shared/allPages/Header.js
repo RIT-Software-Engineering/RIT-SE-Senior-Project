@@ -7,10 +7,11 @@ import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import SELogoLightMode from "../../../Assets/gccis_light.png";
-import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import branding from "../../../branding.json"
+// import SELogoLightMode from "../../../Assets/gccis_light.png";
+// import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 
 function Header() {
   const history = useHistory();
@@ -226,7 +227,7 @@ function Header() {
   return (
     <div id="header">
       <div id="navbar">
-        <span>Software Engineering Senior Project</span>
+        <span>{branding.appName}</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
@@ -244,8 +245,8 @@ function Header() {
         }}
       >
         <img
-          src={darkMode ? SELogoDarkMode : SELogoLightMode}
-          alt="Department of Software Engineering"
+          src={darkMode ? branding.logoDark : branding.logoLight}
+          alt= {branding.orgName}
           style={{
             height: "35px",
             width: "auto",
