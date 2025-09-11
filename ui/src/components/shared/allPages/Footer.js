@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../util/functions/UserContext";
-import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import uiConfig from "../../../config/uiConfig";
 import "./../../../css/containers/footer.css";
 
 function Footer() {
@@ -12,6 +12,10 @@ function Footer() {
     setSignedIn(Object.keys(user).length !== 0);
   }, [user]);
 
+  const footerConfig = signedIn
+    ? uiConfig.footers.loggedIn
+    : uiConfig.footers.loggedOut;
+
   if (signedIn) {
     return (
       <div id="footer">
@@ -19,18 +23,17 @@ function Footer() {
           <div className="two column row">
             <div className="column">
               <h5 id="copyright">
-                <i className="ui icon copyright"></i> Rochester Institute of
-                Technology, All Rights Reserved
+                <i className="ui icon copyright"></i> {footerConfig.copyright}
               </h5>
             </div>
             <div id="version" className="column">
               <h5>
                 <a
-                  href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
+                  href={footerConfig.githubLink}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  v1.8.1
+                  v{footerConfig.version}
                 </a>
               </h5>
             </div>
@@ -45,8 +48,8 @@ function Footer() {
           <div className="three column row">
             <div className="column">
               <img
-                src={collegeLogo}
-                alt="Golisano College of Computing & Information Sciences"
+                src={uiConfig.logoPath}
+                alt="Logo"
                 style={{
                   maxWidth: "200px",
                   width: "100%",
@@ -56,18 +59,17 @@ function Footer() {
             </div>
             <div className="column">
               <h4>
-                Department of Software Engineering
-                <br />
-                Golisano Building 70, Room 1690
-                <br />
-                134 Lomb Memorial Drive
-                <br />
-                Rochester, NY 14623-5608
+                {footerConfig.address.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
               </h4>
             </div>
             <div className="column">
               <h4>
-                <i className="ui mail icon"></i> seniorprojects@se.rit.edu
+                <i className="ui mail icon"></i> {footerConfig.email}
               </h4>
             </div>
           </div>
@@ -81,8 +83,7 @@ function Footer() {
             }}
           >
             <h5>
-              <i className="ui icon copyright"></i> Rochester Institute of
-              Technology, All Rights Reserved
+              <i className="ui icon copyright"></i> {footerConfig.copyright}
             </h5>
           </div>
         </div>
