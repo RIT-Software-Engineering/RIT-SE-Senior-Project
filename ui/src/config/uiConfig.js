@@ -1,4 +1,10 @@
 const uiConfig = {
+   app: {
+    name: "Senior Project Portal",
+    orgName: "Department of Software Engineering",
+    logoLight: "/assets/logo-light.png",
+    logoDark: "/assets/logo-dark.png",
+  },
   logoPath:
     "/assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg",
   footers: {

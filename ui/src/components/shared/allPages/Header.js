@@ -9,7 +9,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
-import branding from "../../../branding.json"
+import uiConfig from "../../../config/uiConfig";
 // import SELogoLightMode from "../../../Assets/gccis_light.png";
 // import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 
@@ -227,7 +227,7 @@ function Header() {
   return (
     <div id="header">
       <div id="navbar">
-        <span>{branding.appName}</span>
+        <span>{uiConfig.app.name}</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
@@ -245,8 +245,8 @@ function Header() {
         }}
       >
         <img
-          src={darkMode ? branding.logoDark : branding.logoLight}
-          alt= {branding.orgName}
+          src={darkMode ? uiConfig.app.logoDark : uiConfig.app.logoLight}
+          alt= {uiConfig.app.orgName}
           style={{
             height: "35px",
             width: "auto",
