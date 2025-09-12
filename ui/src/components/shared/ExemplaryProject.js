@@ -72,10 +72,10 @@ function ExemplaryProject({ project }) {
     <div>
       {" "}
       {/* Div containing all project information */}
-      <div
+      <button
         className="ui segment stackable padded grid"
         onClick={() => toggleInitialModalOpen()}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer",  textAlign: "start", lineHeight: "1.4285em" }}
       >
         <div className="two column row" style={{ display: "flex" }}>
           <div className="column">
@@ -131,7 +131,7 @@ function ExemplaryProject({ project }) {
             {generateProfiles(project.coach, false)}
           </div>
         </div>
-      </div>
+      </button>
       {/* Modal with expanded information */}
       <Modal
         closeOnDimmerClick={false}
