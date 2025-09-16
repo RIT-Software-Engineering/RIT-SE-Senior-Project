@@ -1,5 +1,9 @@
-INSERT INTO page_html (name, html) VALUES
-('homePagePanel', '<div class="row">
+INSERT INTO
+    page_html (name, html)
+VALUES
+    (
+        'homePagePanel',
+        '<div class="row">
                                    <h2>Overview</h2>
                                </div>
                                <div class="row">
@@ -15,8 +19,11 @@ INSERT INTO page_html (name, html) VALUES
                                        inception through an entire software development lifecycle. The end result is a functional software
                                        tool ready for use by the sponsor''s organization.
                                    </p>
-                               </div>'),
-('sponsor', '<div class="row">
+                               </div>'
+    ),
+    (
+        'sponsor',
+        '<div class="row">
                              <h2 class="ui header">Become a Project Sponsor</h2>
                          </div>
                          <div class="row">
@@ -213,4 +220,45 @@ INSERT INTO page_html (name, html) VALUES
                                  </ol>
                </div>
              </div>
-                         </div>');
+                         </div>'
+    ),
+    (
+        'loggedOutFooter',
+        "
+        <div class=' footer '>
+            <div class=' three column row '>
+                <div class=' column '>
+                    <img src='_SERVER_BASE_URL_/assets/Golisano _College of_Computing_and_Information_Sciences_LOGO. jpg' alt=' Logo ' style='max-width:200px; width:100%; height:auto;' />
+                </div>
+                <div class='column'>
+                    <p>
+                        Department of Software Engineering<br/>
+                        Golisano Building 70, Room 1690<br/>
+                        134 Lomb Memorial Drive<br/>
+                        Rochester, NY 14623-5608
+                    </p>
+                </div>
+                 <div class='column'>
+                    <p>
+                        <i class=' ui mail icon '></i> <a href='mailto:seniorprojects@se.rit.edu'>seniorprojects@se.rit.edu</a>
+                    </p
+                </div>
+             </div>
+            <div class='centered row'>
+                 <p>&copy; " || strftime('%Y', 'now') || " Rochester Institute of Technology, All Rights Reserved</p>
+            </div>
+        </div>"
+    ),
+    (
+        'loggedInFooter',
+        "<div class='footer'>
+            <div class='two column row'>
+                <div class='column'>
+                    <p>&copy; " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved</p>
+                </div>
+                <div class='column'>
+                    <p><a href='https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project' target='_blank'>v1.8.1</a></p>
+                </div>
+            </div>
+        </div>"
+    );
