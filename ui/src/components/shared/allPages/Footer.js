@@ -1,95 +1,54 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../util/functions/UserContext";
-import uiConfig from "../../../config/uiConfig";
+import { config } from "../../util/functions/constants";
+import { SecureFetch } from "../../util/functions/secureFetch";
+import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
+import "semantic-ui-css/semantic.min.css"
 
 function Footer() {
   const { user } = useContext(UserContext);
-  const [signedIn, setSignedIn] = useState(false);
+  const [footerHtml, setFooterHtml] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // A user is considered signed in if the user object has a value
-    setSignedIn(Object.keys(user).length !== 0);
-  }, [user]);
-
-  const footerConfig = signedIn
-    ? uiConfig.footers.loggedIn
-    : uiConfig.footers.loggedOut;
-
-  if (signedIn) {
+    
+    const signedIn = user && Object.keys(user).length > 0 && user.user;
+    
+    const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
+    
+    setIsLoading(true);
+    SecureFetch(`${config.url.API_GET_HTML}?name=${footerName}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Network response was not ok");
+        return r.json();
+      })
+      .then((data) => {
+        const html = data?.[0]?.html || "";
+        setFooterHtml(html);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching footer:", error);
+        setFooterHtml("");
+        setIsLoading(false);
+      });
+  }, [user]); 
+  if (isLoading) {
     return (
       <div id="footer">
-        <div id="bringMeDown" className="ui container stackable grid">
-          <div className="two column row">
-            <div className="column">
-              <h5 id="copyright">
-                <i className="ui icon copyright"></i> {footerConfig.copyright}
-              </h5>
-            </div>
-            <div id="version" className="column">
-              <h5>
-                <a
-                  href={footerConfig.githubLink}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  v{footerConfig.version}
-                </a>
-              </h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div id="footer">
-        <div id="bringMeDownSignedIn" className="ui container stackable grid">
-          <div className="three column row">
-            <div className="column">
-              <img
-                src={uiConfig.logoPath}
-                alt="Logo"
-                style={{
-                  maxWidth: "200px",
-                  width: "100%",
-                  height: "auto",
-                }}
-              />
-            </div>
-            <div className="column">
-              <h4>
-                {footerConfig.address.split("\n").map((line, i) => (
-                  <span key={i}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
-              </h4>
-            </div>
-            <div className="column">
-              <h4>
-                <i className="ui mail icon"></i> {footerConfig.email}
-              </h4>
-            </div>
-          </div>
-          <div
-            className="centered row"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            <h5>
-              <i className="ui icon copyright"></i> {footerConfig.copyright}
-            </h5>
-          </div>
+        <div style={{ padding: "10px", textAlign: "center" }}>
+          Loading...
         </div>
       </div>
     );
   }
+
+  return (
+    <div id="footer">
+      {footerHtml ? <InnerHTML html={footerHtml} /> : null}
+    </div>
+  );
 }
 
-export default Footer;
+export default Footer;  

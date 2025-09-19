@@ -2,6 +2,9 @@ const uiConfig = {
    app: {
     name: "Senior Project Portal",
     orgName: "Department of Software Engineering",
+    url: {
+    API_GET_HTML: "/api/getHtml"
+    },
     logoLight: "/assets/logo-light.png",
     logoDark: "/assets/logo-dark.png",
   },
