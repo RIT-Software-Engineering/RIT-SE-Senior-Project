@@ -326,7 +326,14 @@ export default function DevSignInModalContent() {
                 </Dropdown>
               </div>
               <div>
-                <Button color="orange" onClick={signInAsUser}>
+                <Button
+                  color="orange"
+                  onClick={signInAsUser}
+                  style={{
+                    outlineColor: "var(--border-color)",
+                    outlineOffset: "2px",
+                  }}
+                >
                   {" "}
                   <Icon name="sign-in" />
                   Sign In
@@ -342,6 +349,10 @@ export default function DevSignInModalContent() {
                     // Simulate redirect from Shibboleth
                     history.push("/");
                     window.location.reload();
+                  }}
+                  style={{
+                    outlineColor: "var(--border-color)",
+                    outlineOffset: "2px",
                   }}
                 >
                   {" "}
@@ -448,7 +459,7 @@ export default function DevSignInModalContent() {
                   }
                 }}
                 disabled={loading}
-                style={{ marginTop: 12, width: "100%" }}
+                style={{ marginTop: 12, width: "100%", outlineColor: "var(--border-color)", outlineOffset: "2px"}}
                 size="large"
               >
                 {loading ? (
