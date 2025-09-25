@@ -23,6 +23,8 @@ function Footer() {
                 Technology, All Rights Reserved
               </h5>
             </div>
+          </div>
+          <div className="row">
             <div id="version" className="column">
               <h5>
                 <a
