@@ -11,9 +11,8 @@ function Footer() {
   const [footerHtml, setFooterHtml] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const signedIn = user && Object.keys(user).length > 0 && user.user;
   useEffect(() => {
-    
-    const signedIn = user && Object.keys(user).length > 0 && user.user;
     
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
     
@@ -47,6 +46,19 @@ function Footer() {
   return (
     <div id="footer">
       {footerHtml ? <InnerHTML html={footerHtml} /> : null}
+      {signedIn && (
+        <div id="version" className="ui container" style={{ textAlign: "right" }}>
+          <h5>
+            <a
+              href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
+              target="_blank"
+              rel="noreferrer"
+            >
+              v1.8.1
+            </a>
+          </h5>
+        </div>
+      )}
     </div>
   );
 }

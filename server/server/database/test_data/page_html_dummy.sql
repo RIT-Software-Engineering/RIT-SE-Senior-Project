@@ -259,14 +259,6 @@ VALUES
                 " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved
               </h5>
           </div>
-          <div id='version' class='column' style='text-align:right;'>
-              <h5>
-                <a href='https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project'
-                   target='_blank' rel='noreferrer'>
-                  v1.8.1
-                </a>
-              </h5>
-          </div>
       </div>
   </div>"
 );
