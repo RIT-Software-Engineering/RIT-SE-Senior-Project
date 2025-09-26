@@ -10,8 +10,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
 import uiConfig from "../../../config/uiConfig";
-// import SELogoLightMode from "../../../Assets/gccis_light.png";
-// import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 
 function Header() {
   const history = useHistory();
