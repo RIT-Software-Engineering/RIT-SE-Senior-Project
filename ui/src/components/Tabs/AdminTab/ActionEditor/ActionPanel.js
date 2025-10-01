@@ -62,6 +62,14 @@ export default function ActionPanel(props) {
 
   let formFieldArray = [
     {
+      type: "dropdown",
+      label: "Type",
+      placeHolder: "Action Target",
+      name: action_target,
+      options: DROPDOWN_ITEMS.actionTarget,
+      required: true,
+    },
+    {
       type: "input",
       label: "Action Title",
       placeHolder: "Action Title",
@@ -76,14 +84,6 @@ export default function ActionPanel(props) {
       options: createSemesterDropdownOptions(props.semesterData),
       nullValue: SEMESTER_DROPDOWN_NULL_VALUE,
       loading: props.semesterData.loading,
-    },
-    {
-      type: "dropdown",
-      label: "Type",
-      placeHolder: "Action Target",
-      name: action_target,
-      options: DROPDOWN_ITEMS.actionTarget,
-      required: true,
     },
     {
       type: "input",
