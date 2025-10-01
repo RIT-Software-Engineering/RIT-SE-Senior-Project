@@ -123,7 +123,7 @@
 6. To view these changes simply sign out of admin by using the developer sign in menu in the top right or press on the RIT logo in the top left. The UI routing should remain the same and the changes made to the HTML should be visible immediately after refreshing.
    ![Content Editor 6](images/contenteditor6.png)
 
-7. In addtion to the overview and project sponser sections, Content editor includes two other editable sections: "loggedOutFooter" and "loggedInFooter".
+7. In addition to the overview and project sponsor sections, Content Editor includes two other editable sections: "loggedOutFooter" and "loggedInFooter".
    ![Content Editor 7](images/contenteditor7.png)
 
 8. Just like with the Overview and Sponsor sections, you can edit the "loggedOutFooter"
