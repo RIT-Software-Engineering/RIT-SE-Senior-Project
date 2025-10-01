@@ -5,6 +5,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
 import "semantic-ui-css/semantic.min.css"
+import uiConfig from "../../../config/uiConfig";
 
 function Footer() {
   const { user } = useContext(UserContext);
@@ -50,11 +51,11 @@ function Footer() {
         <div id="version" className="ui container" style={{ textAlign: "right" }}>
           <h5>
             <a
-              href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
+              href={uiConfig.footers.loggedIn.githubLink}
               target="_blank"
               rel="noreferrer"
             >
-              v1.8.1
+              v{uiConfig.footers.loggedIn.version}
             </a>
           </h5>
         </div>
