@@ -79,7 +79,7 @@ export default function ActionPanel(props) {
     },
     {
       type: "dropdown",
-      label: "Action Target",
+      label: "Type",
       placeHolder: "Action Target",
       name: action_target,
       options: DROPDOWN_ITEMS.actionTarget,
