@@ -85,6 +85,12 @@ module.exports = (db) => {
     });
   }
 
+  // Debug route to force an error to be logged by the error handler
+  db_router.get("/forceError", (req, res, next) => {
+    // cause some js error
+    nonExistentFunction();
+  });
+
   db_router.get(
     "/selectAllSponsorInfo",
     [UserAuth.isCoachOrAdmin],
