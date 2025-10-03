@@ -18,6 +18,8 @@ import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
 
+//File to edit for the modal
+
 const MODAL_STATUS = {
   SUCCESS: "success",
   FAIL: "fail",
@@ -285,6 +287,11 @@ export default function DatabaseTableEditor(props) {
   let fieldComponents = [];
   for (let i = 0; i < formFieldArray.length; i++) {
     let field = formFieldArray[i];
+
+    // if no action_target/type is chosen yet, hide all fields except the Type dropdown
+    if (!formData.action_target && field.name !== "action_target") {
+    continue;
+  }
 
     if (!field.hidden) {
       switch (field.type) {
