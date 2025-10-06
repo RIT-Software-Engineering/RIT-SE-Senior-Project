@@ -29,6 +29,21 @@ const MODAL_STATUS = {
 
 const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
+const TYPE_HELP = {
+  individual:
+    "Individual Actions — Assigns the same action to each student in the semester group, with completion tracking (red/green) for the team as a whole. Individual students can submit actions again even if they’ve previously done so. Only coaches, admins, and the submitting student can see submitted actions. Other team members can see action status and submission time/date (but not the submitted action).",
+  team:
+    "Team Actions — Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has done so.  Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date..",
+  peer_evaluation:
+    "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
+  coach_announcement:
+    "Coach Announcement — Announcement visible to coaches; no file uploads. Provide title, dates, and message content.",
+  student_announcement:
+    "Student Announcement — Announcement visible to students; no file uploads. Provide title, dates, and message content.",
+  break_period:
+    "Break Period — Write a descriptiona and select the date range.",
+};
+
 export default function DatabaseTableEditor(props) {
   let initialState = props.initialState;
   let submissionModalMessages = props.submissionModalMessages;
@@ -429,17 +444,12 @@ export default function DatabaseTableEditor(props) {
           break;
         // TODO: Add a new type for the forum builder
         case "dropdown":
-          if (
-            (formData.type === "coach" || formData.type === "admin") &&
-            (field.label === "Semester/Project" || field.label === "Semester")
-          ) {
-          } else if (field.name === "semester_group" || field.name === "type") {
-            // required dropdowns; used for user creation.
+          if (field.name === "action_target") {
             fieldComponents.push(
               <Form.Field
                 key={field.name}
                 disabled={field.loading || field.disabled}
-                required
+                required={field.required}
                 error={hasError(field.name)}
               >
                 <label>{field.label}</label>
@@ -450,12 +460,27 @@ export default function DatabaseTableEditor(props) {
                   disabled={field.loading || field.disabled}
                   value={formData[field.name] || field.nullValue}
                   name={field.name}
-                  onChange={handleChange}
+                  onChange={handleChange} 
                 />
-              </Form.Field>,
+                <div style={{ marginTop: 6 }}>
+                  {formData.action_target ? (
+                    <Message info size="tiny">
+                      <Message.Header>About this type</Message.Header>
+                      <p style={{ marginTop: 6 }}>
+                        {TYPE_HELP[formData.action_target] ??
+                          "This action type has no description yet."}
+                      </p>
+                    </Message>
+                  ) : (
+                    <Message size="tiny">
+                      <p>Select a type.</p>
+                    </Message>
+                  )}
+                </div>
+              </Form.Field>
             );
             break;
-          } else if (field.name === "semester_group") {
+  } else if (field.name === "semester_group") {
             // Semester is conditionally required (only for students)
             const isRequired = formData.type === "student";
             fieldComponents.push(
