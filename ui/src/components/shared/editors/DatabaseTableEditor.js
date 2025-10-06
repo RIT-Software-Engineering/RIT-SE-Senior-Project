@@ -31,17 +31,19 @@ const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
 const TYPE_HELP = {
   individual:
-    "Individual Actions — Assigns the same action to each student in the semester group, with completion tracking (red/green) for the team as a whole. Individual students can submit actions again even if they’ve previously done so. Only coaches, admins, and the submitting student can see submitted actions. Other team members can see action status and submission time/date (but not the submitted action).",
+    "Assigns the same action to each student in the semester group, with completion tracking (red/green) for the team as a whole. Individual students can submit actions again even if they’ve previously done so. Only coaches, admins, and the submitting student can see submitted actions. Other team members can see action status and submission time/date (but not the submitted action).",
   team:
-    "Team Actions — Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has done so.  Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date..",
+    "Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has done so.  Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date..",
+  coach:
+    "",
   peer_evaluation:
-    "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
-  coach_announcement:
-    "Coach Announcement — Announcement visible to coaches; no file uploads. Provide title, dates, and message content.",
+  "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
   student_announcement:
-    "Student Announcement — Announcement visible to students; no file uploads. Provide title, dates, and message content.",
+    "Announcement visible to students; no file uploads. Provide title, dates, and message content.",
+  coach_announcement:
+    "Announcement visible to coaches; no file uploads. Provide title, dates, and message content.",
   break_period:
-    "Break Period — Write a descriptiona and select the date range.",
+    "Write a description and select the date range.",
 };
 
 export default function DatabaseTableEditor(props) {
@@ -465,8 +467,7 @@ export default function DatabaseTableEditor(props) {
                 <div style={{ marginTop: 6 }}>
                   {formData.action_target ? (
                     <Message info size="tiny">
-                      <Message.Header>About this type</Message.Header>
-                      <p style={{ marginTop: 6 }}>
+                      <p style={{ marginTop: 6, fontSize: "14px" }}>
                         {TYPE_HELP[formData.action_target] ??
                           "This action type has no description yet."}
                       </p>
