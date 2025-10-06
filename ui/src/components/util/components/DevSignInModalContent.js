@@ -13,6 +13,7 @@ import {
   DropdownDivider,
   DropdownHeader,
 } from "semantic-ui-react";
+import "./../../../css/utils/helpers.css"
 import _ from "lodash";
 
 /**
@@ -328,11 +329,8 @@ export default function DevSignInModalContent() {
               <div>
                 <Button
                   color="orange"
+                  className="offset-outline"
                   onClick={signInAsUser}
-                  style={{
-                    outlineColor: "var(--border-color)",
-                    outlineOffset: "2px",
-                  }}
                 >
                   {" "}
                   <Icon name="sign-in" />
@@ -340,6 +338,7 @@ export default function DevSignInModalContent() {
                 </Button>
                 <Button
                   secondary
+                  className="offset-outline"
                   onClick={() => {
                     // Delete all cookies
                     let cookies = document.cookie.split(";");
@@ -349,10 +348,6 @@ export default function DevSignInModalContent() {
                     // Simulate redirect from Shibboleth
                     history.push("/");
                     window.location.reload();
-                  }}
-                  style={{
-                    outlineColor: "var(--border-color)",
-                    outlineOffset: "2px",
                   }}
                 >
                   {" "}
@@ -399,6 +394,7 @@ export default function DevSignInModalContent() {
 
               <Button
                 color="red"
+                className="offset-outline"
                 onClick={async () => {
                   setLoading(true);
 
@@ -459,7 +455,7 @@ export default function DevSignInModalContent() {
                   }
                 }}
                 disabled={loading}
-                style={{ marginTop: 12, width: "100%", outlineColor: "var(--border-color)", outlineOffset: "2px"}}
+                style={{ marginTop: 12, width: "100%", }}
                 size="large"
               >
                 {loading ? (
