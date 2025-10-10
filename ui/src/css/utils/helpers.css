@@ -151,7 +151,7 @@ a,
   background-color: transparent;
 }
 
-.offset-outline, .button.offset-outline {
+.offset-outline, .button.offset-outline, .button.offset-outline:focus {
   outline-color: var(--border-color);
   outline-offset: 2px;
 }
