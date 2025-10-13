@@ -299,8 +299,49 @@ body.dark-mode .ui.toggle.checkbox label:after {
   background-color: var(--text-primary) !important;
 }
 
-.ui.modal {
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-  padding: 12px;
+/* ===== MODAL SCROLLING FIX ===== */
+.ui.modal > .scrolling.content {
+  max-height: calc(80vh - 10em);
+  overflow-y: auto !important;
+}
+
+body.dark-mode .ui.modal > .scrolling.content {
+  max-height: calc(80vh - 10em);
+  overflow-y: auto !important;
+}
+
+/* ===== FORCE CENTER ALL MODALS ===== */
+/* Higher specificity to override everything */
+body .ui.dimmer > .ui.modal,
+body.dark-mode .ui.dimmer > .ui.modal {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* Ensure modal content starts at top */
+.ui.modal > .content {
+  scroll-behavior: smooth;
+}
+
+/* Reset scroll position */
+.ui.modal.transition.visible > .content {
+  scroll-behavior: auto;
+}
+
+/* Fix for sticky modals like ActionModal */
+.ui.modal.sticky {
+  position: fixed !important;
+  top: 5vh !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: 90vh !important;
+}
+
+.ui.modal.sticky > .content {
+  max-height: calc(90vh - 200px) !important;
+  overflow-y: auto !important;
 }
