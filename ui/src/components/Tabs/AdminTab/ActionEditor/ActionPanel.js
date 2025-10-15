@@ -111,7 +111,7 @@ export default function ActionPanel(props) {
     // Or add a taggle to switch bettwen the html and the form builder
     {
       type: "textArea",
-      label: "Page Html",
+      label: "Html",
       placeHolder: "Page Html",
       name: "page_html",
       required: true,
