@@ -119,14 +119,14 @@ export default function ActionPanel(props) {
     {
       type: "input",
       label:
-        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt) (Not used for announcements)",
+        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
       placeHolder: "CSV format please - No filetypes = no files uploaded",
       name: file_types,
     },
     {
       type: "input",
       label:
-        "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB) (Not used for announcements)",
+        "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB)",
       placeHolder: "File Upload Limit",
       name: file_size,
     },
