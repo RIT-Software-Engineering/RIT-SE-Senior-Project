@@ -21,7 +21,7 @@ export default function SubmissionViewerModal(props) {
       onClose={onClose}
       closeOnDimmerClick={false}
       closeOnEscape={false}
-      size="large" // Use "large" for peer evaluations
+      size="large" // for peer evaluations
       trigger={trigger && <div>{trigger}</div>}
       title={`Submission for ${action.action_title} (${target[0]?.toUpperCase()}${target?.substring(1)} Action)`}
       actions={[
