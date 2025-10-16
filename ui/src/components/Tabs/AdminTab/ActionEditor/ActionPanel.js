@@ -9,7 +9,7 @@ import {
   humanFileSize,
   SEMESTER_DROPDOWN_NULL_VALUE,
 } from "../../../util/functions/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -22,7 +22,7 @@ export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
 
-  let initialState = {
+  let initialState = useMemo(() => ({
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
     semester: props.actionData?.semester || "",
@@ -36,7 +36,7 @@ export default function ActionPanel(props) {
     file_size: props.actionData?.file_size
       ? humanFileSize(props.actionData?.file_size, false, 0)
       : "",
-  };
+  }), [props.actionData]);
 
   let submissionModalMessages = props.create
     ? {
@@ -55,6 +55,8 @@ export default function ActionPanel(props) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
+
+  const [selectedType, setSelectedType] = useState(initialState.action_target || "");
 
   let submitRoute = props.create
     ? config.url.API_POST_CREATE_ACTION
@@ -99,14 +101,36 @@ export default function ActionPanel(props) {
       placeHolder: "Start Date",
       name: "start_date",
       required: true,
-    },
+    }, 
+  ];
+
+    if (
+    selectedType === ACTION_TARGETS.coach_announcement ||
+    selectedType === ACTION_TARGETS.student_announcement ||
+    selectedType === ACTION_TARGETS.break_period
+) {
+  // Announcement or break period — only End Date
+  formFieldArray.push({
+    type: "date",
+    label: "Announcement End Date",
+    placeHolder: "End Date",
+    name: "due_date",
+    required: true,
+  });
+} else {
+  // Other actions — Due Dates
+  formFieldArray.push(
     {
       type: "date",
-      label: "Due Date / Announcement End Date",
-      placeHolder: "Due Date / Announcement End Date",
+      label: "Due Date",
+      placeHolder: "Due Date",
       name: "due_date",
       required: true,
-    },
+    }
+  );
+}
+// Now continue adding the rest of the fields INSIDE the array
+formFieldArray.push(
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
     // Or add a taggle to switch bettwen the html and the form builder
     {
@@ -136,7 +160,7 @@ export default function ActionPanel(props) {
       placeHolder: "Active",
       name: "date_deleted",
     },
-  ];
+);
 
   // validation for the action form
   const validateForm = (data) => {
@@ -234,6 +258,9 @@ export default function ActionPanel(props) {
 
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
+    if (name === action_target) {
+      setSelectedType(value);
+    }
     if (
       name === action_target &&
       [
@@ -257,7 +284,7 @@ export default function ActionPanel(props) {
       return formData;
     }
   };
-
+  
   if (props.isOpenCallback) {
     return (
       <DatabaseTableEditor
