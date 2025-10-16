@@ -9,35 +9,34 @@ import {
   humanFileSize,
   SEMESTER_DROPDOWN_NULL_VALUE,
 } from "../../../util/functions/utils";
-import { useState } from "react";
-
+import { useMemo, useState } from "react";
 const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
 const file_size = "file_size";
 const page_html = "page_html";
 const start_date = "start_date";
-
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
-
-  let initialState = {
-    action_id: props.actionData?.action_id || "",
-    action_title: props.actionData?.action_title || "",
-    semester: props.actionData?.semester || "",
-    action_target: props.actionData?.action_target || "",
-    date_deleted: props.actionData?.date_deleted || "",
-    short_desc: props.actionData?.short_desc || "",
-    start_date: props.actionData?.start_date || "",
-    due_date: props.actionData?.due_date || "",
-    page_html: props.actionData?.page_html || "",
-    file_types: props.actionData?.file_types || "",
-    file_size: props.actionData?.file_size
-      ? humanFileSize(props.actionData?.file_size, false, 0)
-      : "",
-  };
-
+  let initialState = useMemo(
+    () => ({
+      action_id: props.actionData?.action_id || "",
+      action_title: props.actionData?.action_title || "",
+      semester: props.actionData?.semester || "",
+      action_target: props.actionData?.action_target || "",
+      date_deleted: props.actionData?.date_deleted || "",
+      short_desc: props.actionData?.short_desc || "",
+      start_date: props.actionData?.start_date || "",
+      due_date: props.actionData?.due_date || "",
+      page_html: props.actionData?.page_html || "",
+      file_types: props.actionData?.file_types || "",
+      file_size: props.actionData?.file_size
+        ? humanFileSize(props.actionData?.file_size, false, 0)
+        : "",
+    }),
+    [props.actionData],
+  );
   let submissionModalMessages = props.create
     ? {
         SUCCESS: "The action has been created.",
@@ -50,17 +49,25 @@ export default function ActionPanel(props) {
         SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
-
   for (let i = 0; i < props.semesterData.length; i++) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
-
+  const [selectedType, setSelectedType] = useState(
+    initialState.action_target || "",
+  );
   let submitRoute = props.create
     ? config.url.API_POST_CREATE_ACTION
     : config.url.API_POST_EDIT_ACTION;
-
   let formFieldArray = [
+    {
+      type: "dropdown",
+      label: "Type",
+      placeHolder: "Action Target",
+      name: action_target,
+      options: DROPDOWN_ITEMS.actionTarget,
+      required: true,
+    },
     {
       type: "input",
       label: "Action Title",
@@ -78,17 +85,9 @@ export default function ActionPanel(props) {
       loading: props.semesterData.loading,
     },
     {
-      type: "dropdown",
-      label: "Action Target",
-      placeHolder: "Action Target",
-      name: action_target,
-      options: DROPDOWN_ITEMS.actionTarget,
-      required: true,
-    },
-    {
       type: "input",
       label:
-        "Short Desc (allows HTML styling for bold and italics (<b>,<i>,<strong>,<em>) (Not used for announcements);",
+        "Short Description (allows HTML styling for bold and italics (<b>,<i>,<strong>,<em>)",
       placeHolder: "Short Desc",
       name: short_desc,
       required: true,
@@ -100,18 +99,37 @@ export default function ActionPanel(props) {
       name: "start_date",
       required: true,
     },
-    {
+  ];
+  if (
+    selectedType === ACTION_TARGETS.coach_announcement ||
+    selectedType === ACTION_TARGETS.student_announcement ||
+    selectedType === ACTION_TARGETS.break_period
+  ) {
+    // Announcement or break period — only End Date
+    formFieldArray.push({
       type: "date",
-      label: "Due Date / Announcement End Date",
-      placeHolder: "Due Date / Announcement End Date",
+      label: "Announcement End Date",
+      placeHolder: "End Date",
       name: "due_date",
       required: true,
-    },
+    });
+  } else {
+    // Other actions — Due Dates
+    formFieldArray.push({
+      type: "date",
+      label: "Due Date",
+      placeHolder: "Due Date",
+      name: "due_date",
+      required: true,
+    });
+  }
+  // Now continue adding the rest of the fields INSIDE the array
+  formFieldArray.push(
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
     // Or add a taggle to switch bettwen the html and the form builder
     {
       type: "textArea",
-      label: "Page Html",
+      label: "Html",
       placeHolder: "Page Html",
       name: "page_html",
       required: true,
@@ -119,14 +137,14 @@ export default function ActionPanel(props) {
     {
       type: "input",
       label:
-        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt) (Not used for announcements)",
+        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
       placeHolder: "CSV format please - No filetypes = no files uploaded",
       name: file_types,
     },
     {
       type: "input",
       label:
-        "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB) (Not used for announcements)",
+        "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB)",
       placeHolder: "File Upload Limit",
       name: file_size,
     },
@@ -136,12 +154,10 @@ export default function ActionPanel(props) {
       placeHolder: "Active",
       name: "date_deleted",
     },
-  ];
-
+  );
   // validation for the action form
   const validateForm = (data) => {
     const errorsFound = [];
-
     // check for action title
     if (!data.action_title?.trim()) {
       errorsFound.push({
@@ -149,7 +165,6 @@ export default function ActionPanel(props) {
         message: "Please provide the Action Title",
       });
     }
-
     // check for action target
     if (!data.action_target?.trim()) {
       errorsFound.push({
@@ -157,7 +172,6 @@ export default function ActionPanel(props) {
         message: "Please select the Action Target",
       });
     }
-
     if (
       data.action_target !== "peer_evaluation" &&
       data.action_target !== "student_announcement" &&
@@ -171,7 +185,6 @@ export default function ActionPanel(props) {
         });
       }
     }
-
     // check for page_html
     if (data.action_target !== "break_period") {
       if (!data.page_html?.trim()) {
@@ -181,7 +194,6 @@ export default function ActionPanel(props) {
         });
       }
     }
-
     // date validations
     if (!data.start_date) {
       errorsFound.push({
@@ -189,14 +201,12 @@ export default function ActionPanel(props) {
         message: "Please provide the Start Date",
       });
     }
-
     if (!data.due_date) {
       errorsFound.push({
         name: "due_date",
         message: "Please provide the Due Date",
       });
     }
-
     if (data.start_date && data.due_date) {
       if (data.start_date > data.due_date) {
         errorsFound.push({
@@ -206,7 +216,6 @@ export default function ActionPanel(props) {
         });
       }
     }
-
     // check whether Active checkbox is checked or not.
     // if (data.date_deleted === false) {
     //   errorsFound.push({
@@ -216,24 +225,23 @@ export default function ActionPanel(props) {
     // }
     return errorsFound; // no errors found
   };
-
   const preSubmit = (data) => {
     const validationErrors = validateForm(data);
     setErrors(validationErrors);
-
     if (validationErrors.length > 0) {
       return null;
     }
-
     setErrors([]);
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
     return data;
   };
-
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
+    if (name === action_target) {
+      setSelectedType(value);
+    }
     if (
       name === action_target &&
       [
@@ -257,7 +265,6 @@ export default function ActionPanel(props) {
       return formData;
     }
   };
-
   if (props.isOpenCallback) {
     return (
       <DatabaseTableEditor
