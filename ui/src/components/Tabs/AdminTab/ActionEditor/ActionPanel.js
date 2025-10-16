@@ -10,6 +10,7 @@ import {
   SEMESTER_DROPDOWN_NULL_VALUE,
 } from "../../../util/functions/utils";
 import { useMemo, useState } from "react";
+import { Message } from "semantic-ui-react";
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -129,6 +130,32 @@ export default function ActionPanel(props) {
     }
   );
 }
+if (selectedType === ACTION_TARGETS.peer_evaluation) {
+  formFieldArray.push({
+    type: "note",
+    name: "peer_eval_note",
+    content: (
+      <Message info>
+        <Message.Header>Peer Evaluation - Read before editing</Message.Header>
+        <p>
+          This page uses the peer-evaluation question set. Keep the intro
+          instructions concise. Do not remove the submission form markup below.
+          If you need to change questions, use the Question Builder instead of
+          editing raw HTML.
+        </p>
+      </Message>
+    ),
+  });
+}
+// if (selectedType === ACTION_TARGETS.peer_evaluation) {
+//   // Peer evaluation — add note about form builder
+//   formFieldArray.push(
+//     {
+//     type: "note",
+//     label: "Note: For peer evaluations, the HTML editor will be replaced with a form builder in the future.",
+//     }
+//   );
+// }
 // Now continue adding the rest of the fields INSIDE the array
 formFieldArray.push(
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider

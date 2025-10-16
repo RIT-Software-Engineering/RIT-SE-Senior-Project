@@ -650,6 +650,17 @@ export default function DatabaseTableEditor(props) {
             </Form.Field>,
           );
           break;
+          case "note": {
+          // render whatever content ActionPanel passes
+          if (field.content) {
+            fieldComponents.push(
+              <Form.Field key={field.name}>
+                {field.content}
+              </Form.Field>
+            );
+          }
+          break;
+        }
         case "activeCheckbox":
           fieldComponents.push(
             <Form.Field key={field["name"]}>
