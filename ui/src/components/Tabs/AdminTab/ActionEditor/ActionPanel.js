@@ -35,6 +35,23 @@ const TYPE_HELP = {
   break_period:
     "Write a description and select the date range.",
 };
+const HTML_HELP = {
+  individual:
+    "",
+  team:
+    "",
+  coach:
+    "",
+  peer_evaluation:
+    "This page uses the peer-evaluation question set. Keep the intro instructions concise. Do not remove the submission form markup below. If you need to change questions, use the Question Builder instead of editing raw HTML.",
+  student_announcement:
+    "",
+  coach_announcement:
+    "",
+  break_period:
+    "",
+};
+
 
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
@@ -160,19 +177,16 @@ export default function ActionPanel(props) {
     }
   );
 }
-if (selectedType === ACTION_TARGETS.peer_evaluation) {
+if (selectedType !== ACTION_TARGETS.break_period) {
   formFieldArray.push({
     type: "note",
     name: "peer_eval_note",
     content: (
       <Message info>
-        <Message.Header>Peer Evaluation - Read before editing</Message.Header>
-        <p>
-          This page uses the peer-evaluation question set. Keep the intro
-          instructions concise. Do not remove the submission form markup below.
-          If you need to change questions, use the Question Builder instead of
-          editing raw HTML.
-        </p>
+        <Message.Header>Read before editing</Message.Header>
+        <p style={{ marginTop: 6 }}>
+              {HTML_HELP[selectedType] ?? "This action type has no description yet."}
+            </p>
       </Message>
     ),
   });
