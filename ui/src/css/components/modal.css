@@ -299,7 +299,7 @@ body.dark-mode .ui.toggle.checkbox label:after {
   background-color: var(--text-primary) !important;
 }
 
-.ui.modal > .scrolling.content {
+/* .ui.modal > .scrolling.content {
   max-height: calc(80vh - 10em);
   overflow-y: auto !important;
 }
@@ -307,7 +307,7 @@ body.dark-mode .ui.toggle.checkbox label:after {
 body.dark-mode .ui.modal > .scrolling.content {
   max-height: calc(80vh - 10em);
   overflow-y: auto !important;
-}
+} */
 
 body .ui.dimmer > .ui.modal,
 body.dark-mode .ui.dimmer > .ui.modal {
@@ -338,7 +338,7 @@ body.dark-mode .ui.dimmer > .ui.modal {
   max-height: 90vh !important;
 }
 
-.ui.modal.sticky > .content {
+/* .ui.modal.sticky > .content {
   max-height: calc(90vh - 200px) !important;
   overflow-y: auto !important;
-}
+} */

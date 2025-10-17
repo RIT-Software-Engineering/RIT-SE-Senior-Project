@@ -26,14 +26,14 @@ export default function SubmissionViewerModalContent({
   const [due, setDue] = useState(null);
   const [late, setLate] = useState(false);
   const [day, setDay] = useState(0);
-  const contentRef = useRef(null);
+  // const contentRef = useRef(null);
 
   // Always scroll to top every time the modal opens
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollTop = 0;
-    }
-  }, [action]);
+  // useEffect(() => {
+  //   if (contentRef.current) {
+  //     contentRef.current.scrollTop = 0;
+  //   }
+  // }, [action]);
 
   // Load submission and due info
   useEffect(() => {
