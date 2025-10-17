@@ -29,23 +29,6 @@ const MODAL_STATUS = {
 
 const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
-const TYPE_HELP = {
-  individual:
-    "Assigns the same action to each student in the semester group, with completion tracking (red/green) for the team as a whole. Individual students can submit actions again even if they’ve previously done so. Only coaches, admins, and the submitting student can see submitted actions. Other team members can see action status and submission time/date (but not the submitted action).",
-  team:
-    "Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has done so.  Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date.",
-  coach:
-    "Assigns the same action to each coah. Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date.",
-  peer_evaluation:
-  "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
-  student_announcement:
-    "Announcement visible to students; no file uploads. Provide title, dates, and message content.",
-  coach_announcement:
-    "Announcement visible to coaches; no file uploads. Provide title, dates, and message content.",
-  break_period:
-    "Write a description and select the date range.",
-};
-
 export default function DatabaseTableEditor(props) {
   let initialState = props.initialState;
   let submissionModalMessages = props.submissionModalMessages;
@@ -464,20 +447,6 @@ export default function DatabaseTableEditor(props) {
                   name={field.name}
                   onChange={handleChange} 
                 />
-                <div style={{ marginTop: 6 }}>
-                  {formData.action_target ? (
-                    <Message info size="tiny">
-                      <p style={{ marginTop: 6, fontSize: "14px" }}>
-                        {TYPE_HELP[formData.action_target] ??
-                          "This action type has no description yet."}
-                      </p>
-                    </Message>
-                  ) : (
-                    <Message size="tiny">
-                      <p>Select a type.</p>
-                    </Message>
-                  )}
-                </div>
               </Form.Field>
             );
             break;
