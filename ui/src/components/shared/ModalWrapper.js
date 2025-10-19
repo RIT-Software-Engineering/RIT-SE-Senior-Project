@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Modal } from "semantic-ui-react";
 
 export default function ModalWrapper({
@@ -14,26 +14,33 @@ export default function ModalWrapper({
   actions,
   children,
 }) {
-  const modalRef = useRef(null);
-
-  // Scroll the modal content to top when it opens
   useEffect(() => {
-    // If you apply scrolling to the Modal.Content, use modalRef.current for content
-    // If you apply scrolling to the Modal component, you'll need a different ref strategy
-    if (open) {
-      // Wait a small delay to ensure the content is rendered and positioned
-      setTimeout(() => {
-        const modalElement = document.querySelector(".ui.modal.visible");
-        // Check if SUI applied the .scrolling class and scroll that element
-        const scrollingContent = modalElement?.querySelector(".content");
+    const body = document.body;
 
-        if (scrollingContent) {
-          scrollingContent.scrollTop = 0;
-        } else if (modalElement) {
-          // Fallback for non-scrolling content
-          modalElement.scrollTop = 0;
+    if (open) {
+      // Backup original overflow
+      const originalOverflow = body.style.overflow;
+
+      // Allow page scrolling
+      body.style.overflow = "auto";
+
+      // Wait for SUI to render modal, then adjust it
+      setTimeout(() => {
+        const modalEl = document.querySelector(".ui.modal.transition.visible");
+        if (modalEl) {
+          modalEl.style.position = "absolute";
+          modalEl.style.top = "40px";
+          modalEl.style.left = "50%";
+          modalEl.style.transform = "translateX(-50%)";
+          modalEl.style.maxHeight = "none";
+          modalEl.style.overflow = "visible";
         }
-      }, 100);
+      }, 60);
+
+      // Restore overflow when modal closes
+      return () => {
+        body.style.overflow = originalOverflow;
+      };
     }
   }, [open]);
 
@@ -45,24 +52,16 @@ export default function ModalWrapper({
       closeOnDimmerClick={closeOnDimmerClick}
       closeOnEscape={closeOnEscape}
       closeIcon={closeIcon}
-      className={`${className} your-custom-modal`} // Add a custom class if needed
+      className={`${className} your-custom-modal`}
       trigger={trigger}
       dimmer="blurring"
       centered={false}
-      // Use Semantic UI's 'scrolling' prop on the modal to apply the vertical scrollbar
-      // to the content section, *excluding* the header and actions.
-      // This is the standard SUI approach for tall modals.
     >
       {title && <Modal.Header>{title}</Modal.Header>}
 
-      {/* Apply the SUI 'scrolling' prop to the Content, and let SUI handle the internal overflow.
-        We'll remove the custom style props for max-height/overflow from the main Modal tag.
-      */}
-      <Modal.Content scrolling>{children}</Modal.Content>
+      <Modal.Content>{children}</Modal.Content>
 
-      {actions && (
-        <Modal.Actions>{actions.map((action) => action)}</Modal.Actions>
-      )}
+      {actions && <Modal.Actions>{actions.map((a) => a)}</Modal.Actions>}
     </Modal>
   );
 }

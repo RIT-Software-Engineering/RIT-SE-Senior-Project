@@ -299,25 +299,6 @@ body.dark-mode .ui.toggle.checkbox label:after {
   background-color: var(--text-primary) !important;
 }
 
-/* .ui.modal > .scrolling.content {
-  max-height: calc(80vh - 10em);
-  overflow-y: auto !important;
-}
-
-body.dark-mode .ui.modal > .scrolling.content {
-  max-height: calc(80vh - 10em);
-  overflow-y: auto !important;
-} */
-
-body .ui.dimmer > .ui.modal,
-body.dark-mode .ui.dimmer > .ui.modal {
-  position: fixed !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-}
-
 /* Ensure modal content starts at top */
 .ui.modal > .content {
   scroll-behavior: smooth;
@@ -338,7 +319,24 @@ body.dark-mode .ui.dimmer > .ui.modal {
   max-height: 90vh !important;
 }
 
-/* .ui.modal.sticky > .content {
-  max-height: calc(90vh - 200px) !important;
-  overflow-y: auto !important;
-} */
+/* General modal positioning for all sizes */
+body .ui.dimmer > .ui.modal,
+body.dark-mode .ui.dimmer > .ui.modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+body .ui.small.modal,
+body.dark-mode .ui.small.modal {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+body .ui.small.modal {
+  max-width: 600px !important;
+}
