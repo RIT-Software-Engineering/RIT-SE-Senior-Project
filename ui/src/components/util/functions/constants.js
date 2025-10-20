@@ -119,6 +119,7 @@ export const config = {
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
+    API_DELETE_ERROR_LOG: `${BASE_API_URL}/db/removeErrorLog`,
     API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
     API_POST_SET_DARK_MODE: `${BASE_API_URL}/db/setDarkMode`,
     API_POST_SET_GANTT_VIEW: `${BASE_API_URL}/db/setGanttView`,

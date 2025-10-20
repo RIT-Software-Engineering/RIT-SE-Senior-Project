@@ -107,6 +107,25 @@ module.exports = (db) => {
       });
   });
 
+  db_router.delete(
+    "/removeErrorLog/:id",
+    [UserAuth.isAdmin],
+    (req, res, next) => {
+      const deleteErrorLogQuery = `
+            DELETE FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?
+        `;
+      db.query(deleteErrorLogQuery, [req.params.id])
+        .then(() => {
+          res.status(200).send();
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
   db_router.get(
     "/selectAllSponsorInfo",
     [UserAuth.isCoachOrAdmin],

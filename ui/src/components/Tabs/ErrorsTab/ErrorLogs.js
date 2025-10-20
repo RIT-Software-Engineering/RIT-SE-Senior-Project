@@ -31,6 +31,25 @@ const ErrorLogs = () => {
       });
   };
 
+  const deleteErrorLog = (errorId) => {
+    if (window.confirm("Are you sure you want to delete this error log?")) {
+      const apiUrl = `${config.url.API_DELETE_ERROR_LOG}/${errorId}`;
+      SecureFetch(apiUrl, { method: "DELETE" })
+        .then((response) => {
+          if (response.ok) {
+            setErrorLogs((prevLogs) =>
+              prevLogs.filter((log) => log.error_log_id !== errorId),
+            );
+          }
+        })
+        .catch((error) => {
+          alert(
+            "An error occurred while deleting the error log: " + error.message,
+          );
+        });
+    }
+  };
+
   useEffect(() => {
     getErrorLogs();
   }, [activePage]);
@@ -54,6 +73,7 @@ const ErrorLogs = () => {
             <TableHeaderCell>User Role</TableHeaderCell>
             <TableHeaderCell>URL</TableHeaderCell>
             <TableHeaderCell>Stack Trace</TableHeaderCell>
+            <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -101,6 +121,24 @@ const ErrorLogs = () => {
                       </button>
                     )}
                   </div>
+                </TableCell>
+                <TableCell>
+                  {(userContext.user.type === USERTYPES.ADMIN ||
+                    userContext.user.type === USERTYPES.DEVELOPER) && (
+                    <button
+                      onClick={() => deleteErrorLog(log.error_log_id)}
+                      style={{
+                        padding: "5px 10px",
+                        backgroundColor: "#db2828",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </TableCell>
               </TableRow>
             ))
