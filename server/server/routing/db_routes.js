@@ -91,6 +91,22 @@ module.exports = (db) => {
     nonExistentFunction();
   });
 
+  // get error logs
+  db_router.get("/getAllErrorLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const getErrorLogsQuery = `
+            SELECT * FROM ${DB_CONFIG.tableNames.error_log} ORDER BY error_log_id ASC
+        `;
+    db.query(getErrorLogsQuery)
+      .then((errorLogs) => {
+        res.send(errorLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
   db_router.get(
     "/selectAllSponsorInfo",
     [UserAuth.isCoachOrAdmin],
