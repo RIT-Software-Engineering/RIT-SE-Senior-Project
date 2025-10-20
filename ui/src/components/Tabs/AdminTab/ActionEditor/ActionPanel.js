@@ -20,21 +20,12 @@ const page_html = "page_html";
 const start_date = "start_date";
 
 const TYPE_HELP = {
-  individual:
-    `
-    Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+  individual:`
+    Assigns the same action to each student in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Give this action a <b>Title</b>.</li>
-    <li>Select the <b>Year/Semester</b> where it should appear. Options include:
-      <ul>
-        <li><b>No Semester</b> – the action will not appear on the dashboard.</li>
-        <li><b>Future Year</b> – appears for upcoming semesters.</li>
-        <li><b>Current Year</b> – appears for active semesters.</li>
-        <li><b>Previous Year</b> – appears for past semesters.</li>
-      </ul>
-    </li>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
@@ -42,17 +33,71 @@ const TYPE_HELP = {
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
   team:
-    "Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has done so.  Only coaches, admins, and the submitting student's team can see submitted actions.  All users can see action status and submission time/date.",
-  coach:
-    "Assigns the same action to each coah. Only coaches, admins, and the submitting student's team can see submitted actions.  All users can see action status and submission time/date.",
-  peer_evaluation:
-    "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
-  student_announcement:
-    "Announcement visible to students; no file uploads. Provide title, dates, and message content.",
-  coach_announcement:
-    "Announcement visible to coaches; no file uploads. Provide title, dates, and message content.",
-  break_period:
-    "Write a description and select the date range.",
+    `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
+    <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+  </ol>
+  <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
+`,
+  coach:`
+  Assigns the same action to each coach in the semester group. Completion (green) requires submission by any coach for the corresponding team. Only coaches, admins can view submitted actions.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard.</li>
+    <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+  </ol>
+  <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
+`,
+  peer_evaluation:`
+  Assigns a peer-evaluation activity. Students complete a structured form; submissions are visible to coaches and admins. All users can see action status and submission time/date.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when the evaluation opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Use the <b>Question Builder</b> to create items (e.g., table ratings, mood ratings, feedback, peer feedback), then copy the generated HTML into the <b>HTML Field</b>.</li>
+  </ol>
+`,
+  student_announcement:`
+  Announcement visible to students. No submissions are required; this is informational only.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>Announcement End Date</b> (when it should stop showing).</li>
+    <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
+  </ol>
+`,
+  coach_announcement:`
+  Announcement visible to coaches. No submissions are required; this is informational only.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>Announcement End Date</b> (when it should stop showing).</li>
+    <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
+  </ol>
+`,
+  break_period:`
+  Blocks out a break period where actions are paused/limited. Displays informational text during the specified range.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Give this entry a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide it on the dashboard.</li>
+    <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
+    <li>Set the <b>Start Date</b> (when the break begins) and the <b>Announcement End Date</b> (when the break messaging should stop showing).</li>
+    <li>Describe the break details (scope, expectations, dates) in the <b>HTML Field</b>.</li>
+  </ol>
+  <b>Important:</b> <u>No file uploads</u> are needed for break periods. The <b>Short Description</b> and file inputs are typically hidden for this type.
+`,
 };
 const HTML_HELP = {
   individual:
