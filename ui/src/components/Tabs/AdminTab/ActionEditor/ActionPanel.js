@@ -21,25 +21,25 @@ const start_date = "start_date";
 
 const TYPE_HELP = {
   individual:`
-    Assigns the same action to each student in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+    Assigns the same action to each student in the semester group. Completion (green) requires submission by every team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
     <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
   team:
-    `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+    `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
     <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
@@ -51,7 +51,7 @@ const TYPE_HELP = {
   <ol>
     <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
@@ -62,7 +62,7 @@ const TYPE_HELP = {
   <b>How to fill this out:</b>
   <ol>
     <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when the evaluation opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Set a <b>Start Date</b> (when the evaluation opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Use the <b>Question Builder</b> to create items (e.g., table ratings, mood ratings, feedback, peer feedback), then copy the generated HTML into the <b>HTML Field</b>.</li>
   </ol>
 `,
