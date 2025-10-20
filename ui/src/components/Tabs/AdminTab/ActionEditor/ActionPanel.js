@@ -21,11 +21,30 @@ const start_date = "start_date";
 
 const TYPE_HELP = {
   individual:
-    "Assigns the same action to each student in the semester group, with completion tracking (red/green) for the team as a whole. Individual students can submit actions again even if they’ve previously done so. Only coaches, admins, and the submitting student can see submitted actions. Other team members can see action status and submission time/date (but not the submitted action).",
+    `
+    Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+  <br><br>
+  <b>How to fill this out:</b>
+  <ol>
+    <li>Give this action a <b>Title</b>.</li>
+    <li>Select the <b>Year/Semester</b> where it should appear. Options include:
+      <ul>
+        <li><b>No Semester</b> – the action will not appear on the dashboard.</li>
+        <li><b>Future Year</b> – appears for upcoming semesters.</li>
+        <li><b>Current Year</b> – appears for active semesters.</li>
+        <li><b>Previous Year</b> – appears for past semesters.</li>
+      </ul>
+    </li>
+    <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
+    <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed).</li>
+    <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+  </ol>
+  <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
+`,
   team:
-    "Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they’ve previously done so or another team member has done so.  Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date.",
+    "Assigns the same action to each team in the semester group.  Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has done so.  Only coaches, admins, and the submitting student's team can see submitted actions.  All users can see action status and submission time/date.",
   coach:
-    "Assigns the same action to each coah. Only coaches, admins, and the submitting student’s team can see submitted actions.  All users can see action status and submission time/date.",
+    "Assigns the same action to each coah. Only coaches, admins, and the submitting student's team can see submitted actions.  All users can see action status and submission time/date.",
   peer_evaluation:
     "Peer Evaluation — Create an action by entering a clear title, selecting semester/year, setting start and due dates, then building questions (table ratings, mood ratings, feedback, peer feedback) with the question builder, and copy the generated HTML into the page when finished.",
   student_announcement:
@@ -37,19 +56,17 @@ const TYPE_HELP = {
 };
 const HTML_HELP = {
   individual:
-    "",
+    "Write a description of the action for individual students. Include any necessary instructions for submission and file <b> uploads. </b>",
   team:
-    "",
+    "Write a description of the action for teams. Include any necessary instructions for submission and file uploads.",
   coach:
-    "",
+    "Write a description of the action for coaches. Include any necessary instructions for submission and file uploads.",
   peer_evaluation:
-    "This page uses the peer-evaluation question set. Keep the intro instructions concise. Do not remove the submission form markup below. If you need to change questions, use the Question Builder instead of editing raw HTML.",
+    "This page uses the peer-evaluation question set. If you need to change questions, use the Question Builder instead of editing raw HTML.",
   student_announcement:
-    "",
+    "Write the announcement content for students; no file uploads are allowed.",
   coach_announcement:
-    "",
-  break_period:
-    "",
+    "Write the announcement content for coaches; no file uploads are allowed.",
 };
 
 
@@ -111,10 +128,15 @@ export default function ActionPanel(props) {
         type: "note",
         name: "type_help",
         content: (
-          <Message info size="tiny">
-            <p style={{ marginTop: 6 }}>
-              {TYPE_HELP[selectedType] ?? "This action type has no description yet."}
-            </p>
+          <Message info>
+            <div
+              style={{ marginTop: 6 }}
+              dangerouslySetInnerHTML={{
+                __html:
+                  TYPE_HELP[selectedType] ??
+                  "This action type has no description yet.",
+              }}
+            />
           </Message>
         ),
       });
@@ -153,18 +175,18 @@ export default function ActionPanel(props) {
     }, 
     );
     if (
-    selectedType === ACTION_TARGETS.coach_announcement ||
-    selectedType === ACTION_TARGETS.student_announcement ||
-    selectedType === ACTION_TARGETS.break_period
-) {
-  // Announcement or break period — only End Date
-  formFieldArray.push({
-    type: "date",
-    label: "Announcement End Date",
-    placeHolder: "End Date",
-    name: "due_date",
-    required: true,
-  });
+      selectedType === ACTION_TARGETS.coach_announcement ||
+      selectedType === ACTION_TARGETS.student_announcement ||
+      selectedType === ACTION_TARGETS.break_period
+    ) {
+      // Announcement or break period — only End Date
+      formFieldArray.push({
+        type: "date",
+        label: "Announcement End Date",
+        placeHolder: "End Date",
+        name: "due_date",
+        required: true,
+      });
 } else {
   // Other actions — Due Dates
   formFieldArray.push(
@@ -177,7 +199,14 @@ export default function ActionPanel(props) {
     }
   );
 }
-if (selectedType !== ACTION_TARGETS.break_period) {
+// I can remove if
+if (selectedType === ACTION_TARGETS.individual ||
+    selectedType === ACTION_TARGETS.team ||
+    selectedType === ACTION_TARGETS.coach ||
+    selectedType === ACTION_TARGETS.coach_announcement ||
+    selectedType === ACTION_TARGETS.student_announcement || 
+    selectedType === ACTION_TARGETS.peer_evaluation
+  ) {
   formFieldArray.push({
     type: "note",
     name: "peer_eval_note",
