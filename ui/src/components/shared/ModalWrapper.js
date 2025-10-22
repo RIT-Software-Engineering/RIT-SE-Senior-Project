@@ -22,8 +22,8 @@ export default function ModalWrapper({
       const originalOverflow = body.style.overflow;
 
       // Allow page scrolling
-      body.style.overflow = "auto";
-
+      // body.style.overflow = "auto";
+      body.style.overflow = "hidden";
       // Wait for SUI to render modal, then adjust it
       setTimeout(() => {
         const modalEl = document.querySelector(".ui.modal.transition.visible");

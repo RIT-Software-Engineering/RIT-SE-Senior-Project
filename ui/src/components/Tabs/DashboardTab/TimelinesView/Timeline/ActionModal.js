@@ -520,7 +520,7 @@ export default function ActionModal(props) {
       <Modal
         closeOnDimmerClick={false}
         closeOnEscape={false}
-        closeIcon // close (makes x)
+        closeIcon={true}
         className={"sticky"}
         onClose={() => {
           setOpen(false);
@@ -599,7 +599,7 @@ export default function ActionModal(props) {
       <Modal
         closeOnDimmerClick={false}
         closeOnEscape={false}
-        closeIcon // close (makes x)
+        closeIcon={true}
         className={"sticky"}
         onClose={() => {
           setOpen(false);

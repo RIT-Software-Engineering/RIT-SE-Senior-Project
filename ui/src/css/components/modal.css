@@ -340,3 +340,8 @@ body.dark-mode .ui.small.modal {
 body .ui.small.modal {
   max-width: 600px !important;
 }
+
+.ui.modal.scrolling {
+  max-height: 80vh;
+  overflow-y: auto;
+}

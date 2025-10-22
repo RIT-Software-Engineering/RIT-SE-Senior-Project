@@ -211,8 +211,9 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       closeOnDimmerClick={false}
+      closeIcon={true}
       size="small"
       centered={false}
       style={{
