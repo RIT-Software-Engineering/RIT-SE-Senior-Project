@@ -94,24 +94,150 @@ const TYPE_HELP = {
     <li>Give this entry a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide it on the dashboard.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set the <b>Start Date</b> (when the break begins) and the <b>Announcement End Date</b> (when the break messaging should stop showing).</li>
-    <li>Describe the break details (scope, expectations, dates) in the <b>HTML Field</b>.</li>
   </ol>
-  <b>Important:</b> <u>No file uploads</u> are needed for break periods. The <b>Short Description</b> and file inputs are typically hidden for this type.
 `,
 };
 const HTML_HELP = {
-  individual:
-    "Write a description of the action for individual students. Include any necessary instructions for submission and file <b> uploads. </b>",
-  team:
-    "Write a description of the action for teams. Include any necessary instructions for submission and file uploads.",
-  coach:
-    "Write a description of the action for coaches. Include any necessary instructions for submission and file uploads.",
-  peer_evaluation:
-    "This page uses the peer-evaluation question set. If you need to change questions, use the Question Builder instead of editing raw HTML.",
-  student_announcement:
-    "Write the announcement content for students; no file uploads are allowed.",
-  coach_announcement:
-    "Write the announcement content for coaches; no file uploads are allowed.",
+    individual: `
+    <h4 style="margin:0 0 .5rem 0;">Individual action: writing instructions & building a simple form</h4>
+    <p>
+      Use this area to describe the action and (optionally) include a small HTML form students will fill out
+      <i>instead of</i> uploading files. If you don't include a form, you must request at least one file upload below.
+    </p>
+    <b>Example form</b> (copy/paste and then edit labels/fields):
+    <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
+&lt;div&gt;
+  &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
+  &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Hold a project kick-off meeting with your sponsor this week or next week.&lt;/li&gt;
+      &lt;li&gt;Gather enough detail to write the project synopsis (due in a future action).&lt;/li&gt;
+      &lt;li&gt;Complete a team social event (off-campus if possible).&lt;/li&gt;
+      &lt;div class="required field"&gt; &lt;!-- Marked 'required' to enforce submission --&gt; 
+        &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
+        &lt;input required name="Social_Event" type="text"&gt;
+      &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+      &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
+        &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
+        &lt;input required name="Team_Name" type="text"&gt;
+      &lt;/div&gt;
+    &lt;/ul&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+    </pre>
+
+    <p style="margin-top:.75rem;">
+      <b>Tip:</b> The <code>required</code> attribute on an input and/or wrapping it in
+      <code> class="required field"</code> makes that question mandatory before submission.
+      Remove either/both if the question should be optional.
+    </p>
+  `,
+  team: `
+    <h4 style="margin:0 0 .5rem 0;">Team action: describing deliverables &amp; collecting team responses</h4>
+    <p>
+      Use this section to describe what the entire team must complete. You can include optional HTML inputs if
+      teams need to record values instead of uploading a document.
+    </p>
+
+        <b>Example form</b> (copy/paste and then edit labels/fields):
+    <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
+&lt;div&gt;
+  &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
+  &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Hold a project kick-off meeting with your sponsor this week or next week.&lt;/li&gt;
+      &lt;li&gt;Gather enough detail to write the project synopsis (due in a future action).&lt;/li&gt;
+      &lt;li&gt;Complete a team social event (off-campus if possible).&lt;/li&gt;
+      &lt;div class="required field"&gt; &lt;!-- Marked 'required' to enforce submission --&gt; 
+        &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
+        &lt;input required name="Social_Event" type="text"&gt;
+      &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+      &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
+        &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
+        &lt;input required name="Team_Name" type="text"&gt;
+      &lt;/div&gt;
+    &lt;/ul&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+    </pre>
+
+    <p><b>Tip:</b> Keep questions short and use textareas for longer team responses.</p>
+  `,
+
+  coach: `
+    <h4 style="margin:0 0 .5rem 0;">Coach action: providing feedback or logging reviews</h4>
+    <p>
+      Use this field for actions coaches must complete. Include HTML inputs if coaches need to submit specific notes instead of or along uploading files.
+    </p>
+    <b>Example form</b>:
+    <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
+&lt;form class="ui form" action="/db/submitAction" method="POST"&gt;
+  &lt;h3&gt;Team Review Summary&lt;/h3&gt;
+  &lt;div class="required field"&gt; &lt;!-- Required overall score --&gt;
+    &lt;label for="Score"&gt;Overall Score (1-5)&lt;/label&gt;
+    &lt;input required name="Score" type="number" min="1" max="5"&gt;
+  &lt;/div&gt;
+  &lt;div&gt; &lt;!-- Optional written feedback --&gt;
+    &lt;label for="Feedback"&gt;Comments / Notes&lt;/label&gt;
+    &lt;textarea name="Feedback"&gt;&lt;/textarea&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+    </pre>
+  `,
+
+  peer_evaluation: `
+    <h4 style="margin:0 0 .5rem 0;">Peer Evaluation</h4>
+    <p>
+      This page uses the peer-evaluation question set. You normally won't edit the HTML directly unless it is necessary.
+      Instead, use the <b>Question Builder</b> tool to generate your peer-eval form automatically.
+      Reminder: You can make a field required by wrapping it in <code>class="required field"</code> attribute to the input or removing it to make it optional.
+    </p>
+  `,
+
+  student_announcement: `
+    <h4 style="margin:0 0 .5rem 0;">Student Announcement</h4>
+    <p>
+      Use this field to share information or reminders with students. No submissions or uploads are needed.
+      You can use basic HTML to format the announcement.
+    </p>
+
+    <b>Example layout</b>:
+    <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
+&lt;div&gt;
+  &lt;h2&gt;Reminder: Midterm Demos Next Week&lt;/h2&gt;
+  &lt;p&gt;Your team will present on &lt;b&gt;Wednesday&lt;/b&gt; during lab. Make sure to bring a working prototype!&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Prepare a 5-minute overview.&lt;/li&gt;
+    &lt;li&gt;Include slides with progress updates.&lt;/li&gt;
+    &lt;li&gt;Arrive 10 minutes early to set up.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </pre>
+  `,
+
+  coach_announcement: `
+    <h4 style="margin:0 0 .5rem 0;">Coach Announcement</h4>
+    <p>
+      Use this field to post information or reminders for coaches. No submissions or uploads are required.
+      HTML tags like &lt;b&gt;, &lt;i&gt;, and lists are supported for clarity.
+    </p>
+
+    <b>Example layout</b>:
+    <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
+&lt;div&gt;
+  &lt;h2&gt;Weekly Meeting Agenda&lt;/h2&gt;
+  &lt;p&gt;Topics for discussion during this week's coach sync:&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Review of team check-ins&lt;/li&gt;
+    &lt;li&gt;Midterm evaluation timeline&lt;/li&gt;
+    &lt;li&gt;Student support updates&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p&gt;Thank you for supporting your teams!&lt;/p&gt;
+&lt;/div&gt;
+    </pre>
+  `,
 };
 
 
@@ -220,11 +346,11 @@ export default function ActionPanel(props) {
     }, 
     );
     if (
+      // bug fix: Due date is still showing for beak periods
       selectedType === ACTION_TARGETS.coach_announcement ||
       selectedType === ACTION_TARGETS.student_announcement ||
       selectedType === ACTION_TARGETS.break_period
     ) {
-      // Announcement or break period — only End Date
       formFieldArray.push({
         type: "date",
         label: "Announcement End Date",
@@ -256,12 +382,15 @@ if (selectedType === ACTION_TARGETS.individual ||
     type: "note",
     name: "peer_eval_note",
     content: (
-      <Message info>
-        <Message.Header>Read before editing</Message.Header>
-        <p style={{ marginTop: 6 }}>
-              {HTML_HELP[selectedType] ?? "This action type has no description yet."}
-            </p>
-      </Message>
+      <Message info >
+    <Message.Header>Read before editing</Message.Header>
+    <div
+      style={{ marginTop: 6 }}
+      dangerouslySetInnerHTML={{
+        __html: HTML_HELP[selectedType] ?? "This action type has no description yet.",
+      }}
+    />
+  </Message>
     ),
   });
 }
