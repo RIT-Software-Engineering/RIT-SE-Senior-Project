@@ -285,14 +285,14 @@ export default function DatabaseTableEditor(props) {
    * other editor.js files, will contain the name of the column being queried from the db.
    * */
   let fieldComponents = [];
+  const requiresTypeFirst = formFieldArray.some(f => f.name === "action_target");
   for (let i = 0; i < formFieldArray.length; i++) {
     let field = formFieldArray[i];
 
     // if no action_target/type is chosen yet, hide all fields except the Type dropdown
-    if (!formData.action_target && field.name !== "action_target") {
-    continue;
-  }
-
+  if (requiresTypeFirst && !formData.action_target && field.name !== "action_target") {
+  continue;
+}
     if (!field.hidden) {
       switch (field.type) {
         case "input":
