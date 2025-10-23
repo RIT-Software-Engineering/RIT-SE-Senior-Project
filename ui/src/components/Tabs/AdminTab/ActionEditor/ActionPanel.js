@@ -312,6 +312,7 @@ export default function ActionPanel(props) {
         ),
       });
     }
+    console.log('selectedType =', selectedType, 'ACTION_TARGETS =', ACTION_TARGETS);
     formFieldArray.push(
     {
       type: "input",
@@ -346,10 +347,9 @@ export default function ActionPanel(props) {
     }, 
     );
     if (
-      // bug fix: Due date is still showing for beak periods
       selectedType === ACTION_TARGETS.coach_announcement ||
       selectedType === ACTION_TARGETS.student_announcement ||
-      selectedType === ACTION_TARGETS.break_period
+      selectedType === (ACTION_TARGETS.break_period || 'break_period')
     ) {
       formFieldArray.push({
         type: "date",
