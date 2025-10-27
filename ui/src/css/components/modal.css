@@ -345,3 +345,24 @@ body .ui.small.modal {
   max-height: 80vh;
   overflow-y: auto;
 }
+
+/* Exemplary Modal — centered, full-page scroll (like SubmissionViewer) */
+.ui.modal.exemplary-modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  width: 80vw !important;
+  max-width: 1000px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Make sure it stays centered relative to the page, not viewport */
+body .ui.dimmer > .ui.modal.exemplary-modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}

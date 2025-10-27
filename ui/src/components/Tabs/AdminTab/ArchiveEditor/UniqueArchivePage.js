@@ -122,6 +122,7 @@ function UniqueProjectPage({ projectData }) {
             <Modal
               closeOnDocumentClick={false}
               className={"sticky"}
+              closeIcon={true}
               size={"large"}
               open={posterOpen}
               onClose={() => setPosterOpen(false)}
@@ -167,6 +168,7 @@ function UniqueProjectPage({ projectData }) {
             <Modal
               closeOnDimmerClick={false}
               className={"sticky"}
+              closeIcon={true}
               size={"large"}
               open={imageOpen}
               onClose={() => setImageOpen(false)}

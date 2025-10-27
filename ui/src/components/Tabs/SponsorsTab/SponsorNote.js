@@ -21,6 +21,7 @@ export default function SponsorNote(props) {
     <Modal
       closeOnDimmerClick={false}
       className={"sticky"}
+      closeIcon={true}
       trigger={modalButton}
       header={"Sponsor Note Revisions"}
       content={{ content: <Segment.Group>{noteGroup}</Segment.Group> }}
