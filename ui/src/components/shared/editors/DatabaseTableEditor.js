@@ -43,6 +43,7 @@ export default function DatabaseTableEditor(props) {
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
   const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
+  const[showPreview,setShowPreview]=useState(false);
 
   const formRef = useRef(null); // maintain the current form data in the case of submission error
 
@@ -662,6 +663,9 @@ export default function DatabaseTableEditor(props) {
     }
   }
 
+  const isProjectLocked = formFieldArray.some(
+  (field) => field.name === "synopsis" && field.disabled
+);
   const modalActions = () => {
     let mock = false;
 
@@ -675,7 +679,7 @@ export default function DatabaseTableEditor(props) {
         {
           key: "Close",
           content: "Close",
-        },
+        }
       ];
     }
 
@@ -686,17 +690,29 @@ export default function DatabaseTableEditor(props) {
           content: "Cancel",
           onClick: (event) => handleCancel(event),
           color: "grey",
-        },
+        }
       ];
     }
 
-    return [
+      const actions = [
       {
         key: "cancel",
         content: "Cancel",
         onClick: (event) => handleCancel(event),
         color: "grey",
       },
+      ... (props.preview?.enabled
+        ? [
+            {
+              key: "preview",
+              content: "Preview",
+              icon: "eye",
+              labelPosition: "right",
+              onClick: () => setShowPreview(true),
+            },
+          ]
+        : []    
+      ),
       {
         key: "submit",
 
@@ -709,6 +725,7 @@ export default function DatabaseTableEditor(props) {
         positive: true,
       },
     ];
+    return actions;
   };
   let trigger = <Button content={props.content} icon={props.button} />;
   if (props.trigger) {
@@ -716,9 +733,9 @@ export default function DatabaseTableEditor(props) {
   }
 
   // Check if the form is locked by checking if any field with name "synopsis" is disabled
-  const isProjectLocked = formFieldArray.some(
-    (field) => field.name === "synopsis" && field.disabled,
-  );
+  // const isProjectLocked = formFieldArray.some(
+  //   (field) => field.name === "synopsis" && field.disabled,
+  // );
 
   if (props.isOpenCallback) {
     return (
@@ -816,6 +833,26 @@ export default function DatabaseTableEditor(props) {
           }}
           actions={modalActions()}
         />
+        {props.preview?.enabled && (
+          <Modal
+            open={showPreview}
+            size="large"
+            onClose={() => setShowPreview(false)}
+            closeOnEscape
+            closeOnDimmerClick
+            header={props.preview.title ?? "Preview"}
+            content={{
+              content: (
+                <div style={{ padding: "1rem" }}>
+                  {props.preview.render?.(formData)}
+                </div>
+              ),
+            }}
+            actions={[
+              { key: "close", content: "Close", onClick: () => setShowPreview(false) }
+            ]}
+          />
+        )}
         <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
