@@ -411,7 +411,7 @@ formFieldArray.push(
     // Or add a taggle to switch bettwen the html and the form builder
     {
       type: "textArea",
-      label: "Html",
+      label: "HTML",
       placeHolder: "Page Html",
       name: "page_html",
       required: true,
