@@ -246,7 +246,7 @@ const HTML_HELP = {
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
-
+  
   let initialState = useMemo(() => ({
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
@@ -259,29 +259,30 @@ export default function ActionPanel(props) {
     page_html: props.actionData?.page_html || "",
     file_types: props.actionData?.file_types || "",
     file_size: props.actionData?.file_size
-      ? humanFileSize(props.actionData?.file_size, false, 0)
-      : "",
+    ? humanFileSize(props.actionData?.file_size, false, 0)
+    : "",
   }), [props.actionData]);
-
+  
   let submissionModalMessages = props.create
-    ? {
-        SUCCESS: "The action has been created.",
-        FAIL: "We were unable to create your action.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-      }
-    : {
-        SUCCESS: "The action has been Edited.",
-        FAIL: "We were unable to receive your edits.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-      };
+  ? {
+    SUCCESS: "The action has been created.",
+    FAIL: "We were unable to create your action.",
+    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+  }
+  : {
+    SUCCESS: "The action has been Edited.",
+    FAIL: "We were unable to receive your edits.",
+    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+  };
   let semesterMap = {};
-
+  
   for (let i = 0; i < props.semesterData.length; i++) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
-
+  
   const [selectedType, setSelectedType] = useState(initialState.action_target || "");
+  const isEdit = !props.create;
 
   let submitRoute = props.create
     ? config.url.API_POST_CREATE_ACTION
@@ -295,6 +296,7 @@ export default function ActionPanel(props) {
       name: action_target,
       options: DROPDOWN_ITEMS.actionTarget,
       required: true,
+      disabled: isEdit,
     }];
     if (selectedType) {
       formFieldArray.push({
@@ -529,12 +531,16 @@ formFieldArray.push(
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
+
+    if (isEdit) data.action_target = initialState.action_target;
     return data;
+
   };
 
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
     if (name === action_target) {
+      if (isEdit) return formData; // cannot change type when editing
       setSelectedType(value);
     }
     if (
