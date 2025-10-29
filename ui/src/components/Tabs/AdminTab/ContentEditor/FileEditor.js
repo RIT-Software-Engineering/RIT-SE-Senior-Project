@@ -181,7 +181,7 @@ export default function FileEditor() {
         panels={[
           {
             key: "fileEditor",
-            title: "Content Editor",
+            title: "Content",
             content: {
               content: (
                 <>

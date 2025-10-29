@@ -75,7 +75,7 @@ export default function ActionEditor(props) {
         panels={[
           {
             key: "actionEditor",
-            title: "Action and Announcement Editor",
+            title: "Action and Announcement",
             content: { content: semesterPanels },
           },
         ]}
