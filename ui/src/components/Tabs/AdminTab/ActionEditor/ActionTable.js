@@ -24,6 +24,17 @@ export default function ActionTable(props) {
     (project) => project.semester === props.actions[0]?.semester,
   );
 
+  const typeLabel = (t) =>
+  ({
+    individual: "Individual Action",
+    team: "Team Action",
+    coach: "Coach Action",
+    peer_evaluation: "Peer Evaluation",
+    student_announcement: "Student Announcement",
+    coach_announcement: "Coach Announcement",
+    break_period: "Break Period",
+  }[t] || t);
+
   // if there is no semester, then there are no actions
   const semesterName = semester?.name || "No Semester";
   const semesterStart = semester?.start_date || "No Start Date";
@@ -61,7 +72,7 @@ export default function ActionTable(props) {
               <ActionPanel
                 actionData={action}
                 semesterData={props.semesterData}
-                header={`Currently Editing "${action.action_title}"`}
+                header={`Currently Editing "${action.action_title}" ${typeLabel(action.action_target)}`}
                 key={"editAction-" + i}
                 callback={props.callback}
               />
