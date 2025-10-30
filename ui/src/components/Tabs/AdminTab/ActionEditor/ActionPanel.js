@@ -31,6 +31,7 @@ const TYPE_HELP = {
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -43,6 +44,8 @@ const TYPE_HELP = {
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
+
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -55,6 +58,8 @@ const TYPE_HELP = {
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
+
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -421,7 +426,7 @@ formFieldArray.push(
     {
       type: "input",
       label:
-        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
+        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt, .doc, .docx)",
       placeHolder: "CSV format please - No filetypes = no files uploaded",
       name: file_types,
     },

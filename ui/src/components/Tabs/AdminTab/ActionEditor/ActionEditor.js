@@ -75,7 +75,7 @@ export default function ActionEditor(props) {
         panels={[
           {
             key: "actionEditor",
-            title: "Create Action/Announcement/Peer Eval/Break Period",
+            title: "Action / Announcement / Peer Eval / Break Period",
             content: { content: semesterPanels },
           },
         ]}
@@ -83,7 +83,7 @@ export default function ActionEditor(props) {
       <div className="accordion-buttons-container">
         <ActionPanel
           semesterData={props.semesterData}
-          header={"New Action/Announcement/Peer Eval/Break Period"}
+          header={"New Action / Announcement / Peer Eval / Break Period"}
           create={true}
           key={"createAction"}
           callback={getActionData}
