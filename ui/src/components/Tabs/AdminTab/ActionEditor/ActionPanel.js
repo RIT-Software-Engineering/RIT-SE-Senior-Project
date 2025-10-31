@@ -11,6 +11,8 @@ import {
 } from "../../../util/functions/utils";
 import { useMemo, useState } from "react";
 import { Message } from "semantic-ui-react";
+import InnerHTML from "dangerously-set-html-content";
+
 
 const short_desc = "short_desc";
 const file_types = "file_types";
@@ -21,14 +23,15 @@ const start_date = "start_date";
 
 const TYPE_HELP = {
   individual:`
-    Assigns the same action to each student in the semester group. Completion (green) requires submission by every team member. Student team members can submit actions even if they’ve previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+    Assigns the same action to each student in the semester group. Completion (green) requires submission by every team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -37,10 +40,12 @@ const TYPE_HELP = {
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard.</li>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing No Semester will hide the action on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
+
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -49,10 +54,12 @@ const TYPE_HELP = {
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard.</li>
+    <li>Give this action a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the action on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
     <li>Set a <b>Start Date</b> (when the action opens) and a <b>Due Date</b> (when it should be completed) You will see a red “days late” indicator next to each team member's submission once the due date has passed..</li>
     <li>Scroll down for additional instructions on filling out the <b>HTML Field</b>.</li>
+    <li>Please note if you add a file type in <b>File Uploads</b>, a file must be uploaded for the action to be marked complete. Additionally, using a comma between file types will act as an <b>Or</b> condition.</li>
+
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
@@ -71,8 +78,8 @@ const TYPE_HELP = {
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>Announcement End Date</b> (when it should stop showing).</li>
+    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
+    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>End Date</b> (when it should stop showing).</li>
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
@@ -81,8 +88,8 @@ const TYPE_HELP = {
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard.</li>
-    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>Announcement End Date</b> (when it should stop showing).</li>
+    <li>Provide a clear <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide the announcement on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
+    <li>Set a <b>Start Date</b> (when it becomes visible) and an <b>End Date</b> (when it should stop showing).</li>
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
@@ -91,9 +98,9 @@ const TYPE_HELP = {
   <br><br>
   <b>How to fill this out:</b>
   <ol>
-    <li>Give this entry a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide it on the dashboard.</li>
+    <li>Give this entry a <b>Title</b> and select the <b>Year/Semester</b> where it should appear. Note: Choosing <b>No Semester</b> will hide it on the dashboard. Instead, it will show in admin under <b>No Semester</b>.</li>
     <li>Enter a <b>Short Description</b> that appears under the Action Title when clicked on the dashboard.</li>
-    <li>Set the <b>Start Date</b> (when the break begins) and the <b>Announcement End Date</b> (when the break messaging should stop showing).</li>
+    <li>Set the <b>Start Date</b> (when the break begins) and the <b>End Date</b> (when the break messaging should stop showing).</li>
   </ol>
 `,
 };
@@ -244,7 +251,7 @@ const HTML_HELP = {
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
-
+  
   let initialState = useMemo(() => ({
     action_id: props.actionData?.action_id || "",
     action_title: props.actionData?.action_title || "",
@@ -257,29 +264,30 @@ export default function ActionPanel(props) {
     page_html: props.actionData?.page_html || "",
     file_types: props.actionData?.file_types || "",
     file_size: props.actionData?.file_size
-      ? humanFileSize(props.actionData?.file_size, false, 0)
-      : "",
+    ? humanFileSize(props.actionData?.file_size, false, 0)
+    : "",
   }), [props.actionData]);
-
+  
   let submissionModalMessages = props.create
-    ? {
-        SUCCESS: "The action has been created.",
-        FAIL: "We were unable to create your action.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-      }
-    : {
-        SUCCESS: "The action has been Edited.",
-        FAIL: "We were unable to receive your edits.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-      };
+  ? {
+    SUCCESS: "The action has been created.",
+    FAIL: "We were unable to create your action.",
+    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+  }
+  : {
+    SUCCESS: "The action has been Edited.",
+    FAIL: "We were unable to receive your edits.",
+    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+  };
   let semesterMap = {};
-
+  
   for (let i = 0; i < props.semesterData.length; i++) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
-
+  
   const [selectedType, setSelectedType] = useState(initialState.action_target || "");
+  const isEdit = !props.create;
 
   let submitRoute = props.create
     ? config.url.API_POST_CREATE_ACTION
@@ -293,6 +301,7 @@ export default function ActionPanel(props) {
       name: action_target,
       options: DROPDOWN_ITEMS.actionTarget,
       required: true,
+      disabled: isEdit,
     }];
     if (selectedType) {
       formFieldArray.push({
@@ -353,7 +362,7 @@ export default function ActionPanel(props) {
     ) {
       formFieldArray.push({
         type: "date",
-        label: "Announcement End Date",
+        label: "End Date",
         placeHolder: "End Date",
         name: "due_date",
         required: true,
@@ -383,7 +392,7 @@ if (selectedType === ACTION_TARGETS.individual ||
     name: "peer_eval_note",
     content: (
       <Message info >
-    <Message.Header>Read before editing</Message.Header>
+    <Message.Header>Instructions</Message.Header>
     <div
       style={{ marginTop: 6 }}
       dangerouslySetInnerHTML={{
@@ -409,7 +418,7 @@ formFieldArray.push(
     // Or add a taggle to switch bettwen the html and the form builder
     {
       type: "textArea",
-      label: "Html",
+      label: "HTML",
       placeHolder: "Page Html",
       name: "page_html",
       required: true,
@@ -417,7 +426,7 @@ formFieldArray.push(
     {
       type: "input",
       label:
-        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt)",
+        "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt, .doc, .docx)",
       placeHolder: "CSV format please - No filetypes = no files uploaded",
       name: file_types,
     },
@@ -527,12 +536,16 @@ formFieldArray.push(
     if (data.semester === SEMESTER_DROPDOWN_NULL_VALUE) {
       data.semester = "";
     }
+
+    if (isEdit) data.action_target = initialState.action_target;
     return data;
+
   };
 
   //Processing to be done before data is sent to the backend.
   const preChange = (formData, name, value) => {
     if (name === action_target) {
+      if (isEdit) return formData; // cannot change type when editing
       setSelectedType(value);
     }
     if (
@@ -585,6 +598,39 @@ formFieldArray.push(
         preSubmit={preSubmit}
         callback={props.callback}
         errors={errors}
+        preview={{
+     enabled: true,
+     title: "Action/Announcement Preview",
+     render: (data) => (
+       <div className="ui container">
+         {/* Optional header area */}
+         <div className="ui segment">
+           <h3 style={{ marginTop: 0 }}>{data.action_title || "Untitled"}</h3>
+           {data.short_desc && (
+             <p style={{ opacity: 0.8 }}>{data.short_desc}</p>
+           )}
+           {/* Show which type and dates for clarity */}
+           <div className="ui horizontal list" style={{ marginTop: 8 }}>
+             <div className="item"><strong>Type:</strong>&nbsp;{data.action_target || "—"}</div>
+             {data.start_date && (
+               <div className="item"><strong>Start:</strong>&nbsp;{data.start_date}</div>
+             )}
+             {data.due_date && (
+               <div className="item"><strong>Due:</strong>&nbsp;{data.due_date}</div>
+             )}
+             {data.announcement_end_date && (
+               <div className="item"><strong>End:</strong>&nbsp;{data.announcement_end_date}</div>
+             )}
+           </div>
+         </div>
+
+         {/* Render the HTML exactly as it will appear */}
+         <div className="ui segment">
+           <InnerHTML html={data.page_html || "<p><i>No HTML content yet.</i></p>"} />
+         </div>
+       </div>
+     ),
+   }}
       />
     );
   } else {
