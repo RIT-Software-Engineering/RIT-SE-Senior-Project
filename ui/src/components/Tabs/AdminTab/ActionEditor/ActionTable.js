@@ -61,7 +61,7 @@ export default function ActionTable(props) {
       return (
         <TableRow key={i}>
           <TableCell>{action.action_title}</TableCell>
-          <TableCell>{action.action_target}</TableCell>
+          <TableCell>{typeLabel(action.action_target)}</TableCell>
           <TableCell>{formatDateNoOffset(action.start_date)}</TableCell>
           <TableCell>{formatDateNoOffset(action.due_date)}</TableCell>
           <TableCell>
@@ -128,14 +128,14 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.DATE)}
                         >
-                          Action Title
+                          Title
                         </TableHeaderCell>
 
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.ACTION)}
                         >
-                          Action Target
+                         Type
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
@@ -147,7 +147,7 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
                         >
-                          Due Date
+                          End Date
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}

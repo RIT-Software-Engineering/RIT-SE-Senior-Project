@@ -708,7 +708,7 @@ export default function DatabaseTableEditor(props) {
               content: "Preview",
               icon: "eye",
               labelPosition: "right",
-              onClick: () => setShowPreview(true),
+              onClick: openPreview,
             },
           ]
         : []    
@@ -736,7 +736,31 @@ export default function DatabaseTableEditor(props) {
   // const isProjectLocked = formFieldArray.some(
   //   (field) => field.name === "synopsis" && field.disabled,
   // );
+  const suppressParentCloseRef = useRef(false);
 
+  const openPreview = (e) => {
+    e?.stopPropagation?.();
+    setShowPreview(true);
+  };
+
+  const closePreview = (e) => {
+    e?.stopPropagation?.();
+    // tell parent to ignore the next onClose
+    suppressParentCloseRef.current = true;
+    setShowPreview(false);
+    // clear on next tick
+    setTimeout(() => { suppressParentCloseRef.current = false; }, 0);
+  };
+
+  const handleParentClose = (e) => {
+    // ignore closes coming from preview teardown
+    if (showPreview || suppressParentCloseRef.current) {
+      e?.stopPropagation?.();
+      return;
+    }
+    setOpen(false);
+    props.isOpenCallback?.(false);
+  };
   if (props.isOpenCallback) {
     return (
       <>
@@ -745,13 +769,10 @@ export default function DatabaseTableEditor(props) {
           closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
-          onClose={() => {
-            setOpen(false);
-            props.isOpenCallback(false);
-          }}
+          onClose={handleParentClose}
           onOpen={() => {
             setOpen(true);
-            props.isOpenCallback(true);
+            props.isOpenCallback?.(true);
           }}
           open={open}
           header={props.header}
@@ -780,6 +801,7 @@ export default function DatabaseTableEditor(props) {
             ),
           }}
           actions={modalActions()}
+          
         />
         <Modal
           closeOnDimmerClick={false}
@@ -789,7 +811,24 @@ export default function DatabaseTableEditor(props) {
           {...generateModalFields()}
           onClose={() => closeSubmissionModal()}
         />
+        {/* PREVIEW MODAL (needed in isOpenCallback branch too) */}
+        {props.preview?.enabled && (
+          <Modal
+          open={showPreview}
+          size="large"
+          onClose={closePreview}
+          closeOnEscape
+          closeOnDimmerClick = {false}
+          header={props.preview.title ?? "Preview"}
+          style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", margin:0 }}
+          content={{ content: <div style={{ padding: "1rem" }}>{props.preview.render?.(formData)}</div> }}
+          actions={[
+            { key: "close", content: "Close", onClick: closePreview }
+          ]}
+        />
+        )}
       </>
+      
     );
   } else {
     return (
@@ -799,9 +838,7 @@ export default function DatabaseTableEditor(props) {
           closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
-          onClose={() => {
-            setOpen(false);
-          }}
+          onClose={ handleParentClose }
           onOpen={() => {
             setOpen(true);
           }}
@@ -837,9 +874,9 @@ export default function DatabaseTableEditor(props) {
           <Modal
             open={showPreview}
             size="large"
-            onClose={() => setShowPreview(false)}
+            onClose={closePreview}
             closeOnEscape
-            closeOnDimmerClick
+            closeOnDimmerClick = {false}
             header={props.preview.title ?? "Preview"}
             content={{
               content: (
@@ -849,7 +886,7 @@ export default function DatabaseTableEditor(props) {
               ),
             }}
             actions={[
-              { key: "close", content: "Close", onClick: () => setShowPreview(false) }
+              { key: "close", content: "Close", onClick: closePreview }
             ]}
           />
         )}
