@@ -153,7 +153,7 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.EDIT)}
                         >
-                          Edit
+                          Edit / Copy / Preview
                         </TableHeaderCell>
                       </TableRow>
                     </TableHeader>
