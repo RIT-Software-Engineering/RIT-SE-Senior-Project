@@ -73,9 +73,9 @@ function ExemplaryProject({ project }) {
       {" "}
       {/* Div containing all project information */}
       <button
-        className="ui segment stackable padded grid"
+        className="ui segment stackable padded grid fake-div"
         onClick={() => toggleInitialModalOpen()}
-        style={{ cursor: "pointer",  textAlign: "start", lineHeight: "1.4285em" }}
+        style={{ cursor: "pointer" }}
       >
         <div className="two column row" style={{ display: "flex" }}>
           <div className="column">
