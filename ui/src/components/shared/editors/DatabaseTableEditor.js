@@ -151,14 +151,19 @@ export default function DatabaseTableEditor(props) {
   const handleSubmit = async function (e) {
     e.preventDefault();
 
+    let cleanedFormData = { ...formData };
+    if (cleanedFormData.file_types) {
+    cleanedFormData.file_types = cleanedFormData.file_types.replace(/\s+/g, "");
+    }
+
     // data to be sent to backend
     const dataToSubmit = !!props.preSubmit
-      ? props.preSubmit(formData)
-      : formData;
+      ? props.preSubmit(cleanedFormData)
+      : cleanedFormData;
 
     if (dataToSubmit === null) {
       // validation failed
-      formRef.current = formData;
+      formRef.current = cleanedFormData;
       setErrorSubmitted(true);
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
