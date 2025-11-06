@@ -173,7 +173,7 @@ export const DROPDOWN_ITEMS = {
     },
     {
       key: "admin",
-      text: "Admin",
+      text: "Admin Action",
       value: "admin",
     },
     {

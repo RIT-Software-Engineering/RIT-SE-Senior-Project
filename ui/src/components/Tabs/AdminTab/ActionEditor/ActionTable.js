@@ -29,6 +29,7 @@ export default function ActionTable(props) {
     individual: "Individual Action",
     team: "Team Action",
     coach: "Coach Action",
+    admin: "Admin Action",
     peer_evaluation: "Peer Evaluation",
     student_announcement: "Student Announcement",
     coach_announcement: "Coach Announcement",
