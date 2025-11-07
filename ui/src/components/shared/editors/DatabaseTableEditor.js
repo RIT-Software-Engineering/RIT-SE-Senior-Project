@@ -706,7 +706,7 @@ export default function DatabaseTableEditor(props) {
         onClick: (event) => handleCancel(event),
         color: "grey",
       },
-      ... (props.preview?.enabled  && !!formData.action_target
+      ... (props.preview?.enabled && !!formData.action_target
         ? [
             {
               key: "preview",
