@@ -750,11 +750,10 @@ export default function DatabaseTableEditor(props) {
 
   const closePreview = (e) => {
     e?.stopPropagation?.();
-    // tell parent to ignore the next onClose
+    e?.preventDefault?.();
     suppressParentCloseRef.current = true;
     setShowPreview(false);
-    // clear on next tick
-    setTimeout(() => { suppressParentCloseRef.current = false; }, 0);
+    setTimeout(() => { suppressParentCloseRef.current = false; }, 100);
   };
 
   const handleParentClose = (e) => {
@@ -766,13 +765,14 @@ export default function DatabaseTableEditor(props) {
     setOpen(false);
     props.isOpenCallback?.(false);
   };
+  
   if (props.isOpenCallback) {
     return (
       <>
         <Modal
           closeOnDimmerClick={false}
           closeOnEscape={false}
-          className={"sticky"}
+          className={"sticky stacked-modal"}
           trigger={trigger}
           onClose={handleParentClose}
           onOpen={() => {
@@ -808,27 +808,40 @@ export default function DatabaseTableEditor(props) {
           actions={modalActions()}
           
         />
-        <Modal
+        {/* <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
           onClose={() => closeSubmissionModal()}
+        /> */}
+        <Modal
+          className={"stacked"}
+          closeOnDimmerClick={false}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => { suppressParentCloseRef.current = true; closeSubmissionModal(); setTimeout(() => { suppressParentCloseRef.current = false; }, 100);}}
+          dimmer="false"
+          mountNode={document.body}
         />
         {/* PREVIEW MODAL (needed in isOpenCallback branch too) */}
         {props.preview?.enabled && (
           <Modal
+          className="stacked"
           open={showPreview}
           size="large"
           onClose={closePreview}
           closeOnEscape
           closeOnDimmerClick = {false}
+          dimmer="false"
+          mountNode={document.body}
           header={props.preview.title ?? "Preview"}
           style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", margin:0 }}
           content={{ content: <div style={{ padding: "1rem" }}>{props.preview.render?.(formData)}</div> }}
           actions={[
-            { key: "close", content: "Close", onClick: closePreview }
+            { key: "close", content: "Close", onClick: (e) => { e.stopPropagation(); closePreview(e);}}
           ]}
         />
         )}
@@ -891,17 +904,19 @@ export default function DatabaseTableEditor(props) {
               ),
             }}
             actions={[
-              { key: "close", content: "Close", onClick: closePreview }
+              { key: "close", content: "Close", onClick: (e) => { e.stopPropagation(); closePreview(e);}}
             ]}
           />
         )}
         <Modal
+          className={"stacked"}
           closeOnDimmerClick={false}
-          className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
-          onClose={() => closeSubmissionModal()}
+          onClose={() => { suppressParentCloseRef.current = true; closeSubmissionModal(); setTimeout(() => { suppressParentCloseRef.current = false; }, 100);}}
+          dimmer="false"
+          mountNode={document.body}
         />
       </>
     );
