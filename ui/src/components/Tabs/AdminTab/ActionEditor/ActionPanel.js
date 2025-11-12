@@ -155,10 +155,8 @@ const HTML_HELP = {
       Use this section to describe what the entire team must complete. You can include optional HTML inputs if
       teams need to record values instead of uploading a document.
     </p>
-
         <b>Example form</b> (copy/paste and then edit labels/fields):
     <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
-&lt;div&gt;
   &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
   &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
     &lt;ul&gt;
@@ -169,15 +167,26 @@ const HTML_HELP = {
         &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
         &lt;input required name="Social_Event" type="text"&gt;
       &lt;/div&gt;
-      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+        &lt;div class="required field"&gt;
+          &lt;label&gt;Will you be using the project name as your team name?&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="Yes" name="Same_Project_Name" value="Yes" required&gt;
+              &lt;label for="Yes"&gt;Yes&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="No" name="Same_Project_Name" value="No" required&gt;
+              &lt;label for="No"&gt;No&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name if not using the project name(clever is OK, keep it appropriate).&lt;/li&gt;
       &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
         &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
         &lt;input required name="Team_Name" type="text"&gt;
       &lt;/div&gt;
     &lt;/ul&gt;
-  &lt;/form&gt;
-&lt;/div&gt;
-    </pre>
+  &lt;/form&gt;</pre>
 
     <p><b>Tip:</b> Keep questions short and use textareas for longer team responses.</p>
   `,
@@ -192,15 +201,29 @@ const HTML_HELP = {
 &lt;form class="ui form" action="/db/submitAction" method="POST"&gt;
   &lt;h3&gt;Team Review Summary&lt;/h3&gt;
   &lt;div class="required field"&gt; &lt;!-- Required overall score --&gt;
-    &lt;label for="Score"&gt;Overall Score (1-5)&lt;/label&gt;
-    &lt;input required name="Score" type="number" min="1" max="5"&gt;
+    &lt;div class="required field"&gt;
+          &lt;label&gt;Overall Score&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="1" name="Score" value="1" required&gt;
+              &lt;label for="1"&gt;1&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="2" name="Score" value="2" required&gt;
+              &lt;label for="2"&gt;2&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="3" name="Score" value="3" required&gt;
+              &lt;label for="3"&gt;3&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
   &lt;/div&gt;
   &lt;div&gt; &lt;!-- Optional written feedback --&gt;
     &lt;label for="Feedback"&gt;Comments / Notes&lt;/label&gt;
     &lt;textarea name="Feedback"&gt;&lt;/textarea&gt;
   &lt;/div&gt;
-&lt;/form&gt;
-    </pre>
+&lt;/form&gt;</pre>
   `,
 
   peer_evaluation: `
