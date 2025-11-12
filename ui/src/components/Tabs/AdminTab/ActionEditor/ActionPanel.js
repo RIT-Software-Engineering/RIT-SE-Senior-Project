@@ -113,27 +113,36 @@ const HTML_HELP = {
     </p>
     <b>Example form</b> (copy/paste and then edit labels/fields):
     <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
-&lt;div&gt;
-  &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
+  &lt;h2&gt;Submit Project Proposal&lt;/h2&gt;
   &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
     &lt;ul&gt;
-      &lt;li&gt;Hold a project kick-off meeting with your sponsor this week or next week.&lt;/li&gt;
-      &lt;li&gt;Gather enough detail to write the project synopsis (due in a future action).&lt;/li&gt;
-      &lt;li&gt;Complete a team social event (off-campus if possible).&lt;/li&gt;
-      &lt;div class="required field"&gt; &lt;!-- Marked 'required' to enforce submission --&gt; 
-        &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
-        &lt;input required name="Social_Event" type="text"&gt;
+      &lt;li&gt;Project title and team members&lt;/li&gt;
+      &lt;li&gt;Background and motivation&lt;/li&gt;
+      &lt;li&gt;Project goals and objectives&lt;/li&gt;
+      &lt;div class="required field"&gt;
+        &lt;label for="Team_Members"&gt;Team Members&lt;/label&gt;
+        &lt;input required name="Team_Members" type="text" placeholder="List all team members"&gt;
       &lt;/div&gt;
-      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+        &lt;div class="required field"&gt;
+          &lt;label&gt;Will you be using the project name as your team name?&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="Yes" name="Same_Project_Name" value="Yes" required&gt;
+              &lt;label for="Yes"&gt;Yes&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="No" name="Same_Project_Name" value="No" required&gt;
+              &lt;label for="No"&gt;No&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name if it's not the project name(clever is OK, keep it appropriate).&lt;/li&gt;
       &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
         &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
         &lt;input required name="Team_Name" type="text"&gt;
       &lt;/div&gt;
     &lt;/ul&gt;
-  &lt;/form&gt;
-&lt;/div&gt;
-    </pre>
-
+  &lt;/form&gt;</pre>
     <p style="margin-top:.75rem;">
       <b>Tip:</b> The <code>required</code> attribute on an input and/or wrapping it in
       <code> class="required field"</code> makes that question mandatory before submission.
