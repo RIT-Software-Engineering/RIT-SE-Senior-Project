@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react"; //before change
 import {
   Button,
   Form,
@@ -26,6 +26,8 @@ import InnerHTML from "dangerously-set-html-content";
 import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import { QuestionComponentsMap } from "../../../../util/components/PeerEvalComponents";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -53,6 +55,9 @@ export default function ActionModal(props) {
   const [errorFields, setErrorFields] = useState(new Set());
   const filesRef = useRef();
   const [studentOptions, setStudentOptions] = useState([]);
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [formTouched, setFormTouched] = useState(false);
+  const [readyToMark, setReadyToMark] = useState(false);
 
   const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
@@ -131,6 +136,11 @@ export default function ActionModal(props) {
 
     return translation;
   }
+  const markFormAsTouched = () => {
+    if (readyToMark) {
+      setFormTouched(true);
+    }
+  };
 
   function translateCoachPeerEvalFeedbackData(formData) {
     const translation = {
@@ -460,6 +470,7 @@ export default function ActionModal(props) {
               type="file"
               accept={fileTypes}
               multiple
+              onChange={markFormAsTouched}
             />
           </Form.Field>
         </Form>
@@ -468,7 +479,40 @@ export default function ActionModal(props) {
   }
 
   function onActionCancel() {
+    if (formTouched && !props.viewOnly) {
+      confirmAlert({
+        title: "Unsaved Changes",
+        message:
+          "You have unsaved work. Are you sure you want to close without submitting?",
+        buttons: [
+          {
+            label: "Keep Working",
+            onClick: () => {},
+          },
+          {
+            label: "Discard Work",
+            onClick: handleConfirmedClose,
+          },
+        ],
+      });
+    } else {
+      setErrors([]);
+      setOpen(false);
+      props.isOpenCallback(false);
+      setFormTouched(false);
+    }
+  }
+
+  function handleConfirmedClose() {
+    setShowCloseConfirmation(false);
     setErrors([]);
+    setFormTouched(false);
+    setOpen(false);
+    props.isOpenCallback(false);
+  }
+
+  function handleCancelledClose() {
+    setShowCloseConfirmation(false);
   }
 
   const submitButton =
@@ -523,12 +567,40 @@ export default function ActionModal(props) {
         closeIcon={true}
         className={"sticky"}
         onClose={() => {
-          setOpen(false);
-          props.isOpenCallback(false);
+          // Delay ensures latest formTouched state is used
+          setTimeout(() => {
+            if (formTouched && !props.viewOnly) {
+              confirmAlert({
+                title: "Unsaved Changes",
+                message:
+                  "You have unsaved work. Are you sure you want to close without submitting?",
+                buttons: [
+                  { label: "Keep Working", onClick: () => {} },
+                  {
+                    label: "Discard Work",
+                    onClick: () => {
+                      setErrors([]);
+                      setFormTouched(false);
+                      setOpen(false);
+                      props.isOpenCallback(false);
+                    },
+                  },
+                ],
+                overlayClassName: "custom-confirm-overlay",
+              });
+            } else {
+              setOpen(false);
+              props.isOpenCallback(false);
+              setFormTouched(false);
+            }
+          }, 0); // Small defer ensures React state update completes
         }}
         onOpen={() => {
           setOpen(true);
           props.isOpenCallback(true);
+          setFormTouched(false); // ✅ reset each time modal opens
+          setReadyToMark(false); // don't mark until ready
+          setTimeout(() => setReadyToMark(true), 250);
         }}
         open={open}
         trigger={
@@ -544,7 +616,24 @@ export default function ActionModal(props) {
           <Modal.Description>
             {props.preActionContent}
             <br />
-            <div className="content">
+            <div
+              className="content"
+              onChange={markFormAsTouched}
+              onClick={(e) => {
+                // ✅ ignore clicks during initial open
+                if (!readyToMark) return;
+                const target = e.target;
+                if (
+                  target.type === "radio" ||
+                  target.closest("label[for]") || // Label with 'for' attribute
+                  target.tagName === "LABEL" || // Any label
+                  target.classList.contains("icon")
+                ) {
+                  markFormAsTouched();
+                }
+              }}
+              onInput={markFormAsTouched}
+            >
               <CoachFeedBack
                 team={props.projectId}
                 action_id={props.action_id}
@@ -581,14 +670,7 @@ export default function ActionModal(props) {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            color="grey"
-            onClick={() => {
-              onActionCancel();
-              setOpen(false);
-              props.isOpenCallback(false);
-            }}
-          >
+          <Button color="grey" onClick={onActionCancel}>
             Cancel
           </Button>
           {renderSubmitButton()}
@@ -603,13 +685,41 @@ export default function ActionModal(props) {
         closeIcon={true}
         className={"sticky"}
         onClose={() => {
-          setOpen(false);
-          props.isOpenCallback(false);
+          // Delay ensures latest formTouched state is used
+          setTimeout(() => {
+            if (formTouched && !props.viewOnly) {
+              confirmAlert({
+                title: "Unsaved Changes",
+                message:
+                  "You have unsaved work. Are you sure you want to close without submitting?",
+                buttons: [
+                  { label: "Keep Working", onClick: () => {} },
+                  {
+                    label: "Discard Work",
+                    onClick: () => {
+                      setErrors([]);
+                      setFormTouched(false);
+                      setOpen(false);
+                      props.isOpenCallback(false);
+                    },
+                  },
+                ],
+                overlayClassName: "custom-confirm-overlay",
+              });
+            } else {
+              setOpen(false);
+              props.isOpenCallback(false);
+              setFormTouched(false);
+            }
+          }, 0); // Small defer ensures React state update completes
         }}
         onOpen={() => {
           setOpen(true);
           props.isOpenCallback(true);
           fetchStudentNames();
+          setFormTouched(false);
+          setReadyToMark(false);
+          setTimeout(() => setReadyToMark(true), 250);
         }}
         open={open}
         trigger={
@@ -625,7 +735,24 @@ export default function ActionModal(props) {
           <Modal.Description>
             {props.preActionContent}
             <br />
-            <div className="content">
+            <div
+              className="content"
+              onChange={markFormAsTouched}
+              onClick={(e) => {
+                // Track clicks on radio buttons and star ratings
+                if (!readyToMark) return;
+                const target = e.target;
+                if (
+                  target.type === "radio" ||
+                  target.closest("label[for]") || // Label with 'for' attribute
+                  target.tagName === "LABEL" || // Any label
+                  target.classList.contains("icon")
+                ) {
+                  markFormAsTouched();
+                }
+              }}
+              onInput={markFormAsTouched} // Catches more input types
+            >
               {isPeerEval ? (
                 <ParsedInnerHTML
                   html={props.page_html}
@@ -675,14 +802,7 @@ export default function ActionModal(props) {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            color="grey"
-            onClick={() => {
-              onActionCancel();
-              setOpen(false);
-              props.isOpenCallback(false);
-            }}
-          >
+          <Button color="grey" onClick={onActionCancel}>
             Cancel
           </Button>
           {renderSubmitButton()}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import {
   Dropdown,
   Label,
@@ -43,7 +45,7 @@ export default function DatabaseTableEditor(props) {
   const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
 
   const formRef = useRef(null); // maintain the current form data in the case of submission error
-
+  const [formTouched, setFormTouched] = useState(false);
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -139,11 +141,43 @@ export default function DatabaseTableEditor(props) {
   }
 
   function handleCancel() {
-    setErrors([]);
-    setFormData(initialState);
-    formRef.current = null;
-    setOpen(false);
+    if (formTouched && !props.viewOnly) {
+      confirmAlert({
+        title: "Unsaved Changes",
+        message:
+          "You have unsaved changes. Are you sure you want to close without saving?",
+        buttons: [
+          {
+            label: "Keep Editing",
+            onClick: () => {}, // Do nothing, stay in modal
+          },
+          {
+            label: "Discard Changes",
+            onClick: () => {
+              setErrors([]);
+              setFormData(initialState);
+              formRef.current = null;
+              setFormTouched(false);
+              setOpen(false);
+            },
+          },
+        ],
+        overlayClassName: "custom-confirm-overlay",
+      });
+    } else {
+      // No changes or view-only, close immediately
+      setErrors([]);
+      setFormData(initialState);
+      formRef.current = null;
+      setFormTouched(false);
+      setOpen(false);
+    }
   }
+  const markFormAsTouched = () => {
+    if (!props.viewOnly) {
+      setFormTouched(true);
+    }
+  };
 
   const handleSubmit = async function (e) {
     e.preventDefault();
@@ -206,6 +240,7 @@ export default function DatabaseTableEditor(props) {
     if (field && field.disabled) {
       return; // Don't allow changes to disabled fields
     }
+    markFormAsTouched();
 
     if (errorSubmitted) {
       // remove errors if changes made after first submission.
@@ -263,6 +298,7 @@ export default function DatabaseTableEditor(props) {
   };
 
   function handleUpload(event, name) {
+    markFormAsTouched();
     let value = event.target.files[0];
     const newFormData =
       props.preChange && props.preChange(formData, name, value);
@@ -717,12 +753,37 @@ export default function DatabaseTableEditor(props) {
           closeIcon
           trigger={trigger}
           onClose={() => {
-            setOpen(false);
-            props.isOpenCallback(false);
+            // Check if form has been touched before closing
+            if (formTouched && !props.viewOnly) {
+              confirmAlert({
+                title: "Unsaved Changes",
+                message:
+                  "You have unsaved changes. Are you sure you want to close without saving?",
+                buttons: [
+                  {
+                    label: "Keep Editing",
+                    onClick: () => {}, // Do nothing
+                  },
+                  {
+                    label: "Discard Changes",
+                    onClick: () => {
+                      setFormTouched(false);
+                      setOpen(false);
+                      props.isOpenCallback(false);
+                    },
+                  },
+                ],
+                overlayClassName: "custom-confirm-overlay",
+              });
+            } else {
+              setOpen(false);
+              props.isOpenCallback(false);
+            }
           }}
           onOpen={() => {
             setOpen(true);
             props.isOpenCallback(true);
+            setFormTouched(false); // Reset when opening
           }}
           open={open}
           header={props.header}
@@ -744,7 +805,7 @@ export default function DatabaseTableEditor(props) {
                     <br />
                   </div>
                 )}
-                <Form>{fieldComponents}</Form>
+                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
               </>
@@ -752,6 +813,7 @@ export default function DatabaseTableEditor(props) {
           }}
           actions={modalActions()}
         />
+
         <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
@@ -773,10 +835,34 @@ export default function DatabaseTableEditor(props) {
           closeIcon
           trigger={trigger}
           onClose={() => {
-            setOpen(false);
+            // Check if form has been touched before closing
+            if (formTouched && !props.viewOnly) {
+              confirmAlert({
+                title: "Unsaved Changes",
+                message:
+                  "You have unsaved changes. Are you sure you want to close without saving?",
+                buttons: [
+                  {
+                    label: "Keep Editing",
+                    onClick: () => {}, // Do nothing
+                  },
+                  {
+                    label: "Discard Changes",
+                    onClick: () => {
+                      setFormTouched(false);
+                      setOpen(false);
+                    },
+                  },
+                ],
+                overlayClassName: "custom-confirm-overlay",
+              });
+            } else {
+              setOpen(false);
+            }
           }}
           onOpen={() => {
             setOpen(true);
+            setFormTouched(false); // Reset when opening
           }}
           open={open}
           header={props.header}
@@ -798,7 +884,7 @@ export default function DatabaseTableEditor(props) {
                     <br />
                   </div>
                 )}
-                <Form>{fieldComponents}</Form>
+                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
                 {props.childComponents}
                 {props.body}
               </>
@@ -806,6 +892,7 @@ export default function DatabaseTableEditor(props) {
           }}
           actions={modalActions()}
         />
+
         <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
@@ -813,7 +900,10 @@ export default function DatabaseTableEditor(props) {
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
-          onClose={() => closeSubmissionModal()}
+          onClose={() => {
+            closeSubmissionModal();
+            setFormTouched(false); // ADD THIS LINE - Reset after successful submission
+          }}
         />
       </>
     );

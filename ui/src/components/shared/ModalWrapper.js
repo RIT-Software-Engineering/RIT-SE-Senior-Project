@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Modal } from "semantic-ui-react";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function ModalWrapper({
   open,
@@ -13,54 +15,61 @@ export default function ModalWrapper({
   trigger,
   actions,
   children,
+  confirmOnClose = false, // 🧩 confirm close behavior
+  hasUnsavedChanges = false, // 🧩 track unsaved form edits
 }) {
   useEffect(() => {
     const body = document.body;
-
     if (open) {
-      // Backup original overflow
       const originalOverflow = body.style.overflow;
-
-      // Allow page scrolling
-      // body.style.overflow = "auto";
       body.style.overflow = "hidden";
-      // Wait for SUI to render modal, then adjust it
-      setTimeout(() => {
-        const modalEl = document.querySelector(".ui.modal.transition.visible");
-        if (modalEl) {
-          modalEl.style.position = "absolute";
-          modalEl.style.top = "40px";
-          modalEl.style.left = "50%";
-          modalEl.style.transform = "translateX(-50%)";
-          modalEl.style.maxHeight = "none";
-          modalEl.style.overflow = "visible";
-        }
-      }, 60);
-
-      // Restore overflow when modal closes
       return () => {
         body.style.overflow = originalOverflow;
       };
     }
   }, [open]);
 
+  const handleClose = useCallback(() => {
+    if (confirmOnClose && hasUnsavedChanges) {
+      confirmAlert({
+        title: "Unsaved Changes",
+        message:
+          "You have unsaved work. Are you sure you want to close without saving?",
+        buttons: [
+          {
+            label: "Keep Working",
+            onClick: () => {}, // stay open
+          },
+          {
+            label: "Discard Changes",
+            onClick: () => {
+              if (onClose) onClose();
+            },
+          },
+        ],
+        overlayClassName: "custom-confirm-overlay",
+      });
+    } else {
+      onClose && onClose();
+    }
+  }, [onClose, confirmOnClose, hasUnsavedChanges]);
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       size={size}
       closeOnDimmerClick={closeOnDimmerClick}
       closeOnEscape={closeOnEscape}
       closeIcon={closeIcon}
-      className={`${className} your-custom-modal`}
+      className={`${className} your-custom-modal semantic-centered-modal`}
       trigger={trigger}
       dimmer="blurring"
       centered={false}
+      scrolling={false}
     >
       {title && <Modal.Header>{title}</Modal.Header>}
-
       <Modal.Content>{children}</Modal.Content>
-
       {actions && <Modal.Actions>{actions.map((a) => a)}</Modal.Actions>}
     </Modal>
   );

@@ -216,11 +216,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
       closeIcon={true}
       size="small"
       centered={false}
-      style={{
-        position: "sticky",
-        top: "20%",
-        left: "0%",
-      }}
+      className="semantic-centered-modal"
     >
       <Modal.Header>Your Profile</Modal.Header>
       <Modal.Content>
