@@ -89,36 +89,44 @@ After sshing into the server, cd into either prod or test project. Then run resp
 [Swagger Link](https://petstore.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIT-Software-Engineering%2FRIT-SE-Senior-Project%2Frefs%2Fheads%2Fdev%2Fui%2Fpublic%2Fapi-docs%2Fserver_doc.yaml)
 
 
-### Dependencies
+## Dependencies
+### ui
+**CodeMirror** - A rich text interface for editing code while on a website.
 
-CodeMirror - A rich text interface for editing code while on a website
-@uiw/react-codemirror: allows CodeMirror to be added as a react component
-@uiw/codemirror-theme-eclipse: adds theming to CodeMirror
-@codemirror/lang-html: adds auto-closing tags to HTML editing in CodeMirror
+`@uiw/react-codemirror`: allows CodeMirror to be added as a react component.
 
-SemanticUI - UI framework used across the entire website
-semantic-ui-react: provides Semantic UI React components
-semantic-ui-css: provides Semantic UI CSS stylization
-@semantic-ui-react/css-patch: patches semicolon issue with semantic (should have been fixed in an update of semanticUI?)
+`@uiw/codemirror-theme-eclipse`: adds theming to CodeMirror.
 
-@testing-library/jest-dom: currently unused
-@testing-library/react is used once in a seemingly unused file
-@testing-library/user-event currently unused
+`@codemirror/lang-html`: adds auto-closing tags to HTML editing in CodeMirror.
 
-ajv: seems to be unused, may be a subdependency. Compiles JSON schemas to JavaScript code
-caniuse-lite: seems to be unused, may be a subdependency
+**SemanticUI** - UI framework used across the entire website.
 
-Moment.js and Day.js are. Using both Day.js and Moment.js is redundant as dayjs is a moment alternative.
+`semantic-ui-react`: provides Semantic UI React components.
 
-comma-seperated-values used in the Admin User Editor to parse users uploaded as CSV data.
+`semantic-ui-css`: provides Semantic UI CSS stylization.
 
-dangerously-set-html-content is used to allow for modifiable web pages through the edited html.
+`@semantic-ui-react/css-patch`: patches semicolon issue with semantic (should have been fixed in an update of semanticUI?).
 
-DOMpurify is only used in tooltips as a way of limiting the usable tags in the custom HTML.
+`@testing-library/jest-dom`: currently unused.
 
-dotenv imports environment files in server/main.js
+`@testing-library/react`: currently only used once in `ui/src/App.test.js`.
 
-he is used for the decode function in order to clean it up and replace HTML references (for example: &amp) with
-the correct characters (&).
+`@testing-library/user-event`: currently unused.
 
-html-entities is used for the same thing as he.
+`ajv`: seems to be unused, may be a subdependency. Compiles JSON schemas to JavaScript code.
+
+`caniuse-lite`: seems to be unused, may be a subdependency. Lighter version of caniuse-db. This is a tool for showing
+
+`Moment.js` and `Day.js` are both used for handling dates and time. Using both Day.js and Moment.js is redundant as Day.js is a moment alternative.
+
+`comma-separated-values`: used in the Admin User Editor to parse data from users uploaded as CSV data.
+
+`dangerously-set-html-content`: is used to allow for modifiable web pages through the edited html.
+
+`DOMpurify`: is currently only used in tooltips as a way of limiting the usable tags in the custom HTML. It is a tool to combat cross-site scripting (XSS) attacks by sanitizing strings with HTML.
+
+`dotenv`: imports environment files in `server/main.js`
+
+`he`: is used for the decode function in order to clean up incoming strings and replace any HTML character entity references with the correct characters (for example: &trade would be replaced with ™).
+
+`html-entities`: is used for the same thing as `he`.
