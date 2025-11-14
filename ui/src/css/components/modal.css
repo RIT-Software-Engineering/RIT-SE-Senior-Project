@@ -303,6 +303,11 @@ body.dark-mode .ui.toggle.checkbox label:after {
   border-radius: 10px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
   padding: 12px;
+  top: 2rem !important;      
+  margin-top: 0 !important;         
+  transform: none !important;    
+  max-height: calc(100vh - 4rem);   
+  overflow-y: auto;                
 }
 
 .ui.modal.stacked-modal {
