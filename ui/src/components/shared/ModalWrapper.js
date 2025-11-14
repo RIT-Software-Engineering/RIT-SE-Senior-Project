@@ -59,7 +59,7 @@ export default function ModalWrapper({
       open={open}
       onClose={handleClose}
       size={size}
-      closeOnDimmerClick={closeOnDimmerClick}
+      closeOnDimmerClick={false}
       closeOnEscape={closeOnEscape}
       closeIcon={closeIcon}
       className={`${className} your-custom-modal semantic-centered-modal`}

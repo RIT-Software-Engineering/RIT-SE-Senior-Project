@@ -621,6 +621,7 @@ export default function ActionModal(props) {
               onChange={markFormAsTouched}
               onClick={(e) => {
                 // ✅ ignore clicks during initial open
+                e.stopPropagation();
                 if (!readyToMark) return;
                 const target = e.target;
                 if (

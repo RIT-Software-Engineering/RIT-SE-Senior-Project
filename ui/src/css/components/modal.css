@@ -867,3 +867,60 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child {
 body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   background-color: var(--bg-hover, #383838) !important;
 }
+
+/* Improve radio hitbox & prevent visual half-clicks */
+.ui.radio.checkbox input[type="radio"] {
+  position: relative;
+  z-index: 2;
+}
+
+.ui.radio.checkbox label {
+  cursor: pointer;
+  padding-left: 0.5rem;
+}
+
+/* Add breathing room between radio buttons and labels */
+input[type="radio"] + label,
+label[for][for^="SCOOP_"] {
+  margin-left: 6px;
+}
+
+/* Add space between groups horizontally */
+.required.field input[type="radio"] {
+  margin-right: 4px;
+}
+
+/* Optional: align vertically for nicer spacing */
+.required.field label {
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* ===== RADIO BUTTON LABEL ALIGNMENT FIX ===== */
+
+/* Just add more space between the radio button and the label text */
+.ui.radio.checkbox label {
+  padding-left: 1.85rem !important; /* Semantic UI default */
+  padding-top: 0.5rem !important; /* Push text down a bit */
+  line-height: 1.3 !important;
+}
+
+/* Keep the radio button in its normal position */
+.ui.radio.checkbox label::before {
+  top: 0.5rem !important; /* Move the circle down to align with text padding */
+}
+
+.ui.radio.checkbox label::after {
+  top: 0.5rem !important; /* Move the inner dot down to match */
+}
+
+/* Add spacing between radio button groups */
+.required.field .ui.radio.checkbox {
+  margin-right: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Dark mode compatibility */
+body.dark-mode .ui.radio.checkbox label {
+  color: var(--text-primary) !important;
+}
