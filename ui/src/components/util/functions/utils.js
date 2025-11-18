@@ -1,10 +1,20 @@
-import moment from "moment-timezone";
+import dayjs from "dayjs";
 import _ from "lodash";
 import { SERVER_TIMEZONE } from "./constants";
 import { useState, useEffect } from "react";
 
+// include plugins
+var utc = require("dayjs/plugin/utc");
+var timezone = require("dayjs/plugin/timezone");
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(localizedFormat);
+
+
 export const parseDateNoOffset = (dateTime) => {
-  return moment(dateTime);
+  return dayjs(dateTime);
 };
 
 export const parseDate = (dateTime) => {
@@ -12,8 +22,8 @@ export const parseDate = (dateTime) => {
 };
 
 const parseMomentDate = (dateTime) => {
-  let newTime = moment(dateTime).utcOffset(0, true);
-  return newTime.tz(SERVER_TIMEZONE);
+  let newTime = dayjs(dateTime).utcOffset(0, true);
+  return dayjs.tz(newTime, SERVER_TIMEZONE);
 };
 
 export const formatDateTime = (dateTime) => {
@@ -27,7 +37,8 @@ export const formatDate = (date) => {
 };
 
 export const formatDateNoOffset = (date) => {
-  return `${parseDateNoOffset(date).format("L")}`;
+  let dateObj = parseDateNoOffset(date);
+  return `${dateObj.format("L")}`;
 };
 
 // Month+1 in Date constructor to account for how it determines month from numbers
