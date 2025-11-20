@@ -2,7 +2,7 @@
 // when the backend encounters errors this handler redirects to an error page where necessary next steps can be taken.
 
 const DBHandler = require("./database/db");
-const DBCFG = require("./database/db_config");
+const DB_CONFIG = require("./database/db_config");
 let db = new DBHandler();
 
 function errorHandler(err, req, res, next) {
@@ -13,7 +13,7 @@ function errorHandler(err, req, res, next) {
   if (!err.message) err.message = "Internal Server Error";
 
   let error_sql = `
-        INSERT INTO ${DBCFG.tableNames.error_log} 
+        INSERT INTO ${DB_CONFIG.tableNames.error_log} 
           (error_datetime, status_code, user_role, url, stack_trace)
         VALUES (datetime('now'), ?, ?, ?, ?);
     `;

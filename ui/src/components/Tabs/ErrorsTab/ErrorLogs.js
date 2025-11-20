@@ -61,6 +61,8 @@ const ErrorLogs = () => {
     }));
   };
 
+  const num_pages = Math.ceil(errorLogs.length / LOGS_PER_PAGE) - 1;
+
   return (
     <div>
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Error Logs</h1>
@@ -171,11 +173,7 @@ const ErrorLogs = () => {
         </button>
         <button
           onClick={() =>
-            setActivePage((prev) =>
-              prev < Math.ceil(errorLogs.length / LOGS_PER_PAGE) - 1
-                ? prev + 1
-                : prev,
-            )
+            setActivePage((prev) => (prev < num_pages ? prev + 1 : prev))
           }
           disabled={
             activePage >= Math.ceil(errorLogs.length / LOGS_PER_PAGE) - 1

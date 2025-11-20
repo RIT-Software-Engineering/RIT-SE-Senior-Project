@@ -85,12 +85,6 @@ module.exports = (db) => {
     });
   }
 
-  // Debug route to force an error to be logged by the error handler
-  db_router.get("/forceError", (req, res, next) => {
-    // cause some js error
-    nonExistentFunction();
-  });
-
   // get error logs
   db_router.get("/getAllErrorLogs", [UserAuth.isAdmin], (req, res, next) => {
     const getErrorLogsQuery = `
