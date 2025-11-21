@@ -562,7 +562,7 @@ export default function ActionModal(props) {
   if (isPeerEval && user.role === USERTYPES.COACH) {
     return (
       <Modal
-        closeOnDimmerClick={false}
+        closeOnDimmerClick={true}
         closeOnEscape={false}
         closeIcon={true}
         className={"sticky"}
@@ -657,7 +657,7 @@ export default function ActionModal(props) {
             </div>
           </Modal.Description>
           <Modal
-            closeOnDimmerClick={false}
+            closeOnDimmerClick={true}
             closeIcon={true}
             style={{
               position: "fixed",
@@ -681,7 +681,7 @@ export default function ActionModal(props) {
   } else {
     return (
       <Modal
-        closeOnDimmerClick={false}
+        closeOnDimmerClick={true}
         closeOnEscape={false}
         closeIcon={true}
         className={"sticky"}
@@ -789,7 +789,7 @@ export default function ActionModal(props) {
             )}
           </Modal.Description>
           <Modal
-            closeOnDimmerClick={false}
+            closeOnDimmerClick={true}
             closeIcon={true}
             style={{
               position: "fixed",
