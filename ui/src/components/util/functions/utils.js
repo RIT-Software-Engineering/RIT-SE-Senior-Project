@@ -18,21 +18,21 @@ export const parseDateNoOffset = (dateTime) => {
 };
 
 export const parseDate = (dateTime) => {
-  return parseMomentDate(dateTime).toDate();
+  return parseDayjsDate(dateTime).toDate();
 };
 
-const parseMomentDate = (dateTime) => {
+const parseDayjsDate = (dateTime) => {
   let newTime = dayjs(dateTime).utcOffset(0, true);
   return dayjs.tz(newTime, SERVER_TIMEZONE);
 };
 
 export const formatDateTime = (dateTime) => {
-  let date = parseMomentDate(dateTime);
+  let date = parseDayjsDate(dateTime);
   return `${date.format("L LT")}`;
 };
 
 export const formatDate = (date) => {
-  let dateObj = parseMomentDate(date);
+  let dateObj = parseDayjsDate(date);
   return `${dateObj.format("L")}`;
 };
 
