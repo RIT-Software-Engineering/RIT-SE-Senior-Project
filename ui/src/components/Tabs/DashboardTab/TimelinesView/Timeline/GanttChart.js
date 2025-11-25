@@ -244,7 +244,10 @@ export default function GanttChart(props) {
       className="gantt-container"
       // style would be in dashboard.css, but gantt length changes between
       // different projects, so must be specified here
-      style={{ gridColumn: "1/" + (ganttLength + 1) }}
+      style={{
+        gridColumn: "1/" + (ganttLength + 1),
+        "--gantt-length": ganttLength,
+      }}
     >
       <GanttChartBackdrop
         ref={todayRef}
