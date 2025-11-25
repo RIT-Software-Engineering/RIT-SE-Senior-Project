@@ -90,6 +90,52 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 
 ## Dependencies
+### root
+`ajv`: seems to be unused, may be a subdependency. Compiles JSON schemas to JavaScript code.
+
+`html-to-text`: converts HTML into formatted text. Unclear if this needs to be in root.
+
+### server
+`@google/generative-ai`: SDK that provides access to gemini, currently deprecated. Strongly consider switching to `@google/genai`. 
+
+`cookie-parser`: reads data stored in cookies.
+
+`cors`: handles CORS protocol.
+
+`dotenv`: imports environment files in `server/main.js`.
+
+`express`: web application framework that is used for routing.
+
+`express-fileupload`: Express middleware for uploading files.
+
+`express-session`: Express middleware for session data.
+
+`express-validator`: Express middleware for the validator package.
+
+`filesize-parser`: parses the size of files.
+
+`fs-extra`: contains additional file system methods not covered by the `fs` module and allows for `fs` methods to return promises.
+
+`html-to-text`: converts HTML into formatted text.
+
+`memorystore`: stores sessions without leaking memory, unlike the MemoryStore in `express-session`.
+
+`moment`: should be replaced with dayjs.
+
+`nanoid`: creates random project and submission ids.
+
+`node-fetch`: adds window.fetch() to Node, currently unused.
+
+`nodemon`: automatically restarts a Node application when a file is changed, can be used by running the command `nodemon [Node App]`.
+
+`passport`: authentication middleware for Express applications.
+
+`passport-saml`: SAML identity provider for Passport, allows for SSO log-in.
+
+`pdfkit`: used to generate PDF documents.
+
+`sqlite3`: creates bindings to SQLite3 for Node, used to interact with the database.
+
 ### ui
 **CodeMirror** - A rich text interface for editing code while on a website.
 
@@ -125,8 +171,8 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 `DOMpurify`: is currently only used in tooltips as a way of limiting the usable tags in the custom HTML. It is a tool to combat cross-site scripting (XSS) attacks by sanitizing strings with HTML.
 
-`dotenv`: imports environment files in `server/main.js`
-
 `he`: is used for the decode function in order to clean up incoming strings and replace any HTML character entity references with the correct characters (for example: &trade would be replaced with ™).
 
 `html-entities`: is used for the same thing as `he`.
+
+`prop-types`: a tool used for
