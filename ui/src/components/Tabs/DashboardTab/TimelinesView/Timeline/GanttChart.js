@@ -1,4 +1,4 @@
-import React, { act, createElement, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { ACTION_STATES } from "../../../../util/functions/constants";
 import { isSemesterActive, dateDiff } from "../../../../util/functions/utils";
 import GanttChartBackdrop from "./GanttChartBackdrop";
@@ -6,7 +6,7 @@ import _ from "lodash";
 import ToolTip from "./ToolTip";
 import ActionToolTip from "../../../AdminTab/ActionEditor/ActionToolTip";
 import "./../../../../../css/components/gantt.css";
-import { Button, Dropdown } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
 import { MiniActionTooltip } from "../../../../util/components/MiniActionTooltip";
 
 export default function GanttChart(props) {
@@ -64,6 +64,7 @@ export default function GanttChart(props) {
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.actions, selectedTimeSpan, props.isOpen]);
 
   function onTimeSpanChange(e, { value }) {
@@ -132,7 +133,7 @@ export default function GanttChart(props) {
 
     const ganttRowButton = (
       <button
-        ref={action == firstAction ? firstActionRef : null}
+        ref={action === firstAction ? firstActionRef : null}
         className={`action-bar ${color}`}
         style={{
           gridRow: gridrow,
