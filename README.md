@@ -126,7 +126,7 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 `node-fetch`: adds window.fetch() to Node, currently unused.
 
-`nodemon`: automatically restarts a Node application when a file is changed, can be used by running the command `nodemon [Node App]`.
+`nodemon`: automatically restarts a Node application when a file is changed, this is automatically run with the server 'start' script.
 
 `passport`: authentication middleware for Express applications.
 
