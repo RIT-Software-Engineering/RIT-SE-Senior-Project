@@ -33,7 +33,7 @@
     "node-fetch": "^2.7.0",
     "nodemon": "^2.0.20",
     "passport": "^0.4.1",
-    "passport-saml": "^2.0.5",
+    "passport-saml": "^3.2.4",
     "pdfkit": "^0.11.0",
     "sqlite3": "^5.1.5"
   }
