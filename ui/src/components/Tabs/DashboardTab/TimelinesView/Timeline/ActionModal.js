@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react"; //before change
+import React, { useContext, useRef, useState } from "react";
 import {
   Button,
   Form,
@@ -189,6 +189,47 @@ export default function ActionModal(props) {
 
     return translation;
   }
+  const showUnsavedChangesConfirm = (onDiscard) => {
+    confirmAlert({
+      title: "Unsaved Changes",
+      message:
+        "You have unsaved work. Are you sure you want to close without submitting?",
+      buttons: [
+        {
+          label: "Keep Working",
+          onClick: () => {},
+        },
+        {
+          label: "Discard Work",
+          onClick: onDiscard,
+        },
+      ],
+      closeOnClickOutside: true,
+      overlayClassName: "custom-confirm-overlay",
+    });
+
+    const observer = new MutationObserver((mutations, obs) => {
+      const modal = document.querySelector(".react-confirm-alert");
+      if (modal && !document.querySelector(".confirm-close-x")) {
+        const closeButton = document.createElement("button");
+        closeButton.className = "confirm-close-x";
+        closeButton.innerHTML = '<i class="close icon"></i>';
+        closeButton.setAttribute("aria-label", "Close");
+
+        closeButton.onclick = () => {
+          const overlay = document.querySelector(
+            ".react-confirm-alert-overlay",
+          );
+          if (overlay) overlay.click();
+        };
+        modal.appendChild(closeButton);
+        obs.disconnect();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => observer.disconnect(), 1000);
+  };
 
   const generateModalFields = () => {
     switch (submissionModalOpen) {
@@ -253,7 +294,6 @@ export default function ActionModal(props) {
     setOpen(false);
     props.isOpenCallback(false);
   };
-
   async function onActionSubmit(id, file_types) {
     let form = document.forms.item(0);
     if (form !== null && form !== undefined) {
@@ -480,21 +520,7 @@ export default function ActionModal(props) {
 
   function onActionCancel() {
     if (formTouched && !props.viewOnly) {
-      confirmAlert({
-        title: "Unsaved Changes",
-        message:
-          "You have unsaved work. Are you sure you want to close without submitting?",
-        buttons: [
-          {
-            label: "Keep Working",
-            onClick: () => {},
-          },
-          {
-            label: "Discard Work",
-            onClick: handleConfirmedClose,
-          },
-        ],
-      });
+      showUnsavedChangesConfirm(handleConfirmedClose);
     } else {
       setErrors([]);
       setOpen(false);
@@ -570,35 +596,23 @@ export default function ActionModal(props) {
           // Delay ensures latest formTouched state is used
           setTimeout(() => {
             if (formTouched && !props.viewOnly) {
-              confirmAlert({
-                title: "Unsaved Changes",
-                message:
-                  "You have unsaved work. Are you sure you want to close without submitting?",
-                buttons: [
-                  { label: "Keep Working", onClick: () => {} },
-                  {
-                    label: "Discard Work",
-                    onClick: () => {
-                      setErrors([]);
-                      setFormTouched(false);
-                      setOpen(false);
-                      props.isOpenCallback(false);
-                    },
-                  },
-                ],
-                overlayClassName: "custom-confirm-overlay",
+              showUnsavedChangesConfirm(() => {
+                setErrors([]);
+                setFormTouched(false);
+                setOpen(false);
+                props.isOpenCallback(false);
               });
             } else {
               setOpen(false);
               props.isOpenCallback(false);
               setFormTouched(false);
             }
-          }, 0); // Small defer ensures React state update completes
+          }, 0);
         }}
         onOpen={() => {
           setOpen(true);
           props.isOpenCallback(true);
-          setFormTouched(false); // ✅ reset each time modal opens
+          setFormTouched(false);
           setReadyToMark(false); // don't mark until ready
           setTimeout(() => setReadyToMark(true), 250);
         }}
@@ -620,14 +634,13 @@ export default function ActionModal(props) {
               className="content"
               onChange={markFormAsTouched}
               onClick={(e) => {
-                // ✅ ignore clicks during initial open
                 e.stopPropagation();
                 if (!readyToMark) return;
                 const target = e.target;
                 if (
                   target.type === "radio" ||
-                  target.closest("label[for]") || // Label with 'for' attribute
-                  target.tagName === "LABEL" || // Any label
+                  target.closest("label[for]") ||
+                  target.tagName === "LABEL" ||
                   target.classList.contains("icon")
                 ) {
                   markFormAsTouched();
@@ -689,30 +702,18 @@ export default function ActionModal(props) {
           // Delay ensures latest formTouched state is used
           setTimeout(() => {
             if (formTouched && !props.viewOnly) {
-              confirmAlert({
-                title: "Unsaved Changes",
-                message:
-                  "You have unsaved work. Are you sure you want to close without submitting?",
-                buttons: [
-                  { label: "Keep Working", onClick: () => {} },
-                  {
-                    label: "Discard Work",
-                    onClick: () => {
-                      setErrors([]);
-                      setFormTouched(false);
-                      setOpen(false);
-                      props.isOpenCallback(false);
-                    },
-                  },
-                ],
-                overlayClassName: "custom-confirm-overlay",
+              showUnsavedChangesConfirm(() => {
+                setErrors([]);
+                setFormTouched(false);
+                setOpen(false);
+                props.isOpenCallback(false);
               });
             } else {
               setOpen(false);
               props.isOpenCallback(false);
               setFormTouched(false);
             }
-          }, 0); // Small defer ensures React state update completes
+          }, 0);
         }}
         onOpen={() => {
           setOpen(true);
@@ -745,14 +746,14 @@ export default function ActionModal(props) {
                 const target = e.target;
                 if (
                   target.type === "radio" ||
-                  target.closest("label[for]") || // Label with 'for' attribute
-                  target.tagName === "LABEL" || // Any label
+                  target.closest("label[for]") ||
+                  target.tagName === "LABEL" ||
                   target.classList.contains("icon")
                 ) {
                   markFormAsTouched();
                 }
               }}
-              onInput={markFormAsTouched} // Catches more input types
+              onInput={markFormAsTouched}
             >
               {isPeerEval ? (
                 <ParsedInnerHTML

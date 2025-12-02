@@ -164,6 +164,27 @@ export default function DatabaseTableEditor(props) {
         ],
         overlayClassName: "custom-confirm-overlay",
       });
+      const observer = new MutationObserver((mutations, obs) => {
+        const modal = document.querySelector(".react-confirm-alert");
+        if (modal && !document.querySelector(".confirm-close-x")) {
+          const closeButton = document.createElement("button");
+          closeButton.className = "confirm-close-x";
+          closeButton.innerHTML = '<i class="close icon"></i>';
+          closeButton.setAttribute("aria-label", "Close");
+
+          closeButton.onclick = () => {
+            const overlay = document.querySelector(
+              ".react-confirm-alert-overlay",
+            );
+            if (overlay) overlay.click();
+          };
+          modal.appendChild(closeButton);
+          obs.disconnect();
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      setTimeout(() => observer.disconnect(), 1000);
     } else {
       // No changes or view-only, close immediately
       setErrors([]);
@@ -762,7 +783,7 @@ export default function DatabaseTableEditor(props) {
                 buttons: [
                   {
                     label: "Keep Editing",
-                    onClick: () => {}, // Do nothing
+                    onClick: () => {},
                   },
                   {
                     label: "Discard Changes",
@@ -775,6 +796,30 @@ export default function DatabaseTableEditor(props) {
                 ],
                 overlayClassName: "custom-confirm-overlay",
               });
+              const observer = new MutationObserver((mutations, obs) => {
+                const modal = document.querySelector(".react-confirm-alert");
+                if (modal && !document.querySelector(".confirm-close-x")) {
+                  const closeButton = document.createElement("button");
+                  closeButton.className = "confirm-close-x";
+                  closeButton.innerHTML = '<i class="close icon"></i>';
+                  closeButton.setAttribute("aria-label", "Close");
+
+                  closeButton.onclick = () => {
+                    const overlay = document.querySelector(
+                      ".react-confirm-alert-overlay",
+                    );
+                    if (overlay) overlay.click();
+                  };
+                  modal.appendChild(closeButton);
+                  obs.disconnect();
+                }
+              });
+
+              observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+              });
+              setTimeout(() => observer.disconnect(), 1000);
             } else {
               setOpen(false);
               props.isOpenCallback(false);
@@ -844,7 +889,7 @@ export default function DatabaseTableEditor(props) {
                 buttons: [
                   {
                     label: "Keep Editing",
-                    onClick: () => {}, // Do nothing
+                    onClick: () => {},
                   },
                   {
                     label: "Discard Changes",
@@ -856,13 +901,37 @@ export default function DatabaseTableEditor(props) {
                 ],
                 overlayClassName: "custom-confirm-overlay",
               });
+              const observer = new MutationObserver((mutations, obs) => {
+                const modal = document.querySelector(".react-confirm-alert");
+                if (modal && !document.querySelector(".confirm-close-x")) {
+                  const closeButton = document.createElement("button");
+                  closeButton.className = "confirm-close-x";
+                  closeButton.innerHTML = '<i class="close icon"></i>';
+                  closeButton.setAttribute("aria-label", "Close");
+
+                  closeButton.onclick = () => {
+                    const overlay = document.querySelector(
+                      ".react-confirm-alert-overlay",
+                    );
+                    if (overlay) overlay.click();
+                  };
+                  modal.appendChild(closeButton);
+                  obs.disconnect();
+                }
+              });
+
+              observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+              });
+              setTimeout(() => observer.disconnect(), 1000);
             } else {
               setOpen(false);
             }
           }}
           onOpen={() => {
             setOpen(true);
-            setFormTouched(false); // Reset when opening
+            setFormTouched(false);
           }}
           open={open}
           header={props.header}
@@ -902,7 +971,7 @@ export default function DatabaseTableEditor(props) {
           {...generateModalFields()}
           onClose={() => {
             closeSubmissionModal();
-            setFormTouched(false); // ADD THIS LINE - Reset after successful submission
+            setFormTouched(false);
           }}
         />
       </>

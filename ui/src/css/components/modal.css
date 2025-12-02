@@ -24,7 +24,6 @@ a.ui.button {
 }
 
 /* Dark mode styles for pagination */
-
 .dark-mode .ui.sortable.table thead th:hover {
   color: var(--text-primary);
 }
@@ -346,7 +345,6 @@ body .ui.small.modal {
   overflow-y: auto;
 }
 
-/* Exemplary Modal — centered, full-page scroll (like SubmissionViewer) */
 .ui.modal.exemplary-modal {
   position: absolute !important;
   top: 40px !important;
@@ -367,58 +365,8 @@ body .ui.dimmer > .ui.modal.exemplary-modal {
   transform: translateX(-50%) !important;
 }
 
-.react-confirm-alert-overlay {
-  z-index: 99999 !important;
-}
-
 .custom-confirm-overlay {
   z-index: 99999 !important;
-}
-
-.react-confirm-alert {
-  z-index: 100000 !important;
-}
-
-/* Overlay (dimmer) styling */
-.react-confirm-alert-overlay {
-  background: rgba(0, 0, 0, 0.85) !important;
-  z-index: 99999 !important;
-}
-
-/* Main modal container */
-.react-confirm-alert-body {
-  width: 400px !important;
-  padding: 0 !important;
-  border-radius: 0.28571429rem !important;
-  box-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(0, 0, 0, 0.1) !important;
-  font-family:
-    "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif !important;
-}
-
-/* Light mode styling */
-.react-confirm-alert-body {
-  background-color: #ffffff !important;
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-
-/* Dark mode styling */
-body.dark-mode .react-confirm-alert-body {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
-}
-
-/* Header/Title */
-.react-confirm-alert-body > h1 {
-  margin: 0 !important;
-  padding: 1.25rem 1.5rem !important;
-  font-size: 1.42857143rem !important;
-  font-weight: bold !important;
-  line-height: 1.28571429em !important;
-  border-bottom: 1px solid rgba(34, 36, 38, 0.15) !important;
-  background-color: #ffffff !important;
-  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 body.dark-mode .react-confirm-alert-body > h1 {
@@ -426,13 +374,6 @@ body.dark-mode .react-confirm-alert-body > h1 {
   color: var(--text-primary) !important;
   border-bottom: 1px solid var(--bg-footer-header) !important;
 }
-
-/* Add warning icon styling to title */
-/* .react-confirm-alert-body > h1::before {
-  content: "⚠️";
-  margin-right: 0.5rem;
-  font-size: 1.2em;
-} */
 
 /* Message/Content */
 .react-confirm-alert-body > p,
@@ -448,90 +389,6 @@ body.dark-mode .react-confirm-alert-body > p,
 body.dark-mode .react-confirm-alert-body div {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
-}
-
-/* Button container */
-.react-confirm-alert-button-group {
-  display: flex !important;
-  justify-content: flex-end !important;
-  gap: 0.5rem !important;
-  padding: 1rem 1.5rem !important;
-  border-top: 1px solid rgba(34, 36, 38, 0.15) !important;
-  background-color: #f9fafb !important;
-}
-
-body.dark-mode .react-confirm-alert-button-group {
-  background-color: var(--bg-primary) !important;
-  border-top: 1px solid var(--bg-footer-header) !important;
-}
-
-/* Base button styling */
-.react-confirm-alert-button-group > button {
-  cursor: pointer !important;
-  display: inline-block !important;
-  min-height: 1em !important;
-  outline: 0 !important;
-  border: none !important;
-  vertical-align: baseline !important;
-  font-family:
-    "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif !important;
-  margin: 0 !important;
-  padding: 0.78571429em 1.5em !important;
-  font-weight: bold !important;
-  line-height: 1em !important;
-  text-align: center !important;
-  border-radius: 0.28571429rem !important;
-  font-size: 1rem !important;
-  transition:
-    background-color 0.1s ease,
-    color 0.1s ease !important;
-}
-
-/* "Keep Working" / "Keep Editing" button (primary) */
-.react-confirm-alert-button-group > button:first-child {
-  background-color: #2185d0 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 0 0 rgba(34, 36, 38, 0.15) inset !important;
-}
-
-.react-confirm-alert-button-group > button:first-child:hover {
-  background-color: #1678c2 !important;
-  color: #ffffff !important;
-}
-
-body.dark-mode .react-confirm-alert-button-group > button:first-child {
-  background-color: #2185d0 !important;
-  color: #ffffff !important;
-}
-
-body.dark-mode .react-confirm-alert-button-group > button:first-child:hover {
-  background-color: #1678c2 !important;
-}
-
-/* "Discard Work" / "Discard Changes" button (negative/red) */
-.react-confirm-alert-button-group > button:last-child {
-  background-color: #db2828 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 0 0 rgba(34, 36, 38, 0.15) inset !important;
-}
-
-.react-confirm-alert-button-group > button:last-child:hover {
-  background-color: #d01919 !important;
-  color: #ffffff !important;
-}
-
-body.dark-mode .react-confirm-alert-button-group > button:last-child {
-  background-color: #db2828 !important;
-  color: #ffffff !important;
-}
-
-body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
-  background-color: #d01919 !important;
-}
-
-/* Button focus states */
-.react-confirm-alert-button-group > button:focus {
-  outline: 0 !important;
 }
 
 /* Responsive sizing for smaller screens */
@@ -551,11 +408,6 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   }
 }
 
-/* Custom overlay class (if you're using overlayClassName) */
-.custom-confirm-overlay {
-  z-index: 99999 !important;
-}
-
 /* Animation for modal appearance */
 @keyframes react-confirm-alert-fadeIn {
   from {
@@ -572,22 +424,9 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   animation: react-confirm-alert-fadeIn 0.2s ease-out !important;
 }
 
-/* Ensure proper positioning */
-.react-confirm-alert {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-}
-
-/* =============================================== */
-/* MATCH CONFIRM MODAL WITH SEMANTIC MODALS STYLING */
-/* =============================================== */
-
 .react-confirm-alert-body {
-  background-color: var(--bg-primary) !important;
+  /* background-color: var(--bg-primary) !important; */
   color: var(--text-primary) !important;
-  border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
   font-family:
@@ -597,27 +436,20 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
 
 /* Header */
 .react-confirm-alert-body > h1 {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  padding: 1.25rem 1.5rem !important;
+  font-size: 1.4rem !important;
   font-weight: 700 !important;
-  font-size: 1.25rem !important;
+  margin-bottom: 0.85rem !important;
+  color: var(--text-primary) !important;
+  line-height: 1.2 !important;
+  background: none !important;
+  border-bottom: none !important;
+  padding: 0 !important;
 }
-
-/* Add a subtle warning icon like other modals */
-/* .react-confirm-alert-body > h1::before {
-  content: "⚠️";
-  margin-right: 0.5rem;
-  font-size: 1.2em;
-} */
 
 /* Message text */
 .react-confirm-alert-body > p,
 .react-confirm-alert-body div {
-  background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
-  padding: 1.5rem !important;
   font-size: 1rem !important;
   line-height: 1.4 !important;
 }
@@ -628,13 +460,13 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   border-top: 1px solid var(--border-color) !important;
   padding: 1rem 1.5rem !important;
   display: flex !important;
-  justify-content: flex-end !important;
   gap: 0.75rem !important;
 }
 
 /* Buttons styled like Semantic modals */
 .react-confirm-alert-button-group > button {
-  border-radius: 6px !important;
+  font-size: 1.08rem !important;
+  min-width: 130px !important;
   font-weight: 600 !important;
   padding: 0.7em 1.5em !important;
   transition: all 0.15s ease-in-out !important;
@@ -658,31 +490,6 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   background-color: var(--bg-hover) !important;
 }
 
-/* Discard Work = red (danger) button */
-.react-confirm-alert-button-group > button:last-child {
-  background-color: var(--bg-secondary, #2b2b2b) !important;
-}
-.react-confirm-alert-button-group > button:last-child:hover {
-  background-color: var(--bg-hover, #444) !important;
-}
-
-/* Overlay same as Semantic UI dimmer */
-.react-confirm-alert-overlay {
-  background: rgba(0, 0, 0, 0.65) !important;
-  backdrop-filter: blur(2px);
-}
-
-/* Center modal */
-.react-confirm-alert {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 100000 !important;
-  animation: react-confirm-alert-fadeIn 0.2s ease-out !important;
-}
-
-/* ✅ Center all modals nicely for both themes */
 .semantic-centered-modal {
   position: fixed !important;
   top: 50% !important;
@@ -695,14 +502,12 @@ body.dark-mode .react-confirm-alert-button-group > button:last-child:hover {
   transition: transform 0.2s ease-out !important;
 }
 
-/* ✅ Ensure it works under both light & dark modes */
 body.dark-mode .semantic-centered-modal {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
   border: 1px solid var(--border-color) !important;
 }
 
-/* 🔧 General modal base */
 .ui.modal.your-custom-modal {
   border-radius: 8px !important;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
@@ -711,35 +516,13 @@ body.dark-mode .semantic-centered-modal {
     color 0.3s !important;
 }
 
-/* 🌞 Light mode */
-body:not(.dark-mode) .ui.modal.your-custom-modal {
-  background-color: #ffffff !important;
-  color: #222 !important;
-}
-
-/* 🌚 Dark mode */
-body.dark-mode .ui.modal.your-custom-modal {
-  background-color: #1c1c1c !important;
-  color: #f5f5f5 !important;
-}
-
-/* Dimmer background (the overlay behind the modal) */
-body:not(.dark-mode) .ui.dimmer.modals.visible.active {
-  background-color: rgba(0, 0, 0, 0.4) !important;
-}
-
-body.dark-mode .ui.dimmer.modals.visible.active {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-}
-
 .ui.modal > .header,
 .ui.modal > .content,
 .ui.modal > .actions {
-  background: inherit !important; /* use modal’s own background */
+  background: inherit !important;
   color: inherit !important;
 }
 
-/* ✅ Always center the modal horizontally */
 .ui.modal.your-custom-modal {
   left: 50% !important;
   transform: translateX(-50%) !important;
@@ -747,7 +530,6 @@ body.dark-mode .ui.dimmer.modals.visible.active {
   margin-left: 0 !important;
 }
 
-/* ✅ Fix potential top offset and prevent shaking when switching modes */
 .ui.modal.your-custom-modal {
   top: 10% !important;
   bottom: auto !important;
@@ -758,7 +540,6 @@ body.dark-mode .ui.dimmer.modals.visible.active {
   transition: all 0.3s ease-in-out !important;
 }
 
-/* ✅ Center Semantic UI modals consistently in both light and dark mode */
 html body .ui.page.modals.dimmer > .ui.modal.your-custom-modal {
   left: 50% !important;
   right: auto !important;
@@ -771,9 +552,7 @@ html body .ui.page.modals.dimmer > .ui.modal.your-custom-modal {
   max-width: 80vw !important;
 }
 
-/* ===== LIGHT MODE FIX ONLY - Center all modals properly ===== */
-
-/* Fix light mode modal positioning to match dark mode */
+/* Fix light mode modal positioning */
 body:not(.dark-mode) .ui.dimmer > .ui.modal {
   position: fixed !important;
   left: 50% !important;
@@ -838,40 +617,6 @@ html body:not(.dark-mode) .ui.page.modals.dimmer > .ui.modal.your-custom-modal {
   max-width: 80vw !important;
 }
 
-/* Light mode - "Keep Working" button (left) - Gray with white text */
-body:not(.dark-mode) .react-confirm-alert-button-group > button:first-child {
-  background-color: #767676 !important;
-  color: #ffffff !important;
-  border: 1px solid #5a5a5a !important;
-  box-shadow: none !important;
-}
-
-body:not(.dark-mode)
-  .react-confirm-alert-button-group
-  > button:first-child:hover {
-  background-color: #5a5a5a !important;
-  color: #ffffff !important;
-}
-
-/* Light mode - "Discard Work" button (right) - Green with white text */
-body:not(.dark-mode) .react-confirm-alert-button-group > button:last-child {
-  background-color: #21ba45 !important;
-  color: #ffffff !important;
-  border: 1px solid #21ba45 !important;
-  box-shadow: none !important;
-}
-
-body:not(.dark-mode)
-  .react-confirm-alert-button-group
-  > button:last-child:hover {
-  background-color: #16ab39 !important;
-  color: #ffffff !important;
-}
-
-/* =============================================== */
-/* ✅ DARK MODE CONFIRM MODAL BUTTONS (Keep existing) */
-/* =============================================== */
-
 body.dark-mode .react-confirm-alert-button-group > button {
   background-color: var(--bg-secondary, #2d2d2d) !important;
   color: var(--text-primary) !important;
@@ -920,7 +665,6 @@ label[for][for^="SCOOP_"] {
   margin-right: 4px;
 }
 
-/* Optional: align vertically for nicer spacing */
 .required.field label {
   vertical-align: middle;
   line-height: 1.4;
@@ -951,4 +695,284 @@ label[for][for^="SCOOP_"] {
 /* Dark mode compatibility */
 body.dark-mode .ui.radio.checkbox label {
   color: var(--text-primary) !important;
+}
+
+/* Outer background overlay */
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+  z-index: 99999 !important;
+}
+
+/* Header title */
+.react-confirm-alert-body h1 {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  margin-bottom: 18px !important;
+  color: #ffffff !important;
+}
+
+/* Message text */
+.react-confirm-alert-body div {
+  font-size: 1.1rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 28px !important;
+}
+
+.react-confirm-alert-body > div,
+.react-confirm-alert-body > p {
+  font-size: 1.05rem !important;
+  margin-bottom: 1.4rem !important;
+  color: var(--text-primary) !important;
+  padding: 0 !important;
+}
+
+/* Hover state */
+.react-confirm-alert-button-group button:hover {
+  background: #4c4d4e !important;
+}
+
+/* Round ALL layers so nothing overrides the corners */
+.react-confirm-alert {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 100000 !important;
+  animation: react-confirm-alert-fadeIn 0.2s ease-out !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 350px !important;
+  max-width: 90vw !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+.react-confirm-alert-body {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  width: 350px !important;
+  max-width: 90vw !important;
+  padding: 2rem 1.8rem 1.2rem 1.8rem !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+@media (max-width: 480px) {
+  .react-confirm-alert,
+  .react-confirm-alert-body {
+    width: 95vw !important;
+    min-width: 0 !important;
+    max-width: 95vw !important;
+    padding: 1rem !important;
+  }
+}
+
+.react-confirm-alert,
+.react-confirm-alert-body {
+  margin: 0 !important;
+  outline: none !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+.react-confirm-alert-body {
+  width: 500px !important;
+  max-width: 98vw !important;
+}
+
+/* Base button style */
+.react-confirm-alert-button-group button {
+  background: #3a3b3c !important;
+  color: white !important;
+  border: 1px solid #555 !important;
+  padding: 0.8rem 1.6rem !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* Hover */
+.react-confirm-alert-button-group button:hover {
+  background: #4c4d4e !important;
+}
+
+/* Remove border-radius */
+.react-confirm-alert-body > h1,
+.react-confirm-alert-body > div,
+.react-confirm-alert-body > p {
+  border-radius: 0 !important;
+}
+
+/* Make buttons square */
+.react-confirm-alert-button-group button {
+  border-radius: 0 !important;
+}
+
+/* "Keep Working" button (left) - Make it gray/neutral */
+body:not(.dark-mode) .react-confirm-alert-button-group > button:first-child {
+  background-color: #767676 !important;
+  color: #ffffff !important;
+  border: 1px solid #767676 !important;
+  box-shadow: none !important;
+}
+
+body:not(.dark-mode)
+  .react-confirm-alert-button-group
+  > button:first-child:hover {
+  background-color: #5a5a5a !important; /* Darker gray on hover */
+  border-color: #5a5a5a !important;
+  color: #ffffff !important;
+}
+
+/* "Discard Work" button (right) - Makesit green like the "Close" button */
+body:not(.dark-mode) .react-confirm-alert-button-group > button:last-child {
+  background-color: #21ba45 !important;
+  color: #ffffff !important;
+  border: 1px solid #21ba45 !important;
+  box-shadow: none !important;
+}
+
+body:not(.dark-mode)
+  .react-confirm-alert-button-group
+  > button:last-child:hover {
+  background-color: #16ab39 !important;
+  border-color: #16ab39 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure padding and button group layout is consistent */
+body:not(.dark-mode) .react-confirm-alert-button-group {
+  justify-content: flex-end !important;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid rgba(34, 36, 38, 0.15) !important;
+  background-color: #f9fafb !important;
+}
+
+/* Ensure the main modal background is white */
+body:not(.dark-mode) .react-confirm-alert-body {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  border: 1px solid rgba(34, 36, 38, 0.15) !important;
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) .react-confirm-alert-body > h1 {
+  border-bottom: none !important;
+}
+
+body.dark-mode .react-confirm-alert-button-group {
+  justify-content: flex-end !important;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid var(--bg-footer-header) !important;
+  background-color: var(--bg-primary) !important;
+}
+
+/* Ensure the dark mode buttons also maintain their square shape and styling */
+body.dark-mode .react-confirm-alert-button-group > button {
+  border-radius: 0 !important;
+}
+
+/* Dark mode - "Keep Working" button (left) - Neutral gray */
+body.dark-mode .react-confirm-alert-button-group > button:first-child {
+  background-color: var(--bg-secondary, #2e2e2e) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .react-confirm-alert-button-group > button:first-child:hover {
+  background-color: var(--bg-hover, #3a3a3a) !important;
+}
+
+.confirm-close-x {
+  position: absolute !important;
+  top: -0.75rem !important;
+  right: -0.75rem !important;
+  z-index: 100001 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+
+.confirm-close-x i.close.icon {
+  font-size: 1.25rem !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .confirm-close-x i.close.icon {
+  color: #ffffff !important;
+  opacity: 0.9 !important;
+}
+
+/* Position X outside the modal in light mode */
+body:not(.dark-mode) .confirm-close-x {
+  position: absolute !important;
+  top: -1.75rem !important;
+  right: -0.75rem !important;
+  z-index: 100001 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+body:not(.dark-mode) .confirm-close-x i.close.icon:hover {
+  opacity: 1 !important;
+}
+
+body:not(.dark-mode) .react-confirm-alert-body {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(34, 36, 38, 0.15) !important;
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Header/content backgrounds also white */
+body:not(.dark-mode) .react-confirm-alert-body > h1,
+body:not(.dark-mode) .react-confirm-alert-body > p,
+body:not(.dark-mode) .react-confirm-alert-body div {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+/* Ensure confirm body is the positioning context */
+.react-confirm-alert-body {
+  position: relative !important;
+}
+
+.confirm-close-x {
+  position: absolute !important;
+  top: -0.75rem !important;
+  right: -0.75rem !important;
+  z-index: 100001 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+/* Dark mode keeps using your dark color, but same position */
+body.dark-mode .confirm-close-x i.close.icon {
+  color: var(--text-primary) !important;
+}
+
+/* Dark mode: make confirm modal square like light mode */
+body.dark-mode .react-confirm-alert,
+body.dark-mode .react-confirm-alert-body {
+  border-radius: 0 !important;
 }
