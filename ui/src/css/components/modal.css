@@ -956,7 +956,7 @@ body:not(.dark-mode) .react-confirm-alert-body div {
 
 .confirm-close-x {
   position: absolute !important;
-  top: -0.75rem !important;
+  top: -1.75rem !important; /* moved higher */
   right: -0.75rem !important;
   z-index: 100001 !important;
   background: none !important;
