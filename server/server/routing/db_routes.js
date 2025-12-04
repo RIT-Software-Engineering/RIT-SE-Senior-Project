@@ -40,11 +40,11 @@ const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
 // Split route modules (kept mounted here so existing API paths remain available)
-const sponsorsRoutes = require("./db_ind_routes/sponsors_routes");
-const actionsRoutes = require("./db_ind_routes/actions_routes");
-const projectsRoutes = require("./db_ind_routes/projects_routes");
-const archivesRoutes = require("./db_ind_routes/archives_routes");
-const errorLogsRoutes = require("./db_ind_routes/error_logs_routes");
+const sponsorsRoutes = require("./routes/sponsors_routes");
+const actionsRoutes = require("./routes/actions_routes");
+const projectsRoutes = require("./routes/projects_routes");
+const archivesRoutes = require("./routes/archives_routes");
+const errorLogsRoutes = require("./routes/error_logs_routes");
 
 // Mount split routers early so they take precedence over the large monolithic definitions
 db_router.use("/", sponsorsRoutes(db));
