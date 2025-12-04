@@ -750,8 +750,6 @@ export default function DatabaseTableEditor(props) {
 
   const closePreview = (e) => {
     e?.stopPropagation?.();
-    // tell parent to ignore the next onClose
-    suppressParentCloseRef.current = true;
     setShowPreview(false);
     // clear on next tick
     setTimeout(() => { suppressParentCloseRef.current = false; }, 0);
