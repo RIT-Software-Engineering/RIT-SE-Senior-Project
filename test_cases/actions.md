@@ -111,6 +111,17 @@ Functionality is the same process for submission as an “Individual” action, 
 7. If we sign in as a [student](authentication.md#validating-student-sign-in) of the same project and view the admin action submission link the submission details should be invisible.
    ![Admin Action 6](images/adminaction6.png)
 
+### Unsaved Changes Confirmation
+
+1. You may have saw in [individual](#individual-actions) or [team](#team-actions) actions, when you click off the modal or press x or close buttons while partily filling out the modal a modal appears.
+   This modal appears due to not finishing the action and it's intended purpose is so that users don't lose what they wrote when accedienly leaving. To test this go to any action submission modal (pic)
+
+2. Then enter any text but do not complete it, take for example this modal (pic of modal) fill out the first box but leave the rest.
+
+3. You will now click off the modal, you should see the confirmation modal right now in dark mode. the cancel button returns the user to the modal and preserves all saved data.(pic)
+
+4. Now on the same modal you returned to click the x at the top right of the modal, it should lead to the same confirmation modal. Now click the button named "discard", this willn close the action modal and reset all changes you made. (pic)
+
 ### Late Submissions
 
 1. As you may have noticed in [individual](#individual-actions) or [team](#team-actions) actions, action submission times are tracked and displayed accordingly on the dashboard tab. Actions generally have a due date, and if a submission is past that due date, the displayed submission time should display the corresponding information. To test this, sign in as a [student](authentication.md#validating-student-sign-in) with at least one overdue action in the dashboard. Overdue actions should appear in red in the milestone view and the relevant actions view.
