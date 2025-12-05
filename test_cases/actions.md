@@ -116,7 +116,7 @@ Functionality is the same process for submission as an “Individual” action, 
 1. You may have saw in [individual](#individual-actions) or [team](#team-actions) actions, when you click off the modal or press x or close buttons while partily filling out the modal a modal appears.
    This modal appears due to not finishing the action and it's intended purpose is so that users don't lose what they wrote when accedienly leaving. To test this go to any action submission modal ![Unsaved Change 1](images/Unsaved_Change.png)
 
-2. Then enter any text but do not complete it, take for example this modal (pic of modal) fill out the first box but leave the rest.
+2. Then enter any text but do not complete it, take for example this modal ![Unsaved Change 2](images/Unsaved_Change2.png) fill out the first box but leave the rest.
 
 3. You will now click off the modal, you should see the confirmation modal right now in dark mode. the cancel button returns the user to the modal and preserves all saved data.(pic)
 
