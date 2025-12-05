@@ -300,14 +300,8 @@ body.dark-mode .ui.toggle.checkbox label:after {
 }
 
 .ui.modal {
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-  padding: 12px;
-  top: 2rem !important;      
-  margin-top: 0 !important;         
-  transform: none !important;    
-  max-height: calc(100vh - 4rem);   
-  overflow-y: auto;                
+  max-height: calc(100vh - 4rem);
+  overflow-y: visible;
 }
 
 .ui.modal.stacked-modal {
@@ -355,4 +349,18 @@ body.dark-mode .ui.toggle.checkbox label:after {
 body.dark-mode
   .ui.page.modals.dimmer.transition.visible.active:has(.ui.modal.stacked) {
   background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.ui.modal .content {
+  overflow-y: visible;
+}
+
+.ui.modal .ui.dropdown .menu {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+body.dimmed,
+body.dimmed > .pusher {
+  overflow: hidden;
 }
