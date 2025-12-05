@@ -864,7 +864,13 @@ export default function DatabaseTableEditor(props) {
             }}
             content={{
               content: (
-                <div style={{ padding: "1rem" }}>
+                <div
+                  style={{
+                    padding: "1rem",
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                  }}
+                >
                   {props.preview.render?.(formData)}
                 </div>
               ),
@@ -933,7 +939,13 @@ export default function DatabaseTableEditor(props) {
             header={props.preview.title ?? "Preview"}
             content={{
               content: (
-                <div style={{ padding: "1rem" }}>
+                <div
+                  style={{
+                    padding: "1rem",
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                  }}
+                >
                   {props.preview.render?.(formData)}
                 </div>
               ),
