@@ -175,4 +175,4 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 `html-entities`: is used for the same thing as `he`.
 
-`prop-types`: a tool used for
+`prop-types`: a tool used for validating the data types of properties.
