@@ -223,9 +223,12 @@ export default function ProfileModalContent({
   // render
   return (
     <div>
-      <div className="ui container stackable grid">
-        <div className="two column row">
-          <div className="column">
+      <div className="ui grid container">
+        <div
+          className="two column row"
+          style={{ display: "flex", flexWrap: "nowrap" }}
+        >
+          <div className="column" style={{ flex: "1", minWidth: "250px" }}>
             <div
               style={{
                 display: "flex",
@@ -307,7 +310,7 @@ export default function ProfileModalContent({
             )}
           </div>
 
-          <div className="column" style={{ minWidth: "300px" }}>
+          <div className="column" style={{ flex: "1", minWidth: "300px" }}>
             {/* Preferences Section */}
             <div>
               <h3 style={{ marginBottom: "1em" }}>Preferences</h3>

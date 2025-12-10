@@ -220,7 +220,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
     >
       <Modal.Header>Your Profile</Modal.Header>
       <Modal.Content>
-        <div className="ui container stackable grid">
+        <div className="ui stackable grid container">
           <div className="two column row">
             <div className="column">
               <div

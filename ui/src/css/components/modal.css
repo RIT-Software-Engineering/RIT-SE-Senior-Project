@@ -915,7 +915,6 @@ body.dark-mode .confirm-close-x i.close.icon {
   opacity: 0.9 !important;
 }
 
-/* Position X outside the modal in light mode */
 body:not(.dark-mode) .confirm-close-x {
   position: absolute !important;
   top: -1.75rem !important;
@@ -949,14 +948,13 @@ body:not(.dark-mode) .react-confirm-alert-body div {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 
-/* Ensure confirm body is the positioning context */
 .react-confirm-alert-body {
   position: relative !important;
 }
 
 .confirm-close-x {
   position: absolute !important;
-  top: -1.75rem !important; /* moved higher */
+  top: -1.75rem !important;
   right: -0.75rem !important;
   z-index: 100001 !important;
   background: none !important;
@@ -975,4 +973,17 @@ body.dark-mode .confirm-close-x i.close.icon {
 body.dark-mode .react-confirm-alert,
 body.dark-mode .react-confirm-alert-body {
   border-radius: 0 !important;
+}
+
+.semantic-centered-modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-width: 700px !important;
+  max-width: 900px !important;
+  z-index: 1001 !important;
+  transition: transform 0.2s ease-out !important;
 }
