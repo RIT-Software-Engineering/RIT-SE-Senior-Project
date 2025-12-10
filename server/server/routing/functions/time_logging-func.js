@@ -156,6 +156,8 @@ const getAllTimeLogs = (db, user, resultLimit, offset) => {
 
     switch (user.type) {
       case ROLES.STUDENT:
+        // NOTE: Technically, users are able to see if coaches submitted time logs to other projects, but they should not be able to see the actual submission content form this query so that should be fine
+        //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
         getTimeLogQuery = `SELECT time_log.*,
           projects.display_name, projects.title,
           (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
