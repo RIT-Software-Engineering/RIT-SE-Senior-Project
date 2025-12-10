@@ -47,15 +47,15 @@ For this example, we will again be using the mocked data from [resetting the dat
    ![Individual Action 1](images/individualaction1.png)
 
 2. We can see a that no previous submission exists on the action as seen on the preview card, so let us add another to verify functionality. Again, we have selected a simple action to complete for general demonstration purposes. Add a corresponding file to the field and press “Submit.”
-   ![Individual Action 2](images/individualaction2.png)
+   ![Individual Action 2](<images/individualaction2(rework).png>)
 
 3. Now, verify that the access visibility is correct for the completed actions when signed in as “Aerith Gainsborough". The following is what the expanded submission links should look like
-   ![Individual Action 3](images/individualaction3.png)
+   ![Individual Action 3](<images/individualaction3(rework).png>)
    If we were to sign in as another student within the same project, they would not be able to see the submission, as it is only visible to the user who submitted it and their coaches.
-   ![Individual Action 4](images/individualaction4.png)
+   ![Individual Action 4](<images/individualaction4(rework).png>)
 
 4. Once Student visibility is confirmed, [sign in as a coach](authentication.md#validating-coach-sign-in) (for this specific scenario we will use "Laura Martin") and verify that the Coach for the projects can see all student submissions.
-   ![Individual Action 5](images/individualaction5.png)
+   ![Individual Action 5](<images/individualaction5(rework).png>)
 
 The “Logging” tab also displays the completed actions and follows the same visibility procedures as the dashboard tab. In addition to this, “Individual” actions must be completed by all members of the team in order to be considered done. Once completed, they will no longer be visible in the “Relevant Actions” group, and in the “Milestones” section, the action should now have a green border and display all of the submissions as seen below.
 ![Individual Action 6](images/individualaction6.png)
@@ -69,7 +69,7 @@ Functionality is the same process for submission as an “Individual” action, 
 2. The action should turn green as completed, and the submission should be removed from “Relevant Actions”.
    ![Team Action 1](images/teamaction1.png)
    Additionally, the submission details should be visible to all of the other team members unlike individual actions. Confirm this by clicking on the submission when signed in from a different account.
-   ![Team Action 2](images/teamaction2.png)
+   ![Team Action 2](<images/teamaction2(rework).png>)
    _Nova Bright_ Viewing the submission of _Aerith Gainsborough_ as a team member.
 
 ### Coach Actions
@@ -81,18 +81,18 @@ Functionality is the same process for submission as an “Individual” action, 
    ![Coach Action 2](images/coachaction2.png)
 
 3. If we sign in as a [coach](authentication.md#validating-coach-sign-in), we can see that the submission is available. Fill out the respective action’s fields and press the submit button.
-   ![Coach Action 3](images/coachaction3.png)
+   ![Coach Action 3](<images/coachaction3(rework).png>)
 
 4. Once submitted the action should appear complete in the milestone, calendar, and Gantt views.
    ![Coach Action 4](images/coachaction4.png)
-   ![Coach Action 5](images/coachaction5.png)
+   ![Coach Action 5](<images/coachaction5(rework).png>)
 
 5. Additionally, if we sign back into the same project as a student, the completed action should still be visible but again when looking at the details, only the submission time/[lateness](#late-submissions) and the action’s semester/project should be visible to students.
 
 ### Admin Actions
 
 1. In addition to Coach and Student specific actions there are admin actions. As the name suggests these actions are only submittable by Admins however the submission itself can be viewed by Coaches. Signed in as an [admin](authentication.md#validating-admin-sign-in), in the same place where all other actions are [created](#creating), select “Admin” as an action target.
-   ![Admin Action 1](images/adminaction1.png)
+   ![Admin Action 1](<images/adminaction1(rework).png>)
 
 2. Fill out the other fields accordingly and press submit when completed.
 
