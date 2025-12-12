@@ -17,6 +17,8 @@ export default function ModalWrapper({
   children,
   confirmOnClose = false, // 🧩 confirm close behavior
   hasUnsavedChanges = false, // 🧩 track unsaved form edits
+  minWidth = "500px", // NEW: Set minimum width for consistency
+  maxWidth = "90vw", // NEW: Set maximum width for responsiveness
 }) {
   useEffect(() => {
     const body = document.body;
@@ -54,6 +56,12 @@ export default function ModalWrapper({
     }
   }, [onClose, confirmOnClose, hasUnsavedChanges]);
 
+  const modalStyle = {
+    minWidth: minWidth,
+    maxWidth: maxWidth,
+    width: "auto",
+  };
+
   return (
     <Modal
       open={open}
@@ -67,6 +75,7 @@ export default function ModalWrapper({
       dimmer="blurring"
       centered={false}
       scrolling={false}
+      style={modalStyle}
     >
       {title && <Modal.Header>{title}</Modal.Header>}
       <Modal.Content>{children}</Modal.Content>
