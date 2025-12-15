@@ -157,11 +157,11 @@ The following root dependencies are **devDependencies**:
 
 `@semantic-ui-react/css-patch`: patches semicolon issue with semantic (should have been fixed in an update of semanticUI?).
 
-`@testing-library/jest-dom`: currently unused.
+`@testing-library/jest-dom`: currently unused, but should be kept for use in a potential future test expansion.
 
-`@testing-library/react`: currently only used once in `ui/src/App.test.js`.
+`@testing-library/react`: currently only used once in `ui/src/App.test.js`. Could be used in a potential future test expansion.
 
-`@testing-library/user-event`: currently unused.
+`@testing-library/user-event`: currently unused, but should be kept for use in a potential future test expansion.
 
 `ajv`: used several times as a transitive dependency for react-scripts, meaning there are multiple dependencies of react-scripts that depend on ajv. It appears to be hoisted to the top level in order to deduplicate these indirect references to it. The purpose of ajv is to compile JSON schemas into JavaScript code.
 
