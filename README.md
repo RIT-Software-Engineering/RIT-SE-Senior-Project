@@ -91,9 +91,13 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 ## Dependencies
 ### root
-`ajv`: seems to be unused, may be a subdependency. Compiles JSON schemas to JavaScript code.
+`ajv`: seems to be unused as a dependency in the root level. Compiles JSON schemas to JavaScript code.
 
 `html-to-text`: converts HTML into formatted text. Unclear if this needs to be in root.
+
+The following root dependencies are **devDependencies**:
+
+`husky`, `lint-staged`, `prettier`. These are used for the git hook and are covered in the [Technical Information](#technical-information) section of this README document.
 
 ### server
 `@google/generative-ai`: SDK that provides access to gemini, currently deprecated. Strongly consider switching to `@google/genai`. 
@@ -159,7 +163,7 @@ After sshing into the server, cd into either prod or test project. Then run resp
 
 `@testing-library/user-event`: currently unused.
 
-`ajv`: seems to be unused, may be a subdependency. Compiles JSON schemas to JavaScript code.
+`ajv`: used several times as a transitive dependency for react-scripts, meaning there are multiple dependencies of react-scripts that depend on ajv. It appears to be hoisted to the top level in order to deduplicate these indirect references to it. The purpose of ajv is to compile JSON schemas into JavaScript code.
 
 `caniuse-lite`: seems to be unused, may be a subdependency. Lighter version of caniuse-db. This is a tool for showing
 
