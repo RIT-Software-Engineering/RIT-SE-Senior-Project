@@ -179,4 +179,4 @@ The following root dependencies are **devDependencies**:
 
 `html-entities`: is used for the same thing as `he`.
 
-`prop-types`: a tool used for validating the data types of properties.
+`prop-types`: a tool used for validating the data types of properties. It's used inside of the component CustomItemDetail which overwrites the default item detail from react-keyed-file-browser. It's also used inside of ParsedInnerHtml which takes a string containing HTML data among other parameters as properties and outputs a JSX \<div\> containing the HTML data injected with the parameters.
