@@ -165,7 +165,7 @@ The following root dependencies are **devDependencies**:
 
 `ajv`: used several times as a transitive dependency for react-scripts, meaning there are multiple dependencies of react-scripts that depend on ajv. It appears to be hoisted to the top level in order to deduplicate these indirect references to it. The purpose of ajv is to compile JSON schemas into JavaScript code.
 
-`caniuse-lite`: seems to be unused, may be a subdependency. Lighter version of caniuse-db. This is a tool for showing
+`caniuse-lite`: A transitive dependency that appears multiple times under react-scripts. Lighter version of caniuse-db. This is a tool that gives access to the data from caniuse.com (Can I use) which documents the extent to which a feature or technology is supported by various browsers.
 
 `Moment.js` and `Day.js` are both used for handling dates and time. Using both Day.js and Moment.js is redundant as Day.js is a moment alternative.
 
