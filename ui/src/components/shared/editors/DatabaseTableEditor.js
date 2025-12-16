@@ -758,8 +758,6 @@ export default function DatabaseTableEditor(props) {
 
   const closePreview = (e) => {
     e?.stopPropagation?.();
-    e?.preventDefault?.();
-    suppressParentCloseRef.current = true;
     setShowPreview(false);
     setTimeout(() => {
       suppressParentCloseRef.current = false;

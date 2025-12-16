@@ -13,7 +13,6 @@ import { useMemo, useState } from "react";
 import { Message } from "semantic-ui-react";
 import InnerHTML from "dangerously-set-html-content";
 
-
 const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
@@ -22,7 +21,7 @@ const page_html = "page_html";
 const start_date = "start_date";
 
 const TYPE_HELP = {
-  individual:`
+  individual: `
     Assigns the same action to each student in the semester group. Completion (green) requires submission by every team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
@@ -35,8 +34,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  team:
-    `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+  team: `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
@@ -49,7 +47,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  coach:`
+  coach: `
   Assigns the same action to each coach in the semester group. Completion (green) requires submission by any coach for the corresponding team. Only coaches, admins can view submitted actions.
   <br><br>
   <b>How to fill this out:</b>
@@ -63,7 +61,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  peer_evaluation:`
+  peer_evaluation: `
   Assigns a peer-evaluation activity. Students complete a structured form; submissions are visible to coaches and admins. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
@@ -73,7 +71,7 @@ const TYPE_HELP = {
     <li>Use the <b>Question Builder</b> to create items (e.g., table ratings, mood ratings, feedback, peer feedback), then copy the generated HTML into the <b>HTML Field</b>.</li>
   </ol>
 `,
-  student_announcement:`
+  student_announcement: `
   Announcement visible to students. No submissions are required; this is informational only.
   <br><br>
   <b>How to fill this out:</b>
@@ -83,7 +81,7 @@ const TYPE_HELP = {
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
-  coach_announcement:`
+  coach_announcement: `
   Announcement visible to coaches. No submissions are required; this is informational only.
   <br><br>
   <b>How to fill this out:</b>
@@ -93,7 +91,7 @@ const TYPE_HELP = {
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
-  break_period:`
+  break_period: `
   Blocks out a break period where actions are paused/limited. Displays informational text during the specified range.
   <br><br>
   <b>How to fill this out:</b>
@@ -105,7 +103,7 @@ const TYPE_HELP = {
 `,
 };
 const HTML_HELP = {
-    individual: `
+  individual: `
     <h4 style="margin:0 0 .5rem 0;">Individual action: writing instructions & building a simple form</h4>
     <p>
       Use this area to describe the action and (optionally) include a small HTML form students will fill out
@@ -113,27 +111,36 @@ const HTML_HELP = {
     </p>
     <b>Example form</b> (copy/paste and then edit labels/fields):
     <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
-&lt;div&gt;
-  &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
+  &lt;h2&gt;Submit Project Proposal&lt;/h2&gt;
   &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
     &lt;ul&gt;
-      &lt;li&gt;Hold a project kick-off meeting with your sponsor this week or next week.&lt;/li&gt;
-      &lt;li&gt;Gather enough detail to write the project synopsis (due in a future action).&lt;/li&gt;
-      &lt;li&gt;Complete a team social event (off-campus if possible).&lt;/li&gt;
-      &lt;div class="required field"&gt; &lt;!-- Marked 'required' to enforce submission --&gt; 
-        &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
-        &lt;input required name="Social_Event" type="text"&gt;
+      &lt;li&gt;Project title and team members&lt;/li&gt;
+      &lt;li&gt;Background and motivation&lt;/li&gt;
+      &lt;li&gt;Project goals and objectives&lt;/li&gt;
+      &lt;div class="required field"&gt;
+        &lt;label for="Team_Members"&gt;Team Members&lt;/label&gt;
+        &lt;input required name="Team_Members" type="text" placeholder="List all team members"&gt;
       &lt;/div&gt;
-      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+        &lt;div class="required field"&gt;
+          &lt;label&gt;Will you be using the project name as your team name?&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="Yes" name="Same_Project_Name" value="Yes" required&gt;
+              &lt;label for="Yes"&gt;Yes&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="No" name="Same_Project_Name" value="No" required&gt;
+              &lt;label for="No"&gt;No&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name if it's not the project name(clever is OK, keep it appropriate).&lt;/li&gt;
       &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
         &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
         &lt;input required name="Team_Name" type="text"&gt;
       &lt;/div&gt;
     &lt;/ul&gt;
-  &lt;/form&gt;
-&lt;/div&gt;
-    </pre>
-
+  &lt;/form&gt;</pre>
     <p style="margin-top:.75rem;">
       <b>Tip:</b> The <code>required</code> attribute on an input and/or wrapping it in
       <code> class="required field"</code> makes that question mandatory before submission.
@@ -146,10 +153,8 @@ const HTML_HELP = {
       Use this section to describe what the entire team must complete. You can include optional HTML inputs if
       teams need to record values instead of uploading a document.
     </p>
-
         <b>Example form</b> (copy/paste and then edit labels/fields):
     <pre style="overflow:auto; padding:.75rem; border:1px solid #ddd; border-radius:8px;">
-&lt;div&gt;
   &lt;h2&gt;Week 1 Artifacts, Tasks, and Deliverables&lt;/h2&gt;
   &lt;form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data"&gt;
     &lt;ul&gt;
@@ -160,15 +165,26 @@ const HTML_HELP = {
         &lt;label for="Social_Event"&gt;Social Event - time, date, and place&lt;/label&gt;
         &lt;input required name="Social_Event" type="text"&gt;
       &lt;/div&gt;
-      &lt;li&gt;Decide on a professional team name (clever is OK, keep it appropriate).&lt;/li&gt;
+        &lt;div class="required field"&gt;
+          &lt;label&gt;Will you be using the project name as your team name?&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="Yes" name="Same_Project_Name" value="Yes" required&gt;
+              &lt;label for="Yes"&gt;Yes&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="No" name="Same_Project_Name" value="No" required&gt;
+              &lt;label for="No"&gt;No&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;li&gt;Decide on a professional team name if not using the project name(clever is OK, keep it appropriate).&lt;/li&gt;
       &lt;div&gt; &lt;!-- Optional field (no 'required' attribute) --&gt; 
         &lt;label for="Team_Name"&gt;Team Name&lt;/label&gt;
         &lt;input required name="Team_Name" type="text"&gt;
       &lt;/div&gt;
     &lt;/ul&gt;
-  &lt;/form&gt;
-&lt;/div&gt;
-    </pre>
+  &lt;/form&gt;</pre>
 
     <p><b>Tip:</b> Keep questions short and use textareas for longer team responses.</p>
   `,
@@ -183,15 +199,29 @@ const HTML_HELP = {
 &lt;form class="ui form" action="/db/submitAction" method="POST"&gt;
   &lt;h3&gt;Team Review Summary&lt;/h3&gt;
   &lt;div class="required field"&gt; &lt;!-- Required overall score --&gt;
-    &lt;label for="Score"&gt;Overall Score (1-5)&lt;/label&gt;
-    &lt;input required name="Score" type="number" min="1" max="5"&gt;
+    &lt;div class="required field"&gt;
+          &lt;label&gt;Overall Score&lt;/label&gt;
+          &lt;div style="display:flex; gap:1rem; align-items:center; margin-top:0.5rem;"&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="1" name="Score" value="1" required&gt;
+              &lt;label for="1"&gt;1&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="2" name="Score" value="2" required&gt;
+              &lt;label for="2"&gt;2&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;input type="radio" id="3" name="Score" value="3" required&gt;
+              &lt;label for="3"&gt;3&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
   &lt;/div&gt;
   &lt;div&gt; &lt;!-- Optional written feedback --&gt;
     &lt;label for="Feedback"&gt;Comments / Notes&lt;/label&gt;
     &lt;textarea name="Feedback"&gt;&lt;/textarea&gt;
   &lt;/div&gt;
-&lt;/form&gt;
-    </pre>
+&lt;/form&gt;</pre>
   `,
 
   peer_evaluation: `
@@ -247,46 +277,50 @@ const HTML_HELP = {
   `,
 };
 
-
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
-  
-  let initialState = useMemo(() => ({
-    action_id: props.actionData?.action_id || "",
-    action_title: props.actionData?.action_title || "",
-    semester: props.actionData?.semester || "",
-    action_target: props.actionData?.action_target || "",
-    date_deleted: props.actionData?.date_deleted || "",
-    short_desc: props.actionData?.short_desc || "",
-    start_date: props.actionData?.start_date || "",
-    due_date: props.actionData?.due_date || "",
-    page_html: props.actionData?.page_html || "",
-    file_types: props.actionData?.file_types || "",
-    file_size: props.actionData?.file_size
-    ? humanFileSize(props.actionData?.file_size, false, 0)
-    : "",
-  }), [props.actionData]);
-  
+
+  let initialState = useMemo(
+    () => ({
+      action_id: props.actionData?.action_id || "",
+      action_title: props.actionData?.action_title || "",
+      semester: props.actionData?.semester || "",
+      action_target: props.actionData?.action_target || "",
+      date_deleted: props.actionData?.date_deleted || "",
+      short_desc: props.actionData?.short_desc || "",
+      start_date: props.actionData?.start_date || "",
+      due_date: props.actionData?.due_date || "",
+      page_html: props.actionData?.page_html || "",
+      file_types: props.actionData?.file_types || "",
+      file_size: props.actionData?.file_size
+        ? humanFileSize(props.actionData?.file_size, false, 0)
+        : "",
+    }),
+    [props.actionData],
+  );
+
   let submissionModalMessages = props.create
-  ? {
-    SUCCESS: "The action has been created.",
-    FAIL: "We were unable to create your action.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-  }
-  : {
-    SUCCESS: "The action has been Edited.",
-    FAIL: "We were unable to receive your edits.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-  };
+    ? {
+        SUCCESS: "The action has been created.",
+        FAIL: "We were unable to create your action.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+      }
+    : {
+        SUCCESS: "The action has been Edited.",
+        FAIL: "We were unable to receive your edits.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+      };
   let semesterMap = {};
-  
+
   for (let i = 0; i < props.semesterData.length; i++) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
-  
-  const [selectedType, setSelectedType] = useState(initialState.action_target || "");
+
+  const [selectedType, setSelectedType] = useState(
+    initialState.action_target || "",
+  );
   const isEdit = !props.create;
 
   let submitRoute = props.create
@@ -302,27 +336,33 @@ export default function ActionPanel(props) {
       options: DROPDOWN_ITEMS.actionTarget,
       required: true,
       disabled: isEdit,
-    }];
-    if (selectedType) {
-      formFieldArray.push({
-        type: "note",
-        name: "type_help",
-        content: (
-          <Message info>
-            <div
-              style={{ marginTop: 6 }}
-              dangerouslySetInnerHTML={{
-                __html:
-                  TYPE_HELP[selectedType] ??
-                  "This action type has no description yet.",
-              }}
-            />
-          </Message>
-        ),
-      });
-    }
-    console.log('selectedType =', selectedType, 'ACTION_TARGETS =', ACTION_TARGETS);
-    formFieldArray.push(
+    },
+  ];
+  if (selectedType) {
+    formFieldArray.push({
+      type: "note",
+      name: "type_help",
+      content: (
+        <Message info>
+          <div
+            style={{ marginTop: 6 }}
+            dangerouslySetInnerHTML={{
+              __html:
+                TYPE_HELP[selectedType] ??
+                "This action type has no description yet.",
+            }}
+          />
+        </Message>
+      ),
+    });
+  }
+  console.log(
+    "selectedType =",
+    selectedType,
+    "ACTION_TARGETS =",
+    ACTION_TARGETS,
+  );
+  formFieldArray.push(
     {
       type: "input",
       label: "Action Title",
@@ -353,67 +393,68 @@ export default function ActionPanel(props) {
       placeHolder: "Start Date",
       name: "start_date",
       required: true,
-    }, 
-    );
-    if (
-      selectedType === ACTION_TARGETS.coach_announcement ||
-      selectedType === ACTION_TARGETS.student_announcement ||
-      selectedType === (ACTION_TARGETS.break_period || 'break_period')
-    ) {
-      formFieldArray.push({
-        type: "date",
-        label: "End Date",
-        placeHolder: "End Date",
-        name: "due_date",
-        required: true,
-      });
-} else {
-  // Other actions — Due Dates
-  formFieldArray.push(
-    {
+    },
+  );
+  if (
+    selectedType === ACTION_TARGETS.coach_announcement ||
+    selectedType === ACTION_TARGETS.student_announcement ||
+    selectedType === (ACTION_TARGETS.break_period || "break_period")
+  ) {
+    formFieldArray.push({
+      type: "date",
+      label: "End Date",
+      placeHolder: "End Date",
+      name: "due_date",
+      required: true,
+    });
+  } else {
+    // Other actions — Due Dates
+    formFieldArray.push({
       type: "date",
       label: "Due Date",
       placeHolder: "Due Date",
       name: "due_date",
       required: true,
-    }
-  );
-}
-// I can remove if
-if (selectedType === ACTION_TARGETS.individual ||
+    });
+  }
+  // I can remove if
+  if (
+    selectedType === ACTION_TARGETS.individual ||
     selectedType === ACTION_TARGETS.team ||
     selectedType === ACTION_TARGETS.coach ||
     selectedType === ACTION_TARGETS.coach_announcement ||
-    selectedType === ACTION_TARGETS.student_announcement || 
+    selectedType === ACTION_TARGETS.student_announcement ||
     selectedType === ACTION_TARGETS.peer_evaluation
   ) {
-  formFieldArray.push({
-    type: "note",
-    name: "peer_eval_note",
-    content: (
-      <Message info >
-    <Message.Header>Instructions</Message.Header>
-    <div
-      style={{ marginTop: 6 }}
-      dangerouslySetInnerHTML={{
-        __html: HTML_HELP[selectedType] ?? "This action type has no description yet.",
-      }}
-    />
-  </Message>
-    ),
-  });
-}
-// if (selectedType === ACTION_TARGETS.peer_evaluation) {
-//   // Peer evaluation — add note about form builder
-//   formFieldArray.push(
-//     {
-//     type: "note",
-//     label: "Note: For peer evaluations, the HTML editor will be replaced with a form builder in the future.",
-//     }
-//   );
-// }
-// Now continue adding the rest of the fields INSIDE the array
-formFieldArray.push(
+    formFieldArray.push({
+      type: "note",
+      name: "peer_eval_note",
+      content: (
+        <Message info>
+          <Message.Header>Instructions</Message.Header>
+          <div
+            style={{ marginTop: 6 }}
+            dangerouslySetInnerHTML={{
+              __html:
+                HTML_HELP[selectedType] ??
+                "This action type has no description yet.",
+            }}
+          />
+        </Message>
+      ),
+    });
+  }
+  // if (selectedType === ACTION_TARGETS.peer_evaluation) {
+  //   // Peer evaluation — add note about form builder
+  //   formFieldArray.push(
+  //     {
+  //     type: "note",
+  //     label: "Note: For peer evaluations, the HTML editor will be replaced with a form builder in the future.",
+  //     }
+  //   );
+  // }
+  // Now continue adding the rest of the fields INSIDE the array
+  formFieldArray.push(
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
     // Or add a taggle to switch bettwen the html and the form builder
     {
@@ -443,7 +484,7 @@ formFieldArray.push(
       placeHolder: "Active",
       name: "date_deleted",
     },
-);
+  );
 
   // validation for the action form
   const validateForm = (data) => {
@@ -539,7 +580,6 @@ formFieldArray.push(
 
     if (isEdit) data.action_target = initialState.action_target;
     return data;
-
   };
 
   //Processing to be done before data is sent to the backend.
@@ -571,7 +611,7 @@ formFieldArray.push(
       return formData;
     }
   };
-  
+
   if (props.isOpenCallback) {
     return (
       <DatabaseTableEditor
@@ -599,38 +639,50 @@ formFieldArray.push(
         callback={props.callback}
         errors={errors}
         preview={{
-     enabled: true,
-     title: "Action/Announcement Preview",
-     render: (data) => (
-       <div className="ui container">
-         {/* Optional header area */}
-         <div className="ui segment">
-           <h3 style={{ marginTop: 0 }}>{data.action_title || "Untitled"}</h3>
-           {data.short_desc && (
-             <p style={{ opacity: 0.8 }}>{data.short_desc}</p>
-           )}
-           {/* Show which type and dates for clarity */}
-           <div className="ui horizontal list" style={{ marginTop: 8 }}>
-             <div className="item"><strong>Type:</strong>&nbsp;{data.action_target || "—"}</div>
-             {data.start_date && (
-               <div className="item"><strong>Start:</strong>&nbsp;{data.start_date}</div>
-             )}
-             {data.due_date && (
-               <div className="item"><strong>Due:</strong>&nbsp;{data.due_date}</div>
-             )}
-             {data.announcement_end_date && (
-               <div className="item"><strong>End:</strong>&nbsp;{data.announcement_end_date}</div>
-             )}
-           </div>
-         </div>
+          enabled: true,
+          title: "Action/Announcement Preview",
+          render: (data) => (
+            <div className="ui container">
+              {/* Optional header area */}
+              <div className="ui segment">
+                <h3 style={{ marginTop: 0 }}>
+                  {data.action_title || "Untitled"}
+                </h3>
+                {data.short_desc && (
+                  <p style={{ opacity: 0.8 }}>{data.short_desc}</p>
+                )}
+                {/* Show which type and dates for clarity */}
+                <div className="ui horizontal list" style={{ marginTop: 8 }}>
+                  <div className="item">
+                    <strong>Type:</strong>&nbsp;{data.action_target || "—"}
+                  </div>
+                  {data.start_date && (
+                    <div className="item">
+                      <strong>Start:</strong>&nbsp;{data.start_date}
+                    </div>
+                  )}
+                  {data.due_date && (
+                    <div className="item">
+                      <strong>Due:</strong>&nbsp;{data.due_date}
+                    </div>
+                  )}
+                  {data.announcement_end_date && (
+                    <div className="item">
+                      <strong>End:</strong>&nbsp;{data.announcement_end_date}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-         {/* Render the HTML exactly as it will appear */}
-         <div className="ui segment">
-           <InnerHTML html={data.page_html || "<p><i>No HTML content yet.</i></p>"} />
-         </div>
-       </div>
-     ),
-   }}
+              {/* Render the HTML exactly as it will appear */}
+              <div className="ui segment">
+                <InnerHTML
+                  html={data.page_html || "<p><i>No HTML content yet.</i></p>"}
+                />
+              </div>
+            </div>
+          ),
+        }}
       />
     );
   } else {
