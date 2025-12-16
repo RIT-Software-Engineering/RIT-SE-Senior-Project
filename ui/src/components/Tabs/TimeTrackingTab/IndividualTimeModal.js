@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
 
 import { Button, Icon } from "semantic-ui-react";
-// import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
-// import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
 import ModalWrapper from "../../shared/ModalWrapper";
@@ -11,13 +9,7 @@ import IndividualTimeModalContent from "./IndividualTimeModalContent";
 
 export default function IndividualTimeModal(props) {
   const [open, setOpen] = useState(false);
-  // const [submission, setSubmission] = useState({});
-  // const [files, setFiles] = useState([]);
-  // const [noSubmission, setNoSubmission] = useState(true);
-  // const [due, setDue] = useState();
-  // const [late, setLate] = useState(false);
-  // const [day, setDay] = useState(0);
-  const { user } = useContext(UserContext);
+  const { user: currentUser } = useContext(UserContext);
 
   const handleDelete = function (id) {
     //used to be e
@@ -38,10 +30,10 @@ export default function IndividualTimeModal(props) {
   };
 
   const deleteButton =
-    props.userId === user.user &&
+    props.userId === currentUser.user &&
     props.delete === 1 &&
-    !user.view_only &&
-    user.mockUser.view_only !== "TRUE" ? (
+    !currentUser.view_only &&
+    currentUser.mockUser.view_only !== "TRUE" ? (
       <Button
         content="Delete"
         labelPosition="right"

@@ -366,7 +366,7 @@ body .ui.dimmer > .ui.modal.exemplary-modal {
 }
 
 .custom-confirm-overlay {
-  z-index: 99999 !important;
+  z-index: 1050 !important;
 }
 
 body.dark-mode .react-confirm-alert-body > h1 {
@@ -741,7 +741,7 @@ body.dark-mode .ui.radio.checkbox label {
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  z-index: 100000 !important;
+  z-index: 1051 !important;
   animation: react-confirm-alert-fadeIn 0.2s ease-out !important;
   display: flex !important;
   flex-direction: column !important;
@@ -818,10 +818,6 @@ body.dark-mode .ui.radio.checkbox label {
   color: var(--text-primary) !important;
   background-color: transparent !important;
 }
-/* Make buttons square */
-/* .react-confirm-alert-button-group button {
-  border-radius: 0 !important;
-} */
 
 /* "Keep Working" button (left) - Make it gray/neutral */
 body:not(.dark-mode) .react-confirm-alert-button-group > button:first-child {
@@ -879,11 +875,6 @@ body.dark-mode .react-confirm-alert-button-group {
   border-top: 1px solid var(--bg-footer-header) !important;
   background-color: var(--bg-primary) !important;
 }
-
-/* Ensure the dark mode buttons also maintain their square shape and styling */
-/* body.dark-mode .react-confirm-alert-button-group > button {
-  border-radius: 0 !important;
-} */
 
 /* Dark mode - "Keep Working" button (left) - Neutral gray */
 body.dark-mode .react-confirm-alert-button-group > button:first-child {

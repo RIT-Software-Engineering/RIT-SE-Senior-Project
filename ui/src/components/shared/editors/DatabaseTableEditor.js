@@ -771,7 +771,7 @@ export default function DatabaseTableEditor(props) {
           closeOnDimmerClick={false}
           closeOnEscape={false}
           className={"sticky"}
-          closeIcon
+          closeIcon={true}
           trigger={trigger}
           onClose={() => {
             // Check if form has been touched before closing
@@ -862,7 +862,7 @@ export default function DatabaseTableEditor(props) {
         <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
-          closeIcon
+          closeIcon={true}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
@@ -877,7 +877,7 @@ export default function DatabaseTableEditor(props) {
           closeOnDimmerClick={false}
           closeOnEscape={false}
           className={"sticky"}
-          closeIcon
+          closeIcon={true}
           trigger={trigger}
           onClose={() => {
             // Check if form has been touched before closing
@@ -965,7 +965,7 @@ export default function DatabaseTableEditor(props) {
         <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
-          closeIcon
+          closeIcon={true}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
