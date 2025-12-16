@@ -300,7 +300,67 @@ body.dark-mode .ui.toggle.checkbox label:after {
 }
 
 .ui.modal {
-  border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-  padding: 12px;
+  max-height: calc(100vh - 4rem);
+  overflow-y: visible;
+}
+
+.ui.modal.stacked-modal {
+  z-index: 1000 !important;
+}
+
+.ui.modal.stacked {
+  z-index: 1001 !important;
+}
+
+.ui.modal.stacked[dimmer="false"] {
+  background: transparent !important;
+}
+
+/* Keep parent modal visible when child modal opens */
+.ui.dimmer.modals.page.transition.visible.active {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure both modals are visible when stacked */
+.ui.page.modals.dimmer.transition.visible.active > .ui.modal {
+  display: block !important;
+}
+
+/* Stack multiple modals properly */
+.ui.page.modals.dimmer.transition.visible.active > .ui.modal:first-child {
+  z-index: 1000 !important;
+}
+
+.ui.page.modals.dimmer.transition.visible.active > .ui.modal:nth-child(2) {
+  z-index: 1001 !important;
+}
+
+.ui.page.modals.dimmer.transition.visible.active > .ui.modal:nth-child(3) {
+  z-index: 1002 !important;
+}
+
+/* Darken the dimmer for stacked modals */
+.ui.page.modals.dimmer.transition.visible.active:has(.ui.modal.stacked) {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+body.dark-mode
+  .ui.page.modals.dimmer.transition.visible.active:has(.ui.modal.stacked) {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.ui.modal .content {
+  overflow-y: visible;
+}
+
+.ui.modal .ui.dropdown .menu {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+body.dimmed,
+body.dimmed > .pusher {
+  overflow: hidden;
 }

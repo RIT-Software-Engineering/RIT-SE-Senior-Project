@@ -43,7 +43,7 @@ export default function DatabaseTableEditor(props) {
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
   const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
-  const[showPreview,setShowPreview]=useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const formRef = useRef(null); // maintain the current form data in the case of submission error
 
@@ -153,7 +153,10 @@ export default function DatabaseTableEditor(props) {
 
     let cleanedFormData = { ...formData };
     if (cleanedFormData.file_types) {
-    cleanedFormData.file_types = cleanedFormData.file_types.replace(/\s+/g, "");
+      cleanedFormData.file_types = cleanedFormData.file_types.replace(
+        /\s+/g,
+        "",
+      );
     }
 
     // data to be sent to backend
@@ -291,14 +294,20 @@ export default function DatabaseTableEditor(props) {
    * other editor.js files, will contain the name of the column being queried from the db.
    * */
   let fieldComponents = [];
-  const requiresTypeFirst = formFieldArray.some(f => f.name === "action_target");
+  const requiresTypeFirst = formFieldArray.some(
+    (f) => f.name === "action_target",
+  );
   for (let i = 0; i < formFieldArray.length; i++) {
     let field = formFieldArray[i];
 
     // if no action_target/type is chosen yet, hide all fields except the Type dropdown
-  if (requiresTypeFirst && !formData.action_target && field.name !== "action_target") {
-  continue;
-}
+    if (
+      requiresTypeFirst &&
+      !formData.action_target &&
+      field.name !== "action_target"
+    ) {
+      continue;
+    }
     if (!field.hidden) {
       switch (field.type) {
         case "input":
@@ -451,12 +460,12 @@ export default function DatabaseTableEditor(props) {
                   disabled={field.loading || field.disabled}
                   value={formData[field.name] || field.nullValue}
                   name={field.name}
-                  onChange={handleChange} 
+                  onChange={handleChange}
                 />
-              </Form.Field>
+              </Form.Field>,
             );
             break;
-  } else if (field.name === "semester_group") {
+          } else if (field.name === "semester_group") {
             // Semester is conditionally required (only for students)
             const isRequired = formData.type === "student";
             fieldComponents.push(
@@ -625,13 +634,11 @@ export default function DatabaseTableEditor(props) {
             </Form.Field>,
           );
           break;
-          case "note": {
+        case "note": {
           // render whatever content ActionPanel passes
           if (field.content) {
             fieldComponents.push(
-              <Form.Field key={field.name}>
-                {field.content}
-              </Form.Field>
+              <Form.Field key={field.name}>{field.content}</Form.Field>,
             );
           }
           break;
@@ -669,8 +676,8 @@ export default function DatabaseTableEditor(props) {
   }
 
   const isProjectLocked = formFieldArray.some(
-  (field) => field.name === "synopsis" && field.disabled
-);
+    (field) => field.name === "synopsis" && field.disabled,
+  );
   const modalActions = () => {
     let mock = false;
 
@@ -684,7 +691,7 @@ export default function DatabaseTableEditor(props) {
         {
           key: "Close",
           content: "Close",
-        }
+        },
       ];
     }
 
@@ -695,18 +702,18 @@ export default function DatabaseTableEditor(props) {
           content: "Cancel",
           onClick: (event) => handleCancel(event),
           color: "grey",
-        }
+        },
       ];
     }
 
-      const actions = [
+    const actions = [
       {
         key: "cancel",
         content: "Cancel",
         onClick: (event) => handleCancel(event),
         color: "grey",
       },
-      ... (props.preview?.enabled
+      ...(props.preview?.enabled && !!formData.action_target
         ? [
             {
               key: "preview",
@@ -716,8 +723,7 @@ export default function DatabaseTableEditor(props) {
               onClick: openPreview,
             },
           ]
-        : []    
-      ),
+        : []),
       {
         key: "submit",
 
@@ -745,32 +751,37 @@ export default function DatabaseTableEditor(props) {
 
   const openPreview = (e) => {
     e?.stopPropagation?.();
+    e?.preventDefault?.();
+    suppressParentCloseRef.current = true;
     setShowPreview(true);
   };
 
   const closePreview = (e) => {
     e?.stopPropagation?.();
     setShowPreview(false);
-    // clear on next tick
-    setTimeout(() => { suppressParentCloseRef.current = false; }, 0);
+    setTimeout(() => {
+      suppressParentCloseRef.current = false;
+    }, 300);
   };
 
   const handleParentClose = (e) => {
     // ignore closes coming from preview teardown
     if (showPreview || suppressParentCloseRef.current) {
       e?.stopPropagation?.();
+      e?.preventDefault?.();
       return;
     }
     setOpen(false);
     props.isOpenCallback?.(false);
   };
+
   if (props.isOpenCallback) {
     return (
       <>
         <Modal
           closeOnDimmerClick={false}
           closeOnEscape={false}
-          className={"sticky"}
+          className={"sticky stacked-modal"}
           trigger={trigger}
           onClose={handleParentClose}
           onOpen={() => {
@@ -804,34 +815,77 @@ export default function DatabaseTableEditor(props) {
             ),
           }}
           actions={modalActions()}
-          
         />
-        <Modal
+        {/* <Modal
           closeOnDimmerClick={false}
           className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
           onClose={() => closeSubmissionModal()}
+        /> */}
+        <Modal
+          className={"stacked"}
+          closeOnDimmerClick={false}
+          size="tiny"
+          open={!!submissionModalOpen}
+          {...generateModalFields()}
+          onClose={() => {
+            suppressParentCloseRef.current = true;
+            closeSubmissionModal();
+            setTimeout(() => {
+              suppressParentCloseRef.current = false;
+            }, 100);
+          }}
+          dimmer="false"
+          mountNode={document.body}
         />
         {/* PREVIEW MODAL (needed in isOpenCallback branch too) */}
         {props.preview?.enabled && (
           <Modal
-          open={showPreview}
-          size="large"
-          onClose={closePreview}
-          closeOnEscape
-          closeOnDimmerClick = {false}
-          header={props.preview.title ?? "Preview"}
-          style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", margin:0 }}
-          content={{ content: <div style={{ padding: "1rem" }}>{props.preview.render?.(formData)}</div> }}
-          actions={[
-            { key: "close", content: "Close", onClick: closePreview }
-          ]}
-        />
+            className="stacked"
+            open={showPreview}
+            size="large"
+            onClose={closePreview}
+            closeOnEscape
+            closeOnDimmerClick={false}
+            dimmer={false}
+            mountNode={document.body}
+            header={props.preview.title ?? "Preview"}
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "20%",
+              transform: "translate(-50%,-50%)",
+              margin: 0,
+              zIndex: 2000,
+            }}
+            content={{
+              content: (
+                <div
+                  style={{
+                    padding: "1rem",
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                  }}
+                >
+                  {props.preview.render?.(formData)}
+                </div>
+              ),
+            }}
+            actions={[
+              {
+                key: "close",
+                content: "Close",
+                onClick: (e) => {
+                  e.stopPropagation();
+                  closePreview(e);
+                },
+              },
+            ]}
+          />
         )}
       </>
-      
     );
   } else {
     return (
@@ -841,7 +895,7 @@ export default function DatabaseTableEditor(props) {
           closeOnEscape={false}
           className={"sticky"}
           trigger={trigger}
-          onClose={ handleParentClose }
+          onClose={handleParentClose}
           onOpen={() => {
             setOpen(true);
           }}
@@ -879,27 +933,48 @@ export default function DatabaseTableEditor(props) {
             size="large"
             onClose={closePreview}
             closeOnEscape
-            closeOnDimmerClick = {false}
+            closeOnDimmerClick={false}
             header={props.preview.title ?? "Preview"}
             content={{
               content: (
-                <div style={{ padding: "1rem" }}>
+                <div
+                  style={{
+                    padding: "1rem",
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                  }}
+                >
                   {props.preview.render?.(formData)}
                 </div>
               ),
             }}
             actions={[
-              { key: "close", content: "Close", onClick: closePreview }
+              {
+                key: "close",
+                content: "Close",
+                onClick: (e) => {
+                  e.stopPropagation();
+                  closePreview(e);
+                },
+              },
             ]}
           />
         )}
         <Modal
+          className={"stacked"}
           closeOnDimmerClick={false}
-          className={"sticky"}
           size="tiny"
           open={!!submissionModalOpen}
           {...generateModalFields()}
-          onClose={() => closeSubmissionModal()}
+          onClose={() => {
+            suppressParentCloseRef.current = true;
+            closeSubmissionModal();
+            setTimeout(() => {
+              suppressParentCloseRef.current = false;
+            }, 100);
+          }}
+          dimmer="false"
+          mountNode={document.body}
         />
       </>
     );

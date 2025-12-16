@@ -13,7 +13,6 @@ import { useMemo, useState } from "react";
 import { Message } from "semantic-ui-react";
 import InnerHTML from "dangerously-set-html-content";
 
-
 const short_desc = "short_desc";
 const file_types = "file_types";
 const action_target = "action_target";
@@ -22,7 +21,7 @@ const page_html = "page_html";
 const start_date = "start_date";
 
 const TYPE_HELP = {
-  individual:`
+  individual: `
     Assigns the same action to each student in the semester group. Completion (green) requires submission by every team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
@@ -35,8 +34,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  team:
-    `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
+  team: `Assigns the same action to each team in the semester group. Completion (green) requires submission by any team member. Student team members can submit actions even if they've previously done so or another team member has submitted. Only coaches, admins, and the submitting student’s team can view submitted actions. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
   <ol>
@@ -49,7 +47,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  coach:`
+  coach: `
   Assigns the same action to each coach in the semester group. Completion (green) requires submission by any coach for the corresponding team. Only coaches, admins can view submitted actions.
   <br><br>
   <b>How to fill this out:</b>
@@ -63,7 +61,7 @@ const TYPE_HELP = {
   </ol>
   <b>Important:</b> If you do not require a form to be filled out (which you would create in the HTML Field), you must request at least one file upload instead.
 `,
-  peer_evaluation:`
+  peer_evaluation: `
   Assigns a peer-evaluation activity. Students complete a structured form; submissions are visible to coaches and admins. All users can see action status and submission time/date.
   <br><br>
   <b>How to fill this out:</b>
@@ -73,7 +71,7 @@ const TYPE_HELP = {
     <li>Use the <b>Question Builder</b> to create items (e.g., table ratings, mood ratings, feedback, peer feedback), then copy the generated HTML into the <b>HTML Field</b>.</li>
   </ol>
 `,
-  student_announcement:`
+  student_announcement: `
   Announcement visible to students. No submissions are required; this is informational only.
   <br><br>
   <b>How to fill this out:</b>
@@ -83,7 +81,7 @@ const TYPE_HELP = {
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
-  coach_announcement:`
+  coach_announcement: `
   Announcement visible to coaches. No submissions are required; this is informational only.
   <br><br>
   <b>How to fill this out:</b>
@@ -93,7 +91,7 @@ const TYPE_HELP = {
     <li>Enter the announcement content in the <b>HTML Field</b> (you can use basic HTML for formatting).</li>
   </ol>
 `,
-  break_period:`
+  break_period: `
   Blocks out a break period where actions are paused/limited. Displays informational text during the specified range.
   <br><br>
   <b>How to fill this out:</b>
@@ -105,7 +103,7 @@ const TYPE_HELP = {
 `,
 };
 const HTML_HELP = {
-    individual: `
+  individual: `
     <h4 style="margin:0 0 .5rem 0;">Individual action: writing instructions & building a simple form</h4>
     <p>
       Use this area to describe the action and (optionally) include a small HTML form students will fill out
@@ -279,46 +277,50 @@ const HTML_HELP = {
   `,
 };
 
-
 export default function ActionPanel(props) {
   const [open, setOpen] = useState(true);
   const [errors, setErrors] = useState([]); // track action form errors
-  
-  let initialState = useMemo(() => ({
-    action_id: props.actionData?.action_id || "",
-    action_title: props.actionData?.action_title || "",
-    semester: props.actionData?.semester || "",
-    action_target: props.actionData?.action_target || "",
-    date_deleted: props.actionData?.date_deleted || "",
-    short_desc: props.actionData?.short_desc || "",
-    start_date: props.actionData?.start_date || "",
-    due_date: props.actionData?.due_date || "",
-    page_html: props.actionData?.page_html || "",
-    file_types: props.actionData?.file_types || "",
-    file_size: props.actionData?.file_size
-    ? humanFileSize(props.actionData?.file_size, false, 0)
-    : "",
-  }), [props.actionData]);
-  
+
+  let initialState = useMemo(
+    () => ({
+      action_id: props.actionData?.action_id || "",
+      action_title: props.actionData?.action_title || "",
+      semester: props.actionData?.semester || "",
+      action_target: props.actionData?.action_target || "",
+      date_deleted: props.actionData?.date_deleted || "",
+      short_desc: props.actionData?.short_desc || "",
+      start_date: props.actionData?.start_date || "",
+      due_date: props.actionData?.due_date || "",
+      page_html: props.actionData?.page_html || "",
+      file_types: props.actionData?.file_types || "",
+      file_size: props.actionData?.file_size
+        ? humanFileSize(props.actionData?.file_size, false, 0)
+        : "",
+    }),
+    [props.actionData],
+  );
+
   let submissionModalMessages = props.create
-  ? {
-    SUCCESS: "The action has been created.",
-    FAIL: "We were unable to create your action.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-  }
-  : {
-    SUCCESS: "The action has been Edited.",
-    FAIL: "We were unable to receive your edits.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
-  };
+    ? {
+        SUCCESS: "The action has been created.",
+        FAIL: "We were unable to create your action.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+      }
+    : {
+        SUCCESS: "The action has been Edited.",
+        FAIL: "We were unable to receive your edits.",
+        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+      };
   let semesterMap = {};
-  
+
   for (let i = 0; i < props.semesterData.length; i++) {
     const semester = props.semesterData[i];
     semesterMap[semester.semester_id] = semester.name;
   }
-  
-  const [selectedType, setSelectedType] = useState(initialState.action_target || "");
+
+  const [selectedType, setSelectedType] = useState(
+    initialState.action_target || "",
+  );
   const isEdit = !props.create;
 
   let submitRoute = props.create
@@ -334,27 +336,33 @@ export default function ActionPanel(props) {
       options: DROPDOWN_ITEMS.actionTarget,
       required: true,
       disabled: isEdit,
-    }];
-    if (selectedType) {
-      formFieldArray.push({
-        type: "note",
-        name: "type_help",
-        content: (
-          <Message info>
-            <div
-              style={{ marginTop: 6 }}
-              dangerouslySetInnerHTML={{
-                __html:
-                  TYPE_HELP[selectedType] ??
-                  "This action type has no description yet.",
-              }}
-            />
-          </Message>
-        ),
-      });
-    }
-    console.log('selectedType =', selectedType, 'ACTION_TARGETS =', ACTION_TARGETS);
-    formFieldArray.push(
+    },
+  ];
+  if (selectedType) {
+    formFieldArray.push({
+      type: "note",
+      name: "type_help",
+      content: (
+        <Message info>
+          <div
+            style={{ marginTop: 6 }}
+            dangerouslySetInnerHTML={{
+              __html:
+                TYPE_HELP[selectedType] ??
+                "This action type has no description yet.",
+            }}
+          />
+        </Message>
+      ),
+    });
+  }
+  console.log(
+    "selectedType =",
+    selectedType,
+    "ACTION_TARGETS =",
+    ACTION_TARGETS,
+  );
+  formFieldArray.push(
     {
       type: "input",
       label: "Action Title",
@@ -385,67 +393,68 @@ export default function ActionPanel(props) {
       placeHolder: "Start Date",
       name: "start_date",
       required: true,
-    }, 
-    );
-    if (
-      selectedType === ACTION_TARGETS.coach_announcement ||
-      selectedType === ACTION_TARGETS.student_announcement ||
-      selectedType === (ACTION_TARGETS.break_period || 'break_period')
-    ) {
-      formFieldArray.push({
-        type: "date",
-        label: "End Date",
-        placeHolder: "End Date",
-        name: "due_date",
-        required: true,
-      });
-} else {
-  // Other actions — Due Dates
-  formFieldArray.push(
-    {
+    },
+  );
+  if (
+    selectedType === ACTION_TARGETS.coach_announcement ||
+    selectedType === ACTION_TARGETS.student_announcement ||
+    selectedType === (ACTION_TARGETS.break_period || "break_period")
+  ) {
+    formFieldArray.push({
+      type: "date",
+      label: "End Date",
+      placeHolder: "End Date",
+      name: "due_date",
+      required: true,
+    });
+  } else {
+    // Other actions — Due Dates
+    formFieldArray.push({
       type: "date",
       label: "Due Date",
       placeHolder: "Due Date",
       name: "due_date",
       required: true,
-    }
-  );
-}
-// I can remove if
-if (selectedType === ACTION_TARGETS.individual ||
+    });
+  }
+  // I can remove if
+  if (
+    selectedType === ACTION_TARGETS.individual ||
     selectedType === ACTION_TARGETS.team ||
     selectedType === ACTION_TARGETS.coach ||
     selectedType === ACTION_TARGETS.coach_announcement ||
-    selectedType === ACTION_TARGETS.student_announcement || 
+    selectedType === ACTION_TARGETS.student_announcement ||
     selectedType === ACTION_TARGETS.peer_evaluation
   ) {
-  formFieldArray.push({
-    type: "note",
-    name: "peer_eval_note",
-    content: (
-      <Message info >
-    <Message.Header>Instructions</Message.Header>
-    <div
-      style={{ marginTop: 6 }}
-      dangerouslySetInnerHTML={{
-        __html: HTML_HELP[selectedType] ?? "This action type has no description yet.",
-      }}
-    />
-  </Message>
-    ),
-  });
-}
-// if (selectedType === ACTION_TARGETS.peer_evaluation) {
-//   // Peer evaluation — add note about form builder
-//   formFieldArray.push(
-//     {
-//     type: "note",
-//     label: "Note: For peer evaluations, the HTML editor will be replaced with a form builder in the future.",
-//     }
-//   );
-// }
-// Now continue adding the rest of the fields INSIDE the array
-formFieldArray.push(
+    formFieldArray.push({
+      type: "note",
+      name: "peer_eval_note",
+      content: (
+        <Message info>
+          <Message.Header>Instructions</Message.Header>
+          <div
+            style={{ marginTop: 6 }}
+            dangerouslySetInnerHTML={{
+              __html:
+                HTML_HELP[selectedType] ??
+                "This action type has no description yet.",
+            }}
+          />
+        </Message>
+      ),
+    });
+  }
+  // if (selectedType === ACTION_TARGETS.peer_evaluation) {
+  //   // Peer evaluation — add note about form builder
+  //   formFieldArray.push(
+  //     {
+  //     type: "note",
+  //     label: "Note: For peer evaluations, the HTML editor will be replaced with a form builder in the future.",
+  //     }
+  //   );
+  // }
+  // Now continue adding the rest of the fields INSIDE the array
+  formFieldArray.push(
     // PLANNING: When the action is a peer-eval, we would replace textArea with our fourm buider
     // Or add a taggle to switch bettwen the html and the form builder
     {
@@ -475,7 +484,7 @@ formFieldArray.push(
       placeHolder: "Active",
       name: "date_deleted",
     },
-);
+  );
 
   // validation for the action form
   const validateForm = (data) => {
@@ -571,7 +580,6 @@ formFieldArray.push(
 
     if (isEdit) data.action_target = initialState.action_target;
     return data;
-
   };
 
   //Processing to be done before data is sent to the backend.
@@ -603,7 +611,7 @@ formFieldArray.push(
       return formData;
     }
   };
-  
+
   if (props.isOpenCallback) {
     return (
       <DatabaseTableEditor
@@ -631,38 +639,50 @@ formFieldArray.push(
         callback={props.callback}
         errors={errors}
         preview={{
-     enabled: true,
-     title: "Action/Announcement Preview",
-     render: (data) => (
-       <div className="ui container">
-         {/* Optional header area */}
-         <div className="ui segment">
-           <h3 style={{ marginTop: 0 }}>{data.action_title || "Untitled"}</h3>
-           {data.short_desc && (
-             <p style={{ opacity: 0.8 }}>{data.short_desc}</p>
-           )}
-           {/* Show which type and dates for clarity */}
-           <div className="ui horizontal list" style={{ marginTop: 8 }}>
-             <div className="item"><strong>Type:</strong>&nbsp;{data.action_target || "—"}</div>
-             {data.start_date && (
-               <div className="item"><strong>Start:</strong>&nbsp;{data.start_date}</div>
-             )}
-             {data.due_date && (
-               <div className="item"><strong>Due:</strong>&nbsp;{data.due_date}</div>
-             )}
-             {data.announcement_end_date && (
-               <div className="item"><strong>End:</strong>&nbsp;{data.announcement_end_date}</div>
-             )}
-           </div>
-         </div>
+          enabled: true,
+          title: "Action/Announcement Preview",
+          render: (data) => (
+            <div className="ui container">
+              {/* Optional header area */}
+              <div className="ui segment">
+                <h3 style={{ marginTop: 0 }}>
+                  {data.action_title || "Untitled"}
+                </h3>
+                {data.short_desc && (
+                  <p style={{ opacity: 0.8 }}>{data.short_desc}</p>
+                )}
+                {/* Show which type and dates for clarity */}
+                <div className="ui horizontal list" style={{ marginTop: 8 }}>
+                  <div className="item">
+                    <strong>Type:</strong>&nbsp;{data.action_target || "—"}
+                  </div>
+                  {data.start_date && (
+                    <div className="item">
+                      <strong>Start:</strong>&nbsp;{data.start_date}
+                    </div>
+                  )}
+                  {data.due_date && (
+                    <div className="item">
+                      <strong>Due:</strong>&nbsp;{data.due_date}
+                    </div>
+                  )}
+                  {data.announcement_end_date && (
+                    <div className="item">
+                      <strong>End:</strong>&nbsp;{data.announcement_end_date}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-         {/* Render the HTML exactly as it will appear */}
-         <div className="ui segment">
-           <InnerHTML html={data.page_html || "<p><i>No HTML content yet.</i></p>"} />
-         </div>
-       </div>
-     ),
-   }}
+              {/* Render the HTML exactly as it will appear */}
+              <div className="ui segment">
+                <InnerHTML
+                  html={data.page_html || "<p><i>No HTML content yet.</i></p>"}
+                />
+              </div>
+            </div>
+          ),
+        }}
       />
     );
   } else {

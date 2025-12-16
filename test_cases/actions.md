@@ -149,7 +149,7 @@ Functionality is the same process for submission as an “Individual” action, 
 7. Once the action has been created we should be able to see it in the same “Action / Announcement / Peer Eval / Break Period” dropdown.
    ![Create Action Modal 4](images/createactionmodal4.png)
 
-8. Additionally, the freshly created action should be visible in the dashboard to the admin and all of the semester-related students and coaches. 
+8. Additionally, the freshly created action should be visible in the dashboard to the admin and all of the semester-related students and coaches.
    ![Create Action 1](images/createaction1.png)
    ![Create Action 2](images/createaction2.png)
 
