@@ -1,0 +1,6 @@
+# Accessibility Guidelines
+The [Web Content Accessibility Guidelines](https://www.w3.org/WAI/standards-guidelines/wcag/) (WCAG) are a great resource for making accessibility decisions and should be referenced when considering whether or not a certain part of the website is accessible.
+
+For the purpose of accessibility, every feature in this website should be usable without using a mouse. Ensure that any element that can be interacted with using the mouse is selectable using the keyboard through tab navigation. [A relevent WCAG article explaining this](https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html). For this purpose, when making an element that is meant to be clickable, do not make it a \<div\> with some sort of on-click behavior, as this will typically not be selectable with the keyboard. Use a button so that it is selectable with the keyboard by default.
+
+Any text should have a suitable amount of contrast so that it is legible to users with vision related impairments. [Relevent WCAG Article on Contrast](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum)
