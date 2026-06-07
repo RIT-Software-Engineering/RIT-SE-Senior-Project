@@ -73,7 +73,12 @@ export default function SponsorNote(props) {
           data.previous_note = props.note.previous_note;
           return data;
         }}
-        callback={props.callback}
+        callback={(didSave) => {
+          // didSave === true when response.status === 200 in DatabaseTableEditor
+          if (props.callback) {
+            props.callback(didSave);
+          }
+        }}
       />
     </div>
   );

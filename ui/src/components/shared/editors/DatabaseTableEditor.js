@@ -43,9 +43,11 @@ export default function DatabaseTableEditor(props) {
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
   const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
-
+  const ignoreNextChangeRef = useRef(false);
   const formRef = useRef(null); // maintain the current form data in the case of submission error
   const [formTouched, setFormTouched] = useState(false);
+  const [readyToMark, setReadyToMark] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   // Update initial state if provided initial state is changed
   useEffect(() => {
     setFormData(initialState);
@@ -83,7 +85,7 @@ export default function DatabaseTableEditor(props) {
       case MODAL_STATUS.SUBMISSION_ERROR:
         return {
           header: "Invalid Submission",
-          content: submissionModalMessages["SUBMISSON_ERROR"],
+          content: submissionModalMessages["SUBMISSION_ERROR"],
           actions: [
             {
               content: "Cancel",
@@ -109,12 +111,20 @@ export default function DatabaseTableEditor(props) {
         return;
     }
   };
-
   const closeSubmissionModal = () => {
     switch (submissionModalOpen) {
       case MODAL_STATUS.SUCCESS:
         setErrors([]);
+        setFormTouched(false); // ✅ Reset touched state FIRST
+        setReadyToMark(false); // ✅ ADD THIS
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+        setOpen(false); // Close the editor modal
+
+        // ✅ Call callback AFTER state updates
+        if (props.callback) {
+          props.callback(true);
+        }
+
         if (props.reload) {
           props.reloadData();
         }
@@ -122,6 +132,10 @@ export default function DatabaseTableEditor(props) {
       case MODAL_STATUS.FAIL:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
+
+        if (props.callback) {
+          props.callback(false);
+        }
         break;
       case MODAL_STATUS.SUBMISSION_ERROR:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
@@ -195,7 +209,11 @@ export default function DatabaseTableEditor(props) {
     }
   }
   const markFormAsTouched = () => {
-    if (!props.viewOnly) {
+    if (ignoreNextChangeRef.current) {
+      ignoreNextChangeRef.current = false; // consume it
+      return;
+    }
+    if (!props.viewOnly && readyToMark) {
       setFormTouched(true);
     }
   };
@@ -237,14 +255,14 @@ export default function DatabaseTableEditor(props) {
     })
       .then((response) => {
         if (response.status === 200) {
+          ignoreNextChangeRef.current = true;
+          setFormTouched(false);
+          setReadyToMark(false);
           setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
           formRef.current = null;
         } else {
           setSubmissionModalOpen(MODAL_STATUS.FAIL);
           formRef.current = null;
-        }
-        if (props.callback) {
-          props.callback();
         }
       })
       .catch((error) => {
@@ -705,6 +723,10 @@ export default function DatabaseTableEditor(props) {
       }
     }
   }
+  // Check if the form is locked by checking if any field with name "synopsis" is disabled
+  const isProjectLocked = formFieldArray.some(
+    (field) => field.name === "synopsis" && field.disabled,
+  );
 
   const modalActions = () => {
     let mock = false;
@@ -760,9 +782,9 @@ export default function DatabaseTableEditor(props) {
   }
 
   // Check if the form is locked by checking if any field with name "synopsis" is disabled
-  const isProjectLocked = formFieldArray.some(
-    (field) => field.name === "synopsis" && field.disabled,
-  );
+  // const isProjectLocked = formFieldArray.some(
+  //   (field) => field.name === "synopsis" && field.disabled,
+  // );
 
   if (props.isOpenCallback) {
     return (
@@ -774,6 +796,16 @@ export default function DatabaseTableEditor(props) {
           closeIcon={true}
           trigger={trigger}
           onClose={() => {
+            if (justSaved) {
+              // We just successfully saved; close without any confirmation.
+              setFormTouched(false);
+              setJustSaved(false);
+              setOpen(false);
+              if (props.isOpenCallback) {
+                props.isOpenCallback(false);
+              }
+              return;
+            }
             // Check if form has been touched before closing
             if (formTouched && !props.viewOnly) {
               confirmAlert({
@@ -829,6 +861,9 @@ export default function DatabaseTableEditor(props) {
             setOpen(true);
             props.isOpenCallback(true);
             setFormTouched(false); // Reset when opening
+            setReadyToMark(false); // ✅ ADD THIS
+            setTimeout(() => setReadyToMark(true), 250); // ✅ ADD THIS
+            setJustSaved(false);
           }}
           open={open}
           header={props.header}
@@ -880,6 +915,16 @@ export default function DatabaseTableEditor(props) {
           closeIcon={true}
           trigger={trigger}
           onClose={() => {
+            if (justSaved) {
+              // We just successfully saved; close without any confirmation.
+              setFormTouched(false);
+              setJustSaved(false);
+              setOpen(false);
+              if (props.isOpenCallback) {
+                props.isOpenCallback(false);
+              }
+              return;
+            }
             // Check if form has been touched before closing
             if (formTouched && !props.viewOnly) {
               confirmAlert({
@@ -932,6 +977,9 @@ export default function DatabaseTableEditor(props) {
           onOpen={() => {
             setOpen(true);
             setFormTouched(false);
+            setReadyToMark(false); // ✅ ADD THIS
+            setTimeout(() => setReadyToMark(true), 250); // ✅ ADD THIS
+            setJustSaved(false);
           }}
           open={open}
           header={props.header}
