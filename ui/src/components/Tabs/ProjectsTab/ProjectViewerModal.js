@@ -80,15 +80,36 @@ export default function ProjectViewerModal(props) {
                 `}
         </style>
         <h3>Team members</h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/* <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <b>Students:</b>{" "}
           {projectMembers.students?.map((s) => (
             <ProfileCircle key={s} name={s} showFullName size="tiny" />
           ))}{" "}
           <br />
+        </div> */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+          }}
+        >
+          <b style={{ marginRight: "10px" }}>Students:</b>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+            }}
+          >
+            {projectMembers.students?.map((s) => (
+              <ProfileCircle key={s} name={s} showFullName size="tiny" />
+            ))}
+          </div>
         </div>
         <br />
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/* <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <b>Coaches:</b>{" "}
           {projectMembers.coaches?.map((c) => (
             <ProfileCircle
@@ -100,6 +121,33 @@ export default function ProjectViewerModal(props) {
             />
           ))}{" "}
           <br />
+        </div> */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+          }}
+        >
+          <b style={{ marginRight: "10px" }}>Coaches:</b>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+            }}
+          >
+            {projectMembers.coaches?.map((c) => (
+              <ProfileCircle
+                key={c}
+                name={c}
+                isStudent={false}
+                showFullName
+                size="tiny"
+              />
+            ))}
+          </div>
         </div>
         <h3>Website</h3>
         <b>URL:</b> {URL} <br />
@@ -110,11 +158,12 @@ export default function ProjectViewerModal(props) {
         <b>Email:</b> {decode(props.project.contact_email || "")} <br />
         <b>Phone:</b> {decode(props.project.contact_phone || "")} <br />
         <h3>Project Info</h3>
-        <pre
+        <div
           style={{
-            overflowX: "auto",
             whiteSpace: "pre-wrap",
             wordWrap: "break-word",
+            width: "100%",
+            maxWidth: "100%",
           }}
         >
           <b>Original Submission Date:</b>
@@ -170,7 +219,7 @@ export default function ProjectViewerModal(props) {
           <b>Status: </b>
           {decode(props.project.status || "")}
           <br />
-        </pre>
+        </div>
         <h3>Attachments</h3>
         {props.project.attachments ? (
           formattedAttachments(props.project)?.map((file) => {
