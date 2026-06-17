@@ -353,7 +353,7 @@ export default function ActionModal(props) {
           }
           if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
             errors.push(
-              `radio option selection "${formDataInputs[x].name}" is required`,
+              `"${formDataInputs[x].name}" is required`,
             );
             errorsSet.add(formDataInputs[x].name);
           }
