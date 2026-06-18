@@ -193,7 +193,7 @@ export default function WebsiteViewerModal(props) {
                 </div>
               )
             }
-            <div className="ui hidden divider"></div>
+            <div className="ui invisible divider"></div>
             <div className="ui relaxed centered grid">
               {archive?.poster_thumb && (
                 <img
@@ -269,7 +269,7 @@ export default function WebsiteViewerModal(props) {
                 </Modal.Actions>
               </Modal>
             </div>
-            <div className="ui hidden divider"></div>
+            <div className="ui invisible divider"></div>
             <div className="ui attached stackable padded grid">
               <div className="two column row">
                 <div className="column">
@@ -296,7 +296,7 @@ export default function WebsiteViewerModal(props) {
                 </div>
               </div>
             </div>
-            <div className="ui hidden divider"></div>
+            <div className="ui invisible divider"></div>
             <div className="ui attached stackable padded grid">
               <div className="column">
                 <div className="ui small header">Synopsis</div>
