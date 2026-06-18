@@ -6,7 +6,7 @@ const PDFDoc = require("pdfkit");
 const fs = require("fs");
 const fse = require("fs-extra");
 const path = require("path");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const fileSizeParser = require("filesize-parser");
 const he = require("he");
 const { convert } = require("html-to-text");
@@ -298,7 +298,7 @@ module.exports = (db) => {
 
       const active =
         body.active === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
@@ -364,7 +364,7 @@ module.exports = (db) => {
             user.type,
             user.semester_group === "" ? null : user.semester_group,
             user.active.toLocaleLowerCase() === "false"
-              ? moment().format(CONSTANTS.datetime_format)
+              ? dayjs().format(CONSTANTS.datetime_format)
               : "",
             defaultProfileInfo,
           ];
@@ -431,7 +431,7 @@ module.exports = (db) => {
 
       const active =
         body.active === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
@@ -919,7 +919,7 @@ module.exports = (db) => {
                                     WHERE archive_id = ?`;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const locked =
@@ -928,7 +928,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const checkBox = (data) => {
@@ -998,7 +998,7 @@ module.exports = (db) => {
       let body = req.body;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const locked =
         body.locked === "true"
@@ -1006,7 +1006,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
@@ -1086,7 +1086,7 @@ module.exports = (db) => {
                                     WHERE archive_id = ?`;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const locked =
@@ -1095,7 +1095,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       let files_uploaded = [];
@@ -1256,7 +1256,7 @@ module.exports = (db) => {
       let body = req.body;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const locked =
         body.locked === "true"
@@ -1264,7 +1264,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
@@ -3292,7 +3292,7 @@ module.exports = (db) => {
 
       const date_deleted =
         body.date_deleted === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const parsedFileSize = body.file_size
         ? fileSizeParser(body.file_size)
@@ -3855,7 +3855,7 @@ module.exports = (db) => {
 
       const date_deleted =
         body.date_deleted === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const parsedFileSize = body.file_size
         ? fileSizeParser(body.file_size)
