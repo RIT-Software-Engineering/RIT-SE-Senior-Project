@@ -55,12 +55,12 @@ export default function Proposals(props) {
   useEffect(() => {
     const newProposalData = {
       proposals: props.proposalData,
-      column: COLUMNS.DATE,
-      direction: DESCENDING,
+      column: COLUMNS.SEMESTER,
     };
-    newProposalData.proposals = _.sortBy(newProposalData.proposals, [
-      COLUMNS.DATE,
-    ]);
+    newProposalData.proposals = _.sortBy(
+      newProposalData.proposals,
+      COLUMNS.SEMESTER,
+    ).reverse();
     setProposalData(newProposalData);
 
     // For All Projects view with user projects list, create simple permissions map
