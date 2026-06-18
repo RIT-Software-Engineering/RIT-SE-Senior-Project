@@ -11,6 +11,11 @@ a.ui.button {
   margin-bottom: 0.5em;
 }
 
+.button:focus {
+  outline: medium auto;
+  outline-color: auto;
+}
+
 .ui.dimmer .ui.workaround.loader {
   color: var(--text-primary);
 }

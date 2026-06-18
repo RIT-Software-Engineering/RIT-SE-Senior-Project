@@ -26,6 +26,7 @@ import InnerHTML from "dangerously-set-html-content";
 import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import { QuestionComponentsMap } from "../../../../util/components/PeerEvalComponents";
+import "./../../../../../css/utils/helpers.css"
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -476,6 +477,7 @@ export default function ActionModal(props) {
       ` This action can be submitted on ${formatDateTime(props.start_date)}`
     ) : (
       <Button
+        className="offset-outline"
         content={
           user.isMock
             ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
@@ -580,6 +582,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            className="offset-outline"
             color="grey"
             onClick={() => {
               onActionCancel();
@@ -672,6 +675,7 @@ export default function ActionModal(props) {
         </Modal.Content>
         <Modal.Actions>
           <Button
+            className="offset-outline"
             color="grey"
             onClick={() => {
               onActionCancel();
