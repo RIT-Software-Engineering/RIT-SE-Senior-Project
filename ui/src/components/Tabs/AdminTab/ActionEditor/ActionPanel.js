@@ -207,13 +207,28 @@ export default function ActionPanel(props) {
       }
     }
 
-    // check whether Active checkbox is checked or not.
-    // if (data.date_deleted === false) {
-    //   errorsFound.push({
-    //     name: "date_deleted",
-    //     message: "Please check the Active box",
-    //   });
-    // }
+    // Upload file validation
+    if (
+      data.action_target !== "peer_evaluation" &&
+      data.action_target !== "student_announcement" &&
+      data.action_target !== "coach_announcement" &&
+      data.action_target !== "break_period"
+    ) {
+      if (!data.file_types?.trim()) {
+        errorsFound.push({
+          name: "file_types",
+          message: "Please provide at least one allowed file type.",
+        });
+      }
+
+      if (!data.file_size?.trim()) {
+        errorsFound.push({
+          name: "file_size",
+          message: "Please provide a file upload size limit.",
+        });
+      }
+    }
+
     return errorsFound; // no errors found
   };
 

@@ -81,7 +81,17 @@ export default function DatabaseTableEditor(props) {
       case MODAL_STATUS.SUBMISSION_ERROR:
         return {
           header: "Invalid Submission",
-          content: submissionModalMessages["SUBMISSON_ERROR"],
+          content: (
+            <>
+              <p>Please fix the following errors:</p>
+
+              <ul>
+                {errors.map((err) => (
+                  <li key={err.name}>{err.message}</li>
+                ))}
+              </ul>
+            </>
+          ),
           actions: [
             {
               content: "Cancel",
