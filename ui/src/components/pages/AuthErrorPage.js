@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Icon, Message, Container } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
+import "./../../css/components/pages/AuthError.css";
 
 function AuthErrorPage() {
   const history = useHistory();
@@ -19,29 +20,22 @@ function AuthErrorPage() {
   };
 
   return (
-    <Container style={{ marginTop: "2rem" }}>
-      <div style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto" }}>
+    <Container className="autherror-container">
+      <div className="autherror-content">
         <Icon
           name="user times"
           size="huge"
-          color="red"
-          style={{ marginBottom: "1rem" }}
+          className="autherror-icon"
         />
 
         <Message
           error
-          style={{
-            fontSize: "1.1rem",
-            textAlign: "center",
-            padding: "2rem",
-            border: "2px solid #e53935",
-            borderRadius: "8px",
-          }}
+          className="autherror-message"
         >
-          <Message.Header style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
+          <Message.Header className="autherror-message-header">
             Account Access Denied
           </Message.Header>
-          <p style={{ marginBottom: "1rem" }}>
+          <p className="autherror-message-p">
             Sorry, this user does not have an active account or has been
             deactivated.
           </p>
@@ -51,12 +45,12 @@ function AuthErrorPage() {
           </p>
         </Message>
 
-        <div style={{ marginTop: "2rem" }}>
+        <div className="autherror-div">
           <Button
             primary
             size="large"
             onClick={handleGoHome}
-            style={{ marginRight: "1rem" }}
+            className="autherror-button"
           >
             <Icon name="home" />
             Go to Home Page
