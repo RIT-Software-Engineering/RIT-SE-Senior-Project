@@ -1,0 +1,27 @@
+.stack-trace-error-page{
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.stack-trace-error-color{
+    color: var(--action-bar-proposal-red);
+}
+
+.stack-trace-error-info{
+    background: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.stack-trace-error-detail{
+    margin-top: 10px;
+}
+
+.stack-trace-error-detail-summary{
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--text-primary);
+}

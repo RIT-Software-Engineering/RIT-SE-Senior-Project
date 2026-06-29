@@ -70,35 +70,21 @@ const StackTraceErrorPage = () => {
 
   return (
     <div
-      style={{
-        maxWidth: "600px",
-        margin: "50px auto",
-        textAlign: "center",
-        fontFamily: "Arial, sans-serif",
-      }}
+      className="stack-trace-error-page"
     >
-      <h1 style={{ color: "var(--action-bar-proposal-red)" }}>
+      <h1 className="stack-trace-error-color">
         ⚠️ An Error Occurred
       </h1>
       {errorInfo ? (
         <div
-          style={{
-            background: "var(--bg-secondary)",
-            padding: "15px",
-            borderRadius: "8px",
-            textAlign: "left",
-          }}
+          className="stack-trace-error-info"
         >
-          <h2 style={{ color: "var(--action-bar-proposal-red)" }}>
+          <h2 className="stack-trace-error-color">
             Error: {errorInfo.error}
           </h2>
-          <details style={{ marginTop: "10px" }}>
+          <details className="stack-trace-error-detail">
             <summary
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                color: "var(--text-primary)",
-              }}
+              className="stack-trace-error-detail-summary"
             >
               View Stack Trace
             </summary>

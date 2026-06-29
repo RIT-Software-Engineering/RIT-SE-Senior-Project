@@ -57,11 +57,11 @@ function AuthErrorPage() {
           </Button>
         </div>
 
-        <div style={{ marginTop: "2rem", fontSize: "0.9rem", color: "#666" }}>
+        <div className="autherror-style">
           <p>
             <strong>Common reasons for access denial:</strong>
           </p>
-          <ul style={{ textAlign: "left", display: "inline-block" }}>
+          <ul className="autherror-textalign">
             <li>Your account has been deactivated by an administrator</li>
             <li>You are not registered in the system</li>
             <li>There was a problem with a third party authenticator</li>
