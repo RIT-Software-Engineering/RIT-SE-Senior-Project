@@ -89,13 +89,7 @@ const StackTraceErrorPage = () => {
               View Stack Trace
             </summary>
             <pre
-              style={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-                background: "var(--bg-secondary)",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
+              className="stack-trace-error-detail-summary2"
             >
               {errorInfo.componentStack}
             </pre>
@@ -105,9 +99,9 @@ const StackTraceErrorPage = () => {
         <p>No error details available.</p>
       )}
 
-      <div style={{ marginTop: "20px" }}>
+      <div className="stack-trace-error-detail-div">
         <p
-          style={{ fontSize: "14px", color: "var(--action-bar-proposal-red)" }}
+          className="stack-trace-error-detail-p"
         >
           ⚠️ A GitHub account is required to report an issue.
         </p>
@@ -118,10 +112,7 @@ const StackTraceErrorPage = () => {
 
       {userFeedback && (
         <p
-          style={{
-            marginTop: "10px",
-            color: "var(--action-bar-proposal-green)",
-          }}
+          className="stack-trace-error-userfeedback"
         >
           {userFeedback}
         </p>

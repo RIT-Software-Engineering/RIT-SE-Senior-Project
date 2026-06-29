@@ -25,3 +25,25 @@
     font-weight: bold;
     color: var(--text-primary);
 }
+
+.stack-trace-error-detail-summary2{
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--bg-secondary);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.stack-trace-error-detail-div{
+    margin-top: 20px;
+}
+
+.stack-trace-error-detail-p{
+    font-size: 14px;
+    color: var(--action-bar-proposal-red);
+}
+
+.stack-trace-error-userfeedback{
+    margin-top: 14px;
+    color: var(--action-bar-proposal-green);
+}
