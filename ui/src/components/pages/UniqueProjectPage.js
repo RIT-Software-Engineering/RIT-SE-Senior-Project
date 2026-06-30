@@ -6,6 +6,8 @@ import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
+import "./../../css/components/pages/UniqueProjectPage.css";
+
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
@@ -27,7 +29,7 @@ let generateProfiles = (stringUsers, isStudent = true) => {
   if (!stringUsers) return [];
   return (
     <p
-      style={{ display: "flex", gap: "0.5em", width: "100%", flexWrap: "wrap" }}
+      className="unique-project-page-proposal"
     >
       {listNames(stringUsers).map((user, idx) => (
         <ProfileCircle

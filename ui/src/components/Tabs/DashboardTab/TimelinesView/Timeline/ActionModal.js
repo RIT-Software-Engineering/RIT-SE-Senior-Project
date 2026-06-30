@@ -569,12 +569,7 @@ export default function ActionModal(props) {
           </Modal.Description>
           <Modal
             closeOnDimmerClick={false}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
+            className="actionmodal-modal"
             open={!!submissionModalOpen}
             {...generateModalFields()}
             onClose={() => closeSubmissionModal()}
@@ -662,12 +657,7 @@ export default function ActionModal(props) {
           </Modal.Description>
           <Modal
             closeOnDimmerClick={false}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
+            className="actionmodal-modal"
             open={!!submissionModalOpen}
             {...generateModalFields()}
             onClose={() => closeSubmissionModal()}

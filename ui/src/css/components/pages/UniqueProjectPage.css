@@ -1,0 +1,9 @@
+
+
+
+.unique-project-page-profile{
+    display: flex;
+    gap: 0.5em;
+    width: 100%;
+    flex-wrap: wrap;
+}
