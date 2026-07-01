@@ -195,3 +195,7 @@ td.attachments {
   background-color: var(--bg-footer-header) !important;
   color: var(--text-primary) !important;
 }
+
+.proposal-height{
+  height: 150px;
+}

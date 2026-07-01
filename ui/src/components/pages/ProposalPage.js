@@ -394,7 +394,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.background_info || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -433,7 +433,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.project_description || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -472,7 +472,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.project_scope || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -511,7 +511,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.project_challenges || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -550,7 +550,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.constraints_assumptions || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -577,7 +577,7 @@ function ProposalPage() {
           ref={(el) => (quill.current = el)}
           value={formData.sponsor_provided_resources || ""}
           formats={formats}
-          style={{ height: "150px" }}
+          className="proposal-height"
           onChange={(value) => {
             setActualFormData({
               ...formData,
@@ -625,7 +625,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.sponsor_deliverables || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -652,7 +652,7 @@ function ProposalPage() {
           ref={(el) => (quill.current = el)}
           value={formData.proprietary_info || ""}
           formats={formats}
-          style={{ height: "150px" }}
+          className="proposal-height"
           onChange={(value) => {
             setActualFormData({
               ...formData,

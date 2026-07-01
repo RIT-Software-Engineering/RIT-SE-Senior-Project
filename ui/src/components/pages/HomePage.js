@@ -5,6 +5,8 @@ import { Icon, Button } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
+import "./../../css/components/pages/Homepage.css";
+
 
 const PROJECTS_PER_PAGE = 5;
 
@@ -60,7 +62,7 @@ function HomePage() {
         <h2>Exemplary Projects</h2>
       </div>
       <div className="ui invisible divider"></div>
-      <div id="exemplaryProjectsDiv" style={{ marginBottom: "75px" }}>
+      <div id="exemplaryProjectsDiv" className="homepage-exemplary">
         {/* <!-- Attach exemplary project elements here --> */}
         {projects.map((project, idx) => {
           return <ExemplaryProject project={project} key={idx} />;
