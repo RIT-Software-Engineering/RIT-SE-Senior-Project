@@ -1,0 +1,17 @@
+
+
+
+.exemplary-generate-profile{
+    display: flex;
+    gap: 0.5em;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.exemplary-column{
+    float: right;
+}
+
+.exemplary-column-style{
+    border: 3px solid rgb(221, 221, 221);
+}

@@ -4,6 +4,7 @@ import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
+import "./../../css/components/shared/exemplary.css"
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -48,12 +49,7 @@ function ExemplaryProject({ project }) {
     if (!stringUsers) return [];
     return (
       <div
-        style={{
-          display: "flex",
-          gap: "0.5em",
-          width: "100%",
-          flexWrap: "wrap",
-        }}
+        className="exemplary-generate-profile"
       >
         {listNames(stringUsers).map((user, idx) => (
           <ProfileCircle
@@ -91,7 +87,7 @@ function ExemplaryProject({ project }) {
                     <Icon
                       name="trophy"
                       title={award}
-                      style={{ float: "right" }}
+                      className="exemplary-column"
                     />
                   );
                 })}
@@ -104,7 +100,7 @@ function ExemplaryProject({ project }) {
           <div className="column">
             <img
               src={`${basePosterURL}${project.poster_thumb}`}
-              style={{ border: "3px solid rgb(221, 221, 221)" }}
+              className="exemplary-column-style"
               alt="Project Poster"
             />
           </div>

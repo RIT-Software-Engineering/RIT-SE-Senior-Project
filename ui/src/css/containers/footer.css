@@ -38,3 +38,10 @@
   background-color: var(--bg-footer-header);
   color: var(--bg-primary);
 }
+
+
+.footer-college-logo{
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+}

@@ -47,11 +47,7 @@ function Footer() {
               <img
                 src={collegeLogo}
                 alt="Golisano College of Computing & Information Sciences"
-                style={{
-                  maxWidth: "200px",
-                  width: "100%",
-                  height: "auto",
-                }}
+                className="footer-college-logo"
               />
             </div>
             <div className="column">
