@@ -7,3 +7,16 @@
     width: 100%;
     flex-wrap: wrap;
 }
+
+.unique-project-direction{
+    float: right;
+}
+
+.unique-project-zoom{
+    cursor: zoom-in;
+    padding: 5px;
+}
+
+.unique-project-whitespace{
+    white-space: pre-line;
+}

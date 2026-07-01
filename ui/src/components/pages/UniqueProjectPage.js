@@ -103,7 +103,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Outstanding"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-project-direction"
             />
           )}
           {project?.creative === 1 && (
@@ -111,7 +111,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Creative"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-project-direction"
             />
           )}
           {
@@ -131,7 +131,7 @@ function UniqueProjectPage({ projectData }) {
               <img
                 src={`${basePosterURL}${project?.poster_thumb}`}
                 height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-project-zoom"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -176,7 +176,7 @@ function UniqueProjectPage({ projectData }) {
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
                 height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-project-zoom"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />
@@ -232,7 +232,7 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui attached stackable padded grid">
             <div className="column">
               <div className="ui small header">Synopsis</div>
-              <p style={{ whiteSpace: "pre-line" }}>
+              <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
               </p>
             </div>

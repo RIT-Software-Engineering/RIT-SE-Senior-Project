@@ -199,3 +199,8 @@ td.attachments {
 .proposal-height{
   height: 150px;
 }
+
+.proposal-font{
+  font-weight: bold;
+  font-size: 13px;
+}

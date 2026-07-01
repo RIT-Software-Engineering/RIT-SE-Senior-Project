@@ -569,7 +569,7 @@ function ProposalPage() {
         <br />
 
         <br />
-        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
+        <div className="proposal-font">
           Sponsor Provided Resources
         </div>
         <br />
@@ -644,7 +644,7 @@ function ProposalPage() {
         <br />
 
         <br />
-        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
+        <div className="proposal-font">
           Proprietary Information
         </div>
         <br />
