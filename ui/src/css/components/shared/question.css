@@ -1,0 +1,26 @@
+
+
+.question-list{
+    width: auto;
+}
+
+.question-form{
+    position: sticky;
+    top: 5%;
+    left: 0%;
+}
+
+.question-column{
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.question-modal{
+    position: sticky;
+    top: 35%;
+    left: 0%;
+}
+
+.question-row{
+    margin-top: -35px;
+}

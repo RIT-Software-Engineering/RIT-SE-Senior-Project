@@ -24,6 +24,7 @@ import {
   QuestionTable,
 } from "../../util/components/PeerEvalComponents";
 import HTMLEditor from "../../util/components/HTMLEditor";
+import "./../../css/components/shared/question.css"
 
 const mockStudents = ["Student 1", "Student 2", "Student 3"];
 
@@ -465,7 +466,7 @@ const QuestionBuilder = (props) => {
                           });
                           updateQuestion(index, "levels", updatedLevels);
                         }}
-                        style={{ width: "auto" }}
+                        className="question-list"
                       />
                     </List.Item>
                   );
@@ -651,11 +652,7 @@ const QuestionBuilder = (props) => {
         closeOnEscape={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        style={{
-          position: "sticky",
-          top: "5%",
-          left: "0%",
-        }}
+        className="question-form"
         size="large"
       >
         <Modal.Header>Question Form Builder</Modal.Header>
@@ -778,10 +775,7 @@ const QuestionBuilder = (props) => {
               {/*Question Form*/}
               <Grid.Column
                 width={12}
-                style={{
-                  overflowY: "auto",
-                  maxHeight: "600px",
-                }}
+                className="question-column"
               >
                 {questions.map(renderQuestionForm)}
 
@@ -817,11 +811,7 @@ const QuestionBuilder = (props) => {
         closeOnDimmerClick={false}
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
-        style={{
-          position: "sticky",
-          top: "35%",
-          left: "0%",
-        }}
+        className="question-modal"
       >
         <Modal.Header>Form Preview</Modal.Header>
         <Modal.Content scrolling>{renderPreviewForm()}</Modal.Content>
@@ -849,7 +839,7 @@ const QuestionBuilder = (props) => {
             </Grid.Column>
           </Grid.Row>
 
-          <Grid.Row style={{ marginTop: "-35px" }}>
+          <Grid.Row className="question-row">
             <Grid.Column>
               <HTMLEditor
                 field={field}
