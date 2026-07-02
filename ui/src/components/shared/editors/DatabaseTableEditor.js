@@ -17,6 +17,7 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
+import "./../../css/components/shared/profileModal.css"
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -497,7 +498,7 @@ export default function DatabaseTableEditor(props) {
           if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{ color: "lightgray" }}>{field.label}</label>
+                <label className="database-color">{field.label}</label>
                 <Form.Checkbox
                   label={field["label"]}
                   checked={!!formData[field["name"]]}
@@ -547,7 +548,7 @@ export default function DatabaseTableEditor(props) {
           if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{ color: "lightgray" }}>{field.label}</label>
+                <label className="database-color">{field.label}</label>
                 <input
                   type="file"
                   onChange={(event) => handleUpload(event, field.name)}
