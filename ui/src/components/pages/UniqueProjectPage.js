@@ -8,13 +8,10 @@ import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/pages/UniqueProjectPage.css";
 
-
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
-
-const CONTENT_HEIGHT = 250;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -28,9 +25,7 @@ const listNames = (nameString) => {
 let generateProfiles = (stringUsers, isStudent = true) => {
   if (!stringUsers) return [];
   return (
-    <p
-      className="unique-project-page-proposal"
-    >
+    <p className="unique-project-page-profile">
       {listNames(stringUsers).map((user, idx) => (
         <ProfileCircle
           key={idx}
@@ -130,8 +125,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.poster_thumb && (
               <img
                 src={`${basePosterURL}${project?.poster_thumb}`}
-                height={CONTENT_HEIGHT}
-                className="unique-project-zoom"
+                className="unique-project-zoom unique-project-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -165,7 +159,7 @@ function UniqueProjectPage({ projectData }) {
               </Modal.Actions>
             </Modal>
             {project?.video && (
-              <video controls height={CONTENT_HEIGHT}>
+              <video controls className="unique-project-media">
                 <source
                   src={`${baseVideoURL}${project?.video}`}
                   type="video/mp4"
@@ -175,8 +169,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.archive_image && (
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
-                height={CONTENT_HEIGHT}
-                className="unique-project-zoom"
+                className="unique-project-zoom unique-project-media"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />

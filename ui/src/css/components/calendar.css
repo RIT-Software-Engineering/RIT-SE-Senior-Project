@@ -165,7 +165,8 @@
 
 .dark-mode .calendar-action {
   color: var(--text-primary);
-  opacity: 1 !important; /* Ensure opacity is always 1 in dark mode too */
+  opacity: 1 !important;
+  /* Ensure opacity is always 1 in dark mode too */
 }
 
 .dark-mode .nav-button {

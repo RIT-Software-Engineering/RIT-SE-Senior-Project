@@ -106,7 +106,7 @@ export default function DashboardPage() {
             key: "Admin-Tab",
             content: (
               <>
-                <i className="cog icon" style={{ marginRight: 5 }} />
+                <i className="cog icon dashboard-menu-icon" />
                 Admin
               </>
             ),
@@ -134,7 +134,7 @@ export default function DashboardPage() {
             key: "Sponsors-Tab",
             content: (
               <>
-                <i className="handshake icon" style={{ marginRight: 5 }} />
+                <i className="handshake icon dashboard-menu-icon" />
                 Sponsors
               </>
             ),
@@ -153,7 +153,7 @@ export default function DashboardPage() {
             key: "Coaches-Tab",
             content: (
               <>
-                <i className="graduation cap icon" style={{ marginRight: 5 }} />
+                <i className="graduation cap icon dashboard-menu-icon" />
                 Coaches
               </>
             ),
@@ -175,7 +175,7 @@ export default function DashboardPage() {
             key: "Students-Tab",
             content: (
               <>
-                <i className="users icon" style={{ marginRight: 5 }} />
+                <i className="users icon dashboard-menu-icon" />
                 Students
               </>
             ),
@@ -192,7 +192,7 @@ export default function DashboardPage() {
             key: "Projects-Tab",
             content: (
               <>
-                <i className="folder open icon" style={{ marginRight: 5 }} />
+                <i className="folder open icon dashboard-menu-icon" />
                 Projects
               </>
             ),
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             key: "Logging-Tab",
             content: (
               <>
-                <i className="clock outline icon" style={{ marginRight: 5 }} />
+                <i className="clock outline icon dashboard-menu-icon" />
                 Logging
               </>
             ),
@@ -233,7 +233,7 @@ export default function DashboardPage() {
             key: "Dashboard-Tab",
             content: (
               <>
-                <i className="dashboard icon" style={{ marginRight: 5 }} />
+                <i className="dashboard icon dashboard-menu-icon" />
                 Dashboard
               </>
             ),

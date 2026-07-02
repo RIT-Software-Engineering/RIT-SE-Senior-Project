@@ -1,5 +1,11 @@
+.homepage-exemplary {
+  margin-bottom: 75px;
+}
 
+.homepage-panel {
+  margin-bottom: 20px;
+}
 
-.homepage-exemplary{
-    margin-bottom: 75px;
+.homepage-view-more-btn {
+  float: right;
 }

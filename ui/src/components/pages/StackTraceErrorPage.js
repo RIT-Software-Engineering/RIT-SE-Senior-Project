@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "semantic-ui-react";
+import "./../../css/components/pages/StackTraceError.css";
 
 const StackTraceErrorPage = () => {
   // Retrieve error details from sessionStorage.
@@ -69,28 +70,16 @@ const StackTraceErrorPage = () => {
   };
 
   return (
-    <div
-      className="stack-trace-error-page"
-    >
-      <h1 className="stack-trace-error-color">
-        ⚠️ An Error Occurred
-      </h1>
+    <div className="stack-trace-error-page">
+      <h1 className="stack-trace-error-color">⚠️ An Error Occurred</h1>
       {errorInfo ? (
-        <div
-          className="stack-trace-error-info"
-        >
-          <h2 className="stack-trace-error-color">
-            Error: {errorInfo.error}
-          </h2>
+        <div className="stack-trace-error-info">
+          <h2 className="stack-trace-error-color">Error: {errorInfo.error}</h2>
           <details className="stack-trace-error-detail">
-            <summary
-              className="stack-trace-error-detail-summary"
-            >
+            <summary className="stack-trace-error-detail-summary">
               View Stack Trace
             </summary>
-            <pre
-              className="stack-trace-error-detail-summary2"
-            >
+            <pre className="stack-trace-error-detail-summary2">
               {errorInfo.componentStack}
             </pre>
           </details>
@@ -100,9 +89,7 @@ const StackTraceErrorPage = () => {
       )}
 
       <div className="stack-trace-error-detail-div">
-        <p
-          className="stack-trace-error-detail-p"
-        >
+        <p className="stack-trace-error-detail-p">
           ⚠️ A GitHub account is required to report an issue.
         </p>
         <Button onClick={handleGoBack}>🔙 Go Back</Button>
@@ -111,11 +98,7 @@ const StackTraceErrorPage = () => {
       </div>
 
       {userFeedback && (
-        <p
-          className="stack-trace-error-userfeedback"
-        >
-          {userFeedback}
-        </p>
+        <p className="stack-trace-error-userfeedback">{userFeedback}</p>
       )}
     </div>
   );

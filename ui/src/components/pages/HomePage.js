@@ -7,7 +7,6 @@ import { SecureFetch } from "../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import "./../../css/components/pages/Homepage.css";
 
-
 const PROJECTS_PER_PAGE = 5;
 
 function HomePage() {
@@ -48,11 +47,7 @@ function HomePage() {
     <>
       <div className="content">
         {homeHtml && (
-          <InnerHTML
-            html={homeHtml}
-            className="ui segment"
-            style={{ marginBottom: "20px" }}
-          />
+          <InnerHTML html={homeHtml} className="ui segment homepage-panel" />
         )}
       </div>
       <div className="ui invisible divider"></div>
@@ -71,13 +66,12 @@ function HomePage() {
         <br></br>
         <Button
           href={"/projects"}
-          className="ui button"
+          className="ui button homepage-view-more-btn"
           onClick={() => {
             history.push("/projects");
           }}
           icon
           labelPosition="right"
-          style={{ float: "right" }}
         >
           View More Projects
           <Icon name="ellipsis horizontal" />

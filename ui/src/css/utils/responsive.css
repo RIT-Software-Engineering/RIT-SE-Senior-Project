@@ -5,6 +5,7 @@
   #nav-buttons {
     display: none;
   }
+
   #hamburger-menu {
     display: block;
   }
@@ -20,6 +21,7 @@
   #hamburger-menu {
     display: none;
   }
+
   #nav-buttons {
     display: inline-flex;
   }
