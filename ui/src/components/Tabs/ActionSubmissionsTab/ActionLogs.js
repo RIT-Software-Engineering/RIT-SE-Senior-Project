@@ -22,6 +22,8 @@ import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
+import "./../../css/components/tabs/action.css";
+
 const LOGS_PER_PAGE = 10;
 const TIME_LOGS_PER_PAGE = 5;
 
@@ -410,11 +412,7 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_target}</TableCell>
                   <TableCell>
                     <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
+                      className="action-table"
                     >
                       {action.mock_id ? (
                         <>
@@ -433,7 +431,7 @@ export default function ActionLogs(props) {
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
-                        style={{ marginLeft: "4px" }}
+                        className="action-profile"
                       />
                     </span>
                   </TableCell>
