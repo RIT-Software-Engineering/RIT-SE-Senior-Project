@@ -305,7 +305,7 @@ export default function GanttChart(props) {
                   : `Project Timeline`}
             </h3>
           </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span className="gantt-timespan">
             <label htmlFor="TimeSpan">Time Span</label>
             <Dropdown
               name="TimeSpan"

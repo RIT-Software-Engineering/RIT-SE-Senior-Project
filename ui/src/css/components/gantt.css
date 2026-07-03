@@ -342,3 +342,10 @@ body.dark-mode .ui.checkbox label {
 body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
   color: var(--text-primary) !important;
 }
+
+
+.gantt-timespan{
+  display: flex; 
+  align-items: center;
+  gap: 10px
+}
