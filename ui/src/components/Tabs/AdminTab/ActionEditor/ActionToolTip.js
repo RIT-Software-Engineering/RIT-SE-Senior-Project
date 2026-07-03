@@ -5,6 +5,8 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import ActionPanel from "./ActionPanel";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 
+import "./../../css/components/tabs/actiontool.css";
+
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
   [ACTION_TARGETS.team]: "Team",
@@ -94,7 +96,7 @@ function ActionToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
-      style={{ zIndex: 100 }}
+      className="action-pop"
       trigger={props.trigger}
       on="click"
       offset={[offsetX, 0]}

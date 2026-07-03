@@ -11,6 +11,7 @@ import {
   Icon,
   Modal,
 } from "semantic-ui-react";
+import "./../../css/components/tabs/weekly.css";
 
 export default function WeeklyHoursViewer(props) {
   const [open, setOpen] = useState(false);
@@ -39,9 +40,9 @@ export default function WeeklyHoursViewer(props) {
       open={open}
       size="fullscreen"
       trigger={
-        <div style={{ display: "flex" }}>
+        <div className="weekly-trigger">
           {props.trigger || (
-            <Button icon style={{ marginLeft: "auto" }}>
+            <Button icon className="weekly-button">
               <Icon name="calendar" /> Time Log Report
             </Button>
           )}
@@ -52,11 +53,11 @@ export default function WeeklyHoursViewer(props) {
       actions={[{ content: "Close", key: 0 }]}
       content={{
         content: (
-          <div style={{ overflow: "auto" }}>
+          <div className="weekly-content">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHeaderCell style={{ position: "sticky", zIndex: 1 }}>
+                  <TableHeaderCell className="weekly-name">
                     Name
                   </TableHeaderCell>
                   {props.semWeeks.map((week, idx) => (
@@ -79,7 +80,7 @@ export default function WeeklyHoursViewer(props) {
 
                   return (
                     <TableRow>
-                      <TableCell style={{ whiteSpace: "nowrap" }}>
+                      <TableCell className="weekly-student">
                         {`${student.fname} ${student.lname} (${student.system_id})`}
                       </TableCell>
                       {weekly?.map((week, idx) => (
