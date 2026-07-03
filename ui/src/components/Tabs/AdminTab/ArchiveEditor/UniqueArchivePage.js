@@ -6,6 +6,8 @@ import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
 
+import "./../../css/components/tabs/unique.css";
+
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
@@ -86,7 +88,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Outstanding"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-icon"
             />
           )}
           {project?.creative === 1 && (
@@ -94,7 +96,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Creative"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-icon"
             />
           )}
           {
@@ -114,7 +116,7 @@ function UniqueProjectPage({ projectData }) {
               <img
                 src={`${basePosterURL}${project?.poster_thumb}`}
                 height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-img"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -159,7 +161,7 @@ function UniqueProjectPage({ projectData }) {
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
                 height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-img"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />
@@ -215,7 +217,7 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui attached stackable padded grid">
             <div className="column">
               <div className="ui small header">Synopsis</div>
-              <p style={{ whiteSpace: "pre-line" }}>
+              <p className="unique-space">
                 {decodeSynopsis(project?.synopsis)}
               </p>
             </div>
