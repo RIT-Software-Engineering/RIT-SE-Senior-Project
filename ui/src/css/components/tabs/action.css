@@ -12,3 +12,11 @@
   background: var(--bg-inprogress-action);
   font-weight: bold;
 }
+
+.accordion-buttons-container-static {
+  position: initial;
+}
+
+.action-pop {
+  z-index: 100;
+}

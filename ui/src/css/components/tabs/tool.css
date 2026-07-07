@@ -1,35 +1,35 @@
-.tool-late-submit{
-    color: red;
-    margin-left: 5px;
-    font-weight: bold;
+.tool-late-submit {
+  color: red;
+  margin-left: 5px;
+  font-weight: bold;
 }
 
-.tool-submission{
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
+.tool-submission {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
-.tool-profile{
-    margin-left: 0.5em;
-    white-space: nowrap;
+.tool-profile {
+  margin-left: 0.5em;
+  white-space: nowrap;
 }
 
-.tool-submit{
-    display: flex;
-    align-items: center;
+.tool-submit {
+  display: flex;
+  align-items: center;
 }
 
-.tool-whitespace{
-    white-space: nowrap;
+.tool-whitespace {
+  white-space: nowrap;
 }
 
-.tool-pop{
-    z-index: 100;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    min-width: 280px;
+.tool-pop {
+  z-index: 100;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
 }
 
-.tool-as{
-    margin-left: -1.5rem;
+.tool-as {
+  margin-left: -1.5rem;
 }

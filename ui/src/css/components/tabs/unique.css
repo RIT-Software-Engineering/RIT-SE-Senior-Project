@@ -1,14 +1,16 @@
-
-
-.unique-icon{
-    float: right;
+.unique-icon {
+  float: right;
 }
 
-.unique-img{
-    cursor: zoom-in;
-    padding: 5px;
+.unique-img {
+  cursor: zoom-in;
+  padding: 5px;
 }
 
-.unique-space{
-    white-space: pre-line;
+.unique-space {
+  white-space: pre-line;
+}
+
+.unique-media {
+  height: 250px;
 }

@@ -1,11 +1,9 @@
-
-
-.admin-button{
-    float: right;
+.admin-button {
+  float: right;
 }
 
-.admin-text{
-    font-size: 0.9em;
-    color: #999;
-    margin-top: 2px;
+.admin-text {
+  font-size: 0.9em;
+  color: #999;
+  margin-top: 2px;
 }

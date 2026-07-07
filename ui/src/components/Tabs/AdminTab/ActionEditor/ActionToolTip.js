@@ -5,7 +5,7 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import ActionPanel from "./ActionPanel";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 
-import "./../../css/components/tabs/actiontool.css";
+import "./../../../css/components/tabs/action.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -46,10 +46,7 @@ function ActionToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-        <div
-          className="accordion-buttons-container"
-          style={{ position: "initial" }}
-        >
+        <div className="accordion-buttons-container accordion-buttons-container-static">
           <ActionPanel
             trigger={
               <Button fluid className="view-action-button">

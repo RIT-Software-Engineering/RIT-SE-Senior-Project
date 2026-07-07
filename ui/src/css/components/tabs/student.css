@@ -1,84 +1,82 @@
-
-
-.student-status{
-    font-size: 0.9em; 
-    color: #999; 
-    font-style: italic;
+.student-status {
+  font-size: 0.9em;
+  color: #999;
+  font-style: italic;
 }
 
-.student-modal{
-    position: sticky;
-    top: 20%;
-    left: 0%;
+.student-modal {
+  position: sticky;
+  top: 20%;
+  left: 0%;
 }
 
-.student-detail{
-    display: flex;
-    align-items: center;
-    margin-bottom: 1em;
+.student-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
 }
 
-.student-name{
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+.student-name {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
-.student-text{
-    width: 100%;
+.student-text {
+  width: 100%;
 }
 
-.student-button-save{
-    margin-top: 0.5em;
+.student-button-save {
+  margin-top: 0.5em;
 }
 
-.student-button-cancel{
-    margin-top: 0.5em;
-    margin-left: 0.5em;
+.student-button-cancel {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
 }
 
-.student-addition{
-    margin-left: 0.5em;
+.student-addition {
+  margin-left: 0.5em;
 }
 
-.student-button-edit{
-    margin-left: 0.5em;
+.student-button-edit {
+  margin-left: 0.5em;
 }
 
-.student-title{
-    display: flex;
-    align-items: center;
-    padding: 10px;
+.student-title {
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
-.student-profile{
-    margin-left: 10px;
-    margin-right: 10px;
+.student-profile {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-.student-feedback{
-    white-space: pre-wrap;
+.student-feedback {
+  white-space: pre-wrap;
 }
 
-.student-accordian{
-    margin-top: 1em;
+.student-accordian {
+  margin-top: 1em;
 }
 
-.student-editing{
-    margin-top: 10px;
+.student-editing {
+  margin-top: 10px;
 }
 
-.student-icon-color{
-    color: var(--text-primary);
+.student-icon-color {
+  color: var(--text-primary);
 }
 
-.student-dropdown{
-    padding-top: "10px";
-    padding-bottom: "10px";
+.student-dropdown {
+  padding-top: "10px";
+  padding-bottom: "10px";
 }
 
-.student-content{
-    height: 350px;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+.student-content {
+  height: 350px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }

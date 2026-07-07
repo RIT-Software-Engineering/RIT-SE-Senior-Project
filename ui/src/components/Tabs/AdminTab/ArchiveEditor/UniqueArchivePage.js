@@ -6,14 +6,12 @@ import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
 
-import "./../../css/components/tabs/unique.css";
+import "./../../../css/components/tabs/unique.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
-
-const CONTENT_HEIGHT = 250;
 
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
@@ -115,8 +113,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.poster_thumb && (
               <img
                 src={`${basePosterURL}${project?.poster_thumb}`}
-                height={CONTENT_HEIGHT}
-                className="unique-img"
+                className="unique-img unique-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -150,7 +147,7 @@ function UniqueProjectPage({ projectData }) {
               </Modal.Actions>
             </Modal>
             {project?.video && (
-              <video controls height={CONTENT_HEIGHT}>
+              <video controls className="unique-media">
                 <source
                   src={`${baseVideoURL}${project?.video}`}
                   type="video/mp4"
@@ -160,8 +157,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.archive_image && (
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
-                height={CONTENT_HEIGHT}
-                className="unique-img"
+                className="unique-img unique-media"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />
