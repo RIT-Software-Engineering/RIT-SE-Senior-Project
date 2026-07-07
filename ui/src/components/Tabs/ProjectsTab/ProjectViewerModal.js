@@ -7,6 +7,8 @@ import { decode } from "he";
 import { convert } from "html-to-text";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
+import "./../../css/components/tabs/projectviewer.css";
+
 export default function ProjectViewerModal(props) {
   const [projectMembers, setProjectMembers] = useState({
     students: [],
@@ -80,7 +82,7 @@ export default function ProjectViewerModal(props) {
                 `}
         </style>
         <h3>Team members</h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="projectviewer">
           <b>Students:</b>{" "}
           {projectMembers.students?.map((s) => (
             <ProfileCircle key={s} name={s} showFullName size="tiny" />
@@ -88,7 +90,7 @@ export default function ProjectViewerModal(props) {
           <br />
         </div>
         <br />
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="projectviewer">
           <b>Coaches:</b>{" "}
           {projectMembers.coaches?.map((c) => (
             <ProfileCircle
@@ -111,11 +113,7 @@ export default function ProjectViewerModal(props) {
         <b>Phone:</b> {decode(props.project.contact_phone || "")} <br />
         <h3>Project Info</h3>
         <pre
-          style={{
-            overflowX: "auto",
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-          }}
+          className="project-info"
         >
           <b>Original Submission Date:</b>
           <br /> {decode(props.project.submission_datetime || "")}
