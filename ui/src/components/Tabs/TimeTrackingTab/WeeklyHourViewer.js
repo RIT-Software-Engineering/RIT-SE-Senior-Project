@@ -16,6 +16,8 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
+import "./../../css/components/tabs/weeklyhour.css";
+
 const { isSameWeek, addDays } = require("date-fns");
 
 export default function WeeklyHourViewer(props) {
@@ -97,7 +99,7 @@ export default function WeeklyHourViewer(props) {
       trigger={
         <div>
           {props.trigger || (
-            <Button icon style={{ width: "170px", marginLeft: "83%" }}>
+            <Button icon className="weeklyhour-icon">
               <Icon name="calendar" />
               Time Log Report
             </Button>
@@ -105,7 +107,7 @@ export default function WeeklyHourViewer(props) {
         </div>
       }
     >
-      <Modal.Header style={{ textAlign: "center" }}>
+      <Modal.Header className="weeklyhour-header">
         {props.projectName} Time Log Report
       </Modal.Header>
       <Modal.Content>
@@ -126,7 +128,7 @@ export default function WeeklyHourViewer(props) {
               hour metrics.
             </p>
           </Segment>
-          <Segment style={{ overflow: "auto", maxWidth: "100%" }}>
+          <Segment className="weeklyhour-segment">
             <Table celled>
               <TableHeader>
                 <TableRow>
@@ -145,7 +147,7 @@ export default function WeeklyHourViewer(props) {
                 {props.students.map((stu) => (
                   <TableRow key={stu.name}>
                     <TableCell>
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <div className="weeklyhour-table-cell">
                         <ProfileCircle
                           name={stu.name}
                           showFullName
@@ -163,11 +165,7 @@ export default function WeeklyHourViewer(props) {
                         return (
                           <TableCell
                             key={week.toISOString() + stu.name}
-                            style={{
-                              position: "relative",
-                              background: "none",
-                              padding: 0,
-                            }}
+                            className="weeklyhour-table"
                           >
                             <div
                               style={{
@@ -192,12 +190,7 @@ export default function WeeklyHourViewer(props) {
                               }}
                             />
                             <div
-                              style={{
-                                position: "relative",
-                                zIndex: 1,
-                                padding: "0.5em",
-                                textAlign: "center",
-                              }}
+                              className="weeklyhour"
                             >
                               {total}
                             </div>

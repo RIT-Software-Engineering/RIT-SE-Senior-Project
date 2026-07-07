@@ -14,6 +14,8 @@ import { SecureFetch } from "../functions/secureFetch";
 import { UserContext } from "../functions/UserContext";
 import _ from "lodash";
 
+import "./../../css/components/utils/admin.css";
+
 export default function AdminView(props) {
   const [selectedUser, setSelectedUser] = useState();
   const [users, setUsers] = useState([]);
@@ -120,7 +122,7 @@ export default function AdminView(props) {
   const renderSignOutButton = () => {
     return (
       <Button
-        style={{ float: "right" }}
+        className="admin-button"
         secondary
         content="Sign out of mock user"
         onClick={() => {
@@ -144,7 +146,7 @@ export default function AdminView(props) {
   const renderChangeView = () => {
     return (
       <>
-        <div style={{ float: "right" }} ref={ref}>
+        <div className="admin-button" ref={ref}>
           <Label pointing="right">To view this page as a different user</Label>
           <Dropdown
             onClick={handleOpen}
@@ -188,11 +190,7 @@ export default function AdminView(props) {
                           <div>{`${coach.fname} ${coach.lname} (${coach.system_id})`}</div>
                           {statusText && (
                             <div
-                              style={{
-                                fontSize: "0.9em",
-                                color: "#999",
-                                marginTop: "2px",
-                              }}
+                              className="admin-text"
                             >
                               {statusText}
                             </div>
@@ -220,11 +218,7 @@ export default function AdminView(props) {
                           <div>{`${student.fname} ${student.lname} (${student.system_id})`}</div>
                           {statusText && (
                             <div
-                              style={{
-                                fontSize: "0.9em",
-                                color: "#999",
-                                marginTop: "2px",
-                              }}
+                              className="admin-text"
                             >
                               {statusText}
                             </div>
