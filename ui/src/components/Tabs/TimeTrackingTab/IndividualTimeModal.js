@@ -7,6 +7,8 @@ import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
 
+import "./../../css/components/tabs/individual.css";
+
 export default function IndividualTimeModal(props) {
   const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState({});
@@ -66,7 +68,7 @@ export default function IndividualTimeModal(props) {
       }
     >
       <Modal.Header
-        style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
+        className="individual-header"
       >
         Time Submission For {props.user}
       </Modal.Header>
