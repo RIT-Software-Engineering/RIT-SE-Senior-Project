@@ -1,0 +1,20 @@
+
+
+.time-table{
+    display: flex;
+    align-items: center;
+}
+
+.time-table-cell{
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.time-profile{
+    margin-left: -0.5em;
+}
+
+.time-text{
+    min-height: 200;
+}
