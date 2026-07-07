@@ -1,6 +1,5 @@
 import { Checkbox, Divider } from "semantic-ui-react";
-import "./../../css/components/tabs/timeline.css";
-
+import "./../../../css/components/tabs/timeline.css";
 
 export default function TimelineCheckboxes(props) {
   const milestonesChange = (e, data) => {

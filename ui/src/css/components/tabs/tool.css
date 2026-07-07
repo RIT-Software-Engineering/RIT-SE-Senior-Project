@@ -33,3 +33,33 @@
 .tool-as {
   margin-left: -1.5rem;
 }
+
+.tool-trigger {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+.tool-summary-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+}
+
+.tool-summary-line-indent {
+  margin-left: 1.5rem;
+}
+
+.tool-date {
+  display: flex;
+  align-items: center;
+  margin-left: 1.6rem;
+}
+
+.tool-date-indent {
+  margin-left: 0.3rem;
+}

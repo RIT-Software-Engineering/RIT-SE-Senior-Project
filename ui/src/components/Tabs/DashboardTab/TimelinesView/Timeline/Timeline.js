@@ -6,6 +6,7 @@ import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
 import TimelineCheckboxes from "./TimelineCheckboxes";
 import { Calendar } from "../../../../util/components/Calendar";
+import "./../../../css/components/tabs/timeline.css";
 
 const GanttChart = React.lazy(() => import("./GanttChart"));
 
@@ -163,8 +164,7 @@ export default function Timeline(props) {
         />
       </div>
       <div
-        className="timeline-action-block"
-        style={{ display: milestoneVisible ? "block" : "none" }}
+        className={`timeline-action-block${milestoneVisible ? "" : " timeline-hidden"}`}
       >
         <h3>Milestones</h3>
         <ActionElements
@@ -182,8 +182,7 @@ export default function Timeline(props) {
         />
       </div>{" "}
       <div
-        className="timeline-action-block"
-        style={{ display: ganttVisible ? "block" : "none" }}
+        className={`timeline-action-block${ganttVisible ? "" : " timeline-hidden"}`}
       >
         <div className="timeline-action-block">
           <Suspense fallback={<div>Loading Gantt Chart...</div>}>
@@ -210,8 +209,7 @@ export default function Timeline(props) {
         </div>
       </div>
       <div
-        className="timeline-action-block"
-        style={{ display: calendarVisible ? "block" : "none" }}
+        className={`timeline-action-block${calendarVisible ? "" : " timeline-hidden"}`}
       >
         <div className="timeline-action-block">
           <Calendar

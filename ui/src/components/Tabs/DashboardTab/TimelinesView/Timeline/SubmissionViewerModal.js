@@ -16,7 +16,7 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 
-import "./../../css/components/tabs/submit.css";
+import "./../../../css/components/tabs/submit.css";
 
 export default function SubmissionViewerModal(props) {
   const [submission, setSubmission] = useState({});
@@ -113,9 +113,7 @@ export default function SubmissionViewerModal(props) {
             <p className="submit-semester">
               <b>Submitted:</b>
               {props.action.mock_id && (
-                <span
-                  className="submit-submitted"
-                >
+                <span className="submit-submitted">
                   <ProfileCircle
                     name={props.action.mock_name}
                     isStudent={false}
@@ -144,15 +142,9 @@ export default function SubmissionViewerModal(props) {
                 on {formatDate(props.action.submission_datetime)}
               </span>
               {/* Due date with spacing */}
-              <span className="submit-whitespace">
-                (Due {formatDate(due)})
-              </span>
+              <span className="submit-whitespace">(Due {formatDate(due)})</span>
               {late && (
-                <span
-                  className="submit-due"
-                >
-                  {` ${day} days late`}
-                </span>
+                <span className="submit-due">{` ${day} days late`}</span>
               )}
             </p>
             <Divider />

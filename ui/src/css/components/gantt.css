@@ -348,3 +348,33 @@ body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
   align-items: center;
   gap: 10px;
 }
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gantt-timespan-dropdown {
+  z-index: 100;
+  position: relative;
+  background-color: var(--bg-button);
+}
+
+.gantt-row-button {
+  text-wrap: nowrap;
+  overflow: visible;
+  padding-left: 0px;
+}
+
+.gantt-header-text-offset {
+  left: 200px;
+}
+
+.gantt-header-text-offset-mobile {
+  left: 0;
+}
+
+.gantt-header-text-padded {
+  padding-left: 5px;
+}
