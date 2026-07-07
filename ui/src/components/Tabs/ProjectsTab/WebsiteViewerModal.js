@@ -6,7 +6,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
 import { decode } from "he";
 
-import "./../../css/components/tabs/website.css";
+import "./../../../css/components/tabs/website.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
@@ -129,9 +129,7 @@ export default function WebsiteViewerModal(props) {
    */
   const LoadingMessage = () => {
     return (
-      <div
-        className="website-loading"
-      >
+      <div className="website-loading">
         <Icon
           loading
           name="spinner"

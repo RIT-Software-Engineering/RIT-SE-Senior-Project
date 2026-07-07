@@ -7,7 +7,7 @@ import { decode } from "he";
 import { convert } from "html-to-text";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
-import "./../../css/components/tabs/projectviewer.css";
+import "./../../../css/components/tabs/projectviewer.css";
 
 export default function ProjectViewerModal(props) {
   const [projectMembers, setProjectMembers] = useState({
@@ -72,15 +72,6 @@ export default function ProjectViewerModal(props) {
   const generateModalContent = () => {
     return (
       <>
-        <style>
-          {`
-                #gfg {
-                    overflow-x: auto;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-                `}
-        </style>
         <h3>Team members</h3>
         <div className="projectviewer">
           <b>Students:</b>{" "}
@@ -112,9 +103,7 @@ export default function ProjectViewerModal(props) {
         <b>Email:</b> {decode(props.project.contact_email || "")} <br />
         <b>Phone:</b> {decode(props.project.contact_phone || "")} <br />
         <h3>Project Info</h3>
-        <pre
-          className="project-info"
-        >
+        <pre className="project-info">
           <b>Original Submission Date:</b>
           <br /> {decode(props.project.submission_datetime || "")}
           <br />
