@@ -1,11 +1,14 @@
-
-
-.action-table{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+.action-table {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.action-profile{
-    margin-left: 4px;
+.action-profile {
+  margin-left: 4px;
+}
+
+.action-row-highlight {
+  background: var(--bg-inprogress-action);
+  font-weight: bold;
 }

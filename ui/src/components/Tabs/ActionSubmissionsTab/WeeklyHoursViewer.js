@@ -11,7 +11,7 @@ import {
   Icon,
   Modal,
 } from "semantic-ui-react";
-import "./../../css/components/tabs/weekly.css";
+import "./../../../css/components/tabs/weekly.css";
 
 export default function WeeklyHoursViewer(props) {
   const [open, setOpen] = useState(false);

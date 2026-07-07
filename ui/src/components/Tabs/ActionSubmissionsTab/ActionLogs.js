@@ -397,12 +397,11 @@ export default function ActionLogs(props) {
               return (
                 <TableRow
                   // Using same color schema as in-progress projects
-                  style={{
-                    background: showNewSubmissionHighlight
-                      ? "var(--bg-inprogress-action)"
-                      : "none",
-                    fontWeight: showNewSubmissionHighlight ? "bold" : "none",
-                  }}
+                  className={
+                    showNewSubmissionHighlight
+                      ? "action-row-highlight"
+                      : undefined
+                  }
                   key={idx}
                 >
                   {userContext.user?.role !== USERTYPES.STUDENT && (
@@ -411,9 +410,7 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>{action.action_target}</TableCell>
                   <TableCell>
-                    <span
-                      className="action-table"
-                    >
+                    <span className="action-table">
                       {action.mock_id ? (
                         <>
                           <ProfileCircle
