@@ -199,52 +199,52 @@
   color: #5096ff;
 }
 
-.calendar-action{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 100%;
+.calendar-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100%;
 }
 
-.calendar-icon{
-    max-width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-top: 12px;
+.calendar-icon {
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 12px;
 }
 
-.calendar-bold{
-    font-weight: bold;
+.calendar-bold {
+  font-weight: bold;
 }
 
-.claendar-grey{
-    color: grey;
+.claendar-grey {
+  color: grey;
 }
 
-.calendar-trigger{
-    color: var(--action-bar-proposal-purple);
-    display: inline-block;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    vertical-align: bottom;
-    cursor: pointer;
+.calendar-trigger {
+  color: var(--action-bar-proposal-purple);
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  cursor: pointer;
 }
 
-.calendar-current{
+.calendar-current {
   display: flex;
   gap: 10px;
 }
 
-.calendar-drop{
+.calendar-drop {
   background-color: transparent;
   z-index: 100;
   position: relative;
   border: none;
 }
 
-.calendar-display{
+.calendar-display {
   display: flex;
 }

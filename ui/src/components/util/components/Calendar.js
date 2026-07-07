@@ -191,9 +191,7 @@ export function Calendar(props) {
       const showBothArrows = !starts && !ends;
 
       const actionContent = (
-        <span
-          className="calendar-action"
-        >
+        <span className="calendar-action">
           <Icon
             name="triangle left"
             size="large"
@@ -202,9 +200,7 @@ export function Calendar(props) {
                 showLeftArrow || showBothArrows ? "visible" : "hidden",
             }}
           />
-          <p
-            className="calendar-icon"
-          >
+          <p className="calendar-icon">
             {action.state === "green" ? (
               <s>{action.action_title}</s>
             ) : (
@@ -312,11 +308,7 @@ export function Calendar(props) {
                   <div>
                     {breakPeriod.map((bp, index) => (
                       <div key={index}>
-                        <span
-                          className="calendar-bold"
-                        >
-                          {bp.action_title}
-                        </span>
+                        <span className="calendar-bold">{bp.action_title}</span>
                         <br />
                         <span className="calendar-grey">
                           {bp.start_date}
@@ -332,9 +324,7 @@ export function Calendar(props) {
                 position="top right"
                 hoverable
                 trigger={
-                  <span
-                    className="caledar-trigger"
-                  >
+                  <span className="caledar-trigger">
                     {breakPeriod[0].action_title}
                   </span>
                 }
