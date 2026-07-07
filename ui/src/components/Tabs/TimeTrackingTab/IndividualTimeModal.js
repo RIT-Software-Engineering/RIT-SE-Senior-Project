@@ -7,7 +7,7 @@ import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
 
-import "./../../css/components/tabs/individual.css";
+import "./../../../css/components/tabs/individual.css";
 
 export default function IndividualTimeModal(props) {
   const [open, setOpen] = useState(false);
@@ -67,9 +67,7 @@ export default function IndividualTimeModal(props) {
         </div>
       }
     >
-      <Modal.Header
-        className="individual-header"
-      >
+      <Modal.Header className="individual-header">
         Time Submission For {props.user}
       </Modal.Header>
       <Modal.Content>
@@ -92,9 +90,9 @@ export default function IndividualTimeModal(props) {
             {formatDateTime(props.timeLog.submission_datetime)}
           </p>
           <p
-            style={{
-              background: props.timeLog.active === 0 ? "#FF999C" : "none",
-            }}
+            className={
+              props.timeLog.active === 0 ? "individual-deleted-row" : ""
+            }
           >
             <b>
               <i>{props.timeLog.active === 0 ? "DELETED" : ""}</i>

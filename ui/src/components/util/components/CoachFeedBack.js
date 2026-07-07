@@ -318,12 +318,7 @@ export default function CoachFeedback(props) {
     return (
       <div key={index}>
         <Divider section />
-        <Header
-          size={"huge"}
-          block
-          inverted
-          className="coach-header"
-        >
+        <Header size={"huge"} block inverted className="coach-header">
           <ProfileCircle name={student} showFullName />
         </Header>
 
@@ -343,10 +338,7 @@ export default function CoachFeedback(props) {
                   return (
                     <Grid.Row columns={2} key={index}>
                       <Grid.Column>
-                        <Label
-                          className="coach-label"
-                          as="h2"
-                        >
+                        <Label className="coach-label" as="h2">
                           {Object.keys(CoachFeedback)[index]}
                         </Label>
                         <TextArea
@@ -360,10 +352,7 @@ export default function CoachFeedback(props) {
                       </Grid.Column>
                       {Object.keys(CoachFeedback)[index + 1] && (
                         <Grid.Column>
-                          <Label
-                            className="coach-label"
-                            as="h2"
-                          >
+                          <Label className="coach-label" as="h2">
                             {Object.keys(CoachFeedback)[index + 1]}
                           </Label>
                           <TextArea
@@ -395,9 +384,7 @@ export default function CoachFeedback(props) {
             Feedback for {student}
             <Popup
               content="NOT Visible to  Evaluated Student "
-              trigger={
-                <Icon name={"eye slash"} className="coach-icon"></Icon>
-              }
+              trigger={<Icon name={"eye slash"} className="coach-icon"></Icon>}
             />
           </Header>
 
