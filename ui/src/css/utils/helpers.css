@@ -170,3 +170,32 @@ a,
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.dev-drop{
+  margin-bottom: 24;
+}
+
+.dev-status{
+  font-size: 0.9em;
+  color: #999;
+  margin-top: 2px;
+}
+
+.dev-column{
+  border: 2px solid #e53935;
+  border-radius: 8;
+  background: rgba(220, 50, 50, 0.15);
+  padding: 32;
+  align-items: center;
+  justify-content: center;
+  min-height: 250;
+}
+
+.dev-danger{
+  color: #e53935;
+  font-weight: bold;
+  font-size: 18;
+  margin-bottom: 12;
+  letter-spacing: 2;
+  text-transform: uppercase;
+}

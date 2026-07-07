@@ -201,7 +201,7 @@ export default function DevSignInModalContent() {
               >
                 Sign In As
               </h2>
-              <div ref={dropdownRef} style={{ marginBottom: 24 }}>
+              <div ref={dropdownRef} className="">
                 <Dropdown
                   onClick={handleDropdownOpen}
                   className="ui button"
@@ -245,11 +245,7 @@ export default function DevSignInModalContent() {
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
                                     <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
+                                      className="dev-status"
                                     >
                                       {statusText}
                                     </div>
@@ -276,11 +272,7 @@ export default function DevSignInModalContent() {
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
                                     <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
+                                      className="dev-status"
                                     >
                                       {statusText}
                                     </div>
@@ -307,11 +299,7 @@ export default function DevSignInModalContent() {
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
                                     <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
+                                      className="dev-status"
                                     >
                                       {statusText}
                                     </div>
@@ -360,25 +348,10 @@ export default function DevSignInModalContent() {
 
           <div className="column">
             <div
-              style={{
-                border: "2px solid #e53935",
-                borderRadius: 8,
-                background: "rgba(220, 50, 50, 0.15)",
-                padding: 32,
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 250,
-              }}
+              className="dev-column"
             >
               <div
-                style={{
-                  color: "#e53935",
-                  fontWeight: "bold",
-                  fontSize: 18,
-                  marginBottom: 12,
-                  letterSpacing: 2,
-                  textTransform: "uppercase",
-                }}
+                className="dev-danger"
               >
                 DANGER
               </div>
