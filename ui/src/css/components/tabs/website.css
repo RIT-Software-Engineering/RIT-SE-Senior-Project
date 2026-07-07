@@ -1,0 +1,75 @@
+
+
+.website-archive-notfound{
+    padding: 3rem 2rem;
+    min-height: 400px;
+}
+
+.website-archive-text{
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.website-archive-icon{
+    margin-bottom: 1rem;
+}
+
+.website-archive-header{
+    margin: 0 0 1rem 0
+}
+
+.website-archive-message{
+    margin-bottom: 1.5rem;
+}
+
+.website-message-info{
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.website-message-header{
+    font-size: 1.3em;
+    margin-bottom: 1rem;
+}
+
+.website-archive-description{
+    margin-bottom: 1;
+}
+
+.website-loading{
+    padding: 3rem 2rem;
+    text-align: center;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.website-loading-icon{
+    margin-bottom: 2rem;
+}
+
+.website-loading-header{
+    margin: 0;
+    font-size: 1.3em;
+}
+
+.website-loading-wait{
+    color: #6c757d;
+    margin-top: 1rem;
+    font-size: 1.1em;
+}
+
+.website-generate-icon{
+    float: right;
+}
+
+.website-generate-content{
+    cursor: zoom-in; 
+    padding: 5px;
+}
+
+.website-whitespace{
+    white-space: pre-line;
+}
