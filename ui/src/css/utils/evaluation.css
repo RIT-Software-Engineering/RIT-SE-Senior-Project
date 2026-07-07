@@ -1,0 +1,18 @@
+
+
+.evalution-accordian{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.evalution-label{
+    margin-left: 5px;
+}
+
+.evaluation-popup{
+    margin: -12px 0 0 79px;
+    font-size: medium;
+    color: #086EFF;
+}

@@ -13,6 +13,8 @@ import {
 import { UserContext } from "../functions/UserContext";
 import ProfileCircle from "./ProfileCircle";
 
+import "./../../../css/utils/valuation.css";
+
 export default function EvalReview(props) {
   const [userFeedback, setUserFeedback] = useState([]);
   const [studentExpanded, setStudentExpanded] = useState({});
@@ -65,12 +67,7 @@ export default function EvalReview(props) {
                     [student_name]: !studentExpanded[student_name],
                   }));
                 }}
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                }}
+                className="evaluation-accordian"
               >
                 <Icon name="dropdown" />
                 <ProfileCircle name={student_name} size="tiny" />
@@ -141,14 +138,10 @@ export default function EvalReview(props) {
                               src={"Gemini_language_model_logo.png"}
                               alt="Google Gemini  logo"
                               color="white"
-                              style={{ marginLeft: "5px" }}
+                              className="evaluation-label"
                             />
                             <p
-                              style={{
-                                margin: "-12px 0 0 79px",
-                                fontSize: "medium",
-                                color: "#086EFF",
-                              }}
+                              className="evaluation-popup"
                             >
                               {" "}
                               was used to aid the coach in your feedback.
