@@ -23,6 +23,8 @@ import ResultTable from "./ResultTable";
 import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
 import ProfileCircle from "./ProfileCircle";
 
+import "./../../../css/utils/coach.css";
+
 export default function CoachFeedback(props) {
   const [studentList, setStudentList] = useState([]);
   const [submissionList, setSubmissionList] = useState([]);
@@ -320,12 +322,7 @@ export default function CoachFeedback(props) {
           size={"huge"}
           block
           inverted
-          style={{
-            backgroundColor: "var(--bg-secondary)",
-            border: "none",
-            borderRadius: "10px",
-            padding: "20px 15px",
-          }}
+          className="coach-header"
         >
           <ProfileCircle name={student} showFullName />
         </Header>
@@ -347,12 +344,7 @@ export default function CoachFeedback(props) {
                     <Grid.Row columns={2} key={index}>
                       <Grid.Column>
                         <Label
-                          style={{
-                            minHeight: "40px",
-                            minWidth: "100%",
-                            backgroundColor: "var(--menu-item)",
-                            color: "var(--text-primary)",
-                          }}
+                          className="coach-label"
                           as="h2"
                         >
                           {Object.keys(CoachFeedback)[index]}
@@ -369,12 +361,7 @@ export default function CoachFeedback(props) {
                       {Object.keys(CoachFeedback)[index + 1] && (
                         <Grid.Column>
                           <Label
-                            style={{
-                              minHeight: "40px",
-                              minWidth: "100%",
-                              backgroundColor: "var(--menu-item)",
-                              color: "var(--text-primary)",
-                            }}
+                            className="coach-label"
                             as="h2"
                           >
                             {Object.keys(CoachFeedback)[index + 1]}
@@ -409,7 +396,7 @@ export default function CoachFeedback(props) {
             <Popup
               content="NOT Visible to  Evaluated Student "
               trigger={
-                <Icon name={"eye slash"} style={{ marginLeft: "5px" }}></Icon>
+                <Icon name={"eye slash"} className="coach-icon"></Icon>
               }
             />
           </Header>
@@ -421,7 +408,7 @@ export default function CoachFeedback(props) {
                   <div key={index}>
                     <Label
                       as="h2"
-                      style={{ marginBottom: "2px" }}
+                      className="coach-feedback"
                       onClick={() => {
                         expandFeedback(category);
                       }}
@@ -438,7 +425,7 @@ export default function CoachFeedback(props) {
                     {!expandedFeedback[category] &&
                       feedbacks.map(({ From, Feedback }, index) => {
                         return (
-                          <div key={index} style={{ marginBottom: "5px" }}>
+                          <div key={index} className="coach-expand-feedback">
                             <Label
                               ribbon
                               color={From === student ? "black" : "grey"}
@@ -471,7 +458,7 @@ export default function CoachFeedback(props) {
             <Popup
               icon={"eye"}
               content="Visible to Evaluated Student"
-              trigger={<Icon name={"eye"} style={{ marginLeft: "5px" }} />}
+              trigger={<Icon name={"eye"} className="coach-icon" />}
             />
           </Header>
           {hasAverageFeedback ? (
@@ -498,7 +485,7 @@ export default function CoachFeedback(props) {
           <Header as={"h3"}>
             Coach Summarization + Feedback
             <Popup
-              trigger={<Icon name={"eye"} style={{ marginLeft: "5px" }} />}
+              trigger={<Icon name={"eye"} className="coach-icon" />}
               content={"Visible to  Evaluated Student"}
             />
           </Header>
@@ -529,17 +516,10 @@ export default function CoachFeedback(props) {
                   onChange={(_) =>
                     updateAISummaryText(student, aiSummaryText[student])
                   }
-                  style={{
-                    backgroundColor: "#EBEDEF",
-                    outline: "none",
-                    border: "none",
-                    width: "100%",
-                    color: "#4D5258",
-                    marginBottom: "10px",
-                  }}
+                  className="coach-AI-summary"
                 />
               )}
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="coach-button-editing">
                 <Button
                   color="grey"
                   onClick={() => {
@@ -549,7 +529,7 @@ export default function CoachFeedback(props) {
                 >
                   {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
                 </Button>
-                <div style={{ display: "flex", gap: "10px" }}>
+                <div className="coach-button-AI">
                   {aiSummaryText[student] && (
                     <Button
                       color="blue"
@@ -570,12 +550,7 @@ export default function CoachFeedback(props) {
                 </div>
               </div>
               <Confirm
-                style={{
-                  position: "fixed",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
+                className="coach-confirm"
                 content={
                   "Are you sure? \n(This will override the current textbox, and will let the student know Ai was used for Summarization) "
                 }
@@ -589,7 +564,7 @@ export default function CoachFeedback(props) {
 
               <Radio
                 name={`UsedAI--${student}`}
-                style={{ visibility: "hidden" }}
+                className="coach-radio"
                 checked={usedAI[student]}
                 value={usedAI[student] ? 1 : 0}
               />

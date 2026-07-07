@@ -1,0 +1,57 @@
+
+
+.coach-header{
+    background-color: var(--bg-secondary);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 15px;
+}
+
+.coach-label{
+    min-height: 40px;
+    min-width: 100%;
+    background-color: var(--menu-item);
+    color: var(--text-primary);
+}
+
+.coach-icon{
+    margin-left: 5px;
+}
+
+.coach-feedback{
+    margin-bottom: 2px;
+}
+
+.coach-expand-feedback{
+    margin-bottom: 5px;
+}
+
+.coach-button-editing{
+    display: flex; 
+    justify-content: space-between;
+}
+
+.coach-button-AI{
+    display: flex;
+    gap: 10px;
+}
+
+.coach-AI-summary{
+    background-color: #EBEDEF;
+    outline: none;
+    border: none;
+    width: 100%;
+    color: #4D5258;
+    margin-bottom: 10px;
+}
+
+.coach-confirm{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.coach-radio{
+    visibility: hidden;
+}
