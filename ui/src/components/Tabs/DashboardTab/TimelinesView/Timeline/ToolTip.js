@@ -22,6 +22,9 @@ const submissionTypeMap = {
   [ACTION_TARGETS.peer_evaluation]: "Peer Evaluation",
 };
 
+import "./../../css/components/tabs/tool.css";
+
+
 export default function ToolTip(props) {
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);
   const [offsetX, setOffsetX] = useState(0);
@@ -50,11 +53,7 @@ export default function ToolTip(props) {
       <>
         {isLate(submission.due_date, submission.submission_datetime) && (
           <span
-            style={{
-              color: "red",
-              marginLeft: "5px",
-              fontWeight: "bold",
-            }}
+            className="tool-late-submit"
           >
             {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
           </span>
@@ -137,11 +136,7 @@ export default function ToolTip(props) {
             {submissions?.map((submission) => {
               return (
                 <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5em",
-                  }}
+                  className="tool-submission"
                 >
                   <SubmissionViewerModal
                     key={submission.action_log_id}
@@ -165,11 +160,7 @@ export default function ToolTip(props) {
                           <>
                             {submission.mock_id && (
                               <span
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginRight: "0.5em",
-                                }}
+                                className="tool-submission"
                               >
                                 <ProfileCircle
                                   name={submission.mock_name}
@@ -177,10 +168,7 @@ export default function ToolTip(props) {
                                   size="tiny"
                                 />
                                 <span
-                                  style={{
-                                    marginLeft: "0.5em",
-                                    whiteSpace: "nowrap",
-                                  }}
+                                  className="tool-profile"
                                 >
                                   {submission.mock_name} ({submission.mock_id})
                                   as
@@ -188,18 +176,14 @@ export default function ToolTip(props) {
                               </span>
                             )}
                             <span
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5em",
-                              }}
+                              className="tool-submission"
                             >
                               <ProfileCircle
                                 name={submission.name}
                                 size="tiny"
                                 isStudent={submission.user_type === "student"}
                               />
-                              <span style={{ whiteSpace: "nowrap" }}>
+                              <span className="tool-whitespace">
                                 {submission.name} ({submission.system_id}) on{" "}
                                 {formatDateTime(submission.submission_datetime)}
                                 {renderIsLate(submission)}
@@ -220,26 +204,20 @@ export default function ToolTip(props) {
                             >
                               {submission.mock_id && (
                                 <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
+                                  className="tool-submit"
                                 >
                                   <ProfileCircle
                                     name={submission.mock_name}
                                     showFullName
                                     isStudent={false}
                                     size="tiny"
-                                    style={{ marginLeft: "-1.5rem" }}
+                                    className="tool-as"
                                   />
                                   as
                                 </div>
                               )}
                               <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
+                                className="tool-submit"
                               >
                                 <ProfileCircle
                                   name={submission.name}
@@ -319,11 +297,7 @@ export default function ToolTip(props) {
       closeOnEscape={true}
       wide={hasMockedSubmission}
       inverted={document.body.classList.contains("dark-mode")}
-      style={{
-        zIndex: 100,
-        boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-        minWidth: "280px",
-      }}
+      className="tool-pop"
       offset={[offsetX, 0]}
       trigger={props.trigger}
       on="click"

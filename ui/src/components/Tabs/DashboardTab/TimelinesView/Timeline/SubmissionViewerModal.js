@@ -16,6 +16,8 @@ import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 
+import "./../../css/components/tabs/submit.css";
+
 export default function SubmissionViewerModal(props) {
   const [submission, setSubmission] = useState({});
   const [files, setFiles] = useState([]);
@@ -108,22 +110,18 @@ export default function SubmissionViewerModal(props) {
               <b>Semester/Project:</b> {props.semesterName} -{" "}
               {props.projectName}
             </p>
-            <p style={{ display: "flex", alignItems: "center" }}>
+            <p className="submit-semester">
               <b>Submitted:</b>
               {props.action.mock_id && (
                 <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginLeft: "5px",
-                  }}
+                  className="submit-submitted"
                 >
                   <ProfileCircle
                     name={props.action.mock_name}
                     isStudent={false}
                     size="tiny"
                   />
-                  <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+                  <span className="submit-whitespace">
                     {props.action.mock_name} ({props.action.mock_id}) as
                   </span>
                 </span>
@@ -135,27 +133,23 @@ export default function SubmissionViewerModal(props) {
                   props.action.action_target !== ACTION_TARGETS.coach
                 }
                 size="tiny"
-                style={{ marginLeft: "5px" }}
+                className="submit-profile"
               />
               {/* Full name and ID */}
-              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+              <span className="submit-whitespace">
                 {props.action.name} ({props.action.system_id})
               </span>
               {/* Submission date with spacing */}
-              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+              <span className="submit-whitespace">
                 on {formatDate(props.action.submission_datetime)}
               </span>
               {/* Due date with spacing */}
-              <span style={{ marginLeft: "5px", whiteSpace: "nowrap" }}>
+              <span className="submit-whitespace">
                 (Due {formatDate(due)})
               </span>
               {late && (
                 <span
-                  style={{
-                    color: "red",
-                    marginLeft: "5px",
-                    fontWeight: "bold",
-                  }}
+                  className="submit-due"
                 >
                   {` ${day} days late`}
                 </span>
@@ -207,7 +201,7 @@ export default function SubmissionViewerModal(props) {
                   <h2>Coach Feedback</h2>
                   <Segment secondary={false}>
                     {Object.keys(submission.CoachFeedback ?? {})?.map((key) => (
-                      <div style={{ marginBottom: "35px" }}>
+                      <div className="submit-coach-feedback">
                         <Header as={"h3"} dividing content={key} />
                         <p>
                           {" "}
@@ -226,7 +220,7 @@ export default function SubmissionViewerModal(props) {
                         {/* Peer Qualative Feedback */}
                         {Object.keys(submission.Students[key].Feedback)?.map(
                           (feedback_key) => (
-                            <div style={{ marginBottom: "25px" }}>
+                            <div className="submit-feedback">
                               <Header
                                 as={"h3"}
                                 dividing
@@ -250,7 +244,7 @@ export default function SubmissionViewerModal(props) {
                               {submission.Students[key].Feedback[
                                 feedback_key
                               ] === "" ? (
-                                <p style={{ marginTop: "5px" }}>
+                                <p className="submit-no-feedback">
                                   <i>No Feedback Provided</i>
                                 </p>
                               ) : (
@@ -281,7 +275,7 @@ export default function SubmissionViewerModal(props) {
                               return false;
                             }
                             return (
-                              <div style={{ marginBottom: "25px" }}>
+                              <div className="submit-feedback">
                                 <Header
                                   as={"h3"}
                                   dividing
