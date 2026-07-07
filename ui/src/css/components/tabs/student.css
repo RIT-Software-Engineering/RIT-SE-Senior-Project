@@ -66,3 +66,19 @@
 .student-editing{
     margin-top: 10px;
 }
+
+.student-icon-color{
+    color: var(--text-primary);
+}
+
+.student-dropdown{
+    padding-top: "10px";
+    padding-bottom: "10px";
+}
+
+.student-content{
+    height: 350px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
