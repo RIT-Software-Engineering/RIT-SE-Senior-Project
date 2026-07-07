@@ -16,3 +16,12 @@
 .time-text {
   min-height: 200;
 }
+
+.time-row-new {
+  background: var(--bg-inprogress-action);
+  font-weight: bold;
+}
+
+.time-row-deleted {
+  background: #ff999c;
+}

@@ -1,57 +1,56 @@
-
-.profile-modal{
-    position: sticky;
-    top: 20%;
-    left: 0%;
+.profile-modal {
+  position: sticky;
+  top: 20%;
+  left: 0%;
 }
 
-.profile-modal-content{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.5em;
+.profile-modal-content {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5em;
 }
 
-.profile-marginbottom1{
-    margin-bottom: 1em;
+.profile-marginbottom1 {
+  margin-bottom: 1em;
 }
 
-.profile-marginbottom2{
-    margin-bottom: 2em;
+.profile-marginbottom2 {
+  margin-bottom: 2em;
 }
 
-.profile-text{
-    width: 100%;
+.profile-text {
+  width: 100%;
 }
 
-.profile-button{
-    margin-top: 0.5em;
+.profile-button {
+  margin-top: 0.5em;
 }
 
-.profile-cancel{
-    margin-top: 0.5em;
-    margin-left: 0.5em;
+.profile-cancel {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
 }
 
-.profile-edit{
-    margin-left: 0.5em;
+.profile-edit {
+  margin-left: 0.5em;
 }
 
-.profile-preference{
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.8em;
+.profile-preference {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8em;
 }
 
-.profile-dark{
-    min-width: 200px;
-    margin-right: 1em;
+.profile-dark {
+  min-width: 200px;
+  margin-right: 1em;
 }
 
-.profile-dash{
-    flex: 1;
+.profile-dash {
+  flex: 1;
 }
 
-.profile-calendar{
-    flex: 1;
-    align-items: center;
+.profile-calendar {
+  flex: 1;
+  align-items: center;
 }

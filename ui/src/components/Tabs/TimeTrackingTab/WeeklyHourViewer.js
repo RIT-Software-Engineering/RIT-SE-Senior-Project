@@ -16,34 +16,12 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
-import "./../../css/components/tabs/weeklyhour.css";
+import "./../../../css/components/tabs/weeklyhour.css";
 
 const { isSameWeek, addDays } = require("date-fns");
 
 export default function WeeklyHourViewer(props) {
   const [open, setOpen] = useState(false);
-
-  // Check if dark mode is active
-  const isDarkMode = document.body.classList.contains("dark-mode");
-
-  const infoTextStyle = {
-    margin: 0,
-    fontSize: "14px",
-    lineHeight: "1.4",
-    color: isDarkMode ? "#ffffff" : "#333333",
-  };
-
-  const strongTextStyle = {
-    color: isDarkMode ? "#ffffff" : "#333333",
-  };
-
-  const segmentStyle = {
-    padding: "1em",
-    marginBottom: "1em",
-    backgroundColor: isDarkMode ? "#2a2a2a" : "#f8f9fa",
-    border: `1px solid ${isDarkMode ? "#444444" : "#dee2e6"}`,
-    color: isDarkMode ? "#ffffff" : "#333333",
-  };
 
   let maxTime = props.timeLog.reduce(
     (max, log) => Math.max(max, log.time_amount),
@@ -112,9 +90,11 @@ export default function WeeklyHourViewer(props) {
       </Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <Segment basic secondary style={segmentStyle}>
-            <p style={infoTextStyle}>
-              <strong style={strongTextStyle}>How this report works:</strong>{" "}
+          <Segment basic secondary className="weeklyhour-info-segment">
+            <p className="weeklyhour-info-text">
+              <strong className="weeklyhour-info-strong">
+                How this report works:
+              </strong>{" "}
               This table shows the total hours logged by each team member for
               each week of the semester. Weeks are calculated from Sunday to
               Saturday, spanning from the semester start date to end date. Only
@@ -122,10 +102,10 @@ export default function WeeklyHourViewer(props) {
               calculations. Hours are displayed as decimal values (e.g., 1.5
               hours = 1 hour 30 minutes). Each cell represents the sum of all
               time logged during that specific week period.{" "}
-              <strong style={strongTextStyle}>Note:</strong> Weeks that include
-              5 or more break period days (holidays, semester breaks, etc.) are
-              not included in average calculations to provide more accurate work
-              hour metrics.
+              <strong className="weeklyhour-info-strong">Note:</strong> Weeks
+              that include 5 or more break period days (holidays, semester
+              breaks, etc.) are not included in average calculations to provide
+              more accurate work hour metrics.
             </p>
           </Segment>
           <Segment className="weeklyhour-segment">
@@ -168,32 +148,19 @@ export default function WeeklyHourViewer(props) {
                             className="weeklyhour-table"
                           >
                             <div
+                              className="weeklyhour-bar"
                               style={{
-                                width: "100%",
-                                height: "100%",
                                 background:
                                   percent > 0
                                     ? `linear-gradient(to top, var(--action-bar-proposal-blue) ${percent}%, transparent ${percent}%)`
                                     : "transparent",
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                zIndex: 0,
-                                borderRadius: "4px",
-                                opacity: 0.2,
                                 borderBottom:
                                   percent > 0
                                     ? "0px solid transparent"
                                     : "5px solid var(--action-bar-proposal-blue)",
                               }}
                             />
-                            <div
-                              className="weeklyhour"
-                            >
-                              {total}
-                            </div>
+                            <div className="weeklyhour">{total}</div>
                           </TableCell>
                         );
                       })}

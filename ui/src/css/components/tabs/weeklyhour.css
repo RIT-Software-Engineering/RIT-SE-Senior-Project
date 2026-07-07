@@ -29,3 +29,49 @@
   padding: 0.5em;
   text-align: center;
 }
+
+.weeklyhour-info-segment {
+  padding: 1em;
+  margin-bottom: 1em;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #333333;
+}
+
+.dark-mode .weeklyhour-info-segment {
+  background-color: #2a2a2a;
+  border: 1px solid #444444;
+  color: #ffffff;
+}
+
+.weeklyhour-info-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333333;
+}
+
+.dark-mode .weeklyhour-info-text {
+  color: #ffffff;
+}
+
+.weeklyhour-info-strong {
+  color: #333333;
+}
+
+.dark-mode .weeklyhour-info-strong {
+  color: #ffffff;
+}
+
+.weeklyhour-bar {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  border-radius: 4px;
+  opacity: 0.2;
+}
