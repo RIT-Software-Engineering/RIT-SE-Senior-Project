@@ -3885,7 +3885,84 @@ module.exports = (db) => {
         });
     },
   );
+  db_router.post(
+    "/duplicateSemesterActions",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    async (req, res, next) => {
+      const {
+        sourceSemester,
+        targetSemester,
+        offsetDays = 0,
+        actionIds,
+      } = req.body;
 
+      if (!sourceSemester || !targetSemester) {
+        return res.status(400).send("Missing semesters.");
+      }
+
+      try {
+        let query = `
+          SELECT *
+          FROM actions
+          WHERE semester = ?
+        `;
+
+        let params = [sourceSemester];
+
+        // Optional checkbox support
+        if (actionIds && actionIds.length > 0) {
+          query += ` AND action_id IN (${actionIds.map(() => "?").join(",")})`;
+          params.push(...actionIds);
+        }
+
+        const actions = await db.query(query, params);
+
+        for (const action of actions) {
+          await db.query(
+            `
+            INSERT INTO actions
+            (
+              semester,
+              action_title,
+              action_target,
+              date_deleted,
+              short_desc,
+              start_date,
+              due_date,
+              page_html,
+              file_types,
+              file_size
+            )
+            VALUES
+            (?, ?, ?, ?, ?, DATE_ADD(?, INTERVAL ? DAY),
+                DATE_ADD(?, INTERVAL ? DAY),
+                ?, ?, ?)
+          `,
+            [
+              targetSemester,
+              action.action_title,
+              action.action_target,
+              action.date_deleted,
+              action.short_desc,
+              action.start_date,
+              offsetDays,
+              action.due_date,
+              offsetDays,
+              action.page_html,
+              action.file_types,
+              action.file_size,
+            ],
+          );
+        }
+
+        res.json({
+          copied: actions.length,
+        });
+      } catch (err) {
+        next(err);
+      }
+    },
+  );
   db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res, next) => {
     let getSemestersQuery = `
             SELECT *
