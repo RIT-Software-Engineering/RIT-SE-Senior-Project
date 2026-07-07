@@ -17,6 +17,8 @@ import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
+import "./../../css/components/tabs/student.css";
+
 dayjs.extend(utc);
 
 //Query to get peer evals can be updated to not grab so many results and potentially student ids to return less , currently it returns all peer evals in the db from a semester if one is given or all of them if one isn't
@@ -244,7 +246,7 @@ export default function StudentRow(props) {
         {props.student.system_id}
         {statusText && (
           <div
-            style={{ fontSize: "0.9em", color: "#999", fontStyle: "italic" }}
+            className="student-status"
           >
             {statusText}
           </div>
@@ -327,26 +329,18 @@ export default function StudentRow(props) {
           onClose={() => setOpenModal(false)}
           size="small"
           centered={false} // Disable default centering
-          style={{
-            position: "sticky",
-            top: "20%",
-            left: "0%",
-          }}
+          className="student-modal"
         >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
             <p
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "1em",
-              }}
+              className="student-detail"
             >
               <strong>Name:</strong>
               <ProfileCircle
                 name={`${props.student.fname} ${props.student.lname}`}
                 size="tiny"
-                style={{ marginLeft: "0.5em", marginRight: "0.5em" }}
+                className="student-name"
               />
               <span>
                 {props.student.fname} {props.student.lname}
@@ -374,33 +368,33 @@ export default function StudentRow(props) {
                         value={additionalInfo}
                         onChange={(e) => setAdditionalInfo(e.target.value)}
                         rows={4}
-                        style={{ width: "100%" }}
+                        className="student-text"
                       />
                       <Button
                         onClick={handleSaveAdditionalInfo}
                         primary
                         size="small"
-                        style={{ marginTop: "0.5em" }}
+                        className="student-button-save"
                       >
                         Save
                       </Button>
                       <Button
                         onClick={() => setIsEditing(false)}
                         size="small"
-                        style={{ marginTop: "0.5em", marginLeft: "0.5em" }}
+                        className="student-button-cancel"
                       >
                         Cancel
                       </Button>
                     </>
                   ) : (
                     <>
-                      <span style={{ marginLeft: "0.5em" }}>
+                      <span className="student-addtion">
                         {additionalInfo || "No additional info available"}
                       </span>
                       <Button
                         onClick={() => setIsEditing(true)}
                         size="small"
-                        style={{ marginLeft: "0.5em" }}
+                        className="student-button-edit"
                       >
                         Edit
                       </Button>
@@ -408,7 +402,7 @@ export default function StudentRow(props) {
                   )}
                 </>
               ) : (
-                <span style={{ marginLeft: "0.5em" }}>
+                <span className="student-button-edit">
                   {additionalInfo || "No additional info available"}
                 </span>
               )}
@@ -443,11 +437,7 @@ export default function StudentRow(props) {
                             active={activeIndex === index}
                             index={index}
                             onClick={() => handleAccordionClick(index)}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px",
-                            }}
+                            className="student-title"
                           >
                             <Icon name="dropdown" />
                             <ProfileCircle
@@ -458,10 +448,7 @@ export default function StudentRow(props) {
                               }}
                               isStudent={review.type === "student"}
                               size="tiny"
-                              style={{
-                                marginLeft: "10px",
-                                marginRight: "10px",
-                              }}
+                              className="student-profile"
                             />
                             Review by {review.fname} {review.lname} on{" "}
                             {formatDateTime(review.submission_datetime)}
@@ -480,14 +467,14 @@ export default function StudentRow(props) {
 
                                       if (typeof feedback === "string") {
                                         return (
-                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                          <p className="student-feedback">
                                             {feedback}
                                           </p>
                                         );
                                       } else if (Array.isArray(feedback)) {
                                         // If it's an array, join it back to a string
                                         return (
-                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                          <p className="student-feedback">
                                             {feedback.join("")}
                                           </p>
                                         );
@@ -512,7 +499,7 @@ export default function StudentRow(props) {
                                             .join("");
                                           return (
                                             <p
-                                              style={{ whiteSpace: "pre-wrap" }}
+                                              className="student-feedback"
                                             >
                                               {reconstructedString}
                                             </p>
@@ -567,7 +554,7 @@ export default function StudentRow(props) {
                     <p>No peer reviews available.</p>
                   )}
                 </Accordion>
-                <div style={{ marginTop: "1em" }}>
+                <div className="student-accordian">
                   <textarea
                     readOnly
                     value={aiSummary}
@@ -603,7 +590,7 @@ export default function StudentRow(props) {
                     {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
                   </Button>
                   {isEditingPrompt && (
-                    <div style={{ marginTop: "10px" }}>
+                    <div className="student-editing">
                       <textarea
                         value={tempPrompt}
                         onChange={(e) => setTempPrompt(e.target.value)}

@@ -1,0 +1,68 @@
+
+
+.student-status{
+    font-size: 0.9em; 
+    color: #999; 
+    font-style: italic;
+}
+
+.student-modal{
+    position: sticky;
+    top: 20%;
+    left: 0%;
+}
+
+.student-detail{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.student-name{
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.student-text{
+    width: 100%;
+}
+
+.student-button-save{
+    margin-top: 0.5em;
+}
+
+.student-button-cancel{
+    margin-top: 0.5em;
+    margin-left: 0.5em;
+}
+
+.student-addition{
+    margin-left: 0.5em;
+}
+
+.student-button-edit{
+    margin-left: 0.5em;
+}
+
+.student-title{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.student-profile{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.student-feedback{
+    white-space: pre-wrap;
+}
+
+.student-accordian{
+    margin-top: 1em;
+}
+
+.student-editing{
+    margin-top: 10px;
+}
