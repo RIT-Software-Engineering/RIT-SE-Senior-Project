@@ -4,6 +4,8 @@ import { html } from "@codemirror/lang-html";
 import React from "react";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 
+import "./../../../css/utils/html.css";
+
 const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });
 
 export default function HTMLEditor(props) {
@@ -19,12 +21,7 @@ export default function HTMLEditor(props) {
       value={formData[field.name]}
       maxHeight={"700px"}
       extensions={[html({ autoCloseTags: true })]}
-      style={{
-        border: "1px solid #d4d4d5",
-        borderRadius: "5px",
-        padding: "10px",
-        minHeight: "200px",
-      }}
+      className="html-text"
     />
   );
 }
