@@ -1,26 +1,42 @@
-
-
-.question-list{
-    width: auto;
+.question-list {
+  width: auto;
 }
 
-.question-form{
-    position: sticky;
-    top: 5%;
-    left: 0%;
+.question-form {
+  position: sticky;
+  top: 5%;
+  left: 0%;
 }
 
-.question-column{
-    overflow-y: auto;
-    max-height: 600px;
+.question-column {
+  overflow-y: auto;
+  max-height: 600px;
 }
 
-.question-modal{
-    position: sticky;
-    top: 35%;
-    left: 0%;
+.question-modal {
+  position: sticky;
+  top: 35%;
+  left: 0%;
 }
 
-.question-row{
-    margin-top: -35px;
+.question-row {
+  margin-top: -35px;
+}
+
+.question-textarea {
+  resize: none;
+  width: 100%;
+  margin-bottom: 5px;
+  max-height: 40px;
+  overflow: hidden;
+}
+
+.question-textarea-used {
+  background-color: rgba(219, 40, 40, 0.1);
+  color: rgba(119, 40, 40, 1);
+}
+
+.question-textarea-used-same-type {
+  background-color: rgba(40, 180, 219, 0.1);
+  color: rgba(40, 99, 119, 1);
 }

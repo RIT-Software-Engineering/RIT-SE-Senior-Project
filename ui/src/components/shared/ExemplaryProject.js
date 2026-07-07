@@ -4,7 +4,7 @@ import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
-import "./../../css/components/shared/exemplary.css"
+import "./../../css/components/shared/exemplary.css";
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -48,9 +48,7 @@ function ExemplaryProject({ project }) {
   let generateProfiles = (stringUsers, isStudent = true) => {
     if (!stringUsers) return [];
     return (
-      <div
-        className="exemplary-generate-profile"
-      >
+      <div className="exemplary-generate-profile">
         {listNames(stringUsers).map((user, idx) => (
           <ProfileCircle
             key={idx}
@@ -69,11 +67,10 @@ function ExemplaryProject({ project }) {
       {" "}
       {/* Div containing all project information */}
       <div
-        className="ui segment stackable padded grid"
+        className="ui segment stackable padded grid exemplary-clickable"
         onClick={() => toggleInitialModalOpen()}
-        style={{ cursor: "pointer" }}
       >
-        <div className="two column row" style={{ display: "flex" }}>
+        <div className="two column row exemplary-header-row">
           <div className="column">
             <h3 className="ui header">
               {project.display_name || project.title}

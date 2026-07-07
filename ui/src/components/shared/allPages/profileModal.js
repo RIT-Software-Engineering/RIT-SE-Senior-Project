@@ -5,7 +5,7 @@ import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
-import "./../../css/components/shared/profileModal.css"
+import "./../../../css/components/shared/profileModal.css";
 
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -224,9 +224,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         <div className="ui container stackable grid">
           <div className="two column row">
             <div className="column">
-              <div
-                className="profile-modal-content"
-              >
+              <div className="profile-modal-content">
                 <ProfileCircle
                   user={user}
                   size="huge"
@@ -308,16 +306,12 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               )}
             </div>
 
-            <div className="column" style={{ minWidth: "300px" }}>
+            <div className="column profile-preferences-column">
               {/* Preferences Section */}
               <div>
                 <h3 className="profile-marginbottom1">Preferences</h3>
-                <div
-                  className="profile-preference"
-                >
-                  <strong className="profile-dark">
-                    Dark Mode
-                  </strong>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Dark Mode</strong>
                   <Checkbox
                     toggle
                     checked={darkMode}
@@ -329,24 +323,16 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               {/* Dashboard Defaults Section */}
               <div className="profile-dash">
                 <h3 className="profile-marginbottom1">Dashboard Defaults</h3>
-                <div
-                  className="profile-preference"
-                >
-                  <strong className="profile-dark">
-                    Milestones View
-                  </strong>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Milestones View</strong>
                   <Checkbox
                     toggle
                     checked={milestonePreference}
                     onChange={toggleMilestonePreference}
                   />
                 </div>
-                <div
-                  className="profile-preference"
-                >
-                  <strong className="profile-dark">
-                    Gantt View
-                  </strong>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Gantt View</strong>
                   <Checkbox
                     toggle
                     checked={ganttPreference}
@@ -354,9 +340,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                   />
                 </div>
                 <div className="profile-calendar">
-                  <strong className="profile-dark">
-                    Calendar View
-                  </strong>
+                  <strong className="profile-dark">Calendar View</strong>
                   <Checkbox
                     toggle
                     checked={calendarPreference}

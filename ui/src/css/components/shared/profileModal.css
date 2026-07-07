@@ -1,0 +1,23 @@
+.profile-preferences-column {
+  min-width: 300px;
+}
+
+.database-editor-label-disabled {
+  color: lightgray;
+}
+
+.database-editor-textarea {
+  border: 1px solid #d4d4d5;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: 200px;
+}
+
+.database-editor-textarea-error {
+  background-color: #fab9b4;
+}
+
+.database-editor-textarea-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
