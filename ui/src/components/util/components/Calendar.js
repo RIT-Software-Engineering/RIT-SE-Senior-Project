@@ -192,12 +192,7 @@ export function Calendar(props) {
 
       const actionContent = (
         <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            minWidth: "100%",
-          }}
+          className="calendar-action"
         >
           <Icon
             name="triangle left"
@@ -208,13 +203,7 @@ export function Calendar(props) {
             }}
           />
           <p
-            style={{
-              maxWidth: "90%",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              marginTop: "12px",
-            }}
+            className="calendar-icon"
           >
             {action.state === "green" ? (
               <s>{action.action_title}</s>
@@ -324,14 +313,12 @@ export function Calendar(props) {
                     {breakPeriod.map((bp, index) => (
                       <div key={index}>
                         <span
-                          style={{
-                            fontWeight: "bold",
-                          }}
+                          className="calendar-bold"
                         >
                           {bp.action_title}
                         </span>
                         <br />
-                        <span style={{ color: "grey" }}>
+                        <span className="calendar-grey">
                           {bp.start_date}
                           {bp.start_date !== bp.due_date && (
                             <p>{bp.due_date}</p>
@@ -346,16 +333,7 @@ export function Calendar(props) {
                 hoverable
                 trigger={
                   <span
-                    style={{
-                      color: "var(--action-bar-proposal-purple)",
-                      display: "inline-block",
-                      maxWidth: "120px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      verticalAlign: "bottom",
-                      cursor: "pointer",
-                    }}
+                    className="caledar-trigger"
                   >
                     {breakPeriod[0].action_title}
                   </span>
@@ -425,7 +403,7 @@ export function Calendar(props) {
       <div className="action-calendar">
         <div className="calendar-header">
           <div>
-            <h3 style={{ display: "flex", gap: "10px" }}>
+            <h3 className="calendar-current">
               <Dropdown
                 options={monthNames.map((name, i) => ({
                   key: i,
@@ -434,12 +412,7 @@ export function Calendar(props) {
                 }))}
                 value={currentMonth}
                 onChange={(e, { value }) => setCurrentMonth(value)}
-                style={{
-                  backgroundColor: "transparent",
-                  zIndex: 100,
-                  position: "relative",
-                  border: "none",
-                }}
+                className="calendar-drop"
               />
               <Dropdown
                 options={Array.from({ length: 10 }, (_, i) => ({
@@ -450,16 +423,11 @@ export function Calendar(props) {
                 placeholder="Year"
                 value={currentYear}
                 onChange={(e, { value }) => setCurrentYear(value)}
-                style={{
-                  backgroundColor: "transparent",
-                  zIndex: 100,
-                  position: "relative",
-                  border: "none",
-                }}
+                className="calendar-drop"
               />
             </h3>
           </div>
-          <div style={{ display: "flex" }}>
+          <div className="calendar-display">
             <Button
               icon="chevron left"
               className={prevHovered ? "hovered" : ""}
