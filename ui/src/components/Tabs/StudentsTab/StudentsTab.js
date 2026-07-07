@@ -334,10 +334,7 @@ export default function StudentsTab(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon
-                      name="mail"
-                      className="student-icon-color"
-                    />
+                    <Icon name="mail" className="student-icon-color" />
                   </a>
                 </div>
               </div>,
@@ -447,9 +444,7 @@ export default function StudentsTab(props) {
                   content: {
                     content: (
                       <>
-                        <div
-                          className="student-content"
-                        >
+                        <div className="student-content">
                           <BarGraph
                             data={submission}
                             width={window.innerWidth * 0.9}

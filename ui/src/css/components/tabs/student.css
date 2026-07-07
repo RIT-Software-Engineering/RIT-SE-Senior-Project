@@ -34,7 +34,7 @@
   margin-left: 0.5em;
 }
 
-.student-addition {
+.student-addtion {
   margin-left: 0.5em;
 }
 
@@ -79,4 +79,31 @@
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+}
+
+.student-ai-summary-textarea {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  resize: vertical;
+}
+
+.student-ai-summary-textarea-empty {
+  height: 50px;
+  min-height: 50px;
+}
+
+.student-prompt-textarea {
+  width: 100%;
+  min-width: 400px;
+  min-height: 150px;
+  resize: vertical;
+  margin-bottom: 10px;
+  border: 1px solid grey;
+  outline: none;
+}
+
+.student-prompt-textarea-modified {
+  border: 2px solid orange;
+  outline: 2px solid orange;
 }

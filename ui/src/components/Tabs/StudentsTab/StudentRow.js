@@ -17,7 +17,7 @@ import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
-import "./../../css/components/tabs/student.css";
+import "./../../../css/components/tabs/student.css";
 
 dayjs.extend(utc);
 
@@ -244,13 +244,7 @@ export default function StudentRow(props) {
     student_cells.push(
       <TableCell key={"student-id-" + props.student.system_id}>
         {props.student.system_id}
-        {statusText && (
-          <div
-            className="student-status"
-          >
-            {statusText}
-          </div>
-        )}
+        {statusText && <div className="student-status">{statusText}</div>}
       </TableCell>,
     );
     student_cells.push(
@@ -333,9 +327,7 @@ export default function StudentRow(props) {
         >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
-            <p
-              className="student-detail"
-            >
+            <p className="student-detail">
               <strong>Name:</strong>
               <ProfileCircle
                 name={`${props.student.fname} ${props.student.lname}`}
@@ -498,9 +490,7 @@ export default function StudentRow(props) {
                                             .map((key) => feedback[key])
                                             .join("");
                                           return (
-                                            <p
-                                              className="student-feedback"
-                                            >
+                                            <p className="student-feedback">
                                               {reconstructedString}
                                             </p>
                                           );
@@ -559,14 +549,11 @@ export default function StudentRow(props) {
                     readOnly
                     value={aiSummary}
                     rows={aiSummary === "No Summary Generated" ? 2 : 6}
-                    style={{
-                      width: "100%",
-                      height:
-                        aiSummary === "No Summary Generated" ? "50px" : "auto",
-                      minHeight:
-                        aiSummary === "No Summary Generated" ? "50px" : "200px",
-                      resize: "vertical",
-                    }}
+                    className={`student-ai-summary-textarea${
+                      aiSummary === "No Summary Generated"
+                        ? " student-ai-summary-textarea-empty"
+                        : ""
+                    }`}
                   />
                 </div>
                 <Button
@@ -595,21 +582,11 @@ export default function StudentRow(props) {
                         value={tempPrompt}
                         onChange={(e) => setTempPrompt(e.target.value)}
                         rows={8}
-                        style={{
-                          width: "100%",
-                          minWidth: "400px",
-                          minHeight: "150px",
-                          resize: "vertical",
-                          marginBottom: "10px",
-                          border:
-                            tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                              ? "2px solid orange"
-                              : "1px solid grey",
-                          outline:
-                            tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                              ? "2px solid orange"
-                              : "none",
-                        }}
+                        className={`student-prompt-textarea${
+                          tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
+                            ? " student-prompt-textarea-modified"
+                            : ""
+                        }`}
                       />
                       <div>
                         <Button
