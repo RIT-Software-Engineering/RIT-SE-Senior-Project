@@ -15,8 +15,7 @@ import { formatDate } from "../../../../util/functions/utils";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
-
-import "./../../../css/components/tabs/submit.css";
+import "../../../../../css/components/tabs/submit.css";
 
 export default function SubmissionViewerModal(props) {
   const [submission, setSubmission] = useState({});

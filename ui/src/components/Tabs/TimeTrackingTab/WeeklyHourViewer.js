@@ -15,7 +15,6 @@ import {
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
-
 import "./../../../css/components/tabs/weeklyhour.css";
 
 const { isSameWeek, addDays } = require("date-fns");

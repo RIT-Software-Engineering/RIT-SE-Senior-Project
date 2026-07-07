@@ -3,8 +3,9 @@ import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
-const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 import "./../../css/components/shared/exemplary.css";
+
+const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {

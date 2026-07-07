@@ -4,7 +4,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
-
 import "./../../../css/components/shared/profileModal.css";
 
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {

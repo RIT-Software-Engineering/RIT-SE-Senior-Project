@@ -6,7 +6,7 @@ import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
 import TimelineCheckboxes from "./TimelineCheckboxes";
 import { Calendar } from "../../../../util/components/Calendar";
-import "./../../../css/components/tabs/timeline.css";
+import "../../../../../css/components/tabs/timeline.css";
 
 const GanttChart = React.lazy(() => import("./GanttChart"));
 

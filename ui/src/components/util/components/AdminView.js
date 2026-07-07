@@ -13,8 +13,7 @@ import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
 import { UserContext } from "../functions/UserContext";
 import _ from "lodash";
-
-import "./../../css/components/utils/admin.css";
+import "./../../../css/components/utils/admin.css";
 
 export default function AdminView(props) {
   const [selectedUser, setSelectedUser] = useState();
@@ -189,11 +188,7 @@ export default function AdminView(props) {
                         <div>
                           <div>{`${coach.fname} ${coach.lname} (${coach.system_id})`}</div>
                           {statusText && (
-                            <div
-                              className="admin-text"
-                            >
-                              {statusText}
-                            </div>
+                            <div className="admin-text">{statusText}</div>
                           )}
                         </div>
                       </DropdownItem>
@@ -217,11 +212,7 @@ export default function AdminView(props) {
                         <div>
                           <div>{`${student.fname} ${student.lname} (${student.system_id})`}</div>
                           {statusText && (
-                            <div
-                              className="admin-text"
-                            >
-                              {statusText}
-                            </div>
+                            <div className="admin-text">{statusText}</div>
                           )}
                         </div>
                       </DropdownItem>

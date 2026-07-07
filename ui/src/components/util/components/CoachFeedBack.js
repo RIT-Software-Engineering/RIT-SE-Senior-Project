@@ -22,7 +22,6 @@ import { config } from "../functions/constants";
 import ResultTable from "./ResultTable";
 import { PROMPT_GENERATE_FEEDBACK_SUMMARY } from "../functions/constants";
 import ProfileCircle from "./ProfileCircle";
-
 import "./../../../css/utils/coach.css";
 
 export default function CoachFeedback(props) {

@@ -18,8 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import ProfileCircle from "../../util/components/ProfileCircle";
-
-import "./../../css/components/tabs/time.css";
+import "./../../../css/components/tabs/time.css";
 
 export default function ProjectTime(props) {
   const userContext = useContext(UserContext);

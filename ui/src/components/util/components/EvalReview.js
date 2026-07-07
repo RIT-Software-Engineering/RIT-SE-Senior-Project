@@ -12,8 +12,7 @@ import {
 } from "semantic-ui-react";
 import { UserContext } from "../functions/UserContext";
 import ProfileCircle from "./ProfileCircle";
-
-import "./../../../css/utils/valuation.css";
+import "./../../../css/utils/evaluation.css";
 
 export default function EvalReview(props) {
   const [userFeedback, setUserFeedback] = useState([]);
@@ -140,9 +139,7 @@ export default function EvalReview(props) {
                               color="white"
                               className="evaluation-label"
                             />
-                            <p
-                              className="evaluation-popup"
-                            >
+                            <p className="evaluation-popup">
                               {" "}
                               was used to aid the coach in your feedback.
                             </p>

@@ -14,7 +14,7 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
 import { isSemesterActive } from "../../../util/functions/utils";
-import "./../../../css/components/tabs/action.css";
+import "../../../../css/components/tabs/action.css";
 
 export default function ActionTable(props) {
   // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.

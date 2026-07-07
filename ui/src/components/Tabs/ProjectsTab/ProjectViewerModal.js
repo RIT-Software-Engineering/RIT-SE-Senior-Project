@@ -6,7 +6,6 @@ import { formattedAttachments } from "./ProjectEditorModal";
 import { decode } from "he";
 import { convert } from "html-to-text";
 import ProfileCircle from "../../util/components/ProfileCircle";
-
 import "./../../../css/components/tabs/projectviewer.css";
 
 export default function ProjectViewerModal(props) {

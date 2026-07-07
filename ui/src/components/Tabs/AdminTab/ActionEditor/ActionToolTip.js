@@ -4,8 +4,7 @@ import { ACTION_TARGETS } from "../../../util/functions/constants";
 import { formatDateNoOffset } from "../../../util/functions/utils";
 import ActionPanel from "./ActionPanel";
 import PreviewHtml from "../../../util/components/PreviewHtml";
-
-import "./../../../css/components/tabs/action.css";
+import "../../../../css/components/tabs/action.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",

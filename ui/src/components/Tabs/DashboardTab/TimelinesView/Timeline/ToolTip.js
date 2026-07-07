@@ -11,6 +11,7 @@ import SubmissionViewerModal from "./SubmissionViewerModal";
 import DOMpurify from "dompurify";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 import { formatDate } from "../../../../util/functions/utils";
+import "../../../../../css/components/tabs/tool.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -21,8 +22,6 @@ const submissionTypeMap = {
   [ACTION_TARGETS.coach_announcement]: "Coach Announcement",
   [ACTION_TARGETS.peer_evaluation]: "Peer Evaluation",
 };
-
-import "./../../../css/components/tabs/tool.css";
 
 export default function ToolTip(props) {
   const [closeOnDocClick, setCloseOnDocClick] = useState(true);

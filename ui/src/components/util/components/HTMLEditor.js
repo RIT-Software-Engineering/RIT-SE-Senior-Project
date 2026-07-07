@@ -3,7 +3,6 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import React from "react";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
-
 import "./../../../css/utils/html.css";
 
 const modifiedEclipse = eclipseInit({ settings: { caret: "#000000" } });

@@ -3,7 +3,7 @@ import { Button, Divider, Form, Icon, Modal, Table } from "semantic-ui-react";
 import CSV from "comma-separated-values";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { config } from "../../../util/functions/constants";
-import "./../../../css/components/tabs/batchuser.css";
+import "../../../../css/components/tabs/batchuser.css";
 
 const UPLOAD_BUTTON_TEXT = "Upload";
 

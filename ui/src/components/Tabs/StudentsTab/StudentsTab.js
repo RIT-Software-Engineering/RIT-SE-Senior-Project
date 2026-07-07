@@ -8,8 +8,7 @@ import { isSemesterActive } from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
 import BarGraph from "../../util/components/PeerEvalVisualSummary";
 import _ from "lodash";
-
-import "./../../css/components/tabs/student.css";
+import "./../../../css/components/tabs/student.css";
 
 export default function StudentsTab(props) {
   const [students, setStudentsData] = useState([]);

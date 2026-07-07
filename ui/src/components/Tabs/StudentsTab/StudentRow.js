@@ -16,7 +16,6 @@ import { formatDateTime } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
-
 import "./../../../css/components/tabs/student.css";
 
 dayjs.extend(utc);

@@ -6,7 +6,6 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
 import { UserContext } from "../../util/functions/UserContext";
-
 import "./../../../css/components/tabs/time.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };

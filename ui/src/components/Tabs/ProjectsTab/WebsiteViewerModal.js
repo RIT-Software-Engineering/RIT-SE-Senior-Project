@@ -5,7 +5,6 @@ import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
 import { decode } from "he";
-
 import "./../../../css/components/tabs/website.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;

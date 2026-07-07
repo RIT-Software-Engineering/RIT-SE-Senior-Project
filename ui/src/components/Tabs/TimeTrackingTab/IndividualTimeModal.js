@@ -1,12 +1,10 @@
 import React, { useContext, useState } from "react";
-
 import { Button, Divider, Icon, Modal, ModalActions } from "semantic-ui-react";
 import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
-
 import "./../../../css/components/tabs/individual.css";
 
 export default function IndividualTimeModal(props) {
