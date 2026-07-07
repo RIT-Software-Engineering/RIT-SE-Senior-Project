@@ -4,7 +4,7 @@ import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
-import "./../../css/components/tabs/sponser.css";
+import "./../../../css/components/tabs/sponser.css";
 
 export default function SponsorNote(props) {
   let modalButton = <div></div>;
@@ -81,9 +81,7 @@ export default function SponsorNote(props) {
 
   let content = (
     <Segment float={"left"} basic>
-      <div
-        className="sponser-content"
-      >
+      <div className="sponser-content">
         <ProfileCircle
           user={{
             fname: props.note.fname,
