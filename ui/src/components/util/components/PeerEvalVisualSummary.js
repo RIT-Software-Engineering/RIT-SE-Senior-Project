@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
 
+import "./../../../css/utils/peer.css";
+
 const BarGraph = ({ data, width, height }) => {
   const userContext = useContext(UserContext);
   const [userFeedback, setUserFeedback] = useState([]);
@@ -52,29 +54,19 @@ const BarGraph = ({ data, width, height }) => {
 
   return (
     <div
-      style={{
-        width: "90vw",
-        height: "50vh",
-        maxWidth: "1000px",
-        maxHeight: "500px",
-      }}
+      className="peer-performance"
     >
       <h2 style={{ color: textColor }}>Performance Evaluation</h2>
 
       <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          marginTop: "10px",
-        }}
+        className="peer-div"
       >
         {userFeedback.map((person, index) => (
           <div
             key={person[0]}
-            style={{ display: "flex", alignItems: "center", margin: "5px" }}
+            className="peer-user"
           >
-            <svg width="15" height="15" style={{ marginRight: "5px" }}>
+            <svg width="15" height="15" className="peer-svg">
               <rect
                 x="0"
                 y="0"
@@ -163,7 +155,7 @@ const BarGraph = ({ data, width, height }) => {
                   fontSize={15}
                   textAnchor="middle"
                   fill="black"
-                  style={{ fontWeight: "bold" }}
+                  className="peer-text"
                 >
                   {personName
                     .split(" ")

@@ -1,0 +1,87 @@
+.peer-header{
+    margin-bottom: 30px;
+}
+
+.peer-table{
+    overflow-x: auto;
+}
+
+.peer-question{
+    width: 100%;
+}
+
+.peer-content-color{
+    color: red;
+}
+
+.peer-student{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+}
+
+.peer-name{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+}
+
+.peer-error{
+    font-size: 1.2rem;
+}
+
+.peer-rating{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.peer-levels{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.peer-radio{
+    margin: 8px auto;
+}
+
+.peer-feedback{
+    margin-top: 10px;
+}
+
+.peer-performance{
+    width: 90vw;
+    height: 50vh;
+    max-width: 1000px;
+    max-height: 500px;
+}
+
+.peer-div{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.peer-user{
+    display: flex; 
+    align-items: center; 
+    margin: 5px
+}
+
+.peer-svg{
+    margin-right: 5px;
+}
+
+.peer-text{
+    font-size: bold;
+}
