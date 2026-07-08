@@ -250,6 +250,7 @@ export default function ProjectArchivePanel(props) {
             )
               .then((response) => response.json())
               .then((dates) => {
+                if (!dates?.length) return;
                 setInitialState((prevInitialState) => {
                   return {
                     ...prevInitialState,
