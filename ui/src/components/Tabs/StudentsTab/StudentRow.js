@@ -321,7 +321,6 @@ export default function StudentRow(props) {
           closeOnDimmerClick={false}
           onClose={() => setOpenModal(false)}
           size="small"
-          centered={false} // Disable default centering
           className="student-modal"
         >
           <Modal.Header>Student Details</Modal.Header>
