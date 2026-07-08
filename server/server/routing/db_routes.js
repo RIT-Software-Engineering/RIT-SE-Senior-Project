@@ -36,6 +36,42 @@ function humanFileSize(bytes, si = false, dp = 1) {
 
 const defaultFileSizeLimit = 15 * 1024 * 1024;
 
+/**
+ * Format: {ActionName}_{YYYY-MM-DD}_{ProjectName}_{SubmitterLastName}[-N].{ext}
+ */
+function sanitizeFileNameSegment(str, maxLen = 10) {
+  return (str || "")
+    .toString()
+    .replace(/[\\/:*?"<>|]/g, "")
+    .replace(/\s+/g, "")
+    .slice(0, maxLen);
+}
+
+function buildSubmissionDownloadName({
+  actionTitle,
+  submissionDateTime,
+  projectName,
+  submitterLastName,
+  fileIndex,
+  originalFileName,
+}) {
+  const ext = path.extname(originalFileName || "");
+  const dateStr = submissionDateTime
+    ? dayjs(submissionDateTime).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD");
+
+  const segments = [
+    sanitizeFileNameSegment(actionTitle),
+    dateStr,
+    sanitizeFileNameSegment(projectName),
+    sanitizeFileNameSegment(submitterLastName),
+  ].filter(Boolean);
+
+  const increment = fileIndex > 0 ? `-${fileIndex + 1}` : "";
+
+  return segments.join("_") + increment + ext;
+}
+
 const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
@@ -3210,26 +3246,31 @@ module.exports = (db) => {
       let getSubmissionQuery = "";
       let params = [];
 
+      const submissionFileSelect = `
+        SELECT action_log.files, action_log.project, action_log.system_id,
+               action_log.submission_datetime,
+               actions.action_id, actions.action_target, actions.action_title,
+               users.lname AS submitter_lname,
+               COALESCE(projects.display_name, projects.title) AS project_name
+        FROM action_log
+        JOIN actions ON actions.action_id = action_log.action_template
+        JOIN users ON users.system_id = action_log.system_id
+        JOIN projects ON projects.project_id = action_log.project`;
+
       switch (req.user.type) {
         case ROLES.STUDENT:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.COACH:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.ADMIN:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ?`;
           params = [req.query.log_id];
           break;
@@ -3239,8 +3280,17 @@ module.exports = (db) => {
           return next(error);
       }
 
-      const { files, project, action_target, system_id, action_id } =
-        (await db.query(getSubmissionQuery, params))[0] || {};
+      const {
+        files,
+        project,
+        action_target,
+        system_id,
+        action_id,
+        action_title,
+        submitter_lname,
+        project_name,
+        submission_datetime,
+      } = (await db.query(getSubmissionQuery, params))[0] || {};
 
       let fileList = [];
       if (files) {
@@ -3254,11 +3304,19 @@ module.exports = (db) => {
         system_id &&
         action_id
       ) {
-        return res.sendFile(
+        return res.download(
           path.join(
             __dirname,
             `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`,
           ),
+          buildSubmissionDownloadName({
+            actionTitle: action_title,
+            submissionDateTime: submission_datetime,
+            projectName: project_name,
+            submitterLastName: submitter_lname,
+            fileIndex: fileList.indexOf(req.query.file),
+            originalFileName: req.query.file,
+          }),
         );
       }
       const error = new Error(
