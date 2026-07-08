@@ -215,7 +215,6 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
       onClose={onClose}
       closeOnDimmerClick={false}
       size="small"
-      centered={false}
       className="profile-modal"
     >
       <Modal.Header>Your Profile</Modal.Header>

@@ -1,23 +1,64 @@
+.profile-modal.ui.modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
 .profile-preferences-column {
   min-width: 300px;
 }
 
-.database-editor-label-disabled {
-  color: lightgray;
+.profile-modal-content {
+  display: flex;
+  justify-content: center;
 }
 
-.database-editor-textarea {
-  border: 1px solid #d4d4d5;
-  border-radius: 5px;
-  padding: 10px;
-  min-height: 200px;
+.profile-marginbottom1 {
+  margin-bottom: 1em;
 }
 
-.database-editor-textarea-error {
-  background-color: #fab9b4;
+.profile-marginbottom2 {
+  margin-bottom: 1em;
 }
 
-.database-editor-textarea-disabled {
-  opacity: 0.6;
-  pointer-events: none;
+.profile-text {
+  width: 100%;
+  resize: vertical;
+}
+
+.profile-button {
+  margin-top: 0.5em;
+  margin-right: 0.5em;
+}
+
+.profile-cancel {
+  margin-top: 0.5em;
+}
+
+.profile-edit {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.profile-dark {
+  display: inline-block;
+}
+
+.profile-dash {
+  margin-top: 3em;
+}
+
+.profile-preference {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.profile-calendar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
