@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./../../../css/utils/profile.css";
+
 export default function ProfileCircle(props) {
   const {
     user,
@@ -123,12 +125,7 @@ export default function ProfileCircle(props) {
           <img
             src={bgImage}
             alt="Profile Background"
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
+            className="profile-img"
           />
         ) : (
           <div
