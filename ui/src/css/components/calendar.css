@@ -218,7 +218,7 @@
   font-weight: bold;
 }
 
-.claendar-grey {
+.calendar-grey {
   color: grey;
 }
 
@@ -247,4 +247,40 @@
 
 .calendar-display {
   display: flex;
+}
+
+.calendar-action-bar {
+  left: 0;
+  background-color: inherit;
+}
+
+.calendar-arrow-hidden {
+  visibility: hidden;
+}
+
+.calendar-break-day-number {
+  color: var(--action-bar-proposal-purple);
+  font-weight: bold;
+}
+
+.calendar-day-popup {
+  width: 250px;
+  overflow: auto;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  background-color: var(--bg-secondary);
+  padding: 20px;
+}
+
+.calendar-more-actions-trigger {
+  top: 0;
+  background-color: grey;
+  border-left: none;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
 }

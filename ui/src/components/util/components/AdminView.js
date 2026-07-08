@@ -282,7 +282,7 @@ export default function AdminView(props) {
       return (
         <>
           <div>
-            <div className="ui error message" style={{ float: "left" }}>
+            <div className="ui error message admin-status-message">
               Currently mocking: {user?.fname} {user?.lname} ({user?.user}) who
               is a "{user.role}"
             </div>
@@ -294,7 +294,7 @@ export default function AdminView(props) {
       return (
         <>
           <div>
-            <div className="ui positive message" style={{ float: "left" }}>
+            <div className="ui positive message admin-status-message">
               Currently signed in as: {user?.fname} {user?.lname} ({user?.user})
               who is a "{user.role}"
             </div>

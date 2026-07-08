@@ -134,10 +134,7 @@ export default function ResultTable(props) {
               {expandedRows.includes(index) && (
                 <TableRow>
                   <TableCell colSpan="3">
-                    <Card
-                      fluid
-                      className="result-card"
-                    >
+                    <Card fluid className="result-card">
                       <CardContent>
                         <CardHeader>
                           {camelCaseToSentence(category) +

@@ -88,10 +88,7 @@ export function QuestionFeedback({
             const name = `Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`;
             const isErrored = errorFields.has(name);
             return (
-              <div
-                key={`${index}:${students_index}`}
-                className="peer-header"
-              >
+              <div key={`${index}:${students_index}`} className="peer-header">
                 {!isInline && (
                   <Header
                     textAlign="left"
@@ -197,12 +194,8 @@ export function QuestionTable({
                 return (
                   <TableHeaderCell
                     collapsing
-                    style={{
-                      width: pixelWidth + "px",
-                      wordWrap: "break-word",
-                      textAlign: "center",
-                      verticalAlign: "bottom",
-                    }}
+                    className="peer-table-header-cell"
+                    style={{ width: pixelWidth + "px" }}
                     key={question}
                   >
                     <Header as={"h4"}>
@@ -313,7 +306,9 @@ export function QuestionMoodRating({
     <div className="peer-question">
       <Header as="h2" content={question} textAlign="left" dividing>
         {question + " "}
-        {required && <Header.Content content="*" className="peer-content-color" />}
+        {required && (
+          <Header.Content content="*" className="peer-content-color" />
+        )}
       </Header>
       <br />
       <Grid divided="vertically">
@@ -321,14 +316,9 @@ export function QuestionMoodRating({
           const name = `Mood-${sentenceToCamelCase(question)}-${student}`;
           const isErrored = errorFields.has(name);
           return (
-            <div
-              key={student}
-              className="peer-student"
-            >
+            <div key={student} className="peer-student">
               {/* Student Name */}
-              <div
-                className="peer-name"
-              >
+              <div className="peer-name">
                 <Header as={"h3"} className="peer-error">
                   {isErrored && (
                     <Icon
@@ -345,14 +335,9 @@ export function QuestionMoodRating({
               </div>
 
               {/* Rating Levels */}
-              <div
-                className="peer-rating"
-              >
+              <div className="peer-rating">
                 {levels.map((level, index) => (
-                  <div
-                    key={`col-${student}-${index}`}
-                    className="peer-levels"
-                  >
+                  <div key={`col-${student}-${index}`} className="peer-levels">
                     <Radio
                       className="peer-radio"
                       name={`Mood-${sentenceToCamelCase(question)}-${student}`}

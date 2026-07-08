@@ -85,58 +85,41 @@ export default function ProfileCircle(props) {
     return "NA";
   }
 
+  const highlightCircle =
+    !actualIsStudent || ["admin", "coach"].includes(user?.role);
+
   return (
     <div
+      className={`profile-wrapper${pill ? " profile-wrapper-pill" : ""}${
+        clickable ? " profile-wrapper-clickable" : ""
+      }`}
       style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
         backgroundColor: pill ? pillColor : "transparent",
-        padding: pill ? "5px 5px" : "0",
-        borderRadius: pill ? "20px" : "0",
-        cursor: clickable ? "pointer" : "default",
-        marginRight: "5px",
         ...style,
       }}
     >
       <div
         className={`profile-circle ${className}`}
         style={{
-          width: sizes[size]?.width || sizes["small"].width,
-          height: sizes[size]?.height || sizes["small"].height,
-          minWidth: sizes[size]?.width || sizes["small"].width,
-          minHeight: sizes[size]?.height || sizes["small"].height,
-          borderRadius: "50%",
+          "--profile-size": sizes[size]?.width || sizes["small"].width,
+          "--profile-font-size":
+            sizes[size]?.fontSize || sizes["small"].fontSize,
           backgroundColor:
             actualIsStudent && !["admin", "coach"].includes(user?.role)
               ? randColorFromName(user?.fname || name.split(" ")[0] || "User")
               : "var(--bg-secondary)",
-          border:
-            !actualIsStudent || ["admin", "coach"].includes(user?.role)
-              ? `2px solid ${randColorFromName(user?.fname || name.split(" ")[0] || "User")}`
-              : "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: sizes[size]?.fontSize || sizes["small"].fontSize,
+          border: highlightCircle
+            ? `2px solid ${randColorFromName(user?.fname || name.split(" ")[0] || "User")}`
+            : "none",
         }}
       >
         {bgImage ? (
-          <img
-            src={bgImage}
-            alt="Profile Background"
-            className="profile-img"
-          />
+          <img src={bgImage} alt="Profile Background" className="profile-img" />
         ) : (
           <div
-            style={{
-              color:
-                !actualIsStudent || ["admin", "coach"].includes(user?.role)
-                  ? "var(--text-primary)"
-                  : "black",
-              fontWeight: "bold",
-              fontStyle: "normal",
-            }}
+            className={`profile-initials${
+              highlightCircle ? " profile-initials-highlighted" : ""
+            }`}
           >
             {generateInitials(user, name)}
           </div>
@@ -144,21 +127,9 @@ export default function ProfileCircle(props) {
       </div>
       {showFullName && (
         <span
-          style={{
-            marginLeft: "5px",
-            fontStyle: "normal",
-            textDecoration: textUnderlined ? "underline" : "none",
-            // truncate in tiny size (preview), full display otherwise
-            ...(size === "tiny"
-              ? {
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  maxWidth: "120px",
-                  display: "inline-block",
-                }
-              : { display: "inline" }),
-          }}
+          className={`profile-name${
+            textUnderlined ? " profile-name-underlined" : ""
+          }${size === "tiny" ? " profile-name-truncated" : ""}`}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>

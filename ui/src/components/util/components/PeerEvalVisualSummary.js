@@ -53,19 +53,12 @@ const BarGraph = ({ data, width, height }) => {
   const textColor = isDarkMode ? "#ffffff" : "#000000";
 
   return (
-    <div
-      className="peer-performance"
-    >
-      <h2 style={{ color: textColor }}>Performance Evaluation</h2>
+    <div className="peer-performance">
+      <h2 className="peer-performance-heading">Performance Evaluation</h2>
 
-      <div
-        className="peer-div"
-      >
+      <div className="peer-div">
         {userFeedback.map((person, index) => (
-          <div
-            key={person[0]}
-            className="peer-user"
-          >
+          <div key={person[0]} className="peer-user">
             <svg width="15" height="15" className="peer-svg">
               <rect
                 x="0"
@@ -75,7 +68,7 @@ const BarGraph = ({ data, width, height }) => {
                 fill={randColorFromName(person[0].split(" ")[0])}
               />
             </svg>
-            <span style={{ color: textColor }}>{person[0]}</span>
+            <span className="peer-user-name">{person[0]}</span>
           </div>
         ))}
       </div>

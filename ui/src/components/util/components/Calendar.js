@@ -157,7 +157,6 @@ export function Calendar(props) {
 
       let actionStyle = {
         top: `${position.top}px`,
-        backgroundColor: "inherit",
         borderTop: `3px solid ${action.color}`,
         borderBottom: `3px solid ${action.color}`,
         borderLeft: starts || inPopup ? `3px solid ${action.color}` : "none",
@@ -166,7 +165,6 @@ export function Calendar(props) {
         borderBottomLeftRadius: starts || inPopup ? "13px" : "0",
         borderTopRightRadius: ends || inPopup ? "13px" : "0",
         borderBottomRightRadius: ends || inPopup ? "13px" : "0",
-        left: "0",
         backgroundImage: starts
           ? `linear-gradient(to right, ${action.color}, transparent)`
           : ends
@@ -195,10 +193,11 @@ export function Calendar(props) {
           <Icon
             name="triangle left"
             size="large"
-            style={{
-              visibility:
-                showLeftArrow || showBothArrows ? "visible" : "hidden",
-            }}
+            className={
+              showLeftArrow || showBothArrows
+                ? undefined
+                : "calendar-arrow-hidden"
+            }
           />
           <p className="calendar-icon">
             {action.state === "green" ? (
@@ -210,10 +209,11 @@ export function Calendar(props) {
           <Icon
             name="triangle right"
             size="large"
-            style={{
-              visibility:
-                showRightArrow || showBothArrows ? "visible" : "hidden",
-            }}
+            className={
+              showRightArrow || showBothArrows
+                ? undefined
+                : "calendar-arrow-hidden"
+            }
           />
         </span>
       );
@@ -221,7 +221,7 @@ export function Calendar(props) {
       const trigger = (
         <div
           key={`action-${action.action_id}-${day}`}
-          className="calendar-action"
+          className="calendar-action calendar-action-bar"
           style={actionStyle}
           onClick={(e) => {
             e.stopPropagation();
@@ -291,13 +291,8 @@ export function Calendar(props) {
         >
           <div className={`day-number ${isCurrentDay ? "today" : ""}`}>
             <span
-              style={
-                breakPeriod.length > 0
-                  ? {
-                      color: "var(--action-bar-proposal-purple)",
-                      fontWeight: "bold",
-                    }
-                  : {}
+              className={
+                breakPeriod.length > 0 ? "calendar-break-day-number" : undefined
               }
             >
               {day}
@@ -324,7 +319,7 @@ export function Calendar(props) {
                 position="top right"
                 hoverable
                 trigger={
-                  <span className="caledar-trigger">
+                  <span className="calendar-trigger">
                     {breakPeriod[0].action_title}
                   </span>
                 }
@@ -341,33 +336,13 @@ export function Calendar(props) {
                 basic
                 keepInViewPort={true}
                 inverted={isDarkMode}
-                className="calendar-day"
-                style={{
-                  width: "250px",
-                  overflow: "auto",
-                  zIndex: 10,
-                  boxShadow: "0 0 10px rgba(0,0,0,1)",
-                  backgroundColor: "var(--bg-secondary)",
-                  padding: "20px",
-                }}
+                className="calendar-day calendar-day-popup"
                 content={generateActionsForDay(actionsForDay, day, true)}
                 position="bottom center"
                 trigger={
                   <div
                     key={`action-${1}-${day}`}
-                    className="calendar-action"
-                    style={{
-                      top: `0`,
-                      backgroundColor: "grey",
-                      borderLeft: "none",
-                      left: "0",
-                      zIndex: 10,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      color: "white",
-                    }}
+                    className="calendar-action calendar-more-actions-trigger"
                     onClick={(e) => {
                       e.stopPropagation();
                     }}

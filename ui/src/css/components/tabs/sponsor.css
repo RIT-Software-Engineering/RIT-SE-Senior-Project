@@ -1,14 +1,14 @@
-.sponser-content {
+.sponsor-content {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.sponser-profile {
+.sponsor-profile {
   margin-right: 10px;
 }
 
-.sponser-props {
+.sponsor-props {
   margin: 0;
   line-height: 1.4;
 }

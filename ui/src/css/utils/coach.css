@@ -53,3 +53,12 @@
 .coach-radio {
   visibility: hidden;
 }
+
+.coach-prompt-textarea {
+  margin-bottom: 10px;
+  border: 1px solid grey;
+}
+
+.coach-prompt-textarea-modified {
+  border: 2px solid orange;
+}

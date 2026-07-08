@@ -561,13 +561,11 @@ export default function CoachFeedback(props) {
                       value={tempPrompt}
                       onChange={(e) => setTempPrompt(e.target.value)}
                       rows={8}
-                      style={{
-                        marginBottom: "10px",
-                        border:
-                          tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
-                            ? "2px solid orange"
-                            : "1px solid grey",
-                      }}
+                      className={
+                        tempPrompt !== PROMPT_GENERATE_FEEDBACK_SUMMARY
+                          ? "coach-prompt-textarea coach-prompt-textarea-modified"
+                          : "coach-prompt-textarea"
+                      }
                     />
                     <div>
                       <Button

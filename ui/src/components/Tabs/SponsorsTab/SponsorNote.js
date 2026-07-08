@@ -3,7 +3,7 @@ import React from "react";
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
-import "./../../../css/components/tabs/sponser.css";
+import "./../../../css/components/tabs/sponsor.css";
 
 export default function SponsorNote(props) {
   let modalButton = <div></div>;
