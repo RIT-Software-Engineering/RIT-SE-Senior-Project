@@ -77,7 +77,7 @@ function ProjectsPage() {
         <h2>Projects</h2>
       </div>
 
-      <div className="ui hidden divider"></div>
+      <div className="ui invisible divider"></div>
       <Input
         icon="search"
         iconPosition="left"
@@ -88,7 +88,7 @@ function ProjectsPage() {
         })}
       />
 
-      <div className="ui hidden divider"></div>
+      <div className="ui invisible divider"></div>
 
       <div id="exemplaryProjectsDiv">
         {/* <!-- Attach exemplary project elements here --> */}
