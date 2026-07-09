@@ -37,7 +37,7 @@ function humanFileSize(bytes, si = false, dp = 1) {
 const defaultFileSizeLimit = 15 * 1024 * 1024;
 
 /**
- * Format: {ActionName}_{YYYY-MM-DD}_{ProjectName}_{SubmitterLastName}[-N].{ext}
+ * Format: {ActionName}_{YYYY-MM-DD}_{ProjectName}_{SubmitterUserName}[-N].{ext}
  */
 function sanitizeFileNameSegment(str, maxLen = 10) {
   return (str || "")
@@ -51,7 +51,7 @@ function buildSubmissionDownloadName({
   actionTitle,
   submissionDateTime,
   projectName,
-  submitterLastName,
+  submitterUserName,
   fileIndex,
   originalFileName,
 }) {
@@ -64,7 +64,7 @@ function buildSubmissionDownloadName({
     sanitizeFileNameSegment(actionTitle),
     dateStr,
     sanitizeFileNameSegment(projectName),
-    sanitizeFileNameSegment(submitterLastName),
+    sanitizeFileNameSegment(submitterUserName),
   ].filter(Boolean);
 
   const increment = fileIndex > 0 ? `-${fileIndex + 1}` : "";
@@ -3250,11 +3250,9 @@ module.exports = (db) => {
         SELECT action_log.files, action_log.project, action_log.system_id,
                action_log.submission_datetime,
                actions.action_id, actions.action_target, actions.action_title,
-               users.lname AS submitter_lname,
                COALESCE(projects.display_name, projects.title) AS project_name
         FROM action_log
         JOIN actions ON actions.action_id = action_log.action_template
-        JOIN users ON users.system_id = action_log.system_id
         JOIN projects ON projects.project_id = action_log.project`;
 
       switch (req.user.type) {
@@ -3287,7 +3285,6 @@ module.exports = (db) => {
         system_id,
         action_id,
         action_title,
-        submitter_lname,
         project_name,
         submission_datetime,
       } = (await db.query(getSubmissionQuery, params))[0] || {};
@@ -3313,7 +3310,7 @@ module.exports = (db) => {
             actionTitle: action_title,
             submissionDateTime: submission_datetime,
             projectName: project_name,
-            submitterLastName: submitter_lname,
+            submitterUserName: system_id,
             fileIndex: fileList.indexOf(req.query.file),
             originalFileName: req.query.file,
           }),
