@@ -7,10 +7,9 @@ import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import SELogoLightMode from "../../../Assets/gccis_light.png";
-import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import uiConfig from "../../../config/uiConfig";
 
 function Header() {
   const history = useHistory();
@@ -226,7 +225,7 @@ function Header() {
   return (
     <div id="header">
       <div id="navbar">
-        <span>Software Engineering Senior Project</span>
+        <span>{uiConfig.app.name}</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}

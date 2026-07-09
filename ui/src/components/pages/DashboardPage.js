@@ -6,6 +6,7 @@ import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
 import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
 import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
 import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
+import ErrorLogs from "../Tabs/ErrorsTab/ErrorLogs";
 import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
 import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
@@ -225,6 +226,26 @@ export default function DashboardPage() {
                 viewOnly={user.view_only || user.mockUser.view_only}
               />
               <ActionLogs semesterData={semesterData} />
+            </Tab.Pane>
+          ),
+        },
+        {
+          menuItem: {
+            key: "Errors-Tab",
+            content: (
+              <>
+                <i
+                  className="exclamation triangle icon"
+                  style={{ marginRight: 5 }}
+                />
+                Errors
+              </>
+            ),
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <ErrorLogs />
             </Tab.Pane>
           ),
         },

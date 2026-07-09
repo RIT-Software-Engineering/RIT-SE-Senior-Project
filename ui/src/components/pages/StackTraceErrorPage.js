@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import uiConfig from "../../config/uiConfig";
 import { Button } from "semantic-ui-react";
 import "./../../css/components/pages/StackTraceError.css";
 
@@ -34,7 +35,7 @@ const StackTraceErrorPage = () => {
 
   const handleReportOnGitHub = () => {
     try {
-      const version = "v1.8.2";
+      const version = `v${uiConfig.footers.loggedIn.version}`;
       const timestamp = errorInfo?.timestamp || "No timestamp saved";
       const error = errorInfo?.error || "Unknown error";
       const statusCode = errorInfo?.statusCode
