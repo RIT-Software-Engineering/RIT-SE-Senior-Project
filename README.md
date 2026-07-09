@@ -48,7 +48,7 @@ _**On first login, new user must change password by using the `passwd` command**
 
 - ### Using Local Setup
   - Run `install.ps1` (recommended) or `install.bat` (legacy) or `install.sh` (on linux) to get dependencies set up locally
-    - `install.ps1` supports performing a clean installation by using the `-CleanInstall` flag. Use this if you encounter a `npm install` failure. Caution: Ensure you have commited/pushed any important changes before running this command.
+    - `install.ps1` supports performing a clean installation by using the `-CleanInstall` flag. Use this if you encounter a `npm install` failure. **Caution:** Ensure you have commited/pushed any important changes before running this command with the `-CleanInstall` flag.
     - `install.ps1` also supports skipping initializing the server or the ui, using the `-SkipServer` and `-SkipUI` flags.
   - You will need to manually install the Prettier extension on your IDE ([for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) ([for IntelliJ](https://plugins.jetbrains.com/plugin/10456-prettier)).
 
@@ -87,3 +87,18 @@ After sshing into the server, cd into either prod or test project. Then run resp
 ## Backend Documentation
 
 [Swagger Link](https://petstore.swagger.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2FRIT-Software-Engineering%2FRIT-SE-Senior-Project%2Frefs%2Fheads%2Fdev%2Fui%2Fpublic%2Fapi-docs%2Fserver_doc.yaml)
+
+## Content Editor
+
+The site includes a Content Editor that allows administrators to edit HTML fragments stored in the database. These fragments are used to render portions of the site such as the homepage panel, sponsor information, and the logged-in/logged-out footers.
+
+### Accessing the Content Editor
+- Log into the site with an account that has admin privileges.
+- Navigate to the Admin Tab -> Content Editor -> Page Editor
+
+### Editing Content
+- The editor displays a list of named HTML blocks (e.g., `homePagePanel`, `sponsor`, `loggedInFooter`, `loggedOutFooter`).
+- Select the block you want to edit. The existing HTML will be displayed in a text box.
+- Make your changes directly in the editor.
+- Click **Update HTML** to save your changes. The update is written directly into the database.
+- Refresh the site to see your changes in action.

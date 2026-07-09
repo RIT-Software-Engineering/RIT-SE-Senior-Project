@@ -1,5 +1,9 @@
-INSERT INTO page_html (name, html) VALUES
-('homePagePanel', '<div class="row">
+INSERT INTO
+    page_html (name, html)
+VALUES
+    (
+        'homePagePanel',
+        '<div class="row">
                                    <h2>Overview</h2>
                                </div>
                                <div class="row">
@@ -15,8 +19,11 @@ INSERT INTO page_html (name, html) VALUES
                                        inception through an entire software development lifecycle. The end result is a functional software
                                        tool ready for use by the sponsor''s organization.
                                    </p>
-                               </div>'),
-('sponsor', '<div class="row">
+                               </div>'
+    ),
+    (
+        'sponsor',
+        '<div class="row">
                              <h2 class="ui header">Become a Project Sponsor</h2>
                          </div>
                          <div class="row">
@@ -213,4 +220,45 @@ INSERT INTO page_html (name, html) VALUES
                                  </ol>
                </div>
              </div>
-                         </div>');
+                         </div>'
+    ),
+    (
+  'loggedOutFooter',
+  "<div id='bringMeDownSignedIn' class='ui container stackable grid'>
+      <div class='three column row'>
+          <div class='column'>
+              <img src='/assets/logo.jpg' alt='Logo' style='max-width:200px; width:100%; height:auto;' />
+          </div>
+          <div class='column'>
+              <p>
+                  Department of Software Engineering<br/>
+                  Golisano Building 70, Room 1690<br/>
+                  134 Lomb Memorial Drive<br/>
+                  Rochester, NY 14623-5608
+              </p>
+          </div>
+          <div class='column'>
+              <p>
+                  <i class='ui mail icon'></i>
+                  <a href='mailto:seniorprojects@se.rit.edu'>seniorprojects@se.rit.edu</a>
+              </p>
+          </div>
+      </div>
+      <div class='centered row' style='text-align:center;'>
+          <p>&copy; " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved</p>
+      </div>
+  </div>"
+),
+(
+  'loggedInFooter',
+  "<div id='bringMeDown' class='ui container stackable grid'>
+      <div class='two column row'>
+          <div class='column'>
+              <h5 id='copyright'>
+                <i class='ui icon copyright'></i>
+                " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved
+              </h5>
+          </div>
+      </div>
+  </div>"
+);
