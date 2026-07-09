@@ -158,22 +158,22 @@ export const DROPDOWN_ITEMS = {
   actionTarget: [
     {
       key: "individual",
-      text: "Individual",
+      text: "Individual Action",
       value: "individual",
     },
     {
       key: "team",
-      text: "Team",
+      text: "Team Action",
       value: "team",
     },
     {
       key: "coach",
-      text: "Coach",
+      text: "Coach Action",
       value: "coach",
     },
     {
       key: "admin",
-      text: "Admin",
+      text: "Admin Action",
       value: "admin",
     },
     {
