@@ -13,6 +13,7 @@ import {
   DropdownDivider,
   DropdownHeader,
 } from "semantic-ui-react";
+import "./../../../css/utils/helpers.css"
 import _ from "lodash";
 
 /**
@@ -326,13 +327,18 @@ export default function DevSignInModalContent() {
                 </Dropdown>
               </div>
               <div>
-                <Button color="orange" onClick={signInAsUser}>
+                <Button
+                  color="orange"
+                  className="offset-outline"
+                  onClick={signInAsUser}
+                >
                   {" "}
                   <Icon name="sign-in" />
                   Sign In
                 </Button>
                 <Button
                   secondary
+                  className="offset-outline"
                   onClick={() => {
                     // Delete all cookies
                     let cookies = document.cookie.split(";");
@@ -388,6 +394,7 @@ export default function DevSignInModalContent() {
 
               <Button
                 color="red"
+                className="offset-outline"
                 onClick={async () => {
                   setLoading(true);
 
@@ -448,7 +455,7 @@ export default function DevSignInModalContent() {
                   }
                 }}
                 disabled={loading}
-                style={{ marginTop: 12, width: "100%" }}
+                style={{ marginTop: 12, width: "100%", }}
                 size="large"
               >
                 {loading ? (

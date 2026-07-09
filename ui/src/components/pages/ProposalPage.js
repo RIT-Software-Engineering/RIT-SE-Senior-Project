@@ -790,7 +790,7 @@ function ProposalPage() {
             standard Faculty Course Project Non-Disclosure Agreement which
             describes the same process for revealing proprietary information.
           </p>
-          <Divider hidden />
+          <Divider invisible />
           <br />
           <Radio
             label="Assignment of Limited Use Rights"
@@ -821,7 +821,7 @@ function ProposalPage() {
             Non-Disclosure Agreement which describes the same process for
             revealing proprietary information.
           </p>
-          <Divider hidden />
+          <Divider invisible />
           <br />
           <Radio
             label="Open Source Project"
