@@ -834,9 +834,9 @@ const QuestionBuilder = (props) => {
 
       <Form.Field>
         <Grid>
-          <Grid.Row>
+          <Grid.Row style={{ marginTop: "5px" }}>
             <Grid.Column width={8}>
-              <Header as="h5">Page html</Header>
+              <Header as="h5">Html</Header>
             </Grid.Column>
             <Grid.Column width={8}>
               <Button

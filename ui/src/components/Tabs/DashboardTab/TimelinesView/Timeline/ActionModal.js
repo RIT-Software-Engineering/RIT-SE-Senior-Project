@@ -28,6 +28,7 @@ import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import { QuestionComponentsMap } from "../../../../util/components/PeerEvalComponents";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import "./../../../../../css/utils/helpers.css"
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -403,7 +404,7 @@ export default function ActionModal(props) {
           }
           if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
             errors.push(
-              `radio option selection "${formDataInputs[x].name}" is required`,
+              `"${formDataInputs[x].name}" is required`,
             );
             errorsSet.add(formDataInputs[x].name);
           }
@@ -546,6 +547,7 @@ export default function ActionModal(props) {
       ` This action can be submitted on ${formatDateTime(props.start_date)}`
     ) : (
       <Button
+        className="offset-outline"
         content={
           user.isMock
             ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
@@ -684,9 +686,13 @@ export default function ActionModal(props) {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button color="grey" onClick={onActionCancel}>
+          <Button
+            className="offset-outline"
+            color="grey"
+            onClick={onActionCancel}
+          >
             Cancel
-          </Button>
+          </Button> 
           {renderSubmitButton()}
         </Modal.Actions>
       </Modal>
@@ -804,7 +810,11 @@ export default function ActionModal(props) {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button color="grey" onClick={onActionCancel}>
+          <Button
+            className="offset-outline"
+            color="grey"
+            onClick={onActionCancel}
+          >
             Cancel
           </Button>
           {renderSubmitButton()}

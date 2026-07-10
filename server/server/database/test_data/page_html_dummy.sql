@@ -66,7 +66,7 @@ VALUES
                  How will my organization benefit from sponsoring a Senior Project?
                </div>
                <div class="content">
-                 <p class="transition hidden"><ul>
+                 <p class="transition invisible"><ul>
                                      <li>Help educate the next generation of software engineers who you might want as employees</li>
                                      <li>
                                          Get the benefits of any work the team does in clarifying your problem, designing a solution,

@@ -68,11 +68,11 @@ export default function TimeTableEditor(props) {
   };
 
   const handleSubmit = async function (e) {
-    setError1([]);
     const dataToSubmit = !!props.preSubmit
       ? props.preSubmit(formData)
       : formData;
     let invalid = false;
+    const errors = []; // Accumulate errors in a local array
 
     let body = new FormData();
     if ("changed_fields" in dataToSubmit) {
@@ -110,8 +110,8 @@ export default function TimeTableEditor(props) {
         errorMessage = "You must enter a Date of Work within the past 14 days.";
       }
 
-      if (!error1.includes(errorMessage)) {
-        setError1([...error1, errorMessage]);
+      if (!errors.includes(errorMessage)) {
+        errors.push(errorMessage);
       }
       invalid = true;
     }
@@ -121,8 +121,8 @@ export default function TimeTableEditor(props) {
       dataToSubmit["time_amount_hours"] === "" ||
       dataToSubmit["time_amount_hours"] === null
     ) {
-      if (!error1.includes("You must enter a valid Time in hours.")) {
-        setError1([...error1, "You must enter a valid Time in hours."]);
+      if (!errors.includes("You must enter a valid Time in hours.")) {
+        errors.push("You must enter a valid Time in hours.");
       }
       invalid = true;
     }
@@ -137,8 +137,8 @@ export default function TimeTableEditor(props) {
     } // Validate hours range (0-10)
     const hoursValue = parseFloat(dataToSubmit["time_amount_hours"] || 0);
     if (hoursValue < 0 || hoursValue > 10) {
-      if (!error1.includes("You need to enter hours ranging from 0-10.")) {
-        setError1([...error1, "You need to enter hours ranging from 0-10."]);
+      if (!errors.includes("You need to enter hours ranging from 0-10.")) {
+        errors.push("You need to enter hours ranging from 0-10.");
       }
       invalid = true;
     }
@@ -146,8 +146,8 @@ export default function TimeTableEditor(props) {
     // Validate minutes range (0-59) only if a value is provided
     const minutesValue = parseFloat(dataToSubmit["time_amount_mins"] || 0);
     if (minutesValue < 0 || minutesValue > 59) {
-      if (!error1.includes("You need to enter minutes ranging from 0-59.")) {
-        setError1([...error1, "You need to enter minutes ranging from 0-59."]);
+      if (!errors.includes("You need to enter minutes ranging from 0-59.")) {
+        errors.push("You need to enter minutes ranging from 0-59.");
       }
       invalid = true;
     }
@@ -157,43 +157,46 @@ export default function TimeTableEditor(props) {
       parseFloat(dataToSubmit["time_amount_hours"] || 0) * 60 +
       parseFloat(dataToSubmit["time_amount_mins"] || 0);
     if (totalMinutes < 1) {
-      if (!error1.includes("You need to enter at least 1 minute of time.")) {
-        setError1([...error1, "You need to enter at least 1 minute of time."]);
+      if (!errors.includes("You need to enter at least 1 minute of time.")) {
+        errors.push("You need to enter at least 1 minute of time.");
       }
       invalid = true;
     }
 
     if (totalMinutes > 600) {
       // 10 hours = 600 minutes
-      if (!error1.includes("You cannot enter more than 10 hours of time.")) {
-        setError1([...error1, "You cannot enter more than 10 hours of time."]);
+      if (!errors.includes("You cannot enter more than 10 hours of time.")) {
+        errors.push("You cannot enter more than 10 hours of time.");
       }
       invalid = true;
     }
 
     if (dataToSubmit["comment"].length > 300) {
       if (
-        !error1.includes(
-          "You must enter a Date of Work within the past 14 days.",
+        !errors.includes(
+          "You cannot enter a comment exceeding 300 characters.",
         )
       ) {
-        setError1([
-          ...error1,
+        errors.push(
           "You cannot enter a comment exceeding 300 characters.",
-        ]);
+        );
       }
       invalid = true;
     }
 
     if (dataToSubmit["comment"].length === 0) {
-      if (!error1.includes("You must enter a comment.")) {
-        setError1([...error1, "You must enter a comment."]);
+      if (!errors.includes("You must enter a comment.")) {
+        errors.push("You must enter a comment.");
       }
       invalid = true;
     }
 
+    // Set all errors at once
+    setError1(errors);
+
     if (!invalid) {
       setOpen(false);
+      setError1([]); // Clear errors on successful validation
       //calculate combined hours and minutes to one field
       let time_float = (
         parseFloat(dataToSubmit["time_amount_hours"]) +

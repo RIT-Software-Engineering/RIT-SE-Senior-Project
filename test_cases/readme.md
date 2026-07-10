@@ -4,7 +4,7 @@ This document outlines general test cases and their workflow procedures to ensur
 
 ## Table of Contents
 
-- [Authentication](authentication.md) - User Sign In, Resetting Data, User Preferences, Last Login, User Profile Circle
+- [Authentication & Profile](authentication.md) - User Sign In, Resetting Data, User Preferences, Last Login, User Profile Circle
 - [User Management](users.md) - Adding Users, Mail-to-All, Editing Users, Reassigning Users, Deactivation, View Only Users
 - [Projects](projects.md) - Status, Sponsoring, Editing, Featuring, Member Assignment
 - [Actions](actions.md) - Types & Colors, Completing, Individual Actions, Team Actions, Coach Actions, Admin Actions, Late Submissions, Creating, Editing, Deactivating

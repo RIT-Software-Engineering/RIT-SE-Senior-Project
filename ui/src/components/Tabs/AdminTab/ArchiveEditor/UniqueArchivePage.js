@@ -108,7 +108,7 @@ function UniqueProjectPage({ projectData }) {
               </div>
             )
           }
-          <div className="ui hidden divider"></div>
+          <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
             {project?.poster_thumb && (
               <img
@@ -186,7 +186,7 @@ function UniqueProjectPage({ projectData }) {
               </Modal.Actions>
             </Modal>
           </div>
-          <div className="ui hidden divider"></div>
+          <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="two column row">
               <div className="column">
@@ -213,7 +213,7 @@ function UniqueProjectPage({ projectData }) {
               </div>
             </div>
           </div>
-          <div className="ui hidden divider"></div>
+          <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="column">
               <div className="ui small header">Synopsis</div>

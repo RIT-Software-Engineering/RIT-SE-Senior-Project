@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useContext, Suspense } from "react";
 import ActionElements from "./ActionElements";
 import UpcomingActions from "./UpcomingActions";
-import GanttChart from "./GanttChart";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../../util/functions/constants";
 import { UserContext } from "../../../../util/functions/UserContext";
 import TimelineCheckboxes from "./TimelineCheckboxes";
-import { Dropdown } from "semantic-ui-react";
 import { Calendar } from "../../../../util/components/Calendar";
-import { element } from "prop-types";
+
+const GanttChart = React.lazy(() => import("./GanttChart"));
 
 export default function Timeline(props) {
   const [actions, setActions] = useState([]);
@@ -187,25 +186,27 @@ export default function Timeline(props) {
         style={{ display: ganttVisible ? "block" : "none" }}
       >
         <div className="timeline-action-block">
-          <GanttChart
-            projectName={
-              props.elementData.display_name || props.elementData.title
-            }
-            projectId={props.elementData.project_id}
-            semesterName={props.elementData.semester_name}
-            projectStart={props.elementData.start_date}
-            projectEnd={props.elementData.end_date}
-            actions={actions.map((action) => {
-              if (action.action_target === "break_period") {
-                return { ...action, state: "purple" };
+          <Suspense fallback={<div>Loading Gantt Chart...</div>}>
+            <GanttChart
+              projectName={
+                props.elementData.display_name || props.elementData.title
               }
-              return action;
-            })}
-            isOpen={ganttVisible}
-            reloadTimelineActions={() => {
-              loadTimelineActions(props.elementData?.project_id);
-            }}
-          />
+              projectId={props.elementData.project_id}
+              semesterName={props.elementData.semester_name}
+              projectStart={props.elementData.start_date}
+              projectEnd={props.elementData.end_date}
+              actions={actions.map((action) => {
+                if (action.action_target === "break_period") {
+                  return { ...action, state: "purple" };
+                }
+                return action;
+              })}
+              isOpen={ganttVisible}
+              reloadTimelineActions={() => {
+                loadTimelineActions(props.elementData?.project_id);
+              }}
+            />
+          </Suspense>
         </div>
       </div>
       <div
