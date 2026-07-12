@@ -86,7 +86,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
     }
   }, [open, user]);
 
-  // Focus text area when entering edit mode
+  // Focus textarea when entering edit mode
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
@@ -211,16 +211,19 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       closeOnDimmerClick={false}
-      closeIcon={true}
       size="small"
       centered={false}
-      className="semantic-centered-modal"
+      style={{
+        position: "sticky",
+        top: "20%",
+        left: "0%",
+      }}
     >
       <Modal.Header>Your Profile</Modal.Header>
       <Modal.Content>
-        <div className="ui stackable grid container">
+        <div className="ui container stackable grid">
           <div className="two column row">
             <div className="column">
               <div
