@@ -1,58 +1,62 @@
 import React, { useContext, useState } from "react";
 
-import { Button, Icon } from "semantic-ui-react";
+import { Button, Divider, Icon, Modal, ModalActions } from "semantic-ui-react";
+import { formatDate, formatDateTime } from "../../util/functions/utils";
 import { SecureFetch } from "../../util/functions/secureFetch";
+import InnerHTML from "dangerously-set-html-content";
 import { UserContext } from "../../util/functions/UserContext";
 import { config } from "../../util/functions/constants";
-import ModalWrapper from "../../shared/ModalWrapper";
-import IndividualTimeModalContent from "./IndividualTimeModalContent";
 
 export default function IndividualTimeModal(props) {
   const [open, setOpen] = useState(false);
-  const { user: currentUser } = useContext(UserContext);
+  const [submission, setSubmission] = useState({});
+  const [files, setFiles] = useState([]);
+  const [noSubmission, setNoSubmission] = useState(true);
+  const [due, setDue] = useState();
+  const [late, setLate] = useState(false);
+  const [day, setDay] = useState(0);
+  const { user } = useContext(UserContext);
 
-  const handleDelete = function (id) {
-    //used to be e
+  const handleDelete = function (e) {
     let body = new FormData();
-    body.append("id", id);
+    body.append("id", e);
 
     SecureFetch(config.url.API_DELETE_TIME_LOG, {
       method: "POST",
       body: body,
     })
-      .catch(() => {
+      .catch((e) => {
         alert("There was an error deleting the time log.");
       })
-      .finally(() => {
+      .finally((_) => {
         props.resetKey();
         onClose();
       });
   };
 
-  const deleteButton =
-    props.userId === currentUser.user &&
-    props.delete === 1 &&
-    !currentUser.view_only &&
-    currentUser.mockUser.view_only !== "TRUE" ? (
-      <Button
-        content="Delete"
-        labelPosition="right"
-        icon="x"
-        negative
-        onClick={() => handleDelete(props.id)}
-      />
-    ) : null;
+  const deleteButton = (
+    <Button
+      content={"Delete"}
+      labelPosition="right"
+      icon="x"
+      negative
+      onClick={() => handleDelete(props.id)}
+    />
+  );
 
-  const onClose = () => setOpen(false);
-  const onOpen = () => setOpen(true);
-
+  const onClose = (page) => {
+    setOpen(false);
+  };
   return (
-    <ModalWrapper
+    <Modal
       closeOnDimmerClick={false}
+      className={"sticky"}
+      onOpen={() => {
+        setOpen(true);
+      }}
       open={open}
-      onClose={onClose}
       trigger={
-        <div onClick={onOpen}>
+        <div>
           {props.trigger || (
             <Button icon>
               <Icon name="eye" />
@@ -60,17 +64,51 @@ export default function IndividualTimeModal(props) {
           )}
         </div>
       }
-      title={`Time Submission For ${props.user}`}
     >
-      <IndividualTimeModalContent
-        timeLog={props.timeLog}
-        semesterName={props.semesterName}
-        projectName={props.projectName}
-        user={props.user}
-        userId={props.userId}
-        deleteButton={deleteButton}
-        onClose={onClose}
-      />
-    </ModalWrapper>
+      <Modal.Header
+        style={{ display: "flex", alignItems: "center", gap: "0.5em" }}
+      >
+        Time Submission For {props.user}
+      </Modal.Header>
+      <Modal.Content>
+        <Modal.Description>
+          <p>
+            <b>Semester/Project:</b> {props.semesterName} - {props.projectName}
+          </p>
+          <p>
+            <b>Date of Work:</b> {formatDate(props.timeLog.work_date)}
+          </p>
+          <p>
+            <b>Total Hours:</b> {props.timeLog.time_amount}
+          </p>
+          <p>
+            <b>Comment:</b> {props.timeLog.work_comment}
+          </p>
+          {/*{avgTime[idx] !== undefined ? Math.floor(avgTime[idx].avgTime) : 0}*/}
+          <p>
+            <b>Submission Date:</b>{" "}
+            {formatDateTime(props.timeLog.submission_datetime)}
+          </p>
+          <p
+            style={{
+              background: props.timeLog.active === 0 ? "#FF999C" : "none",
+            }}
+          >
+            <b>
+              <i>{props.timeLog.active === 0 ? "DELETED" : ""}</i>
+            </b>
+          </p>
+        </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button onClick={() => onClose()}>Close</Button>
+        {props.userId === user.user &&
+        props.delete === 1 &&
+        !user.view_only &&
+        user.mockUser.view_only !== "TRUE"
+          ? deleteButton
+          : ""}
+      </Modal.Actions>
+    </Modal>
   );
 }

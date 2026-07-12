@@ -155,7 +155,6 @@ export default function BatchUserPanel({ callback }) {
   return (
     <Modal
       className={"sticky"}
-      closeIcon={true}
       trigger={<Button icon="upload" />}
       header="Upload users (Untested for large number of users)"
       content={{ content: modalContent, scrolling: true }}

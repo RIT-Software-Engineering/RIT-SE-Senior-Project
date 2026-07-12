@@ -343,7 +343,6 @@ export default function SponsorEditor(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
-        closeIcon={true}
         trigger={trigger}
         header={"Sponsor Summary View"}
         content={{

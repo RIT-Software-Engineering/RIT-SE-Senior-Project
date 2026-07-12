@@ -21,7 +21,6 @@ export default function SponsorNote(props) {
     <Modal
       closeOnDimmerClick={false}
       className={"sticky"}
-      closeIcon={true}
       trigger={modalButton}
       header={"Sponsor Note Revisions"}
       content={{ content: <Segment.Group>{noteGroup}</Segment.Group> }}
@@ -73,12 +72,7 @@ export default function SponsorNote(props) {
           data.previous_note = props.note.previous_note;
           return data;
         }}
-        callback={(didSave) => {
-          // didSave === true when response.status === 200 in DatabaseTableEditor
-          if (props.callback) {
-            props.callback(didSave);
-          }
-        }}
+        callback={props.callback}
       />
     </div>
   );
