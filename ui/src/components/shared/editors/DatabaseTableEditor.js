@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Form from "semantic-ui-react/dist/commonjs/collections/Form";
 import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
+
 import {
   Dropdown,
   Label,
@@ -19,8 +18,6 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
-
-//File to edit for the modal
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -44,20 +41,19 @@ export default function DatabaseTableEditor(props) {
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
-  const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
+  const [errorSubmitted, setErrorSubmitted] = useState(false);
   const ignoreNextChangeRef = useRef(false);
   const [showPreview, setShowPreview] = useState(false);
-
-  const formRef = useRef(null); // maintain the current form data in the case of submission error
+  const formRef = useRef(null);
   const [formTouched, setFormTouched] = useState(false);
   const [readyToMark, setReadyToMark] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
-  // Update initial state if provided initial state is changed
+  const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
+  const [pendingCloseAction, setPendingCloseAction] = useState(null);
+
   useEffect(() => {
     setFormData(initialState);
   }, [initialState]);
-
-  // update the errors as the errors are changing.
   useEffect(() => {
     setErrors(props.errors);
   }, [props.errors]);
@@ -85,7 +81,6 @@ export default function DatabaseTableEditor(props) {
             },
           ],
         };
-
       case MODAL_STATUS.SUBMISSION_ERROR:
         return {
           header: "Invalid Submission",
@@ -115,31 +110,22 @@ export default function DatabaseTableEditor(props) {
         return;
     }
   };
+
   const closeSubmissionModal = () => {
     switch (submissionModalOpen) {
       case MODAL_STATUS.SUCCESS:
         setErrors([]);
-        setFormTouched(false); // ✅ Reset touched state FIRST
-        setReadyToMark(false); // ✅ ADD THIS
+        setFormTouched(false);
+        setReadyToMark(false);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-        setOpen(false); // Close the editor modal
-
-        // ✅ Call callback AFTER state updates
-        if (props.callback) {
-          props.callback(true);
-        }
-
-        if (props.reload) {
-          props.reloadData();
-        }
+        setOpen(false);
+        if (props.callback) props.callback(true);
+        if (props.reload) props.reloadData();
         break;
       case MODAL_STATUS.FAIL:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-
-        if (props.callback) {
-          props.callback(false);
-        }
+        if (props.callback) props.callback(false);
         break;
       case MODAL_STATUS.SUBMISSION_ERROR:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
@@ -149,7 +135,6 @@ export default function DatabaseTableEditor(props) {
     }
   };
 
-  // helper function to check if the input element is invalid; used to highlight input elements
   function hasError(fieldName) {
     return errors?.some(
       (error) =>
@@ -160,61 +145,30 @@ export default function DatabaseTableEditor(props) {
 
   function handleCancel() {
     if (formTouched && !props.viewOnly) {
-      confirmAlert({
-        title: "Unsaved Changes",
-        message:
-          "You have unsaved changes. Are you sure you want to close without saving?",
-        buttons: [
-          {
-            label: "Keep Editing",
-            onClick: () => {}, // Do nothing, stay in modal
-          },
-          {
-            label: "Discard Changes",
-            onClick: () => {
-              setErrors([]);
-              setFormData(initialState);
-              formRef.current = null;
-              setFormTouched(false);
-              setOpen(false);
-            },
-          },
-        ],
-        overlayClassName: "custom-confirm-overlay",
+      setPendingCloseAction(() => () => {
+        setErrors([]);
+        setFormData(initialState);
+        formRef.current = null;
+        setFormTouched(false);
+        setOpen(false);
+        // ✅ FIX 1: Only call isOpenCallback if it exists
+        props.isOpenCallback?.(false);
       });
-      const observer = new MutationObserver((mutations, obs) => {
-        const modal = document.querySelector(".react-confirm-alert");
-        if (modal && !document.querySelector(".confirm-close-x")) {
-          const closeButton = document.createElement("button");
-          closeButton.className = "confirm-close-x";
-          closeButton.innerHTML = '<i class="close icon"></i>';
-          closeButton.setAttribute("aria-label", "Close");
-
-          closeButton.onclick = () => {
-            const overlay = document.querySelector(
-              ".react-confirm-alert-overlay",
-            );
-            if (overlay) overlay.click();
-          };
-          modal.appendChild(closeButton);
-          obs.disconnect();
-        }
-      });
-
-      observer.observe(document.body, { childList: true, subtree: true });
-      setTimeout(() => observer.disconnect(), 1000);
-    } else {
-      // No changes or view-only, close immediately
-      setErrors([]);
-      setFormData(initialState);
-      formRef.current = null;
-      setFormTouched(false);
-      setOpen(false);
+      setUnsavedModalOpen(true);
+      return;
     }
+    setErrors([]);
+    setFormData(initialState);
+    formRef.current = null;
+    setFormTouched(false);
+    setOpen(false);
+    // ✅ FIX 1: Only call isOpenCallback if it exists
+    props.isOpenCallback?.(false);
   }
+
   const markFormAsTouched = () => {
     if (ignoreNextChangeRef.current) {
-      ignoreNextChangeRef.current = false; // consume it
+      ignoreNextChangeRef.current = false;
       return;
     }
     if (!props.viewOnly && readyToMark) {
@@ -222,82 +176,14 @@ export default function DatabaseTableEditor(props) {
     }
   };
 
-  const handleSubmit = async function (e) {
-    e.preventDefault();
-
-    let cleanedFormData = { ...formData };
-    if (cleanedFormData.file_types) {
-      cleanedFormData.file_types = cleanedFormData.file_types.replace(
-        /\s+/g,
-        "",
-      );
-    }
-
-    // data to be sent to backend
-    const dataToSubmit = !!props.preSubmit
-      ? props.preSubmit(cleanedFormData)
-      : cleanedFormData;
-
-    if (dataToSubmit === null) {
-      // validation failed
-      formRef.current = cleanedFormData;
-      setErrorSubmitted(true);
-      setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
-      return;
-    }
-
-    setErrorSubmitted(false);
-    let body = new FormData();
-    if ("changed_fields" in dataToSubmit) {
-      if (typeof dataToSubmit["changed_fields"] === "object") {
-        dataToSubmit["changed_fields"] = JSON.stringify(
-          dataToSubmit["changed_fields"],
-        );
-      }
-    }
-    Object.keys(dataToSubmit).forEach((key) => {
-      if (key === "dataOnSubmit") {
-        dataToSubmit[key] = dataToSubmit[key] + date.toLocaleDateString();
-      }
-      body.append(key, dataToSubmit[key]);
-    });
-    SecureFetch(submitRoute, {
-      method: "post",
-      body: body,
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          ignoreNextChangeRef.current = true;
-          setFormTouched(false);
-          setReadyToMark(false);
-          setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-          formRef.current = null;
-        } else {
-          setSubmissionModalOpen(MODAL_STATUS.FAIL);
-          formRef.current = null;
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setSubmissionModalOpen(MODAL_STATUS.FAIL);
-      });
-  };
-
-  // PLANNING: Replicate this idea in the student view of editing
-  // So that the fourm saves the data in the same way as the admin view when closed and reoened
   const handleChange = (e, { name, value, checked, isActiveField }) => {
-    // Check if the field is disabled before allowing changes
     const field = formFieldArray.find((f) => f.name === name);
-    if (field && field.disabled) {
-      return; // Don't allow changes to disabled fields
-    }
+    if (field && field.disabled) return;
     markFormAsTouched();
 
     if (errorSubmitted) {
-      // remove errors if changes made after first submission.
       setErrors((prevErrors) => {
         let newErrors = [...prevErrors];
-
         if (
           (name === "action_target" &&
             (value === "peer_evaluation" ||
@@ -318,17 +204,9 @@ export default function DatabaseTableEditor(props) {
       });
     }
 
-    if (props.viewOnly) {
-      return;
-    }
+    if (props.viewOnly) return;
     if (checked !== undefined) {
-      if (isActiveField) {
-        // The active field either stores an empty string or a datetime.
-        // The datetime is set by the server if the active field is set to 'false'.
-        value = checked ? "" : false;
-      } else {
-        value = checked;
-      }
+      value = isActiveField ? (checked ? "" : false) : checked;
     }
     const newFormData =
       props.preChange &&
@@ -340,11 +218,7 @@ export default function DatabaseTableEditor(props) {
         ...formData["changed_fields"],
         [name]: [initialState[name], value],
       };
-      setFormData({
-        ...formData,
-        changed_fields: changedMap,
-        [name]: value,
-      });
+      setFormData({ ...formData, changed_fields: changedMap, [name]: value });
     }
   };
 
@@ -353,37 +227,82 @@ export default function DatabaseTableEditor(props) {
     let value = event.target.files[0];
     const newFormData =
       props.preChange && props.preChange(formData, name, value);
-
     if (newFormData) {
       setFormData(newFormData);
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      setFormData({ ...formData, [name]: value });
     }
   }
 
-  /**
-   * This is how the edit table for any form of editing is made and filled with the initial state.
-   * The initial state is renamed to 'formData', and field(aka formFieldArray, the fields that are populated from
-   * other editor.js files, will contain the name of the column being queried from the db.
-   * */
+  const handleSubmit = async function (e) {
+    e.preventDefault();
+
+    let cleanedFormData = { ...formData };
+    if (cleanedFormData.file_types) {
+      cleanedFormData.file_types = cleanedFormData.file_types.replace(
+        /\s+/g,
+        "",
+      );
+    }
+
+    const dataToSubmit = !!props.preSubmit
+      ? props.preSubmit(cleanedFormData)
+      : cleanedFormData;
+
+    if (dataToSubmit === null) {
+      formRef.current = cleanedFormData;
+      setErrorSubmitted(true);
+      setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
+      return;
+    }
+
+    setErrorSubmitted(false);
+    let body = new FormData();
+    if ("changed_fields" in dataToSubmit) {
+      if (typeof dataToSubmit["changed_fields"] === "object") {
+        dataToSubmit["changed_fields"] = JSON.stringify(
+          dataToSubmit["changed_fields"],
+        );
+      }
+    }
+    Object.keys(dataToSubmit).forEach((key) => {
+      if (key === "dataOnSubmit")
+        dataToSubmit[key] = dataToSubmit[key] + date.toLocaleDateString();
+      body.append(key, dataToSubmit[key]);
+    });
+
+    SecureFetch(submitRoute, { method: "post", body: body })
+      .then((response) => {
+        if (response.status === 200) {
+          ignoreNextChangeRef.current = true;
+          setFormTouched(false);
+          setReadyToMark(false);
+          setJustSaved(true);
+          setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+          formRef.current = null;
+        } else {
+          setSubmissionModalOpen(MODAL_STATUS.FAIL);
+          formRef.current = null;
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setSubmissionModalOpen(MODAL_STATUS.FAIL);
+      });
+  };
+
   let fieldComponents = [];
   const requiresTypeFirst = formFieldArray.some(
     (f) => f.name === "action_target",
   );
   for (let i = 0; i < formFieldArray.length; i++) {
     let field = formFieldArray[i];
-
-    // if no action_target/type is chosen yet, hide all fields except the Type dropdown
     if (
       requiresTypeFirst &&
       !formData.action_target &&
       field.name !== "action_target"
-    ) {
+    )
       continue;
-    }
     if (!field.hidden) {
       switch (field.type) {
         case "input":
@@ -395,7 +314,6 @@ export default function DatabaseTableEditor(props) {
               field.name === "file_size" ||
               field.name === "short_desc")
           ) {
-            // hide input fields if peer_eval / announcements are chosen.
             break;
           } else if (
             formData.action_target === "break_period" &&
@@ -404,7 +322,6 @@ export default function DatabaseTableEditor(props) {
             break;
           } else {
             if (field.name === "file_types" || field.name === "file_size") {
-              // not required
               fieldComponents.push(
                 <Form.Field key={field.name}>
                   <Form.Input
@@ -445,7 +362,7 @@ export default function DatabaseTableEditor(props) {
               <label>{field.label}</label>
               <PhoneInput
                 onChange={(value) => {
-                  handleChange(null, { name: field.name, value: value });
+                  handleChange(null, { name: field.name, value });
                 }}
                 value={formData[field.name]}
                 labels={us}
@@ -482,7 +399,6 @@ export default function DatabaseTableEditor(props) {
                 value={formData[field.name]}
               />,
             );
-            // Don't show this fields if the action is a break period (i.e spring break, christmas, etc)
           } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
               <Form.Field key={field.name} required={field.required}>
@@ -497,7 +413,7 @@ export default function DatabaseTableEditor(props) {
                     field.disabled
                       ? undefined
                       : (value) =>
-                          handleChange(null, { name: field.name, value: value })
+                          handleChange(null, { name: field.name, value })
                   }
                   value={formData[field.name]}
                   maxHeight={"700px"}
@@ -518,7 +434,6 @@ export default function DatabaseTableEditor(props) {
             );
           }
           break;
-        // TODO: Add a new type for the forum builder
         case "dropdown":
           if (field.name === "action_target") {
             fieldComponents.push(
@@ -542,7 +457,6 @@ export default function DatabaseTableEditor(props) {
             );
             break;
           } else if (field.name === "semester_group") {
-            // Semester is conditionally required (only for students)
             const isRequired = formData.type === "student";
             fieldComponents.push(
               <Form.Field
@@ -620,16 +534,14 @@ export default function DatabaseTableEditor(props) {
             <Form.Field key={field["name"]}>
               <label>{field.label}</label>
               {formData[field["name"]].length > 0 ? (
-                formData[field["name"]].map((file) => {
-                  return (
-                    <React.Fragment key={file.link}>
-                      <a target="_blank" rel="noreferrer" href={file.link}>
-                        {file.title}
-                      </a>
-                      <br />
-                    </React.Fragment>
-                  );
-                })
+                formData[field["name"]].map((file) => (
+                  <React.Fragment key={file.link}>
+                    <a target="_blank" rel="noreferrer" href={file.link}>
+                      {file.title}
+                    </a>
+                    <br />
+                  </React.Fragment>
+                ))
               ) : (
                 <p>No Attachments</p>
               )}
@@ -710,15 +622,13 @@ export default function DatabaseTableEditor(props) {
             </Form.Field>,
           );
           break;
-        case "note": {
-          // render whatever content ActionPanel passes
+        case "note":
           if (field.content) {
             fieldComponents.push(
               <Form.Field key={field.name}>{field.content}</Form.Field>,
             );
           }
           break;
-        }
         case "activeCheckbox":
           fieldComponents.push(
             <Form.Field key={field["name"]}>
@@ -732,12 +642,7 @@ export default function DatabaseTableEditor(props) {
                 checked={formData[field["name"]] === ""}
                 name={field["name"]}
                 onChange={(e, { name, value, checked }) =>
-                  handleChange(e, {
-                    name,
-                    value,
-                    checked,
-                    isActiveField: true,
-                  })
+                  handleChange(e, { name, value, checked, isActiveField: true })
                 }
                 disabled={field.disabled}
               />
@@ -750,29 +655,18 @@ export default function DatabaseTableEditor(props) {
       }
     }
   }
-  // Check if the form is locked by checking if any field with name "synopsis" is disabled
 
   const isProjectLocked = formFieldArray.some(
     (field) => field.name === "synopsis" && field.disabled,
   );
+
   const modalActions = () => {
     let mock = false;
-
     if (props.initialState.hasOwnProperty("mockUser")) {
-      if (Object.entries(props.initialState.mockUser).length !== 0) {
-        mock = true;
-      }
+      if (Object.entries(props.initialState.mockUser).length !== 0) mock = true;
     }
-    if (props.viewOnly) {
-      return [
-        {
-          key: "Close",
-          content: "Close",
-        },
-      ];
-    }
-
-    if (isProjectLocked) {
+    if (props.viewOnly) return [{ key: "Close", content: "Close" }];
+    if (isProjectLocked)
       return [
         {
           key: "cancel",
@@ -781,9 +675,8 @@ export default function DatabaseTableEditor(props) {
           color: "grey",
         },
       ];
-    }
 
-    const actions = [
+    return [
       {
         key: "cancel",
         content: "Cancel",
@@ -803,7 +696,6 @@ export default function DatabaseTableEditor(props) {
         : []),
       {
         key: "submit",
-
         content: mock
           ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
           : "Submit",
@@ -813,17 +705,11 @@ export default function DatabaseTableEditor(props) {
         positive: true,
       },
     ];
-    return actions;
   };
-  let trigger = <Button content={props.content} icon={props.button} />;
-  if (props.trigger) {
-    trigger = props.trigger;
-  }
 
-  // Check if the form is locked by checking if any field with name "synopsis" is disabled
-  // const isProjectLocked = formFieldArray.some(
-  //   (field) => field.name === "synopsis" && field.disabled,
-  // );
+  let trigger = <Button content={props.content} icon={props.button} />;
+  if (props.trigger) trigger = props.trigger;
+
   const suppressParentCloseRef = useRef(false);
 
   const openPreview = (e) => {
@@ -841,16 +727,34 @@ export default function DatabaseTableEditor(props) {
     }, 300);
   };
 
-  const handleParentClose = (e) => {
-    // ignore closes coming from preview teardown
-    if (showPreview || suppressParentCloseRef.current) {
-      e?.stopPropagation?.();
-      e?.preventDefault?.();
-      return;
-    }
-    setOpen(false);
-    props.isOpenCallback?.(false);
-  };
+  // ✅ FIX 2: Shared Unsaved Changes modal — rendered OUTSIDE both branches
+  const unsavedChangesModal = (
+    <Modal
+      open={unsavedModalOpen}
+      size="tiny"
+      className="unsaved-modal"
+      onClose={() => setUnsavedModalOpen(false)}
+      closeOnDimmerClick={false}
+      closeIcon
+    >
+      <Modal.Header>Unsaved Changes</Modal.Header>
+      <Modal.Content>
+        You have unsaved changes. Are you sure you want to close without saving?
+      </Modal.Content>
+      <Modal.Actions>
+        <Button onClick={() => setUnsavedModalOpen(false)}>Keep Working</Button>
+        <Button
+          negative
+          onClick={() => {
+            setUnsavedModalOpen(false);
+            pendingCloseAction?.();
+          }}
+        >
+          Discard Changes
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
 
   if (props.isOpenCallback) {
     return (
@@ -863,72 +767,34 @@ export default function DatabaseTableEditor(props) {
           trigger={trigger}
           onClose={() => {
             if (justSaved) {
-              // We just successfully saved; close without any confirmation.
               setFormTouched(false);
               setJustSaved(false);
               setOpen(false);
-              if (props.isOpenCallback) {
-                props.isOpenCallback(false);
-              }
+              props.isOpenCallback(false); // ✅ safe here — we ARE in the isOpenCallback branch
               return;
             }
-            // Check if form has been touched before closing
             if (formTouched && !props.viewOnly) {
-              confirmAlert({
-                title: "Unsaved Changes",
-                message:
-                  "You have unsaved changes. Are you sure you want to close without saving?",
-                buttons: [
-                  {
-                    label: "Keep Editing",
-                    onClick: () => {},
-                  },
-                  {
-                    label: "Discard Changes",
-                    onClick: () => {
-                      setFormTouched(false);
-                      setOpen(false);
-                      props.isOpenCallback(false);
-                    },
-                  },
-                ],
-                overlayClassName: "custom-confirm-overlay",
-              });
-              const observer = new MutationObserver((mutations, obs) => {
-                const modal = document.querySelector(".react-confirm-alert");
-                if (modal && !document.querySelector(".confirm-close-x")) {
-                  const closeButton = document.createElement("button");
-                  closeButton.className = "confirm-close-x";
-                  closeButton.innerHTML = '<i class="close icon"></i>';
-                  closeButton.setAttribute("aria-label", "Close");
-
-                  closeButton.onclick = () => {
-                    const overlay = document.querySelector(
-                      ".react-confirm-alert-overlay",
-                    );
-                    if (overlay) overlay.click();
-                  };
-                  modal.appendChild(closeButton);
-                  obs.disconnect();
-                }
-              });
-
-              observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-              });
-              setTimeout(() => observer.disconnect(), 1000);
-            } else {
               setOpen(false);
-              props.isOpenCallback(false);
+              setPendingCloseAction(() => () => {
+                setErrors([]);
+                setFormData(initialState);
+                formRef.current = null;
+                setFormTouched(false);
+                setOpen(false);
+                props.isOpenCallback(false); // ✅ safe here
+              });
+              setUnsavedModalOpen(true);
+              return;
             }
+            setOpen(false);
+            props.isOpenCallback(false); // ✅ safe here
           }}
           onOpen={() => {
             setOpen(true);
             props.isOpenCallback(true);
-            setFormTouched(false); // Reset when opening
-            setReadyToMark(false); // ✅ ADD THIS
-            setTimeout(() => setReadyToMark(true), 250); // ✅ ADD THIS
+            setFormTouched(false);
+            setReadyToMark(false);
+            setTimeout(() => setReadyToMark(true), 250);
             setJustSaved(false);
           }}
           open={open}
@@ -959,8 +825,6 @@ export default function DatabaseTableEditor(props) {
           }}
           actions={modalActions()}
         />
-
-
         <Modal
           className={"stacked"}
           closeOnDimmerClick={false}
@@ -977,7 +841,6 @@ export default function DatabaseTableEditor(props) {
           dimmer="false"
           mountNode={document.body}
         />
-        {/* PREVIEW MODAL (needed in isOpenCallback branch too) */}
         {props.preview?.enabled && (
           <Modal
             className="stacked"
@@ -1022,6 +885,8 @@ export default function DatabaseTableEditor(props) {
             ]}
           />
         )}
+        {/* ✅ FIX 2: Shared unsaved modal renders in both branches */}
+        {unsavedChangesModal}
       </>
     );
   } else {
@@ -1035,69 +900,33 @@ export default function DatabaseTableEditor(props) {
           trigger={trigger}
           onClose={() => {
             if (justSaved) {
-              // We just successfully saved; close without any confirmation.
               setFormTouched(false);
               setJustSaved(false);
               setOpen(false);
-              if (props.isOpenCallback) {
-                props.isOpenCallback(false);
-              }
+              // ✅ FIX 1: NO props.isOpenCallback here — it doesn't exist in this branch
               return;
             }
-            // Check if form has been touched before closing
             if (formTouched && !props.viewOnly) {
-              confirmAlert({
-                title: "Unsaved Changes",
-                message:
-                  "You have unsaved changes. Are you sure you want to close without saving?",
-                buttons: [
-                  {
-                    label: "Keep Editing",
-                    onClick: () => {},
-                  },
-                  {
-                    label: "Discard Changes",
-                    onClick: () => {
-                      setFormTouched(false);
-                      setOpen(false);
-                    },
-                  },
-                ],
-                overlayClassName: "custom-confirm-overlay",
-              });
-              const observer = new MutationObserver((mutations, obs) => {
-                const modal = document.querySelector(".react-confirm-alert");
-                if (modal && !document.querySelector(".confirm-close-x")) {
-                  const closeButton = document.createElement("button");
-                  closeButton.className = "confirm-close-x";
-                  closeButton.innerHTML = '<i class="close icon"></i>';
-                  closeButton.setAttribute("aria-label", "Close");
-
-                  closeButton.onclick = () => {
-                    const overlay = document.querySelector(
-                      ".react-confirm-alert-overlay",
-                    );
-                    if (overlay) overlay.click();
-                  };
-                  modal.appendChild(closeButton);
-                  obs.disconnect();
-                }
-              });
-
-              observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-              });
-              setTimeout(() => observer.disconnect(), 1000);
-            } else {
               setOpen(false);
+              setPendingCloseAction(() => () => {
+                setErrors([]);
+                setFormData(initialState);
+                formRef.current = null;
+                setFormTouched(false);
+                setOpen(false);
+                // ✅ FIX 1: NO props.isOpenCallback here
+              });
+              setUnsavedModalOpen(true);
+              return;
             }
+            setOpen(false);
+            // ✅ FIX 1: NO props.isOpenCallback here
           }}
           onOpen={() => {
             setOpen(true);
             setFormTouched(false);
-            setReadyToMark(false); // ✅ ADD THIS
-            setTimeout(() => setReadyToMark(true), 250); // ✅ ADD THIS
+            setReadyToMark(false);
+            setTimeout(() => setReadyToMark(true), 250);
             setJustSaved(false);
           }}
           open={open}
@@ -1164,7 +993,6 @@ export default function DatabaseTableEditor(props) {
         <Modal
           className={"stacked"}
           closeOnDimmerClick={false}
-          className={"sticky"}
           closeIcon={true}
           size="tiny"
           open={!!submissionModalOpen}
@@ -1174,6 +1002,8 @@ export default function DatabaseTableEditor(props) {
             setFormTouched(false);
           }}
         />
+        {/* ✅ FIX 2: Shared unsaved modal renders in both branches */}
+        {unsavedChangesModal}
       </>
     );
   }
