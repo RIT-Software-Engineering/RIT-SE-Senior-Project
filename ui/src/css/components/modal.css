@@ -436,7 +436,7 @@ body:not(.dark-mode) .ui.modal.sticky {
   max-height: 90vh !important;
 }
 
-/* Fix for exemplary modals in light mode (SubmissionViewer) */
+/* Fix for modals in light mode (SubmissionViewer) */
 body:not(.dark-mode) .ui.dimmer > .ui.modal.exemplary-modal {
   position: absolute !important;
   top: 40px !important;
@@ -479,16 +479,16 @@ label[for][for^="SCOOP_"] {
   line-height: 1.4;
 }
 
-/* Just add more space between the radio button and the label text */
+/* Just adds more space between the radio button and the label text */
 .ui.radio.checkbox label {
-  padding-left: 1.85rem !important; /* Semantic UI default */
+  padding-left: 1.85rem !important;
   padding-top: 0.75rem !important;
   line-height: 1.3 !important;
 }
 
 /* Keep the radio button in its normal position */
 .ui.radio.checkbox label::before {
-  top: 0.5rem !important; /* Move the circle down to align with text padding */
+  top: 0.5rem !important;
 }
 
 .ui.radio.checkbox label::after {
@@ -560,11 +560,6 @@ body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
 
   max-height: unset !important;
 }
-
-/* .ui.modal.unsaved-modal > .close.icon {
-    top: -1.3rem !important;
-    right: -1.3rem !important;
-} */
 
 /* Position the close X consistently on all Semantic UI modals */
 .ui.modal > .close.icon {

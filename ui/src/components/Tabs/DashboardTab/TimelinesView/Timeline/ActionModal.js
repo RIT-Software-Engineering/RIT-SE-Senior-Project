@@ -28,8 +28,6 @@ import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import { QuestionComponentsMap } from "../../../../util/components/PeerEvalComponents";
 import "./../../../../../css/utils/helpers.css";
 
-// ✅ react-confirm-alert imports REMOVED
-
 const MODAL_STATUS = {
   SUCCESS: "success",
   FAIL: "fail",
@@ -40,9 +38,6 @@ const MODAL_STATUS = {
 const camelCaseToSentence = (string = "") =>
   string.replaceAll(/([A-Z])/g, (word) => ` ${word}`).trimStart();
 
-/**
- * This file is only used in ToolTips, it should be removed completely
- */
 export default function ActionModal(props) {
   const { user } = useContext(UserContext);
   const [open, setOpen] = React.useState(false);
@@ -58,11 +53,8 @@ export default function ActionModal(props) {
   const [studentOptions, setStudentOptions] = useState([]);
   const [formTouched, setFormTouched] = useState(false);
   const [readyToMark, setReadyToMark] = useState(false);
-
-  // ✅ Replaces react-confirm-alert
   const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
   const [pendingCloseAction, setPendingCloseAction] = useState(null);
-
   const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
   const fetchStudentNames = () => {
@@ -192,7 +184,6 @@ export default function ActionModal(props) {
     return translation;
   }
 
-  // ✅ Shared helper — replaces showUnsavedChangesConfirm
   function openUnsavedModal(onDiscard) {
     setPendingCloseAction(() => onDiscard);
     setUnsavedModalOpen(true);
@@ -459,7 +450,6 @@ export default function ActionModal(props) {
     );
   }
 
-  // ✅ Uses Semantic UI modal now
   function onActionCancel() {
     if (formTouched && !props.viewOnly) {
       openUnsavedModal(() => {
@@ -517,7 +507,6 @@ export default function ActionModal(props) {
     }
   };
 
-  // ✅ Shared Semantic UI unsaved changes modal
   const unsavedChangesModal = (
     <Modal
       open={unsavedModalOpen}

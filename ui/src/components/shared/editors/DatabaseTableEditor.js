@@ -151,7 +151,6 @@ export default function DatabaseTableEditor(props) {
         formRef.current = null;
         setFormTouched(false);
         setOpen(false);
-        // ✅ FIX 1: Only call isOpenCallback if it exists
         props.isOpenCallback?.(false);
       });
       setUnsavedModalOpen(true);
@@ -162,7 +161,6 @@ export default function DatabaseTableEditor(props) {
     formRef.current = null;
     setFormTouched(false);
     setOpen(false);
-    // ✅ FIX 1: Only call isOpenCallback if it exists
     props.isOpenCallback?.(false);
   }
 
@@ -727,7 +725,6 @@ export default function DatabaseTableEditor(props) {
     }, 300);
   };
 
-  // ✅ FIX 2: Shared Unsaved Changes modal — rendered OUTSIDE both branches
   const unsavedChangesModal = (
     <Modal
       open={unsavedModalOpen}
@@ -770,7 +767,7 @@ export default function DatabaseTableEditor(props) {
               setFormTouched(false);
               setJustSaved(false);
               setOpen(false);
-              props.isOpenCallback(false); // ✅ safe here — we ARE in the isOpenCallback branch
+              props.isOpenCallback(false);
               return;
             }
             if (formTouched && !props.viewOnly) {
@@ -781,13 +778,13 @@ export default function DatabaseTableEditor(props) {
                 formRef.current = null;
                 setFormTouched(false);
                 setOpen(false);
-                props.isOpenCallback(false); // ✅ safe here
+                props.isOpenCallback(false);
               });
               setUnsavedModalOpen(true);
               return;
             }
             setOpen(false);
-            props.isOpenCallback(false); // ✅ safe here
+            props.isOpenCallback(false);
           }}
           onOpen={() => {
             setOpen(true);
@@ -885,7 +882,6 @@ export default function DatabaseTableEditor(props) {
             ]}
           />
         )}
-        {/* ✅ FIX 2: Shared unsaved modal renders in both branches */}
         {unsavedChangesModal}
       </>
     );
@@ -903,7 +899,6 @@ export default function DatabaseTableEditor(props) {
               setFormTouched(false);
               setJustSaved(false);
               setOpen(false);
-              // ✅ FIX 1: NO props.isOpenCallback here — it doesn't exist in this branch
               return;
             }
             if (formTouched && !props.viewOnly) {
@@ -914,13 +909,11 @@ export default function DatabaseTableEditor(props) {
                 formRef.current = null;
                 setFormTouched(false);
                 setOpen(false);
-                // ✅ FIX 1: NO props.isOpenCallback here
               });
               setUnsavedModalOpen(true);
               return;
             }
             setOpen(false);
-            // ✅ FIX 1: NO props.isOpenCallback here
           }}
           onOpen={() => {
             setOpen(true);
@@ -1002,7 +995,6 @@ export default function DatabaseTableEditor(props) {
             setFormTouched(false);
           }}
         />
-        {/* ✅ FIX 2: Shared unsaved modal renders in both branches */}
         {unsavedChangesModal}
       </>
     );
