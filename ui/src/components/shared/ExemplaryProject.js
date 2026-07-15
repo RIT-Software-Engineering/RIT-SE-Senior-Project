@@ -133,9 +133,11 @@ function ExemplaryProject({ project }) {
         </div>
       </div>
       {/* Modal with expanded information */}
+      // Around line 134, change the Modal to:
       <Modal
         closeOnDimmerClick={false}
-        className={"sticky"}
+        closeIcon={true}
+        className="exemplary-modal"
         size={"large"}
         open={initialOpen}
         onClose={() => setInitialOpen(false)}
