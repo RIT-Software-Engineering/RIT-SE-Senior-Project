@@ -3,9 +3,9 @@ import {
   Button,
   Dropdown,
   Form,
-  Header,
   Input,
-  Segment,
+  Message,
+  Modal,
 } from "semantic-ui-react";
 
 import { SecureFetch } from "../../../util/functions/secureFetch";
@@ -16,15 +16,23 @@ export default function DuplicateSemesterPanel(props) {
   const [targetSemester, setTargetSemester] = useState("");
   const [offsetDays, setOffsetDays] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const duplicateSemester = () => {
     if (!sourceSemester || !targetSemester) {
-      alert("Select both semesters.");
+      setStatus({
+        type: "error",
+        text: "Select both semesters.",
+      });
       return;
     }
 
     if (sourceSemester === targetSemester) {
-      alert("Source and Target semesters cannot be the same.");
+      setStatus({
+        type: "error",
+        text: "Source and Target semesters cannot be the same.",
+      });
       return;
     }
 
@@ -46,12 +54,20 @@ export default function DuplicateSemesterPanel(props) {
         return res.json();
       })
       .then((data) => {
-        alert(`Copied ${data.copied} actions.`);
+        setStatus({
+          type: "success",
+          text: `Copied ${data.copied} actions.`,
+        });
+
         props.callback();
+        setOpen(false);
       })
       .catch((err) => {
         console.error(err);
-        alert("Failed to duplicate actions.");
+        setStatus({
+          type: "error",
+          text: "Failed to duplicate actions.",
+        });
       })
       .finally(() => setLoading(false));
   };
@@ -63,48 +79,69 @@ export default function DuplicateSemesterPanel(props) {
   }));
 
   return (
-    <Segment>
-      <Header>Duplicate Semester Actions</Header>
+    <>
+      <Button
+        primary
+        onClick={() => {
+          setStatus(null);
+          setOpen(true);
+        }}
+      ></Button>
 
-      <Form>
-        <Form.Field>
-          <label>Source Semester</label>
+      <Modal open={open} onClose={() => setOpen(false)} size="small">
+        <Modal.Header>Copy Semester Actions</Modal.Header>
+        <Modal.Content>
+          {status && (
+            <Message
+              positive={status.type === "success"}
+              negative={status.type === "error"}
+              content={status.text}
+            />
+          )}
+          <Form>
+            <Form.Field>
+              <label>Source Semester</label>
+              <Dropdown
+                fluid
+                selection
+                options={semesterOptions}
+                value={sourceSemester}
+                onChange={(e, { value }) => setSourceSemester(value)}
+              />
+            </Form.Field>
 
-          <Dropdown
-            fluid
-            selection
-            options={semesterOptions}
-            value={sourceSemester}
-            onChange={(e, { value }) => setSourceSemester(value)}
-          />
-        </Form.Field>
+            <Form.Field>
+              <label>Target Semester</label>
 
-        <Form.Field>
-          <label>Target Semester</label>
+              <Dropdown
+                fluid
+                selection
+                options={semesterOptions}
+                value={targetSemester}
+                onChange={(e, { value }) => setTargetSemester(value)}
+              />
+            </Form.Field>
 
-          <Dropdown
-            fluid
-            selection
-            options={semesterOptions}
-            value={targetSemester}
-            onChange={(e, { value }) => setTargetSemester(value)}
-          />
-        </Form.Field>
+            <Form.Field>
+              <label>Offset Days</label>
 
-        <Form.Field>
-          <label>Offset Days</label>
+              <Input
+                type="number"
+                value={offsetDays}
+                onChange={(e) => setOffsetDays(e.target.value)}
+              />
+            </Form.Field>
+          </Form>
+        </Modal.Content>
 
-          <Input
-            type="number"
-            value={offsetDays}
-            onChange={(e) => setOffsetDays(e.target.value)}
-          />
-        </Form.Field>
+        <Modal.Actions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
 
-        <Button primary loading={loading} onClick={duplicateSemester}>
-          Duplicate
-        </Button>
-      </Form>
-    </Segment>
+          <Button primary loading={loading} onClick={duplicateSemester}>
+            Copy Selected Actions
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    </>
   );
 }
