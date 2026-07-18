@@ -27,7 +27,7 @@ const ErrorLogs = () => {
         setErrorLogs(error_logs);
       })
       .catch((error) => {
-        alert("Failed to get error log data: " + error);
+        console.error("Failed to get error log data", error);
       });
   };
 

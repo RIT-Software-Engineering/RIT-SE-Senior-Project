@@ -69,6 +69,7 @@ export default function WeeklyHourViewer(props) {
       closeOnDimmerClick={false}
       size={"fullscreen"}
       className={"sticky"}
+      closeIcon={true}
       onOpen={() => {
         setOpen(true);
       }}

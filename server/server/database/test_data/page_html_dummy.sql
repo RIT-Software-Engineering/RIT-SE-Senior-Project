@@ -58,13 +58,13 @@ VALUES
                              </p>
                              <br />
                              <div class="ui styled fluid accordion">
-               <div class="title">
+               <button class="title fake-div">
              <script>
              $(".ui.accordion").accordion();
              </script>
                  <i class="dropdown icon"></i>
                  How will my organization benefit from sponsoring a Senior Project?
-               </div>
+               </button>
                <div class="content">
                  <p class="transition invisible"><ul>
                                      <li>Help educate the next generation of software engineers who you might want as employees</li>
@@ -78,10 +78,10 @@ VALUES
                                      </li>
                                  </ul></p>
                </div>
-               <div class="title">
+               <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What is the size, scope and duration of these projects?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -113,10 +113,10 @@ VALUES
                                      </li>
                                  </ul>
                </div>
-               <div class="title">
+               <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  Who works on the project?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>The project sponsor works with a senior team and their faculty coach.</li>
@@ -130,10 +130,10 @@ VALUES
                                      </li>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What process is followed over the course of the project?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -152,10 +152,10 @@ VALUES
                                      </li>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What are my responsibilities and commitments as a sponsor?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -186,10 +186,10 @@ VALUES
                                      </ul>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  How are proposals reviewed?
-               </div>
+               </button>
                <div class="content">
                  <ol>
                                      <li>

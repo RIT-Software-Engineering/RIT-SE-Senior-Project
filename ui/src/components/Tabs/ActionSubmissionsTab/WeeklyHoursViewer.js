@@ -29,6 +29,7 @@ export default function WeeklyHoursViewer(props) {
     <Modal
       closeOnDimmerClick={false}
       className={"sticky"}
+      closeIcon={true}
       onClose={() => {
         setOpen(false);
         props?.isOpenCallback(false);

@@ -182,6 +182,7 @@ export default function PreviewHtml(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
+        closeIcon={true}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         onClose={() => {
           setOpen(false);
@@ -209,6 +210,7 @@ export default function PreviewHtml(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
+        closeIcon={true}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         header={props.header}
         content={{

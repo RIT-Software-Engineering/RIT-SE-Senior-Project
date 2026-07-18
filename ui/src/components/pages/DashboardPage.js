@@ -104,6 +104,26 @@ export default function DashboardPage() {
       if (!user.view_only && !user.mockUser.view_only) {
         panes.push({
           menuItem: {
+            key: "Errors-Tab",
+            content: (
+              <>
+                <i
+                  className="exclamation triangle icon"
+                  style={{ marginRight: 5 }}
+                />
+                Errors
+              </>
+            ),
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <ErrorLogs />
+            </Tab.Pane>
+          ),
+        });
+        panes.push({
+          menuItem: {
             key: "Admin-Tab",
             content: (
               <>
@@ -226,26 +246,6 @@ export default function DashboardPage() {
                 viewOnly={user.view_only || user.mockUser.view_only}
               />
               <ActionLogs semesterData={semesterData} />
-            </Tab.Pane>
-          ),
-        },
-        {
-          menuItem: {
-            key: "Errors-Tab",
-            content: (
-              <>
-                <i
-                  className="exclamation triangle icon"
-                  style={{ marginRight: 5 }}
-                />
-                Errors
-              </>
-            ),
-            href: "#",
-          },
-          render: () => (
-            <Tab.Pane>
-              <ErrorLogs />
             </Tab.Pane>
           ),
         },
