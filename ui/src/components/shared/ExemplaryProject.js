@@ -72,8 +72,8 @@ function ExemplaryProject({ project }) {
     <div>
       {" "}
       {/* Div containing all project information */}
-      <div
-        className="ui segment stackable padded grid"
+      <button
+        className="ui segment stackable padded grid fake-div"
         onClick={() => toggleInitialModalOpen()}
         style={{ cursor: "pointer" }}
       >
@@ -131,7 +131,7 @@ function ExemplaryProject({ project }) {
             {generateProfiles(project.coach, false)}
           </div>
         </div>
-      </div>
+      </button>
       {/* Modal with expanded information */}
       // Around line 134, change the Modal to:
       <Modal
