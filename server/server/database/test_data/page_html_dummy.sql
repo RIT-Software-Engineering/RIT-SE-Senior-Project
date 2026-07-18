@@ -1,5 +1,9 @@
-INSERT INTO page_html (name, html) VALUES
-('homePagePanel', '<div class="row">
+INSERT INTO
+    page_html (name, html)
+VALUES
+    (
+        'homePagePanel',
+        '<div class="row">
                                    <h2>Overview</h2>
                                </div>
                                <div class="row">
@@ -15,8 +19,11 @@ INSERT INTO page_html (name, html) VALUES
                                        inception through an entire software development lifecycle. The end result is a functional software
                                        tool ready for use by the sponsor''s organization.
                                    </p>
-                               </div>'),
-('sponsor', '<div class="row">
+                               </div>'
+    ),
+    (
+        'sponsor',
+        '<div class="row">
                              <h2 class="ui header">Become a Project Sponsor</h2>
                          </div>
                          <div class="row">
@@ -51,15 +58,15 @@ INSERT INTO page_html (name, html) VALUES
                              </p>
                              <br />
                              <div class="ui styled fluid accordion">
-               <div class="title">
+               <button class="title fake-div">
              <script>
              $(".ui.accordion").accordion();
              </script>
                  <i class="dropdown icon"></i>
                  How will my organization benefit from sponsoring a Senior Project?
-               </div>
+               </button>
                <div class="content">
-                 <p class="transition hidden"><ul>
+                 <p class="transition invisible"><ul>
                                      <li>Help educate the next generation of software engineers who you might want as employees</li>
                                      <li>
                                          Get the benefits of any work the team does in clarifying your problem, designing a solution,
@@ -71,10 +78,10 @@ INSERT INTO page_html (name, html) VALUES
                                      </li>
                                  </ul></p>
                </div>
-               <div class="title">
+               <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What is the size, scope and duration of these projects?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -106,10 +113,10 @@ INSERT INTO page_html (name, html) VALUES
                                      </li>
                                  </ul>
                </div>
-               <div class="title">
+               <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  Who works on the project?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>The project sponsor works with a senior team and their faculty coach.</li>
@@ -123,10 +130,10 @@ INSERT INTO page_html (name, html) VALUES
                                      </li>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What process is followed over the course of the project?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -145,10 +152,10 @@ INSERT INTO page_html (name, html) VALUES
                                      </li>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  What are my responsibilities and commitments as a sponsor?
-               </div>
+               </button>
                <div class="content">
                  <ul>
                                      <li>
@@ -179,10 +186,10 @@ INSERT INTO page_html (name, html) VALUES
                                      </ul>
                                  </ul>
                </div>
-             <div class="title">
+             <button class="title fake-div">
                  <i class="dropdown icon"></i>
                  How are proposals reviewed?
-               </div>
+               </button>
                <div class="content">
                  <ol>
                                      <li>
@@ -213,4 +220,45 @@ INSERT INTO page_html (name, html) VALUES
                                  </ol>
                </div>
              </div>
-                         </div>');
+                         </div>'
+    ),
+    (
+  'loggedOutFooter',
+  "<div id='bringMeDownSignedIn' class='ui container stackable grid'>
+      <div class='three column row'>
+          <div class='column'>
+              <img src='/assets/logo.jpg' alt='Logo' style='max-width:200px; width:100%; height:auto;' />
+          </div>
+          <div class='column'>
+              <p>
+                  Department of Software Engineering<br/>
+                  Golisano Building 70, Room 1690<br/>
+                  134 Lomb Memorial Drive<br/>
+                  Rochester, NY 14623-5608
+              </p>
+          </div>
+          <div class='column'>
+              <p>
+                  <i class='ui mail icon'></i>
+                  <a href='mailto:seniorprojects@se.rit.edu'>seniorprojects@se.rit.edu</a>
+              </p>
+          </div>
+      </div>
+      <div class='centered row' style='text-align:center;'>
+          <p>&copy; " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved</p>
+      </div>
+  </div>"
+),
+(
+  'loggedInFooter',
+  "<div id='bringMeDown' class='ui container stackable grid'>
+      <div class='two column row'>
+          <div class='column'>
+              <h5 id='copyright'>
+                <i class='ui icon copyright'></i>
+                " || strftime('%Y','now') || " Rochester Institute of Technology, All Rights Reserved
+              </h5>
+          </div>
+      </div>
+  </div>"
+);

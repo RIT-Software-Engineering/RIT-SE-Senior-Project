@@ -53,7 +53,7 @@ export default function ProfileCircle(props) {
       (acc, char) => acc + char.charCodeAt(0),
       0,
     );
-    const hue = hash % 360;
+    const hue = (hash * 58) % 360;
     return `hsl(${hue}, 70%, 70%)`;
   }
 

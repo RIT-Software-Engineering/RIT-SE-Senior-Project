@@ -53,13 +53,13 @@ function HomePage() {
           />
         )}
       </div>
-      <div className="ui hidden divider"></div>
+      <div className="ui invisible divider"></div>
       <div className="ui divider"></div>
 
       <div className="row">
         <h2>Exemplary Projects</h2>
       </div>
-      <div className="ui hidden divider"></div>
+      <div className="ui invisible divider"></div>
       <div id="exemplaryProjectsDiv" style={{ marginBottom: "75px" }}>
         {/* <!-- Attach exemplary project elements here --> */}
         {projects.map((project, idx) => {

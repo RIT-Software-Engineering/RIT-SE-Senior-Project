@@ -1,71 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import { config, USERTYPES } from "../../util/functions/constants";
-import { SecureFetch } from "../../util/functions/secureFetch";
-import { formattedAttachments } from "./ProjectEditorModal";
-import { decode } from "he";
-import { convert } from "html-to-text";
-import ProfileCircle from "../../util/components/ProfileCircle";
+import React, { useState } from "react";
+import ModalWrapper from "../../shared/ModalWrapper";
+import ProjectViewerModalContent from "./ProjectViewerModalContent";
+import { Button } from "semantic-ui-react";
 
 export default function ProjectViewerModal(props) {
-  const [projectMembers, setProjectMembers] = useState({
-    students: [],
-    coaches: [],
-  });
-  const [URL, setURL] = useState("No URL found");
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    SecureFetch(
-      `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`,
-    )
-      .then((response) => response.json())
-      .then((members) => {
-        let projectGroupedValues = { students: [], coaches: [] };
-        members.forEach((member, idx) => {
-          switch (member.type) {
-            case USERTYPES.STUDENT:
-              member.view_only === "TRUE"
-                ? projectGroupedValues.students.push(
-                    `${member.fname} ${member.lname} ${"(View Only)"}`,
-                  )
-                : projectGroupedValues.students.push(
-                    `${member.fname} ${member.lname}`,
-                  );
-              break;
-            case USERTYPES.COACH:
-              member.view_only === "TRUE"
-                ? projectGroupedValues.coaches.push(
-                    `${member.fname} ${member.lname} ${"(View Only)"}`,
-                  )
-                : projectGroupedValues.coaches.push(
-                    `${member.fname} ${member.lname}`,
-                  );
-              break;
-            default:
-              console.error(
-                `Project editor error - invalid project member type "${member.type}" for member: `,
-                member,
-              );
-              break;
-          }
-        });
-        setProjectMembers(projectGroupedValues);
-      });
-  }, [props.project?.project_id]);
-
-  useEffect(() => {
-    SecureFetch(
-      `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`,
-    )
-      .then((response) => response.json())
-      .then((archives) => {
-        if (archives.length > 0) {
-          if (archives[0].url_slug !== null && archives[0].url_slug !== "") {
-            setURL(archives[0].url_slug);
-          }
-        }
-      });
-  }, [props.project?.project_id]);
+  const handleClose = () => {
+    setOpen(false);
+    if (props.onClose) props.onClose();
+  };
 
   const generateModalContent = () => {
     return (
@@ -239,14 +183,30 @@ export default function ProjectViewerModal(props) {
       </>
     );
   };
-  return (
-    <Modal
-      className={"sticky"}
-      closeOnDimmerClick={false}
-      trigger={<Button icon="eye" />}
-      header={`Viewing "${props.project.display_name || props.project.title}"`}
-      content={{ content: generateModalContent() }}
-      actions={[{ key: "Close", content: "Close" }]}
+
+  // Determine the trigger element.
+  // We use the custom trigger if provided, otherwise, default to the eye Button.
+  // The onClick handler is applied directly to ensure it works with Semantic UI layout.
+  const triggerElement = props.trigger || (
+    <Button
+      icon="eye"
+      onClick={handleOpen} // Handler applied directly to the Button
     />
+  );
+
+  return (
+    <ModalWrapper
+      open={open}
+      onClose={handleClose}
+      closeOnDimmerClick={false}
+      trigger={triggerElement} // Pass the button directly
+      title={`Viewing "${props.project?.display_name || props.project?.title || "Project"}"`}
+      actions={[<Button key="close" content="Close" onClick={handleClose} />]}
+    >
+      <ProjectViewerModalContent
+        project={props.project}
+        semesterMap={props.semesterMap}
+      />
+    </ModalWrapper>
   );
 }
