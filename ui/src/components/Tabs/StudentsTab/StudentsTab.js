@@ -58,7 +58,10 @@ export default function StudentsTab(props) {
 
   function getCoachFeedback(project_id) {
     SecureFetch(`${config.url.API_GET_COACH_FEEDBACK}?project_id=${project_id}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) return [];
+        return response.json();
+      })
       .then((data) => {
         const submissions = {};
         data.forEach((s) => {
@@ -83,7 +86,7 @@ export default function StudentsTab(props) {
         updateCoachFeedback(project_id, forms);
       })
       .catch((error) => {
-        alert("Failed to get Coach's Feedback" + error);
+        console.error("Failed to get Coach's Feedback", error);
       });
   }
 

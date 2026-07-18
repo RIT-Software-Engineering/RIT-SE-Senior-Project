@@ -6,7 +6,7 @@ const PDFDoc = require("pdfkit");
 const fs = require("fs");
 const fse = require("fs-extra");
 const path = require("path");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const fileSizeParser = require("filesize-parser");
 const he = require("he");
 const { convert } = require("html-to-text");
@@ -35,6 +35,42 @@ function humanFileSize(bytes, si = false, dp = 1) {
 }
 
 const defaultFileSizeLimit = 15 * 1024 * 1024;
+
+/**
+ * Format: {ActionName}_{YYYY-MM-DD}_{ProjectName}_{SubmitterUserName}[-N].{ext}
+ */
+function sanitizeFileNameSegment(str, maxLen = 10) {
+  return (str || "")
+    .toString()
+    .replace(/[\\/:*?"<>|]/g, "")
+    .replace(/\s+/g, "")
+    .slice(0, maxLen);
+}
+
+function buildSubmissionDownloadName({
+  actionTitle,
+  submissionDateTime,
+  projectName,
+  submitterUserName,
+  fileIndex,
+  originalFileName,
+}) {
+  const ext = path.extname(originalFileName || "");
+  const dateStr = submissionDateTime
+    ? dayjs(submissionDateTime).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD");
+
+  const segments = [
+    sanitizeFileNameSegment(actionTitle),
+    dateStr,
+    sanitizeFileNameSegment(projectName),
+    sanitizeFileNameSegment(submitterUserName),
+  ].filter(Boolean);
+
+  const increment = fileIndex > 0 ? `-${fileIndex + 1}` : "";
+
+  return segments.join("_") + increment + ext;
+}
 
 const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
@@ -84,6 +120,41 @@ module.exports = (db) => {
       }
     });
   }
+
+  // get error logs
+  db_router.get("/getAllErrorLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const getErrorLogsQuery = `
+            SELECT * FROM ${DB_CONFIG.tableNames.error_log} ORDER BY error_log_id ASC
+        `;
+    db.query(getErrorLogsQuery)
+      .then((errorLogs) => {
+        res.send(errorLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.delete(
+    "/removeErrorLog/:id",
+    [UserAuth.isAdmin],
+    (req, res, next) => {
+      const deleteErrorLogQuery = `
+            DELETE FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?
+        `;
+      db.query(deleteErrorLogQuery, [req.params.id])
+        .then(() => {
+          res.status(200).send();
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.get(
     "/selectAllSponsorInfo",
@@ -298,7 +369,7 @@ module.exports = (db) => {
 
       const active =
         body.active === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
@@ -364,7 +435,7 @@ module.exports = (db) => {
             user.type,
             user.semester_group === "" ? null : user.semester_group,
             user.active.toLocaleLowerCase() === "false"
-              ? moment().format(CONSTANTS.datetime_format)
+              ? dayjs().format(CONSTANTS.datetime_format)
               : "",
             defaultProfileInfo,
           ];
@@ -431,7 +502,7 @@ module.exports = (db) => {
 
       const active =
         body.active === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
@@ -919,7 +990,7 @@ module.exports = (db) => {
                                     WHERE archive_id = ?`;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const locked =
@@ -928,7 +999,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const checkBox = (data) => {
@@ -998,7 +1069,7 @@ module.exports = (db) => {
       let body = req.body;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const locked =
         body.locked === "true"
@@ -1006,7 +1077,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const updateArchiveQuery = `INSERT INTO ${DB_CONFIG.tableNames.archive}(featured, outstanding, creative,
@@ -1086,7 +1157,7 @@ module.exports = (db) => {
                                     WHERE archive_id = ?`;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const locked =
@@ -1095,7 +1166,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       let files_uploaded = [];
@@ -1256,7 +1327,7 @@ module.exports = (db) => {
       let body = req.body;
       const inactive =
         body.inactive === "true"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const locked =
         body.locked === "true"
@@ -1264,7 +1335,7 @@ module.exports = (db) => {
             " " +
             req.user.lname +
             " locked at " +
-            moment().format(CONSTANTS.datetime_format)
+            dayjs().format(CONSTANTS.datetime_format)
           : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
@@ -3210,26 +3281,29 @@ module.exports = (db) => {
       let getSubmissionQuery = "";
       let params = [];
 
+      const submissionFileSelect = `
+        SELECT action_log.files, action_log.project, action_log.system_id,
+               action_log.submission_datetime,
+               actions.action_id, actions.action_target, actions.action_title,
+               COALESCE(projects.display_name, projects.title) AS project_name
+        FROM action_log
+        JOIN actions ON actions.action_id = action_log.action_template
+        JOIN projects ON projects.project_id = action_log.project`;
+
       switch (req.user.type) {
         case ROLES.STUDENT:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.COACH:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.ADMIN:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ?`;
           params = [req.query.log_id];
           break;
@@ -3239,8 +3313,16 @@ module.exports = (db) => {
           return next(error);
       }
 
-      const { files, project, action_target, system_id, action_id } =
-        (await db.query(getSubmissionQuery, params))[0] || {};
+      const {
+        files,
+        project,
+        action_target,
+        system_id,
+        action_id,
+        action_title,
+        project_name,
+        submission_datetime,
+      } = (await db.query(getSubmissionQuery, params))[0] || {};
 
       let fileList = [];
       if (files) {
@@ -3254,11 +3336,19 @@ module.exports = (db) => {
         system_id &&
         action_id
       ) {
-        return res.sendFile(
+        return res.download(
           path.join(
             __dirname,
             `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`,
           ),
+          buildSubmissionDownloadName({
+            actionTitle: action_title,
+            submissionDateTime: submission_datetime,
+            projectName: project_name,
+            submitterUserName: system_id,
+            fileIndex: fileList.indexOf(req.query.file),
+            originalFileName: req.query.file,
+          }),
         );
       }
       const error = new Error(
@@ -3292,7 +3382,7 @@ module.exports = (db) => {
 
       const date_deleted =
         body.date_deleted === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const parsedFileSize = body.file_size
         ? fileSizeParser(body.file_size)
@@ -3855,7 +3945,7 @@ module.exports = (db) => {
 
       const date_deleted =
         body.date_deleted === "false"
-          ? moment().format(CONSTANTS.datetime_format)
+          ? dayjs().format(CONSTANTS.datetime_format)
           : "";
       const parsedFileSize = body.file_size
         ? fileSizeParser(body.file_size)

@@ -26,6 +26,7 @@ import InnerHTML from "dangerously-set-html-content";
 import ParsedInnerHTML from "../../../../util/components/ParsedInnerHtml";
 import CoachFeedBack from "../../../../util/components/CoachFeedBack";
 import { QuestionComponentsMap } from "../../../../util/components/PeerEvalComponents";
+import "./../../../../../css/utils/helpers.css";
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -37,9 +38,6 @@ const MODAL_STATUS = {
 const camelCaseToSentence = (string = "") =>
   string.replaceAll(/([A-Z])/g, (word) => ` ${word}`).trimStart();
 
-/**
- *This file is only used in ToolTips, it should be removed completely
- */
 export default function ActionModal(props) {
   const { user } = useContext(UserContext);
   const [open, setOpen] = React.useState(false);
@@ -53,7 +51,10 @@ export default function ActionModal(props) {
   const [errorFields, setErrorFields] = useState(new Set());
   const filesRef = useRef();
   const [studentOptions, setStudentOptions] = useState([]);
-
+  const [formTouched, setFormTouched] = useState(false);
+  const [readyToMark, setReadyToMark] = useState(false);
+  const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
+  const [pendingCloseAction, setPendingCloseAction] = useState(null);
   const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
 
   const fetchStudentNames = () => {
@@ -132,11 +133,14 @@ export default function ActionModal(props) {
     return translation;
   }
 
+  const markFormAsTouched = () => {
+    if (readyToMark) {
+      setFormTouched(true);
+    }
+  };
+
   function translateCoachPeerEvalFeedbackData(formData) {
-    const translation = {
-      Submitter: "COACH",
-      Students: {},
-    };
+    const translation = { Submitter: "COACH", Students: {} };
 
     for (const key in formData) {
       let [category, header, student] = key.split("-");
@@ -178,6 +182,11 @@ export default function ActionModal(props) {
     }
 
     return translation;
+  }
+
+  function openUnsavedModal(onDiscard) {
+    setPendingCloseAction(() => onDiscard);
+    setUnsavedModalOpen(true);
   }
 
   const generateModalFields = () => {
@@ -226,16 +235,13 @@ export default function ActionModal(props) {
       case MODAL_STATUS.SUCCESS:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-
         break;
       case MODAL_STATUS.FAIL:
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-
         break;
       case MODAL_STATUS.SUBMITTING:
         setErrors([]);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
-
         break;
       default:
         console.error(`MODAL_STATUS of '${submissionModalOpen}' not handled`);
@@ -248,9 +254,7 @@ export default function ActionModal(props) {
     let form = document.forms.item(0);
     if (form !== null && form !== undefined) {
       let body = new FormData();
-
       body.append("action_template", props.action_id);
-      // Note: A user could spoof this and submit actions for other projects...although idk what they could gain from doing that.
       body.append("project", props.projectId);
 
       let formData = {};
@@ -258,7 +262,7 @@ export default function ActionModal(props) {
 
       const isRequiredAndEmpty = (input) =>
         formDataInputs[input]?.required &&
-        formDataInputs[input]?.name && // Only check elements with names
+        formDataInputs[input]?.name &&
         (!formDataInputs[input]?.value ||
           !formDataInputs[formDataInputs[input].name]?.value ||
           (formDataInputs[input]?.name.startsWith("Table") &&
@@ -282,7 +286,6 @@ export default function ActionModal(props) {
             formData[inputName] = String(input?.value);
           }
 
-          // Error Handling
           const [questionType, questionName, studentName] =
             inputName.split("-");
           const questionSetKey = questionType + questionName;
@@ -291,7 +294,6 @@ export default function ActionModal(props) {
 
           if (!isEmpty) continue;
 
-          // Push errors to the question components
           switch (questionType) {
             case "Feedback":
             case "Mood":
@@ -305,15 +307,11 @@ export default function ActionModal(props) {
               break;
           }
 
-          // Stops repeat errors from appearing
           if (hasDoneError) continue;
 
-          // Push errors to the error list at bottom of page
           if (questionType === "Table") {
             errors.push(
-              `'${camelCaseToSentence(
-                questionName,
-              )}' column is required to be filled out.`,
+              `'${camelCaseToSentence(questionName)}' column is required to be filled out.`,
             );
             errorsSet.add(questionSetKey);
           } else if (questionType === "Feedback") {
@@ -323,38 +321,27 @@ export default function ActionModal(props) {
               );
             } else {
               errors.push(
-                `'${camelCaseToSentence(
-                  questionName,
-                )}' feedback is required for all students.`,
+                `'${camelCaseToSentence(questionName)}' feedback is required for all students.`,
               );
               errorsSet.add(questionSetKey);
             }
           } else if (questionType === "Mood") {
             errors.push(
-              `'${camelCaseToSentence(
-                questionName,
-              )}' question is required to be answered.`,
+              `'${camelCaseToSentence(questionName)}' question is required to be answered.`,
             );
             errorsSet.add(questionSetKey);
           } else {
             errors.push(
-              `'${camelCaseToSentence(
-                questionName,
-              )}' feedback is required to be given for all students.`,
+              `'${camelCaseToSentence(questionName)}' feedback is required to be given for all students.`,
             );
             errorsSet.add(questionSetKey);
           }
 
           continue;
         } else {
-          // Skip radio inputs without names
-          if (!formDataInputs[x].name) {
-            continue;
-          }
+          if (!formDataInputs[x].name) continue;
           if (isRequiredAndEmpty(x) && !errorsSet.has(formDataInputs[x].name)) {
-            errors.push(
-              `radio option selection "${formDataInputs[x].name}" is required`,
-            );
+            errors.push(`"${formDataInputs[x].name}" is required`);
             errorsSet.add(formDataInputs[x].name);
           }
           formData[formDataInputs[x].name] =
@@ -372,10 +359,8 @@ export default function ActionModal(props) {
       }
 
       const formFiles = filesRef.current?.inputRef?.current?.files || [];
-
-      if (file_types && formFiles.length === 0) {
+      if (file_types && formFiles.length === 0)
         errors.push("You must upload files");
-      }
 
       if (errors.length > 0) {
         setErrors(errors);
@@ -383,7 +368,6 @@ export default function ActionModal(props) {
         return;
       }
 
-      // NOTE: Translates form data into Object structure for future usage
       if (isPeerEval) {
         if (user.role === USERTYPES.STUDENT) {
           formData = translateStudentPeerEvalData(formData);
@@ -393,7 +377,6 @@ export default function ActionModal(props) {
       }
 
       body.append("form_data", JSON.stringify(formData));
-
       for (let i = 0; i < formFiles?.length || 0; i++) {
         body.append("attachments", formFiles[i]);
       }
@@ -433,7 +416,6 @@ export default function ActionModal(props) {
           props.reloadTimelineActions();
         })
         .catch((error) => {
-          // TODO: Redirect to failed page or handle errors
           console.error(error);
           setSubmissionModalResponse(
             "We were unable to receive your submission.",
@@ -460,6 +442,7 @@ export default function ActionModal(props) {
               type="file"
               accept={fileTypes}
               multiple
+              onChange={markFormAsTouched}
             />
           </Form.Field>
         </Form>
@@ -468,7 +451,19 @@ export default function ActionModal(props) {
   }
 
   function onActionCancel() {
-    setErrors([]);
+    if (formTouched && !props.viewOnly) {
+      openUnsavedModal(() => {
+        setErrors([]);
+        setFormTouched(false);
+        setOpen(false);
+        props.isOpenCallback(false);
+      });
+    } else {
+      setErrors([]);
+      setOpen(false);
+      props.isOpenCallback(false);
+      setFormTouched(false);
+    }
   }
 
   const submitButton =
@@ -476,6 +471,7 @@ export default function ActionModal(props) {
       ` This action can be submitted on ${formatDateTime(props.start_date)}`
     ) : (
       <Button
+        className="offset-outline"
         content={
           user.isMock
             ? `Submitting ${user.mockUser.fname} ${user.mockUser.lname} as ${user.fname} ${user.lname}`
@@ -491,10 +487,8 @@ export default function ActionModal(props) {
     );
 
   const renderSubmitButton = () => {
-    if (user.view_only || user.mockUser.view_only === "TRUE") {
-      // render plain text for view-only role instead of a button
+    if (user.view_only || user.mockUser.view_only === "TRUE")
       return " View Only Role";
-    }
     switch (props.action_target) {
       case ACTION_TARGETS.admin:
         return user.role === USERTYPES.ADMIN
@@ -508,46 +502,234 @@ export default function ActionModal(props) {
         return user.role === USERTYPES.STUDENT
           ? submitButton
           : " Individual Actions are Available Only to Students";
-      // case ACTION_TARGETS.peer_evaluation:
-      //     return user.role !== USERTYPES.COACH ? submitButton : "Available when all Students Submit";
       default:
         return submitButton;
     }
   };
 
+  const unsavedChangesModal = (
+    <Modal
+      open={unsavedModalOpen}
+      size="tiny"
+      className="unsaved-modal"
+      closeOnDimmerClick={false}
+      closeOnEscape={false}
+      closeIcon
+      onClose={() => setUnsavedModalOpen(false)}
+    >
+      <Modal.Header>Unsaved Changes</Modal.Header>
+      <Modal.Content>
+        You have unsaved work. Are you sure you want to close without
+        submitting?
+      </Modal.Content>
+      <Modal.Actions>
+        <Button onClick={() => setUnsavedModalOpen(false)}>Keep Working</Button>
+        <Button
+          negative
+          onClick={() => {
+            setUnsavedModalOpen(false);
+            pendingCloseAction?.();
+          }}
+        >
+          Discard Work
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+
   if (isPeerEval && user.role === USERTYPES.COACH) {
     return (
-      <Modal
-        closeOnDimmerClick={false}
-        closeOnEscape={false}
-        className={"sticky"}
-        onClose={() => {
-          setOpen(false);
-          props.isOpenCallback(false);
-        }}
-        onOpen={() => {
-          setOpen(true);
-          props.isOpenCallback(true);
-        }}
-        open={open}
-        trigger={
-          props.trigger || (
-            <Button ref={props.ref} fluid className="view-action-button">
-              View Action
+      <>
+        <Modal
+          closeOnDimmerClick={true}
+          closeOnEscape={false}
+          closeIcon={true}
+          className={"sticky"}
+          onClose={() => {
+            setTimeout(() => {
+              if (formTouched && !props.viewOnly) {
+                openUnsavedModal(() => {
+                  setErrors([]);
+                  setFormTouched(false);
+                  setOpen(false);
+                  props.isOpenCallback(false);
+                });
+              } else {
+                setOpen(false);
+                props.isOpenCallback(false);
+                setFormTouched(false);
+              }
+            }, 0);
+          }}
+          onOpen={() => {
+            setOpen(true);
+            props.isOpenCallback(true);
+            setFormTouched(false);
+            setReadyToMark(false);
+            setTimeout(() => setReadyToMark(true), 250);
+          }}
+          open={open}
+          trigger={
+            props.trigger || (
+              <Button ref={props.ref} fluid className="view-action-button">
+                View Action
+              </Button>
+            )
+          }
+        >
+          <Modal.Header>{props.action_title}</Modal.Header>
+          <Modal.Content>
+            <Modal.Description>
+              {props.preActionContent}
+              <br />
+              <div
+                className="content"
+                onChange={markFormAsTouched}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!readyToMark) return;
+                  const target = e.target;
+                  if (
+                    target.type === "radio" ||
+                    target.closest("label[for]") ||
+                    target.tagName === "LABEL" ||
+                    target.classList.contains("icon")
+                  ) {
+                    markFormAsTouched();
+                  }
+                }}
+                onInput={markFormAsTouched}
+              >
+                <CoachFeedBack
+                  team={props.projectId}
+                  action_id={props.action_id}
+                />
+                {errors.length > 0 && (
+                  <div className="submission-errors">
+                    <br />
+                    <Message error>
+                      <MessageHeader>
+                        <Icon name="warning circle" /> Errors:
+                      </MessageHeader>
+                      <MessageList>
+                        {errors.map((err) => (
+                          <li key={err}>{err}</li>
+                        ))}
+                      </MessageList>
+                    </Message>
+                  </div>
+                )}
+              </div>
+            </Modal.Description>
+            <Modal
+              closeOnDimmerClick={true}
+              closeIcon={true}
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              open={!!submissionModalOpen}
+              {...generateModalFields()}
+              onClose={() => closeSubmissionModal()}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              className="offset-outline"
+              color="grey"
+              onClick={onActionCancel}
+            >
+              Cancel
             </Button>
-          )
-        }
-      >
-        <Modal.Header>{props.action_title}</Modal.Header>
-        <Modal.Content>
-          <Modal.Description>
-            {props.preActionContent}
-            <br />
-            <div className="content">
-              <CoachFeedBack
-                team={props.projectId}
-                action_id={props.action_id}
-              />
+            {renderSubmitButton()}
+          </Modal.Actions>
+        </Modal>
+        {unsavedChangesModal}
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Modal
+          closeOnDimmerClick={true}
+          closeOnEscape={false}
+          closeIcon={true}
+          className={"sticky"}
+          onClose={() => {
+            setTimeout(() => {
+              if (formTouched && !props.viewOnly) {
+                openUnsavedModal(() => {
+                  setErrors([]);
+                  setFormTouched(false);
+                  setOpen(false);
+                  props.isOpenCallback(false);
+                });
+              } else {
+                setOpen(false);
+                props.isOpenCallback(false);
+                setFormTouched(false);
+              }
+            }, 0);
+          }}
+          onOpen={() => {
+            setOpen(true);
+            props.isOpenCallback(true);
+            fetchStudentNames();
+            setFormTouched(false);
+            setReadyToMark(false);
+            setTimeout(() => setReadyToMark(true), 250);
+          }}
+          open={open}
+          trigger={
+            props.trigger || (
+              <Button ref={props.ref} fluid className="view-action-button">
+                View Action
+              </Button>
+            )
+          }
+        >
+          <Modal.Header>{props.action_title}</Modal.Header>
+          <Modal.Content>
+            <Modal.Description>
+              {props.preActionContent}
+              <br />
+              <div
+                className="content"
+                onChange={markFormAsTouched}
+                onClick={(e) => {
+                  if (!readyToMark) return;
+                  const target = e.target;
+                  if (
+                    target.type === "radio" ||
+                    target.closest("label[for]") ||
+                    target.tagName === "LABEL" ||
+                    target.classList.contains("icon")
+                  ) {
+                    markFormAsTouched();
+                  }
+                }}
+                onInput={markFormAsTouched}
+              >
+                {isPeerEval ? (
+                  <ParsedInnerHTML
+                    html={props.page_html}
+                    components={QuestionComponentsMap}
+                    studentsList={studentOptions}
+                    errorFields={errorFields}
+                    submitter={
+                      user.isMock
+                        ? `${user.mockUser.fname} ${user.mockUser.lname}`
+                        : `${user.fname} ${user.lname}`
+                    }
+                  />
+                ) : (
+                  <InnerHTML html={props.page_html} />
+                )}
+              </div>
+              <br />
+              {fileUpload(props.file_types, props.file_size)}
               {errors.length > 0 && (
                 <div className="submission-errors">
                   <br />
@@ -563,127 +745,34 @@ export default function ActionModal(props) {
                   </Message>
                 </div>
               )}
-            </div>
-          </Modal.Description>
-          <Modal
-            closeOnDimmerClick={false}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-            open={!!submissionModalOpen}
-            {...generateModalFields()}
-            onClose={() => closeSubmissionModal()}
-          />
-        </Modal.Content>
-        <Modal.Actions>
-          <Button
-            color="grey"
-            onClick={() => {
-              onActionCancel();
-              setOpen(false);
-              props.isOpenCallback(false);
-            }}
-          >
-            Cancel
-          </Button>
-          {renderSubmitButton()}
-        </Modal.Actions>
-      </Modal>
-    );
-  } else {
-    return (
-      <Modal
-        closeOnDimmerClick={false}
-        closeOnEscape={false}
-        className={"sticky"}
-        onClose={() => {
-          setOpen(false);
-          props.isOpenCallback(false);
-        }}
-        onOpen={() => {
-          setOpen(true);
-          props.isOpenCallback(true);
-          fetchStudentNames();
-        }}
-        open={open}
-        trigger={
-          props.trigger || (
-            <Button ref={props.ref} fluid className="view-action-button">
-              View Action
+            </Modal.Description>
+            <Modal
+              closeOnDimmerClick={true}
+              closeIcon={true}
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+              open={!!submissionModalOpen}
+              {...generateModalFields()}
+              onClose={() => closeSubmissionModal()}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              className="offset-outline"
+              color="grey"
+              onClick={onActionCancel}
+            >
+              Cancel
             </Button>
-          )
-        }
-      >
-        <Modal.Header>{props.action_title}</Modal.Header>
-        <Modal.Content>
-          <Modal.Description>
-            {props.preActionContent}
-            <br />
-            <div className="content">
-              {isPeerEval ? (
-                <ParsedInnerHTML
-                  html={props.page_html}
-                  components={QuestionComponentsMap}
-                  studentsList={studentOptions}
-                  errorFields={errorFields}
-                  submitter={
-                    user.isMock
-                      ? `${user.mockUser.fname} ${user.mockUser.lname}`
-                      : `${user.fname} ${user.lname}`
-                  }
-                />
-              ) : (
-                <InnerHTML html={props.page_html} />
-              )}
-            </div>
-            <br />
-            {fileUpload(props.file_types, props.file_size)}
-            {errors.length > 0 && (
-              <div className="submission-errors">
-                <br />
-                <Message error>
-                  <MessageHeader>
-                    <Icon name="warning circle" /> Errors:
-                  </MessageHeader>
-                  <MessageList>
-                    {errors.map((err) => (
-                      <li key={err}>{err}</li>
-                    ))}
-                  </MessageList>
-                </Message>
-              </div>
-            )}
-          </Modal.Description>
-          <Modal
-            closeOnDimmerClick={false}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-            open={!!submissionModalOpen}
-            {...generateModalFields()}
-            onClose={() => closeSubmissionModal()}
-          />
-        </Modal.Content>
-        <Modal.Actions>
-          <Button
-            color="grey"
-            onClick={() => {
-              onActionCancel();
-              setOpen(false);
-              props.isOpenCallback(false);
-            }}
-          >
-            Cancel
-          </Button>
-          {renderSubmitButton()}
-        </Modal.Actions>
-      </Modal>
+            {renderSubmitButton()}
+          </Modal.Actions>
+        </Modal>
+        {unsavedChangesModal}
+      </>
     );
   }
 }

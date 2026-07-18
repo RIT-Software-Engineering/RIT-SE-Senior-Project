@@ -39,7 +39,7 @@ export default function SemesterEditor() {
         panels={[
           {
             key: "semesterEditor",
-            title: "Semester Editor",
+            title: "Semester",
             content: { content: semestersToEdit },
           },
         ]}

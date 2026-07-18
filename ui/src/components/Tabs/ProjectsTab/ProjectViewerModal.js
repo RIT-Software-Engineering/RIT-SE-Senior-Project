@@ -1,71 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import { config, USERTYPES } from "../../util/functions/constants";
-import { SecureFetch } from "../../util/functions/secureFetch";
-import { formattedAttachments } from "./ProjectEditorModal";
-import { decode } from "he";
-import { convert } from "html-to-text";
-import ProfileCircle from "../../util/components/ProfileCircle";
+import React, { useState } from "react";
+import ModalWrapper from "../../shared/ModalWrapper";
+import ProjectViewerModalContent from "./ProjectViewerModalContent";
+import { Button } from "semantic-ui-react";
 
 export default function ProjectViewerModal(props) {
-  const [projectMembers, setProjectMembers] = useState({
-    students: [],
-    coaches: [],
-  });
-  const [URL, setURL] = useState("No URL found");
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    SecureFetch(
-      `${config.url.API_GET_PROJECT_MEMBERS}?project_id=${props.project?.project_id}`,
-    )
-      .then((response) => response.json())
-      .then((members) => {
-        let projectGroupedValues = { students: [], coaches: [] };
-        members.forEach((member, idx) => {
-          switch (member.type) {
-            case USERTYPES.STUDENT:
-              member.view_only === "TRUE"
-                ? projectGroupedValues.students.push(
-                    `${member.fname} ${member.lname} ${"(View Only)"}`,
-                  )
-                : projectGroupedValues.students.push(
-                    `${member.fname} ${member.lname}`,
-                  );
-              break;
-            case USERTYPES.COACH:
-              member.view_only === "TRUE"
-                ? projectGroupedValues.coaches.push(
-                    `${member.fname} ${member.lname} ${"(View Only)"}`,
-                  )
-                : projectGroupedValues.coaches.push(
-                    `${member.fname} ${member.lname}`,
-                  );
-              break;
-            default:
-              console.error(
-                `Project editor error - invalid project member type "${member.type}" for member: `,
-                member,
-              );
-              break;
-          }
-        });
-        setProjectMembers(projectGroupedValues);
-      });
-  }, [props.project?.project_id]);
-
-  useEffect(() => {
-    SecureFetch(
-      `${config.url.API_GET_ARCHIVE_FROM_PROJECT}?project_id=${props.project?.project_id}`,
-    )
-      .then((response) => response.json())
-      .then((archives) => {
-        if (archives.length > 0) {
-          if (archives[0].url_slug !== null && archives[0].url_slug !== "") {
-            setURL(archives[0].url_slug);
-          }
-        }
-      });
-  }, [props.project?.project_id]);
+  const handleClose = () => {
+    setOpen(false);
+    if (props.onClose) props.onClose();
+  };
 
   const generateModalContent = () => {
     return (
@@ -80,15 +24,36 @@ export default function ProjectViewerModal(props) {
                 `}
         </style>
         <h3>Team members</h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/* <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <b>Students:</b>{" "}
           {projectMembers.students?.map((s) => (
             <ProfileCircle key={s} name={s} showFullName size="tiny" />
           ))}{" "}
           <br />
+        </div> */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+          }}
+        >
+          <b style={{ marginRight: "10px" }}>Students:</b>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+            }}
+          >
+            {projectMembers.students?.map((s) => (
+              <ProfileCircle key={s} name={s} showFullName size="tiny" />
+            ))}
+          </div>
         </div>
         <br />
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {/* <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <b>Coaches:</b>{" "}
           {projectMembers.coaches?.map((c) => (
             <ProfileCircle
@@ -100,6 +65,33 @@ export default function ProjectViewerModal(props) {
             />
           ))}{" "}
           <br />
+        </div> */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+          }}
+        >
+          <b style={{ marginRight: "10px" }}>Coaches:</b>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "8px",
+            }}
+          >
+            {projectMembers.coaches?.map((c) => (
+              <ProfileCircle
+                key={c}
+                name={c}
+                isStudent={false}
+                showFullName
+                size="tiny"
+              />
+            ))}
+          </div>
         </div>
         <h3>Website</h3>
         <b>URL:</b> {URL} <br />
@@ -110,11 +102,12 @@ export default function ProjectViewerModal(props) {
         <b>Email:</b> {decode(props.project.contact_email || "")} <br />
         <b>Phone:</b> {decode(props.project.contact_phone || "")} <br />
         <h3>Project Info</h3>
-        <pre
+        <div
           style={{
-            overflowX: "auto",
             whiteSpace: "pre-wrap",
             wordWrap: "break-word",
+            width: "100%",
+            maxWidth: "100%",
           }}
         >
           <b>Original Submission Date:</b>
@@ -170,7 +163,7 @@ export default function ProjectViewerModal(props) {
           <b>Status: </b>
           {decode(props.project.status || "")}
           <br />
-        </pre>
+        </div>
         <h3>Attachments</h3>
         {props.project.attachments ? (
           formattedAttachments(props.project)?.map((file) => {
@@ -190,14 +183,30 @@ export default function ProjectViewerModal(props) {
       </>
     );
   };
-  return (
-    <Modal
-      className={"sticky"}
-      closeOnDimmerClick={false}
-      trigger={<Button icon="eye" />}
-      header={`Viewing "${props.project.display_name || props.project.title}"`}
-      content={{ content: generateModalContent() }}
-      actions={[{ key: "Close", content: "Close" }]}
+
+  // Determine the trigger element.
+  // We use the custom trigger if provided, otherwise, default to the eye Button.
+  // The onClick handler is applied directly to ensure it works with Semantic UI layout.
+  const triggerElement = props.trigger || (
+    <Button
+      icon="eye"
+      onClick={handleOpen} // Handler applied directly to the Button
     />
+  );
+
+  return (
+    <ModalWrapper
+      open={open}
+      onClose={handleClose}
+      closeOnDimmerClick={false}
+      trigger={triggerElement} // Pass the button directly
+      title={`Viewing "${props.project?.display_name || props.project?.title || "Project"}"`}
+      actions={[<Button key="close" content="Close" onClick={handleClose} />]}
+    >
+      <ProjectViewerModalContent
+        project={props.project}
+        semesterMap={props.semesterMap}
+      />
+    </ModalWrapper>
   );
 }

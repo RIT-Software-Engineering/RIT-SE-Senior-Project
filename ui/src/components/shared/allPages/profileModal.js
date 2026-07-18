@@ -86,7 +86,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
     }
   }, [open, user]);
 
-  // Focus textarea when entering edit mode
+  // Focus text area when entering edit mode
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
@@ -211,21 +211,18 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       closeOnDimmerClick={false}
+      closeIcon={true}
       size="small"
       centered={false}
-      style={{
-        position: "sticky",
-        top: "20%",
-        left: "0%",
-      }}
+      className="semantic-centered-modal"
     >
       <Modal.Header>Your Profile</Modal.Header>
       <Modal.Content>
-        <div className="ui container stackable grid">
-          <div className="two column row">
-            <div className="column">
+        <div className="ui container">
+          <div style={{ display: "flex", flexWrap: "nowrap" }}>
+            <div className="column" style={{ flex: "1", minWidth: "250px" }}>
               <div
                 style={{
                   display: "flex",
@@ -314,7 +311,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               )}
             </div>
 
-            <div className="column" style={{ minWidth: "300px" }}>
+            <div className="column" style={{ flex: "1", minWidth: "300px" }}>
               {/* Preferences Section */}
               <div>
                 <h3 style={{ marginBottom: "1em" }}>Preferences</h3>

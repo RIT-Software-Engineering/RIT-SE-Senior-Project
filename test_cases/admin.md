@@ -120,5 +120,13 @@
 5. Upon successful updating of the HTMLs a little “Success!” should appear just above the “Update HTML” button
    ![Content Editor 5](images/contenteditor5.png)
 
-6. To view these changes simply sign out of admin by using the developer sign in menu in the top right or press on the RIT logo in the top left. The UI routing should remain the same and the changes made to the HTML should be visible immediately.
+6. To view these changes simply sign out of admin by using the developer sign in menu in the top right or press on the RIT logo in the top left. The UI routing should remain the same and the changes made to the HTML should be visible immediately after refreshing.
    ![Content Editor 6](images/contenteditor6.png)
+
+7. In addition to the overview and project sponsor sections, Content Editor includes two other editable sections: "loggedOutFooter" and "loggedInFooter".
+   ![Content Editor 7](images/contenteditor7.png)
+
+8. Just like with the Overview and Sponsor sections, you can edit the "loggedOutFooter"
+   and "loggedInFooter" HTML directly. After making your changes, click "Update HTML"
+   and check the footer on the corresponding page (signed in vs. signed out) to confirm
+   the updates appear.

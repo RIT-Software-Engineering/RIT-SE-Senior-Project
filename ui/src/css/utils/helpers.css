@@ -4,7 +4,7 @@
   width: 100%;
 }
 
-.hidden {
+.invisible {
   visibility: collapse;
 }
 
@@ -12,6 +12,20 @@
   color: #1e70bf;
   text-decoration: none;
   cursor: pointer;
+}
+
+.fake-div, button.fake-div {
+  text-align: start;
+  line-height: 1.4285em;
+  display: block;
+  unicode-bidi: isolate;
+  width: 100%;
+
+  background-color: rgba(0,0,0,0);
+
+  border-block-style: none;
+  border-inline-style: none;
+  animation: initial;
 }
 
 .spacer {
@@ -149,4 +163,9 @@ a,
 
 .icon {
   background-color: transparent;
+}
+
+.offset-outline, .button.offset-outline, .button.offset-outline:focus {
+  outline-color: var(--border-color);
+  outline-offset: 2px;
 }
