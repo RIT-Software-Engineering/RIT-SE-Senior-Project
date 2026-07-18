@@ -133,7 +133,6 @@ function ExemplaryProject({ project }) {
         </div>
       </button>
       {/* Modal with expanded information */}
-      // Around line 134, change the Modal to:
       <Modal
         closeOnDimmerClick={false}
         closeIcon={true}
