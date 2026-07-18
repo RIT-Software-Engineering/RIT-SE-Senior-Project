@@ -6,6 +6,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
 import { UserContext } from "../../util/functions/UserContext";
+import "./../../../css/components/tabs/time.css";
 
 const MODAL_STATUS = { SUCCESS: "success", FAIL: "fail", CLOSED: false };
 const { differenceInWeeks } = require("date-fns");
@@ -363,7 +364,7 @@ export default function TimeTableEditor(props) {
                 label={field.label}
                 name={field.name}
                 value={formData[field.name]}
-                style={{ minHeight: 200 }}
+                className="time-text"
                 onChange={handleChange}
                 disabled={field.disabled}
               />

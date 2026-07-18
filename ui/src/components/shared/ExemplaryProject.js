@@ -3,6 +3,8 @@ import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
+import "./../../css/components/shared/exemplary.css";
+
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
@@ -47,14 +49,7 @@ function ExemplaryProject({ project }) {
   let generateProfiles = (stringUsers, isStudent = true) => {
     if (!stringUsers) return [];
     return (
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5em",
-          width: "100%",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="exemplary-generate-profile">
         {listNames(stringUsers).map((user, idx) => (
           <ProfileCircle
             key={idx}
@@ -75,9 +70,8 @@ function ExemplaryProject({ project }) {
       <button
         className="ui segment stackable padded grid fake-div"
         onClick={() => toggleInitialModalOpen()}
-        style={{ cursor: "pointer" }}
       >
-        <div className="two column row" style={{ display: "flex" }}>
+        <div className="two column row exemplary-header-row">
           <div className="column">
             <h3 className="ui header">
               {project.display_name || project.title}
@@ -91,7 +85,7 @@ function ExemplaryProject({ project }) {
                     <Icon
                       name="trophy"
                       title={award}
-                      style={{ float: "right" }}
+                      className="exemplary-column"
                     />
                   );
                 })}
@@ -104,7 +98,7 @@ function ExemplaryProject({ project }) {
           <div className="column">
             <img
               src={`${basePosterURL}${project.poster_thumb}`}
-              style={{ border: "3px solid rgb(221, 221, 221)" }}
+              className="exemplary-column-style"
               alt="Project Poster"
             />
           </div>

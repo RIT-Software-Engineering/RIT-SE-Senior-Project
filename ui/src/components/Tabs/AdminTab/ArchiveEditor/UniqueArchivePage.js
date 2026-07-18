@@ -5,13 +5,12 @@ import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
+import "./../../../css/components/tabs/unique.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
-
-const CONTENT_HEIGHT = 250;
 
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
@@ -86,7 +85,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Outstanding"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-icon"
             />
           )}
           {project?.creative === 1 && (
@@ -94,7 +93,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Creative"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-icon"
             />
           )}
           {
@@ -113,8 +112,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.poster_thumb && (
               <img
                 src={`${basePosterURL}${project?.poster_thumb}`}
-                height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-img unique-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -149,7 +147,7 @@ function UniqueProjectPage({ projectData }) {
               </Modal.Actions>
             </Modal>
             {project?.video && (
-              <video controls height={CONTENT_HEIGHT}>
+              <video controls className="unique-media">
                 <source
                   src={`${baseVideoURL}${project?.video}`}
                   type="video/mp4"
@@ -159,8 +157,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.archive_image && (
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
-                height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-img unique-media"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />
@@ -217,7 +214,7 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui attached stackable padded grid">
             <div className="column">
               <div className="ui small header">Synopsis</div>
-              <p style={{ whiteSpace: "pre-line" }}>
+              <p className="unique-space">
                 {decodeSynopsis(project?.synopsis)}
               </p>
             </div>

@@ -18,6 +18,7 @@ import TimeLogPanel from "./TimeLogPanel";
 import IndividualTimeModal from "./IndividualTimeModal";
 import WeeklyHoursViewer from "./WeeklyHourViewer";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import "./../../../css/components/tabs/time.css";
 
 export default function ProjectTime(props) {
   const userContext = useContext(UserContext);
@@ -76,9 +77,7 @@ export default function ProjectTime(props) {
                         ?.filter((log) => log.project === props.proj.project_id)
                         .map((timeLog, idx) => {
                           let submittedBy = (
-                            <span
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
+                            <span className="time-table">
                               <ProfileCircle name={timeLog.name} showFullName />
                               ({timeLog.system_id})
                             </span>
@@ -86,12 +85,7 @@ export default function ProjectTime(props) {
                           if (timeLog.mock_id) {
                             //submittedBy = `${timeLog.mock_name} (${timeLog.mock_id}) as ${timeLog.name} (${timeLog.system_id})`;
                             submittedBy = (
-                              <span
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
+                              <span className="time-table">
                                 <ProfileCircle
                                   name={timeLog.mock_name}
                                   showFullName
@@ -112,28 +106,16 @@ export default function ProjectTime(props) {
                             idx >= currentPage * postsPerPage &&
                             idx <= currentPage * postsPerPage + postsPerPage - 1
                           ) {
+                            let rowClassName = "";
+                            if (showNewSubmissionHighlight) {
+                              rowClassName = "time-row-new";
+                            } else if (timeLog.active === 0) {
+                              rowClassName = "time-row-deleted";
+                            }
                             return (
-                              <TableRow
-                                style={{
-                                  background: showNewSubmissionHighlight
-                                    ? "var(--bg-inprogress-action)"
-                                    : timeLog.active === 0
-                                      ? "#FF999C"
-                                      : "none",
-                                  fontWeight: showNewSubmissionHighlight
-                                    ? "bold"
-                                    : "none",
-                                }}
-                                key={idx}
-                              >
+                              <TableRow className={rowClassName} key={idx}>
                                 <TableCell>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "0.5em",
-                                    }}
-                                  >
+                                  <div className="time-table-cell">
                                     {timeLog.mock_id ? (
                                       <>
                                         <ProfileCircle
@@ -142,9 +124,7 @@ export default function ProjectTime(props) {
                                           isStudent={false}
                                           showFullName
                                         />
-                                        <span style={{ marginLeft: "-0.5em" }}>
-                                          as
-                                        </span>
+                                        <span className="time-profile">as</span>
                                       </>
                                     ) : (
                                       ""
@@ -241,13 +221,7 @@ export default function ProjectTime(props) {
                           return (
                             <TableRow key={idx}>
                               <TableCell>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5em",
-                                  }}
-                                >
+                                <div className="time-table-cell">
                                   <ProfileCircle
                                     user={{
                                       fname: timeStat.name

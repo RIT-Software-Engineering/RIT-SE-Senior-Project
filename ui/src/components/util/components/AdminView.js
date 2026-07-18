@@ -13,6 +13,7 @@ import { config, USERTYPES } from "../functions/constants";
 import { SecureFetch } from "../functions/secureFetch";
 import { UserContext } from "../functions/UserContext";
 import _ from "lodash";
+import "./../../../css/components/utils/admin.css";
 
 export default function AdminView(props) {
   const [selectedUser, setSelectedUser] = useState();
@@ -120,7 +121,7 @@ export default function AdminView(props) {
   const renderSignOutButton = () => {
     return (
       <Button
-        style={{ float: "right" }}
+        className="admin-button"
         secondary
         content="Sign out of mock user"
         onClick={() => {
@@ -144,7 +145,7 @@ export default function AdminView(props) {
   const renderChangeView = () => {
     return (
       <>
-        <div style={{ float: "right" }} ref={ref}>
+        <div className="admin-button" ref={ref}>
           <Label pointing="right">To view this page as a different user</Label>
           <Dropdown
             onClick={handleOpen}
@@ -187,15 +188,7 @@ export default function AdminView(props) {
                         <div>
                           <div>{`${coach.fname} ${coach.lname} (${coach.system_id})`}</div>
                           {statusText && (
-                            <div
-                              style={{
-                                fontSize: "0.9em",
-                                color: "#999",
-                                marginTop: "2px",
-                              }}
-                            >
-                              {statusText}
-                            </div>
+                            <div className="admin-text">{statusText}</div>
                           )}
                         </div>
                       </DropdownItem>
@@ -219,15 +212,7 @@ export default function AdminView(props) {
                         <div>
                           <div>{`${student.fname} ${student.lname} (${student.system_id})`}</div>
                           {statusText && (
-                            <div
-                              style={{
-                                fontSize: "0.9em",
-                                color: "#999",
-                                marginTop: "2px",
-                              }}
-                            >
-                              {statusText}
-                            </div>
+                            <div className="admin-text">{statusText}</div>
                           )}
                         </div>
                       </DropdownItem>
@@ -297,7 +282,7 @@ export default function AdminView(props) {
       return (
         <>
           <div>
-            <div className="ui error message" style={{ float: "left" }}>
+            <div className="ui error message admin-status-message">
               Currently mocking: {user?.fname} {user?.lname} ({user?.user}) who
               is a "{user.role}"
             </div>
@@ -309,7 +294,7 @@ export default function AdminView(props) {
       return (
         <>
           <div>
-            <div className="ui positive message" style={{ float: "left" }}>
+            <div className="ui positive message admin-status-message">
               Currently signed in as: {user?.fname} {user?.lname} ({user?.user})
               who is a "{user.role}"
             </div>

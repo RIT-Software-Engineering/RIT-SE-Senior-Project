@@ -107,9 +107,9 @@ function Header() {
               className="ui button"
               onClick={() => setProfileModalOpen(true)}
             >
-              <span style={{ display: "inline-flex", alignItems: "center" }}>
+              <span className="header-span">
                 <ProfileCircle user={user} size="tiny" />
-                <span style={{ marginLeft: "8px", paddingTop: "2px" }}>
+                <span className="header-profile">
                   Profile
                 </span>
               </span>
@@ -118,7 +118,7 @@ function Header() {
         </div>
         <div id="hamburger-menu" className="ui right floated buttons">
           <Button
-            style={{ backgroundColor: "black", color: "white" }}
+            className="header-button"
             icon
             onClick={() => setVisible(true)}
           >
@@ -235,23 +235,12 @@ function Header() {
         />
       </div>
       <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "1em",
-          borderTop: "2px solid rgba(255,255,255, 0.2)",
-        }}
+        className="header-nav"
       >
         <img
-          src={darkMode ? uiConfig.app.logoDark : uiConfig.app.logoLight}
-          alt= {uiConfig.app.orgName}
-          style={{
-            height: "35px",
-            width: "auto",
-            marginRight: "15px",
-            flexShrink: 0,
-            cursor: "pointer",
-          }}
+          src={darkMode ? SELogoDarkMode : SELogoLightMode}
+          alt="Department of Software Engineering"
+          className="header-dark"
           href={"/"}
           onClick={() => {
             history.push("/");
@@ -264,7 +253,7 @@ function Header() {
           }}
         />
         <span
-          style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
+          className="header-cookies"
           href={"/"}
           onClick={() => {
             history.push("/");

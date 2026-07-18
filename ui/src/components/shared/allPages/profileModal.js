@@ -4,6 +4,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import "./../../../css/components/shared/profileModal.css";
 
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -233,11 +234,11 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                 <ProfileCircle
                   user={user}
                   size="huge"
-                  style={{ marginBottom: "1em" }}
+                  className="profile-marginbottom1"
                 />
               </div>
               {/* User Info */}
-              <div style={{ marginBottom: "2em" }}>
+              <div className="profile-marginbottom2">
                 <div>
                   <strong>Name:</strong> {user.fname} {user.lname}
                 </div>
@@ -254,7 +255,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
 
               {/* Additional Info (Students Only) */}
               {user.role === USERTYPES.STUDENT && (
-                <div style={{ marginBottom: "2em" }}>
+                <div className="profile-marginbottom2">
                   <strong>Additional Info:</strong>
                   {isEditing ? (
                     <>
@@ -271,14 +272,14 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                           setAdditionalInfo(newValue);
                         }}
                         rows={4}
-                        style={{ width: "100%" }}
+                        className="profile-text"
                         placeholder="Enter additional information..."
                       />
                       <Button
                         onClick={handleSaveAdditionalInfo}
                         primary
                         size="small"
-                        style={{ marginTop: "0.5em" }}
+                        className="profile-button"
                       >
                         Save
                       </Button>
@@ -288,20 +289,20 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                           setIsEditing(false);
                         }}
                         size="small"
-                        style={{ marginLeft: "0.5em", marginTop: "0.5em" }}
+                        className="profile-cancel"
                       >
                         Cancel
                       </Button>
                     </>
                   ) : (
                     <>
-                      <span style={{ marginLeft: "0.5em" }}>
+                      <span className="profile-edit">
                         {additionalInfo || "No additional info available"}
                       </span>
                       <Button
                         onClick={() => setIsEditing(true)}
                         size="small"
-                        style={{ marginLeft: "0.5em" }}
+                        className="profile-edit"
                       >
                         Edit
                       </Button>
@@ -314,17 +315,9 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
             <div className="column" style={{ flex: "1", minWidth: "300px" }}>
               {/* Preferences Section */}
               <div>
-                <h3 style={{ marginBottom: "1em" }}>Preferences</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "0.8em",
-                  }}
-                >
-                  <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                    Dark Mode
-                  </strong>
+                <h3 className="profile-marginbottom1">Preferences</h3>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Dark Mode</strong>
                   <Checkbox
                     toggle
                     checked={darkMode}
@@ -334,44 +327,26 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               </div>
 
               {/* Dashboard Defaults Section */}
-              <div style={{ flex: 1 }}>
-                <h3 style={{ marginBottom: "1em" }}>Dashboard Defaults</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "0.8em",
-                  }}
-                >
-                  <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                    Milestones View
-                  </strong>
+              <div className="profile-dash">
+                <h3 className="profile-marginbottom1">Dashboard Defaults</h3>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Milestones View</strong>
                   <Checkbox
                     toggle
                     checked={milestonePreference}
                     onChange={toggleMilestonePreference}
                   />
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "0.8em",
-                  }}
-                >
-                  <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                    Gantt View
-                  </strong>
+                <div className="profile-preference">
+                  <strong className="profile-dark">Gantt View</strong>
                   <Checkbox
                     toggle
                     checked={ganttPreference}
                     onChange={toggleGanttPreference}
                   />
                 </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                    Calendar View
-                  </strong>
+                <div className="profile-calendar">
+                  <strong className="profile-dark">Calendar View</strong>
                   <Checkbox
                     toggle
                     checked={calendarPreference}

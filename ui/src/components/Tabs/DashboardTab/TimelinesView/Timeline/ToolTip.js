@@ -11,6 +11,7 @@ import SubmissionViewerModal from "./SubmissionViewerModal";
 import DOMpurify from "dompurify";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 import { formatDate } from "../../../../util/functions/utils";
+import "../../../../../css/components/tabs/tool.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -49,13 +50,7 @@ export default function ToolTip(props) {
     return (
       <>
         {isLate(submission.due_date, submission.submission_datetime) && (
-          <span
-            style={{
-              color: "red",
-              marginLeft: "5px",
-              fontWeight: "bold",
-            }}
-          >
+          <span className="tool-late-submit">
             {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
           </span>
         )}
@@ -136,13 +131,7 @@ export default function ToolTip(props) {
             )}
             {submissions?.map((submission) => {
               return (
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5em",
-                  }}
-                >
+                <span className="tool-submission">
                   <SubmissionViewerModal
                     key={submission.action_log_id}
                     action={submission}
@@ -152,54 +141,29 @@ export default function ToolTip(props) {
                     projectName={props.projectName}
                     isOpenCallback={isOpenCallback}
                     trigger={
-                      <div
-                        className="fake-a"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginBottom: "0.5rem",
-                          gap: "0.5rem",
-                        }}
-                      >
+                      <div className="fake-a tool-trigger">
                         {longSubmissionTitle ? (
                           <>
                             {submission.mock_id && (
-                              <span
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginRight: "0.5em",
-                                }}
-                              >
+                              <span className="tool-submission">
                                 <ProfileCircle
                                   name={submission.mock_name}
                                   isStudent={false}
                                   size="tiny"
                                 />
-                                <span
-                                  style={{
-                                    marginLeft: "0.5em",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
+                                <span className="tool-profile">
                                   {submission.mock_name} ({submission.mock_id})
                                   as
                                 </span>
                               </span>
                             )}
-                            <span
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5em",
-                              }}
-                            >
+                            <span className="tool-submission">
                               <ProfileCircle
                                 name={submission.name}
                                 size="tiny"
                                 isStudent={submission.user_type === "student"}
                               />
-                              <span style={{ whiteSpace: "nowrap" }}>
+                              <span className="tool-whitespace">
                                 {submission.name} ({submission.system_id}) on{" "}
                                 {formatDateTime(submission.submission_datetime)}
                                 {renderIsLate(submission)}
@@ -209,38 +173,25 @@ export default function ToolTip(props) {
                         ) : (
                           <>
                             <i
-                              style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "0.5rem",
-                                marginLeft: submission.mock_id ? "1.5rem" : "0",
-                              }}
+                              className={`tool-summary-line${
+                                submission.mock_id
+                                  ? " tool-summary-line-indent"
+                                  : ""
+                              }`}
                             >
                               {submission.mock_id && (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
-                                >
+                                <div className="tool-submit">
                                   <ProfileCircle
                                     name={submission.mock_name}
                                     showFullName
                                     isStudent={false}
                                     size="tiny"
-                                    style={{ marginLeft: "-1.5rem" }}
+                                    className="tool-as"
                                   />
                                   as
                                 </div>
                               )}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
+                              <div className="tool-submit">
                                 <ProfileCircle
                                   name={submission.name}
                                   showFullName
@@ -250,13 +201,9 @@ export default function ToolTip(props) {
                                 on
                               </div>
                               <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginLeft: submission.mock_id
-                                    ? "0.3rem"
-                                    : "1.6rem",
-                                }}
+                                className={`tool-date${
+                                  submission.mock_id ? " tool-date-indent" : ""
+                                }`}
                               >
                                 {formatDateTime(submission.submission_datetime)}
                                 {renderIsLate(submission)}
@@ -319,11 +266,7 @@ export default function ToolTip(props) {
       closeOnEscape={true}
       wide={hasMockedSubmission}
       inverted={document.body.classList.contains("dark-mode")}
-      style={{
-        zIndex: 100,
-        boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-        minWidth: "280px",
-      }}
+      className="tool-pop"
       offset={[offsetX, 0]}
       trigger={props.trigger}
       on="click"

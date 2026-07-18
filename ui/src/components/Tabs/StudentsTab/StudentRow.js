@@ -16,6 +16,7 @@ import { formatDateTime } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import "./../../../css/components/tabs/student.css";
 
 dayjs.extend(utc);
 
@@ -242,13 +243,7 @@ export default function StudentRow(props) {
     student_cells.push(
       <TableCell key={"student-id-" + props.student.system_id}>
         {props.student.system_id}
-        {statusText && (
-          <div
-            style={{ fontSize: "0.9em", color: "#999", fontStyle: "italic" }}
-          >
-            {statusText}
-          </div>
-        )}
+        {statusText && <div className="student-status">{statusText}</div>}
       </TableCell>,
     );
     student_cells.push(
@@ -327,27 +322,16 @@ export default function StudentRow(props) {
           closeIcon={true}
           onClose={() => setOpenModal(false)}
           size="small"
-          centered={false} // Disable default centering
-          style={{
-            position: "sticky",
-            top: "20%",
-            left: "0%",
-          }}
+          className="student-modal"
         >
           <Modal.Header>Student Details</Modal.Header>
           <Modal.Content>
-            <p
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "1em",
-              }}
-            >
+            <p className="student-detail">
               <strong>Name:</strong>
               <ProfileCircle
                 name={`${props.student.fname} ${props.student.lname}`}
                 size="tiny"
-                style={{ marginLeft: "0.5em", marginRight: "0.5em" }}
+                className="student-name"
               />
               <span>
                 {props.student.fname} {props.student.lname}
@@ -375,33 +359,33 @@ export default function StudentRow(props) {
                         value={additionalInfo}
                         onChange={(e) => setAdditionalInfo(e.target.value)}
                         rows={4}
-                        style={{ width: "100%" }}
+                        className="student-text"
                       />
                       <Button
                         onClick={handleSaveAdditionalInfo}
                         primary
                         size="small"
-                        style={{ marginTop: "0.5em" }}
+                        className="student-button-save"
                       >
                         Save
                       </Button>
                       <Button
                         onClick={() => setIsEditing(false)}
                         size="small"
-                        style={{ marginTop: "0.5em", marginLeft: "0.5em" }}
+                        className="student-button-cancel"
                       >
                         Cancel
                       </Button>
                     </>
                   ) : (
                     <>
-                      <span style={{ marginLeft: "0.5em" }}>
+                      <span className="student-addtion">
                         {additionalInfo || "No additional info available"}
                       </span>
                       <Button
                         onClick={() => setIsEditing(true)}
                         size="small"
-                        style={{ marginLeft: "0.5em" }}
+                        className="student-button-edit"
                       >
                         Edit
                       </Button>
@@ -409,7 +393,7 @@ export default function StudentRow(props) {
                   )}
                 </>
               ) : (
-                <span style={{ marginLeft: "0.5em" }}>
+                <span className="student-button-edit">
                   {additionalInfo || "No additional info available"}
                 </span>
               )}
@@ -444,11 +428,7 @@ export default function StudentRow(props) {
                             active={activeIndex === index}
                             index={index}
                             onClick={() => handleAccordionClick(index)}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: "10px",
-                            }}
+                            className="student-title"
                           >
                             <Icon name="dropdown" />
                             <ProfileCircle
@@ -459,10 +439,7 @@ export default function StudentRow(props) {
                               }}
                               isStudent={review.type === "student"}
                               size="tiny"
-                              style={{
-                                marginLeft: "10px",
-                                marginRight: "10px",
-                              }}
+                              className="student-profile"
                             />
                             Review by {review.fname} {review.lname} on{" "}
                             {formatDateTime(review.submission_datetime)}
@@ -481,14 +458,14 @@ export default function StudentRow(props) {
 
                                       if (typeof feedback === "string") {
                                         return (
-                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                          <p className="student-feedback">
                                             {feedback}
                                           </p>
                                         );
                                       } else if (Array.isArray(feedback)) {
                                         // If it's an array, join it back to a string
                                         return (
-                                          <p style={{ whiteSpace: "pre-wrap" }}>
+                                          <p className="student-feedback">
                                             {feedback.join("")}
                                           </p>
                                         );
@@ -512,9 +489,7 @@ export default function StudentRow(props) {
                                             .map((key) => feedback[key])
                                             .join("");
                                           return (
-                                            <p
-                                              style={{ whiteSpace: "pre-wrap" }}
-                                            >
+                                            <p className="student-feedback">
                                               {reconstructedString}
                                             </p>
                                           );
@@ -568,19 +543,16 @@ export default function StudentRow(props) {
                     <p>No peer reviews available.</p>
                   )}
                 </Accordion>
-                <div style={{ marginTop: "1em" }}>
+                <div className="student-accordian">
                   <textarea
                     readOnly
                     value={aiSummary}
                     rows={aiSummary === "No Summary Generated" ? 2 : 6}
-                    style={{
-                      width: "100%",
-                      height:
-                        aiSummary === "No Summary Generated" ? "50px" : "auto",
-                      minHeight:
-                        aiSummary === "No Summary Generated" ? "50px" : "200px",
-                      resize: "vertical",
-                    }}
+                    className={`student-ai-summary-textarea${
+                      aiSummary === "No Summary Generated"
+                        ? " student-ai-summary-textarea-empty"
+                        : ""
+                    }`}
                   />
                 </div>
                 <Button
@@ -604,26 +576,16 @@ export default function StudentRow(props) {
                     {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
                   </Button>
                   {isEditingPrompt && (
-                    <div style={{ marginTop: "10px" }}>
+                    <div className="student-editing">
                       <textarea
                         value={tempPrompt}
                         onChange={(e) => setTempPrompt(e.target.value)}
                         rows={8}
-                        style={{
-                          width: "100%",
-                          minWidth: "400px",
-                          minHeight: "150px",
-                          resize: "vertical",
-                          marginBottom: "10px",
-                          border:
-                            tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                              ? "2px solid orange"
-                              : "1px solid grey",
-                          outline:
-                            tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                              ? "2px solid orange"
-                              : "none",
-                        }}
+                        className={`student-prompt-textarea${
+                          tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
+                            ? " student-prompt-textarea-modified"
+                            : ""
+                        }`}
                       />
                       <div>
                         <Button

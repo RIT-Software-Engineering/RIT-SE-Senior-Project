@@ -1,0 +1,11 @@
+.result-card {
+  background-color: var(--bg-primary);
+}
+
+.result-icon {
+  margin-left: 5px;
+}
+
+.result-text {
+  color: var(--text-primary);
+}

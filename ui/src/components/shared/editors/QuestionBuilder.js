@@ -24,6 +24,7 @@ import {
   QuestionTable,
 } from "../../util/components/PeerEvalComponents";
 import HTMLEditor from "../../util/components/HTMLEditor";
+import "./../../../css/components/shared/question.css";
 
 const mockStudents = ["Student 1", "Student 2", "Student 3"];
 
@@ -465,7 +466,7 @@ const QuestionBuilder = (props) => {
                           });
                           updateQuestion(index, "levels", updatedLevels);
                         }}
-                        style={{ width: "auto" }}
+                        className="question-list"
                       />
                     </List.Item>
                   );
@@ -508,33 +509,19 @@ const QuestionBuilder = (props) => {
             {question.questions.map((question_title, i) => {
               const questionUsed = questionIsUsed(question_title, index, i);
 
-              const styles = {
-                resize: "none",
-                width: "100%",
-                marginBottom: "5px",
-                maxHeight: "40px",
-                overflow: "hidden",
-              };
-
-              switch (questionUsed) {
-                case QuestionUsedStates.USED:
-                  styles.backgroundColor = "rgba(219, 40, 40, .1)";
-                  styles.color = "rgba(119, 40, 40, 1)";
-                  break;
-                case QuestionUsedStates.USED_SAME_TYPE:
-                  styles.backgroundColor = "rgba(40, 180, 219, .1)";
-                  styles.color = "rgba(40, 99, 119, 1)";
-                  break;
-                default:
-                  break;
-              }
-
               return (
                 <Form.Field
                   control={TextArea}
                   key={i + " " + index}
                   value={question_title}
-                  style={styles}
+                  className={
+                    "question-textarea" +
+                    (questionUsed === QuestionUsedStates.USED
+                      ? " question-textarea-used"
+                      : questionUsed === QuestionUsedStates.USED_SAME_TYPE
+                        ? " question-textarea-used-same-type"
+                        : "")
+                  }
                   onChange={(e) => {
                     const updatedQuestions = question.questions.map((q, j) => {
                       if (i === j) return e.target.value;
@@ -651,11 +638,7 @@ const QuestionBuilder = (props) => {
         closeOnEscape={false}
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        style={{
-          position: "sticky",
-          top: "5%",
-          left: "0%",
-        }}
+        className="question-form"
         size="large"
       >
         <Modal.Header>Question Form Builder</Modal.Header>
@@ -776,13 +759,7 @@ const QuestionBuilder = (props) => {
               </Grid.Column>
 
               {/*Question Form*/}
-              <Grid.Column
-                width={12}
-                style={{
-                  overflowY: "auto",
-                  maxHeight: "600px",
-                }}
-              >
+              <Grid.Column width={12} className="question-column">
                 {questions.map(renderQuestionForm)}
 
                 <div ref={addButtonRef}>
@@ -817,11 +794,7 @@ const QuestionBuilder = (props) => {
         closeOnDimmerClick={false}
         open={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
-        style={{
-          position: "sticky",
-          top: "35%",
-          left: "0%",
-        }}
+        className="question-modal"
       >
         <Modal.Header>Form Preview</Modal.Header>
         <Modal.Content scrolling>{renderPreviewForm()}</Modal.Content>
@@ -849,7 +822,7 @@ const QuestionBuilder = (props) => {
             </Grid.Column>
           </Grid.Row>
 
-          <Grid.Row style={{ marginTop: "-35px" }}>
+          <Grid.Row className="question-row">
             <Grid.Column>
               <HTMLEditor
                 field={field}

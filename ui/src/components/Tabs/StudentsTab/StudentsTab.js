@@ -8,6 +8,7 @@ import { isSemesterActive } from "../../util/functions/utils";
 import EvalReview from "../../util/components/EvalReview";
 import BarGraph from "../../util/components/PeerEvalVisualSummary";
 import _ from "lodash";
+import "./../../../css/components/tabs/student.css";
 
 export default function StudentsTab(props) {
   const [students, setStudentsData] = useState([]);
@@ -335,10 +336,7 @@ export default function StudentsTab(props) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <Icon
-                      name="mail"
-                      style={{ color: "var(--text-primary)" }}
-                    />
+                    <Icon name="mail" className="student-icon-color" />
                   </a>
                 </div>
               </div>,
@@ -389,10 +387,7 @@ export default function StudentsTab(props) {
             />
             <div className="accordion-buttons-container">
               <Dropdown
-                style={{
-                  paddingTop: "10px",
-                  paddingBottom: "10px",
-                }}
+                className="student-dropdown"
                 text="Sort By"
                 direction="left"
                 floating
@@ -413,7 +408,7 @@ export default function StudentsTab(props) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Icon name="mail" style={{ color: "var(--text-primary)" }} />
+                <Icon name="mail" className="student-icon-color" />
               </a>
             </div>
           </div>,
@@ -451,14 +446,7 @@ export default function StudentsTab(props) {
                   content: {
                     content: (
                       <>
-                        <div
-                          style={{
-                            height: "350px",
-                            maxWidth: "100%",
-                            overflowX: "auto",
-                            overflowY: "hidden",
-                          }}
-                        >
+                        <div className="student-content">
                           <BarGraph
                             data={submission}
                             width={window.innerWidth * 0.9}

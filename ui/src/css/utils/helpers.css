@@ -73,6 +73,10 @@
   color: red;
 }
 
+.dashboard-menu-icon {
+  margin-right: 5px;
+}
+
 /* Dark Mode Styles */
 
 .dark-mode a {
@@ -118,6 +122,7 @@ a,
     opacity: 0.5;
     transform: translateY(5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0px);
@@ -139,6 +144,7 @@ a,
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -165,7 +171,94 @@ a,
   background-color: transparent;
 }
 
-.offset-outline, .button.offset-outline, .button.offset-outline:focus {
+.offset-outline,
+.button.offset-outline,
+.button.offset-outline:focus {
   outline-color: var(--border-color);
   outline-offset: 2px;
+}
+
+.actionmodal-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dev-drop {
+  margin-bottom: 24px;
+}
+
+.dev-status {
+  font-size: 0.9em;
+  color: #999;
+  margin-top: 2px;
+}
+
+.dev-column {
+  border: 2px solid #e53935;
+  border-radius: 8px;
+  background: rgba(220, 50, 50, 0.15);
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+}
+
+.dev-danger {
+  color: #e53935;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.dev-signin-container {
+  max-width: 600px;
+}
+
+.dev-signin-box {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  justify-content: center;
+  min-height: 250px;
+}
+
+body.dark-mode .dev-signin-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.dev-signin-heading {
+  margin-bottom: 24px;
+}
+
+body.dark-mode .dev-signin-heading {
+  color: var(--text-primary);
+}
+
+.dev-signin-dropdown {
+  font-size: 16px;
+}
+
+.dev-warning-text {
+  margin-bottom: 12px;
+}
+
+body.dark-mode .dev-warning-text {
+  color: var(--text-primary);
+}
+
+.dev-reset-button {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.dev-loading-bar {
+  margin: -10px -20px;
+  padding: 10px 20px;
 }

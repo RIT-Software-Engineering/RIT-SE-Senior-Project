@@ -71,11 +71,26 @@ input[id^="hidden_"]:invalid {
   pointer-events: none !important;
 }
 
+.custom-validation-tooltip-arrow {
+  position: absolute;
+  top: -5px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #323232;
+}
+
 /* Dark mode custom tooltip styling */
 .dark-mode .custom-validation-tooltip {
   background: #1a1a1a !important;
   color: #ff6b6b !important;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark-mode .custom-validation-tooltip-arrow {
+  border-bottom-color: #1a1a1a;
 }
 
 .proposal-submit-buttons {
@@ -194,4 +209,13 @@ td.attachments {
 .dark-mode .edited-input.dropdown {
   background-color: var(--bg-footer-header) !important;
   color: var(--text-primary) !important;
+}
+
+.proposal-height {
+  height: 150px;
+}
+
+.proposal-font {
+  font-weight: bold;
+  font-size: 13px;
 }

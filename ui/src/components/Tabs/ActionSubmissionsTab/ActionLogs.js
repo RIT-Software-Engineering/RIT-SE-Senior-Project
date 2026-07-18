@@ -21,6 +21,7 @@ import { config, USERTYPES } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import _ from "lodash";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import "./../../../css/components/tabs/action.css";
 
 const LOGS_PER_PAGE = 10;
 const TIME_LOGS_PER_PAGE = 5;
@@ -395,12 +396,11 @@ export default function ActionLogs(props) {
               return (
                 <TableRow
                   // Using same color schema as in-progress projects
-                  style={{
-                    background: showNewSubmissionHighlight
-                      ? "var(--bg-inprogress-action)"
-                      : "none",
-                    fontWeight: showNewSubmissionHighlight ? "bold" : "none",
-                  }}
+                  className={
+                    showNewSubmissionHighlight
+                      ? "action-row-highlight"
+                      : undefined
+                  }
                   key={idx}
                 >
                   {userContext.user?.role !== USERTYPES.STUDENT && (
@@ -409,13 +409,7 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>{action.action_target}</TableCell>
                   <TableCell>
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
+                    <span className="action-table">
                       {action.mock_id ? (
                         <>
                           <ProfileCircle
@@ -433,7 +427,7 @@ export default function ActionLogs(props) {
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
-                        style={{ marginLeft: "4px" }}
+                        className="action-profile"
                       />
                     </span>
                   </TableCell>

@@ -14,6 +14,7 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
 import { isSemesterActive } from "../../../util/functions/utils";
+import "../../../../css/components/tabs/action.css";
 
 export default function ActionTable(props) {
   // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
@@ -66,10 +67,7 @@ export default function ActionTable(props) {
           <TableCell>{formatDateNoOffset(action.start_date)}</TableCell>
           <TableCell>{formatDateNoOffset(action.due_date)}</TableCell>
           <TableCell>
-            <div
-              className="accordion-buttons-container"
-              style={{ position: "initial" }}
-            >
+            <div className="accordion-buttons-container accordion-buttons-container-static">
               <ActionPanel
                 actionData={action}
                 semesterData={props.semesterData}

@@ -37,8 +37,38 @@ function Footer() {
   if (isLoading) {
     return (
       <div id="footer">
-        <div style={{ padding: "10px", textAlign: "center" }}>
-          Loading...
+        <div id="bringMeDownSignedIn" className="ui container stackable grid">
+          <div className="three column row">
+            <div className="column">
+              <img
+                src={collegeLogo}
+                alt="Golisano College of Computing & Information Sciences"
+                className="footer-college-logo"
+              />
+            </div>
+            <div className="column">
+              <h4>
+                Department of Software Engineering
+                <br />
+                Golisano Building 70, Room 1690
+                <br />
+                134 Lomb Memorial Drive
+                <br />
+                Rochester, NY 14623-5608
+              </h4>
+            </div>
+            <div className="column">
+              <h4>
+                <i className="ui mail icon"></i> seniorprojects@se.rit.edu
+              </h4>
+            </div>
+          </div>
+          <div className="centered row footer-signed-out-copyright">
+            <h5>
+              <i className="ui icon copyright"></i> Rochester Institute of
+              Technology, All Rights Reserved
+            </h5>
+          </div>
         </div>
       </div>
     );

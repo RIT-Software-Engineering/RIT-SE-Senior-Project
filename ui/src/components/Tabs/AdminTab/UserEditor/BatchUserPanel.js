@@ -3,6 +3,7 @@ import { Button, Divider, Form, Icon, Modal, Table } from "semantic-ui-react";
 import CSV from "comma-separated-values";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { config } from "../../../util/functions/constants";
+import "../../../../css/components/tabs/batchuser.css";
 
 const UPLOAD_BUTTON_TEXT = "Upload";
 
@@ -105,11 +106,7 @@ export default function BatchUserPanel({ callback }) {
                 return (
                   <Table.Row
                     key={idx}
-                    style={
-                      isError
-                        ? { backgroundColor: "var(--action-bar-proposal-red)" }
-                        : {}
-                    }
+                    className={isError ? "batch-user-row-error" : undefined}
                   >
                     {Object.keys(user).map((key) => (
                       <Table.Cell key={key}>{user[key]}</Table.Cell>

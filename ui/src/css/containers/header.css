@@ -53,3 +53,38 @@
   background-color: transparent;
   border: none;
 }
+
+.header-span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-profile {
+  margin-left: 8px;
+  padding-top: 2px;
+}
+
+.header-button {
+  background-color: black;
+  color: white;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-dark {
+  height: 35px;
+  width: auto;
+  margin-right: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.header-cookies {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  cursor: pointer;
+}

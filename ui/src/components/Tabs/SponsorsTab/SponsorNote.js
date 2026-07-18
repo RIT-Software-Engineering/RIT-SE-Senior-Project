@@ -3,6 +3,7 @@ import React from "react";
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import "./../../../css/components/tabs/sponsor.css";
 
 export default function SponsorNote(props) {
   let modalButton = <div></div>;
@@ -85,9 +86,7 @@ export default function SponsorNote(props) {
 
   let content = (
     <Segment float={"left"} basic>
-      <div
-        style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
-      >
+      <div className="sponser-content">
         <ProfileCircle
           user={{
             fname: props.note.fname,
@@ -96,10 +95,10 @@ export default function SponsorNote(props) {
           }}
           isStudent={props.note.type === "student"}
           size="tiny"
-          style={{ marginRight: "10px" }}
+          className="sponser-profile"
         />
         <div>
-          <h5 style={{ margin: "0", lineHeight: "1.2" }}>
+          <h5 className="sponser-props">
             {props.note.mock_id ? (
               <>
                 {props.note.mock_name} as {props.note.fname} {props.note.lname}

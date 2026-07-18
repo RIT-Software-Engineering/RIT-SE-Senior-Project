@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Accordion } from "semantic-ui-react";
 import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
+import "../../../../css/components/tabs/overview.css";
 
 export default function OverviewEditor() {
   const [html, setHtml] = useState({});
@@ -54,7 +55,7 @@ export default function OverviewEditor() {
         label={tableName}
         key={tableName}
         value={html[tableName]}
-        style={{ minHeight: 200 }}
+        className="overview-table"
         onChange={(e) => {
           let htmlChange = { ...html, [tableName]: e.target.value };
           setHtml(htmlChange);

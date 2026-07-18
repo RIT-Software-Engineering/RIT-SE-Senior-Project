@@ -18,6 +18,7 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { eclipseInit } from "@uiw/codemirror-theme-eclipse";
 import QuestionBuilder from "./QuestionBuilder";
+import "./../../../css/components/shared/profileModal.css";
 
 const MODAL_STATUS = {
   SUCCESS: "success",
@@ -410,7 +411,13 @@ export default function DatabaseTableEditor(props) {
           } else if (formData.action_target !== "break_period") {
             fieldComponents.push(
               <Form.Field key={field.name} required={field.required}>
-                <label style={{ color: field.disabled ? "lightgray" : "" }}>
+                <label
+                  className={
+                    field.disabled
+                      ? "database-editor-label-disabled"
+                      : undefined
+                  }
+                >
                   {field.label}
                 </label>
                 <Form.TextArea
@@ -426,15 +433,11 @@ export default function DatabaseTableEditor(props) {
                   value={formData[field.name]}
                   maxHeight={"700px"}
                   extensions={[html({ autoCloseTags: true })]}
-                  style={{
-                    border: "1px solid #d4d4d5",
-                    borderRadius: "5px",
-                    padding: "10px",
-                    minHeight: "200px",
-                    backgroundColor: hasError(field.name) ? "#fab9b4" : "",
-                    opacity: field.disabled ? 0.6 : 1,
-                    pointerEvents: field.disabled ? "none" : "auto",
-                  }}
+                  className={`database-editor-textarea${
+                    hasError(field.name)
+                      ? " database-editor-textarea-error"
+                      : ""
+                  }${field.disabled ? " database-editor-textarea-disabled" : ""}`}
                   required={field.required}
                   readOnly={field.disabled}
                 />
@@ -512,7 +515,7 @@ export default function DatabaseTableEditor(props) {
           if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{ color: "lightgray" }}>{field.label}</label>
+                <label className="database-color">{field.label}</label>
                 <Form.Checkbox
                   label={field["label"]}
                   checked={!!formData[field["name"]]}
@@ -560,7 +563,7 @@ export default function DatabaseTableEditor(props) {
           if (field.disabled) {
             fieldComponents.push(
               <Form.Field key={field["name"]}>
-                <label style={{ color: "lightgray" }}>{field.label}</label>
+                <label className="database-color">{field.label}</label>
                 <input
                   type="file"
                   onChange={(event) => handleUpload(event, field.name)}

@@ -14,15 +14,6 @@ export default function ProjectViewerModal(props) {
   const generateModalContent = () => {
     return (
       <>
-        <style>
-          {`
-                #gfg {
-                    overflow-x: auto;
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                }
-                `}
-        </style>
         <h3>Team members</h3>
         {/* <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
           <b>Students:</b>{" "}
