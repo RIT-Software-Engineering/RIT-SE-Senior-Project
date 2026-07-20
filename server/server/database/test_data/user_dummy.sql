@@ -394,8 +394,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-21 12:30:00',
-        '2025-12-26 11:30:00'
+        NULL,
+        NULL
         ),
         (
         'viv910',
