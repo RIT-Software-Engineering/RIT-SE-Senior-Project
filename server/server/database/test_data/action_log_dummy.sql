@@ -434,7 +434,12 @@ VALUES
         'del1234',
         NULL,
         '4_buzzboost',
-        '{"Submitter":"COACH","Students":{"Link Hero":{"Feedback":"Some feedback here","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"3.666666666666667","Group Maintenance":"3.3333333333333335"},"SelfRating":{}},"Glimmer Star":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3.333333333333333","Initiative":"3","Dependability":"2.6666666666666665","Group Maintenance":"2.333333333333333"},"SelfRating":{}},"Zelda Hyrule":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},"Comet Rush":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Link Hero":{"Feedback":"Good job! Continue delegating earlier so other members have more time to contribute.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"3.666666666666667","Group Maintenance":"3.3333333333333335"},"SelfRating":{}},
+        "Glimmer Star":{"Feedback":"Well done! More proactive status updates would improve team coordination.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3.333333333333333","Initiative":"3","Dependability":"2.6666666666666665","Group Maintenance":"2.333333333333333"},"SelfRating":{}},
+        "Zelda Hyrule":{"Feedback":"Excellent! Continue balancing leadership with shared decision making.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},
+        "Comet Rush":{"Feedback":"More consistent communication and earlier progress updates are recommended.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
         NULL,
         DATE(
             strftime('%Y', DATE('now')) || '-07-25'
