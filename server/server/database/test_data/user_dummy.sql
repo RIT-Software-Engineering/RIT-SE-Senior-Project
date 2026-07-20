@@ -25,8 +25,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":false, "milestone_view":true, "calendar_view":false}',
-        '2025-12-15 10:23:45',
-        '2025-11-30 09:12:34'
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-15 10:23:45'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-11-30 09:12:34')
         ),
         (
         'myeyes',
@@ -39,8 +39,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-10 14:05:12',
-        '2025-12-20 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 14:05:12'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 16:45:00')
         ),
         (
         'cave',
@@ -53,8 +53,8 @@ VALUES
         '',
         'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-10 14:05:12',
-        '2025-12-20 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 14:05:12'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 16:45:00')
         ),
         (
         'wheatley',
@@ -67,8 +67,8 @@ VALUES
         '',
         'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-02-02 08:30:00',
-        '2025-01-15 07:20:10'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-02 08:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-15 07:20:10')
         ),
         (
         'ViewOnlyCoach',
@@ -81,8 +81,8 @@ VALUES
         '',
         'TRUE',
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-25 12:00:00',
-        '2025-01-10 11:11:11'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-25 12:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 11:11:11')
         ),
         (
         'jod1234',
@@ -95,8 +95,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-18 09:45:00',
-        '2025-12-28 08:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-18 09:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 08:30:00')
         ),
         (
         'del1234',
@@ -109,8 +109,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-12 13:22:10',
-        '2025-12-30 10:10:10'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-12 13:22:10'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 10:10:10')
         ),
         (
         'lam4821',
@@ -123,8 +123,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-20 15:00:00',
-        '2025-12-25 14:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-20 15:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-25 14:00:00')
         ),
         (
         'joh1234',
@@ -137,8 +137,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-05 11:11:11',
-        '2025-12-15 10:10:10'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-05 11:11:11'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-15 10:10:10')
         ),
         (
         'rth4567',
@@ -151,8 +151,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-28 17:30:00',
-        '2025-01-10 16:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-28 17:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 16:00:00')
         ),
 
         -- students
@@ -168,8 +168,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-15 08:00:00',
-        '2025-12-20 07:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-15 08:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 07:00:00')
         ),
         (
         'cs1290',
@@ -182,8 +182,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-17 09:30:00',
-        '2025-12-22 08:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-17 09:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 08:30:00')
         ),
         (
         'bt1293',
@@ -196,8 +196,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-19 10:45:00',
-        '2025-12-24 09:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-19 10:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 09:45:00')
         ),
         (
         'til345',
@@ -210,8 +210,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-21 11:15:00',
-        '2025-12-26 10:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-21 11:15:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-26 10:15:00')
         ),
         (
         'pb1233',
@@ -224,8 +224,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-23 12:30:00',
-        '2025-12-28 11:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-23 12:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 11:30:00')
         ),
         (
         'sos339',
@@ -238,8 +238,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-25 13:45:00',
-        '2025-12-30 12:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-25 13:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 12:45:00')
         ),
         (
         'ls2198',
@@ -252,8 +252,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-27 14:00:00',
-        '2025-01-02 13:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-27 14:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-02 13:00:00')
         ),
         (
         'zfa894',
@@ -266,8 +266,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-29 15:15:00',
-        '2025-01-04 14:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-29 15:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-04 14:15:00')
         ),
         (
         'mj3281',
@@ -280,8 +280,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-31 16:30:00',
-        '2025-01-06 15:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-31 16:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-06 15:30:00')
         ),
         (
         'ng1312',
@@ -294,8 +294,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-02-02 17:45:00',
-        '2025-01-08 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-02 17:45:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-08 16:45:00')
         ),
         (
         'ss7238',
@@ -308,8 +308,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-02-04 18:00:00',
-        '2025-01-10 17:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-04 18:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 17:00:00')
         ),
         (
         'sf7493',
@@ -322,8 +322,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-02-06 19:15:00',
-        '2025-01-12 18:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-06 19:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-12 18:15:00')
         ),
 
         (
@@ -337,8 +337,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-13 08:30:00',
-        '2025-12-18 07:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-13 08:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-18 07:30:00')
         ),
         (
         'gs9947',
@@ -351,8 +351,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-15 09:45:00',
-        '2025-12-20 08:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-15 09:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 08:45:00')
         ),
         (
         'zh7558',
@@ -365,8 +365,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-17 10:00:00',
-        '2025-12-22 09:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-17 10:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 09:00:00')
         ),
         (
         'cr8473',
@@ -379,8 +379,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-19 11:15:00',
-        '2025-12-24 10:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
 
         (
@@ -408,8 +408,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-23 13:45:00',
-        '2025-12-28 12:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-23 13:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 12:45:00')
         ),
         (
         'pt7786',
@@ -422,8 +422,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-25 14:00:00',
-        '2025-12-30 13:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
         (
         'bno009',
@@ -436,8 +436,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-27 15:15:00',
-        '2025-01-02 14:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
 
         (
@@ -451,8 +451,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-29 16:30:00',
-        '2025-01-04 15:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-29 16:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-04 15:30:00')
         ),
         (
         'sv3824',
@@ -465,8 +465,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-31 17:45:00',
-        '2025-01-06 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-31 17:45:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-06 16:45:00')
         ),
         (
         'yd8537',
@@ -479,8 +479,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-02-02 18:00:00',
-        '2025-01-08 17:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
         (
         'rr2397',
@@ -493,8 +493,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-02-04 19:15:00',
-        '2025-01-10 18:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-04 19:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 18:15:00')
         ),
 
         (
@@ -508,8 +508,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-13 08:30:00',
-        '2025-12-18 07:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-13 08:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-18 07:30:00')
         ),
         (
         'ns2127',
@@ -522,8 +522,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-15 09:45:00',
-        '2025-12-20 08:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-15 09:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 08:45:00')
         ),
         (
         'dk8008',
@@ -536,8 +536,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
-        '2025-01-17 10:00:00',
-        '2025-12-22 09:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-17 10:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 09:00:00')
         ),
         (
         'fb7283',
@@ -550,8 +550,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
-        '2025-01-19 11:15:00',
-        '2025-12-24 10:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
 
         (
@@ -565,8 +565,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
-        '2025-01-21 12:30:00',
-        '2025-12-26 11:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-21 12:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-26 11:30:00')
         ),
         (
         'ag6726',
@@ -579,8 +579,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-23 13:45:00',
-        '2025-12-28 12:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-23 13:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 12:45:00')
         ),
         (
         'bk6334',
@@ -593,8 +593,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-25 14:00:00',
-        '2025-12-30 13:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
         (
         'zef827',
@@ -607,8 +607,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-27 15:15:00',
-        '2025-01-02 14:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
 
         (
@@ -622,8 +622,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-29 16:30:00',
-        '2025-01-04 15:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-29 16:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-04 15:30:00')
         ),
         (
         'vw9474',
@@ -636,8 +636,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-31 17:45:00',
-        '2025-01-06 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-31 17:45:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-06 16:45:00')
         ),
         (
         'sb9047',
@@ -650,8 +650,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-02-02 18:00:00',
-        '2025-01-08 17:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
         (
         'nb9374',
@@ -664,8 +664,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-02-04 19:15:00',
-        '2025-01-10 18:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-04 19:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 18:15:00')
         ),
 
         (
@@ -679,8 +679,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-13 08:30:00',
-        '2025-12-18 07:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-13 08:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-18 07:30:00')
         ),
         (
         'bs6764',
@@ -693,8 +693,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-15 09:45:00',
-        '2025-12-20 08:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-15 09:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 08:45:00')
         ),
         (
         'mps823',
@@ -707,8 +707,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-17 10:00:00',
-        '2025-12-22 09:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-17 10:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 09:00:00')
         ),
         (
         'sc8924',
@@ -721,8 +721,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-19 11:15:00',
-        '2025-12-24 10:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
 
         (
@@ -736,8 +736,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-21 12:30:00',
-        '2025-12-26 11:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-21 12:30:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-26 11:30:00')
         ),
         (
         'ef9474',
@@ -750,8 +750,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-23 13:45:00',
-        '2025-12-28 12:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-23 13:45:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 12:45:00')
         ),
         (
         'cl9346',
@@ -764,8 +764,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-25 14:00:00',
-        '2025-12-30 13:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
+        DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
         (
         'sv9373',
@@ -778,8 +778,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-27 15:15:00',
-        '2025-01-02 14:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
         
         (
@@ -793,8 +793,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-29 16:30:00',
-        '2025-01-04 15:30:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-29 16:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-04 15:30:00')
         ),
         (
         'fc9723',
@@ -807,8 +807,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-01-31 17:45:00',
-        '2025-01-06 16:45:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-01-31 17:45:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-06 16:45:00')
         ),
         (
         'rid732',
@@ -821,8 +821,8 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-02-02 18:00:00',
-        '2025-01-08 17:00:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
         (
         'bs9047',
@@ -835,6 +835,6 @@ VALUES
         '',
         0,
         '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
-        '2025-02-04 19:15:00',
-        '2025-01-10 18:15:00'
+        DATETIME(strftime('%Y', DATE('now')) || '-02-04 19:15:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 18:15:00')
         );
