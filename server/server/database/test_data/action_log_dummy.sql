@@ -445,6 +445,283 @@ VALUES
             strftime('%Y', DATE('now')) || '-07-25'
         )
     ),
+
+    (
+        29,
+        'lh7488',
+        NULL,
+        '7_carecraze',
+        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-12'
+        )
+    ),
+
+    (
+        29,
+        'zh7558',
+        NULL,
+        '7_carecraze',
+        '{
+            "CoachFeedback": {
+                "Provide Specific Comments About Any Members Or Situations": "Link was an absolute standout, always leading with enthusiasm and creativity. The team worked well overall, but Link’s energy carried us.",
+                "Identify Disputes Or Problems That Happened And How They Were Handled": "There was some miscommunication about task deadlines between Glimmer and Comet, but we resolved it by clarifying roles in a group meeting."
+            },
+            "Students": {
+                "Aerith Gainsborough": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He’s basically perfect!",
+                    "Quantity Of Work": "Link consistently went above and beyond, delivering more than expected on every task.",
+                    "Initiative": "Link took the lead on multiple tasks without being asked, always pushing the team forward."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 5,
+                    "Quantity Of Work": 5,
+                    "Initiative": 5,
+                    "Dependability": 5,
+                    "Group Maintenance": 5
+                }
+                },
+                "Vapor Wave": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Glimmer was generally cooperative but sometimes seemed distracted during meetings.",
+                    "Quantity Of Work": "Glimmer completed their tasks, but the output was average and could’ve been more thorough.",
+                    "Initiative": "Glimmer followed instructions well but didn’t take much initiative on their own."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 3,
+                    "Dependability": 4,
+                    "Group Maintenance": 3
+                }
+                },
+                "Sephiroth Blade": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Comet was okay to work with but had moments of frustration that affected team morale.",
+                    "Quantity Of Work": "Comet’s work was sufficient but often submitted just before deadlines.",
+                    "Initiative": "Comet needed prompting to take on additional responsibilities."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 4,
+                    "Dependability": 3,
+                    "Group Maintenance": 3
+                }
+                }
+            },
+            "Submitter": "Nova Bright"
+            }',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-01'
+        )
+    ),
+
+    (
+        29,
+        'zh7558',
+        NULL,
+        '7_carecraze',
+        '{
+            "CoachFeedback": {
+                "Provide Specific Comments About Any Members Or Situations": "Link was an absolute standout, always leading with enthusiasm and creativity. The team worked well overall, but Link’s energy carried us.",
+                "Identify Disputes Or Problems That Happened And How They Were Handled": "There was some miscommunication about task deadlines between Glimmer and Comet, but we resolved it by clarifying roles in a group meeting."
+            },
+            "Students": {
+                "Aerith Gainsborough": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He’s basically perfect!",
+                    "Quantity Of Work": "Link consistently went above and beyond, delivering more than expected on every task.",
+                    "Initiative": "Link took the lead on multiple tasks without being asked, always pushing the team forward."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 5,
+                    "Quantity Of Work": 5,
+                    "Initiative": 5,
+                    "Dependability": 5,
+                    "Group Maintenance": 5
+                }
+                },
+                "Vapor Wave": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Glimmer was generally cooperative but sometimes seemed distracted during meetings.",
+                    "Quantity Of Work": "Glimmer completed their tasks, but the output was average and could’ve been more thorough.",
+                    "Initiative": "Glimmer followed instructions well but didn’t take much initiative on their own."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 3,
+                    "Dependability": 4,
+                    "Group Maintenance": 3
+                }
+                },
+                "Nova Bright": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Comet was okay to work with but had moments of frustration that affected team morale.",
+                    "Quantity Of Work": "Comet’s work was sufficient but often submitted just before deadlines.",
+                    "Initiative": "Comet needed prompting to take on additional responsibilities."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 4,
+                    "Dependability": 3,
+                    "Group Maintenance": 3
+                }
+                }
+            },
+            "Submitter": "Sephiroth Blade"
+            }',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-01'
+        )
+    ),
+
+    (
+        29,
+        'zh7558',
+        NULL,
+        '7_carecraze',
+        '{
+            "CoachFeedback": {
+                "Provide Specific Comments About Any Members Or Situations": "Link was an absolute standout, always leading with enthusiasm and creativity. The team worked well overall, but Link’s energy carried us.",
+                "Identify Disputes Or Problems That Happened And How They Were Handled": "There was some miscommunication about task deadlines between Glimmer and Comet, but we resolved it by clarifying roles in a group meeting."
+            },
+            "Students": {
+                "Aerith Gainsborough": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He’s basically perfect!",
+                    "Quantity Of Work": "Link consistently went above and beyond, delivering more than expected on every task.",
+                    "Initiative": "Link took the lead on multiple tasks without being asked, always pushing the team forward."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 5,
+                    "Quantity Of Work": 5,
+                    "Initiative": 5,
+                    "Dependability": 5,
+                    "Group Maintenance": 5
+                }
+                },
+                "Sephiroth Blade": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Glimmer was generally cooperative but sometimes seemed distracted during meetings.",
+                    "Quantity Of Work": "Glimmer completed their tasks, but the output was average and could’ve been more thorough.",
+                    "Initiative": "Glimmer followed instructions well but didn’t take much initiative on their own."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 3,
+                    "Dependability": 4,
+                    "Group Maintenance": 3
+                }
+                },
+                "Nova Bright": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Comet was okay to work with but had moments of frustration that affected team morale.",
+                    "Quantity Of Work": "Comet’s work was sufficient but often submitted just before deadlines.",
+                    "Initiative": "Comet needed prompting to take on additional responsibilities."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 4,
+                    "Dependability": 3,
+                    "Group Maintenance": 3
+                }
+                }
+            },
+            "Submitter": "Vapor Wave"
+            }',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-01'
+        )
+    ),
+
+    (
+        29,
+        'zh7558',
+        NULL,
+        '7_carecraze',
+        '{
+            "CoachFeedback": {
+                "Provide Specific Comments About Any Members Or Situations": "Link was an absolute standout, always leading with enthusiasm and creativity. The team worked well overall, but Link’s energy carried us.",
+                "Identify Disputes Or Problems That Happened And How They Were Handled": "There was some miscommunication about task deadlines between Glimmer and Comet, but we resolved it by clarifying roles in a group meeting."
+            },
+            "Students": {
+                "Vapor Wave": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He’s basically perfect!",
+                    "Quantity Of Work": "Link consistently went above and beyond, delivering more than expected on every task.",
+                    "Initiative": "Link took the lead on multiple tasks without being asked, always pushing the team forward."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 5,
+                    "Quantity Of Work": 5,
+                    "Initiative": 5,
+                    "Dependability": 5,
+                    "Group Maintenance": 5
+                }
+                },
+                "Sephiroth Blade": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Glimmer was generally cooperative but sometimes seemed distracted during meetings.",
+                    "Quantity Of Work": "Glimmer completed their tasks, but the output was average and could’ve been more thorough.",
+                    "Initiative": "Glimmer followed instructions well but didn’t take much initiative on their own."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 3,
+                    "Dependability": 4,
+                    "Group Maintenance": 3
+                }
+                },
+                "Nova Bright": {
+                "Feedback": {
+                    "Cooperation And Attitude": "Comet was okay to work with but had moments of frustration that affected team morale.",
+                    "Quantity Of Work": "Comet’s work was sufficient but often submitted just before deadlines.",
+                    "Initiative": "Comet needed prompting to take on additional responsibilities."
+                },
+                "Ratings": {
+                    "Cooperation And Attitude": 3,
+                    "Quantity Of Work": 3,
+                    "Initiative": 4,
+                    "Dependability": 3,
+                    "Group Maintenance": 3
+                }
+                }
+            },
+            "Submitter": "Aerith Gainsborough"
+            }',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-01'
+        )
+    ),
+
+    (
+        29,
+        'lam4821',
+        NULL,
+        '7_carecraze',
+        '{"Submitter":"COACH",
+            "Students":{
+            "Aerith Gainsborough":{"Feedback":"Strong collaboration and clear communication throughout the project.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+            "Vapor Wave":{"Feedback":"Contributed useful ideas and maintained a positive team environment.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"4.666666666666667"},"SelfRating":{}},
+            "Sephiroth Blade":{"Feedback":"Completed technical tasks well and supported teammates during difficult work.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+            "Nova Bright":{"Feedback":"Reliable work and good progress updates. Continue taking initiative earlier.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4","Initiative":"3.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}}}}',
+        NULL,
+        DATE(
+            strftime('%Y', DATE('now')) || '-07-25'
+        )
+    ),
     -- Past projects: 1_groweasy, 2_smartspark, 3_techtitan, 5_profitpulse
     -- 1_groweasy
     (
@@ -636,6 +913,7 @@ VALUES
         NULL,
         strftime('%Y', DATE('now', '-1 year')) || '-07-23'
     ),
+    
     -- 2_smartspark
     (
         1,
