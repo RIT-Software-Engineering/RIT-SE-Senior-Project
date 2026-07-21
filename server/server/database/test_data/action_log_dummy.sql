@@ -641,12 +641,19 @@ VALUES
         NULL,
         strftime('%Y', DATE('now', '-1 year')) || '-07-22'
     ),
+
     (
         14,
         'jod1234',
         NULL,
         '1_groweasy',
-        '{"peer_evaluation":"GrowEasy peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Miku Hatsune":{"Feedback":"Consistently delivered strong technical work and communicated progress clearly.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Cloud Strife":{"Feedback":"Completed assigned work reliably and supported teammates when technical issues arose.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Blaze Thunder":{"Feedback":"Contributed useful ideas and completed design work on schedule.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Tifa Lockhart":{"Feedback":"Communicated effectively and helped the team resolve disagreements constructively.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
+        }',
         NULL,
         strftime('%Y', DATE('now', '-1 year')) || '-07-23'
     ),
@@ -816,7 +823,13 @@ VALUES
         'jod1234',
         NULL,
         '2_smartspark',
-        '{"peer_evaluation":"SmartSpark peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Pixel Blaze":{"Feedback":"Produced reliable work and kept the team informed of progress.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Sonic Speed":{"Feedback":"Completed tasks quickly and helped the team address blockers.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Luna Sparkle":{"Feedback":"Collaborated well and contributed thoughtful ideas during team discussions.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}},
+        "Zack Fair":{"Feedback":"Stayed dependable and supported the team throughout the project.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-24'
@@ -1010,17 +1023,25 @@ VALUES
             strftime('%Y', DATE('now', '-1 year')) || '-06-17'
         )
     ),
+
     (
         14,
         'del1234',
         NULL,
         '3_techtitan',
-        '{"peer_evaluation":"TechTitan peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Mario Jumpman":{"Feedback":"Provided steady leadership and kept the team focused on project priorities.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Neon Glow":{"Feedback":"Produced strong technical work and communicated implementation issues clearly.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4"},"SelfRating":{}},
+        "Solid Snake":{"Feedback":"Worked independently while remaining responsive to team needs.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4"},"SelfRating":{}},
+        "Teto Kasane":{"Feedback":"Contributed useful analysis and maintained clear communication with the team.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-18'
         )
     ),
+
     -- 5_profitpulse
     (
         1,
@@ -1198,6 +1219,7 @@ VALUES
             strftime('%Y', DATE('now', '-1 year')) || '-07-16'
         )
     ),
+
     (
         14,
         'yd8537',
@@ -1214,7 +1236,13 @@ VALUES
         'lam4821',
         NULL,
         '5_profitpulse',
-        '{"peer_evaluation":"ProfitPulse peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Radiant Ray":{"Feedback":"Kept the team organized and contributed consistently throughout the project.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Samus Aran":{"Feedback":"Delivered high-quality work and helped resolve difficult technical problems.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Spark Vibe":{"Feedback":"Communicated well and made useful contributions during team reviews.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}},
+        "Yoshi Dino":{"Feedback":"Completed assigned tasks reliably. Earlier progress updates would improve coordination.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4","Initiative":"3.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-18'
