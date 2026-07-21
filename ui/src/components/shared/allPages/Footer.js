@@ -4,8 +4,9 @@ import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
-import "semantic-ui-css/semantic.min.css"
+import "semantic-ui-css/semantic.min.css";
 import uiConfig from "../../../config/uiConfig";
+import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
   const { user } = useContext(UserContext);
@@ -14,9 +15,8 @@ function Footer() {
 
   const signedIn = user && Object.keys(user).length > 0 && user.user;
   useEffect(() => {
-    
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
-    
+
     setIsLoading(true);
     SecureFetch(`${config.url.API_GET_HTML}?name=${footerName}`)
       .then((r) => {
@@ -33,7 +33,7 @@ function Footer() {
         setFooterHtml("");
         setIsLoading(false);
       });
-  }, [user]); 
+  }, [user]);
   if (isLoading) {
     return (
       <div id="footer">
@@ -78,7 +78,11 @@ function Footer() {
     <div id="footer">
       {footerHtml ? <InnerHTML html={footerHtml} /> : null}
       {signedIn && (
-        <div id="version" className="ui container" style={{ textAlign: "right" }}>
+        <div
+          id="version"
+          className="ui container"
+          style={{ textAlign: "right" }}
+        >
           <h5>
             <a
               href={uiConfig.footers.loggedIn.githubLink}
@@ -94,4 +98,4 @@ function Footer() {
   );
 }
 
-export default Footer;  
+export default Footer;

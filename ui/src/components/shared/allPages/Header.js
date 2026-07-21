@@ -10,6 +10,8 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
 import uiConfig from "../../../config/uiConfig";
+import SELogoDarkMode from "../../../Assets/gccis_dark.png";
+import SELogoLightMode from "../../../Assets/gccis_light.png";
 
 function Header() {
   const history = useHistory();
@@ -109,9 +111,7 @@ function Header() {
             >
               <span className="header-span">
                 <ProfileCircle user={user} size="tiny" />
-                <span className="header-profile">
-                  Profile
-                </span>
+                <span className="header-profile">Profile</span>
               </span>
             </Button>
           )}
@@ -234,9 +234,7 @@ function Header() {
           user={user}
         />
       </div>
-      <div
-        className="header-nav"
-      >
+      <div className="header-nav">
         <img
           src={darkMode ? SELogoDarkMode : SELogoLightMode}
           alt="Department of Software Engineering"
