@@ -460,7 +460,7 @@ VALUES
 
     (
         29,
-        'zh7558',
+        'nb9374',
         NULL,
         '7_carecraze',
         '{
@@ -471,7 +471,7 @@ VALUES
             "Students": {
                 "Aerith Gainsborough": {
                 "Feedback": {
-                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He’s basically perfect!",
+                    "Cooperation And Attitude": "Link is a dream to work with—always positive, collaborative, and inspiring. He basically perfect!",
                     "Quantity Of Work": "Link consistently went above and beyond, delivering more than expected on every task.",
                     "Initiative": "Link took the lead on multiple tasks without being asked, always pushing the team forward."
                 },
@@ -522,7 +522,7 @@ VALUES
 
     (
         29,
-        'zh7558',
+        'sb9047',
         NULL,
         '7_carecraze',
         '{
@@ -584,7 +584,7 @@ VALUES
 
     (
         29,
-        'zh7558',
+        'vw9474',
         NULL,
         '7_carecraze',
         '{
@@ -646,7 +646,7 @@ VALUES
 
     (
         29,
-        'zh7558',
+        'aeg836',
         NULL,
         '7_carecraze',
         '{
