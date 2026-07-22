@@ -4,12 +4,10 @@ import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import ActionPanel from "./ActionPanel";
 import ActionTable from "./ActionTable";
-import DuplicateSemesterPanel from "./DuplicateSemesterPanel";
 
 export default function ActionEditor(props) {
   const [actions, setActionsData] = useState([]);
   const [projectData, setProjectData] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
 
   const getActionData = () => {
     SecureFetch(config.url.API_GET_ACTIONS)
@@ -88,33 +86,8 @@ export default function ActionEditor(props) {
           create={true}
           key={"createAction"}
           callback={getActionData}
-          isOpenCallback={(isOpen) => setIsOpen(isOpen)} // Pass the isOpenCallback prop
         />
       </div>
-      <DuplicateSemesterPanel
-        semesterData={props.semesterData}
-        callback={getActionData}
-      />
-      <button
-        onClick={() => {
-          SecureFetch(config.url.API_POST_DUPLICATE_SEMESTER_ACTIONS, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sourceSemester: 1,
-              targetSemester: 2,
-              offsetDays: 120,
-            }),
-          })
-            .then((r) => r.json())
-            .then(console.log)
-            .catch(console.error);
-        }}
-      >
-        Duplicate Semester
-      </button>
     </div>
   );
 }

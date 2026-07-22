@@ -49,6 +49,8 @@ export const config = {
     API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
     // Grabs all the semester data from semester_groups and orders them by start and end date.
     API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
+    API_GET_SEMESTER_ACTIONS: `${BASE_API_URL}/db/getSemesterActions`,
+    API_POST_DUPLICATE_ACTIONS: `${BASE_API_URL}/db/duplicateActions`,
     API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
     API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,
     API_GET_TIMELINE_ACTIONS: `${BASE_API_URL}/db/getTimelineActions`,
