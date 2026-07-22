@@ -272,7 +272,7 @@ VALUES
     ),
     (
         '9_ecoedge',
-        'needs revision',
+        'submitted',
         'EcoEdge Carbon Footprint Tracking and Sustainability Reporting',
         'GreenEdge Solutions',
         'John Smith',
@@ -328,7 +328,7 @@ VALUES
         NULL,
         NULL,
         'Market trend dashboard',
-        2
+        NULL
     ),
     (
         '11_vitavibe',
