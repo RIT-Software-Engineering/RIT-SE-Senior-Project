@@ -591,8 +591,12 @@ VALUES
         '',
         'Assign and submit team member roles and responsibilities',
         'team',
-        DATE('now', '-14 days'),
-        DATE('now', '+7 days'),
+        DATE(
+            strftime('%Y', DATE('now')) || '-07-23'
+        ),
+        DATE(
+            strftime('%Y', DATE('now')) || '-08-15'
+        ),
         '<h1>Submit Team Roles</h1>
         <p>
             Assign roles and responsibilities to each team member. Your document should include:
