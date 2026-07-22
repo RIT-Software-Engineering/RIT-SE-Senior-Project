@@ -3980,6 +3980,110 @@ module.exports = (db) => {
       });
   });
 
+  db_router.get(
+    "/getSemesterActions",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      const semester = req.query.semester;
+
+      if (!semester) {
+        return res.status(400).send("Missing semester");
+      }
+
+      db.query(
+        `
+      SELECT *
+      FROM actions
+      WHERE semester = ?
+      ORDER BY start_date
+      `,
+        [semester],
+      )
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
+  db_router.post(
+    "/duplicateActions",
+    [UserAuth.isAdmin],
+    async (req, res, next) => {
+      const { actions, target_semester, day_offset } = req.body;
+
+      if (!actions || !target_semester) {
+        return res.status(400).send("Missing required fields");
+      }
+
+      const parsedActions = JSON.parse(actions);
+      const offset = parseInt(day_offset) || 0;
+
+      try {
+        for (const action of parsedActions) {
+          const startDate = action.start_date
+            ? new Date(
+                new Date(action.start_date).getTime() +
+                  offset * 24 * 60 * 60 * 1000,
+              )
+                .toISOString()
+                .split("T")[0]
+            : null;
+
+          const endDate = action.end_date
+            ? new Date(
+                new Date(action.end_date).getTime() +
+                  offset * 24 * 60 * 60 * 1000,
+              )
+                .toISOString()
+                .split("T")[0]
+            : null;
+
+          await db.query(
+            `
+          INSERT INTO actions (
+            action_title,
+            short_desc,
+            page_html,
+            action_target,
+            start_date,
+            due_date,
+            semester,
+            file_types,
+            file_size
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `,
+            [
+              action.action_title,
+              action.short_desc,
+              action.page_html,
+              action.action_target,
+              startDate,
+              endDate,
+              target_semester,
+              action.file_types || null,
+              action.file_size || null,
+            ],
+          );
+        }
+
+        res.send({
+          success: true,
+          copied: parsedActions.length,
+        });
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      }
+    },
+  );
+
   db_router.get("/getArchive", [UserAuth.isAdmin], (req, res, next) => {
     let getArchiveQuery = `
             SELECT *
