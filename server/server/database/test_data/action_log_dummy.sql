@@ -208,9 +208,7 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_rf9472.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-05'
-        )
+        DATE('now', '-6 days')
     ),
     (
         22,
@@ -219,9 +217,7 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_ef9474.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-06'
-        )
+        DATE('now', '-7 days')
     ),
     (
         22,
@@ -230,9 +226,7 @@ VALUES
         '4_buzzboost',
         '{"roles":"Zelda: Project Lead, Link: Designer, Glimmer: Developer, Comet: Analyst"}',
         'roles_zh7558.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-07'
-        )
+        DATE('now', '-7 days')
     ),
     -- Midterm Peer Evaluation Form
     (
@@ -292,9 +286,7 @@ VALUES
             "Submitter": "Zelda Hyrule"
             }',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-01'
-        )
+        DATE('now', '-6 days')
     ),
     (
         29,
@@ -303,9 +295,7 @@ VALUES
         '4_buzzboost',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-12'
-        )
+        DATE('now', '-6 days')
     ),
     (
         29,
@@ -364,9 +354,7 @@ VALUES
                 "Submitter": "Glimmer Star"
             }',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-02'
-        )
+        DATE('now', '-6 days')
     ),
     (
         29,
@@ -425,21 +413,34 @@ VALUES
             "Submitter": "Comet Rush"
             }',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-23'
-        )
+        DATE('now', '-6 days')
     ),
     (
         29,
         'del1234',
         NULL,
         '4_buzzboost',
-        '{"Submitter":"COACH","Students":{"Link Hero":{"Feedback":"Some feedback here","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"3.666666666666667","Group Maintenance":"3.3333333333333335"},"SelfRating":{}},"Glimmer Star":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3.333333333333333","Initiative":"3","Dependability":"2.6666666666666665","Group Maintenance":"2.333333333333333"},"SelfRating":{}},"Zelda Hyrule":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},"Comet Rush":{"Feedback":"Some Feedback here","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Link Hero":{"Feedback":"Good job! Continue delegating earlier so other members have more time to contribute.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"3.666666666666667","Group Maintenance":"3.3333333333333335"},"SelfRating":{}},
+        "Glimmer Star":{"Feedback":"Well done! More proactive status updates would improve team coordination.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3.333333333333333","Initiative":"3","Dependability":"2.6666666666666665","Group Maintenance":"2.333333333333333"},"SelfRating":{}},
+        "Zelda Hyrule":{"Feedback":"Excellent! Continue balancing leadership with shared decision making.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},
+        "Comet Rush":{"Feedback":"More consistent communication and earlier progress updates are recommended.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-25'
-        )
+        DATE('now', '-6 days')
     ),
+
+    (
+        29,
+        'lh7488',
+        NULL,
+        '7_carecraze',
+        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
+        NULL,
+        DATE('now', '-6 days')
+    ),
+
+    
     -- Past projects: 1_groweasy, 2_smartspark, 3_techtitan, 5_profitpulse
     -- 1_groweasy
     (
@@ -611,7 +612,7 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-07-21'
+        DATE('now', '-6 days')
     ),
     (
         14,
@@ -620,17 +621,25 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-07-22'
+        DATE('now', '-6 days')
     ),
+
     (
         14,
         'jod1234',
         NULL,
         '1_groweasy',
-        '{"peer_evaluation":"GrowEasy peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Miku Hatsune":{"Feedback":"Consistently delivered strong technical work and communicated progress clearly.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Cloud Strife":{"Feedback":"Completed assigned work reliably and supported teammates when technical issues arose.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Blaze Thunder":{"Feedback":"Contributed useful ideas and completed design work on schedule.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Tifa Lockhart":{"Feedback":"Communicated effectively and helped the team resolve disagreements constructively.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
+        }',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-07-23'
+        DATE('now', '-6 days')
     ),
+    
     -- 2_smartspark
     (
         1,
@@ -796,7 +805,13 @@ VALUES
         'jod1234',
         NULL,
         '2_smartspark',
-        '{"peer_evaluation":"SmartSpark peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Pixel Blaze":{"Feedback":"Produced reliable work and kept the team informed of progress.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Sonic Speed":{"Feedback":"Completed tasks quickly and helped the team address blockers.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Luna Sparkle":{"Feedback":"Collaborated well and contributed thoughtful ideas during team discussions.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}},
+        "Zack Fair":{"Feedback":"Stayed dependable and supported the team throughout the project.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-24'
@@ -990,17 +1005,25 @@ VALUES
             strftime('%Y', DATE('now', '-1 year')) || '-06-17'
         )
     ),
+
     (
         14,
         'del1234',
         NULL,
         '3_techtitan',
-        '{"peer_evaluation":"TechTitan peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Mario Jumpman":{"Feedback":"Provided steady leadership and kept the team focused on project priorities.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Neon Glow":{"Feedback":"Produced strong technical work and communicated implementation issues clearly.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4"},"SelfRating":{}},
+        "Solid Snake":{"Feedback":"Worked independently while remaining responsive to team needs.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.666666666666667","Group Maintenance":"4"},"SelfRating":{}},
+        "Teto Kasane":{"Feedback":"Contributed useful analysis and maintained clear communication with the team.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4","Initiative":"4.333333333333333","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-18'
         )
     ),
+
     -- 5_profitpulse
     (
         1,
@@ -1178,6 +1201,7 @@ VALUES
             strftime('%Y', DATE('now', '-1 year')) || '-07-16'
         )
     ),
+
     (
         14,
         'yd8537',
@@ -1194,7 +1218,13 @@ VALUES
         'lam4821',
         NULL,
         '5_profitpulse',
-        '{"peer_evaluation":"ProfitPulse peer evaluation"}',
+        '{"Submitter":"COACH",
+        "Students":{
+        "Radiant Ray":{"Feedback":"Kept the team organized and contributed consistently throughout the project.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.333333333333333"},"SelfRating":{}},
+        "Samus Aran":{"Feedback":"Delivered high-quality work and helped resolve difficult technical problems.","UsedAI":true,"AverageRatings":{"Cooperation And Attitude":"4","Quantity Of Work":"4.666666666666667","Initiative":"4.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}},
+        "Spark Vibe":{"Feedback":"Communicated well and made useful contributions during team reviews.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4","Dependability":"4.333333333333333","Group Maintenance":"4.666666666666667"},"SelfRating":{}},
+        "Yoshi Dino":{"Feedback":"Completed assigned tasks reliably. Earlier progress updates would improve coordination.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4","Initiative":"3.666666666666667","Dependability":"4.333333333333333","Group Maintenance":"4"},"SelfRating":{}}}
+        }',
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-18'

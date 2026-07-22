@@ -208,7 +208,7 @@ VALUES
         NULL,
         NULL,
         'AR shopping assistant',
-        3
+        NULL
     ),
     (
         '7_carecraze',
@@ -298,7 +298,7 @@ VALUES
         NULL,
         NULL,
         'Corporate carbon tracking',
-        2
+        NULL
     ),
     (
         '10_trendtide',
