@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import {
   Button,
   Form,
@@ -39,11 +39,22 @@ const camelCaseToSentence = (string = "") =>
   string.replaceAll(/([A-Z])/g, (word) => ` ${word}`).trimStart();
 
 export default function ActionModal(props) {
+  console.log("ActionModal rendered");
   const { user } = useContext(UserContext);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(props.open || false);
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
   );
+  useEffect(() => {
+    setOpen(props.open || false);
+    if (props.open) {
+      props.isOpenCallback?.(true);
+      fetchStudentNames();
+      setFormTouched(false);
+      setReadyToMark(false);
+      setTimeout(() => setReadyToMark(true), 250);
+    }
+  }, [props.open]);
   const [submissionModalResponse, setSubmissionModalResponse] = useState(
     "We were unable to receive your submission.",
   );
@@ -546,6 +557,12 @@ export default function ActionModal(props) {
           closeIcon={true}
           className={"sticky"}
           onClose={() => {
+            console.log("modal open");
+            setOpen(true);
+            props.isOpenCallback(true);
+            fetchStudentNames();
+            setFormTouched(false);
+            setReadyToMark(false);
             setTimeout(() => {
               if (formTouched && !props.viewOnly) {
                 openUnsavedModal(() => {
@@ -562,6 +579,7 @@ export default function ActionModal(props) {
             }, 0);
           }}
           onOpen={() => {
+            console.log("ACTION MODAL OPEN");
             setOpen(true);
             props.isOpenCallback(true);
             setFormTouched(false);
@@ -571,7 +589,12 @@ export default function ActionModal(props) {
           open={open}
           trigger={
             props.trigger || (
-              <Button ref={props.ref} fluid className="view-action-button">
+              <Button
+                ref={props.ref}
+                fluid
+                className="view-action-button"
+                onClick={() => console.log("trigger clicked")}
+              >
                 View Action
               </Button>
             )
@@ -658,6 +681,13 @@ export default function ActionModal(props) {
           closeIcon={true}
           className={"sticky"}
           onClose={() => {
+            console.log("modal open");
+            setOpen(true);
+            props.isOpenCallback(true);
+            fetchStudentNames();
+            setFormTouched(false);
+            setReadyToMark(false);
+            setTimeout(() => setReadyToMark(true), 250);
             setTimeout(() => {
               if (formTouched && !props.viewOnly) {
                 openUnsavedModal(() => {
@@ -674,6 +704,7 @@ export default function ActionModal(props) {
             }, 0);
           }}
           onOpen={() => {
+            console.log("ACTION MODAL OPEN");
             setOpen(true);
             props.isOpenCallback(true);
             fetchStudentNames();
@@ -684,7 +715,12 @@ export default function ActionModal(props) {
           open={open}
           trigger={
             props.trigger || (
-              <Button ref={props.ref} fluid className="view-action-button">
+              <Button
+                ref={props.ref}
+                fluid
+                className="view-action-button"
+                onClick={() => console.log("trigger clicked")}
+              >
                 View Action
               </Button>
             )
