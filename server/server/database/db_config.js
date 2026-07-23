@@ -19,6 +19,7 @@ module.exports = {
     project_coaches: "project_coaches",
     sponsors: "sponsors",
     error_log: "error_log",
+    audit_log: "audit_log",
   },
   senior_project_proposal_keys: {
     title: "Title",

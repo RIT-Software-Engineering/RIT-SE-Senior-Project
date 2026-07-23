@@ -91,7 +91,7 @@ const ACTION_TARGETS = {
 };
 
 // Routes
-module.exports = (db) => {
+module.exports = (db, AuditLog) => {
   /**
    * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
    *
@@ -1730,6 +1730,27 @@ module.exports = (db) => {
         db.query(deleteCoachesSQL),
       ])
         .then((values) => {
+          let changedFields = {};
+          try {
+            changedFields = body.changed_fields
+              ? JSON.parse(body.changed_fields)
+              : {};
+          } catch (err) {
+            changedFields = {};
+          }
+
+          const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+          const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
+
+          AuditLog.record(req, {
+            actionType: AuditLog.ACTION_TYPES.UPDATE,
+            entityType: "project",
+            entityId: body.project_id,
+            message: changeSummary
+              ? `${baseMessage} — ${changeSummary}`
+              : baseMessage,
+            details: changedFields,
+          });
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -3404,6 +3425,47 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          let changedFields = {};
+          try {
+            changedFields = body.changed_fields
+              ? JSON.parse(body.changed_fields)
+              : {};
+          } catch (err) {
+            changedFields = {};
+          }
+
+          let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
+          let auditVerb = "updated";
+
+          if ("date_deleted" in changedFields) {
+            const [beforeRaw, afterRaw] = changedFields.date_deleted;
+            const isEmpty = (v) => v === "" || v === undefined || v === null;
+            const wasActive = isEmpty(beforeRaw);
+            const isActiveNow = isEmpty(afterRaw);
+
+            if (wasActive && !isActiveNow) {
+              auditActionType = AuditLog.ACTION_TYPES.DEACTIVATE;
+              auditVerb = "deactivated";
+            } else if (!wasActive && isActiveNow) {
+              auditActionType = AuditLog.ACTION_TYPES.REACTIVATE;
+              auditVerb = "reactivated";
+            }
+
+            delete changedFields.date_deleted;
+          }
+
+          const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+          const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} action ${body.action_id} (${body.action_title})`;
+
+          AuditLog.record(req, {
+            actionType: auditActionType,
+            entityType: "action",
+            entityId: body.action_id,
+            message: changeSummary
+              ? `${baseMessage} — ${changeSummary}`
+              : baseMessage,
+            details: changedFields,
+          });
           return res.status(200).send();
         })
         .catch((err) => {
@@ -3966,6 +4028,22 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          return db.query(
+            `SELECT action_id FROM actions
+             WHERE semester = ? AND action_title = ? AND start_date = ? AND due_date = ?
+             ORDER BY action_id DESC LIMIT 1`,
+            [body.semester, body.action_title, body.start_date, body.due_date],
+          );
+        })
+        .then((rows) => {
+          const newActionId = rows && rows[0] ? rows[0].action_id : null;
+          AuditLog.record(req, {
+            actionType: AuditLog.ACTION_TYPES.CREATE,
+            entityType: "action",
+            entityId: newActionId,
+            message: `${AuditLog.actorLabel(req)} created action ${newActionId} (${body.action_title})`,
+            details: body,
+          });
           return res.status(200).send();
         })
         .catch((err) => {
