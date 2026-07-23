@@ -1,12 +1,15 @@
-INSERT INTO archive (project_id, name, title, team_name, members, sponsor, coach, poster_thumb, synopsis, keywords, url_slug, inactive, featured)
-VALUES 
+INSERT INTO archive (project_id, name, title, team_name, members, sponsor, coach, poster_thumb, synopsis, keywords, url_slug, inactive, featured, start_date, end_date, creative)
+VALUES
 
     ('1_groweasy', 'GrowEasy Analytics Platform for Small Business Growth ', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doe', 'dummy/groweasy_thumb.png',
     'GrowEasy Analytics is a project aimed at developing an analytics platform for small businesses. The platform will focus on providing a user-friendly dashboard that allows
     businesses to analyze their market expansion strategies effectively. The project will address challenges such as data integration issues and the need for a limited budget and tight timeline.
     The team will work on creating a prototype of the dashboard, which will include features for market analysis and reporting. The platform will also ensure compliance with data privacy regulations
     and will be designed to handle confidential client data. The project will involve collaboration with GrowEasy Inc. to ensure that the final product meets their needs and expectations.',
-    'analytics, business, growth, dashboard', 'groweasy-analytics', '', 1
+    'analytics, business, growth, dashboard', 'groweasy-analytics', '', 1,
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    1
     ),
 
     ('2_smartspark', 'SmartSpark AI-Driven Marketing Campaign Tool', 'SmartSpark Marketing', 'SparkGenix', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png',
@@ -14,7 +17,10 @@ VALUES
     to analyze social media trends and optimize ad placements. The team will work on training AI models to ensure accurate predictions and effective campaign management. Challenges include resource
     constraints and the need for a robust AI model. The final deliverables will include a campaign tool prototype and a case study demonstrating its effectiveness. The project will also involve
     collaboration with SparkVibe Agency to ensure that the platform meets industry standards and client expectations.',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1
+    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    0
     ),
 
     ('3_techtitan', 'TechTitan Scalable CRM System for Startups', 'TechTitan Solutions', 'TitanCoders', 'Mario Jumpman, Neon Glow, Solid Snake, Teto Kasane', 'Tech Titan Corp.', 'David Lee', 'dummy/techtitan_thumb.png',
@@ -22,6 +28,9 @@ VALUES
     The team will address challenges related to scalability and user adoption, ensuring that the CRM system is cloud-based and easy to use. Key deliverables will include a prototype of the CRM system
     and a user guide to help businesses implement the solution effectively. The project will involve close collaboration with TechTitan Corp. to ensure that the final product aligns with their business goals and
     technical requirements.',
-    'CRM, technology, scalability, startups', 'techtitan-solutions', '', 1
+    'CRM, technology, scalability, startups', 'techtitan-solutions', '', 1,
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
+    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    0
     )
 ;

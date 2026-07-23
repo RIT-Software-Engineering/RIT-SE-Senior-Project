@@ -20,6 +20,7 @@ export default function ProjectsTab(props) {
       .then((response) => response.json())
       .then((proposals) => {
         setMyProposalData(proposals);
+
         // Only load candidate projects if student and don't have a project
         if (
           (proposals.length === 0 &&
@@ -38,6 +39,10 @@ export default function ProjectsTab(props) {
       });
   }, [userContext]);
 
+  const myProjectsWithSemester = myProposalData.filter(
+    (project) => project.semester !== null && project.semester !== undefined,
+  );
+
   return (
     <>
       {(candidateProjects.length > 0 ||
@@ -54,18 +59,20 @@ export default function ProjectsTab(props) {
           <br />
         </>
       )}
+
       <h3>My Projects</h3>
       <Proposals
         noAccordion
         viewOnly
         viewOnlyArchive={props.viewOnly}
-        proposalData={myProposalData}
+        proposalData={myProjectsWithSemester}
         semesterData={props.semesterData}
         reloadSemesters={props.reloadSemesters}
         isCandidateProject={false}
-        userProjects={myProposalData}
+        userProjects={myProjectsWithSemester}
       />
       <br />
+
       {userContext.user?.role !== USERTYPES.STUDENT && (
         <>
           <h3>All Projects</h3>

@@ -1,0 +1,37 @@
+.submit-semester {
+  display: flex;
+  align-items: center;
+}
+
+.submit-submitted {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.submit-whitespace {
+  margin-left: 5px;
+  white-space: nowrap;
+}
+
+.submit-profile {
+  margin-left: 5px;
+}
+
+.submit-feedback {
+  margin-bottom: 25px;
+}
+
+.submit-due {
+  color: red;
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+.submit-coach-feedback {
+  margin-bottom: 35px;
+}
+
+.submit-no-feedback {
+  margin-top: 5px;
+}

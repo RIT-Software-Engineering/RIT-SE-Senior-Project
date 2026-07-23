@@ -134,13 +134,10 @@ export default function GanttChart(props) {
     const ganttRowButton = (
       <button
         ref={action === firstAction ? firstActionRef : null}
-        className={`action-bar ${color}`}
+        className={`action-bar ${color} gantt-row-button`}
         style={{
           gridRow: gridrow,
           gridColumn: barStart + " / span " + barSpan,
-          textWrap: "nowrap",
-          overflow: "visible",
-          paddingLeft: "0px",
         }}
         key={idx}
       >
@@ -288,14 +285,7 @@ export default function GanttChart(props) {
     <div>
       <h3>Gantt Chart</h3>
       <div className="action-calendar">
-        <div
-          className="calendar-header"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="calendar-header">
           <span>
             <h3>
               {selectedTimeSpan === "week"
@@ -305,11 +295,11 @@ export default function GanttChart(props) {
                   : `Project Timeline`}
             </h3>
           </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span className="gantt-timespan">
             <label htmlFor="TimeSpan">Time Span</label>
             <Dropdown
               name="TimeSpan"
-              className="ui button"
+              className="ui button gantt-timespan-dropdown"
               defaultValue={selectedTimeSpan}
               onChange={onTimeSpanChange}
               options={[
@@ -318,11 +308,6 @@ export default function GanttChart(props) {
                 { key: "project", text: "Project", value: "project" },
               ]}
               compact
-              style={{
-                zIndex: 100,
-                position: "relative",
-                backgroundColor: "var(--bg-button)",
-              }}
             />
           </span>
         </div>

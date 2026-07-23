@@ -14,6 +14,7 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
 import { isSemesterActive } from "../../../util/functions/utils";
+import "../../../../css/components/tabs/action.css";
 
 export default function ActionTable(props) {
   // TODO: This is pretty inefficient and will get slower as more semesters are added - find better way to handle this.
@@ -23,6 +24,18 @@ export default function ActionTable(props) {
   const project = props.projectData.find(
     (project) => project.semester === props.actions[0]?.semester,
   );
+
+  const typeLabel = (t) =>
+  ({
+    individual: "Individual Action",
+    team: "Team Action",
+    coach: "Coach Action",
+    admin: "Admin Action",
+    peer_evaluation: "Peer Evaluation",
+    student_announcement: "Student Announcement",
+    coach_announcement: "Coach Announcement",
+    break_period: "Break Period",
+  }[t] || t);
 
   // if there is no semester, then there are no actions
   const semesterName = semester?.name || "No Semester";
@@ -50,18 +63,15 @@ export default function ActionTable(props) {
       return (
         <TableRow key={i}>
           <TableCell>{action.action_title}</TableCell>
-          <TableCell>{action.action_target}</TableCell>
+          <TableCell>{typeLabel(action.action_target)}</TableCell>
           <TableCell>{formatDateNoOffset(action.start_date)}</TableCell>
           <TableCell>{formatDateNoOffset(action.due_date)}</TableCell>
           <TableCell>
-            <div
-              className="accordion-buttons-container"
-              style={{ position: "initial" }}
-            >
+            <div className="accordion-buttons-container accordion-buttons-container-static">
               <ActionPanel
                 actionData={action}
                 semesterData={props.semesterData}
-                header={`Currently Editing "${action.action_title}"`}
+                header={`Currently Editing "${action.action_title}" ${typeLabel(action.action_target)}`}
                 key={"editAction-" + i}
                 callback={props.callback}
               />
@@ -117,14 +127,14 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.DATE ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.DATE)}
                         >
-                          Action Title
+                          Title
                         </TableHeaderCell>
 
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.ACTION)}
                         >
-                          Action Target
+                         Type
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
@@ -136,13 +146,13 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.ATTACHMENTS ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.ATTACHMENTS)}
                         >
-                          Due Date
+                          End Date
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.EDIT ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.EDIT)}
                         >
-                          Edit
+                          Edit / Copy / Preview
                         </TableHeaderCell>
                       </TableRow>
                     </TableHeader>

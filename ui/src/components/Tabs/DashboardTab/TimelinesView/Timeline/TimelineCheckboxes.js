@@ -1,4 +1,5 @@
 import { Checkbox, Divider } from "semantic-ui-react";
+import "../../../../../css/components/tabs/timeline.css";
 
 export default function TimelineCheckboxes(props) {
   const milestonesChange = (e, data) => {
@@ -17,7 +18,7 @@ export default function TimelineCheckboxes(props) {
   };
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <div className="timeline-box">
       <Checkbox
         toggle
         className="timeline-checkbox"

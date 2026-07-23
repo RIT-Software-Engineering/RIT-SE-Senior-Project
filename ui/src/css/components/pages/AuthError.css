@@ -1,0 +1,50 @@
+.autherror-container {
+  margin-top: 2rem;
+}
+
+.autherror-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.autherror-icon {
+  margin-bottom: 1rem;
+  color: red;
+}
+
+.autherror-message {
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 2rem;
+  border: 2px solid #e53935;
+  border-radius: 8px;
+}
+
+.autherror-message-header {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.autherror-message-p {
+  margin-bottom: 1rem;
+}
+
+.autherror-div {
+  margin-top: 2rem;
+}
+
+.autherror-button {
+  margin-right: 1rem;
+}
+
+.autherror-style {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.autherror-textalign {
+  text-align: left;
+  display: inline-block;
+}

@@ -88,33 +88,9 @@ function ProposalPage() {
       tooltip.className = "custom-validation-tooltip";
       tooltip.textContent = "Please fill out this field.";
 
-      // Style the tooltip to look like native browser validation
-      tooltip.style.cssText = `
-        position: absolute;
-        background: #323232;
-        color: white;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        white-space: nowrap;
-        z-index: 10000;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        pointer-events: none;
-      `;
-
       // Add arrow to tooltip
       const arrow = document.createElement("div");
-      arrow.style.cssText = `
-        position: absolute;
-        top: -5px;
-        left: 20px;
-        width: 0;
-        height: 0;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-        border-bottom: 5px solid #323232;
-      `;
+      arrow.className = "custom-validation-tooltip-arrow";
       tooltip.appendChild(arrow);
 
       // Position the tooltip relative to the QuillEditor
@@ -383,10 +359,7 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
+          <label className="required-field proposal-font">
             Project Background Information
           </label>
           <div id="quill_background_info">
@@ -394,7 +367,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.background_info || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -422,10 +395,7 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
+          <label className="required-field proposal-font">
             Project Description
           </label>
           <div id="quill_project_description">
@@ -433,7 +403,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.project_description || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -461,18 +431,13 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
-            Project Scope
-          </label>
+          <label className="required-field proposal-font">Project Scope</label>
           <div id="quill_project_scope">
             <QuillEditor
               ref={(el) => (quill.current = el)}
               value={formData.project_scope || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -500,10 +465,7 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
+          <label className="required-field proposal-font">
             Project Challenges
           </label>
           <div id="quill_project_challenges">
@@ -511,7 +473,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.project_challenges || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -539,10 +501,7 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
+          <label className="required-field proposal-font">
             Constraints & Assumptions
           </label>
           <div id="quill_constraints_assumptions">
@@ -550,7 +509,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.constraints_assumptions || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -569,15 +528,13 @@ function ProposalPage() {
         <br />
 
         <br />
-        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
-          Sponsor Provided Resources
-        </div>
+        <div className="proposal-font">Sponsor Provided Resources</div>
         <br />
         <QuillEditor
           ref={(el) => (quill.current = el)}
           value={formData.sponsor_provided_resources || ""}
           formats={formats}
-          style={{ height: "150px" }}
+          className="proposal-height"
           onChange={(value) => {
             setActualFormData({
               ...formData,
@@ -614,10 +571,7 @@ function ProposalPage() {
             }
           }
         >
-          <label
-            className="required-field"
-            style={{ fontWeight: "bold", fontSize: "13px" }}
-          >
+          <label className="required-field proposal-font">
             Sponsor and Project Specific Deliverables
           </label>
           <div id="quill_sponsor_deliverables">
@@ -625,7 +579,7 @@ function ProposalPage() {
               ref={(el) => (quill.current = el)}
               value={formData.sponsor_deliverables || ""}
               formats={formats}
-              style={{ height: "150px" }}
+              className="proposal-height"
               onChange={(value) => {
                 setActualFormData({
                   ...formData,
@@ -644,15 +598,13 @@ function ProposalPage() {
         <br />
 
         <br />
-        <div style={{ fontWeight: "bold", fontSize: "13px" }}>
-          Proprietary Information
-        </div>
+        <div className="proposal-font">Proprietary Information</div>
         <br />
         <QuillEditor
           ref={(el) => (quill.current = el)}
           value={formData.proprietary_info || ""}
           formats={formats}
-          style={{ height: "150px" }}
+          className="proposal-height"
           onChange={(value) => {
             setActualFormData({
               ...formData,

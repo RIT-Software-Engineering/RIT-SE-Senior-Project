@@ -7,10 +7,11 @@ import "../../../css/utils/responsive.css";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { SecureFetch } from "../../util/functions/secureFetch";
-import SELogoLightMode from "../../../Assets/gccis_light.png";
-import SELogoDarkMode from "../../../Assets/gccis_dark.png";
 import ProfileModal from "./profileModal";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import uiConfig from "../../../config/uiConfig";
+import SELogoDarkMode from "../../../Assets/gccis_dark.png";
+import SELogoLightMode from "../../../Assets/gccis_light.png";
 
 function Header() {
   const history = useHistory();
@@ -108,18 +109,16 @@ function Header() {
               className="ui button"
               onClick={() => setProfileModalOpen(true)}
             >
-              <span style={{ display: "inline-flex", alignItems: "center" }}>
+              <span className="header-span">
                 <ProfileCircle user={user} size="tiny" />
-                <span style={{ marginLeft: "8px", paddingTop: "2px" }}>
-                  Profile
-                </span>
+                <span className="header-profile">Profile</span>
               </span>
             </Button>
           )}
         </div>
         <div id="hamburger-menu" className="ui right floated buttons">
           <Button
-            style={{ backgroundColor: "black", color: "white" }}
+            className="header-button"
             icon
             onClick={() => setVisible(true)}
           >
@@ -226,7 +225,7 @@ function Header() {
   return (
     <div id="header">
       <div id="navbar">
-        <span>Software Engineering Senior Project</span>
+        <span>{uiConfig.app.name}</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
@@ -235,24 +234,11 @@ function Header() {
           user={user}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "1em",
-          borderTop: "2px solid rgba(255,255,255, 0.2)",
-        }}
-      >
+      <div className="header-nav">
         <img
           src={darkMode ? SELogoDarkMode : SELogoLightMode}
           alt="Department of Software Engineering"
-          style={{
-            height: "35px",
-            width: "auto",
-            marginRight: "15px",
-            flexShrink: 0,
-            cursor: "pointer",
-          }}
+          className="header-dark"
           href={"/"}
           onClick={() => {
             history.push("/");
@@ -265,7 +251,7 @@ function Header() {
           }}
         />
         <span
-          style={{ fontSize: "clamp(1.5rem, 2vw, 2rem)", cursor: "pointer" }}
+          className="header-cookies"
           href={"/"}
           onClick={() => {
             history.push("/");

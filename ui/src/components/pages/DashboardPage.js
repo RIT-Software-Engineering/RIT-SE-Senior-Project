@@ -6,6 +6,7 @@ import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
 import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
 import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
 import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
+import ErrorLogs from "../Tabs/ErrorsTab/ErrorLogs";
 import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
 import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
@@ -103,10 +104,30 @@ export default function DashboardPage() {
       if (!user.view_only && !user.mockUser.view_only) {
         panes.push({
           menuItem: {
+            key: "Errors-Tab",
+            content: (
+              <>
+                <i
+                  className="exclamation triangle icon"
+                  style={{ marginRight: 5 }}
+                />
+                Errors
+              </>
+            ),
+            href: "#",
+          },
+          render: () => (
+            <Tab.Pane>
+              <ErrorLogs />
+            </Tab.Pane>
+          ),
+        });
+        panes.push({
+          menuItem: {
             key: "Admin-Tab",
             content: (
               <>
-                <i className="cog icon" style={{ marginRight: 5 }} />
+                <i className="cog icon dashboard-menu-icon" />
                 Admin
               </>
             ),
@@ -134,7 +155,7 @@ export default function DashboardPage() {
             key: "Sponsors-Tab",
             content: (
               <>
-                <i className="handshake icon" style={{ marginRight: 5 }} />
+                <i className="handshake icon dashboard-menu-icon" />
                 Sponsors
               </>
             ),
@@ -153,7 +174,7 @@ export default function DashboardPage() {
             key: "Coaches-Tab",
             content: (
               <>
-                <i className="graduation cap icon" style={{ marginRight: 5 }} />
+                <i className="graduation cap icon dashboard-menu-icon" />
                 Coaches
               </>
             ),
@@ -175,7 +196,7 @@ export default function DashboardPage() {
             key: "Students-Tab",
             content: (
               <>
-                <i className="users icon" style={{ marginRight: 5 }} />
+                <i className="users icon dashboard-menu-icon" />
                 Students
               </>
             ),
@@ -192,7 +213,7 @@ export default function DashboardPage() {
             key: "Projects-Tab",
             content: (
               <>
-                <i className="folder open icon" style={{ marginRight: 5 }} />
+                <i className="folder open icon dashboard-menu-icon" />
                 Projects
               </>
             ),
@@ -212,7 +233,7 @@ export default function DashboardPage() {
             key: "Logging-Tab",
             content: (
               <>
-                <i className="clock outline icon" style={{ marginRight: 5 }} />
+                <i className="clock outline icon dashboard-menu-icon" />
                 Logging
               </>
             ),
@@ -233,7 +254,7 @@ export default function DashboardPage() {
             key: "Dashboard-Tab",
             content: (
               <>
-                <i className="dashboard icon" style={{ marginRight: 5 }} />
+                <i className="dashboard icon dashboard-menu-icon" />
                 Dashboard
               </>
             ),

@@ -5,6 +5,7 @@ import { config } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import ErrorPage from "../../pages/ErrorPage";
 import { decode } from "he";
+import "./../../../css/components/tabs/website.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
@@ -86,31 +87,31 @@ export default function WebsiteViewerModal(props) {
    */
   const NoArchiveFoundMessage = () => {
     return (
-      <div style={{ padding: "3rem 2rem", minHeight: "400px" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+      <div className="website-archive-notfound">
+        <div className="website-archive">
           <Icon
             name="bullhorn"
             size="huge"
             color="grey"
-            style={{ marginBottom: "1rem" }}
+            className="website-archive-icon"
           />
-          <Header as="h2" color="grey" style={{ margin: "0 0 1rem 0" }}>
+          <Header as="h2" color="grey" className="website-archive-">
             No Archive Available
           </Header>
         </div>
 
-        <Message info style={{ fontSize: "1.1em", lineHeight: "1.6" }}>
-          <Message.Header style={{ fontSize: "1.3em", marginBottom: "1rem" }}>
+        <Message info className="website-message-info">
+          <Message.Header className="website-message-header">
             Archive Not Found
           </Message.Header>
-          <div style={{ marginBottom: "1.5rem" }}>
-            <p style={{ marginBottom: "1rem" }}>
+          <div className="website-archive-message">
+            <p className="website-archive-icon">
               This project doesn't have an archive or showcase materials
               available yet. Archives typically include project posters, videos,
               images, and detailed information about the project's scope, team,
               and outcomes.
             </p>
-            <p style={{ marginBottom: "0" }}>
+            <p className="website-message-description">
               Archives are usually created after project completion. If you wish
               to add an archive to this project, and are a member of the project
               team press the "+" button. If you are not a member of the project
@@ -127,27 +128,17 @@ export default function WebsiteViewerModal(props) {
    */
   const LoadingMessage = () => {
     return (
-      <div
-        style={{
-          padding: "3rem 2rem",
-          textAlign: "center",
-          minHeight: "400px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div className="website-loading">
         <Icon
           loading
           name="spinner"
           size="huge"
-          style={{ marginBottom: "2rem" }}
+          className="website-loading-icon"
         />
-        <Header as="h3" color="grey" style={{ margin: "0", fontSize: "1.3em" }}>
+        <Header as="h3" color="grey" className="website-loading-header">
           Loading project archive...
         </Header>
-        <p style={{ color: "#6c757d", marginTop: "1rem", fontSize: "1.1em" }}>
+        <p className="website-loading-wait">
           Please wait while we fetch the project details.
         </p>
       </div>
@@ -171,7 +162,7 @@ export default function WebsiteViewerModal(props) {
                 name="trophy"
                 title={"Outstanding"}
                 size="large"
-                style={{ float: "right" }}
+                className="website-generate-icon"
               />
             )}
             {archive?.creative === 1 && (
@@ -179,7 +170,7 @@ export default function WebsiteViewerModal(props) {
                 name="trophy"
                 title={"Creative"}
                 size="large"
-                style={{ float: "right" }}
+                className="website-generate-icon"
               />
             )}
             {
@@ -199,7 +190,7 @@ export default function WebsiteViewerModal(props) {
                 <img
                   src={`${basePosterURL}${archive?.poster_thumb}`}
                   height={CONTENT_HEIGHT}
-                  style={{ cursor: "zoom-in", padding: "5px" }}
+                  className="website-generate-content"
                   onClick={() => setPosterOpen(true)}
                   alt={archive?.title + " Senior Project Thumbnail Poster"}
                 />
@@ -207,6 +198,7 @@ export default function WebsiteViewerModal(props) {
               <Modal
                 closeOnDimmerClick={false}
                 className={"sticky"}
+                closeIcon={true}
                 size={"large"}
                 open={posterOpen}
                 onClose={() => setPosterOpen(false)}
@@ -244,7 +236,7 @@ export default function WebsiteViewerModal(props) {
                 <img
                   src={`${baseImageURL}${archive?.archive_image}`}
                   height={CONTENT_HEIGHT}
-                  style={{ cursor: "zoom-in", padding: "5px" }}
+                  className="website-generate-content"
                   onClick={() => setImageOpen(true)}
                   alt={archive?.title + " Senior Project Image"}
                 />
@@ -252,6 +244,7 @@ export default function WebsiteViewerModal(props) {
               <Modal
                 closeOnDimmerClick={false}
                 className={"sticky"}
+                closeIcon={true}
                 size={"large"}
                 open={imageOpen}
                 onClose={() => setImageOpen(false)}
@@ -300,7 +293,7 @@ export default function WebsiteViewerModal(props) {
             <div className="ui attached stackable padded grid">
               <div className="column">
                 <div className="ui small header">Synopsis</div>
-                <p style={{ whiteSpace: "pre-line" }}>
+                <p className="website-whitespace">
                   {decodeSynopsis(archive?.synopsis)}
                 </p>
               </div>
@@ -317,6 +310,7 @@ export default function WebsiteViewerModal(props) {
     <Modal
       closeOnDimmerClick={false}
       className={"sticky"}
+      closeIcon={true}
       trigger={<Button icon="bullhorn" />}
       header={`Viewing "${props.project.display_name || props.project.title}"`}
       onOpen={updateData}

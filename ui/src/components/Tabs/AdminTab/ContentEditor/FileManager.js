@@ -5,7 +5,7 @@ import { SecureFetch } from "../../../util/functions/secureFetch";
 import FileBrowser from "react-keyed-file-browser";
 import CustomItemDetail from "./CustomItemDetail";
 import "react-keyed-file-browser/dist/react-keyed-file-browser.css";
-import dayjs from "dayjs"
+import dayjs from "dayjs";
 
 export default function FileManager() {
   // Stores the data of files to display to front end
@@ -80,7 +80,7 @@ export default function FileManager() {
           fileData.forEach((pathData) => {
             if (isDirectory(pathData["file"])) {
               getFilesInDirectory(pathData["file"] + "/", newFilesToSet);
-            } else { 
+            } else {
               newFilesToSet.push({
                 key: pathData["file"],
                 modified: dayjs(pathData["lastModified"]).toDate(),

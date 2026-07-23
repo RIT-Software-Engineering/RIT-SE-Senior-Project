@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import uiConfig from "../../config/uiConfig";
 import { Button } from "semantic-ui-react";
+import "./../../css/components/pages/StackTraceError.css";
 
 const StackTraceErrorPage = () => {
   // Retrieve error details from sessionStorage.
@@ -33,7 +35,7 @@ const StackTraceErrorPage = () => {
 
   const handleReportOnGitHub = () => {
     try {
-      const version = "v1.8.2";
+      const version = `v${uiConfig.footers.loggedIn.version}`;
       const timestamp = errorInfo?.timestamp || "No timestamp saved";
       const error = errorInfo?.error || "Unknown error";
       const statusCode = errorInfo?.statusCode
@@ -69,48 +71,16 @@ const StackTraceErrorPage = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "50px auto",
-        textAlign: "center",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1 style={{ color: "var(--action-bar-proposal-red)" }}>
-        ⚠️ An Error Occurred
-      </h1>
+    <div className="stack-trace-error-page">
+      <h1 className="stack-trace-error-color">⚠️ An Error Occurred</h1>
       {errorInfo ? (
-        <div
-          style={{
-            background: "var(--bg-secondary)",
-            padding: "15px",
-            borderRadius: "8px",
-            textAlign: "left",
-          }}
-        >
-          <h2 style={{ color: "var(--action-bar-proposal-red)" }}>
-            Error: {errorInfo.error}
-          </h2>
-          <details style={{ marginTop: "10px" }}>
-            <summary
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                color: "var(--text-primary)",
-              }}
-            >
+        <div className="stack-trace-error-info">
+          <h2 className="stack-trace-error-color">Error: {errorInfo.error}</h2>
+          <details className="stack-trace-error-detail">
+            <summary className="stack-trace-error-detail-summary">
               View Stack Trace
             </summary>
-            <pre
-              style={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-                background: "var(--bg-secondary)",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
-            >
+            <pre className="stack-trace-error-detail-summary2">
               {errorInfo.componentStack}
             </pre>
           </details>
@@ -119,10 +89,8 @@ const StackTraceErrorPage = () => {
         <p>No error details available.</p>
       )}
 
-      <div style={{ marginTop: "20px" }}>
-        <p
-          style={{ fontSize: "14px", color: "var(--action-bar-proposal-red)" }}
-        >
+      <div className="stack-trace-error-detail-div">
+        <p className="stack-trace-error-detail-p">
           ⚠️ A GitHub account is required to report an issue.
         </p>
         <Button onClick={handleGoBack}>🔙 Go Back</Button>
@@ -131,14 +99,7 @@ const StackTraceErrorPage = () => {
       </div>
 
       {userFeedback && (
-        <p
-          style={{
-            marginTop: "10px",
-            color: "var(--action-bar-proposal-green)",
-          }}
-        >
-          {userFeedback}
-        </p>
+        <p className="stack-trace-error-userfeedback">{userFeedback}</p>
       )}
     </div>
   );

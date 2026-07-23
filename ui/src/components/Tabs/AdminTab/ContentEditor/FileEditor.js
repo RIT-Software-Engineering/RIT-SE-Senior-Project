@@ -181,7 +181,7 @@ export default function FileEditor() {
         panels={[
           {
             key: "fileEditor",
-            title: "Content Editor",
+            title: "Content",
             content: {
               content: (
                 <>
@@ -190,6 +190,7 @@ export default function FileEditor() {
                     closeOnDimmerClick={false}
                     closeOnEscape={false}
                     className={"sticky"}
+                    closeIcon={true}
                     open={addFileOpen}
                     onClose={() => setAddFileOpen(false)}
                     onOpen={() => setAddFileOpen(true)}

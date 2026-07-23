@@ -1,0 +1,11 @@
+.projectviewer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-info {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

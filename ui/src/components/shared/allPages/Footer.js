@@ -1,44 +1,40 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../util/functions/UserContext";
-import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import { config } from "../../util/functions/constants";
+import { SecureFetch } from "../../util/functions/secureFetch";
+import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
+import "semantic-ui-css/semantic.min.css";
+import uiConfig from "../../../config/uiConfig";
+import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
   const { user } = useContext(UserContext);
-  const [signedIn, setSignedIn] = useState(false);
+  const [footerHtml, setFooterHtml] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
+  const signedIn = user && Object.keys(user).length > 0 && user.user;
   useEffect(() => {
-    // A user is considered signed in if the user object has a value
-    setSignedIn(Object.keys(user).length !== 0);
-  }, [user]);
+    const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
-  if (signedIn) {
-    return (
-      <div id="footer">
-        <div id="bringMeDown" className="ui container stackable grid">
-          <div className="two column row">
-            <div className="column">
-              <h5 id="copyright">
-                <i className="ui icon copyright"></i> Rochester Institute of
-                Technology, All Rights Reserved
-              </h5>
-            </div>
-            <div id="version" className="column">
-              <h5>
-                <a
-                  href="https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  v1.8.3
-                </a>
-              </h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
+    setIsLoading(true);
+    SecureFetch(`${config.url.API_GET_HTML}?name=${footerName}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Network response was not ok");
+        return r.json();
+      })
+      .then((data) => {
+        const html = data?.[0]?.html || "";
+        setFooterHtml(html);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching footer:", error);
+        setFooterHtml("");
+        setIsLoading(false);
+      });
+  }, [user]);
+  if (isLoading) {
     return (
       <div id="footer">
         <div id="bringMeDownSignedIn" className="ui container stackable grid">
@@ -47,11 +43,7 @@ function Footer() {
               <img
                 src={collegeLogo}
                 alt="Golisano College of Computing & Information Sciences"
-                style={{
-                  maxWidth: "200px",
-                  width: "100%",
-                  height: "auto",
-                }}
+                className="footer-college-logo"
               />
             </div>
             <div className="column">
@@ -71,15 +63,7 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div
-            className="centered row"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
+          <div className="centered row footer-signed-out-copyright">
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
@@ -89,6 +73,29 @@ function Footer() {
       </div>
     );
   }
+
+  return (
+    <div id="footer">
+      {footerHtml ? <InnerHTML html={footerHtml} /> : null}
+      {signedIn && (
+        <div
+          id="version"
+          className="ui container"
+          style={{ textAlign: "right" }}
+        >
+          <h5>
+            <a
+              href={uiConfig.footers.loggedIn.githubLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              v{uiConfig.footers.loggedIn.version}
+            </a>
+          </h5>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default Footer;

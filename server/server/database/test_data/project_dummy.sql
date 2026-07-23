@@ -208,7 +208,7 @@ VALUES
         NULL,
         NULL,
         'AR shopping assistant',
-        3
+        NULL
     ),
     (
         '7_carecraze',
@@ -272,7 +272,7 @@ VALUES
     ),
     (
         '9_ecoedge',
-        'needs revision',
+        'submitted',
         'EcoEdge Carbon Footprint Tracking and Sustainability Reporting',
         'GreenEdge Solutions',
         'John Smith',
@@ -298,7 +298,7 @@ VALUES
         NULL,
         NULL,
         'Corporate carbon tracking',
-        2
+        NULL
     ),
     (
         '10_trendtide',
@@ -328,7 +328,7 @@ VALUES
         NULL,
         NULL,
         'Market trend dashboard',
-        2
+        NULL
     ),
     (
         '11_vitavibe',
