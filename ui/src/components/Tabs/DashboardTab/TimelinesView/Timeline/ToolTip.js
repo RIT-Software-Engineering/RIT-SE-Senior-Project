@@ -258,10 +258,30 @@ export default function ToolTip(props) {
 
   if (props.noPopup) {
     return (
-      <div className={`no-popup-tooltip ${props.color}`}>
-        <h4>{props.action?.action_title}</h4>
-        {content()}
-      </div>
+      <>
+        <div className={`no-popup-tooltip ${props.color}`}>
+          <h4>{props.action?.action_title}</h4>
+          {content()}
+        </div>
+        {props.action?.action_target !== "break_period" && (
+          <ActionModal
+            open={actionModalOpen}
+            key={props.action?.action_id}
+            {...props.action}
+            projectId={props.projectId}
+            preActionContent={metadata(true)}
+            reloadTimelineActions={props.reloadTimelineActions}
+            trigger={<span style={{ display: "none" }} />}
+            isOpenCallback={(isOpen) => {
+              setCloseOnDocClick(!isOpen);
+              if (isOpen) {
+                setActionModalOpen(false);
+              }
+              setActionModalOpen(isOpen);
+            }}
+          />
+        )}
+      </>
     );
   }
 
@@ -311,6 +331,7 @@ export default function ToolTip(props) {
           projectId={props.projectId}
           preActionContent={metadata(true)}
           reloadTimelineActions={props.reloadTimelineActions}
+          trigger={<span style={{ display: "none" }} />}
           isOpenCallback={(isOpen) => {
             setCloseOnDocClick(!isOpen);
             if (isOpen) {
