@@ -8,6 +8,7 @@ import ProposalPage from "./components/pages/ProposalPage";
 import ErrorPage from "./components/pages/ErrorPage";
 import DashboardPage from "./components/pages/DashboardPage";
 import AuthErrorPage from "./components/pages/AuthErrorPage";
+import ErrorLogsPage from "./components/pages/ErrorLogsPage";
 import Header from "./components/shared/allPages/Header";
 import Footer from "./components/shared/allPages/Footer";
 import { UserContextProvider } from "./components/util/functions/UserContext";
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/proposal-form" component={ProposalPage} />
                 <Route path="/dashboard" component={DashboardPage} />
                 <Route path="/auth-error" component={AuthErrorPage} />
+                <Route path="/error-logs" component={ErrorLogsPage} />
                 <Route path="/error" component={StackTraceErrorPage} />
                 <Route component={ErrorPage} />
               </Switch>
