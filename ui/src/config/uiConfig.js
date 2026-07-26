@@ -1,9 +1,9 @@
 const uiConfig = {
-   app: {
+  app: {
     name: "Senior Project Portal",
     orgName: "Department of Software Engineering",
     url: {
-    API_GET_HTML: "/api/getHtml"
+      API_GET_HTML: "/api/getHtml",
     },
     logoLight: "/assets/logo-light.png",
     logoDark: "/assets/logo-dark.png",
@@ -19,7 +19,7 @@ const uiConfig = {
     },
     loggedIn: {
       copyright: "Rochester Institute of Technology, All Rights Reserved",
-      version: "1.9.0",
+      version: "1.9.1",
       githubLink:
         "https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project",
     },

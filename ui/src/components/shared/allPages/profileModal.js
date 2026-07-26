@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
-import { useSessionStorage } from "../../util/functions/utils";
+import { useSessionStorage, formatDateTime } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
 import "./../../../css/components/shared/profileModal.css";
 
@@ -248,7 +248,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                 <div>
                   <strong>Last Login:</strong>{" "}
                   {user.last_login
-                    ? new Date(user.last_login).toLocaleString()
+                    ? formatDateTime(user.last_login)
                     : "Never Logged In"}
                 </div>
               </div>
