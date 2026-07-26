@@ -10,10 +10,9 @@ require("../config/passport");
 const router = require("express").Router();
 const DBHandler = require("../database/db");
 let db = new DBHandler();
-const AuditLog = require("../audit/audit_logger")(db);
 
 const saml_router = require("./saml_routes")(router, db);
-const db_router = require("./db_routes")(db, AuditLog);
+const db_router = require("./db_routes")(db);
 const ai_router = require("./ai_routes")(router);
 
 // Database routes

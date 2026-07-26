@@ -7,6 +7,6 @@ CREATE TABLE audit_log (
     entity_type     TEXT NOT NULL,
     entity_id       TEXT,
     message         TEXT NOT NULL,
-    details         TEXT,
+    details_json    TEXT,
     FOREIGN KEY (system_id) REFERENCES users(system_id)
 );

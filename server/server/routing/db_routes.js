@@ -11,6 +11,7 @@ const fileSizeParser = require("filesize-parser");
 const he = require("he");
 const { convert } = require("html-to-text");
 const redeployDatabase = require("../../db_setup");
+const AuditLog = require("../audit/audit_logger");
 
 function humanFileSize(bytes, si = false, dp = 1) {
   const thresh = si ? 1000 : 1024;
@@ -90,8 +91,78 @@ const ACTION_TARGETS = {
   PEER_EVALUATION: "peer_evaluation",
 };
 
+function recordProjectEditAudit(req, body) {
+  let changedFields = {};
+  try {
+    changedFields = body.changed_fields ? JSON.parse(body.changed_fields) : {};
+  } catch (err) {
+    changedFields = {};
+  }
+
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
+
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.UPDATE,
+    entityType: "project",
+    entityId: body.project_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordActionEditAudit(req, body) {
+  let changedFields = {};
+  try {
+    changedFields = body.changed_fields ? JSON.parse(body.changed_fields) : {};
+  } catch (err) {
+    changedFields = {};
+  }
+
+  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
+  let auditVerb = "updated";
+
+  if ("date_deleted" in changedFields) {
+    const [beforeRaw, afterRaw] = changedFields.date_deleted;
+    const isEmpty = (v) => v === "" || v === undefined || v === null;
+    const wasActive = isEmpty(beforeRaw);
+    const isActiveNow = isEmpty(afterRaw);
+
+    if (wasActive && !isActiveNow) {
+      auditActionType = AuditLog.ACTION_TYPES.DEACTIVATE;
+      auditVerb = "deactivated";
+    } else if (!wasActive && isActiveNow) {
+      auditActionType = AuditLog.ACTION_TYPES.REACTIVATE;
+      auditVerb = "reactivated";
+    }
+
+    delete changedFields.date_deleted;
+  }
+
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} action ${body.action_id} (${body.action_title})`;
+
+  return AuditLog.record(req, {
+    actionType: auditActionType,
+    entityType: "action",
+    entityId: body.action_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordActionCreateAudit(req, body, newActionId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "action",
+    entityId: newActionId,
+    message: `${AuditLog.actorLabel(req)} created action ${newActionId} (${body.action_title})`,
+    details: body,
+  });
+}
+
 // Routes
-module.exports = (db, AuditLog) => {
+module.exports = (db) => {
   /**
    * /getAllUsersForLogin ENDPOINT SHOULD ONLY BE HIT IN DEVELOPMENT ONLY
    *
@@ -1730,27 +1801,7 @@ module.exports = (db, AuditLog) => {
         db.query(deleteCoachesSQL),
       ])
         .then((values) => {
-          let changedFields = {};
-          try {
-            changedFields = body.changed_fields
-              ? JSON.parse(body.changed_fields)
-              : {};
-          } catch (err) {
-            changedFields = {};
-          }
-
-          const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-          const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
-
-          AuditLog.record(req, {
-            actionType: AuditLog.ACTION_TYPES.UPDATE,
-            entityType: "project",
-            entityId: body.project_id,
-            message: changeSummary
-              ? `${baseMessage} — ${changeSummary}`
-              : baseMessage,
-            details: changedFields,
-          });
+          recordProjectEditAudit(req, body);
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -3425,47 +3476,7 @@ module.exports = (db, AuditLog) => {
 
       db.query(updateQuery, params)
         .then(() => {
-          let changedFields = {};
-          try {
-            changedFields = body.changed_fields
-              ? JSON.parse(body.changed_fields)
-              : {};
-          } catch (err) {
-            changedFields = {};
-          }
-
-          let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
-          let auditVerb = "updated";
-
-          if ("date_deleted" in changedFields) {
-            const [beforeRaw, afterRaw] = changedFields.date_deleted;
-            const isEmpty = (v) => v === "" || v === undefined || v === null;
-            const wasActive = isEmpty(beforeRaw);
-            const isActiveNow = isEmpty(afterRaw);
-
-            if (wasActive && !isActiveNow) {
-              auditActionType = AuditLog.ACTION_TYPES.DEACTIVATE;
-              auditVerb = "deactivated";
-            } else if (!wasActive && isActiveNow) {
-              auditActionType = AuditLog.ACTION_TYPES.REACTIVATE;
-              auditVerb = "reactivated";
-            }
-
-            delete changedFields.date_deleted;
-          }
-
-          const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-          const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} action ${body.action_id} (${body.action_title})`;
-
-          AuditLog.record(req, {
-            actionType: auditActionType,
-            entityType: "action",
-            entityId: body.action_id,
-            message: changeSummary
-              ? `${baseMessage} — ${changeSummary}`
-              : baseMessage,
-            details: changedFields,
-          });
+          recordActionEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -4037,13 +4048,7 @@ module.exports = (db, AuditLog) => {
         })
         .then((rows) => {
           const newActionId = rows && rows[0] ? rows[0].action_id : null;
-          AuditLog.record(req, {
-            actionType: AuditLog.ACTION_TYPES.CREATE,
-            entityType: "action",
-            entityId: newActionId,
-            message: `${AuditLog.actorLabel(req)} created action ${newActionId} (${body.action_title})`,
-            details: body,
-          });
+          recordActionCreateAudit(req, body, newActionId);
           return res.status(200).send();
         })
         .catch((err) => {
