@@ -20,6 +20,7 @@ export default function TimelineCheckboxes(props) {
   return (
     <div className="timeline-box">
       <Checkbox
+        id={`timeline-${props.projectId}-milestones`}
         toggle
         className="timeline-checkbox"
         label="Milestones"
@@ -28,6 +29,7 @@ export default function TimelineCheckboxes(props) {
       />
       <Divider orientation="vertical" />
       <Checkbox
+        id={`timeline-${props.projectId}-gantt`}
         toggle
         className="timeline-checkbox"
         label="Gantt"
@@ -36,6 +38,7 @@ export default function TimelineCheckboxes(props) {
       />
       <Divider orientation="vertical" />
       <Checkbox
+        id={`timeline-${props.projectId}-Calendar`}
         toggle
         className="timeline-checkbox"
         label="Calendar"
