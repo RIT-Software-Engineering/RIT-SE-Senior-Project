@@ -288,7 +288,6 @@ export default function ToolTip(props) {
   return (
     <>
       <Popup
-        onClose={() => console.log("POPUP CLOSE")}
         open={popupOpen}
         header={props.action?.action_title}
         content={content()}
