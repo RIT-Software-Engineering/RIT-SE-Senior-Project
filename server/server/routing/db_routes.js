@@ -4105,7 +4105,7 @@ module.exports = (db) => {
     [UserAuth.isAdmin],
     async (req, res, next) => {
       const { actions, target_semester, day_offset } = req.body;
-
+      const { source_semester } = req.body;
       if (!actions || !target_semester) {
         return res.status(400).send("Missing required fields");
       }
