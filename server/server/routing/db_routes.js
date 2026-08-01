@@ -12,6 +12,11 @@ const he = require("he");
 const { convert } = require("html-to-text");
 const redeployDatabase = require("../../db_setup");
 const AuditLog = require("../audit/audit_logger");
+const {
+  safeParseChangedFields,
+  detectActiveStateTransition,
+  detectBooleanActiveStateTransition,
+} = require("../utils");
 
 function humanFileSize(bytes, si = false, dp = 1) {
   const thresh = si ? 1000 : 1024;
@@ -91,52 +96,34 @@ const ACTION_TARGETS = {
   PEER_EVALUATION: "peer_evaluation",
 };
 
-function recordProjectEditAudit(req, body) {
-  let changedFields = {};
-  try {
-    changedFields = body.changed_fields ? JSON.parse(body.changed_fields) : {};
-  } catch (err) {
-    changedFields = {};
+function mapActiveStateTransition(transition) {
+  if (transition === "deactivated") {
+    return {
+      actionType: AuditLog.ACTION_TYPES.DEACTIVATE,
+      verb: "deactivated",
+    };
   }
-
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
-
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.UPDATE,
-    entityType: "project",
-    entityId: body.project_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
+  if (transition === "reactivated") {
+    return {
+      actionType: AuditLog.ACTION_TYPES.REACTIVATE,
+      verb: "reactivated",
+    };
+  }
+  return null;
 }
 
 function recordActionEditAudit(req, body) {
-  let changedFields = {};
-  try {
-    changedFields = body.changed_fields ? JSON.parse(body.changed_fields) : {};
-  } catch (err) {
-    changedFields = {};
-  }
+  const changedFields = safeParseChangedFields(body.changed_fields);
 
   let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
   let auditVerb = "updated";
 
-  if ("date_deleted" in changedFields) {
-    const [beforeRaw, afterRaw] = changedFields.date_deleted;
-    const isEmpty = (v) => v === "" || v === undefined || v === null;
-    const wasActive = isEmpty(beforeRaw);
-    const isActiveNow = isEmpty(afterRaw);
-
-    if (wasActive && !isActiveNow) {
-      auditActionType = AuditLog.ACTION_TYPES.DEACTIVATE;
-      auditVerb = "deactivated";
-    } else if (!wasActive && isActiveNow) {
-      auditActionType = AuditLog.ACTION_TYPES.REACTIVATE;
-      auditVerb = "reactivated";
-    }
-
-    delete changedFields.date_deleted;
+  const transition = mapActiveStateTransition(
+    detectActiveStateTransition(changedFields, "date_deleted"),
+  );
+  if (transition) {
+    auditActionType = transition.actionType;
+    auditVerb = transition.verb;
   }
 
   const changeSummary = AuditLog.summarizeChangedFields(changedFields);
@@ -158,6 +145,199 @@ function recordActionCreateAudit(req, body, newActionId) {
     entityId: newActionId,
     message: `${AuditLog.actorLabel(req)} created action ${newActionId} (${body.action_title})`,
     details: body,
+  });
+}
+
+function recordProjectEditAudit(req, body) {
+  const changedFields = safeParseChangedFields(body.changed_fields);
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
+
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.UPDATE,
+    entityType: "project",
+    entityId: body.project_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordSemesterEditAudit(req, body) {
+  const changedFields = safeParseChangedFields(body.changed_fields);
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} updated semester ${body.semester_id} (${body.name})`;
+
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.UPDATE,
+    entityType: "semester",
+    entityId: body.semester_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordSemesterCreateAudit(req, body, newSemesterId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "semester",
+    entityId: newSemesterId,
+    message: `${AuditLog.actorLabel(req)} created semester ${newSemesterId} (${body.name})`,
+    details: body,
+  });
+}
+
+function recordArchiveEditAudit(req, body) {
+  const changedFields = safeParseChangedFields(body.changed_fields);
+
+  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
+  let auditVerb = "updated";
+
+  const transition = mapActiveStateTransition(
+    detectActiveStateTransition(changedFields, "inactive"),
+  );
+  if (transition) {
+    auditActionType = transition.actionType;
+    auditVerb = transition.verb;
+  }
+
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} archive entry ${body.archive_id} (${body.title})`;
+
+  return AuditLog.record(req, {
+    actionType: auditActionType,
+    entityType: "archive",
+    entityId: body.archive_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordArchiveCreateAudit(req, body, newArchiveId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "archive",
+    entityId: newArchiveId,
+    message: `${AuditLog.actorLabel(req)} created archive entry ${newArchiveId} (${body.title})`,
+    details: body,
+  });
+}
+
+function recordUserEditAudit(req, body) {
+  const changedFields = safeParseChangedFields(body.changed_fields);
+
+  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
+  let auditVerb = "updated";
+
+  const transition = mapActiveStateTransition(
+    detectActiveStateTransition(changedFields, "active"),
+  );
+  if (transition) {
+    auditActionType = transition.actionType;
+    auditVerb = transition.verb;
+  }
+
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} user ${body.system_id}`;
+
+  return AuditLog.record(req, {
+    actionType: auditActionType,
+    entityType: "user",
+    entityId: body.system_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordUserCreateAudit(req, body) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "user",
+    entityId: body.system_id,
+    message: `${AuditLog.actorLabel(req)} created user ${body.system_id}`,
+    details: body,
+  });
+}
+
+function recordSponsorEditAudit(req, body) {
+  const changedFields = safeParseChangedFields(body.changed_fields);
+
+  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
+  let auditVerb = "updated";
+
+  const transition = mapActiveStateTransition(
+    detectBooleanActiveStateTransition(changedFields, "inActive"),
+  );
+  if (transition) {
+    auditActionType = transition.actionType;
+    auditVerb = transition.verb;
+  }
+
+  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
+  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} sponsor ${body.sponsor_id}`;
+
+  return AuditLog.record(req, {
+    actionType: auditActionType,
+    entityType: "sponsor",
+    entityId: body.sponsor_id,
+    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    details: changedFields,
+  });
+}
+
+function recordSponsorCreateAudit(req, body, newSponsorId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "sponsor",
+    entityId: newSponsorId,
+    message: `${AuditLog.actorLabel(req)} created sponsor ${newSponsorId} (${body.fname} ${body.lname})`,
+    details: body,
+  });
+}
+
+function recordSponsorNoteCreateAudit(req, body) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "sponsor",
+    entityId: body.sponsor_id,
+    message: `${AuditLog.actorLabel(req)} added a note to sponsor ${body.sponsor_id}`,
+    details: { note_content: body.note_content },
+  });
+}
+
+function recordTimeLogCreateAudit(req, body, newTimeLogId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "time_log",
+    entityId: newTimeLogId,
+    message: `${AuditLog.actorLabel(req)} logged ${body.time_amount} hour(s) on ${body.date}`,
+    details: body,
+  });
+}
+
+function recordTimeLogDeleteAudit(req, timeLogId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.DELETE,
+    entityType: "time_log",
+    entityId: timeLogId,
+    message: `${AuditLog.actorLabel(req)} deleted time log ${timeLogId}`,
+  });
+}
+
+function recordErrorLogDeleteAudit(req, errorLogId) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.DELETE,
+    entityType: "error_log",
+    entityId: errorLogId,
+    message: `${AuditLog.actorLabel(req)} deleted error log ${errorLogId}`,
+  });
+}
+
+function recordActionSubmissionCreateAudit(req, newActionLogId, actionTitle) {
+  return AuditLog.record(req, {
+    actionType: AuditLog.ACTION_TYPES.CREATE,
+    entityType: "action_submission",
+    entityId: newActionLogId,
+    message: `${AuditLog.actorLabel(req)} submitted "${actionTitle}"`,
   });
 }
 
@@ -217,6 +397,7 @@ module.exports = (db) => {
         `;
       db.query(deleteErrorLogQuery, [req.params.id])
         .then(() => {
+          recordErrorLogDeleteAudit(req, req.params.id);
           res.status(200).send();
         })
         .catch((err) => {
@@ -466,6 +647,7 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          recordUserCreateAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -592,6 +774,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordUserEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -616,6 +799,7 @@ module.exports = (db) => {
 
       db.query(sql, [req.body.id])
         .then(() => {
+          recordTimeLogDeleteAudit(req, req.body.id);
           res.status(200).send();
         })
         .catch((err) => {
@@ -706,6 +890,21 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          return db.query(
+            `SELECT time_log_id FROM time_log
+             WHERE system_id = ? AND project = ? AND work_date = ? AND time_amount = ?
+             ORDER BY time_log_id DESC LIMIT 1`,
+            [
+              req.user.system_id,
+              req.user.project,
+              req.body.date,
+              req.body.time_amount,
+            ],
+          );
+        })
+        .then((rows) => {
+          const newTimeLogId = rows && rows[0] ? rows[0].time_log_id : null;
+          recordTimeLogCreateAudit(req, req.body, newTimeLogId);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -1116,6 +1315,7 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then(() => {
+          recordArchiveEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -1201,7 +1401,16 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          return res.status(200).send(response);
+          return db
+            .query(
+              `SELECT archive_id FROM ${DB_CONFIG.tableNames.archive} WHERE name = ?`,
+              [body.name],
+            )
+            .then((rows) => {
+              const newArchiveId = rows && rows[0] ? rows[0].archive_id : null;
+              recordArchiveCreateAudit(req, body, newArchiveId);
+              return res.status(200).send(response);
+            });
         })
         .catch((err) => {
           console.error(err);
@@ -2718,6 +2927,20 @@ module.exports = (db) => {
 
       db.query(insertAction, params)
         .then(() => {
+          return db.query(
+            `SELECT action_log_id FROM action_log
+             WHERE action_template = ? AND system_id = ? AND project = ?
+             ORDER BY action_log_id DESC LIMIT 1`,
+            [body.action_template, req.user.system_id, body.project],
+          );
+        })
+        .then((rows) => {
+          const newActionLogId = rows && rows[0] ? rows[0].action_log_id : null;
+          recordActionSubmissionCreateAudit(
+            req,
+            newActionLogId,
+            action.action_title,
+          );
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -3810,7 +4033,15 @@ module.exports = (db) => {
       let createSponsorQueryPromise = db
         .query(createSponsorQuery, createSponsorParams)
         .then(() => {
-          return [200, null];
+          return db
+            .query(
+              `SELECT sponsor_id FROM sponsors WHERE fname = ? AND lname = ? AND company = ? AND email = ? ORDER BY sponsor_id DESC LIMIT 1`,
+              [body.fname, body.lname, body.company, body.email],
+            )
+            .then((rows) => {
+              const newSponsorId = rows && rows[0] ? rows[0].sponsor_id : null;
+              return [200, null, newSponsorId];
+            });
         })
         .catch((err) => {
           const error = new Error(err);
@@ -3831,7 +4062,7 @@ module.exports = (db) => {
 
       Promise.all([createSponsorQueryPromise, createSponsorNotePromise]).then(
         ([
-          [createSponsorQueryStatusCode, createSponsorError],
+          [createSponsorQueryStatusCode, createSponsorError, newSponsorId],
           [createNoteStatusCode, createNoteError],
         ]) => {
           if (createSponsorError) {
@@ -3845,6 +4076,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorCreateAudit(req, body, newSponsorId);
             res.status(createSponsorQueryStatusCode).send();
           }
         },
@@ -3950,6 +4182,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorEditAudit(req, body);
             res.status(updateQueryStatusCode).send();
           }
         },
@@ -3999,6 +4232,7 @@ module.exports = (db) => {
           error.statusCode = status;
           return next(error);
         } else {
+          recordSponsorNoteCreateAudit(req, body);
           res.status(status).send();
         }
       });
@@ -4159,6 +4393,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordSemesterEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -4227,6 +4462,16 @@ module.exports = (db) => {
 
       db.query(sql, params)
         .then(() => {
+          return db.query(
+            `SELECT semester_id FROM semester_group
+             WHERE name = ? AND dept = ? AND start_date = ? AND end_date = ?
+             ORDER BY semester_id DESC LIMIT 1`,
+            [body.name, body.dept, body.start_date, body.end_date],
+          );
+        })
+        .then((rows) => {
+          const newSemesterId = rows && rows[0] ? rows[0].semester_id : null;
+          recordSemesterCreateAudit(req, body, newSemesterId);
           return res.status(200).send();
         })
         .catch((err) => {

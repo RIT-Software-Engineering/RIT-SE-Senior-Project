@@ -1,11 +1,7 @@
 const Logger = require("../logger");
 const DBHandler = require("../database/db");
 const DB_CONFIG = require("../database/db_config");
-const {
-  getActor,
-  actorLabel,
-  summarizeChangedFields,
-} = require("../util/format_utils");
+const { getActor, actorLabel, summarizeChangedFields } = require("../utils");
 
 const db = new DBHandler();
 
