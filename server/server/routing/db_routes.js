@@ -11,12 +11,6 @@ const fileSizeParser = require("filesize-parser");
 const he = require("he");
 const { convert } = require("html-to-text");
 const redeployDatabase = require("../../db_setup");
-const AuditLog = require("../audit/audit_logger");
-const {
-  safeParseChangedFields,
-  detectActiveStateTransition,
-  detectBooleanActiveStateTransition,
-} = require("../utils");
 
 function humanFileSize(bytes, si = false, dp = 1) {
   const thresh = si ? 1000 : 1024;
@@ -96,250 +90,24 @@ const ACTION_TARGETS = {
   PEER_EVALUATION: "peer_evaluation",
 };
 
-function mapActiveStateTransition(transition) {
-  if (transition === "deactivated") {
-    return {
-      actionType: AuditLog.ACTION_TYPES.DEACTIVATE,
-      verb: "deactivated",
-    };
-  }
-  if (transition === "reactivated") {
-    return {
-      actionType: AuditLog.ACTION_TYPES.REACTIVATE,
-      verb: "reactivated",
-    };
-  }
-  return null;
-}
-
-function recordActionEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-
-  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
-  let auditVerb = "updated";
-
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "date_deleted"),
-  );
-  if (transition) {
-    auditActionType = transition.actionType;
-    auditVerb = transition.verb;
-  }
-
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} action ${body.action_id} (${body.action_title})`;
-
-  return AuditLog.record(req, {
-    actionType: auditActionType,
-    entityType: "action",
-    entityId: body.action_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordActionCreateAudit(req, body, newActionId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "action",
-    entityId: newActionId,
-    message: `${AuditLog.actorLabel(req)} created action ${newActionId} (${body.action_title})`,
-    details: body,
-  });
-}
-
-function recordProjectEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} updated project ${body.project_id} (${body.title})`;
-
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.UPDATE,
-    entityType: "project",
-    entityId: body.project_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordSemesterEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} updated semester ${body.semester_id} (${body.name})`;
-
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.UPDATE,
-    entityType: "semester",
-    entityId: body.semester_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordSemesterCreateAudit(req, body, newSemesterId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "semester",
-    entityId: newSemesterId,
-    message: `${AuditLog.actorLabel(req)} created semester ${newSemesterId} (${body.name})`,
-    details: body,
-  });
-}
-
-function recordArchiveEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-
-  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
-  let auditVerb = "updated";
-
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "inactive"),
-  );
-  if (transition) {
-    auditActionType = transition.actionType;
-    auditVerb = transition.verb;
-  }
-
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} archive entry ${body.archive_id} (${body.title})`;
-
-  return AuditLog.record(req, {
-    actionType: auditActionType,
-    entityType: "archive",
-    entityId: body.archive_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordArchiveCreateAudit(req, body, newArchiveId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "archive",
-    entityId: newArchiveId,
-    message: `${AuditLog.actorLabel(req)} created archive entry ${newArchiveId} (${body.title})`,
-    details: body,
-  });
-}
-
-function recordUserEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-
-  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
-  let auditVerb = "updated";
-
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "active"),
-  );
-  if (transition) {
-    auditActionType = transition.actionType;
-    auditVerb = transition.verb;
-  }
-
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} user ${body.system_id}`;
-
-  return AuditLog.record(req, {
-    actionType: auditActionType,
-    entityType: "user",
-    entityId: body.system_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordUserCreateAudit(req, body) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "user",
-    entityId: body.system_id,
-    message: `${AuditLog.actorLabel(req)} created user ${body.system_id}`,
-    details: body,
-  });
-}
-
-function recordSponsorEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
-
-  let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
-  let auditVerb = "updated";
-
-  const transition = mapActiveStateTransition(
-    detectBooleanActiveStateTransition(changedFields, "inActive"),
-  );
-  if (transition) {
-    auditActionType = transition.actionType;
-    auditVerb = transition.verb;
-  }
-
-  const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} sponsor ${body.sponsor_id}`;
-
-  return AuditLog.record(req, {
-    actionType: auditActionType,
-    entityType: "sponsor",
-    entityId: body.sponsor_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
-    details: changedFields,
-  });
-}
-
-function recordSponsorCreateAudit(req, body, newSponsorId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "sponsor",
-    entityId: newSponsorId,
-    message: `${AuditLog.actorLabel(req)} created sponsor ${newSponsorId} (${body.fname} ${body.lname})`,
-    details: body,
-  });
-}
-
-function recordSponsorNoteCreateAudit(req, body) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "sponsor",
-    entityId: body.sponsor_id,
-    message: `${AuditLog.actorLabel(req)} added a note to sponsor ${body.sponsor_id}`,
-    details: { note_content: body.note_content },
-  });
-}
-
-function recordTimeLogCreateAudit(req, body, newTimeLogId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "time_log",
-    entityId: newTimeLogId,
-    message: `${AuditLog.actorLabel(req)} logged ${body.time_amount} hour(s) on ${body.date}`,
-    details: body,
-  });
-}
-
-function recordTimeLogDeleteAudit(req, timeLogId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.DELETE,
-    entityType: "time_log",
-    entityId: timeLogId,
-    message: `${AuditLog.actorLabel(req)} deleted time log ${timeLogId}`,
-  });
-}
-
-function recordErrorLogDeleteAudit(req, errorLogId) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.DELETE,
-    entityType: "error_log",
-    entityId: errorLogId,
-    message: `${AuditLog.actorLabel(req)} deleted error log ${errorLogId}`,
-  });
-}
-
-function recordActionSubmissionCreateAudit(req, newActionLogId, actionTitle) {
-  return AuditLog.record(req, {
-    actionType: AuditLog.ACTION_TYPES.CREATE,
-    entityType: "action_submission",
-    entityId: newActionLogId,
-    message: `${AuditLog.actorLabel(req)} submitted "${actionTitle}"`,
-  });
-}
+const {
+  recordActionEditAudit,
+  recordActionCreateAudit,
+  recordProjectEditAudit,
+  recordSemesterEditAudit,
+  recordSemesterCreateAudit,
+  recordArchiveEditAudit,
+  recordArchiveCreateAudit,
+  recordUserEditAudit,
+  recordUserCreateAudit,
+  recordSponsorEditAudit,
+  recordSponsorCreateAudit,
+  recordSponsorNoteCreateAudit,
+  recordTimeLogCreateAudit,
+  recordTimeLogDeleteAudit,
+  recordErrorLogDeleteAudit,
+  recordActionSubmissionCreateAudit,
+} = require("../audit/audit_events");
 
 // Routes
 module.exports = (db) => {
@@ -395,9 +163,18 @@ module.exports = (db) => {
       const deleteErrorLogQuery = `
             DELETE FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?
         `;
-      db.query(deleteErrorLogQuery, [req.params.id])
-        .then(() => {
-          recordErrorLogDeleteAudit(req, req.params.id);
+      db.query(
+        `SELECT * FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?`,
+        [req.params.id],
+      )
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db
+            .query(deleteErrorLogQuery, [req.params.id])
+            .then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordErrorLogDeleteAudit(req, req.params.id, deletedRow);
           res.status(200).send();
         })
         .catch((err) => {
@@ -797,9 +574,13 @@ module.exports = (db) => {
 
       const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
 
-      db.query(sql, [req.body.id])
-        .then(() => {
-          recordTimeLogDeleteAudit(req, req.body.id);
+      db.query("SELECT * FROM time_log WHERE time_log_id = ?", [req.body.id])
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db.query(sql, [req.body.id]).then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordTimeLogDeleteAudit(req, req.body.id, deletedRow);
           res.status(200).send();
         })
         .catch((err) => {
@@ -2939,6 +2720,7 @@ module.exports = (db) => {
           recordActionSubmissionCreateAudit(
             req,
             newActionLogId,
+            action.action_id,
             action.action_title,
           );
           return res.sendStatus(200);
@@ -4232,7 +4014,19 @@ module.exports = (db) => {
           error.statusCode = status;
           return next(error);
         } else {
-          recordSponsorNoteCreateAudit(req, body);
+          db.query("SELECT fname, lname FROM sponsors WHERE sponsor_id = ?", [
+            body.sponsor_id,
+          ])
+            .then((rows) => {
+              const sponsorName =
+                rows && rows[0]
+                  ? `${rows[0].fname} ${rows[0].lname}`
+                  : "Unknown";
+              recordSponsorNoteCreateAudit(req, body, sponsorName);
+            })
+            .catch(() => {
+              recordSponsorNoteCreateAudit(req, body, "Unknown");
+            });
           res.status(status).send();
         }
       });

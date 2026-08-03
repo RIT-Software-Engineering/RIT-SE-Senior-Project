@@ -6,12 +6,34 @@ function getActor(req) {
 
 function actorLabel(req) {
   if (!req.user) return "Unknown user";
-  const name = [req.user.fname, req.user.lname].filter(Boolean).join(" ");
-  return name ? `${name} (${req.user.system_id})` : req.user.system_id;
+  const roleLabels = {
+    admin: "Admin Account",
+    coach: "Coach Account",
+    student: "Student Account",
+  };
+  const roleLabel = roleLabels[req.user.type] || "User Account";
+  return `${roleLabel} (${req.user.system_id})`;
 }
 
 function humanizeFieldName(field) {
   return field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function capitalize(str) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+function formatDurationFromDecimalHours(decimalHours) {
+  const totalMinutes = Math.round(parseFloat(decimalHours || 0) * 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  const parts = [];
+  if (hours > 0) parts.push(`${hours} hour(s)`);
+  if (minutes > 0) parts.push(`${minutes} minute(s)`);
+
+  return parts.length > 0 ? parts.join(" and ") : "0 minute(s)";
 }
 
 function displayValue(value) {
@@ -77,6 +99,8 @@ module.exports = {
   actorLabel,
   humanizeFieldName,
   displayValue,
+  capitalize,
+  formatDurationFromDecimalHours,
   summarizeChangedFields,
   safeParseChangedFields,
   detectActiveStateTransition,
