@@ -7,21 +7,32 @@ function getActor(req) {
 function actorLabel(req) {
   if (!req.user) return "Unknown user";
   const roleLabels = {
-    admin: "Admin Account",
-    coach: "Coach Account",
-    student: "Student Account",
+    admin: "Admin account",
+    coach: "Coach account",
+    student: "Student account",
   };
-  const roleLabel = roleLabels[req.user.type] || "User Account";
+  const roleLabel = roleLabels[req.user.type] || "User account";
   return `${roleLabel} (${req.user.system_id})`;
 }
 
+const FIELD_NAME_OVERRIDES = {
+  fname: "First Name",
+  lname: "Last Name",
+};
+
 function humanizeFieldName(field) {
-  return field.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  if (FIELD_NAME_OVERRIDES[field]) return FIELD_NAME_OVERRIDES[field];
+
+  return field
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function capitalize(str) {
-  if (!str) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+function displayValue(value) {
+  if (value === null || value === undefined || value === "") return "(empty)";
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
 }
 
 function formatDurationFromDecimalHours(decimalHours) {
@@ -34,12 +45,6 @@ function formatDurationFromDecimalHours(decimalHours) {
   if (minutes > 0) parts.push(`${minutes} minute(s)`);
 
   return parts.length > 0 ? parts.join(" and ") : "0 minute(s)";
-}
-
-function displayValue(value) {
-  if (value === null || value === undefined || value === "") return "(empty)";
-  if (typeof value === "object") return JSON.stringify(value);
-  return String(value);
 }
 
 function summarizeChangedFields(changedFields, excludeFields = []) {
@@ -64,34 +69,68 @@ function safeParseChangedFields(changedFields) {
   }
 }
 
-function detectActiveStateTransition(changedFields, fieldName) {
+function detectTransitionFromChangedFields(
+  changedFields,
+  fieldName,
+  isInactive,
+) {
   if (!(fieldName in changedFields)) return null;
 
   const [beforeRaw, afterRaw] = changedFields[fieldName];
-  const isEmpty = (v) => v === "" || v === undefined || v === null;
-  const wasActive = isEmpty(beforeRaw);
-  const isActiveNow = isEmpty(afterRaw);
+  const wasInactive = isInactive(beforeRaw);
+  const isInactiveNow = isInactive(afterRaw);
 
   delete changedFields[fieldName];
+
+  if (!wasInactive && isInactiveNow) return "deactivated";
+  if (wasInactive && !isInactiveNow) return "reactivated";
+  return null;
+}
+
+function detectActiveStateTransition(changedFields, fieldName) {
+  return detectTransitionFromChangedFields(
+    changedFields,
+    fieldName,
+    (v) => v !== "" && v !== undefined && v !== null,
+  );
+}
+
+function detectBooleanActiveStateTransition(changedFields, fieldName) {
+  return detectTransitionFromChangedFields(
+    changedFields,
+    fieldName,
+    (v) => v === "true" || v === "1" || v === true || v === 1,
+  );
+}
+
+function detectActiveStateTransitionFromValues(priorValue, newValue) {
+  const isEmpty = (v) => v === "" || v === undefined || v === null;
+  const wasActive = isEmpty(priorValue);
+  const isActiveNow = isEmpty(newValue);
 
   if (wasActive && !isActiveNow) return "deactivated";
   if (!wasActive && isActiveNow) return "reactivated";
   return null;
 }
 
-function detectBooleanActiveStateTransition(changedFields, fieldName) {
-  if (!(fieldName in changedFields)) return null;
+function buildServerSideDiff(priorRow, newBody, fields) {
+  const normalize = (v) => (v === null || v === undefined ? "" : String(v));
+  const changedFields = {};
 
-  const [beforeRaw, afterRaw] = changedFields[fieldName];
-  const isInactive = (v) => v === "true" || v === "1" || v === true || v === 1;
-  const wasActive = !isInactive(beforeRaw);
-  const isActiveNow = !isInactive(afterRaw);
+  fields.forEach((field) => {
+    const priorVal = priorRow ? priorRow[field] : "";
+    const newVal = newBody ? newBody[field] : "";
+    if (normalize(priorVal) !== normalize(newVal)) {
+      changedFields[field] = [priorVal, newVal];
+    }
+  });
 
-  delete changedFields[fieldName];
+  return changedFields;
+}
 
-  if (wasActive && !isActiveNow) return "deactivated";
-  if (!wasActive && isActiveNow) return "reactivated";
-  return null;
+function buildEditMessage(baseMessage, transition, changeSummary) {
+  if (transition) return baseMessage;
+  return changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage;
 }
 
 module.exports = {
@@ -99,10 +138,12 @@ module.exports = {
   actorLabel,
   humanizeFieldName,
   displayValue,
-  capitalize,
   formatDurationFromDecimalHours,
   summarizeChangedFields,
   safeParseChangedFields,
   detectActiveStateTransition,
   detectBooleanActiveStateTransition,
+  detectActiveStateTransitionFromValues,
+  buildServerSideDiff,
+  buildEditMessage,
 };

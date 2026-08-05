@@ -10,11 +10,11 @@ const {
 const db = new DBHandler();
 
 const ACTION_TYPES = {
-  CREATE: "CREATED",
-  UPDATE: "UPDATED",
-  DELETE: "DELETED",
-  DEACTIVATE: "DEACTIVATED",
-  REACTIVATE: "REACTIVATED",
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+  DEACTIVATE: "DEACTIVATE",
+  REACTIVATE: "REACTIVATE",
 };
 
 async function record(

@@ -3,7 +3,9 @@ const {
   safeParseChangedFields,
   detectActiveStateTransition,
   detectBooleanActiveStateTransition,
-  capitalize,
+  detectActiveStateTransitionFromValues,
+  buildServerSideDiff,
+  buildEditMessage,
   formatDurationFromDecimalHours,
 } = require("./audit_utilities");
 
@@ -29,9 +31,11 @@ function recordActionEditAudit(req, body) {
   let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
   let auditVerb = "updated";
 
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "date_deleted"),
+  const rawTransition = detectActiveStateTransition(
+    changedFields,
+    "date_deleted",
   );
+  const transition = mapActiveStateTransition(rawTransition);
   if (transition) {
     auditActionType = transition.actionType;
     auditVerb = transition.verb;
@@ -44,7 +48,7 @@ function recordActionEditAudit(req, body) {
     actionType: auditActionType,
     entityType: "action",
     entityId: body.action_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    message: buildEditMessage(baseMessage, rawTransition, changeSummary),
     details: changedFields,
   });
 }
@@ -97,15 +101,18 @@ function recordSemesterCreateAudit(req, body, newSemesterId) {
   });
 }
 
-function recordArchiveEditAudit(req, body) {
+function recordArchiveEditAudit(req, body, priorInactive, newInactive) {
   const changedFields = safeParseChangedFields(body.changed_fields);
+  delete changedFields.inactive;
 
   let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
   let auditVerb = "updated";
 
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "inactive"),
+  const rawTransition = detectActiveStateTransitionFromValues(
+    priorInactive,
+    newInactive,
   );
+  const transition = mapActiveStateTransition(rawTransition);
   if (transition) {
     auditActionType = transition.actionType;
     auditVerb = transition.verb;
@@ -118,7 +125,7 @@ function recordArchiveEditAudit(req, body) {
     actionType: auditActionType,
     entityType: "archive",
     entityId: body.archive_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    message: buildEditMessage(baseMessage, rawTransition, changeSummary),
     details: changedFields,
   });
 }
@@ -133,35 +140,45 @@ function recordArchiveCreateAudit(req, body, newArchiveId) {
   });
 }
 
-function recordUserEditAudit(req, body) {
-  const changedFields = safeParseChangedFields(body.changed_fields);
+function recordUserEditAudit(req, body, priorUser, newActive) {
+  const comparableFields = [
+    "fname",
+    "lname",
+    "email",
+    "type",
+    "semester_group",
+    "project",
+  ];
+  const changedFields = buildServerSideDiff(priorUser, body, comparableFields);
 
   let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
   let auditVerb = "updated";
 
-  const transition = mapActiveStateTransition(
-    detectActiveStateTransition(changedFields, "active"),
+  const rawTransition = detectActiveStateTransitionFromValues(
+    priorUser ? priorUser.active : "",
+    newActive,
   );
+  const transition = mapActiveStateTransition(rawTransition);
   if (transition) {
     auditActionType = transition.actionType;
     auditVerb = transition.verb;
   }
 
   const changeSummary = AuditLog.summarizeChangedFields(changedFields);
-  const accountLabel = `${capitalize(body.type)} account`;
+  const accountLabel = `${(body.type || "").toLowerCase()} account`;
   const baseMessage = `${AuditLog.actorLabel(req)} ${auditVerb} ${accountLabel} (${body.system_id})`;
 
   return AuditLog.record(req, {
     actionType: auditActionType,
     entityType: "user",
     entityId: body.system_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    message: buildEditMessage(baseMessage, rawTransition, changeSummary),
     details: changedFields,
   });
 }
 
 function recordUserCreateAudit(req, body) {
-  const accountLabel = `${capitalize(body.type)} account`;
+  const accountLabel = `${(body.type || "").toLowerCase()} account`;
   return AuditLog.record(req, {
     actionType: AuditLog.ACTION_TYPES.CREATE,
     entityType: "user",
@@ -177,9 +194,11 @@ function recordSponsorEditAudit(req, body) {
   let auditActionType = AuditLog.ACTION_TYPES.UPDATE;
   let auditVerb = "updated";
 
-  const transition = mapActiveStateTransition(
-    detectBooleanActiveStateTransition(changedFields, "inActive"),
+  const rawTransition = detectBooleanActiveStateTransition(
+    changedFields,
+    "inActive",
   );
+  const transition = mapActiveStateTransition(rawTransition);
   if (transition) {
     auditActionType = transition.actionType;
     auditVerb = transition.verb;
@@ -192,7 +211,7 @@ function recordSponsorEditAudit(req, body) {
     actionType: auditActionType,
     entityType: "sponsor",
     entityId: body.sponsor_id,
-    message: changeSummary ? `${baseMessage} — ${changeSummary}` : baseMessage,
+    message: buildEditMessage(baseMessage, rawTransition, changeSummary),
     details: changedFields,
   });
 }
