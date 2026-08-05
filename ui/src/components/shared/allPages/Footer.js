@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../util/functions/UserContext";
-import { config } from "../../util/functions/constants";
+import { config, USERTYPES } from "../../util/functions/constants";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
@@ -9,11 +10,17 @@ import uiConfig from "../../../config/uiConfig";
 import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
-  const { user } = useContext(UserContext);
+  const { user, isAdminTabActive } = useContext(UserContext);
   const [footerHtml, setFooterHtml] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const signedIn = user && Object.keys(user).length > 0 && user.user;
+  const isFullAdmin =
+    signedIn &&
+    user.role === USERTYPES.ADMIN &&
+    !user.view_only &&
+    !user.mockUser?.view_only;
+  const showErrorLogsLink = isFullAdmin && isAdminTabActive;
   useEffect(() => {
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
@@ -84,13 +91,17 @@ function Footer() {
           style={{ textAlign: "right" }}
         >
           <h5>
-            <a
-              href={uiConfig.footers.loggedIn.githubLink}
-              target="_blank"
-              rel="noreferrer"
-            >
-              v{uiConfig.footers.loggedIn.version}
-            </a>
+            {showErrorLogsLink ? (
+              <Link to="/error-logs">Error Logs</Link>
+            ) : (
+              <a
+                href={uiConfig.footers.loggedIn.githubLink}
+                target="_blank"
+                rel="noreferrer"
+              >
+                v{uiConfig.footers.loggedIn.version}
+              </a>
+            )}
           </h5>
         </div>
       )}
