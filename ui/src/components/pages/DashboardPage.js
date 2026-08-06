@@ -6,7 +6,6 @@ import SemesterEditor from "../Tabs/AdminTab/SemesterEditor/SemesterEditor";
 import ActionEditor from "../Tabs/AdminTab/ActionEditor/ActionEditor";
 import StudentsTab from "../Tabs/StudentsTab/StudentsTab";
 import ProjectsTab from "../Tabs/ProjectsTab/ProjectsTab";
-import ErrorLogs from "../Tabs/ErrorsTab/ErrorLogs";
 import ProjectEditor from "../Tabs/AdminTab/ProjectEditor";
 import ActionLogs from "../Tabs/ActionSubmissionsTab/ActionLogs";
 import CoachesTab from "../Tabs/CoachesTab/CoachesTab";
@@ -23,9 +22,10 @@ import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setIsAdminTabActive } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
   const [authError, setAuthError] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const history = useHistory();
 
   // When dashboard loads, check who is currently signed in
@@ -102,26 +102,6 @@ export default function DashboardPage() {
   switch (user.role) {
     case "admin":
       if (!user.view_only && !user.mockUser.view_only) {
-        panes.push({
-          menuItem: {
-            key: "Errors-Tab",
-            content: (
-              <>
-                <i
-                  className="exclamation triangle icon"
-                  style={{ marginRight: 5 }}
-                />
-                Errors
-              </>
-            ),
-            href: "#",
-          },
-          render: () => (
-            <Tab.Pane>
-              <ErrorLogs />
-            </Tab.Pane>
-          ),
-        });
         panes.push({
           menuItem: {
             key: "Admin-Tab",
@@ -285,6 +265,15 @@ export default function DashboardPage() {
 
   panes.reverse();
 
+  useEffect(() => {
+    const activeKey = panes[activeIndex]?.menuItem?.key;
+    setIsAdminTabActive(activeKey === "Admin-Tab");
+  }, [activeIndex, user.role]);
+
+  useEffect(() => {
+    return () => setIsAdminTabActive(false);
+  }, []);
+
   // Don't render dashboard if there's an authentication error
   if (authError) {
     return null; // The useEffect will handle redirecting to auth-error page
@@ -294,7 +283,11 @@ export default function DashboardPage() {
     <>
       <AdminView />
       {/*This is for the tabs inside of the dashboard tab*/}
-      <Tab panes={panes} className="admin-menu" />
+      <Tab
+        panes={panes}
+        onTabChange={(e, data) => setActiveIndex(data.activeIndex)}
+        className="admin-menu"
+      />
     </>
   );
 }

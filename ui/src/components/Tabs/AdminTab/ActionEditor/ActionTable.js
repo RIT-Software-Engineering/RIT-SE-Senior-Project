@@ -26,16 +26,16 @@ export default function ActionTable(props) {
   );
 
   const typeLabel = (t) =>
-  ({
-    individual: "Individual Action",
-    team: "Team Action",
-    coach: "Coach Action",
-    admin: "Admin Action",
-    peer_evaluation: "Peer Evaluation",
-    student_announcement: "Student Announcement",
-    coach_announcement: "Coach Announcement",
-    break_period: "Break Period",
-  }[t] || t);
+    ({
+      individual: "Individual Action",
+      team: "Team Action",
+      coach: "Coach Action",
+      admin: "Admin Action",
+      peer_evaluation: "Peer Evaluation",
+      student_announcement: "Student Announcement",
+      coach_announcement: "Coach Announcement",
+      break_period: "Break Period",
+    })[t] || t;
 
   // if there is no semester, then there are no actions
   const semesterName = semester?.name || "No Semester";
@@ -67,7 +67,7 @@ export default function ActionTable(props) {
           <TableCell>{formatDateNoOffset(action.start_date)}</TableCell>
           <TableCell>{formatDateNoOffset(action.due_date)}</TableCell>
           <TableCell>
-            <div className="accordion-buttons-container accordion-buttons-container-static">
+            <div className="action-table-buttons">
               <ActionPanel
                 actionData={action}
                 semesterData={props.semesterData}
@@ -134,7 +134,7 @@ export default function ActionTable(props) {
                         // sorted={proposalData.column === COLUMNS.ACTION ? proposalData.direction : null}
                         // onClick={() => changeSort(COLUMNS.ACTION)}
                         >
-                         Type
+                          Type
                         </TableHeaderCell>
                         <TableHeaderCell
                         // sorted={proposalData.column === COLUMNS.TITLE ? proposalData.direction : null}
