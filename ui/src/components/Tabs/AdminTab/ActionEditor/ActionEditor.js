@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Accordion } from "semantic-ui-react";
 import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
+import DuplicateSemesterPanel from "./DuplicateSemesterPanel";
 import ActionPanel from "./ActionPanel";
 import ActionTable from "./ActionTable";
 
 export default function ActionEditor(props) {
   const [actions, setActionsData] = useState([]);
   const [projectData, setProjectData] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [copyModalOpen, setCopyModalOpen] = useState(false);
 
   const getActionData = () => {
     SecureFetch(config.url.API_GET_ACTIONS)
@@ -87,7 +88,20 @@ export default function ActionEditor(props) {
           create={true}
           key={"createAction"}
           callback={getActionData}
-          isOpenCallback={(isOpen) => setIsOpen(isOpen)} // Pass the isOpenCallback prop
+        />
+        <button
+          className="ui icon button"
+          title="Copy Action / Announcement / Peer Eval / Break Period"
+          onClick={() => setCopyModalOpen(true)}
+        >
+          <i className="clone outline icon" />
+        </button>
+
+        <DuplicateSemesterPanel
+          open={copyModalOpen}
+          onClose={() => setCopyModalOpen(false)}
+          semesterData={props.semesterData}
+          callback={getActionData}
         />
       </div>
     </div>

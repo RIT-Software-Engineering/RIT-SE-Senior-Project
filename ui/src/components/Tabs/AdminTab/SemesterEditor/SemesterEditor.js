@@ -5,9 +5,8 @@ import { SecureFetch } from "../../../util/functions/secureFetch";
 import SemesterPanel from "./SemesterPanel";
 import SemesterTable from "./SemesterTable";
 
-export default function SemesterEditor() {
+export default function SemesterEditor(props) {
   const [semesters, setSemestersData] = useState([]);
-
   const getSemesters = () => {
     SecureFetch(config.url.API_GET_SEMESTERS)
       .then((response) => response.json())

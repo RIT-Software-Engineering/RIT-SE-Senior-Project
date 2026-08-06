@@ -3975,7 +3975,84 @@ module.exports = (db) => {
         });
     },
   );
+  db_router.post(
+    "/duplicateSemesterActions",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    async (req, res, next) => {
+      const {
+        sourceSemester,
+        targetSemester,
+        offsetDays = 0,
+        actionIds,
+      } = req.body;
 
+      if (!sourceSemester || !targetSemester) {
+        return res.status(400).send("Missing semesters.");
+      }
+
+      try {
+        let query = `
+          SELECT *
+          FROM actions
+          WHERE semester = ?
+        `;
+
+        let params = [sourceSemester];
+
+        // Optional checkbox support
+        if (actionIds && actionIds.length > 0) {
+          query += ` AND action_id IN (${actionIds.map(() => "?").join(",")})`;
+          params.push(...actionIds);
+        }
+
+        const actions = await db.query(query, params);
+
+        for (const action of actions) {
+          await db.query(
+            `
+            INSERT INTO actions
+            (
+              semester,
+              action_title,
+              action_target,
+              date_deleted,
+              short_desc,
+              start_date,
+              due_date,
+              page_html,
+              file_types,
+              file_size
+            )
+            VALUES
+            (?, ?, ?, ?, ?, DATE_ADD(?, INTERVAL ? DAY),
+                DATE_ADD(?, INTERVAL ? DAY),
+                ?, ?, ?)
+          `,
+            [
+              targetSemester,
+              action.action_title,
+              action.action_target,
+              action.date_deleted,
+              action.short_desc,
+              action.start_date,
+              offsetDays,
+              action.due_date,
+              offsetDays,
+              action.page_html,
+              action.file_types,
+              action.file_size,
+            ],
+          );
+        }
+
+        res.json({
+          copied: actions.length,
+        });
+      } catch (err) {
+        next(err);
+      }
+    },
+  );
   db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res, next) => {
     let getSemestersQuery = `
             SELECT *
@@ -3992,6 +4069,135 @@ module.exports = (db) => {
         return next(error);
       });
   });
+
+  db_router.get(
+    "/getSemesterActions",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      const semester = req.query.semester;
+
+      if (!semester) {
+        return res.status(400).send("Missing semester");
+      }
+
+      db.query(
+        `
+      SELECT *
+      FROM actions
+      WHERE semester = ?
+      ORDER BY start_date
+      `,
+        [semester],
+      )
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
+  db_router.post(
+    "/duplicateActions",
+    [UserAuth.isAdmin],
+    async (req, res, next) => {
+      const { actions, source_semester, target_semester, day_offset } =
+        req.body;
+
+      if (!actions || !target_semester || !source_semester) {
+        return res.status(400).send("Missing required fields");
+      }
+
+      const parsedActions = JSON.parse(actions);
+      const offset = parseInt(day_offset) || 0;
+      const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+      try {
+        const semesterResults = await db.query(
+          `
+      SELECT semester_id, start_date
+      FROM semester_group
+      WHERE semester_id IN (?, ?)
+      `,
+          [source_semester, target_semester],
+        );
+
+        const sourceSem = semesterResults.find(
+          (s) => s.semester_id == source_semester,
+        );
+
+        const targetSem = semesterResults.find(
+          (s) => s.semester_id == target_semester,
+        );
+
+        if (!sourceSem || !targetSem) {
+          return res.status(400).send("Semester not found");
+        }
+
+        const sourceStart = new Date(sourceSem.start_date);
+        const targetStart = new Date(targetSem.start_date);
+
+        for (const action of parsedActions) {
+          // Calculate start_date relative to source semester start
+          let startDate = null;
+          if (action.start_date) {
+            const originalStart = new Date(action.start_date);
+            const daysFromStart = Math.round(
+              (originalStart - sourceStart) / MS_PER_DAY,
+            );
+            startDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
+
+          // Calculate due_date relative to source semester start
+          let dueDate = null;
+          if (action.due_date) {
+            const originalDue = new Date(action.due_date);
+
+            const daysFromStart = Math.round(
+              (originalDue - sourceStart) / MS_PER_DAY,
+            );
+
+            dueDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
+
+          await db.query(
+            `INSERT INTO actions (
+          action_title, short_desc, page_html, action_target,
+          start_date, due_date, semester, file_types, file_size
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              action.action_title,
+              action.short_desc,
+              action.page_html,
+              action.action_target,
+              startDate,
+              dueDate,
+              target_semester,
+              action.file_types || null,
+              action.file_size || null,
+            ],
+          );
+        }
+
+        res.status(200).send("Actions duplicated successfully");
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      }
+    },
+  );
 
   db_router.get("/getArchive", [UserAuth.isAdmin], (req, res, next) => {
     let getArchiveQuery = `
