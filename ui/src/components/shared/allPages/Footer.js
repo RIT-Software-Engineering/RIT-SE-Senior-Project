@@ -10,17 +10,13 @@ import uiConfig from "../../../config/uiConfig";
 import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
-  const { user, isAdminTabActive } = useContext(UserContext);
+  const { user, isAuditTabActive } = useContext(UserContext);
   const [footerHtml, setFooterHtml] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const signedIn = user && Object.keys(user).length > 0 && user.user;
-  const isFullAdmin =
-    signedIn &&
-    user.role === USERTYPES.ADMIN &&
-    !user.view_only &&
-    !user.mockUser?.view_only;
-  const showAdminFooterLinks = isFullAdmin && isAdminTabActive;
+  const isAdminOrViewOnlyAdmin = signedIn && user.role === USERTYPES.ADMIN;
+  const showErrorLogsLink = isAdminOrViewOnlyAdmin && isAuditTabActive;
   useEffect(() => {
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
@@ -91,7 +87,7 @@ function Footer() {
           style={{ textAlign: "right" }}
         >
           <h5>
-            {showAdminFooterLinks ? (
+            {showErrorLogsLink ? (
               <Link to="/error-logs">Error Logs</Link>
             ) : (
               <a
@@ -103,11 +99,6 @@ function Footer() {
               </a>
             )}
           </h5>
-          {showAdminFooterLinks && (
-            <h5>
-              <Link to="/audit-logs">Audit Logs</Link>
-            </h5>
-          )}
         </div>
       )}
     </div>

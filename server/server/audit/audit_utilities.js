@@ -11,6 +11,14 @@ function actorLabel(req) {
     coach: "Coach account",
     student: "Student account",
   };
+
+  if (req.user.mock && req.user.mock.system_id) {
+    const realAdmin = req.user.mock;
+    const realRoleLabel = roleLabels[realAdmin.type] || "User account";
+    const mockedRoleLabel = (req.user.type || "user").toLowerCase();
+    return `${realRoleLabel} (${realAdmin.system_id}) as a ${mockedRoleLabel} account (${req.user.system_id})`;
+  }
+
   const roleLabel = roleLabels[req.user.type] || "User account";
   return `${roleLabel} (${req.user.system_id})`;
 }

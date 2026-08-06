@@ -19,10 +19,11 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
+import AuditLogs from "../Tabs/AuditLogsTab/AuditLogs";
 import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
-  const { user, setUser, setIsAdminTabActive } = useContext(UserContext);
+  const { user, setUser, setIsAuditTabActive } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
   const [authError, setAuthError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -126,6 +127,23 @@ export default function DashboardPage() {
           ),
         });
       }
+      panes.push({
+        menuItem: {
+          key: "Audit-Tab",
+          content: (
+            <>
+              <i className="history icon dashboard-menu-icon" />
+              Audit Logs
+            </>
+          ),
+          href: "#",
+        },
+        render: () => (
+          <Tab.Pane>
+            <AuditLogs />
+          </Tab.Pane>
+        ),
+      });
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
     case "coach":
@@ -267,11 +285,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const activeKey = panes[activeIndex]?.menuItem?.key;
-    setIsAdminTabActive(activeKey === "Admin-Tab");
+    setIsAuditTabActive(activeKey === "Audit-Tab");
   }, [activeIndex, user.role]);
 
   useEffect(() => {
-    return () => setIsAdminTabActive(false);
+    return () => setIsAuditTabActive(false);
   }, []);
 
   // Don't render dashboard if there's an authentication error

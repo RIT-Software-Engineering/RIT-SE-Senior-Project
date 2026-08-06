@@ -169,67 +169,63 @@ module.exports = (db) => {
       });
   });
 
-  db_router.get(
-    "/getAuditLogs",
-    [UserAuth.isAdmin, UserAuth.canWrite],
-    (req, res, next) => {
-      const {
-        entity_type,
-        action_type,
-        start_date,
-        end_date,
-        search,
-        resultLimit,
-        offset,
-      } = req.query;
+  db_router.get("/getAuditLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const {
+      entity_type,
+      action_type,
+      start_date,
+      end_date,
+      search,
+      resultLimit,
+      offset,
+    } = req.query;
 
-      const whereClauses = [];
-      const params = [];
+    const whereClauses = [];
+    const params = [];
 
-      if (entity_type) {
-        whereClauses.push("entity_type = ?");
-        params.push(entity_type);
-      }
-      if (action_type) {
-        whereClauses.push("action_type = ?");
-        params.push(action_type);
-      }
-      if (start_date) {
-        whereClauses.push("date(audit_datetime) >= date(?)");
-        params.push(start_date);
-      }
-      if (end_date) {
-        whereClauses.push("date(audit_datetime) <= date(?)");
-        params.push(end_date);
-      }
-      if (search) {
-        whereClauses.push("(system_id LIKE ? OR message LIKE ?)");
-        params.push(`%${search}%`, `%${search}%`);
-      }
+    if (entity_type) {
+      whereClauses.push("entity_type = ?");
+      params.push(entity_type);
+    }
+    if (action_type) {
+      whereClauses.push("action_type = ?");
+      params.push(action_type);
+    }
+    if (start_date) {
+      whereClauses.push("date(audit_datetime) >= date(?)");
+      params.push(start_date);
+    }
+    if (end_date) {
+      whereClauses.push("date(audit_datetime) <= date(?)");
+      params.push(end_date);
+    }
+    if (search) {
+      whereClauses.push("(system_id LIKE ? OR message LIKE ?)");
+      params.push(`%${search}%`, `%${search}%`);
+    }
 
-      const whereSql =
-        whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
-      const limit = Number(resultLimit) || 20;
-      const page = Number(offset) || 0;
+    const whereSql =
+      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+    const limit = Number(resultLimit) || 20;
+    const page = Number(offset) || 0;
 
-      const getAuditLogsQuery = `
+    const getAuditLogsQuery = `
             SELECT * FROM ${DB_CONFIG.tableNames.audit_log}
             ${whereSql}
             ORDER BY audit_log_id DESC
             LIMIT ? OFFSET ?
         `;
 
-      db.query(getAuditLogsQuery, [...params, limit, page * limit])
-        .then((auditLogs) => {
-          res.send(auditLogs);
-        })
-        .catch((err) => {
-          const error = new Error(err);
-          error.statusCode = 500;
-          return next(error);
-        });
-    },
-  );
+    db.query(getAuditLogsQuery, [...params, limit, page * limit])
+      .then((auditLogs) => {
+        res.send(auditLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
 
   db_router.delete(
     "/removeErrorLog/:id",

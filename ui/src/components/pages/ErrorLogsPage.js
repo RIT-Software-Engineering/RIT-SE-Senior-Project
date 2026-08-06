@@ -73,10 +73,7 @@ function ErrorLogsPage() {
       .finally(() => setIsLoadingUser(false));
   }, []);
 
-  const isAdmin =
-    user?.role === USERTYPES.ADMIN &&
-    !user?.view_only &&
-    !user?.mockUser?.view_only;
+  const isAdmin = user?.role === USERTYPES.ADMIN;
 
   useEffect(() => {
     if (!isLoadingUser && user?.role && !isAdmin) {

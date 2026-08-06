@@ -13,11 +13,20 @@ import {
   Input,
   Button,
 } from "semantic-ui-react";
-import "../../../css/components/pages/AuditLogsPage.css";
+import "../../../css/components/tabs/auditlogs.css";
 
 const LOGS_PER_PAGE = 20;
 
-const ENTITY_TYPE_OPTIONS = [
+const TYPE_OPTIONS = [
+  { key: "all", value: "", text: "All" },
+  { key: "create", value: "CREATE", text: "Create" },
+  { key: "update", value: "UPDATE", text: "Update" },
+  { key: "delete", value: "DELETE", text: "Delete" },
+  { key: "deactivate", value: "DEACTIVATE", text: "Deactivate" },
+  { key: "reactivate", value: "REACTIVATE", text: "Reactivate" },
+];
+
+const CATEGORY_OPTIONS = [
   { key: "all", value: "", text: "All" },
   { key: "semester", value: "semester", text: "Semester" },
   { key: "action", value: "action", text: "Action" },
@@ -34,15 +43,6 @@ const ENTITY_TYPE_OPTIONS = [
   { key: "error_log", value: "error_log", text: "Error Log" },
 ];
 
-const ACTION_TYPE_OPTIONS = [
-  { key: "all", value: "", text: "All" },
-  { key: "create", value: "CREATE", text: "Create" },
-  { key: "update", value: "UPDATE", text: "Update" },
-  { key: "delete", value: "DELETE", text: "Delete" },
-  { key: "deactivate", value: "DEACTIVATE", text: "Deactivate" },
-  { key: "reactivate", value: "REACTIVATE", text: "Reactivate" },
-];
-
 const humanizeUnderscored = (value) => {
   if (!value) return "";
   return value
@@ -54,8 +54,8 @@ const humanizeUnderscored = (value) => {
 const AuditLogs = () => {
   const [auditLogs, setAuditLogs] = useState([]);
   const [activePage, setActivePage] = useState(0);
-  const [entityType, setEntityType] = useState("");
-  const [actionType, setActionType] = useState("");
+  const [type, setType] = useState("");
+  const [category, setCategory] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [search, setSearch] = useState("");
@@ -66,8 +66,8 @@ const AuditLogs = () => {
       resultLimit: LOGS_PER_PAGE,
       offset: activePage,
     });
-    if (entityType) params.append("entity_type", entityType);
-    if (actionType) params.append("action_type", actionType);
+    if (type) params.append("action_type", type);
+    if (category) params.append("entity_type", category);
     if (startDate) params.append("start_date", startDate);
     if (endDate) params.append("end_date", endDate);
     if (search) params.append("search", search);
@@ -85,7 +85,7 @@ const AuditLogs = () => {
 
   useEffect(() => {
     getAuditLogs();
-  }, [activePage, entityType, actionType, startDate, endDate, search]);
+  }, [activePage, type, category, startDate, endDate, search]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -102,12 +102,17 @@ const AuditLogs = () => {
 
   const clearFilters = () => {
     setActivePage(0);
-    setEntityType("");
-    setActionType("");
+    setType("");
+    setCategory("");
     setStartDate("");
     setEndDate("");
     setSearch("");
     setSearchInput("");
+  };
+
+  const formatActor = (log) => {
+    if (log.mock_id) return `${log.mock_id} (as ${log.system_id})`;
+    return log.system_id || "N/A";
   };
 
   const hasNextPage = auditLogs.length === LOGS_PER_PAGE;
@@ -118,27 +123,23 @@ const AuditLogs = () => {
 
       <div className="audit-logs-filter-bar">
         <div className="audit-logs-filter-field">
-          <label>Entity Type</label>
+          <label>Type</label>
           <Dropdown
             selection
             placeholder="All"
-            options={ENTITY_TYPE_OPTIONS}
-            value={entityType}
-            onChange={(e, { value }) =>
-              handleFilterChange(setEntityType)(value)
-            }
+            options={TYPE_OPTIONS}
+            value={type}
+            onChange={(e, { value }) => handleFilterChange(setType)(value)}
           />
         </div>
         <div className="audit-logs-filter-field">
-          <label>Action Type</label>
+          <label>Category</label>
           <Dropdown
             selection
             placeholder="All"
-            options={ACTION_TYPE_OPTIONS}
-            value={actionType}
-            onChange={(e, { value }) =>
-              handleFilterChange(setActionType)(value)
-            }
+            options={CATEGORY_OPTIONS}
+            value={category}
+            onChange={(e, { value }) => handleFilterChange(setCategory)(value)}
           />
         </div>
         <div className="audit-logs-filter-field">
@@ -176,8 +177,8 @@ const AuditLogs = () => {
           <TableRow>
             <TableHeaderCell>Timestamp</TableHeaderCell>
             <TableHeaderCell>Actor</TableHeaderCell>
-            <TableHeaderCell>Entity Type</TableHeaderCell>
-            <TableHeaderCell>Action Type</TableHeaderCell>
+            <TableHeaderCell>Type</TableHeaderCell>
+            <TableHeaderCell>Category</TableHeaderCell>
             <TableHeaderCell>Message</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -188,9 +189,9 @@ const AuditLogs = () => {
                 <TableCell style={{ whiteSpace: "nowrap" }}>
                   {formatDateTime(log.audit_datetime)}
                 </TableCell>
-                <TableCell>{log.system_id || "N/A"}</TableCell>
-                <TableCell>{humanizeUnderscored(log.entity_type)}</TableCell>
+                <TableCell>{formatActor(log)}</TableCell>
                 <TableCell>{humanizeUnderscored(log.action_type)}</TableCell>
+                <TableCell>{humanizeUnderscored(log.entity_type)}</TableCell>
                 <TableCell>{log.message}</TableCell>
               </TableRow>
             ))
