@@ -140,12 +140,12 @@ export default function DuplicateSemesterPanel(props) {
     <Modal open={props.open} onClose={props.onClose} size="large" closeIcon>
       <Modal.Header>
         <i className="copy outline icon" />
-        Copy Semester Actions
+        Copy Action / Announcement / Peer Eval / Break Period
       </Modal.Header>
       <Modal.Content>
         <p style={{ color: "#888", marginBottom: "1.5rem" }}>
-          Copy actions and announcements from one semester into another with an
-          optional date offset.
+          Copy actions, announcements, peer evaluations, and break periods from
+          one semester into another with an optional date offset.
         </p>
 
         {status && (

@@ -4,11 +4,9 @@ import { config } from "../../../util/functions/constants";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import SemesterPanel from "./SemesterPanel";
 import SemesterTable from "./SemesterTable";
-import DuplicateSemesterPanel from "../ActionEditor/DuplicateSemesterPanel";
 
 export default function SemesterEditor(props) {
   const [semesters, setSemestersData] = useState([]);
-  const [copyModalOpen, setCopyModalOpen] = useState(false);
   const getSemesters = () => {
     SecureFetch(config.url.API_GET_SEMESTERS)
       .then((response) => response.json())
@@ -51,27 +49,6 @@ export default function SemesterEditor(props) {
           callback={getSemesters}
           semester={null} // for semester creation
           semesterData={semesters}
-        />
-        <button
-          className="ui icon button"
-          title="Copy Semester Actions"
-          onClick={() => setCopyModalOpen(true)}
-        >
-          <i className="clone outline icon" />
-        </button>
-
-        <DuplicateSemesterPanel
-          open={copyModalOpen}
-          onClose={() => setCopyModalOpen(false)}
-          semesterData={semesters}
-          callback={() => {
-            console.log("Semester callback fired");
-            getSemesters();
-            if (props.onActionsCopied) {
-              console.log("Refreshing ActionEditor");
-              props.onActionsCopied();
-            }
-          }}
         />
       </div>
     </div>

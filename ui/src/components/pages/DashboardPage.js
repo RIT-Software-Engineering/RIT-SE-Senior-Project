@@ -25,7 +25,6 @@ import "./../../css/utils/helpers.css";
 export default function DashboardPage() {
   const { user, setUser } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
-  const [actionRefreshKey, setActionRefreshKey] = useState(0);
   const [authError, setAuthError] = useState(false);
   const history = useHistory();
 
@@ -136,13 +135,8 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <SemesterEditor
-                onActionsCopied={() => setActionRefreshKey((prev) => prev + 1)}
-              />
-              <ActionEditor
-                semesterData={semesterData}
-                refreshKey={actionRefreshKey}
-              />
+              <SemesterEditor />
+              <ActionEditor semesterData={semesterData} />
               <ProjectEditor semesterData={semesterData} />
               <ArchiveEditor />
               <UserEditor />
