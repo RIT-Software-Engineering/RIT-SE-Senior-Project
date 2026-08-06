@@ -61,6 +61,7 @@ export const config = {
     API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
     API_GET_ALL_ERROR_LOGS: `${BASE_API_URL}/db/getAllErrorLogs`,
+    API_GET_AUDIT_LOGS: `${BASE_API_URL}/db/getAuditLogs`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
     API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,

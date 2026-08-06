@@ -20,7 +20,7 @@ function Footer() {
     user.role === USERTYPES.ADMIN &&
     !user.view_only &&
     !user.mockUser?.view_only;
-  const showErrorLogsLink = isFullAdmin && isAdminTabActive;
+  const showAdminFooterLinks = isFullAdmin && isAdminTabActive;
   useEffect(() => {
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
@@ -91,7 +91,7 @@ function Footer() {
           style={{ textAlign: "right" }}
         >
           <h5>
-            {showErrorLogsLink ? (
+            {showAdminFooterLinks ? (
               <Link to="/error-logs">Error Logs</Link>
             ) : (
               <a
@@ -103,6 +103,11 @@ function Footer() {
               </a>
             )}
           </h5>
+          {showAdminFooterLinks && (
+            <h5>
+              <Link to="/audit-logs">Audit Logs</Link>
+            </h5>
+          )}
         </div>
       )}
     </div>
