@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Checkbox,
@@ -30,8 +30,18 @@ export default function DuplicateSemesterPanel(props) {
   const [offsetDays, setOffsetDays] = useState(0);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [actions, setActions] = useState([]);
   const [selectedActions, setSelectedActions] = useState([]);
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    const year = d.getUTCFullYear();
+    return `${month}/${day}/${year}`;
+  };
 
   const duplicateSemester = () => {
     const selectedActionObjects = actions.filter((action) =>
@@ -92,6 +102,25 @@ export default function DuplicateSemesterPanel(props) {
     (option) => option.value !== sourceSemester,
   );
 
+  const sourceSemesterData = props.semesterData.find(
+    (s) => s.semester_id === sourceSemester,
+  );
+
+  const targetSemesterData = props.semesterData.find(
+    (s) => s.semester_id === targetSemester,
+  );
+
+  // Auto-calculate offset when both semesters are selected
+  useEffect(() => {
+    if (sourceSemesterData && targetSemesterData && Number(offsetDays) === 0) {
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const sourceDate = new Date(sourceSemesterData.start_date);
+      const targetDate = new Date(targetSemesterData.start_date);
+      const diff = Math.round((targetDate - sourceDate) / msPerDay);
+      setOffsetDays(diff);
+    }
+  }, [sourceSemesterData, targetSemesterData, offsetDays]);
+
   const isValid =
     !!sourceSemester &&
     !!targetSemester &&
@@ -99,8 +128,16 @@ export default function DuplicateSemesterPanel(props) {
     selectedActions.length > 0 &&
     !loading;
 
+  // Preview the new date based on offset (client-side preview only)
+  const previewDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    d.setDate(d.getDate() + Number(offsetDays));
+    return d.toISOString().split("T")[0];
+  };
+
   return (
-    <Modal open={props.open} onClose={props.onClose} size="small">
+    <Modal open={props.open} onClose={props.onClose} size="large" closeIcon>
       <Modal.Header>
         <i className="copy outline icon" />
         Copy Semester Actions
@@ -131,6 +168,7 @@ export default function DuplicateSemesterPanel(props) {
                 onChange={(e, { value }) => {
                   setSourceSemester(value);
                   setStatus(null);
+                  setOffsetDays(0);
                   setActions([]);
                   setSelectedActions([]);
                   SecureFetch(
@@ -154,6 +192,7 @@ export default function DuplicateSemesterPanel(props) {
                 onChange={(e, { value }) => {
                   setTargetSemester(value);
                   setStatus(null);
+                  setOffsetDays(0);
                 }}
               />
             </Form.Field>
@@ -189,49 +228,57 @@ export default function DuplicateSemesterPanel(props) {
               <Table.HeaderCell>Type</Table.HeaderCell>
               <Table.HeaderCell>Start Date</Table.HeaderCell>
               <Table.HeaderCell>End Date</Table.HeaderCell>
+              <Table.HeaderCell>New Start</Table.HeaderCell>
+              <Table.HeaderCell>New End</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
             {actions.length === 0 ? (
               <Table.Row>
-                <Table.Cell colSpan={5} textAlign="center" disabled>
+                <Table.Cell colSpan={7} textAlign="center" disabled>
                   {sourceSemester
                     ? "No actions found for this semester."
                     : "Select a source semester to load actions."}
                 </Table.Cell>
               </Table.Row>
             ) : (
-              actions.map((action) => (
-                <Table.Row key={action.action_id}>
-                  <Table.Cell>
-                    <Checkbox
-                      checked={selectedActions.includes(action.action_id)}
-                      onChange={(e, data) => {
-                        if (data.checked) {
-                          setSelectedActions([
-                            ...selectedActions,
-                            action.action_id,
-                          ]);
-                        } else {
-                          setSelectedActions(
-                            selectedActions.filter(
-                              (id) => id !== action.action_id,
-                            ),
-                          );
-                        }
-                      }}
-                    />
-                  </Table.Cell>
-                  <Table.Cell>{action.action_title}</Table.Cell>
-                  <Table.Cell>
-                    {actionTypeMap[action.action_target] ||
-                      action.action_target}
-                  </Table.Cell>
-                  <Table.Cell>{action.start_date}</Table.Cell>
-                  <Table.Cell>{action.due_date}</Table.Cell>
-                </Table.Row>
-              ))
+              actions.map((action) => {
+                const newStartDate = previewDate(action.start_date);
+                const newEndDate = previewDate(action.due_date);
+                return (
+                  <Table.Row key={action.action_id}>
+                    <Table.Cell>
+                      <Checkbox
+                        checked={selectedActions.includes(action.action_id)}
+                        onChange={(e, data) => {
+                          if (data.checked) {
+                            setSelectedActions([
+                              ...selectedActions,
+                              action.action_id,
+                            ]);
+                          } else {
+                            setSelectedActions(
+                              selectedActions.filter(
+                                (id) => id !== action.action_id,
+                              ),
+                            );
+                          }
+                        }}
+                      />
+                    </Table.Cell>
+                    <Table.Cell>{action.action_title}</Table.Cell>
+                    <Table.Cell>
+                      {actionTypeMap[action.action_target] ||
+                        action.action_target}
+                    </Table.Cell>
+                    <Table.Cell>{formatDate(action.start_date)}</Table.Cell>
+                    <Table.Cell>{formatDate(action.due_date)}</Table.Cell>
+                    <Table.Cell>{formatDate(newStartDate)}</Table.Cell>
+                    <Table.Cell>{formatDate(newEndDate)}</Table.Cell>
+                  </Table.Row>
+                );
+              })
             )}
           </Table.Body>
         </Table>
@@ -245,13 +292,64 @@ export default function DuplicateSemesterPanel(props) {
         />
         <Button
           primary
-          icon="copy"
-          content="Copy Actions"
-          loading={loading}
+          icon="eye"
+          content="Preview"
           disabled={!isValid}
-          onClick={duplicateSemester}
+          onClick={() => setPreviewOpen(true)}
         />
       </Modal.Actions>
+
+      {/* Preview confirmation modal */}
+      <Modal
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        size="large"
+        closeIcon
+      >
+        <Modal.Header>Preview Semester Copy</Modal.Header>
+        <Modal.Content>
+          <Table celled compact>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Title</Table.HeaderCell>
+                <Table.HeaderCell>Current Start</Table.HeaderCell>
+                <Table.HeaderCell>New Start</Table.HeaderCell>
+                <Table.HeaderCell>Current End</Table.HeaderCell>
+                <Table.HeaderCell>New End</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {actions
+                .filter((a) => selectedActions.includes(a.action_id))
+                .map((action) => (
+                  <Table.Row key={action.action_id}>
+                    <Table.Cell>{action.action_title}</Table.Cell>
+                    <Table.Cell>{formatDate(action.start_date)}</Table.Cell>
+                    <Table.Cell>
+                      {formatDate(previewDate(action.start_date))}
+                    </Table.Cell>
+                    <Table.Cell>{formatDate(action.due_date)}</Table.Cell>
+                    <Table.Cell>
+                      {formatDate(previewDate(action.due_date))}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button content="Cancel" onClick={() => setPreviewOpen(false)} />
+          <Button
+            primary
+            content="Confirm Copy"
+            loading={loading}
+            onClick={() => {
+              setPreviewOpen(false);
+              duplicateSemester();
+            }}
+          />
+        </Modal.Actions>
+      </Modal>
     </Modal>
   );
 }

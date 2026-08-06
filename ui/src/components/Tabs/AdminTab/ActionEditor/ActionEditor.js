@@ -40,7 +40,7 @@ export default function ActionEditor(props) {
   useEffect(() => {
     getActionData();
     getProjectData();
-  }, []);
+  }, [props.refreshKey]);
 
   let semesterPanels = [];
   if (actions) {

@@ -4104,57 +4104,85 @@ module.exports = (db) => {
     "/duplicateActions",
     [UserAuth.isAdmin],
     async (req, res, next) => {
-      const { actions, target_semester, day_offset } = req.body;
-      const { source_semester } = req.body;
-      if (!actions || !target_semester) {
+      const { actions, source_semester, target_semester, day_offset } =
+        req.body;
+
+      if (!actions || !target_semester || !source_semester) {
         return res.status(400).send("Missing required fields");
       }
 
       const parsedActions = JSON.parse(actions);
       const offset = parseInt(day_offset) || 0;
+      const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
       try {
-        for (const action of parsedActions) {
-          const startDate = action.start_date
-            ? new Date(
-                new Date(action.start_date).getTime() +
-                  offset * 24 * 60 * 60 * 1000,
-              )
-                .toISOString()
-                .split("T")[0]
-            : null;
+        const semesterResults = await db.query(
+          `
+      SELECT semester_id, start_date
+      FROM semester_group
+      WHERE semester_id IN (?, ?)
+      `,
+          [source_semester, target_semester],
+        );
 
-          const endDate = action.end_date
-            ? new Date(
-                new Date(action.end_date).getTime() +
-                  offset * 24 * 60 * 60 * 1000,
-              )
-                .toISOString()
-                .split("T")[0]
-            : null;
+        const sourceSem = semesterResults.find(
+          (s) => s.semester_id == source_semester,
+        );
+
+        const targetSem = semesterResults.find(
+          (s) => s.semester_id == target_semester,
+        );
+
+        if (!sourceSem || !targetSem) {
+          return res.status(400).send("Semester not found");
+        }
+
+        const sourceStart = new Date(sourceSem.start_date);
+        const targetStart = new Date(targetSem.start_date);
+
+        for (const action of parsedActions) {
+          // Calculate start_date relative to source semester start
+          let startDate = null;
+          if (action.start_date) {
+            const originalStart = new Date(action.start_date);
+            const daysFromStart = Math.round(
+              (originalStart - sourceStart) / MS_PER_DAY,
+            );
+            startDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
+
+          // Calculate due_date relative to source semester start
+          let dueDate = null;
+          if (action.due_date) {
+            const originalDue = new Date(action.due_date);
+
+            const daysFromStart = Math.round(
+              (originalDue - sourceStart) / MS_PER_DAY,
+            );
+
+            dueDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
 
           await db.query(
-            `
-          INSERT INTO actions (
-            action_title,
-            short_desc,
-            page_html,
-            action_target,
-            start_date,
-            due_date,
-            semester,
-            file_types,
-            file_size
-          )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `,
+            `INSERT INTO actions (
+          action_title, short_desc, page_html, action_target,
+          start_date, due_date, semester, file_types, file_size
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
               action.action_title,
               action.short_desc,
               action.page_html,
               action.action_target,
               startDate,
-              endDate,
+              dueDate,
               target_semester,
               action.file_types || null,
               action.file_size || null,
@@ -4162,10 +4190,7 @@ module.exports = (db) => {
           );
         }
 
-        res.send({
-          success: true,
-          copied: parsedActions.length,
-        });
+        res.status(200).send("Actions duplicated successfully");
       } catch (err) {
         const error = new Error(err);
         error.statusCode = 500;
