@@ -290,16 +290,31 @@ export default function StudentRow(props) {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell onClick={() => setOpenModal(props.isMyTeamTable)}>
-            <ProfileCircle
-              user={props.student}
-              size="tiny"
-              showFullName
-              textUnderlined
-              clickable
-            />
+          <TableCell>
+            {props.isMyTeamTable ? (
+              <Button
+                type="button"
+                basic
+                compact
+                className="student-name-button"
+                onClick={() => setOpenModal(true)}
+              >
+                <ProfileCircle
+                  user={props.student}
+                  size="tiny"
+                  showFullName
+                  textUnderlined
+                  clickable
+                />
+              </Button>
+            ) : (
+              <ProfileCircle
+                user={props.student}
+                size="tiny"
+                showFullName
+              />
+            )}
           </TableCell>
-
           <TableCell>{project}</TableCell>
           <TableCell>
             <a href={`mailto:${props.student.email}`}>{props.student.email}</a>
