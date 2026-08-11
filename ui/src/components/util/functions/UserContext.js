@@ -8,14 +8,14 @@ import React, { createContext, useState } from "react";
 export const UserContext = createContext({
   user: null,
   setUser: () => {},
-  isAdminTabActive: false,
-  setIsAdminTabActive: () => {},
+  isAuditTabActive: false,
+  setIsAuditTabActive: () => {},
 });
 
 // Provider for the app -- you most likely don't need to touch this
 export function UserContextProvider({ children }) {
   const [user, updateUser] = useState({});
-  const [isAdminTabActive, setIsAdminTabActive] = useState(false);
+  const [isAuditTabActive, setIsAuditTabActive] = useState(false);
 
   const setUser = (newUser) => {
     updateUser(newUser);
@@ -24,8 +24,8 @@ export function UserContextProvider({ children }) {
   let context = {
     user: user,
     setUser,
-    isAdminTabActive,
-    setIsAdminTabActive,
+    isAuditTabActive,
+    setIsAuditTabActive,
   };
 
   return (

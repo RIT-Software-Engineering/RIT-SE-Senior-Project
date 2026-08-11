@@ -90,6 +90,38 @@ const ACTION_TARGETS = {
   PEER_EVALUATION: "peer_evaluation",
 };
 
+const {
+  recordActionEditAudit,
+  recordActionCreateAudit,
+  recordProjectEditAudit,
+  recordSemesterEditAudit,
+  recordSemesterCreateAudit,
+  recordArchiveEditAudit,
+  recordArchiveCreateAudit,
+  recordUserEditAudit,
+  recordUserCreateAudit,
+  recordSponsorEditAudit,
+  recordSponsorCreateAudit,
+  recordSponsorNoteCreateAudit,
+  recordTimeLogCreateAudit,
+  recordTimeLogDeleteAudit,
+  recordErrorLogDeleteAudit,
+  recordActionSubmissionCreateAudit,
+} = require("../audit/audit_events");
+
+function lookupNewlyInsertedId(db, table, idColumn, whereFields) {
+  const columns = Object.keys(whereFields);
+  const whereSql = columns.map((col) => `${col} = ?`).join(" AND ");
+  const params = columns.map((col) => whereFields[col]);
+
+  return db
+    .query(
+      `SELECT ${idColumn} FROM ${table} WHERE ${whereSql} ORDER BY ${idColumn} DESC LIMIT 1`,
+      params,
+    )
+    .then((rows) => (rows && rows[0] ? rows[0][idColumn] : null));
+}
+
 // Routes
 module.exports = (db) => {
   /**
@@ -137,6 +169,64 @@ module.exports = (db) => {
       });
   });
 
+  db_router.get("/getAuditLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const {
+      entity_type,
+      action_type,
+      start_date,
+      end_date,
+      search,
+      resultLimit,
+      offset,
+    } = req.query;
+
+    const whereClauses = [];
+    const params = [];
+
+    if (entity_type) {
+      whereClauses.push("entity_type = ?");
+      params.push(entity_type);
+    }
+    if (action_type) {
+      whereClauses.push("action_type = ?");
+      params.push(action_type);
+    }
+    if (start_date) {
+      whereClauses.push("date(audit_datetime) >= date(?)");
+      params.push(start_date);
+    }
+    if (end_date) {
+      whereClauses.push("date(audit_datetime) <= date(?)");
+      params.push(end_date);
+    }
+    if (search) {
+      whereClauses.push("(system_id LIKE ? OR message LIKE ?)");
+      params.push(`%${search}%`, `%${search}%`);
+    }
+
+    const whereSql =
+      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+    const limit = Number(resultLimit) || 20;
+    const page = Number(offset) || 0;
+
+    const getAuditLogsQuery = `
+            SELECT * FROM ${DB_CONFIG.tableNames.audit_log}
+            ${whereSql}
+            ORDER BY audit_log_id DESC
+            LIMIT ? OFFSET ?
+        `;
+
+    db.query(getAuditLogsQuery, [...params, limit, page * limit])
+      .then((auditLogs) => {
+        res.send(auditLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
   db_router.delete(
     "/removeErrorLog/:id",
     [UserAuth.isAdmin],
@@ -144,8 +234,18 @@ module.exports = (db) => {
       const deleteErrorLogQuery = `
             DELETE FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?
         `;
-      db.query(deleteErrorLogQuery, [req.params.id])
-        .then(() => {
+      db.query(
+        `SELECT * FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?`,
+        [req.params.id],
+      )
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db
+            .query(deleteErrorLogQuery, [req.params.id])
+            .then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordErrorLogDeleteAudit(req, req.params.id, deletedRow);
           res.status(200).send();
         })
         .catch((err) => {
@@ -395,6 +495,7 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          recordUserCreateAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -519,8 +620,13 @@ module.exports = (db) => {
         body.system_id,
       ];
 
-      db.query(updateQuery, params)
-        .then(() => {
+      db.query("SELECT * FROM users WHERE system_id = ?", [body.system_id])
+        .then((rows) => {
+          const priorUser = rows && rows[0] ? rows[0] : {};
+          return db.query(updateQuery, params).then(() => priorUser);
+        })
+        .then((priorUser) => {
+          recordUserEditAudit(req, body, priorUser, active);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -543,8 +649,13 @@ module.exports = (db) => {
 
       const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
 
-      db.query(sql, [req.body.id])
-        .then(() => {
+      db.query("SELECT * FROM time_log WHERE time_log_id = ?", [req.body.id])
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db.query(sql, [req.body.id]).then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordTimeLogDeleteAudit(req, req.body.id, deletedRow);
           res.status(200).send();
         })
         .catch((err) => {
@@ -635,6 +746,21 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          return db.query(
+            `SELECT time_log_id FROM time_log
+             WHERE system_id = ? AND project = ? AND work_date = ? AND time_amount = ?
+             ORDER BY time_log_id DESC LIMIT 1`,
+            [
+              req.user.system_id,
+              req.user.project,
+              req.body.date,
+              req.body.time_amount,
+            ],
+          );
+        })
+        .then((rows) => {
+          const newTimeLogId = rows && rows[0] ? rows[0].time_log_id : null;
+          recordTimeLogCreateAudit(req, req.body, newTimeLogId);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -1043,8 +1169,18 @@ module.exports = (db) => {
         body.archive_id,
       ];
 
-      db.query(updateArchiveQuery, updateArchiveParams)
-        .then(() => {
+      db.query(
+        `SELECT inactive FROM ${DB_CONFIG.tableNames.archive} WHERE archive_id = ?`,
+        [body.archive_id],
+      )
+        .then((rows) => {
+          const priorInactive = rows && rows[0] ? rows[0].inactive : "";
+          return db
+            .query(updateArchiveQuery, updateArchiveParams)
+            .then(() => priorInactive);
+        })
+        .then((priorInactive) => {
+          recordArchiveEditAudit(req, body, priorInactive, inactive);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -1130,7 +1266,17 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          return res.status(200).send(response);
+          return lookupNewlyInsertedId(
+            db,
+            DB_CONFIG.tableNames.archive,
+            "archive_id",
+            {
+              name: body.name,
+            },
+          ).then((newArchiveId) => {
+            recordArchiveCreateAudit(req, body, newArchiveId);
+            return res.status(200).send(response);
+          });
         })
         .catch((err) => {
           console.error(err);
@@ -1730,6 +1876,7 @@ module.exports = (db) => {
         db.query(deleteCoachesSQL),
       ])
         .then((values) => {
+          recordProjectEditAudit(req, body);
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -2646,6 +2793,21 @@ module.exports = (db) => {
 
       db.query(insertAction, params)
         .then(() => {
+          return db.query(
+            `SELECT action_log_id FROM action_log
+             WHERE action_template = ? AND system_id = ? AND project = ?
+             ORDER BY action_log_id DESC LIMIT 1`,
+            [body.action_template, req.user.system_id, body.project],
+          );
+        })
+        .then((rows) => {
+          const newActionLogId = rows && rows[0] ? rows[0].action_log_id : null;
+          recordActionSubmissionCreateAudit(
+            req,
+            newActionLogId,
+            action.action_id,
+            action.action_title,
+          );
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -3404,6 +3566,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordActionEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -3737,7 +3900,12 @@ module.exports = (db) => {
       let createSponsorQueryPromise = db
         .query(createSponsorQuery, createSponsorParams)
         .then(() => {
-          return [200, null];
+          return lookupNewlyInsertedId(db, "sponsors", "sponsor_id", {
+            fname: body.fname,
+            lname: body.lname,
+            company: body.company,
+            email: body.email,
+          }).then((newSponsorId) => [200, null, newSponsorId]);
         })
         .catch((err) => {
           const error = new Error(err);
@@ -3758,7 +3926,7 @@ module.exports = (db) => {
 
       Promise.all([createSponsorQueryPromise, createSponsorNotePromise]).then(
         ([
-          [createSponsorQueryStatusCode, createSponsorError],
+          [createSponsorQueryStatusCode, createSponsorError, newSponsorId],
           [createNoteStatusCode, createNoteError],
         ]) => {
           if (createSponsorError) {
@@ -3772,6 +3940,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorCreateAudit(req, body, newSponsorId);
             res.status(createSponsorQueryStatusCode).send();
           }
         },
@@ -3877,6 +4046,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorEditAudit(req, body);
             res.status(updateQueryStatusCode).send();
           }
         },
@@ -3926,6 +4096,19 @@ module.exports = (db) => {
           error.statusCode = status;
           return next(error);
         } else {
+          db.query("SELECT fname, lname FROM sponsors WHERE sponsor_id = ?", [
+            body.sponsor_id,
+          ])
+            .then((rows) => {
+              const sponsorName =
+                rows && rows[0]
+                  ? `${rows[0].fname} ${rows[0].lname}`
+                  : "Unknown";
+              recordSponsorNoteCreateAudit(req, body, sponsorName);
+            })
+            .catch(() => {
+              recordSponsorNoteCreateAudit(req, body, "Unknown");
+            });
           res.status(status).send();
         }
       });
@@ -3966,6 +4149,15 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          return lookupNewlyInsertedId(db, "actions", "action_id", {
+            semester: body.semester,
+            action_title: body.action_title,
+            start_date: body.start_date,
+            due_date: body.due_date,
+          });
+        })
+        .then((newActionId) => {
+          recordActionCreateAudit(req, body, newActionId);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -4282,6 +4474,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordSemesterEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -4350,6 +4543,15 @@ module.exports = (db) => {
 
       db.query(sql, params)
         .then(() => {
+          return lookupNewlyInsertedId(db, "semester_group", "semester_id", {
+            name: body.name,
+            dept: body.dept,
+            start_date: body.start_date,
+            end_date: body.end_date,
+          });
+        })
+        .then((newSemesterId) => {
+          recordSemesterCreateAudit(req, body, newSemesterId);
           return res.status(200).send();
         })
         .catch((err) => {

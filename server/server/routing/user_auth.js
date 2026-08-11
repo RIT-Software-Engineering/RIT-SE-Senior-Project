@@ -7,7 +7,7 @@ const isSignedIn = (req, res, next) => {
     req.user.system_id === undefined ||
     req.user.system_id === null
   ) {
-    const error = new Error(err);
+    const error = new Error("Not signed in");
     error.statusCode = 401;
     return next(error);
   }

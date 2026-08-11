@@ -10,17 +10,13 @@ import uiConfig from "../../../config/uiConfig";
 import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
-  const { user, isAdminTabActive } = useContext(UserContext);
+  const { user, isAuditTabActive } = useContext(UserContext);
   const [footerHtml, setFooterHtml] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const signedIn = user && Object.keys(user).length > 0 && user.user;
-  const isFullAdmin =
-    signedIn &&
-    user.role === USERTYPES.ADMIN &&
-    !user.view_only &&
-    !user.mockUser?.view_only;
-  const showErrorLogsLink = isFullAdmin && isAdminTabActive;
+  const isAdminOrViewOnlyAdmin = signedIn && user.role === USERTYPES.ADMIN;
+  const showErrorLogsLink = isAdminOrViewOnlyAdmin && isAuditTabActive;
   useEffect(() => {
     const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
