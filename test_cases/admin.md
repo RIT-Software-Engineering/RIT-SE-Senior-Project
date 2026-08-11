@@ -7,6 +7,7 @@
 - [Mocking Users](#mocking-users)
 - [Admin Tab](#admin-tab)
 - [Creating Semesters](#creating-semesters)
+- [Copy Semester Actions](#copy-semester-actions)
 - [Editing Semesters](#editing-semesters)
 - [Archive Editor](#archive-editor)
 - [Content Editor](#content-editor)
@@ -56,6 +57,20 @@
    ![Creating Semesters 5](images/creatingsemesters5.png)
 
 6. Additionally as an admin we should be able to assign [projects to that semester](projects.md#editing) now and further [assign members](projects.md#member-assignment) to said projects.
+
+### Copy Semester Actions
+
+1. The Copy Semester Actions feature allows admins to duplicate actions, announcements, peer evaluations, and break periods from one semester into another with an optional date offset.To access this feature, sign in as an admin, navigate to the "Admin" tab, and press the copy icon button next to the "+" button in the Action / Announcement / Peer Eval / Break Period section.[Copy Semester actions 1](images/copysemesteractions1.png)
+
+2. The Copy Semester Actions modal will open with three fields: Source Semester, Target Semester, and Date Offset (Days). Select a source semester called "previous year" from the dropdown. This will load all actions associated with that semester into the table.[Copy Semester actions 2](images/copysemesteractions2.png)
+
+3. Next select a target semester called "current year" from the Target Semester dropdown. Once both semesters are selected, the Date Offset field will automatically populate with the number of days between the two semester's start dates.[Copy Semester actions 3](images/copysemesteractions3.png)
+
+4. Now increase the offsets days by 5 then deselect prototype feedback checkbox at the left of the actions so that when we copy the actions it won't be there twice.[Copy Semester actions 4](images/copysemesteractions4.png)
+
+5. Then go to the bottom of the modal and press preview, it will show a final confirmation table with each selected action's current start and end dates alongside the calculated new dates. confirm that the offset is increased and the dates are right.[Copy Semester actions 5](images/copysemesteractions5.png)
+
+6. Now press copy actions and the page will modal will automatically close after a short delay and the Action Editor section will immediately refresh to show the newly copied actions under the target semester. Confirm under the Action / Announcement / Peer Eval / Break Period section for the current year that the actions were copied by seeing the date and action from the preview modal like seeing project proposal twice but one of them is the copied action with the diffrent date.[Copy Semester actions 6](images/copysemesteractions6.png)
 
 ### Editing Semesters
 
