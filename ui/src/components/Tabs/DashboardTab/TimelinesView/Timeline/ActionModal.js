@@ -45,6 +45,10 @@ export default function ActionModal(props) {
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
   );
+
+  const modalFocus = useRef(null);
+
+
   useEffect(() => {
     setOpen(props.open || false);
     if (props.open) {
@@ -53,6 +57,9 @@ export default function ActionModal(props) {
       setFormTouched(false);
       setReadyToMark(false);
       setTimeout(() => setReadyToMark(true), 250);
+      setTimeout(() => {
+        modalFocus.current?.focus()
+      }, 0);
     }
   }, [props.open]);
   const [submissionModalResponse, setSubmissionModalResponse] = useState(
@@ -600,7 +607,11 @@ export default function ActionModal(props) {
             )
           }
         >
-          <Modal.Header>{props.action_title}</Modal.Header>
+          <Modal.Header>
+            <span ref={modalFocus} tabIndex={-1}>
+              {props.action_title}
+            </span>
+          </Modal.Header>
           <Modal.Content>
             <Modal.Description>
               {props.preActionContent}
@@ -726,7 +737,11 @@ export default function ActionModal(props) {
             )
           }
         >
-          <Modal.Header>{props.action_title}</Modal.Header>
+          <Modal.Header>
+            <span ref={modalFocus} tabIndex={-1}>
+              {props.action_title}
+            </span>
+          </Modal.Header>
           <Modal.Content>
             <Modal.Description>
               {props.preActionContent}
