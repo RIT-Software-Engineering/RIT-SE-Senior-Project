@@ -251,6 +251,13 @@ export default function ProjectArchivePanel(props) {
               .then((response) => response.json())
               .then((dates) => {
                 setInitialState((prevInitialState) => {
+                  if (dates.length === 0) {
+                    console.error(
+                      `No start and end dates found for semester: ${props.project?.semester}`,
+                    );
+                    return prevInitialState; // Return previous state if no dates found
+                  }
+
                   return {
                     ...prevInitialState,
                     start_date: dates[0].start_date,
