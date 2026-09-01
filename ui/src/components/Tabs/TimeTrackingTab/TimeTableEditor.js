@@ -158,29 +158,25 @@ export default function TimeTableEditor(props) {
       parseFloat(dataToSubmit["time_amount_hours"] || 0) * 60 +
       parseFloat(dataToSubmit["time_amount_mins"] || 0);
     if (totalMinutes < 1) {
-      if (!errors.includes("You need to enter at least 1 minute of time.")) {
-        errors.push("You need to enter at least 1 minute of time.");
+      if (!errors.includes("Time submitted must be at least 1 minute.")) {
+        errors.push("Time submitted must be at least 1 minute.");
       }
       invalid = true;
     }
 
     if (totalMinutes > 600) {
       // 10 hours = 600 minutes
-      if (!errors.includes("You cannot enter more than 10 hours of time.")) {
-        errors.push("You cannot enter more than 10 hours of time.");
+      if (!errors.includes("Total time submitted must not exceed 10 hours.")) {
+        errors.push("Total time submitted must not exceed 10 hours.");
       }
       invalid = true;
     }
 
     if (dataToSubmit["comment"].length > 300) {
       if (
-        !errors.includes(
-          "You cannot enter a comment exceeding 300 characters.",
-        )
+        !errors.includes("You cannot enter a comment exceeding 300 characters.")
       ) {
-        errors.push(
-          "You cannot enter a comment exceeding 300 characters.",
-        );
+        errors.push("You cannot enter a comment exceeding 300 characters.");
       }
       invalid = true;
     }
@@ -509,7 +505,7 @@ export default function TimeTableEditor(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
-        closeIcon={true}
+        closeIcon={false}
         trigger={user.role === "coach" ? null : trigger}
         onOpen={() => {
           setOpen(true);
