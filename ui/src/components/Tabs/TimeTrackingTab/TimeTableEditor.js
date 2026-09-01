@@ -505,8 +505,11 @@ export default function TimeTableEditor(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
-        closeIcon={false}
+        closeIcon={true}
         trigger={user.role === "coach" ? null : trigger}
+        onClose={() => {
+          setOpen(false);
+        }}
         onOpen={() => {
           setOpen(true);
         }}

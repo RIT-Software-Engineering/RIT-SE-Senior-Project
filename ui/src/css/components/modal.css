@@ -511,10 +511,10 @@ body.dark-mode .ui.radio.checkbox label {
   color: #ffffff !important;
 }
 
-body.dark-mode .confirm-close-x i.close.icon {
+/* body.dark-mode .confirm-close-x i.close.icon {
   color: #ffffff !important;
   opacity: 0.9 !important;
-}
+} */
 
 body:not(.dark-mode) .confirm-close-x {
   position: absolute !important;
@@ -565,4 +565,8 @@ body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
 .ui.modal > .close.icon {
   top: -1.5rem !important;
   right: -1.8rem !important;
+}
+
+.ui.modal .close.icon {
+  color: #fff !important;
 }
