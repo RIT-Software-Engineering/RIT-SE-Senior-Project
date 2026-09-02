@@ -147,7 +147,7 @@ body.dark-mode .ui.dropdown {
 }
 
 body.dark-mode .ui.dropdown .menu {
-  background-color: var(--bg-footer-header);
+  background-color: var(--text-primary);
   border: 1px solid var(--border-color);
 }
 
