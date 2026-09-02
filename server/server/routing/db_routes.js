@@ -2932,7 +2932,8 @@ module.exports = (db) => {
                         WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                        WHEN action_target = 'peer_evaluation' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) + 1 THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)
+                        ) AND EXISTS (SELECT 1 FROM project_coaches pc JOIN action_log al ON al.system_id = pc.coach_id WHERE pc.project_id = ? AND al.action_template = actions.action_id AND al.project = ?) THEN 'green'
                         WHEN action_target = 'peer_evaluation' THEN 'red'
                         WHEN action_target IS 'individual' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)) THEN 'green'
                         WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
@@ -2949,6 +2950,9 @@ module.exports = (db) => {
             GROUP BY actions.action_id`;
 
       db.query(getTimelineActions, [
+        req.query.project_id,
+        req.query.project_id,
+        req.query.project_id,
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,
