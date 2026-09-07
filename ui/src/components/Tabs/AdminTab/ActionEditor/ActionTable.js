@@ -92,6 +92,7 @@ export default function ActionTable(props) {
                 semesterName={semesterName}
                 header={`Currently Viewing "${action.action_title}"`}
                 key={"viewHtml-" + i}
+                previewOnly={true}
               />
             </div>
           </TableCell>
