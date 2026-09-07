@@ -561,28 +561,7 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
-            setOpen(true);
-            props.isOpenCallback(true);
-            fetchStudentNames();
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => {
-              if (formTouched && !props.viewOnly) {
-                openUnsavedModal(() => {
-                  setErrors([]);
-                  setFormTouched(false);
-                  setOpen(false);
-                  props.isOpenCallback(false);
-                });
-              } else {
-                setOpen(false);
-                props.isOpenCallback(false);
-                setFormTouched(false);
-              }
-            }, 0);
-          }}
+          onClose={onActionCancel}
           onOpen={() => {
             console.log("ACTION MODAL OPEN");
             setOpen(true);
@@ -685,8 +664,9 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
+          onClose={onActionCancel}
+          onOpen={() => {
+            console.log("ACTION MODAL OPEN");
             setOpen(true);
             props.isOpenCallback(true);
             fetchStudentNames();
