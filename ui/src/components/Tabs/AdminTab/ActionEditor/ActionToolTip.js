@@ -72,6 +72,7 @@ function ActionToolTip(props) {
             projectId={props.projectId}
             header={`Currently Viewing "${props.action.action_title}"`}
             key={"viewHtml-" + props.index}
+            previewOnly={true}
           />
         </div>
       </div>
