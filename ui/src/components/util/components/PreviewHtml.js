@@ -87,7 +87,8 @@ export default function PreviewHtml(props) {
           />
         )}
         <br />
-        {fileUpload(props.action.file_types, props.action.file_size)}
+        {!props.previewOnly &&
+          fileUpload(props.action.file_types, props.action.file_size)}
       </div>
     );
   }
@@ -148,14 +149,20 @@ export default function PreviewHtml(props) {
     return (
       <>
         <p>{props.action?.short_desc}</p>
-        <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
-        <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
-        <p>Project Title: {props.projectName}</p>
+        {!props.previewOnly && (
+          <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
+        )}
+        {!props.previewOnly && (
+          <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
+        )}
+        {!props.previewOnly && <p>Project Title: {props.projectName}</p>}
         <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
-        <div>
-          Submissons:
-          {renderSubmissionsList()}
-        </div>
+        {!props.previewOnly && (
+          <div>
+            Submissons:
+            {renderSubmissionsList()}
+          </div>
+        )}
       </>
     );
   }
