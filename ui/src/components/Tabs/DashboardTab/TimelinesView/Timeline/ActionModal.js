@@ -376,6 +376,7 @@ export default function ActionModal(props) {
       if (errors.length > 0) {
         setErrors(errors);
         setErrorFields(errorFields);
+        setFormTouched(false);
         return;
       }
 
@@ -462,7 +463,11 @@ export default function ActionModal(props) {
   }
 
   function onActionCancel() {
-    if (formTouched && !props.viewOnly) {
+    if (
+      formTouched &&
+      !props.viewOnly &&
+      submissionModalOpen !== MODAL_STATUS.SUCCESS
+    ) {
       openUnsavedModal(() => {
         setErrors([]);
         setFormTouched(false);
@@ -526,7 +531,7 @@ export default function ActionModal(props) {
       closeOnDimmerClick={false}
       closeOnEscape={false}
       closeIcon
-      onClose={() => setUnsavedModalOpen(false)}
+      onClose={onActionCancel}
     >
       <Modal.Header>Unsaved Changes</Modal.Header>
       <Modal.Content>
