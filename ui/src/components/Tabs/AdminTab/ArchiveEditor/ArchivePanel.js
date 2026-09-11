@@ -235,19 +235,19 @@ export default function ArchivePanel(props) {
     submissionModalMessages = {
       SUCCESS: "The project has been archived.",
       FAIL: "Could not archive the project.",
-      SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+      SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
     };
   } else {
     submissionModalMessages = props.create
       ? {
           SUCCESS: "The archive project has been created.",
           FAIL: "We were unable to add to archive.",
-          SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+          SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
         }
       : {
           SUCCESS: "The archived project has been edited.",
           FAIL: "Could not make edits.",
-          SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+          SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
         };
   }
 
