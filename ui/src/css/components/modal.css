@@ -386,6 +386,10 @@ body.dark-mode .semantic-centered-modal {
   transition:
     background-color 0.3s,
     color 0.3s !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  margin: 0 !important;
 }
 
 .ui.modal > .header,
@@ -415,41 +419,6 @@ html body .ui.page.modals.dimmer > .ui.modal.your-custom-modal {
   bottom: auto !important;
   width: auto !important;
   max-width: 80vw !important;
-}
-
-/* Fix light mode modal positioning */
-body:not(.dark-mode) .ui.dimmer > .ui.modal {
-  position: fixed !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-}
-
-/* Fix for sticky modals in light mode (ActionModal, etc) */
-body:not(.dark-mode) .ui.modal.sticky {
-  position: fixed !important;
-  top: 5vh !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  margin: 0 !important;
-  max-height: 90vh !important;
-}
-
-/* Fix for modals in light mode (SubmissionViewer) */
-body:not(.dark-mode) .ui.dimmer > .ui.modal.exemplary-modal {
-  position: absolute !important;
-  top: 40px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  margin: 0 !important;
-}
-
-/* Ensure small modals center properly in light mode */
-body:not(.dark-mode) .ui.small.modal {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  max-width: 600px !important;
 }
 
 /* Improve radio hitbox & prevent visual half-clicks */
