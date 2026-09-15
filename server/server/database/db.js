@@ -57,7 +57,9 @@ module.exports = class DBHandler {
    */
   query(sql, values = []) {
     return new Promise((resolve, reject) => {
-      this.openReadWrite();
+      if(!this.seniorProjectsDB){
+        this.openReadWrite();
+      }
       if (this.seniorProjectsDB) {
         this.seniorProjectsDB.all(sql, values, (err, rows) => {
           if (err) reject(err);
