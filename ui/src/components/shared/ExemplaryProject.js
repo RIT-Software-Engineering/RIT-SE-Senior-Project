@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
+import gccisLogo from "../../Assets/gccis_logo.jpg";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/shared/exemplary.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
+const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -97,7 +99,7 @@ function ExemplaryProject({ project }) {
         <div className="three column row">
           <div className="column">
             <img
-              src={`${basePosterURL}${project.poster_thumb}`}
+              src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : project.archive_image ? `${baseImageURL}${project.archive_image}` : gccisLogo}
               className="exemplary-column-style"
               alt="Project Poster"
             />

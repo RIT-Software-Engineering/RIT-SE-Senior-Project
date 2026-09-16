@@ -4,6 +4,7 @@ import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
+import gccisLogo from "../../Assets/gccis_logo.jpg";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/pages/UniqueProjectPage.css";
@@ -122,9 +123,9 @@ function UniqueProjectPage({ projectData }) {
           }
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            {project?.poster_thumb && (
+            {(
               <img
-                src={`${basePosterURL}${project?.poster_thumb}`}
+                src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                 className="unique-project-zoom unique-project-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
@@ -143,13 +144,13 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_thumb}`}
+                    src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_full}`}
+                    src={project?.poster_full ? `${basePosterURL}${project?.poster_full}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
