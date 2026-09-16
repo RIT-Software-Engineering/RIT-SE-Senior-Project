@@ -129,7 +129,7 @@ export default function ProfileCircle(props) {
         <span
           className={`profile-name${
             textUnderlined ? " profile-name-underlined" : ""
-          }${size === "tiny" ? " profile-name-truncated" : ""}`}
+          }`}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
