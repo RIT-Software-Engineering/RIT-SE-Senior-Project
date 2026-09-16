@@ -115,7 +115,7 @@ function UniqueProjectPage({ projectData }) {
           )}
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            {(
+            {(project?.poster_thumb || project?.archive_image || !url_slug) && (
               <img
                 src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                 height={CONTENT_HEIGHT}
