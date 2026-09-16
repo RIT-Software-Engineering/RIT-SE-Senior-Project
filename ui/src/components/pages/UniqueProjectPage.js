@@ -206,8 +206,6 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
-                <div className="ui small header">Students</div>
-                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -220,13 +218,15 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="column">
+              <div className="ui small header">Students</div>
+                {generateProfiles(project?.members, true)}
+              <div className="ui invisible divider"></div>
               {
                 // display project page link if slug has been defined
                 project.url_slug !== null && project?.url_slug !== "" && (
                 <div>
-                  <Icon name="linkify" />{" "}
                   <Link to={`/projects/${project.url_slug}`}>
-                    {`${baseProjectURL}${project.url_slug}`}
+                    {project?.title}
                   </Link>
                 </div>
                 )
