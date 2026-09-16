@@ -151,17 +151,12 @@ export default function ProfileCircle(props) {
             marginLeft: "5px",
             fontStyle: "normal",
             textDecoration: textUnderlined ? "underline" : "none",
-            // truncate in tiny size (preview), full display otherwise
             ...(size === "tiny"
               ? {
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  maxWidth: "120px",
-                  display: "inline-block",
-                }
-              : { display: "inline" }),
-          }}
+                display: "inline-block",
+              }
+            : { display: "inline" }),
+        }}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>

@@ -113,17 +113,6 @@ function UniqueProjectPage({ projectData }) {
               style={{ float: "right" }}
             />
           )}
-          {
-            // display project page link if slug has been defined
-            project.url_slug !== null && project?.url_slug !== "" && (
-              <div>
-                <Icon name="linkify" />{" "}
-                <Link to={`/projects/${project.url_slug}`}>
-                  {`${baseProjectURL}${project.url_slug}`}
-                </Link>
-              </div>
-            )
-          }
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
             {(
@@ -231,9 +220,24 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="column">
+              {
+                // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                <div>
+                  <Icon name="linkify" />{" "}
+                  <Link to={`/projects/${project.url_slug}`}>
+                    {`${baseProjectURL}${project.url_slug}`}
+                  </Link>
+                </div>
+                )
+              }
               <div className="ui small header">Synopsis</div>
               <p style={{ whiteSpace: "pre-line" }}>
                 {decodeSynopsis(project?.synopsis)}
+              </p>
+              <div className="ui small header">Keywords</div>
+              <p className="unique-project-whitespace">
+                {project?.keywords}
               </p>
             </div>
           </div>
