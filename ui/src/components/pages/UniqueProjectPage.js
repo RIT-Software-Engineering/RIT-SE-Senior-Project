@@ -218,11 +218,12 @@ function UniqueProjectPage({ projectData }) {
               {
                 // display project page link if slug has been defined
                 project.url_slug !== null && project?.url_slug !== "" && (
+                <><div className="ui small header">Link</div>
                 <div>
                   <Link to={`/projects/${project.url_slug}`}>
-                    {project?.title}
+                    {`${baseProjectURL}${project.url_slug}`}
                   </Link>
-                </div>
+                </div></>
                 )
               }
               <div className="ui small header">Synopsis</div>
