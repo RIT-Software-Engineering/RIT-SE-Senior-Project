@@ -4,6 +4,7 @@ import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
+import gccisLogo from "../../Assets/gccis_logo.jpg";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/pages/UniqueProjectPage.css";
@@ -109,22 +110,11 @@ function UniqueProjectPage({ projectData }) {
               className="unique-project-direction"
             />
           )}
-          {
-            // display project page link if slug has been defined
-            project.url_slug !== null && project?.url_slug !== "" && (
-              <div>
-                <Icon name="linkify" />{" "}
-                <Link to={`/projects/${project.url_slug}`}>
-                  {`${baseProjectURL}${project.url_slug}`}
-                </Link>
-              </div>
-            )
-          }
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            {project?.poster_thumb && (
+            {(project?.poster_thumb || project?.archive_image || !url_slug) && (
               <img
-                src={`${basePosterURL}${project?.poster_thumb}`}
+                src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                 className="unique-project-zoom unique-project-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
@@ -143,13 +133,13 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_thumb}`}
+                    src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_full}`}
+                    src={project?.poster_full ? `${basePosterURL}${project?.poster_full}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
@@ -210,8 +200,6 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
-                <div className="ui small header">Students</div>
-                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -224,9 +212,27 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="column">
+              <div className="ui small header">Students</div>
+                {generateProfiles(project?.members, true)}
+              <div className="ui invisible divider"></div>
+              {
+                // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                <><div className="ui small header">Link</div>
+                <div>
+                  <Link to={`/projects/${project.url_slug}`}>
+                    {`${baseProjectURL}${project.url_slug}`}
+                  </Link>
+                </div></>
+                )
+              }
               <div className="ui small header">Synopsis</div>
               <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
+              </p>
+              <div className="ui small header">Keywords</div>
+              <p className="unique-project-whitespace">
+                {project?.keywords}
               </p>
             </div>
           </div>
