@@ -10,7 +10,7 @@ echo "Installing dependencies"
 cd /home/website-test/RIT-SE-Senior-Project/server
 sudo npm install
 cd /home/website-test/RIT-SE-Senior-Project/ui
-sudo npm install
+sudo npm install --legacy-peer-deps
 echo "Building react app"
 sudo npm run-script build
 cd ..

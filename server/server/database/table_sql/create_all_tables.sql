@@ -5,6 +5,9 @@
 .read table_sql/projects.sql
 .read table_sql/semester_group.sql
 .read table_sql/sponsors.sql
+.read table_sql/time_log.sql
 .read table_sql/users.sql
 .read table_sql/sponsor_notes.sql
 .read table_sql/page_html.sql
+.read table_sql/error_log.sql
+.read table_sql/audit_log.sql

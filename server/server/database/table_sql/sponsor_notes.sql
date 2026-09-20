@@ -4,8 +4,10 @@ CREATE TABLE sponsor_notes (
     note_content TEXT,
     sponsor INTEGER,
     author TEXT,
+    mock_id TEXT,
     previous_note INTEGER,
     FOREIGN KEY (sponsor) REFERENCES sponsors(sponsor_id),
     FOREIGN KEY (author) REFERENCES user(system_id),
+    FOREIGN KEY (mock_id) REFERENCES user(system_id),
     FOREIGN KEY (previous_note) REFERENCES sponsor_notes(sponsor_note_id)
 );

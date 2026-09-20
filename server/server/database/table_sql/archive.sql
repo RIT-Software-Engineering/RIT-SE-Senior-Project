@@ -23,5 +23,6 @@ CREATE TABLE archive (
     url_slug        TEXT,   -- unique project url
     video           TEXT,   -- path to project video (if any)
     inactive        TEXT DEFAULT '' NOT NULL,   -- Empty string if active, Datetime of when deactivated if inactive
+    locked          TEXT DEFAULT '' NOT NULL,   -- Empty string if unlocked, Datetime of when locked and user otherwise
     FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );

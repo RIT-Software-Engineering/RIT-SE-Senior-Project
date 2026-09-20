@@ -1,0 +1,380 @@
+@import "./../base/variables.css";
+
+.gantt {
+  display: grid;
+  position: relative;
+  border: var(--border-color) 1px solid;
+  width: 100%;
+  grid-auto-flow: column;
+  grid-template-columns: 200px;
+  max-height: 400px;
+  overflow: auto;
+  overflow-y: scroll;
+}
+
+.gantt.no-sidebar {
+  grid-template-columns: minmax(0px, min-content);
+}
+
+.gantt-container {
+  display: grid;
+  grid-template-columns: 200px repeat(var(--gantt-length), 1fr);
+  grid-row: 1 / 300;
+  height: 100%;
+}
+
+.gantt-header > p {
+  position: sticky;
+  padding-left: var(--default-padding);
+}
+
+.gantt-header {
+  display: grid;
+  grid-template-columns: repeat(var(--gantt-length), 1fr);
+  grid-row: 1/3;
+  position: sticky;
+  top: 0;
+  border: none;
+  border-left: var(--border-color) 1px solid;
+  border-bottom: var(--border-color) 1px solid;
+  background-color: var(--bg-primary);
+  z-index: 99;
+}
+
+.gantt-header.first {
+  grid-row: 1;
+  position: sticky;
+  text-wrap: nowrap;
+}
+
+.gantt-header.second {
+  grid-row: 2;
+  position: sticky;
+}
+
+.gantt-background {
+  display: grid;
+  grid-row: 1 / 300;
+  grid-template-columns: repeat(var(--gantt-length), 1fr);
+}
+
+.gantt-col {
+  grid-row: 3 / 300;
+}
+
+.gantt-col.weekday {
+  background-color: var(--bg-primary);
+}
+
+.gantt-col.weekend {
+  background-color: var(--gantt-weekend);
+}
+
+.gantt-col.today {
+  background-color: color-mix(
+    in srgb,
+    var(--action-bar-proposal-blue) 40%,
+    transparent
+  );
+}
+
+.gantt-col.projectStart {
+  background-color: var(--border-color);
+}
+
+.gantt-col.projectEnd {
+  background-color: var(--border-color);
+}
+
+.sidebar-container {
+  display: grid;
+  grid-row: 1 / 300;
+  grid-template-columns: 200px;
+  grid-column: 1;
+  position: sticky;
+  left: 0;
+  border: none;
+  z-index: 100;
+}
+
+.sidebar-container.empty {
+  width: 0px;
+}
+
+.sidebar {
+  width: 100%;
+  background: var(--bg-primary);
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: none;
+  border-top: var(--border-color) 1px solid;
+  border-right: var(--border-color) 1px solid;
+  text-align: left;
+  cursor: pointer;
+  padding: var(--default-padding);
+}
+
+.sidebar.header {
+  grid-row: 1/3;
+  grid-column-start: 1;
+  padding-left: var(--default-padding);
+  padding-top: 1px;
+  padding-bottom: 1px;
+  cursor: default;
+  text-align: left;
+  border: none;
+  border-right: var(--border-color) 1px solid;
+  border-bottom: var(--border-color) 3px solid;
+  position: sticky;
+  top: 0;
+}
+
+.gantt-chart {
+  display: grid;
+  text-wrap: nowrap;
+  text-align: left;
+  width: 100%;
+  grid-row: 1 / 300;
+  grid-template-columns: repeat(var(--gantt-length), 1fr);
+  overflow-x: clip;
+}
+
+.action-bar > p {
+  padding-left: var(--default-br);
+  position: sticky;
+  left: 200px;
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  border-radius: 1em;
+  padding: var(--default-padding);
+  overflow: visible;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.action-bar.proposal-row-yellow {
+  border: 2px var(--action-bar-proposal-yellow) solid;
+  color: var(--border-color);
+  font-weight: bold;
+  grid-column: span 3 / auto;
+}
+
+.action-bar.proposal-row-red {
+  border: 2px var(--action-bar-proposal-red) solid;
+  color: var(--border-color);
+  font-weight: bold;
+  grid-column: span 3 / auto;
+}
+
+.action-bar.proposal-row-blue {
+  border: 2px var(--action-bar-proposal-blue) solid;
+  color: var(--border-color);
+  grid-column: span 2 / auto;
+  font-weight: bold;
+  text-decoration: line-through;
+}
+
+.action-bar.proposal-row-green {
+  border: 2px var(--action-bar-proposal-green) solid;
+  color: var(--border-color);
+  grid-column: span 2 / auto;
+  text-decoration: line-through;
+}
+
+.action-bar.proposal-row-gray {
+  border: 2px var(--action-bar-proposal-gray) solid;
+  color: var(--border-color);
+  grid-column: span 2 / auto;
+}
+
+.action-bar.proposal-row-purple {
+  border: 2px var(--action-bar-proposal-purple) solid;
+  color: var(--border-color);
+  grid-column: span 2 / auto;
+}
+
+.action-bar-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.actions-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.6em, 1fr));
+  grid-auto-rows: 4.6em;
+  gap: var(--default-gap);
+  margin-bottom: 1em;
+}
+
+.view-action-button {
+  min-height: 2.5em !important;
+}
+
+.relevant-actions-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.6em, 1fr));
+  gap: var(--default-gap);
+}
+
+.no-popup-tooltip {
+  grid-column: span 3 / auto;
+  padding: var(--default-padding);
+  border-radius: 0.25em;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-popup-tooltip .content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.project-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkbox-container {
+  display: flex;
+  margin-top: 15px;
+  position: relative;
+  justify-content: space-between;
+  right: 0;
+}
+
+.timeline-action-block {
+  margin-top: 30px;
+}
+
+.timeline-checkbox {
+  padding-left: 10px;
+  margin-bottom: 14px;
+}
+
+/* Dark mode styles for gantt chart */
+body.dark-mode .gantt {
+  border-color: var(--border-color);
+}
+
+body.dark-mode .gantt-header {
+  background-color: var(--bg-primary);
+  border-left-color: var(--border-color);
+  border-bottom-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-mode .gantt-col.weekday {
+  background-color: var(--bg-primary);
+}
+
+body.dark-mode .gantt-col.weekend {
+  background-color: var(--bg-secondary);
+}
+
+body.dark-mode .sidebar {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-right-color: var(--border-color);
+}
+
+body.dark-mode .sidebar.header {
+  background-color: var(--bg-primary);
+  border-right-color: var(--border-color);
+  border-bottom-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Dark mode styles for action bar */
+body.dark-mode .action-bar {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .action-bar.proposal-row-yellow {
+  border-color: var(--action-bar-proposal-yellow);
+  color: var(--text-primary);
+}
+
+body.dark-mode .action-bar.proposal-row-red {
+  border-color: var(--action-bar-proposal-red);
+  color: var(--text-primary);
+}
+
+body.dark-mode .action-bar.proposal-row-blue {
+  border-color: var(--action-bar-proposal-blue);
+  color: var(--text-primary);
+}
+
+body.dark-mode .action-bar.proposal-row-green {
+  border-color: var(--action-bar-proposal-green);
+  color: var(--text-primary);
+}
+
+body.dark-mode .action-bar.proposal-row-gray {
+  border-color: var(--action-bar-proposal-gray);
+  color: var(--text-primary);
+}
+
+/* Dark mode styles for checkbox */
+body.dark-mode .timeline-checkbox {
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode .ui.checkbox label {
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode .ui.checkbox input[type="checkbox"]:checked + label {
+  color: var(--text-primary) !important;
+}
+
+.gantt-timespan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gantt-timespan-dropdown {
+  z-index: 100;
+  position: relative;
+  background-color: var(--bg-button);
+}
+
+.gantt-row-button {
+  text-wrap: nowrap;
+  overflow: visible;
+  padding-left: 0px;
+}
+
+.gantt-header-text-offset {
+  left: 200px;
+}
+
+.gantt-header-text-offset-mobile {
+  left: 0;
+}
+
+.gantt-header-text-padded {
+  padding-left: 5px;
+}

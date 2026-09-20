@@ -1,243 +1,243 @@
 import React, { useEffect, useState } from "react";
-import { Accordion } from "semantic-ui-react";
-import { config, USERTYPES } from "../../../util/functions/constants";
+import { Accordion, Loader } from "semantic-ui-react";
+import { USERTYPES } from "../../../util/functions/constants";
 import _ from "lodash";
 import StudentTeamTable from "../../StudentsTab/StudentTeamTable";
-import { SecureFetch } from "../../../util/functions/secureFetch";
+import { isSemesterActive } from "../../../util/functions/utils";
 
+export default function UserEditorUserGroups(props) {
+  const unassignedStudentsStr = "Unassigned students";
+  const coaches = "Coaches";
+  const admins = "Admins";
+  const inactive = "Inactive Users";
 
-/**
- * FIXME: This whole component should be redesigned to only
- * get users when opening an accordion. Loading all of the users
- * at the beginning will slow down over time especially as we add
- * nearly 200 users per semester. Overall, the design of this component
- * could be less complex.
- */
-export default function UserEditorUserGroups() {
-    const [students, setStudentsData] = useState([]);
-    const [semesters, setSemestersData] = useState();
-    const [projects, setProjectsData] = useState([]);
-    const [users, setUserData] = useState([]);
+  const [activeIndexes, setActiveIndexes] = useState([]);
+  const [groupings, setGroupings] = useState(null);
 
-    const unassignedStudentsStr = "Unassigned students";
-    const coaches = "Coaches";
-    const admins = "Admins";
-    const inactive = "Inactive Users";
-
-    let groupings;
-    let semesterMap = {};
-    let projectMap = {};
-    let semesterAccordions = [];
-
-    useEffect(() => {
-        SecureFetch(config.url.API_GET_STUDENT_INFO)
-            .then((response) => response.json())
-            .then((studentsData) => {
-                setStudentsData(studentsData);
-            })
-            .catch((error) => {
-                alert("Failed to get students data" + error);
-            });
-        SecureFetch(config.url.API_GET_NON_STUDENT_INFO)
-            .then((response) => response.json())
-            .then((userData) => {
-                setUserData(userData);
-            })
-            .catch((error) => {
-                alert("Failed to get non student data" + error);
-            });
-        SecureFetch(config.url.API_GET_SEMESTERS)
-            .then((response) => response.json())
-            .then((semestersData) => {
-                setSemestersData(semestersData);
-            })
-            .catch((error) => {
-                alert("Failed to get semestersData data" + error);
-            });
-        SecureFetch(config.url.API_GET_ACTIVE_PROJECTS)
-            .then((response) => response.json())
-            .then((projectsData) => {
-                setProjectsData(projectsData);
-            })
-            .catch((error) => {
-                alert("Failed to get projectsData" + error);
-            });
-    }, []);
-
-    function groupUsers(studentData, userData, projectMap) {
-        let semesterMap = { semesters: [] }
-
-        userData.forEach(user => {
-            if (user.active === "") {
-                switch (user.type) {
-                    case USERTYPES.COACH:
-                        if (!semesterMap[coaches]) {
-                            semesterMap[coaches] = [];
-                        }
-                        semesterMap[coaches].push(user);
-                        semesterMap[coaches].sort((a, b) => a.lname.localeCompare(b.lname))
-                        break;
-                    case USERTYPES.ADMIN:
-                        if (!semesterMap[admins]) {
-                            semesterMap[admins] = [];
-                        }
-                        semesterMap[admins].push(user);
-                        semesterMap[admins].sort((a, b) => a.lname.localeCompare(b.lname))
-                        break;
-
-                    default:
-                        break;
-                }
-            } else {
-                if (!semesterMap[inactive]) {
-                    semesterMap[inactive] = [];
-                }
-                semesterMap[inactive].push(user);
-            }
-        });
-
-        for (let i = 0; i < studentData.length; i++) {
-            let student = studentData[i];
-            if (student.semester_group) {
-                if (!semesterMap["semesters"][student.semester_id]) {
-                    semesterMap["semesters"][student.semester_id] = { projects: {} };
-                }
-
-                if (student.project) {
-                    //If a students project doesn't exist inside the semestermap yet, it creates it
-                    if (!semesterMap["semesters"][student.semester_id]["projects"][student.project]) {
-                        semesterMap["semesters"][student.semester_id]["projects"][student.project] = {
-                            name: projectMap[student.project].display_name || projectMap[student.project].title,
-                            project_id: projectMap[student.project].project_id,
-                            students: []
-                        };
-                    }
-                    semesterMap["semesters"][student.semester_id]["projects"][student.project]["students"].push(student);
-                    //Sorting after insertion, not the most optimal, but should be okay.
-                    semesterMap["semesters"][student.semester_id]["projects"][student.project]["students"].sort((a, b) => a.lname.localeCompare(b.lname))
-                } else {
-                    // if a student hasn't been assigned a project yet
-                    if (!semesterMap["semesters"][student.semester_id][unassignedStudentsStr]) {
-                        semesterMap["semesters"][student.semester_id][unassignedStudentsStr] = [];
-                    }
-                    semesterMap["semesters"][student.semester_id][unassignedStudentsStr].push(student);
-                    semesterMap["semesters"][student.semester_id][unassignedStudentsStr].sort((a, b) => a.lname.localeCompare(b.lname))
-                }
-            }
-            else {
-                //if a student doesn't have an assigned semester group yet
-                if (!semesterMap[unassignedStudentsStr]) {
-                    semesterMap[unassignedStudentsStr] = [];
-                }
-                semesterMap[unassignedStudentsStr].push(student);
-                semesterMap[unassignedStudentsStr].sort((a, b) => a.lname.localeCompare(b.lname))
-            }
-        }
-        return semesterMap;
-    }
-
-    function createSemesterAccordion(grouping) {
-        let panels = [];
-
-        if (grouping[unassignedStudentsStr]) {
-            panels.push(<StudentTeamTable
-                key={unassignedStudentsStr}
-                childKey={unassignedStudentsStr}
-                title={`Unassigned Students (${grouping[unassignedStudentsStr].length})`}
-                projectsData={projects}
-                semesterData={semesters}
-                students={grouping[unassignedStudentsStr]}
-            />)
-        }
-
-        if (grouping["projects"]) {
-            let sortedProjects = _.sortBy(grouping["projects"], ["name"]);
-
-            panels.push(sortedProjects.map(project => {
-                return <StudentTeamTable
-                    key={`project-${project.project_id}`}
-                    childKey={`project-${project.project_id}`}
-                    title={`${project["name"]} (${project["students"].length})`}
-                    projectsData={projects}
-                    semesterData={semesters}
-                    students={project["students"]}
-                />
-            }));
-        }
-        return panels
-    }
-
-    if (!students || !semesters || !Object.keys(projects).length) {
-        return <>loading...</>
-    }
-
-    semesters.forEach(semester => {
-        semesterMap[semester.semester_id] = semester;
-    })
-    projects.forEach(project => {
-        projectMap[project.project_id] = project;
-    })
-
-    groupings = groupUsers(students, users, projectMap);
-
-    semesterAccordions = Object.keys(groupings["semesters"]).map(semesterId => {
-        return {
-            endDate: semesterMap[semesterId]?.end_date,
-            startDate: semesterMap[semesterId]?.start_date,
-            accordion: <Accordion
-                key={semesterId}
-                fluid
-                styled
-                panels={[
-                    {
-                        key: "StudentsTab-semester-selector-" + semesterId,
-                        title: `${semesterMap[semesterId]["name"]} (${Object.keys(groupings["semesters"][semesterId])?.length})`,
-                        content: { content: createSemesterAccordion(groupings["semesters"][semesterId]) },
-                    },
-                ]}
-            />,
-        }
-    })
-
-    semesterAccordions = _.sortBy(semesterAccordions, ["end_date", "start_date"]).reverse();
-
-    return (
-        <>
-            <StudentTeamTable
-                title="Unassigned Students"
-                key="Unassigned Students Key"
-                childKey="Unassigned Students Key"
-                projectsData={projects}
-                semesterData={semesters}
-                students={groupings[unassignedStudentsStr]}
-            />
-            <StudentTeamTable
-                title="Admins"
-                key="Admins"
-                childKey="Admins"
-                projectsData={projects}
-                semesterData={semesters}
-                students={groupings[admins]}
-            />
-            <StudentTeamTable
-                title="Coaches"
-                key="Coaches"
-                childKey="Coaches"
-                projectsData={projects}
-                semesterData={semesters}
-                students={groupings[coaches]}
-            />
-            {semesterAccordions?.map(semesterAccordion => {
-                return semesterAccordion.accordion
-            })}
-            <StudentTeamTable
-                title="Inactive Students"
-                key="Inactive Students"
-                childKey="Inactive Students"
-                projectsData={projects}
-                semesterData={semesters}
-                students={groupings[inactive]}
-            />
-        </>
+  const handleAccordionClick = (semesterId) => {
+    setActiveIndexes((prev) =>
+      prev.includes(semesterId)
+        ? prev.filter((id) => id !== semesterId)
+        : [...prev, semesterId],
     );
+  };
+
+  function groupUsers(studentData, userData, projectMap) {
+    const result = {
+      [unassignedStudentsStr]: [],
+      [coaches]: [],
+      [admins]: [],
+      [inactive]: [],
+      semesters: {},
+    };
+
+    userData.forEach((user) => {
+      if (user.active === "") {
+        if (user.type === USERTYPES.COACH) {
+          result[coaches].push(user);
+        } else if (user.type === USERTYPES.ADMIN) {
+          result[admins].push(user);
+        }
+      } else {
+        result[inactive].push(user);
+      }
+    });
+
+    studentData.forEach((student) => {
+      if (!student.semester_group) {
+        result[unassignedStudentsStr].push(student);
+        return;
+      }
+
+      const semesterId = student.semester_id;
+      if (!result.semesters[semesterId]) {
+        result.semesters[semesterId] = { projects: {}, unassigned: [] };
+      }
+
+      if (student.project) {
+        if (!result.semesters[semesterId].projects[student.project]) {
+          result.semesters[semesterId].projects[student.project] = {
+            name:
+              projectMap[student.project]?.display_name ||
+              projectMap[student.project]?.title,
+            project_id: projectMap[student.project]?.project_id,
+            students: [],
+          };
+        }
+        result.semesters[semesterId].projects[student.project].students.push(
+          student,
+        );
+      } else {
+        result.semesters[semesterId].unassigned.push(student);
+      }
+    });
+
+    [unassignedStudentsStr, coaches, admins, inactive].forEach((key) => {
+      result[key].sort((a, b) => a.lname.localeCompare(b.lname));
+    });
+    Object.values(result.semesters).forEach((semester) => {
+      semester.unassigned.sort((a, b) => a.lname.localeCompare(b.lname));
+      Object.values(semester.projects).forEach((project) =>
+        project.students.sort((a, b) => a.lname.localeCompare(b.lname)),
+      );
+    });
+
+    return result;
+  }
+
+  function createSemesterAccordion(semesterId, semesterGroup) {
+    const panels = [];
+
+    if (semesterGroup.unassigned?.length > 0) {
+      panels.push(
+        <StudentTeamTable
+          key={`${semesterId}-unassigned`}
+          childKey={`${semesterId}-unassigned`}
+          title={`Unassigned Students (${semesterGroup.unassigned.length})`}
+          projectsData={props.projectData}
+          semesterData={props.semesterData}
+          students={semesterGroup.unassigned}
+          callback={props.callback}
+        />,
+      );
+    }
+
+    if (semesterGroup.projects) {
+      const sortedProjects = _.sortBy(
+        Object.values(semesterGroup.projects),
+        "name",
+      );
+      sortedProjects.forEach((project) => {
+        panels.push(
+          <StudentTeamTable
+            key={`project-${project.project_id}`}
+            childKey={`project-${project.project_id}`}
+            title={`${project.name} (${project.students.length})`}
+            projectsData={props.projectData}
+            semesterData={props.semesterData}
+            students={project.students}
+            callback={props.callback}
+          />,
+        );
+      });
+    }
+
+    return panels;
+  }
+
+  useEffect(() => {
+    if (
+      props.studentData &&
+      props.semesterData &&
+      Object.keys(props.projectData).length
+    ) {
+      const projectMap = {};
+      props.projectData.forEach((project) => {
+        projectMap[project.project_id] = project;
+      });
+      const grouped = groupUsers(props.studentData, props.userData, projectMap);
+      setGroupings(grouped);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.studentData, props.userData, props.projectData]);
+
+  if (!groupings) {
+    return <Loader active inline="centered" />;
+  }
+
+  const semesterAccordions = props.semesterData.map((semester) => {
+    const semesterId = semester.semester_id;
+    const isActive = isSemesterActive(semester.start_date, semester.end_date);
+    const semesterGroup = groupings.semesters[semesterId] || {
+      projects: {},
+      unassigned: [],
+    };
+
+    const totalCount =
+      (semesterGroup.unassigned?.length || 0) +
+      Object.values(semesterGroup.projects).reduce(
+        (sum, project) => sum + (project.students?.length || 0),
+        0,
+      );
+
+    return {
+      endDate: semester.end_date,
+      startDate: semester.start_date,
+      accordion: (
+        <Accordion
+          key={semesterId}
+          fluid
+          styled
+          panels={[
+            {
+              key: `StudentsTab-semester-selector-${semesterId}`,
+              title: `${semester.name} (${totalCount})`,
+              content: {
+                content: activeIndexes.includes(semesterId)
+                  ? createSemesterAccordion(semesterId, semesterGroup)
+                  : null,
+              },
+            },
+          ]}
+          active={isActive || activeIndexes.includes(semesterId)}
+          onTitleClick={() => handleAccordionClick(semesterId)}
+        />
+      ),
+    };
+  });
+
+  const sortedAccordions = _.sortBy(semesterAccordions, [
+    "endDate",
+    "startDate",
+  ]).reverse();
+
+  return (
+    <>
+      {groupings[unassignedStudentsStr]?.length > 0 && (
+        <StudentTeamTable
+          title={`Unassigned Students (${groupings[unassignedStudentsStr].length})`}
+          key="Unassigned Students Key"
+          childKey="Unassigned Students Key"
+          projectsData={props.projectData}
+          semesterData={props.semesterData}
+          students={groupings[unassignedStudentsStr]}
+          callback={props.callback}
+        />
+      )}
+      {groupings[admins]?.length > 0 && (
+        <StudentTeamTable
+          title={`Admins (${groupings[admins].length})`}
+          key="Admins"
+          childKey="Admins"
+          projectsData={props.projectData}
+          semesterData={props.semesterData}
+          students={groupings[admins]}
+          callback={props.callback}
+        />
+      )}
+      {groupings[coaches]?.length > 0 && (
+        <StudentTeamTable
+          title={`Coaches (${groupings[coaches].length})`}
+          key="Coaches"
+          childKey="Coaches"
+          projectsData={props.projectData}
+          semesterData={props.semesterData}
+          students={groupings[coaches]}
+          callback={props.callback}
+        />
+      )}
+      {sortedAccordions.map((semesterAccordion) => semesterAccordion.accordion)}
+      {groupings[inactive]?.length > 0 && (
+        <StudentTeamTable
+          title={`Inactive Users (${groupings[inactive].length})`}
+          key="Inactive Students"
+          childKey="Inactive Students"
+          projectsData={props.projectData}
+          semesterData={props.semesterData}
+          students={groupings[inactive]}
+          callback={props.callback}
+        />
+      )}
+    </>
+  );
 }

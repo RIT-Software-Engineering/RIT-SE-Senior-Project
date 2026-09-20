@@ -1,0 +1,90 @@
+@import "./../base/variables.css";
+
+#header {
+  height: var(--header-footer-height);
+  background-color: white;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 10px black;
+}
+
+#header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  transition: color 0.3s ease;
+}
+
+#subHeader {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Dark Mode Styles */
+.dark-mode #header {
+  background-color: black;
+}
+
+.dark-mode #header .container,
+.dark-mode #subHeader {
+  color: var(--bg-primary);
+}
+
+.header-divider {
+  width: 100vw;
+  height: 0.5em;
+  background-color: var(--gantt-today);
+}
+
+#navbar {
+  width: 100vw;
+  height: 43px;
+  background-color: black;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  padding-left: 1em;
+  font-size: 1.2em;
+}
+
+#navbar .ui.button {
+  color: white;
+  background-color: transparent;
+  border: none;
+}
+
+.header-span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-profile {
+  margin-left: 8px;
+  padding-top: 2px;
+}
+
+.header-button {
+  background-color: black;
+  color: white;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-dark {
+  height: 35px;
+  width: auto;
+  margin-right: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.header-cookies {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  cursor: pointer;
+}

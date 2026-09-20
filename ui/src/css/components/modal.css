@@ -1,0 +1,568 @@
+@import "./../base/variables.css";
+
+button.ui.button,
+.ui.icon.button,
+.ui.icon.buttons,
+.button,
+a.ui.button {
+  color: var(--text-primary);
+  padding: 10px 20px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.button:focus {
+  outline: medium auto;
+  outline-color: auto;
+}
+
+.ui.dimmer .ui.workaround.loader {
+  color: var(--text-primary);
+}
+
+.ui.dimmer .ui.workaround.loader:before {
+  border-color: var(--shadow-color);
+}
+
+.ui.dimmer .ui.workaround.loader:after {
+  border-color: #767676 transparent transparent;
+}
+
+/* Dark mode styles for pagination */
+.dark-mode .ui.sortable.table thead th:hover {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.pagination.menu {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.pagination.menu .item {
+  background-color: var(--menu-item);
+  color: var(--text-primary);
+  margin: 0;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+body.dark-mode .ui.pagination.menu .item:hover {
+  background-color: var(--menu-item-hover);
+}
+
+body.dark-mode .ui.pagination.menu .active.item {
+  background-color: var(--menu-item-active);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+body.dark-mode .ui.message {
+  background-color: var(--bg-primary);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+.dark-mode .ui.button {
+  background-color: var(--bg-button);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-primary);
+}
+
+.dark-mode .ui.button:hover {
+  background-color: var(--bg-hover);
+}
+
+.dark-mode .ui.active.button:hover {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.header {
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.segment,
+.dark-mode .ui.tab {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.menu {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.tabular.menu .item {
+  color: var(--text-primary);
+  background-color: var(--menu-item);
+}
+
+.dark-mode .ui.tabular.menu .active.item {
+  background-color: var(--menu-item-active);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.pane {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .semester-editor {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.modal {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.table {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.table th {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.table td,
+body.dark-mode .ui.table th {
+  border-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dark-mode .ui.input > input {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+}
+
+/* Dark mode styles for dropdown components */
+body.dark-mode .ui.dropdown {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu {
+  background-color: var(--bg-footer-header);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .item {
+  background-color: var(--bg-footer-header);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .item:hover {
+  background-color: var(--menu-item-hover);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.dropdown .menu .header {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.dropdown .menu .divider {
+  border-top: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .input input {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+body.dark-mode .ui.dropdown .menu .input input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .ui.modal .header,
+body.dark-mode .ui.modal .content,
+body.dark-mode .ui.modal .actions {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .button {
+  background-color: var(--bg-button);
+  color: var(--text-primary);
+  border: 1px solid var(--bg-primary);
+}
+
+body.dark-mode .ui.modal .button:hover {
+  background-color: var(--bg-button-hover);
+}
+
+body.dark-mode .ui.segment.stackable.padded.grid {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+body.dark-mode .ui.container.stackable.grid {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal .actions {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--bg-footer-header);
+}
+
+body.dark-mode .ui.segment .column {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .ui.small.header {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.segment .column h3,
+body.dark-mode .ui.segment .column h4,
+body.dark-mode .ui.segment .column h5,
+body.dark-mode .ui.segment .column p {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.modal label,
+body.dark-mode .ui.form .field > label {
+  color: var(--text-primary);
+}
+
+body.dark-mode .ui.rating .active.icon {
+  color: var(--text-primary);
+}
+
+/* Dark mode rating stars outline for better visibility */
+body.dark-mode .ui.rating .icon {
+  text-shadow:
+    -1px -1px 0 var(--border-light),
+    1px -1px 0 var(--border-light),
+    -1px 1px 0 var(--border-light),
+    1px 1px 0 var(--border-light);
+}
+
+body.dark-mode .ui.rating .active.icon {
+  text-shadow:
+    -1px -1px 0 var(--border-light),
+    1px -1px 0 var(--border-light),
+    -1px 1px 0 var(--border-light),
+    1px 1px 0 var(--border-light);
+}
+
+body.dark-mode .ui.positive.message {
+  background-color: #1f2d1f;
+  color: #a3c293 !important;
+  box-shadow:
+    0 0 0 1px #3c6142 inset,
+    0 0 0 0 transparent;
+}
+
+/* Toggle switch styles for better visibility and consistency */
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ label:before {
+  border: 1px solid var(--border-light) !important;
+}
+
+.ui.toggle.checkbox .box:before,
+.ui.toggle.checkbox label:before {
+  border: 1px solid var(--border-light) !important;
+}
+
+/* Dark mode specific toggle switch styles */
+body.dark-mode .ui.toggle.checkbox input:checked ~ .box:before,
+body.dark-mode .ui.toggle.checkbox input:checked ~ label:before {
+  background-color: var(--action-bar-proposal-blue) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox .box:before,
+body.dark-mode .ui.toggle.checkbox label:before {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-light) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox input:checked ~ .box:after,
+body.dark-mode .ui.toggle.checkbox input:checked ~ label:after {
+  border: 1px solid var(--border-light) !important;
+  background-color: var(--text-primary) !important;
+}
+
+body.dark-mode .ui.toggle.checkbox .box:after,
+body.dark-mode .ui.toggle.checkbox label:after {
+  border: 1px solid var(--border-light) !important;
+  background-color: var(--text-primary) !important;
+}
+
+/* Ensure modal content starts at top */
+.ui.modal > .content {
+  scroll-behavior: smooth;
+}
+
+/* Reset scroll position */
+.ui.modal.transition.visible > .content {
+  scroll-behavior: auto;
+}
+
+/* Fix for sticky modals like ActionModal */
+.ui.modal.sticky {
+  position: fixed !important;
+  top: 5vh !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: 90vh !important;
+}
+
+/* General modal positioning for all sizes */
+body .ui.dimmer > .ui.modal,
+body.dark-mode .ui.dimmer > .ui.modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+body .ui.small.modal,
+body.dark-mode .ui.small.modal {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+body .ui.small.modal {
+  max-width: 600px !important;
+}
+
+.ui.modal.scrolling {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.ui.modal.exemplary-modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  width: 80vw !important;
+  max-width: 1000px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Make sure it stays centered relative to the page, not viewport */
+body .ui.dimmer > .ui.modal.exemplary-modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.custom-confirm-overlay {
+  z-index: 1050 !important;
+}
+
+body.dark-mode .semantic-centered-modal {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.ui.modal.your-custom-modal {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
+  transition:
+    background-color 0.3s,
+    color 0.3s !important;
+}
+
+.ui.modal > .header,
+.ui.modal > .content,
+.ui.modal > .actions {
+  background: inherit !important;
+  color: inherit !important;
+}
+
+.ui.modal.your-custom-modal {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  right: auto !important;
+  margin-left: 0 !important;
+}
+
+.ui.modal.your-custom-modal {
+  transition: all 0.3s ease-in-out !important;
+}
+
+html body .ui.page.modals.dimmer > .ui.modal.your-custom-modal {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  margin: 2rem 0 !important;
+  position: fixed !important;
+  bottom: auto !important;
+  width: auto !important;
+  max-width: 80vw !important;
+}
+
+/* Fix light mode modal positioning */
+body:not(.dark-mode) .ui.dimmer > .ui.modal {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* Fix for sticky modals in light mode (ActionModal, etc) */
+body:not(.dark-mode) .ui.modal.sticky {
+  position: fixed !important;
+  top: 5vh !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: 90vh !important;
+}
+
+/* Fix for modals in light mode (SubmissionViewer) */
+body:not(.dark-mode) .ui.dimmer > .ui.modal.exemplary-modal {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+}
+
+/* Ensure small modals center properly in light mode */
+body:not(.dark-mode) .ui.small.modal {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  max-width: 600px !important;
+}
+
+/* Improve radio hitbox & prevent visual half-clicks */
+.ui.radio.checkbox input[type="radio"] {
+  position: relative;
+  z-index: 2;
+}
+
+.ui.radio.checkbox label {
+  cursor: pointer;
+  padding-left: 0.5rem;
+}
+
+/* Add breathing room between radio buttons and labels */
+input[type="radio"] + label,
+label[for][for^="SCOOP_"] {
+  margin-left: 6px;
+}
+
+/* Add space between groups horizontally */
+.required.field input[type="radio"] {
+  margin-right: 4px;
+}
+
+.required.field label {
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* Just adds more space between the radio button and the label text */
+.ui.radio.checkbox label {
+  padding-left: 1.85rem !important;
+  padding-top: 0.75rem !important;
+  line-height: 1.3 !important;
+}
+
+/* Keep the radio button in its normal position */
+.ui.radio.checkbox label::before {
+  top: 0.5rem !important;
+}
+
+.ui.radio.checkbox label::after {
+  top: 0.5rem !important; /* Move the inner dot down to match */
+}
+
+/* Add spacing between radio button groups */
+.required.field .ui.radio.checkbox {
+  margin-right: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Dark mode compatibility */
+body.dark-mode .ui.radio.checkbox label {
+  color: var(--text-primary) !important;
+}
+
+.confirm-close-x i.close.icon {
+  font-size: 1.25rem !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .confirm-close-x i.close.icon {
+  color: #ffffff !important;
+  opacity: 0.9 !important;
+}
+
+body:not(.dark-mode) .confirm-close-x {
+  position: absolute !important;
+  top: -1.75rem !important;
+  right: -0.75rem !important;
+  z-index: 100001 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+body:not(.dark-mode) .confirm-close-x i.close.icon:hover {
+  opacity: 1 !important;
+}
+
+/* Dark mode keeps using your dark color, but same position */
+body.dark-mode .confirm-close-x i.close.icon {
+  color: var(--text-primary) !important;
+}
+
+.ui.modal.unsaved-modal {
+  position: fixed !important;
+
+  top: 50% !important;
+  left: 50% !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  margin: 0 !important;
+}
+
+body .ui.dimmer > .ui.modal.unsaved-modal,
+body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
+  position: fixed !important;
+
+  top: 50% !important;
+  left: 50% !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  margin: 0 !important;
+
+  max-height: unset !important;
+}
+
+/* Position the close X consistently on all Semantic UI modals */
+.ui.modal > .close.icon {
+  top: -1.5rem !important;
+  right: -1.8rem !important;
+}

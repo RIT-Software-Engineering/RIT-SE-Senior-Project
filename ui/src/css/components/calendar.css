@@ -1,0 +1,286 @@
+@import "./../base/variables.css";
+
+/* Calendar container */
+.action-calendar {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Calendar header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 8px 8px 0 0;
+}
+
+.current-month {
+  color: var(--text-primary);
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: transparent;
+  touch-action: manipulation;
+}
+
+.nav-button.hovered {
+  background-color: var(--bg-button-hover);
+}
+
+/* Calendar days header */
+.calendar-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px 0;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.day-name {
+  text-align: center;
+  color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+/* Calendar grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px;
+  background-color: var(--bg-primary);
+}
+
+/* Calendar day */
+.calendar-day {
+  position: relative;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  cursor: pointer;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--shadow-color);
+  overflow: hidden;
+  touch-action: manipulation;
+  border-radius: 4px;
+}
+
+.calendar-day.empty {
+  height: 120px;
+  background-color: var(--bg-secondary);
+  cursor: default;
+}
+
+.calendar-day.today {
+  background-color: var(--bg-today);
+  border: 1px solid #0066cc;
+}
+
+.calendar-day.selected {
+  background-color: #f0f7ff;
+}
+
+.calendar-day.selected.hovered {
+  background-color: #e6f0fa;
+}
+
+.calendar-day.hovered:not(.selected) {
+  background-color: var(--bg-hover);
+}
+
+/* Day number */
+.day-number {
+  margin: 4px;
+  align-self: flex-start;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 8px;
+  font-size: 16px;
+  text-overflow: ellipsis;
+}
+
+.day-number.today {
+  color: var(--text-today);
+}
+
+/* Action container */
+.action-container {
+  width: 100%;
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Calendar action */
+.calendar-action {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  padding: 4px;
+  right: 0;
+  height: 26px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.calendar-action:hover {
+  filter: brightness(150%);
+}
+
+.more-actions {
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Dark mode specific adjustments for better contrast */
+
+.dark-mode .calendar-day {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.dark-mode .calendar-action {
+  color: var(--text-primary);
+  opacity: 1 !important;
+  /* Ensure opacity is always 1 in dark mode too */
+}
+
+.dark-mode .nav-button {
+  color: var(--text-primary);
+}
+
+.dark-mode .nav-button:hover {
+  background-color: var(--bg-button-hover);
+}
+
+/* Improve visibility of strikethrough text in dark mode */
+.dark-mode .calendar-action s {
+  text-decoration-color: var(--text-primary);
+}
+
+.dark-mode .calendar-day.selected {
+  background-color: #2c3e50;
+}
+
+.dark-mode .calendar-day.selected.hovered {
+  background-color: #34495e;
+}
+
+.dark-mode .calendar-day.today {
+  background-color: #1e3a5f;
+  border: 1px solid #4d94ff;
+}
+
+.dark-mode .day-number.today {
+  color: #5096ff;
+}
+
+.calendar-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100%;
+}
+
+.calendar-icon {
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 12px;
+}
+
+.calendar-bold {
+  font-weight: bold;
+}
+
+.calendar-grey {
+  color: grey;
+}
+
+.calendar-trigger {
+  color: var(--action-bar-proposal-purple);
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+.calendar-current {
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-drop {
+  background-color: transparent;
+  z-index: 100;
+  position: relative;
+  border: none;
+}
+
+.calendar-display {
+  display: flex;
+}
+
+.calendar-action-bar {
+  left: 0;
+  background-color: inherit;
+}
+
+.calendar-arrow-hidden {
+  visibility: hidden;
+}
+
+.calendar-break-day-number {
+  color: var(--action-bar-proposal-purple);
+  font-weight: bold;
+}
+
+.calendar-day-popup {
+  width: 250px;
+  overflow: auto;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  background-color: var(--bg-secondary);
+  padding: 20px;
+}
+
+.calendar-more-actions-trigger {
+  top: 0;
+  background-color: grey;
+  border-left: none;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}

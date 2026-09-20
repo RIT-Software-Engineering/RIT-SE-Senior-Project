@@ -5,7 +5,7 @@
 
 "use strict";
 // Leave importing dotenv as the topmost thing
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
 /**
  *
@@ -13,8 +13,8 @@ require('dotenv').config({ path: require('path').join(__dirname, '.env') });
  *
  * UNCOMMENT THIS TO RESET DATABASE
  */
-// const redeployDatabase = require("./db_setup");
-// redeployDatabase();
+const redeployDatabase = require("./db_setup");
+redeployDatabase();
 
 // Imports
 const express = require("express");
@@ -22,6 +22,8 @@ const cors = require("cors");
 const app = express();
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./server/error_handler");
+const path = require("path");
 // Constants
 const port = process.env.PORT;
 
@@ -29,35 +31,42 @@ const port = process.env.PORT;
 // TODO-IMPORTANT: LOOK FOR BEST PRACTICE CORS POLICIES
 // Basic setup found here: https://www.positronx.io/express-cors-tutorial/
 app.use(function (req, res, next) {
-    // res.header("Access-Control-Allow-Origin", "*");
-    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  // res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-    // Required for SSO authentication
-    // TODO: This may no longer be needed because of our cors policy lower down "credentials: true".
-    res.header("Access-Control-Allow-Credentials", "true");
+  // Required for SSO authentication
+  // TODO: This may no longer be needed because of our cors policy lower down "credentials: true".
+  res.header("Access-Control-Allow-Credentials", "true");
 
-    next();
+  next();
 });
 app.use(
-    cors({
-        origin: process.env.BASE_URL || "http://localhost:3000",
-        credentials: true,
-    })
+  cors({
+    origin: process.env.BASE_URL || "http://localhost:3000",
+    credentials: true,
+  }),
 );
 
- // Set up body parsing and file upload configurations
+// Set up body parsing and file upload configurations
 app.use(express.urlencoded({ extended: true })); // replaces bodyParser.urlencoded since bodyParser is depreciated
 app.use(cookieParser());
 app.use(express.json());
 app.use(
-    fileupload({
-        safeFileNames: true,
-        preserveExtension: 4,
-    })
+  fileupload({
+    safeFileNames: true,
+    preserveExtension: 4,
+  }),
 );
+
+// Fix for the Content Editor on local development TODO/Important check if there is a better fix and if it breaks in live live
+app.use("/resource", express.static(path.join(__dirname, "resource")));
+
+// Serve static files from doc directory TODO/check if this is needed
+app.use("/doc", express.static(path.join(__dirname, "doc")));
 
 // This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
 const routing = require("./server/routing/index");
 // Attach route handlers
 app.use("/", routing);
+app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
 app.listen(port);
