@@ -153,7 +153,7 @@ export default function PreviewHtml(props) {
         <p>Project Title: {props.projectName}</p>
         <p>Submission Type: {submissionTypeMap[props.action?.action_target]}</p>
         <div>
-          Submissons:
+          Submissions:
           {renderSubmissionsList()}
         </div>
       </>
