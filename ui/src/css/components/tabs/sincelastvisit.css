@@ -1,0 +1,24 @@
+.since-last-visit {
+  color: var(--text-primary);
+}
+
+.since-last-visit-header {
+  color: var(--text-primary);
+}
+
+.since-last-visit-cutoff {
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.dark-mode .since-last-visit .ui.button {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .since-last-visit .ui.message {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode .since-last-visit .icon {
+  color: var(--text-primary);
+}
