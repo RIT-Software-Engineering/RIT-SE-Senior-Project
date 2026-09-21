@@ -20,6 +20,7 @@ import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 import AuditLogs from "../Tabs/AuditLogsTab/AuditLogs";
+import SinceLastVisit from "../Tabs/DashboardTab/SinceLastVisit/SinceLastVisit";
 import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
@@ -260,6 +261,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
+              <SinceLastVisit />
               <TimeLinesView semesterData={semesterData} />
             </Tab.Pane>
           ),
