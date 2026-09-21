@@ -845,8 +845,7 @@ export default function DatabaseTableEditor(props) {
                 className="upload-progress"
                 percent={uploadProgress}
                 progress
-                indicating={uploadProgress < 100}
-                success={uploadProgress === 100}
+                color="green"
               >
                 {uploadProgress < 100
                   ? `Uploading... ${uploadProgress}%`
