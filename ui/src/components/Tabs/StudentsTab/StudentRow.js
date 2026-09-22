@@ -258,6 +258,7 @@ export default function StudentRow(props) {
     );
     student_cells.push(
       <TableCell key={"student-login-" + props.student.last_login}>
+        <span className="mobile-only-label">Last Login: </span>{" "}
         {props.student.last_login
           ? dayjs(props.student.last_login)
               .utc(true)
@@ -306,6 +307,7 @@ export default function StudentRow(props) {
           </TableCell>
           {props.showLogin && (
             <TableCell>
+              <span className="mobile-only-label">Last Login: </span>
               {props.student.last_login
                 ? dayjs(props.student.last_login)
                     .utc(true)
