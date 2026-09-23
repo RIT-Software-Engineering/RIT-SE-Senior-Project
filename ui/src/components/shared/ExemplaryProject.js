@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
+import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
+import "./../../css/components/shared/exemplary.css";
+
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
+const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -47,14 +51,7 @@ function ExemplaryProject({ project }) {
   let generateProfiles = (stringUsers, isStudent = true) => {
     if (!stringUsers) return [];
     return (
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5em",
-          width: "100%",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="exemplary-generate-profile">
         {listNames(stringUsers).map((user, idx) => (
           <ProfileCircle
             key={idx}
@@ -72,12 +69,11 @@ function ExemplaryProject({ project }) {
     <div>
       {" "}
       {/* Div containing all project information */}
-      <div
-        className="ui segment stackable padded grid"
+      <button
+        className="ui segment stackable padded grid fake-div"
         onClick={() => toggleInitialModalOpen()}
-        style={{ cursor: "pointer" }}
       >
-        <div className="two column row" style={{ display: "flex" }}>
+        <div className="two column row exemplary-header-row">
           <div className="column">
             <h3 className="ui header">
               {project.display_name || project.title}
@@ -91,7 +87,7 @@ function ExemplaryProject({ project }) {
                     <Icon
                       name="trophy"
                       title={award}
-                      style={{ float: "right" }}
+                      className="exemplary-column"
                     />
                   );
                 })}
@@ -103,7 +99,8 @@ function ExemplaryProject({ project }) {
         <div className="three column row">
           <div className="column">
             <img
-              src={`${basePosterURL}${project.poster_thumb}`}
+              src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : project.archive_image ? `${baseImageURL}${project.archive_image}` : gccisLogo}
+              className="exemplary-column-style"
               style={{ border: "3px solid rgb(221, 221, 221)" }}
               alt="Project Poster"
             />
@@ -131,11 +128,12 @@ function ExemplaryProject({ project }) {
             {generateProfiles(project.coach, false)}
           </div>
         </div>
-      </div>
+      </button>
       {/* Modal with expanded information */}
       <Modal
         closeOnDimmerClick={false}
-        className={"sticky"}
+        closeIcon={true}
+        className="exemplary-modal"
         size={"large"}
         open={initialOpen}
         onClose={() => setInitialOpen(false)}

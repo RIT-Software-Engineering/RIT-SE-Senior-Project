@@ -14,7 +14,6 @@ import {
 import Announcements from "../../Tabs/DashboardTab/TimelinesView/Announcements";
 import { SecureFetch } from "../functions/secureFetch";
 import { useState, useEffect } from "react";
-
 import { QuestionComponentsMap } from "./PeerEvalComponents";
 import ParsedInnerHTML from "./ParsedInnerHtml";
 import SubmissionViewerModal from "../../Tabs/DashboardTab/TimelinesView/Timeline/SubmissionViewerModal";
@@ -183,6 +182,7 @@ export default function PreviewHtml(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
+        closeIcon={true}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         onClose={() => {
           setOpen(false);
@@ -210,6 +210,7 @@ export default function PreviewHtml(props) {
       <Modal
         closeOnDimmerClick={false}
         className={"sticky"}
+        closeIcon={true}
         trigger={props.trigger || <Button icon={<Icon name="eye" />} />}
         header={props.header}
         content={{

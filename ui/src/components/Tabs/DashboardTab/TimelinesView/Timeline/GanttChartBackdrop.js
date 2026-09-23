@@ -6,6 +6,7 @@ import {
   daysInMonth,
 } from "../../../../util/functions/utils";
 import _ from "lodash";
+import "./../../../../../css/components/gantt.css";
 
 export default forwardRef(function GanttChartBackdrop(props, todayRef) {
   const semesterActive = props.semesterActive;
@@ -41,8 +42,10 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
     startCol.getUTCFullYear(),
   );
 
-  // sticky text left - 200px is fixed sidebar width
-  let sidebarWidth = props.isMobile ? 0 : "200px";
+  // sticky text left offset class - 200px is fixed sidebar width, 0 on mobile
+  const sidebarTextClass = props.isMobile
+    ? "gantt-header-text-offset-mobile"
+    : "gantt-header-text-offset";
   let isToday;
   let isProjectStart;
   let isProjectEnd;
@@ -54,7 +57,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         className="gantt-header first"
         style={{ gridColumn: 1 + " / span " + (7 - (startCol.getDay() % 7)) }}
       >
-        <p style={{ left: sidebarWidth }}>
+        <p className={sidebarTextClass}>
           {monthNames[currMonth]} {currDate}
         </p>
       </div>,
@@ -66,7 +69,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         className="gantt-header first"
         style={{ gridColumn: 1 + " / span " + (monthLength - currDate + 1) }}
       >
-        <p style={{ left: sidebarWidth }}>{monthNames[currMonth]}</p>
+        <p className={sidebarTextClass}>{monthNames[currMonth]}</p>
       </div>,
     );
   } else {
@@ -79,7 +82,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
           gridColumn: 1 + " / span " + (numDaysLeftInYear(startCol) + 1),
         }}
       >
-        <p style={{ left: sidebarWidth }}>{currYear}</p>
+        <p className={sidebarTextClass}>{currYear}</p>
       </div>,
     );
 
@@ -89,7 +92,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
         className="gantt-header second"
         style={{ gridColumn: 1 + " / span " + (monthLength - currDate + 1) }}
       >
-        <p style={{ left: sidebarWidth }}>{monthNames[currMonth]}</p>
+        <p className={sidebarTextClass}>{monthNames[currMonth]}</p>
       </div>,
     );
   }
@@ -129,7 +132,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             className="gantt-header first"
             style={{ gridColumn: i + " / span " + 7 }}
           >
-            <p style={{ left: sidebarWidth }}>
+            <p className={sidebarTextClass}>
               {monthNames[currMonth]} {currDate}
             </p>
           </div>,
@@ -143,7 +146,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
           className="gantt-header second"
           style={{ gridColumn: i }}
         >
-          <p style={{ left: sidebarWidth }}>
+          <p className={sidebarTextClass}>
             {weekNames[(startCol.getDay() + i - 1) % 7]}
           </p>
         </div>,
@@ -169,12 +172,11 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             className="gantt-header first"
             style={{ gridColumn: i + " / span " + monthLength }}
           >
-            <p style={{ left: sidebarWidth }}>{monthNames[currMonth]}</p>
+            <p className={sidebarTextClass}>{monthNames[currMonth]}</p>
           </div>,
         );
       }
 
-      let paddingLeft = props.isMobile ? 0 : "5px";
       // per day (header names)
       ganttHeader.push(
         <div
@@ -182,7 +184,13 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
           className="gantt-header second"
           style={{ gridColumn: i }}
         >
-          <p style={{ left: sidebarWidth, paddingLeft: paddingLeft }}>
+          <p
+            className={
+              props.isMobile
+                ? sidebarTextClass
+                : `${sidebarTextClass} gantt-header-text-padded`
+            }
+          >
             {currDate}
           </p>
         </div>,
@@ -211,7 +219,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
                     : 365),
               }}
             >
-              <p style={{ left: sidebarWidth }}>{currYear}</p>
+              <p className={sidebarTextClass}>{currYear}</p>
             </div>,
           );
         }
@@ -228,7 +236,7 @@ export default forwardRef(function GanttChartBackdrop(props, todayRef) {
             className="gantt-header second"
             style={{ gridColumn: i + "/ span " + monthLength }}
           >
-            <p style={{ left: sidebarWidth }}>{monthNames[currMonth]}</p>
+            <p className={sidebarTextClass}>{monthNames[currMonth]}</p>
           </div>,
         ); // month
       }

@@ -10,6 +10,7 @@ This document outlines general test cases and their workflow procedures to ensur
 - [Actions](actions.md) - Types & Colors, Completing, Individual Actions, Team Actions, Coach Actions, Admin Actions, Late Submissions, Creating, Editing, Deactivating
 - [Logging](logging.md) - Time logs, Action Logs, Sponsor Notes
 - [Administrative Tools](admin.md) - Mocking Users, Admin Tab, Creating Semesters, Editing Semesters, Archive Editor, Content Editor
+- [Auditability System](audit.md) - Audit Tab, Filtering and Search, Recorded Actions, Mocked Actions, Error Logs
 - [Sponsors](sponsors.md) - Adding, Editing, Visibility
 - [Announcements & Breaks](announcements.md) - Visibility, Creating, Editing, Deactivating, Breaks
 - [AI-Driven Integration](ai.md) - API Key, Student Progress Summarization, AI Coach Feedback Generation

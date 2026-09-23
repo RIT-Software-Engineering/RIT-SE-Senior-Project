@@ -4,15 +4,15 @@ import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
+import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
+import "./../../css/components/pages/UniqueProjectPage.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
-
-const CONTENT_HEIGHT = 250;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -26,9 +26,7 @@ const listNames = (nameString) => {
 let generateProfiles = (stringUsers, isStudent = true) => {
   if (!stringUsers) return [];
   return (
-    <p
-      style={{ display: "flex", gap: "0.5em", width: "100%", flexWrap: "wrap" }}
-    >
+    <p className="unique-project-page-profile">
       {listNames(stringUsers).map((user, idx) => (
         <ProfileCircle
           key={idx}
@@ -101,7 +99,7 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Outstanding"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-project-direction"
             />
           )}
           {project?.creative === 1 && (
@@ -109,27 +107,17 @@ function UniqueProjectPage({ projectData }) {
               name="trophy"
               title={"Creative"}
               size="large"
-              style={{ float: "right" }}
+              className="unique-project-direction"
             />
           )}
-          {
-            // display project page link if slug has been defined
-            project.url_slug !== null && project?.url_slug !== "" && (
-              <div>
-                <Icon name="linkify" />{" "}
-                <Link to={`/projects/${project.url_slug}`}>
-                  {`${baseProjectURL}${project.url_slug}`}
-                </Link>
-              </div>
-            )
-          }
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            {project?.poster_thumb && (
+            {(project?.poster_thumb || project?.archive_image || !url_slug) && (
               <img
-                src={`${basePosterURL}${project?.poster_thumb}`}
+                src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                 height={CONTENT_HEIGHT}
                 style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-project-zoom unique-project-media"
                 onClick={() => setPosterOpen(true)}
                 alt={project?.title + " Senior Project Thumbnail Poster"}
               />
@@ -147,13 +135,13 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_thumb}`}
+                    src={project?.poster_thumb ? `${basePosterURL}${project?.poster_thumb}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_full}`}
+                    src={project?.poster_full ? `${basePosterURL}${project?.poster_full}` : project?.archive_image ? `${baseImageURL}${project?.archive_image}` : gccisLogo}
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
@@ -163,7 +151,7 @@ function UniqueProjectPage({ projectData }) {
               </Modal.Actions>
             </Modal>
             {project?.video && (
-              <video controls height={CONTENT_HEIGHT}>
+              <video controls className="unique-project-media">
                 <source
                   src={`${baseVideoURL}${project?.video}`}
                   type="video/mp4"
@@ -173,8 +161,7 @@ function UniqueProjectPage({ projectData }) {
             {project?.archive_image && (
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
-                height={CONTENT_HEIGHT}
-                style={{ cursor: "zoom-in", padding: "5px" }}
+                className="unique-project-zoom unique-project-media"
                 onClick={() => setImageOpen(true)}
                 alt={project?.title + " Senior Project Image"}
               />
@@ -215,8 +202,6 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
-                <div className="ui small header">Students</div>
-                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -229,9 +214,27 @@ function UniqueProjectPage({ projectData }) {
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
             <div className="column">
+              <div className="ui small header">Students</div>
+                {generateProfiles(project?.members, true)}
+              <div className="ui invisible divider"></div>
+              {
+                // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                <><div className="ui small header">Link</div>
+                <div>
+                  <Link to={`/projects/${project.url_slug}`}>
+                    {`${baseProjectURL}${project.url_slug}`}
+                  </Link>
+                </div></>
+                )
+              }
               <div className="ui small header">Synopsis</div>
-              <p style={{ whiteSpace: "pre-line" }}>
+              <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
+              </p>
+              <div className="ui small header">Keywords</div>
+              <p className="unique-project-whitespace">
+                {project?.keywords}
               </p>
             </div>
           </div>

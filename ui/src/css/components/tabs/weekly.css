@@ -1,0 +1,20 @@
+.weekly-trigger {
+  display: flex;
+}
+
+.weekly-button {
+  margin-left: auto;
+}
+
+.weekly-content {
+  overflow: auto;
+}
+
+.weekly-name {
+  position: sticky;
+  z-index: 1;
+}
+
+.weekly-student {
+  white-space: nowrap;
+}

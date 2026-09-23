@@ -19,6 +19,94 @@
 3. If the API key is empty or invalid the generated AI summarization should output similar to below.
    ![API Key 3](images/apikey3.png)
 
+### Expanded Test Cases — API Key
+
+These test cases document current observable behavior in the repo and outline expected improvements for a production-ready system.  
+Each test is split into **Current** vs **Future/Expected**.
+
+---
+
+#### TC-AI-1: No key configured
+
+**Current:**
+
+- `.env` has `GOOGLE_API_KEY` unset or blank.
+- Summarization button is visible and clickable in the UI.
+- Clicking it returns “Invalid API key. Please let an admin know.”
+- The backend detects the missing key without sending a provider request.
+
+**Future/Expected:**
+
+- Summarization button should be disabled or hidden.
+- UI should show “AI not configured” message in the Student/Coach views.
+- Backend should block the feature without requiring user interaction.
+
+---
+
+#### TC-AI-2: Key present but masked (permissions)
+
+**Current:**
+
+- Valid key stored only in `.env`.
+- No way to view or change the key in the UI; only developers can change it.
+- Admin/Coach/Student all see the same Summarization button when key is present.
+
+**Future/Expected:**
+
+- Admin sees masked key (e.g, `AZ1****7NM9`) or a simple “Configured” status.
+- Admin can update the key through the UI, which securely sends it to the backend.
+- Backend stores the key in a secure place (DB or secrets manager).
+- Coach and Student never see or edit the key.
+- Full, raw key is never returned to the frontend.
+
+---
+
+#### TC-AI-3: Invalid key format
+
+**Current:**
+
+- `.env` contains an invalid value (e.g., `sillyinput123`).
+- Backend attempts a request with that value.
+- Gemini rejects and returns “Invalid API key. Please let an admin know.”
+
+**Future/Expected:**
+
+- Backend validates key format (e.g, regex) before sending requests.
+- Invalid keys are not saved.
+- Admin UI sends an error (“Configured key is invalid, please update”).
+- No sensitive information exposed to users.
+
+---
+
+#### TC-AI-4: Key rotation
+
+**Current:**
+
+- Updating the API key means editing `.env`, restarting the server, and the new key is then used.
+
+**Future/Expected:**
+
+- Admin updates key in UI; backend updates secure storage.
+- Backend reloads key without the need for a manual restart.
+- Summarization runs API call with new key.
+- Admin only sees masked confirmation of update while Coach/Student see no change.
+
+---
+
+#### TC-AI-5: API failure / rate limit
+
+**Current:**
+
+- Valid key in `.env`.
+- If quota is exceeded, backend attempts request and Gemini returns error.
+- UI directs to error page, (“Error: Error generating summary with gemini-1.5-flash-latest”).
+
+**Future/Expected:**
+
+- UI displays error (“Quota exceeded, try later”).
+- Backend retries after a cooldown.
+- Feature temporarily disabled for cooldown.
+
 ## Student Progress Summarization
 
 1. As quickly demonstrated in the [API Key](#api-key) setup, admins and coaches have the functionality to generate AI summaries for students based on their current project progress and this response can be edited to factor in a variety of variables. These summarizations are not saved and must be generated manually every time a student’s details are opened up.

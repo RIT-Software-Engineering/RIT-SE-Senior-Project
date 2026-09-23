@@ -46,19 +46,22 @@ For this example, we will again be using the mocked data from [resetting the dat
 1. [Signed in as a student](authentication.md#validating-student-sign-in), proceed to an individual action submission modal using the “View Action” button. Remember, “Individual” actions are limited to Students, “Coach” actions are limited to Coaches, and “Team” actions can be submitted by any member of the group. For demonstration purposes, we will be using the mock data project “TrendTide Analytics” and its respective Students and coaches. Below is an example action we will initially complete as “Aerith Gainsborough".
    ![Individual Action 1](images/individualaction1.png)
 
-2. We can see a that no previous submission exists on the action as seen on the preview card, so let us add another to verify functionality. Again, we have selected a simple action to complete for general demonstration purposes. Add a corresponding file to the field and press “Submit.”
+2. We can see a that no previous submission exists on the action as seen on the preview card, so let us add another to verify functionality. Again, we have selected a simple action to complete for general demonstration purposes.
    ![Individual Action 2](images/individualaction2.png)
 
-3. Now, verify that the access visibility is correct for the completed actions when signed in as “Aerith Gainsborough". The following is what the expanded submission links should look like
+3. Now add a corresponding file but don't submit yet, if you click off the action modal or click x you should
+   see a confirmation modal asking if you are sure discarding changes, click "Keep Working" and press "Submit."
    ![Individual Action 3](images/individualaction3.png)
-   If we were to sign in as another student within the same project, they would not be able to see the submission, as it is only visible to the user who submitted it and their coaches.
+4. Now, verify that the access visibility is correct for the completed actions when signed in as “Aerith Gainsborough". The following is what the expanded submission links should look like
    ![Individual Action 4](images/individualaction4.png)
-
-4. Once Student visibility is confirmed, [sign in as a coach](authentication.md#validating-coach-sign-in) (for this specific scenario we will use "Laura Martin") and verify that the Coach for the projects can see all student submissions.
+   If we were to sign in as another student within the same project, they would not be able to see the submission, as it is only visible to the user who submitted it and their coaches.
    ![Individual Action 5](images/individualaction5.png)
 
+5. Once Student visibility is confirmed, [sign in as a coach](authentication.md#validating-coach-sign-in) (for this specific scenario we will use "Laura Martin") and verify that the Coach for the projects can see all student submissions.
+   ![Individual Action 6](images/individualaction6.png)
+
 The “Logging” tab also displays the completed actions and follows the same visibility procedures as the dashboard tab. In addition to this, “Individual” actions must be completed by all members of the team in order to be considered done. Once completed, they will no longer be visible in the “Relevant Actions” group, and in the “Milestones” section, the action should now have a green border and display all of the submissions as seen below.
-![Individual Action 6](images/individualaction6.png)
+![Individual Action 7](images/individualaction7.png)
 
 ### Team Actions
 
@@ -128,38 +131,42 @@ Functionality is the same process for submission as an “Individual” action, 
 
 ## Creating
 
-1. Actions can only be created by admins in this system. Sign in as an [admin](authentication.md#validating-admin-sign-in), navigate to the “Admin” tab and press the “+” button on the “Action and Announcement Editor” dropdown.
+1. Actions can only be created by admins in this system. Sign in as an [admin](authentication.md#validating-admin-sign-in), navigate to the “Admin” tab and press the “+” button on the “Action / Announcement / Peer Eval / Break Period” dropdown.
    ![Create Action Button](images/createactionbutton.png)
 
-2. Doing so will bring up the action creation modal, which contains the functionality for creating the following “Action Targets”: Individual, Team, Coach, Admin, Student Announcement, Coach Announcement, Peer evaluation, and Break Period. By default, with no “Action Target” selected, all of the action fields are visible and ready to be added, however each “Action Target” has its own specific set of required fields and the modal should change accordingly with each specific “Action Target”. Verify this by briefly clicking through action targets.
+2. Doing so will bring up the action creation modal, which contains the functionality for creating the following “Type”: Individual Action, Team Action, Coach Action, Admin, Student Announcement, Coach Announcement, Peer evaluation, and Break Period. After choosing your Type, the modal will update accordingly. Verify this by briefly clicking through types.
+   ![Type Action Selection](images/typeactionselection.png)
    ![Create Action Modal](images/createactionmodal.png)
 
-3. For this test case we will be creating a simple individual action for students to complete. Select “Individual” in the “Action Target” dropdown and fill out the fields from “Action Title” to “Due Date/Announcement End Date with unique/easily checkable information.
+3. For this test case we will be creating a simple individual action for students to complete. Select “Individual Action” in the “Type” dropdown and fill out the fields from “Action Title” to the bottom.
    ![Create Action Modal 2](images/createactionmodal2.png)
 
 4. In the Html section include a simple html that can capture user input like below.
    ![Create Action Modal 3](images/createactionmodal3.png)
 
-5. For now we can leave the file submission fields blank and proceed with submitting and creating the action.
+5. Click the Preview button on the bottom to view what your action or announcement will look like.
+   ![Preview Action Modal](images/previewactionmodal.png)
 
-6. Once the action has been created we should be able to see it in the same “Acton and Announcement Editor” dropdown at the very bottom of the list since its the newest created.
+6. For now we can leave the file submission fields blank and proceed with submitting and creating the action.
+
+7. Once the action has been created we should be able to see it in the same “Action / Announcement / Peer Eval / Break Period” dropdown.
    ![Create Action Modal 4](images/createactionmodal4.png)
 
-7. Additionally, the freshly created action should be visible in the dashboard to the admin and all of the semester-related students and coaches
+8. Additionally, the freshly created action should be visible in the dashboard to the admin and all of the semester-related students and coaches.
    ![Create Action 1](images/createaction1.png)
    ![Create Action 2](images/createaction2.png)
 
-8. Like all other individual actions, this action can only be completed by students, student submissions are not visible to other students, and the action is only completed once every student has completed it.
+9. Like all other individual actions, this action can only be completed by students, student submissions are not visible to other students, and the action is only completed once every student has completed it.
 
 ## Editing
 
-1. In this application actions cannot be hard deleted in this system but we can still [deactivate](#deactivating) and more importantly edit actions to reuse and repurpose data. Actions can only be edited by [admins](authentication.md#validating-admin-sign-in) and like creation, editing of actions is in the “Admin” tab under the “Action and Announcement Editor” dropdown with edit buttons next to each action.
+1. In this application actions cannot be hard deleted in this system but we can still [deactivate](#deactivating) and more importantly edit actions to reuse and repurpose data. Actions can only be edited by [admins](authentication.md#validating-admin-sign-in) and like creation, editing of actions is in the “Admin” tab under the “Action / Announcement / Peer Eval / Break Period” dropdown with edit buttons next to each action.
    ![Editing Actions 1](images/editingactions1.png)
 
 2. Clicking on the edit button will bring up an action editor modal and it should display the correct action and its details.  
    ![Editing Actions 2](images/editingactions2.png)
 
-3. Modify any of the fields with new information and press the submit button when done to finish editing the action.
+3. Modify any of the fields with new information and press the submit button when done to finish editing the action. Note: type cannot be change; you will need to deactivate the action and create a new one.
 
 4. A confirmation popup should appear afterwards and the information modified should be correctly displayed in the “Action and Announcement Editor” dropdown and every other instance of the action in the application.
 

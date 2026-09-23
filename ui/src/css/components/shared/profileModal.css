@@ -1,0 +1,64 @@
+.profile-modal.ui.modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+.profile-preferences-column {
+  min-width: 300px;
+}
+
+.profile-modal-content {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-marginbottom1 {
+  margin-bottom: 1em;
+}
+
+.profile-marginbottom2 {
+  margin-bottom: 1em;
+}
+
+.profile-text {
+  width: 100%;
+  resize: vertical;
+}
+
+.profile-button {
+  margin-top: 0.5em;
+  margin-right: 0.5em;
+}
+
+.profile-cancel {
+  margin-top: 0.5em;
+}
+
+.profile-edit {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.profile-dark {
+  display: inline-block;
+}
+
+.profile-dash {
+  margin-top: 3em;
+}
+
+.profile-preference {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.profile-calendar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
