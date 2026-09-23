@@ -4,7 +4,7 @@ import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
-import gccisLogo from "../../Assets/gccis_logo.jpg";
+import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
-import gccisLogo from "../../Assets/gccis_logo.jpg";
+import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
