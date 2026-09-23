@@ -1,0 +1,11 @@
+.error-logs-back-button.ui.basic.button {
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 0 0 1px var(--border-color) inset !important;
+  background: transparent !important;
+}
+
+.error-logs-back-button.ui.basic.button:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}

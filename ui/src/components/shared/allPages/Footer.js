@@ -1,16 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../util/functions/UserContext";
-import collegeLogo from "../../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import { config, USERTYPES } from "../../util/functions/constants";
+import { SecureFetch } from "../../util/functions/secureFetch";
+import InnerHTML from "dangerously-set-html-content";
 import "./../../../css/containers/footer.css";
+import "semantic-ui-css/semantic.min.css";
+import uiConfig from "../../../config/uiConfig";
+import collegeLogo from "../../../Assets/gccis_logo.jpg";
 
 function Footer() {
-  const { user } = useContext(UserContext);
-  const [signedIn, setSignedIn] = useState(false);
+  const { user, isAuditTabActive } = useContext(UserContext);
+  const [footerHtml, setFooterHtml] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
+  const signedIn = user && Object.keys(user).length > 0 && user.user;
+  const isAdminOrViewOnlyAdmin = signedIn && user.role === USERTYPES.ADMIN;
+  const showErrorLogsLink = isAdminOrViewOnlyAdmin && isAuditTabActive;
   useEffect(() => {
-    // A user is considered signed in if the user object has a value
-    setSignedIn(Object.keys(user).length !== 0);
-  }, [user]);
+    const footerName = signedIn ? "loggedInFooter" : "loggedOutFooter";
 
   if (signedIn) {
     return (
@@ -47,11 +55,7 @@ function Footer() {
               <img
                 src={collegeLogo}
                 alt="Golisano College of Computing & Information Sciences"
-                style={{
-                  maxWidth: "200px",
-                  width: "100%",
-                  height: "auto",
-                }}
+                className="footer-college-logo"
               />
             </div>
             <div className="column">
@@ -71,15 +75,7 @@ function Footer() {
               </h4>
             </div>
           </div>
-          <div
-            className="centered row"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
+          <div className="centered row footer-signed-out-copyright">
             <h5>
               <i className="ui icon copyright"></i> Rochester Institute of
               Technology, All Rights Reserved
@@ -89,6 +85,33 @@ function Footer() {
       </div>
     );
   }
+
+  return (
+    <div id="footer">
+      {footerHtml ? <InnerHTML html={footerHtml} /> : null}
+      {signedIn && (
+        <div
+          id="version"
+          className="ui container"
+          style={{ textAlign: "right" }}
+        >
+          <h5>
+            {showErrorLogsLink ? (
+              <Link to="/error-logs">Error Logs</Link>
+            ) : (
+              <a
+                href={uiConfig.footers.loggedIn.githubLink}
+                target="_blank"
+                rel="noreferrer"
+              >
+                v{uiConfig.footers.loggedIn.version}
+              </a>
+            )}
+          </h5>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default Footer;

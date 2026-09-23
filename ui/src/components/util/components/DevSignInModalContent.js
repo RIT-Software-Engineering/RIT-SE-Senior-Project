@@ -13,7 +13,7 @@ import {
   DropdownDivider,
   DropdownHeader,
 } from "semantic-ui-react";
-import "./../../../css/utils/helpers.css"
+import "./../../../css/utils/helpers.css";
 import _ from "lodash";
 
 /**
@@ -171,40 +171,18 @@ export default function DevSignInModalContent() {
       });
   };
 
-  // Check if dark mode is active
-  const isDarkMode = document.body.classList.contains("dark-mode");
-
   return (
-    <Container textAlign="center" style={{ maxWidth: 600 }}>
+    <Container textAlign="center" className="dev-signin-container">
       <div className="ui container stackable grid">
         <div className="two column row">
           <div className="column">
             {/* Left Section: Sign In */}
-            <div
-              style={{
-                background: isDarkMode
-                  ? "var(--bg-secondary)"
-                  : "rgba(0,0,0,0.1)",
-                borderRadius: 8,
-                boxShadow: "0 1px 6px rgba(0,0,0,0.1)",
-                padding: 32,
-                justifyContent: "center",
-                minHeight: 250,
-                border: isDarkMode ? "1px solid var(--border-color)" : "none",
-              }}
-            >
-              <h2
-                style={{
-                  marginBottom: 24,
-                  color: isDarkMode ? "var(--text-primary)" : "inherit",
-                }}
-              >
-                Sign In As
-              </h2>
-              <div ref={dropdownRef} style={{ marginBottom: 24 }}>
+            <div className="dev-signin-box">
+              <h2 className="dev-signin-heading">Sign In As</h2>
+              <div ref={dropdownRef} className="">
                 <Dropdown
                   onClick={handleDropdownOpen}
-                  className="ui button"
+                  className="ui button dev-signin-dropdown"
                   search
                   text={
                     selectedUser
@@ -213,9 +191,6 @@ export default function DevSignInModalContent() {
                   }
                   open={isDropdownOpen}
                   fluid
-                  style={{
-                    fontSize: 16,
-                  }}
                 >
                   {isDropdownOpen ? (
                     <DropdownMenu>
@@ -244,13 +219,7 @@ export default function DevSignInModalContent() {
                                 <div>
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
-                                    <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
-                                    >
+                                    <div className="dev-status">
                                       {statusText}
                                     </div>
                                   )}
@@ -275,13 +244,7 @@ export default function DevSignInModalContent() {
                                 <div>
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
-                                    <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
-                                    >
+                                    <div className="dev-status">
                                       {statusText}
                                     </div>
                                   )}
@@ -306,13 +269,7 @@ export default function DevSignInModalContent() {
                                 <div>
                                   <div>{`${user.fname} ${user.lname} (${user.system_id})`}</div>
                                   {statusText && (
-                                    <div
-                                      style={{
-                                        fontSize: "0.9em",
-                                        color: "#999",
-                                        marginTop: "2px",
-                                      }}
-                                    >
+                                    <div className="dev-status">
                                       {statusText}
                                     </div>
                                   )}
@@ -359,42 +316,16 @@ export default function DevSignInModalContent() {
           </div>
 
           <div className="column">
-            <div
-              style={{
-                border: "2px solid #e53935",
-                borderRadius: 8,
-                background: "rgba(220, 50, 50, 0.15)",
-                padding: 32,
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 250,
-              }}
-            >
-              <div
-                style={{
-                  color: "#e53935",
-                  fontWeight: "bold",
-                  fontSize: 18,
-                  marginBottom: 12,
-                  letterSpacing: 2,
-                  textTransform: "uppercase",
-                }}
-              >
-                DANGER
-              </div>
-              <div
-                style={{
-                  marginBottom: 12,
-                  color: isDarkMode ? "var(--text-primary)" : "inherit",
-                }}
-              >
+            <div className="dev-column">
+              <div className="dev-danger">DANGER</div>
+              <div className="dev-warning-text">
                 This will reset the entire database and delete all cookies.
                 Please proceed with caution.
               </div>
 
               <Button
                 color="red"
-                className="offset-outline"
+                className="offset-outline dev-reset-button"
                 onClick={async () => {
                   setLoading(true);
 
@@ -455,14 +386,10 @@ export default function DevSignInModalContent() {
                   }
                 }}
                 disabled={loading}
-                style={{ marginTop: 12, width: "100%", }}
                 size="large"
               >
                 {loading ? (
-                  <div
-                    className="loading-bar"
-                    style={{ margin: "-10px -20px", padding: "10px 20px" }}
-                  >
+                  <div className="loading-bar dev-loading-bar">
                     <Icon name="database" />
                     Resetting...
                   </div>

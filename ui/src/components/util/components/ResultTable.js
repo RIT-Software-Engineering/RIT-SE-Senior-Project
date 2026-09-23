@@ -20,6 +20,8 @@ import {
 } from "semantic-ui-react";
 import ProfileCircle from "./ProfileCircle";
 
+import "./../../../css/utils/result.css";
+
 function roundDec(number, places) {
   return Math.round(number * Math.pow(10, places)) / Math.pow(10, places);
 }
@@ -132,10 +134,7 @@ export default function ResultTable(props) {
               {expandedRows.includes(index) && (
                 <TableRow>
                   <TableCell colSpan="3">
-                    <Card
-                      fluid
-                      style={{ backgroundColor: "var(--bg-primary)" }}
-                    >
+                    <Card fluid className="result-card">
                       <CardContent>
                         <CardHeader>
                           {camelCaseToSentence(category) +
@@ -145,7 +144,7 @@ export default function ResultTable(props) {
                             trigger={
                               <Icon
                                 name={"eye slash"}
-                                style={{ marginLeft: "5px" }}
+                                className="result-icon"
                               />
                             }
                           />
@@ -172,7 +171,7 @@ export default function ResultTable(props) {
                                 )}
                                 <TextArea
                                   disabled
-                                  style={{ color: "var(--text-primary)" }}
+                                  className="result-text"
                                   value={
                                     student.Feedback[category] ||
                                     "No Feedback Given"

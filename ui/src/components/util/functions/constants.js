@@ -49,6 +49,8 @@ export const config = {
     API_GET_ARCHIVE_MEMBERS: `${BASE_API_URL}/db/getArchiveMembers`,
     // Grabs all the semester data from semester_groups and orders them by start and end date.
     API_GET_SEMESTERS: `${BASE_API_URL}/db/getSemesters`,
+    API_GET_SEMESTER_ACTIONS: `${BASE_API_URL}/db/getSemesterActions`,
+    API_POST_DUPLICATE_ACTIONS: `${BASE_API_URL}/db/duplicateActions`,
     API_GET_ACTIONS: `${BASE_API_URL}/db/getActions`,
     API_GET_SEMESTER_ANNOUNCEMENTS: `${BASE_API_URL}/db/getSemesterAnnouncements`,
     API_GET_TIMELINE_ACTIONS: `${BASE_API_URL}/db/getTimelineActions`,
@@ -60,6 +62,8 @@ export const config = {
     API_GET_ACTIVE_TIMELINES: `${BASE_API_URL}/db/getActiveTimelines`,
     API_GET_ACTION_LOGS: `${BASE_API_URL}/db/getActionLogs`,
     API_GET_ALL_ACTION_LOGS: `${BASE_API_URL}/db/getAllActionLogs`,
+    API_GET_ALL_ERROR_LOGS: `${BASE_API_URL}/db/getAllErrorLogs`,
+    API_GET_AUDIT_LOGS: `${BASE_API_URL}/db/getAuditLogs`,
     API_GET_TIME_LOGS: `${BASE_API_URL}/db/getTimeLogs`,
     API_GET_ALL_TIME_LOGS: `${BASE_API_URL}/db/getAllTimeLogs`,
     API_GET_TIME_AVG: `${BASE_API_URL}/db/avgTime`,
@@ -102,6 +106,7 @@ export const config = {
     API_POST_SUBMIT_ACTION: `${BASE_API_URL}/db/submitAction`,
     API_POST_EDIT_ACTION: `${BASE_API_URL}/db/editAction`,
     API_POST_CREATE_ACTION: `${BASE_API_URL}/db/createAction`,
+    API_POST_DUPLICATE_SEMESTER_ACTIONS: `${BASE_API_URL}/db/duplicateSemesterActions`,
     API_POST_CREATE_TIME_LOG: `${BASE_API_URL}/db/createTimeLog`,
     API_POST_EDIT_SEMESTER: `${BASE_API_URL}/db/editSemester`,
     API_POST_CREATE_SEMESTER: `${BASE_API_URL}/db/createSemester`,
@@ -118,6 +123,7 @@ export const config = {
     API_POST_EDIT_ARCHIVE: `${BASE_API_URL}/db/editArchive`,
     API_POST_CREATE_ARCHIVE: `${BASE_API_URL}/db/createArchive`,
     API_DELETE_TIME_LOG: `${BASE_API_URL}/db/removeTime`,
+    API_DELETE_ERROR_LOG: `${BASE_API_URL}/db/removeErrorLog`,
     API_POST_EDIT_ADDITIONAL_INFO: `${BASE_API_URL}/db/editAdditionalInfo`,
     API_POST_SET_DARK_MODE: `${BASE_API_URL}/db/setDarkMode`,
     API_POST_SET_GANTT_VIEW: `${BASE_API_URL}/db/setGanttView`,
@@ -158,22 +164,22 @@ export const DROPDOWN_ITEMS = {
   actionTarget: [
     {
       key: "individual",
-      text: "Individual",
+      text: "Individual Action",
       value: "individual",
     },
     {
       key: "team",
-      text: "Team",
+      text: "Team Action",
       value: "team",
     },
     {
       key: "coach",
-      text: "Coach",
+      text: "Coach Action",
       value: "coach",
     },
     {
       key: "admin",
-      text: "Admin",
+      text: "Admin Action",
       value: "admin",
     },
     {

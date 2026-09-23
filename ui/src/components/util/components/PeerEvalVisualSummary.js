@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../functions/UserContext";
 
+import "./../../../css/utils/peer.css";
+
 const BarGraph = ({ data, width, height }) => {
   const userContext = useContext(UserContext);
   const [userFeedback, setUserFeedback] = useState([]);
@@ -51,30 +53,13 @@ const BarGraph = ({ data, width, height }) => {
   const textColor = isDarkMode ? "#ffffff" : "#000000";
 
   return (
-    <div
-      style={{
-        width: "90vw",
-        height: "50vh",
-        maxWidth: "1000px",
-        maxHeight: "500px",
-      }}
-    >
-      <h2 style={{ color: textColor }}>Performance Evaluation</h2>
+    <div className="peer-performance">
+      <h2 className="peer-performance-heading">Performance Evaluation</h2>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          marginTop: "10px",
-        }}
-      >
+      <div className="peer-div">
         {userFeedback.map((person, index) => (
-          <div
-            key={person[0]}
-            style={{ display: "flex", alignItems: "center", margin: "5px" }}
-          >
-            <svg width="15" height="15" style={{ marginRight: "5px" }}>
+          <div key={person[0]} className="peer-user">
+            <svg width="15" height="15" className="peer-svg">
               <rect
                 x="0"
                 y="0"
@@ -83,7 +68,7 @@ const BarGraph = ({ data, width, height }) => {
                 fill={randColorFromName(person[0].split(" ")[0])}
               />
             </svg>
-            <span style={{ color: textColor }}>{person[0]}</span>
+            <span className="peer-user-name">{person[0]}</span>
           </div>
         ))}
       </div>
@@ -163,7 +148,7 @@ const BarGraph = ({ data, width, height }) => {
                   fontSize={15}
                   textAnchor="middle"
                   fill="black"
-                  style={{ fontWeight: "bold" }}
+                  className="peer-text"
                 >
                   {personName
                     .split(" ")

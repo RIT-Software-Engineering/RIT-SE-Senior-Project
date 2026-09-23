@@ -131,7 +131,7 @@ export default function ProjectEditor(props) {
       panels={[
         {
           key: "projectEditor",
-          title: props.viewOnly ? "Project Viewer" : "Project Editor",
+          title: props.viewOnly ? "Project Viewer" : "Project",
           content: { content: content() },
         },
       ]}

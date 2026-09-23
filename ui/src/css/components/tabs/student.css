@@ -1,0 +1,111 @@
+.student-modal.ui.modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+.student-status {
+  font-size: 0.9em;
+  color: #999;
+  font-style: italic;
+}
+
+.student-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.student-name {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.student-text {
+  width: 100%;
+}
+
+.student-button-save {
+  margin-top: 0.5em;
+}
+
+.student-button-cancel {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+
+.student-addtion {
+  margin-left: 0.5em;
+}
+
+.student-button-edit {
+  margin-left: 0.5em;
+}
+
+.student-title {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.student-profile {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.student-feedback {
+  white-space: pre-wrap;
+}
+
+.student-accordian {
+  margin-top: 1em;
+}
+
+.student-editing {
+  margin-top: 10px;
+}
+
+.student-icon-color {
+  color: var(--text-primary);
+}
+
+.student-dropdown {
+  padding-top: "10px";
+  padding-bottom: "10px";
+}
+
+.student-content {
+  height: 350px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.student-ai-summary-textarea {
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  resize: vertical;
+}
+
+.student-ai-summary-textarea-empty {
+  height: 50px;
+  min-height: 50px;
+}
+
+.student-prompt-textarea {
+  width: 100%;
+  min-width: 400px;
+  min-height: 150px;
+  resize: vertical;
+  margin-bottom: 10px;
+  border: 1px solid grey;
+  outline: none;
+}
+
+.student-prompt-textarea-modified {
+  border: 2px solid orange;
+  outline: 2px solid orange;
+}

@@ -19,12 +19,14 @@ import SponsorsTab from "../Tabs/SponsorsTab/SponsorsTab";
 import SponsorEditorAccordion from "../Tabs/AdminTab/SponsorEditorAccordion";
 import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
+import AuditLogs from "../Tabs/AuditLogsTab/AuditLogs";
 import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, setIsAuditTabActive } = useContext(UserContext);
   const [semesterData, setSemestersData] = useState([]);
   const [authError, setAuthError] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const history = useHistory();
 
   // When dashboard loads, check who is currently signed in
@@ -106,7 +108,7 @@ export default function DashboardPage() {
             key: "Admin-Tab",
             content: (
               <>
-                <i className="cog icon" style={{ marginRight: 5 }} />
+                <i className="cog icon dashboard-menu-icon" />
                 Admin
               </>
             ),
@@ -125,6 +127,23 @@ export default function DashboardPage() {
           ),
         });
       }
+      panes.push({
+        menuItem: {
+          key: "Audit-Tab",
+          content: (
+            <>
+              <i className="history icon dashboard-menu-icon" />
+              Audit Logs
+            </>
+          ),
+          href: "#",
+        },
+        render: () => (
+          <Tab.Pane>
+            <AuditLogs />
+          </Tab.Pane>
+        ),
+      });
     // Break intentionally left out to take advantage of switch flow
     // eslint-disable-next-line
     case "coach":
@@ -134,7 +153,7 @@ export default function DashboardPage() {
             key: "Sponsors-Tab",
             content: (
               <>
-                <i className="handshake icon" style={{ marginRight: 5 }} />
+                <i className="handshake icon dashboard-menu-icon" />
                 Sponsors
               </>
             ),
@@ -153,7 +172,7 @@ export default function DashboardPage() {
             key: "Coaches-Tab",
             content: (
               <>
-                <i className="graduation cap icon" style={{ marginRight: 5 }} />
+                <i className="graduation cap icon dashboard-menu-icon" />
                 Coaches
               </>
             ),
@@ -175,7 +194,7 @@ export default function DashboardPage() {
             key: "Students-Tab",
             content: (
               <>
-                <i className="users icon" style={{ marginRight: 5 }} />
+                <i className="users icon dashboard-menu-icon" />
                 Students
               </>
             ),
@@ -192,7 +211,7 @@ export default function DashboardPage() {
             key: "Projects-Tab",
             content: (
               <>
-                <i className="folder open icon" style={{ marginRight: 5 }} />
+                <i className="folder open icon dashboard-menu-icon" />
                 Projects
               </>
             ),
@@ -212,7 +231,7 @@ export default function DashboardPage() {
             key: "Logging-Tab",
             content: (
               <>
-                <i className="clock outline icon" style={{ marginRight: 5 }} />
+                <i className="clock outline icon dashboard-menu-icon" />
                 Logging
               </>
             ),
@@ -233,7 +252,7 @@ export default function DashboardPage() {
             key: "Dashboard-Tab",
             content: (
               <>
-                <i className="dashboard icon" style={{ marginRight: 5 }} />
+                <i className="dashboard icon dashboard-menu-icon" />
                 Dashboard
               </>
             ),
@@ -264,6 +283,15 @@ export default function DashboardPage() {
 
   panes.reverse();
 
+  useEffect(() => {
+    const activeKey = panes[activeIndex]?.menuItem?.key;
+    setIsAuditTabActive(activeKey === "Audit-Tab");
+  }, [activeIndex, user.role]);
+
+  useEffect(() => {
+    return () => setIsAuditTabActive(false);
+  }, []);
+
   // Don't render dashboard if there's an authentication error
   if (authError) {
     return null; // The useEffect will handle redirecting to auth-error page
@@ -273,7 +301,11 @@ export default function DashboardPage() {
     <>
       <AdminView />
       {/*This is for the tabs inside of the dashboard tab*/}
-      <Tab panes={panes} className="admin-menu" />
+      <Tab
+        panes={panes}
+        onTabChange={(e, data) => setActiveIndex(data.activeIndex)}
+        className="admin-menu"
+      />
     </>
   );
 }

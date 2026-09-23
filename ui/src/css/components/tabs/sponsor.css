@@ -1,0 +1,14 @@
+.sponsor-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sponsor-profile {
+  margin-right: 10px;
+}
+
+.sponsor-props {
+  margin: 0;
+  line-height: 1.4;
+}

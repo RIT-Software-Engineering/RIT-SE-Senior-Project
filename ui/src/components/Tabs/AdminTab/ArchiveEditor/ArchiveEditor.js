@@ -52,7 +52,7 @@ export default function ArchiveEditor() {
         panels={[
           {
             key: "archiveEditor",
-            title: "Archive Editor",
+            title: "Archive",
             content: { content: archivesToEdit },
           },
         ]}
