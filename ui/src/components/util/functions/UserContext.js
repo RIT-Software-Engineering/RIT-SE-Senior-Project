@@ -5,11 +5,17 @@ import React, { createContext, useState } from "react";
  */
 
 // Use this to get the current state of a user
-export const UserContext = createContext({ user: null, setUser: () => {} });
+export const UserContext = createContext({
+  user: null,
+  setUser: () => {},
+  isAuditTabActive: false,
+  setIsAuditTabActive: () => {},
+});
 
 // Provider for the app -- you most likely don't need to touch this
 export function UserContextProvider({ children }) {
   const [user, updateUser] = useState({});
+  const [isAuditTabActive, setIsAuditTabActive] = useState(false);
 
   const setUser = (newUser) => {
     updateUser(newUser);
@@ -18,6 +24,8 @@ export function UserContextProvider({ children }) {
   let context = {
     user: user,
     setUser,
+    isAuditTabActive,
+    setIsAuditTabActive,
   };
 
   return (

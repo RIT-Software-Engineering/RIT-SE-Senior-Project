@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Popup } from "semantic-ui-react";
+import { Icon, Popup, Button } from "semantic-ui-react";
 import { ACTION_TARGETS, config } from "../../../../util/functions/constants";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import {
@@ -11,6 +11,7 @@ import SubmissionViewerModal from "./SubmissionViewerModal";
 import DOMpurify from "dompurify";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 import { formatDate } from "../../../../util/functions/utils";
+import "../../../../../css/components/tabs/tool.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -28,6 +29,8 @@ export default function ToolTip(props) {
 
   const [submissions, setSubmissions] = useState(null);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+  const [actionModalOpen, setActionModalOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   var [hasMockedSubmission, setHasMockedSubmission] = useState(false);
 
@@ -49,13 +52,7 @@ export default function ToolTip(props) {
     return (
       <>
         {isLate(submission.due_date, submission.submission_datetime) && (
-          <span
-            style={{
-              color: "red",
-              marginLeft: "5px",
-              fontWeight: "bold",
-            }}
-          >
+          <span className="tool-late-submit">
             {` ${daysLate(submission.due_date, submission.submission_datetime)} days late`}
           </span>
         )}
@@ -67,6 +64,9 @@ export default function ToolTip(props) {
   // clicking elements on the modal
   let isOpenCallback = function (isOpen) {
     setCloseOnDocClick(!isOpen);
+    if (isOpen) {
+      setPopupOpen(false);
+    }
   };
 
   const loadSubmission = (projectId, actionId) => {
@@ -136,13 +136,7 @@ export default function ToolTip(props) {
             )}
             {submissions?.map((submission) => {
               return (
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5em",
-                  }}
-                >
+                <span className="tool-submission">
                   <SubmissionViewerModal
                     key={submission.action_log_id}
                     action={submission}
@@ -152,54 +146,29 @@ export default function ToolTip(props) {
                     projectName={props.projectName}
                     isOpenCallback={isOpenCallback}
                     trigger={
-                      <div
-                        className="fake-a"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginBottom: "0.5rem",
-                          gap: "0.5rem",
-                        }}
-                      >
+                      <div className="fake-a tool-trigger">
                         {longSubmissionTitle ? (
                           <>
                             {submission.mock_id && (
-                              <span
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginRight: "0.5em",
-                                }}
-                              >
+                              <span className="tool-submission">
                                 <ProfileCircle
                                   name={submission.mock_name}
                                   isStudent={false}
                                   size="tiny"
                                 />
-                                <span
-                                  style={{
-                                    marginLeft: "0.5em",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
+                                <span className="tool-profile">
                                   {submission.mock_name} ({submission.mock_id})
                                   as
                                 </span>
                               </span>
                             )}
-                            <span
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5em",
-                              }}
-                            >
+                            <span className="tool-submission">
                               <ProfileCircle
                                 name={submission.name}
                                 size="tiny"
                                 isStudent={submission.user_type === "student"}
                               />
-                              <span style={{ whiteSpace: "nowrap" }}>
+                              <span className="tool-whitespace">
                                 {submission.name} ({submission.system_id}) on{" "}
                                 {formatDateTime(submission.submission_datetime)}
                                 {renderIsLate(submission)}
@@ -209,38 +178,25 @@ export default function ToolTip(props) {
                         ) : (
                           <>
                             <i
-                              style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "0.5rem",
-                                marginLeft: submission.mock_id ? "1.5rem" : "0",
-                              }}
+                              className={`tool-summary-line${
+                                submission.mock_id
+                                  ? " tool-summary-line-indent"
+                                  : ""
+                              }`}
                             >
                               {submission.mock_id && (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
-                                >
+                                <div className="tool-submit">
                                   <ProfileCircle
                                     name={submission.mock_name}
                                     showFullName
                                     isStudent={false}
                                     size="tiny"
-                                    style={{ marginLeft: "-1.5rem" }}
+                                    className="tool-as"
                                   />
                                   as
                                 </div>
                               )}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
+                              <div className="tool-submit">
                                 <ProfileCircle
                                   name={submission.name}
                                   showFullName
@@ -250,13 +206,9 @@ export default function ToolTip(props) {
                                 on
                               </div>
                               <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginLeft: submission.mock_id
-                                    ? "0.3rem"
-                                    : "1.6rem",
-                                }}
+                                className={`tool-date${
+                                  submission.mock_id ? " tool-date-indent" : ""
+                                }`}
                               >
                                 {formatDateTime(submission.submission_datetime)}
                                 {renderIsLate(submission)}
@@ -286,17 +238,19 @@ export default function ToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-        {props.action?.action_target !== "break_period" ? (
-          <ActionModal
-            key={props.action?.action_id}
-            {...props.action}
-            isOpenCallback={isOpenCallback}
-            projectId={props.projectId}
-            preActionContent={metadata(true)}
-            reloadTimelineActions={props.reloadTimelineActions}
-          />
-        ) : (
-          <></>
+        {props.action?.action_target !== "break_period" && (
+          <Button
+            fluid
+            className="view-action-button"
+            onClick={(e) => {
+              console.log("VIEW ACTION CLICKED");
+              e.stopPropagation();
+              setPopupOpen(false);
+              setActionModalOpen(true);
+            }}
+          >
+            View Action
+          </Button>
         )}
       </div>
     );
@@ -304,45 +258,89 @@ export default function ToolTip(props) {
 
   if (props.noPopup) {
     return (
-      <div className={`no-popup-tooltip ${props.color}`}>
-        <h4>{props.action?.action_title}</h4>
-        {content()}
-      </div>
+      <>
+        <div className={`no-popup-tooltip ${props.color}`}>
+          <h4>{props.action?.action_title}</h4>
+          {content()}
+        </div>
+        {props.action?.action_target !== "break_period" && (
+          <ActionModal
+            open={actionModalOpen}
+            key={props.action?.action_id}
+            {...props.action}
+            projectId={props.projectId}
+            preActionContent={metadata(true)}
+            reloadTimelineActions={props.reloadTimelineActions}
+            trigger={<span style={{ display: "none" }} />}
+            isOpenCallback={(isOpen) => {
+              setCloseOnDocClick(!isOpen);
+              if (isOpen) {
+                setActionModalOpen(false);
+              }
+              setActionModalOpen(isOpen);
+            }}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <Popup
-      header={props.action?.action_title}
-      content={content()}
-      closeOnDocumentClick={closeOnDocClick}
-      closeOnEscape={true}
-      wide={hasMockedSubmission}
-      inverted={document.body.classList.contains("dark-mode")}
-      style={{
-        zIndex: 100,
-        boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-        minWidth: "280px",
-      }}
-      offset={[offsetX, 0]}
-      trigger={props.trigger}
-      on="click"
-      onOpen={(event, data) => {
-        if (props.containerRef) {
-          try {
-            // purpose is to get the mouse's position relative to the start of the bar
-            let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
-            let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
-            let mouseXWithinContainer =
-              event.clientX -
-              props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
-            setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
-          } catch (e) {
-            console.log("tooltip positioning", e);
+    <>
+      <Popup
+        onClose={() => console.log("POPUP CLOSE")}
+        open={popupOpen}
+        header={props.action?.action_title}
+        content={content()}
+        closeOnDocumentClick={closeOnDocClick}
+        closeOnEscape={true}
+        wide={hasMockedSubmission}
+        inverted={document.body.classList.contains("dark-mode")}
+        className="tool-pop"
+        offset={[offsetX, 0]}
+        trigger={props.trigger}
+        on="click"
+        onOpen={(event, data) => {
+          console.log("POPUP OPEN");
+          setPopupOpen(true);
+          if (props.containerRef) {
+            try {
+              // purpose is to get the mouse's position relative to the start of the bar
+              let barOffset = data.trigger.ref.current.offsetLeft; // dist from bar start to gantt start
+              let containerScroll = props.containerRef?.current.scrollLeft; // dist from gantt start to left edge of visible container (scroll)
+              let mouseXWithinContainer =
+                event.clientX -
+                props.containerRef?.current.getBoundingClientRect().left; // mouse dist from left (within container)
+              setOffsetX(containerScroll - barOffset + mouseXWithinContainer);
+            } catch (e) {
+              console.log("tooltip positioning", e);
+            }
           }
-        }
-        loadSubmission(props.projectId, props.action?.action_id);
-      }}
-    />
+          loadSubmission(props.projectId, props.action?.action_id);
+        }}
+        onClose={(event, data) => {
+          console.log("POPUP CLOSE", event, data);
+          setPopupOpen(false);
+        }}
+      />
+      {props.action?.action_target !== "break_period" && (
+        <ActionModal
+          open={actionModalOpen}
+          key={props.action?.action_id}
+          {...props.action}
+          projectId={props.projectId}
+          preActionContent={metadata(true)}
+          reloadTimelineActions={props.reloadTimelineActions}
+          trigger={<span style={{ display: "none" }} />}
+          isOpenCallback={(isOpen) => {
+            setCloseOnDocClick(!isOpen);
+            if (isOpen) {
+              setActionModalOpen(false);
+            }
+            setActionModalOpen(isOpen);
+          }}
+        />
+      )}
+    </>
   );
 }

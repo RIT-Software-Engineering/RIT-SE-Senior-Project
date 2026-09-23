@@ -4,7 +4,7 @@ import { SecureFetch } from "../../util/functions/secureFetch";
 import { config } from "../../util/functions/constants";
 import { UserContext } from "../../util/functions/UserContext";
 import { isSemesterActive } from "../../util/functions/utils";
-import ProjectTime from "./ProjectTIme";
+import ProjectTime from "./ProjectTime";
 
 const LOGS_PER_PAGE = 50;
 

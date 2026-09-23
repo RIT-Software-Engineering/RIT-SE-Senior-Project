@@ -36,6 +36,42 @@ function humanFileSize(bytes, si = false, dp = 1) {
 
 const defaultFileSizeLimit = 15 * 1024 * 1024;
 
+/**
+ * Format: {ActionName}_{YYYY-MM-DD}_{ProjectName}_{SubmitterUserName}[-N].{ext}
+ */
+function sanitizeFileNameSegment(str, maxLen = 10) {
+  return (str || "")
+    .toString()
+    .replace(/[\\/:*?"<>|]/g, "")
+    .replace(/\s+/g, "")
+    .slice(0, maxLen);
+}
+
+function buildSubmissionDownloadName({
+  actionTitle,
+  submissionDateTime,
+  projectName,
+  submitterUserName,
+  fileIndex,
+  originalFileName,
+}) {
+  const ext = path.extname(originalFileName || "");
+  const dateStr = submissionDateTime
+    ? dayjs(submissionDateTime).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD");
+
+  const segments = [
+    sanitizeFileNameSegment(actionTitle),
+    dateStr,
+    sanitizeFileNameSegment(projectName),
+    sanitizeFileNameSegment(submitterUserName),
+  ].filter(Boolean);
+
+  const increment = fileIndex > 0 ? `-${fileIndex + 1}` : "";
+
+  return segments.join("_") + increment + ext;
+}
+
 const DB_CONFIG = require("../database/db_config");
 const CONFIG = require("../config/config");
 const { nanoid } = require("nanoid");
@@ -53,6 +89,38 @@ const ACTION_TARGETS = {
   STUDENT_ANNOUNCEMENT: "student_announcement",
   PEER_EVALUATION: "peer_evaluation",
 };
+
+const {
+  recordActionEditAudit,
+  recordActionCreateAudit,
+  recordProjectEditAudit,
+  recordSemesterEditAudit,
+  recordSemesterCreateAudit,
+  recordArchiveEditAudit,
+  recordArchiveCreateAudit,
+  recordUserEditAudit,
+  recordUserCreateAudit,
+  recordSponsorEditAudit,
+  recordSponsorCreateAudit,
+  recordSponsorNoteCreateAudit,
+  recordTimeLogCreateAudit,
+  recordTimeLogDeleteAudit,
+  recordErrorLogDeleteAudit,
+  recordActionSubmissionCreateAudit,
+} = require("../audit/audit_events");
+
+function lookupNewlyInsertedId(db, table, idColumn, whereFields) {
+  const columns = Object.keys(whereFields);
+  const whereSql = columns.map((col) => `${col} = ?`).join(" AND ");
+  const params = columns.map((col) => whereFields[col]);
+
+  return db
+    .query(
+      `SELECT ${idColumn} FROM ${table} WHERE ${whereSql} ORDER BY ${idColumn} DESC LIMIT 1`,
+      params,
+    )
+    .then((rows) => (rows && rows[0] ? rows[0][idColumn] : null));
+}
 
 // Routes
 module.exports = (db) => {
@@ -84,6 +152,109 @@ module.exports = (db) => {
       }
     });
   }
+
+  // get error logs
+  db_router.get("/getAllErrorLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const getErrorLogsQuery = `
+            SELECT * FROM ${DB_CONFIG.tableNames.error_log} ORDER BY error_log_id ASC
+        `;
+    db.query(getErrorLogsQuery)
+      .then((errorLogs) => {
+        res.send(errorLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.get("/getAuditLogs", [UserAuth.isAdmin], (req, res, next) => {
+    const {
+      entity_type,
+      action_type,
+      start_date,
+      end_date,
+      search,
+      resultLimit,
+      offset,
+    } = req.query;
+
+    const whereClauses = [];
+    const params = [];
+
+    if (entity_type) {
+      whereClauses.push("entity_type = ?");
+      params.push(entity_type);
+    }
+    if (action_type) {
+      whereClauses.push("action_type = ?");
+      params.push(action_type);
+    }
+    if (start_date) {
+      whereClauses.push("date(audit_datetime) >= date(?)");
+      params.push(start_date);
+    }
+    if (end_date) {
+      whereClauses.push("date(audit_datetime) <= date(?)");
+      params.push(end_date);
+    }
+    if (search) {
+      whereClauses.push("(system_id LIKE ? OR message LIKE ?)");
+      params.push(`%${search}%`, `%${search}%`);
+    }
+
+    const whereSql =
+      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+    const limit = Number(resultLimit) || 20;
+    const page = Number(offset) || 0;
+
+    const getAuditLogsQuery = `
+            SELECT * FROM ${DB_CONFIG.tableNames.audit_log}
+            ${whereSql}
+            ORDER BY audit_log_id DESC
+            LIMIT ? OFFSET ?
+        `;
+
+    db.query(getAuditLogsQuery, [...params, limit, page * limit])
+      .then((auditLogs) => {
+        res.send(auditLogs);
+      })
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
+  db_router.delete(
+    "/removeErrorLog/:id",
+    [UserAuth.isAdmin],
+    (req, res, next) => {
+      const deleteErrorLogQuery = `
+            DELETE FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?
+        `;
+      db.query(
+        `SELECT * FROM ${DB_CONFIG.tableNames.error_log} WHERE error_log_id = ?`,
+        [req.params.id],
+      )
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db
+            .query(deleteErrorLogQuery, [req.params.id])
+            .then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordErrorLogDeleteAudit(req, req.params.id, deletedRow);
+          res.status(200).send();
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
 
   db_router.get(
     "/selectAllSponsorInfo",
@@ -324,6 +495,7 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          recordUserCreateAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -448,8 +620,13 @@ module.exports = (db) => {
         body.system_id,
       ];
 
-      db.query(updateQuery, params)
-        .then(() => {
+      db.query("SELECT * FROM users WHERE system_id = ?", [body.system_id])
+        .then((rows) => {
+          const priorUser = rows && rows[0] ? rows[0] : {};
+          return db.query(updateQuery, params).then(() => priorUser);
+        })
+        .then((priorUser) => {
+          recordUserEditAudit(req, body, priorUser, active);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -472,8 +649,13 @@ module.exports = (db) => {
 
       const sql = "UPDATE time_log SET active=0 WHERE time_log_id = ?";
 
-      db.query(sql, [req.body.id])
-        .then(() => {
+      db.query("SELECT * FROM time_log WHERE time_log_id = ?", [req.body.id])
+        .then((rows) => {
+          const deletedRow = rows && rows[0] ? rows[0] : null;
+          return db.query(sql, [req.body.id]).then(() => deletedRow);
+        })
+        .then((deletedRow) => {
+          recordTimeLogDeleteAudit(req, req.body.id, deletedRow);
           res.status(200).send();
         })
         .catch((err) => {
@@ -564,6 +746,21 @@ module.exports = (db) => {
       ];
       db.query(sql, params)
         .then(() => {
+          return db.query(
+            `SELECT time_log_id FROM time_log
+             WHERE system_id = ? AND project = ? AND work_date = ? AND time_amount = ?
+             ORDER BY time_log_id DESC LIMIT 1`,
+            [
+              req.user.system_id,
+              req.user.project,
+              req.body.date,
+              req.body.time_amount,
+            ],
+          );
+        })
+        .then((rows) => {
+          const newTimeLogId = rows && rows[0] ? rows[0].time_log_id : null;
+          recordTimeLogCreateAudit(req, req.body, newTimeLogId);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -972,8 +1169,18 @@ module.exports = (db) => {
         body.archive_id,
       ];
 
-      db.query(updateArchiveQuery, updateArchiveParams)
-        .then(() => {
+      db.query(
+        `SELECT inactive FROM ${DB_CONFIG.tableNames.archive} WHERE archive_id = ?`,
+        [body.archive_id],
+      )
+        .then((rows) => {
+          const priorInactive = rows && rows[0] ? rows[0].inactive : "";
+          return db
+            .query(updateArchiveQuery, updateArchiveParams)
+            .then(() => priorInactive);
+        })
+        .then((priorInactive) => {
+          recordArchiveEditAudit(req, body, priorInactive, inactive);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -1059,7 +1266,17 @@ module.exports = (db) => {
 
       db.query(updateArchiveQuery, updateArchiveParams)
         .then((response) => {
-          return res.status(200).send(response);
+          return lookupNewlyInsertedId(
+            db,
+            DB_CONFIG.tableNames.archive,
+            "archive_id",
+            {
+              name: body.name,
+            },
+          ).then((newArchiveId) => {
+            recordArchiveCreateAudit(req, body, newArchiveId);
+            return res.status(200).send(response);
+          });
         })
         .catch((err) => {
           console.error(err);
@@ -1659,6 +1876,7 @@ module.exports = (db) => {
         db.query(deleteCoachesSQL),
       ])
         .then((values) => {
+          recordProjectEditAudit(req, body);
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -2575,6 +2793,21 @@ module.exports = (db) => {
 
       db.query(insertAction, params)
         .then(() => {
+          return db.query(
+            `SELECT action_log_id FROM action_log
+             WHERE action_template = ? AND system_id = ? AND project = ?
+             ORDER BY action_log_id DESC LIMIT 1`,
+            [body.action_template, req.user.system_id, body.project],
+          );
+        })
+        .then((rows) => {
+          const newActionLogId = rows && rows[0] ? rows[0].action_log_id : null;
+          recordActionSubmissionCreateAudit(
+            req,
+            newActionLogId,
+            action.action_id,
+            action.action_title,
+          );
           return res.sendStatus(200);
         })
         .catch((err) => {
@@ -3210,26 +3443,29 @@ module.exports = (db) => {
       let getSubmissionQuery = "";
       let params = [];
 
+      const submissionFileSelect = `
+        SELECT action_log.files, action_log.project, action_log.system_id,
+               action_log.submission_datetime,
+               actions.action_id, actions.action_target, actions.action_title,
+               COALESCE(projects.display_name, projects.title) AS project_name
+        FROM action_log
+        JOIN actions ON actions.action_id = action_log.action_template
+        JOIN projects ON projects.project_id = action_log.project`;
+
       switch (req.user.type) {
         case ROLES.STUDENT:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.COACH:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
           params = [req.query.log_id, req.user.system_id];
           break;
         case ROLES.ADMIN:
-          getSubmissionQuery = `SELECT action_log.files, action_log.project, action_log.system_id, actions.action_id, actions.action_target
-                    FROM action_log
-                    JOIN actions ON actions.action_id = action_log.action_template
+          getSubmissionQuery = `${submissionFileSelect}
                     WHERE action_log.action_log_id = ?`;
           params = [req.query.log_id];
           break;
@@ -3239,8 +3475,16 @@ module.exports = (db) => {
           return next(error);
       }
 
-      const { files, project, action_target, system_id, action_id } =
-        (await db.query(getSubmissionQuery, params))[0] || {};
+      const {
+        files,
+        project,
+        action_target,
+        system_id,
+        action_id,
+        action_title,
+        project_name,
+        submission_datetime,
+      } = (await db.query(getSubmissionQuery, params))[0] || {};
 
       let fileList = [];
       if (files) {
@@ -3254,11 +3498,19 @@ module.exports = (db) => {
         system_id &&
         action_id
       ) {
-        return res.sendFile(
+        return res.download(
           path.join(
             __dirname,
             `../project_docs/${project}/${action_target}/${action_id}/${system_id}/${req.query.file}`,
           ),
+          buildSubmissionDownloadName({
+            actionTitle: action_title,
+            submissionDateTime: submission_datetime,
+            projectName: project_name,
+            submitterUserName: system_id,
+            fileIndex: fileList.indexOf(req.query.file),
+            originalFileName: req.query.file,
+          }),
         );
       }
       const error = new Error(
@@ -3314,6 +3566,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordActionEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -3647,7 +3900,12 @@ module.exports = (db) => {
       let createSponsorQueryPromise = db
         .query(createSponsorQuery, createSponsorParams)
         .then(() => {
-          return [200, null];
+          return lookupNewlyInsertedId(db, "sponsors", "sponsor_id", {
+            fname: body.fname,
+            lname: body.lname,
+            company: body.company,
+            email: body.email,
+          }).then((newSponsorId) => [200, null, newSponsorId]);
         })
         .catch((err) => {
           const error = new Error(err);
@@ -3668,7 +3926,7 @@ module.exports = (db) => {
 
       Promise.all([createSponsorQueryPromise, createSponsorNotePromise]).then(
         ([
-          [createSponsorQueryStatusCode, createSponsorError],
+          [createSponsorQueryStatusCode, createSponsorError, newSponsorId],
           [createNoteStatusCode, createNoteError],
         ]) => {
           if (createSponsorError) {
@@ -3682,6 +3940,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorCreateAudit(req, body, newSponsorId);
             res.status(createSponsorQueryStatusCode).send();
           }
         },
@@ -3787,6 +4046,7 @@ module.exports = (db) => {
             error.statusCode = 500;
             return next(error);
           } else {
+            recordSponsorEditAudit(req, body);
             res.status(updateQueryStatusCode).send();
           }
         },
@@ -3836,6 +4096,19 @@ module.exports = (db) => {
           error.statusCode = status;
           return next(error);
         } else {
+          db.query("SELECT fname, lname FROM sponsors WHERE sponsor_id = ?", [
+            body.sponsor_id,
+          ])
+            .then((rows) => {
+              const sponsorName =
+                rows && rows[0]
+                  ? `${rows[0].fname} ${rows[0].lname}`
+                  : "Unknown";
+              recordSponsorNoteCreateAudit(req, body, sponsorName);
+            })
+            .catch(() => {
+              recordSponsorNoteCreateAudit(req, body, "Unknown");
+            });
           res.status(status).send();
         }
       });
@@ -3876,6 +4149,15 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          return lookupNewlyInsertedId(db, "actions", "action_id", {
+            semester: body.semester,
+            action_title: body.action_title,
+            start_date: body.start_date,
+            due_date: body.due_date,
+          });
+        })
+        .then((newActionId) => {
+          recordActionCreateAudit(req, body, newActionId);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -3885,7 +4167,84 @@ module.exports = (db) => {
         });
     },
   );
+  db_router.post(
+    "/duplicateSemesterActions",
+    [UserAuth.isAdmin, UserAuth.canWrite],
+    async (req, res, next) => {
+      const {
+        sourceSemester,
+        targetSemester,
+        offsetDays = 0,
+        actionIds,
+      } = req.body;
 
+      if (!sourceSemester || !targetSemester) {
+        return res.status(400).send("Missing semesters.");
+      }
+
+      try {
+        let query = `
+          SELECT *
+          FROM actions
+          WHERE semester = ?
+        `;
+
+        let params = [sourceSemester];
+
+        // Optional checkbox support
+        if (actionIds && actionIds.length > 0) {
+          query += ` AND action_id IN (${actionIds.map(() => "?").join(",")})`;
+          params.push(...actionIds);
+        }
+
+        const actions = await db.query(query, params);
+
+        for (const action of actions) {
+          await db.query(
+            `
+            INSERT INTO actions
+            (
+              semester,
+              action_title,
+              action_target,
+              date_deleted,
+              short_desc,
+              start_date,
+              due_date,
+              page_html,
+              file_types,
+              file_size
+            )
+            VALUES
+            (?, ?, ?, ?, ?, DATE_ADD(?, INTERVAL ? DAY),
+                DATE_ADD(?, INTERVAL ? DAY),
+                ?, ?, ?)
+          `,
+            [
+              targetSemester,
+              action.action_title,
+              action.action_target,
+              action.date_deleted,
+              action.short_desc,
+              action.start_date,
+              offsetDays,
+              action.due_date,
+              offsetDays,
+              action.page_html,
+              action.file_types,
+              action.file_size,
+            ],
+          );
+        }
+
+        res.json({
+          copied: actions.length,
+        });
+      } catch (err) {
+        next(err);
+      }
+    },
+  );
   db_router.get("/getSemesters", [UserAuth.isSignedIn], (req, res, next) => {
     let getSemestersQuery = `
             SELECT *
@@ -3902,6 +4261,135 @@ module.exports = (db) => {
         return next(error);
       });
   });
+
+  db_router.get(
+    "/getSemesterActions",
+    [UserAuth.isSignedIn],
+    (req, res, next) => {
+      const semester = req.query.semester;
+
+      if (!semester) {
+        return res.status(400).send("Missing semester");
+      }
+
+      db.query(
+        `
+      SELECT *
+      FROM actions
+      WHERE semester = ?
+      ORDER BY start_date
+      `,
+        [semester],
+      )
+        .then((values) => {
+          res.send(values);
+        })
+        .catch((err) => {
+          const error = new Error(err);
+          error.statusCode = 500;
+          return next(error);
+        });
+    },
+  );
+
+  db_router.post(
+    "/duplicateActions",
+    [UserAuth.isAdmin],
+    async (req, res, next) => {
+      const { actions, source_semester, target_semester, day_offset } =
+        req.body;
+
+      if (!actions || !target_semester || !source_semester) {
+        return res.status(400).send("Missing required fields");
+      }
+
+      const parsedActions = JSON.parse(actions);
+      const offset = parseInt(day_offset) || 0;
+      const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+      try {
+        const semesterResults = await db.query(
+          `
+      SELECT semester_id, start_date
+      FROM semester_group
+      WHERE semester_id IN (?, ?)
+      `,
+          [source_semester, target_semester],
+        );
+
+        const sourceSem = semesterResults.find(
+          (s) => s.semester_id == source_semester,
+        );
+
+        const targetSem = semesterResults.find(
+          (s) => s.semester_id == target_semester,
+        );
+
+        if (!sourceSem || !targetSem) {
+          return res.status(400).send("Semester not found");
+        }
+
+        const sourceStart = new Date(sourceSem.start_date);
+        const targetStart = new Date(targetSem.start_date);
+
+        for (const action of parsedActions) {
+          // Calculate start_date relative to source semester start
+          let startDate = null;
+          if (action.start_date) {
+            const originalStart = new Date(action.start_date);
+            const daysFromStart = Math.round(
+              (originalStart - sourceStart) / MS_PER_DAY,
+            );
+            startDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
+
+          // Calculate due_date relative to source semester start
+          let dueDate = null;
+          if (action.due_date) {
+            const originalDue = new Date(action.due_date);
+
+            const daysFromStart = Math.round(
+              (originalDue - sourceStart) / MS_PER_DAY,
+            );
+
+            dueDate = new Date(
+              targetStart.getTime() + (daysFromStart + offset) * MS_PER_DAY,
+            )
+              .toISOString()
+              .split("T")[0];
+          }
+
+          await db.query(
+            `INSERT INTO actions (
+          action_title, short_desc, page_html, action_target,
+          start_date, due_date, semester, file_types, file_size
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              action.action_title,
+              action.short_desc,
+              action.page_html,
+              action.action_target,
+              startDate,
+              dueDate,
+              target_semester,
+              action.file_types || null,
+              action.file_size || null,
+            ],
+          );
+        }
+
+        res.status(200).send("Actions duplicated successfully");
+      } catch (err) {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      }
+    },
+  );
 
   db_router.get("/getArchive", [UserAuth.isAdmin], (req, res, next) => {
     let getArchiveQuery = `
@@ -3986,6 +4474,7 @@ module.exports = (db) => {
 
       db.query(updateQuery, params)
         .then(() => {
+          recordSemesterEditAudit(req, body);
           return res.status(200).send();
         })
         .catch((err) => {
@@ -4054,6 +4543,15 @@ module.exports = (db) => {
 
       db.query(sql, params)
         .then(() => {
+          return lookupNewlyInsertedId(db, "semester_group", "semester_id", {
+            name: body.name,
+            dept: body.dept,
+            start_date: body.start_date,
+            end_date: body.end_date,
+          });
+        })
+        .then((newSemesterId) => {
+          recordSemesterCreateAudit(req, body, newSemesterId);
           return res.status(200).send();
         })
         .catch((err) => {

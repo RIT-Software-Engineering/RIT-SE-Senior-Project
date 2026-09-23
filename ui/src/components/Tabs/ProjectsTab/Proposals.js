@@ -47,7 +47,7 @@ export default function Proposals(props) {
   const [projectPermissions, setProjectPermissions] = useState({});
   const userContext = useContext(UserContext);
 
-  let semesterMap = { undefined: "No semester", null: "No semester" };
+  let semesterMap = { undefined: "No Semester", null: "No Semester" };
   props.semesterData?.forEach((semester) => {
     semesterMap[semester.semester_id] = semester.name;
   });
@@ -203,7 +203,7 @@ export default function Proposals(props) {
 
   const semesterName = () => {
     if (props.semester === null) {
-      return "No semester";
+      return "No Semester";
     }
 
     return props.semester?.name && props.semester.name;

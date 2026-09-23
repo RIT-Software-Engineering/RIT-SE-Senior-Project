@@ -32,8 +32,8 @@
 
 .announcement-container-wrapper {
   background-color: var(--bg-primary);
-  padding: var(--default-br);
-  border-radius: var(--default-pading);
+  padding: var(--default-padding);
+  border-radius: var(--default-br);
 }
 
 /* Dark mode styles for Announcement */

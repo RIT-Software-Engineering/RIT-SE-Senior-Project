@@ -19,6 +19,7 @@ import {
   TextArea,
 } from "semantic-ui-react";
 
+import "./../../../css/utils/peer.css";
 const sentenceToCamelCase = (string = "") =>
   string.replaceAll(
     /(\w+).?/g,
@@ -67,17 +68,17 @@ export function QuestionFeedback({
           as="h2"
           content={title}
           dividing
-          style={{ marginBottom: "30px" }}
+          className="peer-header"
         />
       )}
       {questions.map((question, index) => (
-        <div key={index} style={{ marginBottom: "30px" }}>
+        <div key={index} className="peer-header">
           {!isInline && hasQuestions && (
             <Header
               textAlign="left"
               as="h3"
               dividing={hasStudents}
-              style={{ marginBottom: "30px" }}
+              className="peer-header"
             >
               {ordered ? `${index + 1}. ${question}` : question}
               {required && <Header content="*" color={"red"} floated="left" />}
@@ -87,10 +88,7 @@ export function QuestionFeedback({
             const name = `Feedback-${sentenceToCamelCase(question)}-${hasStudents ? student : "Anon"}`;
             const isErrored = errorFields.has(name);
             return (
-              <div
-                key={`${index}:${students_index}`}
-                style={{ marginBottom: "30px" }}
-              >
+              <div key={`${index}:${students_index}`} className="peer-header">
                 {!isInline && (
                   <Header
                     textAlign="left"
@@ -185,7 +183,7 @@ export function QuestionTable({
           name={"asterisk"}
         />
       )}
-      <div style={{ overflowX: "auto" }}>
+      <div className="peer-table">
         <Table basic="very" celled collapsing unstackable>
           <TableHeader>
             <TableRow>
@@ -196,12 +194,8 @@ export function QuestionTable({
                 return (
                   <TableHeaderCell
                     collapsing
-                    style={{
-                      width: pixelWidth + "px",
-                      wordWrap: "break-word",
-                      textAlign: "center",
-                      verticalAlign: "bottom",
-                    }}
+                    className="peer-table-header-cell"
+                    style={{ width: pixelWidth + "px" }}
                     key={question}
                   >
                     <Header as={"h4"}>
@@ -309,10 +303,12 @@ export function QuestionMoodRating({
   };
 
   return (
-    <div style={{ width: "100%" }}>
+    <div className="peer-question">
       <Header as="h2" content={question} textAlign="left" dividing>
         {question + " "}
-        {required && <Header.Content content="*" style={{ color: "red" }} />}
+        {required && (
+          <Header.Content content="*" className="peer-content-color" />
+        )}
       </Header>
       <br />
       <Grid divided="vertically">
@@ -320,28 +316,10 @@ export function QuestionMoodRating({
           const name = `Mood-${sentenceToCamelCase(question)}-${student}`;
           const isErrored = errorFields.has(name);
           return (
-            <div
-              key={student}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "10px",
-                marginBottom: "10px",
-                overflowX: "auto",
-              }}
-            >
+            <div key={student} className="peer-student">
               {/* Student Name */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingBottom: "8px",
-                }}
-              >
-                <Header as={"h3"} style={{ fontSize: "1.2rem" }}>
+              <div className="peer-name">
+                <Header as={"h3"} className="peer-error">
                   {isErrored && (
                     <Icon
                       size="tiny"
@@ -357,27 +335,11 @@ export function QuestionMoodRating({
               </div>
 
               {/* Rating Levels */}
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  justifyContent: "center",
-                }}
-              >
+              <div className="peer-rating">
                 {levels.map((level, index) => (
-                  <div
-                    key={`col-${student}-${index}`}
-                    style={{
-                      textAlign: "center",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      minWidth: "80px",
-                    }}
-                  >
+                  <div key={`col-${student}-${index}`} className="peer-levels">
                     <Radio
-                      style={{ margin: "8px auto" }}
+                      className="peer-radio"
                       name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                       value={index}
                       checked={selections[student] === index}
@@ -391,7 +353,7 @@ export function QuestionMoodRating({
 
               {/* Feedback Section */}
               {feedback && (
-                <div style={{ marginTop: "10px" }}>
+                <div className="peer-feedback">
                   <QuestionPeerFeedback
                     isInline={true}
                     questions={[question]}

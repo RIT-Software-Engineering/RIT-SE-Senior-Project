@@ -12,7 +12,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(localizedFormat);
 
-
 export const parseDateNoOffset = (dateTime) => {
   return dayjs(dateTime);
 };
