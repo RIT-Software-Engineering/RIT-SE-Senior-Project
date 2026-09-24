@@ -2774,18 +2774,20 @@ module.exports = (db) => {
                 system_id,
                 project,
                 form_data,
-                files
+                files,
+                notes
                 ${(req.user.mock && ",mock_id") || ""}
                 )
-            VALUES (?,?,?,?,?${(req.user.mock && ",?") || ""})
+            VALUES (?,?,?,?,?,?${(req.user.mock && ",?") || ""})
         `;
-
+      let notesJSON = JSON.stringify({ note: body.notes || "" });
       let params = [
         body.action_template,
         req.user.system_id,
         body.project,
         body.form_data,
         filenamesCSV,
+        notesJSON,
       ];
       if (req.user.mock) {
         params.push(req.user.mock.system_id);
