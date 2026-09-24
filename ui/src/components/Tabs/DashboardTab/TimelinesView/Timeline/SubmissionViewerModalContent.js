@@ -112,7 +112,7 @@ export default function SubmissionViewerModalContent({
           <b>Due:</b> {formatDate(action.due_date)}
         </p>
         <p>
-          <b>Project:</b> {projectName}
+          <b>Semester/Project:</b> {semesterName} – {projectName}
         </p>
         <p>
           <b>Submission Type:</b> {target}
@@ -137,9 +137,6 @@ export default function SubmissionViewerModalContent({
       )}
 
       <Divider />
-      <p>
-        <b>Semester/Project:</b> {semesterName} – {projectName}
-      </p>
 
       {/* Who submitted */}
       <p style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -176,8 +173,6 @@ export default function SubmissionViewerModalContent({
         <span style={{ marginLeft: 5 }}>
           on {formatDate(action.submission_datetime)}
         </span>
-
-        {due && <span style={{ marginLeft: 5 }}>(Due {formatDate(due)})</span>}
 
         {late && (
           <span style={{ color: "red", marginLeft: 5, fontWeight: "bold" }}>
