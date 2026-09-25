@@ -1,4 +1,4 @@
-import "../../../../css/components/tabs/sincelastvisit.css";
+import "../../../../css/components/tabs/recentactivity.css";
 
 import React, {
   useCallback,
@@ -129,10 +129,7 @@ export default function SinceLastVisit() {
       }
 
       /**
-       * Prototype fallback.
-       *
-       * This approach requires multiple requests and should be replaced by
-       * a more efficient endpoint in a production implementation.
+       * Finds logs by Action
        */
       const logsByAction = await Promise.all(
         actions.map(async (action) => {
@@ -478,12 +475,12 @@ export default function SinceLastVisit() {
             className="since-last-visit-header"
             style={{ marginBottom: "0.25rem" }}
           >
-            Since Your Last Visit...
+            Recent Activity
           </h2>
 
           {cutoff && (
             <div className="since-last-visit-cutoff">
-              Showing project activity since {formatDateTime(cutoff)}
+              Showing activity since {formatDateTime(cutoff)}
             </div>
           )}
         </div>
