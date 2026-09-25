@@ -9,9 +9,10 @@ import React, {
 } from "react";
 import { Button, Icon, Loader, Message, Segment } from "semantic-ui-react";
 
+import ProfileCircle from "../../../util/components/ProfileCircle";
 import { UserContext } from "../../../util/functions/UserContext";
 import { SecureFetch } from "../../../util/functions/secureFetch";
-import { config } from "../../../util/functions/constants";
+import { config, USERTYPES } from "../../../util/functions/constants";
 import { formatDateTime } from "../../../util/functions/utils";
 import ToolTip from "../TimelinesView/Timeline/ToolTip";
 
@@ -55,6 +56,17 @@ function getActivityCutoff(user, dismissedAt) {
   }
 
   return dismissedDate > loginDate ? dismissedDate : loginDate;
+}
+
+function isOwnActivity(log, user) {
+  const currentUserIds = [user?.user, user?.mockUser?.system_id]
+    .filter(Boolean)
+    .map(String);
+
+  return (
+    currentUserIds.includes(String(log.system_id)) ||
+    (log.mock_id && currentUserIds.includes(String(log.mock_id)))
+  );
 }
 
 function getActorName(log) {
@@ -210,6 +222,7 @@ export default function SinceLastVisit() {
       const actionLogs = await loadActionLogs(actions);
 
       const submissionActivity = actionLogs
+        .filter((log) => !isOwnActivity(log, user))
         .map((log) => {
           const action = actionsById.get(String(log.action_template));
 
@@ -223,7 +236,9 @@ export default function SinceLastVisit() {
             id: `submission-${log.action_log_id}`,
             type: "action_submission",
             timestamp: log.submission_datetime,
-            text: `${actor} submitted "${action.action_title}"`,
+            text: `submitted "${action.action_title}"`,
+            actorName: getActorName(log),
+            actorType: log.user_type,
             icon: "check circle outline",
             action,
             projectId: log.project || projectId,
@@ -295,7 +310,10 @@ export default function SinceLastVisit() {
 
             timeLogActivity = (timeLogs || [])
               .filter(
-                (log) => log.submission_datetime && String(log.active) !== "0",
+                (log) =>
+                  log.submission_datetime &&
+                  String(log.active) !== "0" &&
+                  !isOwnActivity(log, user),
               )
               .map((log) => {
                 const actor = getActorName(log);
@@ -307,7 +325,9 @@ export default function SinceLastVisit() {
                   id: `time-log-${log.time_log_id}`,
                   type: "time_log",
                   timestamp: log.submission_datetime,
-                  text: `${actor} logged ${hourText}`,
+                  text: `logged ${hourText}`,
+                  actorName: getActorName(log),
+                  actorType: log.user_type,
                   icon: "clock outline",
                   action: null,
                   projectId: log.project || projectId,
@@ -427,19 +447,22 @@ export default function SinceLastVisit() {
           textAlign: "left",
         }}
       >
-        <Icon name={item.icon} />
+        <div className="recent-activity-content">
+          <Icon name={item.icon} />
 
-        <span>{item.text}</span>
+          {item.actorName && (
+            <ProfileCircle name={item.actorName} size="tiny" />
+          )}
 
-        <span
-          style={{
-            float: "right",
-            fontWeight: "normal",
-            opacity: 0.7,
-          }}
-        >
-          {formatDateTime(item.timestamp)}
-        </span>
+          <span>
+            {item.actorName && `${item.actorName} `}
+            {item.text}
+          </span>
+
+          <span className="recent-activity-date">
+            {formatDateTime(item.timestamp)}
+          </span>
+        </div>
       </Button>
     );
 
@@ -460,8 +483,8 @@ export default function SinceLastVisit() {
     );
   };
 
-  return (
-    <Segment className="since-last-visit">
+  const activityContent = (
+    <div className="since-last-visit">
       <div
         style={{
           display: "flex",
@@ -517,6 +540,11 @@ export default function SinceLastVisit() {
           {showAll ? "Show Less" : `View All ${visibleActivity.length} Changes`}
         </Button>
       )}
-    </Segment>
+    </div>
   );
+
+  if (user?.role === USERTYPES.STUDENT) {
+    return activityContent;
+  }
+  return <Segment>{activityContent}</Segment>;
 }
