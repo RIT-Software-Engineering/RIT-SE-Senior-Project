@@ -22,6 +22,7 @@ export default function SubmissionViewerModalContent({
 }) {
   const [submission, setSubmission] = useState({});
   const [files, setFiles] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [noSub, setNoSub] = useState(true);
   const [due, setDue] = useState(null);
   const [late, setLate] = useState(false);
@@ -48,8 +49,10 @@ export default function SubmissionViewerModalContent({
         if (data?.length > 0) {
           const formData = JSON.parse(data[0].form_data.toString());
           const fileData = data[0].files ? data[0].files.split(",") : [];
+          const notesData = data[0].notes ? data[0].notes.split(",") : [];
           setSubmission(formData);
           setFiles(fileData);
+          setNotes(notesData);
           setNoSub(
             Object.keys(formData || {}).length === 0 &&
               (!fileData || fileData.length === 0),
@@ -180,6 +183,14 @@ export default function SubmissionViewerModalContent({
           </span>
         )}
       </p>
+
+      {notes &&
+        !noSubmission &&
+        !noSub && ( // Display notes only when submission is viewable
+          <p>
+            <b>Notes: </b> {notes}
+          </p>
+        )}
 
       <Divider />
       <h3>Submission</h3>
