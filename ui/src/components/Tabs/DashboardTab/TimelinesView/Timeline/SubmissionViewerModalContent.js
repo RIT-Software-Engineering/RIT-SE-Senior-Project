@@ -52,7 +52,15 @@ export default function SubmissionViewerModalContent({
           const notesData = data[0].notes ? data[0].notes.split(",") : [];
           setSubmission(formData);
           setFiles(fileData);
-          setNotes(notesData);
+
+          let noteText = "";
+          try {
+            noteText = data[0].notes ? JSON.parse(data[0].notes).note : "";
+          } catch (e) {
+            noteText = ""; //if something gets messed up it wont die
+          }
+          setNotes(noteText || "");
+
           setNoSub(
             Object.keys(formData || {}).length === 0 &&
               (!fileData || fileData.length === 0),
@@ -190,6 +198,7 @@ export default function SubmissionViewerModalContent({
             style={{
               border: "1px solid var(--border-color)",
               backgroundColor: "var(--bg-primary)",
+              overflowWrap: "break-word",
             }}
           >
             <b>Notes: </b> {notes.length > 0 ? notes : "None"}

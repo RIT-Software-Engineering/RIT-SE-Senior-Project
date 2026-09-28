@@ -3401,21 +3401,21 @@ module.exports = (db) => {
 
     switch (req.user.type) {
       case ROLES.STUDENT:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.COACH:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     WHERE action_log.action_log_id = ?`;
         params = [req.query.log_id];
