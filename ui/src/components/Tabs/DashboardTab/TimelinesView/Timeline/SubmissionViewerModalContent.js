@@ -184,12 +184,16 @@ export default function SubmissionViewerModalContent({
         )}
       </p>
 
-      {notes &&
-        !noSubmission &&
+      {!noSubmission &&
         !noSub && ( // Display notes only when submission is viewable
-          <p>
-            <b>Notes: </b> {notes}
-          </p>
+          <Segment
+            style={{
+              border: "1px solid var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+            }}
+          >
+            <b>Notes: </b> {notes.length > 0 ? notes : "None"}
+          </Segment>
         )}
 
       <Divider />

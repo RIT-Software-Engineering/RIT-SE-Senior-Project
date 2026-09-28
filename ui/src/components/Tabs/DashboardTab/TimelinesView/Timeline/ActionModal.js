@@ -9,6 +9,7 @@ import {
   MessageHeader,
   MessageList,
   Modal,
+  TextArea,
 } from "semantic-ui-react";
 import {
   ACTION_TARGETS,
@@ -50,6 +51,7 @@ export default function ActionModal(props) {
     if (props.open) {
       props.isOpenCallback?.(true);
       fetchStudentNames();
+      setNotes("");
       setFormTouched(false);
       setReadyToMark(false);
       setTimeout(() => setReadyToMark(true), 250);
@@ -67,6 +69,7 @@ export default function ActionModal(props) {
   const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
   const [pendingCloseAction, setPendingCloseAction] = useState(null);
   const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
+  const [notes, setNotes] = useState("");
 
   const fetchStudentNames = () => {
     if (user.role === USERTYPES.STUDENT) {
@@ -388,6 +391,7 @@ export default function ActionModal(props) {
       }
 
       body.append("form_data", JSON.stringify(formData));
+      body.append("notes", notes.trim());
       for (let i = 0; i < formFiles?.length || 0; i++) {
         body.append("attachments", formFiles[i]);
       }
@@ -766,6 +770,21 @@ export default function ActionModal(props) {
               </div>
               <br />
               {fileUpload(props.file_types, props.file_size)}
+              <div className="ui form notes-field">
+                <div className="field">
+                  <label>Submission Notes (optional)</label>
+                  <TextArea
+                    rows={3}
+                    maxLength={500}
+                    placeholder="Add a note for this submission"
+                    value={notes}
+                    onChange={(e, data) => {
+                      setNotes(data.value);
+                      markFormAsTouched();
+                    }}
+                  />
+                </div>
+              </div>
               {errors.length > 0 && (
                 <div className="submission-errors">
                   <br />
