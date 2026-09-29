@@ -11,11 +11,16 @@
   opacity: 0.7;
 }
 
+.recent-activity-item {
+  min-height: 40px !important;
+}
+
 .recent-activity-content {
   display: flex;
   align-items: center;
   gap: 0.4em;
   width: 100%;
+  color: var(--text-primary);
 }
 
 .recent-activity-date {
@@ -24,14 +29,25 @@
   white-space: nowrap;
 }
 
-.dark-mode .since-last-visit .ui.button {
-  color: var(--text-primary) !important;
-}
-
-.dark-mode .since-last-visit .ui.message {
-  color: var(--text-primary) !important;
-}
-
-.dark-mode .since-last-visit .icon {
+.since-last-visit .ui.basic.button {
   color: var(--text-primary);
+}
+
+.dark-mode .since-last-visit .ui.basic.button {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 1px var(--border-light) inset !important;
+}
+
+.dark-mode .since-last-visit .ui.basic.button:hover,
+.dark-mode .since-last-visit .ui.basic.button:focus,
+.dark-mode .since-last-visit .ui.basic.button:active {
+  color: var(--text-primary) !important;
+  background: var(--bg-hover) !important;
+  box-shadow: 0 0 0 1px var(--border-light) inset !important;
+}
+
+.dark-mode .recent-activity-content,
+.dark-mode .recent-activity-date {
+  color: inherit;
 }

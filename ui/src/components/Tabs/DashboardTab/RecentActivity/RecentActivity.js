@@ -1,4 +1,5 @@
 import "../../../../css/components/tabs/recentactivity.css";
+import IndividualTimeModal from "../../TimeTrackingTab/IndividualTimeModal";
 
 import React, {
   useCallback,
@@ -331,6 +332,7 @@ export default function SinceLastVisit() {
                   icon: "clock outline",
                   action: null,
                   projectId: log.project || projectId,
+                  timeLog: log,
                 };
               });
           }
@@ -446,12 +448,15 @@ export default function SinceLastVisit() {
           marginBottom: "0.5rem",
           textAlign: "left",
         }}
+        className="recent-activity-item"
       >
         <div className="recent-activity-content">
           <Icon name={item.icon} />
 
-          {item.actorName && (
+          {item.actorName ? (
             <ProfileCircle name={item.actorName} size="tiny" />
+          ) : (
+            <span />
           )}
 
           <span>
@@ -465,6 +470,23 @@ export default function SinceLastVisit() {
         </div>
       </Button>
     );
+
+    if (item.type === "time_log") {
+      return (
+        <IndividualTimeModal
+          key={item.id}
+          trigger={trigger}
+          timeLog={item.timeLog}
+          user={item.actorName}
+          userId={item.timeLog.system_id}
+          id={item.timeLog.time_log_id}
+          delete={0}
+          resetKey={loadActivity}
+          semesterName=""
+          projectName=""
+        />
+      );
+    }
 
     if (!item.action) {
       return <div key={item.id}>{trigger}</div>;
@@ -510,7 +532,7 @@ export default function SinceLastVisit() {
 
         <div>
           {visibleActivity.length > 0 && (
-            <Button basic size="small" onClick={dismissActivity}>
+            <Button fluid size="small" onClick={dismissActivity}>
               <Icon name="check" />
               Dismiss All
             </Button>
