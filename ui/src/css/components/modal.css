@@ -304,6 +304,10 @@ body.dark-mode .ui.toggle.checkbox label:after {
   background-color: var(--text-primary) !important;
 }
 
+.dark-mode .ui.progress.upload-progress > .label {
+  color: var(--text-primary);
+}
+
 .ui.modal {
   border-radius: 10px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);

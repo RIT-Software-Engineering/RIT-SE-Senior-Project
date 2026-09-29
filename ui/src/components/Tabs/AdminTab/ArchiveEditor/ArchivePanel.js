@@ -226,6 +226,9 @@ export default function ArchivePanel(props) {
       (props.newArchive && props?.project?.title
         ? slugify(props?.project?.title) // This will be updated to unique slug in useEffect
         : ""),
+    url: props?.project?.url_slug
+      ? `${window.location.origin}/projects/${props.project.url_slug}`
+      : "",
     inactive: props.project?.inactive || "",
     locked: props.project?.locked || "",
   });
@@ -382,13 +385,12 @@ export default function ArchivePanel(props) {
       label: "priority ***INTEGERS ONLY",
     },
     {
-      // slugs can only be set on new archive submission
+      // Slug can only be set during initial archive submission.
+      // Afterwards, display the complete public URL.
       type: "input",
-      label: props.newArchive
-        ? "URL Slug (this can not be changed)"
-        : "URL Slug",
-      placeholder: "url_slug",
-      name: "url_slug",
+      label: props.newArchive ? "URL Slug (this can not be changed)" : "URL",
+      placeholder: props.newArchive ? "URL Slug" : "URL",
+      name: props.newArchive ? "url_slug" : "url",
       disabled: !props.newArchive,
     },
     {

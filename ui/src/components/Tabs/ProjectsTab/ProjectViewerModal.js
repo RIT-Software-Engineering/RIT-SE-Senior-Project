@@ -61,7 +61,9 @@ export default function ProjectViewerModal(props) {
       .then((archives) => {
         if (archives.length > 0) {
           if (archives[0].url_slug !== null && archives[0].url_slug !== "") {
-            setURL(archives[0].url_slug);
+            setURL(
+              `${window.location.origin}/projects/${archives[0].url_slug}`,
+            );
           }
         }
       });
@@ -102,7 +104,15 @@ export default function ProjectViewerModal(props) {
           <br />
         </div>
         <h3>Website</h3>
-        <b>URL:</b> {URL} <br />
+        <b>URL:</b>{" "}
+        {URL === "No URL found" ? (
+          URL
+        ) : (
+          <a href={URL} target="_blank">
+            {URL}
+          </a>
+        )}
+        <br />
         <h3>Sponsor Info</h3>
         <b>Organization:</b> {decode(props.project.organization || "")} <br />
         <b>Primary Contact:</b> {decode(props.project.primary_contact || "")}{" "}

@@ -75,6 +75,7 @@ export default function ProjectArchivePanel(props) {
     end_date: "",
     keywords: "",
     url_slug: "",
+    url: "",
     inactive: "",
     locked: "",
   });
@@ -156,6 +157,7 @@ export default function ProjectArchivePanel(props) {
               end_date: archive.end_date,
               keywords: archive.keywords,
               url_slug: archive.url_slug,
+              url: `${window.location.origin}/projects/${archive.url_slug}`,
               inactive: archive.inactive === "" ? false : true,
               locked: archive.locked === "" ? false : true,
             };
@@ -174,6 +176,7 @@ export default function ProjectArchivePanel(props) {
                   title: props.project?.title,
                   team_name: generatedTeamName,
                   url_slug: uniqueSlug,
+                  url: `${window.location.origin}/projects/${uniqueSlug}`,
                   inactive: false,
                   locked: false,
                 };
@@ -186,12 +189,14 @@ export default function ProjectArchivePanel(props) {
               );
               // Fallback to basic slug generation
               setInitialState((prevInitialState) => {
+                const fallbackSlug = slugify(props.project?.title || "");
                 return {
                   ...prevInitialState,
                   project_id: props.project?.project_id,
                   title: props.project?.title,
                   team_name: generatedTeamName,
-                  url_slug: slugify(props.project?.title || ""),
+                  url_slug: fallbackSlug,
+                  url: `${window.location.origin}/projects/${fallbackSlug}`,
                   inactive: false,
                   locked: false,
                 };
@@ -368,9 +373,9 @@ export default function ProjectArchivePanel(props) {
     },
     {
       type: "input",
-      label: "URL Slug",
-      placeholder: "url_slug",
-      name: "url_slug",
+      label: "URL",
+      placeholder: "URL",
+      name: "url",
       disabled: true,
     },
     {
