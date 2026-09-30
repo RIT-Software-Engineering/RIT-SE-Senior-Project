@@ -1,7 +1,7 @@
 INSERT INTO archive (project_id, name, title, team_name, members, sponsor, coach, poster_thumb, synopsis, keywords, url_slug, inactive, featured)
 VALUES 
 
-    ('1_groweasy', 'GrowEasy Analytics Platform for Small Business Growth ', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doe', 'dummy/groweasy_thumb.png',
+    ('1_groweasy', 'GrowEasy Analytics Platform for Small Business Growth ', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doeeeeeeeeeeeeeeee', '',
     'GrowEasy Analytics is a project aimed at developing an analytics platform for small businesses. The platform will focus on providing a user-friendly dashboard that allows
     businesses to analyze their market expansion strategies effectively. The project will address challenges such as data integration issues and the need for a limited budget and tight timeline.
     The team will work on creating a prototype of the dashboard, which will include features for market analysis and reporting. The platform will also ensure compliance with data privacy regulations
