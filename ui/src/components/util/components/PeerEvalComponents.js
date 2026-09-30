@@ -317,7 +317,7 @@ export function QuestionMoodRating({
       <Header as="h2" content={question} textAlign="left" dividing>
         {question + " "}
         {required && (
-          <span style={{ color: "red", fontWeight: "bold" }}>{"\u00A0"}*</span>
+          <span style={{ color: "red", fontWeight: "bold" }}>*</span>
         )}
       </Header>
       <br />
@@ -365,32 +365,52 @@ export function QuestionMoodRating({
               {/* Rating Levels */}
               <div
                 style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  justifyContent: "center",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+                  gap: "8px",
+                  width: "100%",
                 }}
               >
                 {levels.map((level, index) => (
                   <div
                     key={`col-${student}-${index}`}
+                    onClick={() => handleSelection(student, index)}
                     style={{
-                      textAlign: "center",
-                      display: "flex",
-                      flexDirection: "column",
+                      minWidth: "0",
+                      minHeight: "58px",
+                      padding: "8px",
+                      fontSize: "0.90rem",
+                      border: "1px solid var(--border-color)",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "grid",
+                      gridTemplateColumns: "22px 1fr",
                       alignItems: "center",
-                      minWidth: "80px",
+                      columnGap: "10px",
                     }}
                   >
                     <Radio
-                      style={{ margin: "8px auto" }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        height: "100%",
+                      }}
                       name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                       value={index}
                       checked={selections[student] === index}
-                      onChange={() => handleSelection(student, index)}
+                      onChange={(e) => e.stopPropagation()}
                       required={required}
                     />
-                    {level}
+
+                    <span
+                      style={{
+                        lineHeight: "1.15",
+                      }}
+                    >
+                      {level}
+                    </span>
                   </div>
                 ))}
               </div>
