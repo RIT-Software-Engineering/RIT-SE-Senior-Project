@@ -138,7 +138,7 @@ a,
 
 .ui.form textarea:focus {
   background-color: var(--bg-primary);
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   box-shadow: none;
 }
 
@@ -151,7 +151,9 @@ a,
   background-color: transparent;
 }
 
-.offset-outline, .button.offset-outline, .button.offset-outline:focus {
+.offset-outline,
+.button.offset-outline,
+.button.offset-outline:focus {
   outline-color: var(--border-color);
   outline-offset: 2px;
 }
