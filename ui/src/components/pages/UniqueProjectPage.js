@@ -4,7 +4,7 @@ import { Button, Modal, Icon } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
-import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import gccisLogo from "../../Assets/Golisano_College_of_Computing_and_Information_Sciences_LOGO.jpg";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/pages/UniqueProjectPage.css";
@@ -13,6 +13,8 @@ const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
+
+const CONTENT_HEIGHT = 250;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {

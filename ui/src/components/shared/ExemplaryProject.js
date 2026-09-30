@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Icon, Modal } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
-import gccisLogo from "../../Assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg";
+import gccisLogo from "../../Assets/Golisano_College_of_Computing_and_Information_Sciences_LOGO.jpg";
 import UniqueProjectPage from "../pages/UniqueProjectPage";
 import ProfileCircle from "../util/components/ProfileCircle";
 import "./../../css/components/shared/exemplary.css";
