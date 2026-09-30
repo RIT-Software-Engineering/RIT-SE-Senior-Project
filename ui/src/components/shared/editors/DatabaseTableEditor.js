@@ -10,8 +10,9 @@ import {
   MessageHeader,
   MessageList,
   Icon,
+  Progress,
 } from "semantic-ui-react";
-import { SecureFetch } from "../../util/functions/secureFetch";
+import { SecureFetch, SecureUpload } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
 import ReactCodeMirror from "@uiw/react-codemirror";
@@ -42,15 +43,16 @@ export default function DatabaseTableEditor(props) {
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
   const [errors, setErrors] = useState(props.errors);
-  const [errorSubmitted, setErrorSubmitted] = useState(false);
-  const ignoreNextChangeRef = useRef(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const formRef = useRef(null);
-  const [formTouched, setFormTouched] = useState(false);
-  const [readyToMark, setReadyToMark] = useState(false);
-  const [justSaved, setJustSaved] = useState(false);
-  const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
-  const [pendingCloseAction, setPendingCloseAction] = useState(null);
+  const [errorSubmitted, setErrorSubmitted] = useState(false); // enable dynamic error updates after first submission
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  console.log("RENDER:", {
+    open,
+    isUploading,
+    uploadProgress,
+    submissionModalOpen,
+  });
+  const formRef = useRef(null); // maintain the current form data in the case of submission error
 
   useEffect(() => {
     setFormData(initialState);
@@ -175,17 +177,69 @@ export default function DatabaseTableEditor(props) {
     props.isOpenCallback?.(false);
   }
 
-  const markFormAsTouched = () => {
-    if (ignoreNextChangeRef.current) {
-      ignoreNextChangeRef.current = false;
+  const handleSubmit = async function (e) {
+    console.log("SUBMIT CLICKED", {
+      open,
+      isUploading,
+    });
+    e.preventDefault();
+    setOpen(true);
+    // data to be sent to backend
+    const dataToSubmit = !!props.preSubmit
+      ? props.preSubmit(formData)
+      : formData;
+
+    if (dataToSubmit === null) {
+      // validation failed
+      formRef.current = formData;
+      setErrorSubmitted(true);
+      setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
     }
     if (!props.viewOnly && readyToMark) {
       setFormTouched(true);
     }
+    Object.keys(dataToSubmit).forEach((key) => {
+      if (key === "dataOnSubmit") {
+        dataToSubmit[key] = dataToSubmit[key] + date.toLocaleDateString();
+      }
+      body.append(key, dataToSubmit[key]);
+    });
+    setIsUploading(true);
+    setUploadProgress(0);
+    SecureUpload(
+      submitRoute,
+      {
+        method: "post",
+        body: body,
+      },
+      (progress) => {
+        setUploadProgress(progress);
+        //console.log(`Upload progress: ${progress}%`);
+      },
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          setOpen(false);
+          setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+          formRef.current = null;
+        } else {
+          setSubmissionModalOpen(MODAL_STATUS.FAIL);
+          formRef.current = null;
+        }
+        if (props.callback) {
+          props.callback();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setSubmissionModalOpen(MODAL_STATUS.FAIL);
+      });
   };
 
   const handleChange = (e, { name, value, checked, isActiveField }) => {
+    console.log("handleCancel called");
+    // Check if the field is disabled before allowing changes
     const field = formFieldArray.find((f) => f.name === name);
     if (field && field.disabled) return;
     markFormAsTouched();
@@ -667,55 +721,51 @@ export default function DatabaseTableEditor(props) {
     }
   }
 
-  const isProjectLocked = formFieldArray.some(
-    (field) => field.name === "synopsis" && field.disabled,
-  );
-
-  const modalActions = () => {
+  const renderModalActions = () => {
     let mock = false;
     if (props.initialState.hasOwnProperty("mockUser")) {
       if (Object.entries(props.initialState.mockUser).length !== 0) mock = true;
     }
-    if (props.viewOnly) return [{ key: "Close", content: "Close" }];
-    if (isProjectLocked)
-      return [
-        {
-          key: "cancel",
-          content: "Cancel",
-          onClick: (event) => handleCancel(event),
-          color: "grey",
-        },
-      ];
 
-    return [
-      {
-        key: "cancel",
-        content: "Cancel",
-        onClick: (event) => handleCancel(event),
-        color: "grey",
-      },
-      ...(props.preview?.enabled && !!formData.action_target
-        ? [
-            {
-              key: "preview",
-              content: "Preview",
-              icon: "eye",
-              labelPosition: "right",
-              onClick: openPreview,
-            },
-          ]
-        : []),
-      {
-        key: "submit",
-        content: mock
-          ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
-          : "Submit",
-        onClick: (event) => handleSubmit(event),
-        labelPosition: "right",
-        icon: "check",
-        positive: true,
-      },
-    ];
+    if (props.viewOnly) {
+      return (
+        <Modal.Actions>
+          <Button onClick={() => setOpen(false)}>Close</Button>
+        </Modal.Actions>
+      );
+    }
+
+    if (isProjectLocked) {
+      return (
+        <Modal.Actions>
+          <Button color="grey" onClick={handleCancel} disabled={isUploading}>
+            Cancel
+          </Button>
+        </Modal.Actions>
+      );
+    }
+
+    return (
+      <Modal.Actions>
+        <Button color="grey" onClick={handleCancel} disabled={isUploading}>
+          Cancel
+        </Button>
+
+        <Button
+          positive
+          icon="check"
+          labelPosition="right"
+          content={
+            mock
+              ? `Submitting ${props.initialState.mockUser.fname} ${props.initialState.mockUser.lname} as ${props.initialState.user.fname} ${props.initialState.user.lname}`
+              : "Submit"
+          }
+          onClick={handleSubmit}
+          loading={isUploading}
+          disabled={isUploading}
+        />
+      </Modal.Actions>
+    );
   };
 
   let trigger = <Button content={props.content} icon={props.button} />;
@@ -800,6 +850,8 @@ export default function DatabaseTableEditor(props) {
             props.isOpenCallback(false);
           }}
           onOpen={() => {
+            setUploadProgress(0);
+            setIsUploading(false);
             setOpen(true);
             props.isOpenCallback(true);
             setFormTouched(false);
@@ -808,33 +860,47 @@ export default function DatabaseTableEditor(props) {
             setJustSaved(false);
           }}
           open={open}
-          header={props.header}
-          content={{
-            content: (
-              <>
-                {errors?.length > 0 && (
-                  <div className="submission-errors">
-                    <Message error>
-                      <MessageHeader>
-                        <Icon name="warning circle" /> Errors:
-                      </MessageHeader>
-                      <MessageList>
-                        {errors.map((err) => (
-                          <li key={err.name}>{err.message}</li>
-                        ))}
-                      </MessageList>
-                    </Message>
-                    <br />
-                  </div>
-                )}
-                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
-                {props.childComponents}
-                {props.body}
-              </>
-            ),
-          }}
-          actions={modalActions()}
-        />
+        >
+          <Modal.Header>{props.header}</Modal.Header>
+
+          <Modal.Content>
+            {errors?.length > 0 && (
+              <div className="submission-errors">
+                <Message error>
+                  <MessageHeader>
+                    <Icon name="warning circle" /> Errors:
+                  </MessageHeader>
+                  <MessageList>
+                    {errors.map((err) => (
+                      <li key={err.name}>{err.message}</li>
+                    ))}
+                  </MessageList>
+                </Message>
+                <br />
+              </div>
+            )}
+
+            <Form>{fieldComponents}</Form>
+
+            {isUploading && (
+              <Progress
+                percent={uploadProgress}
+                progress
+                indicating={uploadProgress < 100}
+                success={uploadProgress === 100}
+              >
+                {uploadProgress < 100
+                  ? `Uploading... ${uploadProgress}%`
+                  : "Upload complete. Processing submission..."}
+              </Progress>
+            )}
+
+            {props.childComponents}
+            {props.body}
+          </Modal.Content>
+
+          {renderModalActions()}
+        </Modal>
         <Modal
           className={"stacked"}
           closeOnDimmerClick={false}
@@ -929,6 +995,8 @@ export default function DatabaseTableEditor(props) {
             setOpen(false);
           }}
           onOpen={() => {
+            setUploadProgress(0);
+            setIsUploading(false);
             setOpen(true);
             setFormTouched(false);
             setReadyToMark(false);
@@ -936,66 +1004,47 @@ export default function DatabaseTableEditor(props) {
             setJustSaved(false);
           }}
           open={open}
-          header={props.header}
-          content={{
-            content: (
-              <>
-                {errors?.length > 0 && (
-                  <div className="submission-errors">
-                    <Message error>
-                      <MessageHeader>
-                        <Icon name="warning circle" /> Errors:
-                      </MessageHeader>
-                      <MessageList>
-                        {errors.map((err) => (
-                          <li key={err.name}>{err.message}</li>
-                        ))}
-                      </MessageList>
-                    </Message>
-                    <br />
-                  </div>
-                )}
-                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
-                {props.childComponents}
-                {props.body}
-              </>
-            ),
-          }}
-          actions={modalActions()}
-        />
-        {props.preview?.enabled && (
-          <Modal
-            open={showPreview}
-            size="large"
-            onClose={closePreview}
-            closeOnEscape
-            closeOnDimmerClick={false}
-            header={props.preview.title ?? "Preview"}
-            content={{
-              content: (
-                <div
-                  style={{
-                    padding: "1rem",
-                    maxHeight: "70vh",
-                    overflowY: "auto",
-                  }}
-                >
-                  {props.preview.render?.(formData)}
-                </div>
-              ),
-            }}
-            actions={[
-              {
-                key: "close",
-                content: "Close",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  closePreview(e);
-                },
-              },
-            ]}
-          />
-        )}
+        >
+          <Modal.Header>{props.header}</Modal.Header>
+
+          <Modal.Content>
+            {errors?.length > 0 && (
+              <div className="submission-errors">
+                <Message error>
+                  <MessageHeader>
+                    <Icon name="warning circle" /> Errors:
+                  </MessageHeader>
+                  <MessageList>
+                    {errors.map((err) => (
+                      <li key={err.name}>{err.message}</li>
+                    ))}
+                  </MessageList>
+                </Message>
+                <br />
+              </div>
+            )}
+
+            <Form>{fieldComponents}</Form>
+
+            {isUploading && (
+              <Progress
+                className="upload-progress"
+                percent={uploadProgress}
+                progress
+                color="green"
+              >
+                {uploadProgress < 100
+                  ? `Uploading... ${uploadProgress}%`
+                  : "Upload complete. Processing submission..."}
+              </Progress>
+            )}
+
+            {props.childComponents}
+            {props.body}
+          </Modal.Content>
+
+          {renderModalActions()}
+        </Modal>
         <Modal
           className={"stacked"}
           closeOnDimmerClick={false}
