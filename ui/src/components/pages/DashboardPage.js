@@ -261,7 +261,7 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <RecentActivity />
+              <RecentActivity semesterData={semesterData} />
               <TimeLinesView semesterData={semesterData} />
             </Tab.Pane>
           ),

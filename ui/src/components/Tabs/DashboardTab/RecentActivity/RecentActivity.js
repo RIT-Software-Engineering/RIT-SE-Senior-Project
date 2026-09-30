@@ -1,5 +1,5 @@
 import "../../../../css/components/tabs/recentactivity.css";
-import IndividualTimeModal from "../../TimeTrackingTab/IndividualTimeModal";
+import WeeklyHoursViewer from "../../TimeTrackingTab/WeeklyHourViewer";
 
 import React, {
   useCallback,
@@ -41,6 +41,19 @@ function getCalendarDayNumber(date) {
   return (
     Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY
   );
+}
+
+function getStartOfWeek(date) {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  result.setDate(result.getDate() - result.getDay());
+  return result;
+}
+
+function getEndOfWeek(startOfWeek) {
+  const result = new Date(startOfWeek);
+  result.setDate(result.getDate() + 7);
+  return result;
 }
 
 /**
@@ -107,7 +120,7 @@ function getProjectName(log) {
   return log?.display_name || log?.title || "Current Project";
 }
 
-export default function SinceLastVisit() {
+export default function SinceLastVisit(props) {
   const { user } = useContext(UserContext);
 
   const [activity, setActivity] = useState([]);
@@ -115,6 +128,7 @@ export default function SinceLastVisit() {
   const [error, setError] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [dismissedAt, setDismissedAt] = useState(null);
+  const [timeReport, setTimeReport] = useState(null);
 
   const projectId = user?.project;
 
@@ -344,32 +358,131 @@ export default function SinceLastVisit() {
           if (timeLogsResponse.ok) {
             const timeLogs = await timeLogsResponse.json();
 
-            timeLogActivity = (timeLogs || [])
+            const projectsResponse = await SecureFetch(
+              config.url.API_GET_MY_PROJECTS,
+            );
+
+            const projects = projectsResponse.ok
+              ? await projectsResponse.json()
+              : [];
+
+            const currentProject = projects.find(
+              (project) => String(project.project_id) === String(projectId),
+            );
+
+            const semester = props.semesterData?.find(
+              (sem) =>
+                String(sem.semester_id) === String(currentProject?.semester),
+            );
+
+            const reportStudents = Array.from(
+              new Map(
+                (timeLogs || [])
+                  .filter((log) => log.name)
+                  .map((log) => [
+                    String(log.system_id),
+                    {
+                      name: log.name,
+                      system_id: log.system_id,
+                      project: log.project,
+                    },
+                  ]),
+              ).values(),
+            );
+
+            const { eachWeekOfInterval } = require("date-fns");
+
+            const reportWeeks =
+              semester?.start_date && semester?.end_date
+                ? eachWeekOfInterval({
+                    start: new Date(semester.start_date),
+                    end: new Date(semester.end_date),
+                  })
+                : [];
+
+            setTimeReport({
+              projectName:
+                currentProject?.display_name ||
+                currentProject?.title ||
+                "Current Project",
+              semesterName: semester?.name || "",
+              weeks: reportWeeks,
+              timeLogs,
+              students: reportStudents,
+            });
+            const now = new Date();
+
+            const thisWeekStart = getStartOfWeek(now);
+            const nextWeekStart = getEndOfWeek(thisWeekStart);
+
+            const lastWeekStart = new Date(thisWeekStart);
+            lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+
+            const groupedLogs = new Map();
+            (timeLogs || [])
               .filter(
                 (log) =>
                   log.submission_datetime &&
                   String(log.active) !== "0" &&
                   !isOwnActivity(log, user),
               )
-              .map((log) => {
-                const actor = getActorName(log);
+              .forEach((log) => {
+                const studentId = String(log.system_id);
 
-                const hours = Number(log.time_amount);
-                const hourText = hours === 1 ? "1 hour" : `${hours} hours`;
+                if (!groupedLogs.has(studentId)) {
+                  groupedLogs.set(studentId, {
+                    actorName: getActorName(log),
+                    systemId: log.system_id,
+                    projectId: log.project || projectId,
+                    thisWeek: 0,
+                    lastWeek: 0,
+                    latestSubmission: null,
+                  });
+                }
 
-                return {
-                  id: `time-log-${log.time_log_id}`,
-                  type: "time_log",
-                  timestamp: log.submission_datetime,
-                  text: `logged ${hourText}`,
-                  actorName: getActorName(log),
-                  actorType: log.user_type,
-                  icon: "clock outline",
-                  action: null,
-                  projectId: log.project || projectId,
-                  timeLog: log,
-                };
+                const student = groupedLogs.get(studentId);
+                const workDate = parseDate(log.work_date);
+                const submissionDate = parseDate(log.submission_datetime);
+                const hours = Number(log.time_amount) || 0;
+
+                if (workDate) {
+                  if (workDate >= thisWeekStart && workDate < nextWeekStart) {
+                    student.thisWeek += hours;
+                  } else if (
+                    workDate >= lastWeekStart &&
+                    workDate < thisWeekStart
+                  ) {
+                    student.lastWeek += hours;
+                  }
+                }
+
+                if (
+                  submissionDate &&
+                  (!student.latestSubmission ||
+                    submissionDate > student.latestSubmission)
+                ) {
+                  student.latestSubmission = submissionDate;
+                }
               });
+
+            timeLogActivity = Array.from(groupedLogs.values())
+              .filter((student) => student.latestSubmission)
+              .map((student) => ({
+                id: `time-log-summary-${student.systemId}`,
+                type: "time_log_summary",
+                timestamp: student.latestSubmission,
+                actorName: student.actorName,
+                icon: "clock outline",
+                action: null,
+                projectId: student.projectId,
+                thisWeek: student.thisWeek,
+                lastWeek: student.lastWeek,
+                text: `logged ${student.thisWeek} ${
+                  student.thisWeek === 1 ? "hour" : "hours"
+                } this week and ${student.lastWeek} ${
+                  student.lastWeek === 1 ? "hour" : "hours"
+                } last week`,
+              }));
           }
         } catch (err) {
           console.error("Failed to load time logs:", err);
@@ -416,7 +529,7 @@ export default function SinceLastVisit() {
     } finally {
       setLoading(false);
     }
-  }, [loadActionLogs, projectId]);
+  }, [loadActionLogs, projectId, props.semesterData]);
 
   /**
    * Loads activity after the project becomes available.
@@ -518,19 +631,16 @@ export default function SinceLastVisit() {
       </Button>
     );
 
-    if (item.type === "time_log") {
+    if (item.type === "time_log_summary" && timeReport) {
       return (
-        <IndividualTimeModal
+        <WeeklyHoursViewer
           key={item.id}
           trigger={trigger}
-          timeLog={item.timeLog}
-          user={item.actorName}
-          userId={item.timeLog.system_id}
-          id={item.timeLog.time_log_id}
-          delete={0}
-          resetKey={loadActivity}
-          semesterName=""
-          projectName=""
+          projectName={timeReport.projectName}
+          semesterName={timeReport.semesterName}
+          weeks={timeReport.weeks}
+          timeLog={timeReport.timeLogs}
+          students={timeReport.students}
         />
       );
     }
