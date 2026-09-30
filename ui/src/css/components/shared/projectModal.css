@@ -1,0 +1,24 @@
+.project-modal.ui.modal{
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 40px !important;
+    overflow: hidden;
+}
+
+.img {
+    object-fit: contain;
+    width: 85%;
+    height: 100%;
+}
+
+.row .ui.header {
+    display: flex;
+    flex-direction: row;
+}
+
+.info-row {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  padding-bottom: 10px;
+  gap: 8px;
+}

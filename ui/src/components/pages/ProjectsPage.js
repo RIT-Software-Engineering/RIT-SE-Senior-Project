@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
-import ExemplaryProject from "../shared/ExemplaryProject";
+import ProjectCard from "../shared/ProjectCard.js"
+import ProjectModal from "../shared/ProjectModal.js"
+import "../../css/components/pages/BrowseAllProjects.css"
+import "../../css/components/shared/projectCard.css"
 import { Icon, Input, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
+import uiConfig from "../../config/uiConfig.js";
 
-const PROJECTS_PER_PAGE = 5;
+const PROJECTS_PER_PAGE = 25;
 
 /**
  * Projects page visible on main page of the website without signing in.
  **/
 function ProjectsPage() {
   const [projects, setProjects] = useState([]);
-  const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
   const [activePage, setActivePage] = useState(0);
   const [pageChange, setPageChange] = useState(0);
   const [searchBarValue, setSearchBarValue] = useState("");
   const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
+  const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
+  const [selectedSemester, setSelectedSemester] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedAward, setSelectedAward] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     getPaginationData();
@@ -73,44 +81,52 @@ function ProjectsPage() {
 
   return (
     <>
-      <div className="row">
-        <h2>Projects</h2>
+      <div className="row" style={{display: "flex", justifyContent: "center", marginTop: "60px", gap: "15px"}}>
+        <div className="page-title">Browse All</div><div className="page-title page-title--orange">Projects</div>
       </div>
 
       <div className="ui invisible divider"></div>
-      <Input
-        icon="search"
-        iconPosition="left"
-        placeholder="Search..."
-        value={searchBarValue}
-        onChange={_.debounce(handleSearchChange, 500, {
-          leading: true,
-        })}
-      />
 
-      <div className="ui invisible divider"></div>
+      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "30px"}}>
+        <Input
+          className="search-bar"
+          action="Go"
+          placeholder="Search"
+          value={searchBarValue}
+          onChange={_.debounce(handleSearchChange, 500, {
+            leading: true,
+          })}
+        />
 
-      <div id="exemplaryProjectsDiv">
-        {/* <!-- Attach exemplary project elements here --> */}
-        {projects?.map((project, idx) => {
-          return <ExemplaryProject project={project} key={idx} projectsPage />;
-        })}
-        <div className="pagination-container">
-          <Pagination
-            activePage={activePage + 1}
-            ellipsisItem={null}
-            firstItem={null}
-            lastItem={null}
-            prevItem={{ content: <Icon name="angle left" />, icon: true }}
-            nextItem={{ content: <Icon name="angle right" />, icon: true }}
-            totalPages={Math.ceil(projectCount / PROJECTS_PER_PAGE)}
-            onPageChange={(event, data) => {
-              setActivePage(data.activePage - 1);
-              setPageChange(data.activePage - 1);
-            }}
-          />
+        <div>
+          <select className="dropdown" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)}>
+            <option value="none">Semester</option>
+          </select>
+          <select className="dropdown" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+            <option value="none">Status</option>
+          </select>
+          <select className="dropdown" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
+            <option value="none">Award</option>
+            {Object.values(uiConfig.awards).map((award) => (
+              <option key={award.id} value={award.id}>{award.name}</option>
+            ))}
+          </select>
         </div>
       </div>
+
+      <div className="ui invisible divider"></div>
+
+      <div className="projects-grid">
+        {projects?.map((project) => {
+          return <ProjectCard key={project.id} project={project} onClick={setSelectedProject}/>;
+        })}
+      </div>
+
+      <ProjectModal
+        project={selectedProject}
+        open={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+      />
     </>
   );
 }

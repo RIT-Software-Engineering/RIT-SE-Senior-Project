@@ -24,6 +24,14 @@ const uiConfig = {
         "https://github.com/RIT-Software-Engineering/RIT-SE-Senior-Project",
     },
   },
+  awards: {
+    outstanding: {
+      name: "Outstanding"
+    },
+    creativity: {
+      name: "Creativity"
+    }
+  }
 };
 
 export default uiConfig;
