@@ -2933,6 +2933,7 @@ module.exports = (db) => {
                         WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target = 'peer_evaluation' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) + 1 THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND date('now') < start_date THEN 'grey'
                         WHEN action_target = 'peer_evaluation' THEN 'red'
                         WHEN action_target IS 'individual' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'green'
                         WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
