@@ -80,7 +80,11 @@ export function QuestionFeedback({
               style={{ marginBottom: "30px" }}
             >
               {ordered ? `${index + 1}. ${question}` : question}
-              {required && <Header content="*" color={"red"} floated="left" />}
+              {required && (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {"\u00A0"}*
+                </span>
+              )}
             </Header>
           )}
           {students.map((student, students_index) => {
@@ -312,7 +316,9 @@ export function QuestionMoodRating({
     <div style={{ width: "100%" }}>
       <Header as="h2" content={question} textAlign="left" dividing>
         {question + " "}
-        {required && <Header.Content content="*" style={{ color: "red" }} />}
+        {required && (
+          <span style={{ color: "red", fontWeight: "bold" }}>{"\u00A0"}*</span>
+        )}
       </Header>
       <br />
       <Grid divided="vertically">
