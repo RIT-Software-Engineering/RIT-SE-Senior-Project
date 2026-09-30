@@ -42,12 +42,12 @@ export default function ActionPanel(props) {
     ? {
         SUCCESS: "The action has been created.",
         FAIL: "We were unable to create your action.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       }
     : {
         SUCCESS: "The action has been Edited.",
         FAIL: "We were unable to receive your edits.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
 
