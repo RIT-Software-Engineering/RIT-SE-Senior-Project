@@ -135,10 +135,92 @@ export default function ToolTip(props) {
               </p>
             )}
             {submissions?.map((submission) => {
+              // Gets notes for display on hover, I can revert this file if we don't like that.
+              let noteText = submission.notes
+                ? JSON.parse(submission.notes).note
+                : "";
+              console.log(
+                "submission notes raw:",
+                submission.notes,
+                "parsed:",
+                noteText,
+              );
+              const trigger = (
+                <div className="fake-a tool-trigger">
+                  {longSubmissionTitle ? (
+                    <>
+                      {submission.mock_id && (
+                        <span className="tool-submission">
+                          <ProfileCircle
+                            name={submission.mock_name}
+                            isStudent={false}
+                            size="tiny"
+                          />
+                          <span className="tool-profile">
+                            {submission.mock_name} ({submission.mock_id}) as
+                          </span>
+                        </span>
+                      )}
+                      <span className="tool-submission">
+                        <ProfileCircle
+                          name={submission.name}
+                          size="tiny"
+                          isStudent={submission.user_type === "student"}
+                        />
+                        <span className="tool-whitespace">
+                          {submission.name} ({submission.system_id}) on{" "}
+                          {formatDateTime(submission.submission_datetime)}
+                          {renderIsLate(submission)}
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className={`tool-summary-line${
+                          submission.mock_id ? " tool-summary-line-indent" : ""
+                        }`}
+                      >
+                        {submission.mock_id && (
+                          <div className="tool-submit">
+                            <ProfileCircle
+                              name={submission.mock_name}
+                              showFullName
+                              isStudent={false}
+                              size="tiny"
+                              className="tool-as"
+                            />
+                            as
+                          </div>
+                        )}
+                        <div className="tool-submit">
+                          <ProfileCircle
+                            name={submission.name}
+                            showFullName
+                            size="tiny"
+                            isStudent={submission.user_type === "student"}
+                          />
+                          on
+                        </div>
+                        <div
+                          className={`tool-date${
+                            submission.mock_id ? " tool-date-indent" : ""
+                          }`}
+                        >
+                          {formatDateTime(submission.submission_datetime)}
+                          {renderIsLate(submission)}
+                        </div>
+                      </i>
+                    </>
+                  )}
+                </div>
+              );
               return (
-                <span className="tool-submission">
+                <span
+                  className="tool-submission"
+                  key={submission.action_log_id}
+                >
                   <SubmissionViewerModal
-                    key={submission.action_log_id}
                     action={submission}
                     title={props.action?.action_title}
                     target={props.action?.action_target}
@@ -146,77 +228,16 @@ export default function ToolTip(props) {
                     projectName={props.projectName}
                     isOpenCallback={isOpenCallback}
                     trigger={
-                      <div className="fake-a tool-trigger">
-                        {longSubmissionTitle ? (
-                          <>
-                            {submission.mock_id && (
-                              <span className="tool-submission">
-                                <ProfileCircle
-                                  name={submission.mock_name}
-                                  isStudent={false}
-                                  size="tiny"
-                                />
-                                <span className="tool-profile">
-                                  {submission.mock_name} ({submission.mock_id})
-                                  as
-                                </span>
-                              </span>
-                            )}
-                            <span className="tool-submission">
-                              <ProfileCircle
-                                name={submission.name}
-                                size="tiny"
-                                isStudent={submission.user_type === "student"}
-                              />
-                              <span className="tool-whitespace">
-                                {submission.name} ({submission.system_id}) on{" "}
-                                {formatDateTime(submission.submission_datetime)}
-                                {renderIsLate(submission)}
-                              </span>
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <i
-                              className={`tool-summary-line${
-                                submission.mock_id
-                                  ? " tool-summary-line-indent"
-                                  : ""
-                              }`}
-                            >
-                              {submission.mock_id && (
-                                <div className="tool-submit">
-                                  <ProfileCircle
-                                    name={submission.mock_name}
-                                    showFullName
-                                    isStudent={false}
-                                    size="tiny"
-                                    className="tool-as"
-                                  />
-                                  as
-                                </div>
-                              )}
-                              <div className="tool-submit">
-                                <ProfileCircle
-                                  name={submission.name}
-                                  showFullName
-                                  size="tiny"
-                                  isStudent={submission.user_type === "student"}
-                                />
-                                on
-                              </div>
-                              <div
-                                className={`tool-date${
-                                  submission.mock_id ? " tool-date-indent" : ""
-                                }`}
-                              >
-                                {formatDateTime(submission.submission_datetime)}
-                                {renderIsLate(submission)}
-                              </div>
-                            </i>
-                          </>
-                        )}
-                      </div>
+                      noteText ? (
+                        <Popup
+                          content={noteText ? `Note: ${noteText}` : ""}
+                          on="hover"
+                          className="note-popup"
+                          trigger={trigger}
+                        />
+                      ) : (
+                        trigger
+                      )
                     }
                   />
                 </span>

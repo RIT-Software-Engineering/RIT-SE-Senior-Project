@@ -63,3 +63,15 @@
 .tool-date-indent {
   margin-left: 0.3rem;
 }
+
+.ui.popup.note-popup {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  padding: 0.4rem 0.85rem;
+}
+
+.ui.popup.note-popup::before {
+  background-color: var(--bg-secondary) !important;
+  box-shadow: none !important;
+}
