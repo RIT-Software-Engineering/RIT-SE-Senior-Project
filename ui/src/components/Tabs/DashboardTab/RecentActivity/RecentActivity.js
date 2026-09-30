@@ -14,10 +14,34 @@ import ProfileCircle from "../../../util/components/ProfileCircle";
 import { UserContext } from "../../../util/functions/UserContext";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../util/functions/constants";
-import { formatDateTime } from "../../../util/functions/utils";
+import { formatDateTime, formatDate } from "../../../util/functions/utils";
 import ToolTip from "../TimelinesView/Timeline/ToolTip";
 
 const MAX_VISIBLE_ACTIVITY = 5;
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function parseDateOnly(value) {
+  if (!value) {
+    return null;
+  }
+
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match;
+
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
+
+function getCalendarDayNumber(date) {
+  return (
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY
+  );
+}
 
 /**
  * Converts supported date values into a Date object.
@@ -261,6 +285,8 @@ export default function SinceLastVisit() {
 
       const now = new Date();
 
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
       const overdueActivity = actions
         .map((action) => {
           const dueDate = parseDate(action.due_date);
@@ -269,19 +295,28 @@ export default function SinceLastVisit() {
             return null;
           }
 
-          if (dueDate >= now) {
-            return null;
-          }
-
           if (action.state !== "red") {
             return null;
           }
 
+          const daysOverdue =
+            getCalendarDayNumber(today) - getCalendarDayNumber(dueDate);
+
+          if (daysOverdue < 1) {
+            return null;
+          }
+
+          const dayText =
+            daysOverdue === 1
+              ? "is 1 day overdue"
+              : `is ${daysOverdue} days overdue`;
+
           return {
-            id: `overdue-${action.action_id}-${action.due_date}`,
+            id: `overdue-${action.action_id}-${today.toISOString().split("T")[0]}`,
             type: "action_overdue",
-            timestamp: action.due_date,
-            text: `"${action.action_title}" became overdue`,
+            timestamp: today.toISOString().split("T")[0],
+            daysOverdue,
+            text: `"${action.action_title}" ${dayText}`,
             icon: "warning sign",
             action,
             projectId,
@@ -359,7 +394,17 @@ export default function SinceLastVisit() {
           return 0;
         }
 
-        return bDate - aDate;
+        const timeDifference = bDate - aDate;
+
+        if (timeDifference !== 0) {
+          return timeDifference;
+        }
+
+        if (a.type === "action_overdue" && b.type === "action_overdue") {
+          return (b.daysOverdue || 0) - (a.daysOverdue || 0);
+        }
+
+        return 0;
       });
 
       setActivity(combinedActivity);
@@ -465,7 +510,9 @@ export default function SinceLastVisit() {
           </span>
 
           <span className="recent-activity-date">
-            {formatDateTime(item.timestamp)}
+            {item.type === "action_overdue"
+              ? formatDate(item.timestamp)
+              : formatDateTime(item.timestamp)}
           </span>
         </div>
       </Button>
