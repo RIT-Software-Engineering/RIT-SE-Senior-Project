@@ -27,6 +27,14 @@ import HTMLEditor from "../../util/components/HTMLEditor";
 
 const mockStudents = ["Student 1", "Student 2", "Student 3"];
 
+const escapeHtmlAttribute = (value) =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
 const QuestionSettings = {
   QuestionFeedback: "Feedback",
   QuestionPeerFeedback: "Peer Feedback",
@@ -200,29 +208,29 @@ const QuestionBuilder = (props) => {
     let html = "";
     questions.map((question, _) => {
       if (question.addHeader) {
-        html += `<h2>${question.title}</h2>\n`;
+        html += `<h2>${escapeHtmlAttribute(question.title)}</h2>\n`;
       }
       html += "<div>\n";
 
       if (question.type === "QuestionFeedback") {
-        html += `\t<QuestionFeedback title="${
-          question.title
-        }" questions='${JSON.stringify(question.questions)}' ordered='${
+        html += `\t<QuestionFeedback title="${escapeHtmlAttribute(
+          question.title,
+        )}" questions='${escapeHtmlAttribute(JSON.stringify(question.questions))}' ordered='${
           question.ordered
         }' required='${question.isRequired}' includeStudents='${
           question.isForStudents
         }' selfFeedback='${globalSettings.selfRating}' />`;
       } else if (question.type === "QuestionPeerFeedback") {
-        html += `\t<QuestionPeerFeedback title="${
-          question.title
-        }" questions='${JSON.stringify(question.questions)}' required='${
+        html += `\t<QuestionPeerFeedback title="${escapeHtmlAttribute(
+          question.title,
+        )}" questions='${escapeHtmlAttribute(JSON.stringify(question.questions))}' required='${
           question.isRequired
         }' selfFeedback='${
           globalSettings.selfRating
         }' includeStudents='true'/>`;
       } else if (question.type === "QuestionTable") {
-        html += `\t<QuestionTable questions='${JSON.stringify(
-          question.questions,
+        html += `\t<QuestionTable questions='${escapeHtmlAttribute(
+          JSON.stringify(question.questions),
         )}' scale='${globalSettings.ratingScale}' required='${
           question.isRequired
         }' icon='${question.icon}' selfFeedback='${
@@ -237,8 +245,8 @@ const QuestionBuilder = (props) => {
             : [...question.levels];
         question.questions.map((question_title, _) => {
           html += "\t<div>\n";
-          html += `\t\t<QuestionMoodRating question="${question_title}" levels='${JSON.stringify(
-            levels,
+          html += `\t\t<QuestionMoodRating question="${escapeHtmlAttribute(question_title)}" levels='${escapeHtmlAttribute(
+            JSON.stringify(levels),
           )}' required='${question.isRequired}' selfFeedback='${
             globalSettings.selfRating
           }' feedback='${
