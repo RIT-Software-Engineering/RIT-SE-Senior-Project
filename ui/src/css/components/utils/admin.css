@@ -11,3 +11,15 @@
 .admin-status-message {
   float: left;
 }
+
+body.dark-mode .ui.tabular.menu {
+  scrollbar-color: var(--text-primary) var(--bg-primary);
+}
+
+body.dark-mode .ui.tabular.menu::-webkit-scrollbar {
+  height: 6px;
+}
+
+body.dark-mode .ui.tabular.menu::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}

@@ -92,3 +92,49 @@
     font-size: 0.7rem;
   }
 }
+
+/* Responsive table wrapper making tables scrolllable for mobile */
+
+.responsive-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.responsive-table-wrapper table {
+  min-width: 700px;
+}
+
+/* Added dark mode scrollbar visibility rn since that keeps making things difficult */
+body.dark-mode .responsive-table-wrapper {
+  scrollbar-color: var(--text-primary) var(--bg-primary);
+}
+
+body.dark-mode .responsive-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+body.dark-mode .responsive-table-wrapper::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+body.dark-mode .responsive-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--text-primary);
+  border-radius: 3px;
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.table.stackable-hide-header:not(.unstackable) thead {
+    display: none !important;
+  }
+}
+
+.mobile-only-label {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .stackable-hide-header .mobile-only-label {
+    display: inline;
+  }
+}

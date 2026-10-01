@@ -60,7 +60,7 @@ export default function ProjectTime(props) {
             content: {
               content: (
                 <div>
-                  <Table>
+                  <Table stackable className="stackable-hide-header">
                     <TableHeader>
                       <TableRow>
                         {/*Headers for the table */}
@@ -137,16 +137,30 @@ export default function ProjectTime(props) {
                                   </div>
                                 </TableCell>
                                 <TableCell>
+                                  <span className="mobile-only-label">
+                                    Date of Work:{" "}
+                                  </span>
                                   {formatDate(timeLog.work_date)}
                                 </TableCell>
-                                <TableCell>{timeLog.time_amount}</TableCell>
                                 <TableCell>
+                                  <span className="mobile-only-label">
+                                    Hours Submitted:{" "}
+                                  </span>
+                                  {timeLog.time_amount}
+                                </TableCell>
+                                <TableCell>
+                                  <span className="mobile-only-label">
+                                    Comment:{" "}
+                                  </span>
                                   {timeLog.work_comment.length < 10
                                     ? timeLog.work_comment
                                     : timeLog.work_comment.slice(0, 10) +
                                       "...."}
                                 </TableCell>
                                 <TableCell>
+                                  <span className="mobile-only-label">
+                                    Submitted:{" "}
+                                  </span>
                                   {formatDateTime(timeLog.submission_datetime)}
                                 </TableCell>
                                 <TableCell>
@@ -194,7 +208,7 @@ export default function ProjectTime(props) {
                       }}
                     />
                   </div>
-                  <Table>
+                  <Table stackable className="stackable-hide-header">
                     <TableHeader>
                       <TableRow>
                         {/*Headers for the table */}
@@ -237,9 +251,17 @@ export default function ProjectTime(props) {
                                 </div>
                               </TableCell>
                               <TableCell>
+                                <span className="mobile-only-label">
+                                  Average Hours:{" "}
+                                </span>
                                 {avgTime[idx]?.avgTime ?? 0}
                               </TableCell>
-                              <TableCell>{totalHours}</TableCell>
+                              <TableCell>
+                                <span className="mobile-only-label">
+                                  Total Hours:{" "}
+                                </span>
+                                {totalHours}
+                              </TableCell>
                             </TableRow>
                           );
                         })}
