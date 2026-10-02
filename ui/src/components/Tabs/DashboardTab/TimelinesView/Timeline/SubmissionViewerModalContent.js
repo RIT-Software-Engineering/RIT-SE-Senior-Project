@@ -57,7 +57,7 @@ export default function SubmissionViewerModalContent({
           try {
             noteText = data[0].notes ? JSON.parse(data[0].notes).note : "";
           } catch (e) {
-            noteText = ""; //if something gets messed up it wont die
+            noteText = ""; //unlikely, but if something gets messed up it wont die
           }
           setNotes(noteText || "");
 
@@ -192,8 +192,10 @@ export default function SubmissionViewerModalContent({
         )}
       </p>
 
-      {!noSubmission &&
-        !noSub && ( // Display notes only when submission is viewable
+      {notes &&
+        !noSubmission &&
+        !noSub &&
+        !IS_PEER_EVAL && ( // Display notes only when submission is viewable
           <Segment
             style={{
               border: "1px solid var(--border-color)",

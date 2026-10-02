@@ -770,21 +770,23 @@ export default function ActionModal(props) {
               </div>
               <br />
               {fileUpload(props.file_types, props.file_size)}
-              <div className="ui form notes-field">
-                <div className="field">
-                  <label>Submission Notes (optional)</label>
-                  <TextArea
-                    rows={3}
-                    maxLength={500}
-                    placeholder="Add a note for this submission"
-                    value={notes}
-                    onChange={(e, data) => {
-                      setNotes(data.value);
-                      markFormAsTouched();
-                    }}
-                  />
+              {!isPeerEval && (
+                <div className="ui form notes-field">
+                  <div className="field">
+                    <label>Submission Notes (optional)</label>
+                    <TextArea
+                      rows={3}
+                      maxLength={500}
+                      placeholder="Add a note for this submission"
+                      value={notes}
+                      onChange={(e, data) => {
+                        setNotes(data.value);
+                        markFormAsTouched();
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               {errors.length > 0 && (
                 <div className="submission-errors">
                   <br />

@@ -69,6 +69,8 @@
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   padding: 0.4rem 0.85rem;
+  max-width: 205px;
+  overflow-wrap: anywhere;
 }
 
 .ui.popup.note-popup::before {
