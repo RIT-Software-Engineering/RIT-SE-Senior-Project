@@ -105,7 +105,7 @@ export default function StudentTeamTable(props) {
   }
 
   const table = (
-    <Table sortable>
+    <Table sortable stackable className="stackable-hide-header">
       <TableHeader>
         <TableRow key="studentTeamTableHeaders">
           {tableHeaderCells}
