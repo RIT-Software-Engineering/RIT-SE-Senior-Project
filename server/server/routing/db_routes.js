@@ -4627,7 +4627,7 @@ module.exports = (db) => {
 
       try {
         const result = await db.query(
-          `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
+          `SELECT email, json_extract(profile_info, '$.additional_info') AS additional_info
              FROM users WHERE system_id = ?`,
           [requestedUserId],
         );

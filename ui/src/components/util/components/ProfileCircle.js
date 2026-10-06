@@ -40,22 +40,14 @@ export default function ProfileCircle(props) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!user?.system_id) {
-      setLoaded(true);
-      return;
-    }
-    SecureFetch(
-      `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${user.system_id}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setAdditionalInfo(data);
-        setLoaded(true);
-      })
-      .catch((error) => {
-        console.error("Error fetching additional user info:", error);
-        setLoaded(true);
-      });
+    if (!user?.system_id) return;
+    let cancelled = false;
+    getAdditionalInfo(user.system_id).then((data) => {
+      if (!cancelled) setAdditionalInfo(data);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [user?.system_id]);
 
   function randColorFromName(name) {
@@ -87,6 +79,25 @@ export default function ProfileCircle(props) {
     }
 
     return "NA";
+  }
+
+  //chaching to reduce requests
+  const infoCache = new Map();
+
+  function getAdditionalInfo(systemId) {
+    if (!infoCache.has(systemId)) {
+      const p = SecureFetch(
+        `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`,
+      )
+        .then((r) => r.json())
+        .catch((err) => {
+          console.error("Error fetching additional user info:", err);
+          infoCache.delete(systemId);
+          return null;
+        });
+      infoCache.set(systemId, p);
+    }
+    return infoCache.get(systemId);
   }
 
   const profileElement = (
@@ -138,7 +149,9 @@ export default function ProfileCircle(props) {
     </div>
   );
 
-  if (!user?.system_id || !additionalInfo?.additional_info) {
+  const email = user?.email || additionalInfo?.email;
+
+  if (!user?.system_id || (!email && !additionalInfo?.additional_info)) {
     return profileElement;
   }
 
@@ -149,8 +162,10 @@ export default function ProfileCircle(props) {
       className="info-popup"
       content={
         <div>
-          <div>Email: {user.email}</div>
-          <div>Additional Info: {additionalInfo.additional_info}</div>
+          {email && <div>Email: {email}</div>}
+          {additionalInfo?.additional_info && (
+            <div>Additional Info: {additionalInfo.additional_info}</div>
+          )}
         </div>
       }
     />

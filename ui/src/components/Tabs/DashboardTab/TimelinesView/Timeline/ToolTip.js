@@ -152,6 +152,10 @@ export default function ToolTip(props) {
                             {submission.mock_id && (
                               <span className="tool-submission">
                                 <ProfileCircle
+                                  user={{
+                                    system_id: submission.mock_id,
+                                    email: submission.mock_email,
+                                  }}
                                   name={submission.mock_name}
                                   isStudent={false}
                                   size="tiny"
@@ -164,6 +168,10 @@ export default function ToolTip(props) {
                             )}
                             <span className="tool-submission">
                               <ProfileCircle
+                                user={{
+                                  system_id: submission.mock_id,
+                                  email: submission.mock_email,
+                                }}
                                 name={submission.name}
                                 size="tiny"
                                 isStudent={submission.user_type === "student"}
