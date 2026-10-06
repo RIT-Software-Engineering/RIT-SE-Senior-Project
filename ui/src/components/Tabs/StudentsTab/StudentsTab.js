@@ -545,7 +545,10 @@ export default function StudentsTab(props) {
       });
 
       if (peerEvalSemesterPanels.length > 0) {
-        semesterPanels.push(peerEvalSemesterPanels, <h3>Peer Evaluations</h3>);
+        semesterPanels.push(
+          [...peerEvalSemesterPanels].reverse(),
+          <h3>Peer Evaluations</h3>,
+        );
       }
     }
 
@@ -626,7 +629,7 @@ export default function StudentsTab(props) {
       userContext.user.role !== USERTYPES.ADMIN &&
       activeProjects.length !== 0
     ) {
-      semesterPanels.push(activeProjects, <h3>My Teams</h3>);
+      semesterPanels.push([...activeProjects].reverse(), <h3>My Teams</h3>);
     }
   }
 
