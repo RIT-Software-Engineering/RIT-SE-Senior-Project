@@ -65,3 +65,14 @@
   max-width: 120px;
   display: inline-block;
 }
+
+.ui.popup.info-popup {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+.ui.popup.info-popup::before {
+  background-color: var(--bg-primary) !important;
+  box-shadow: none !important;
+}
