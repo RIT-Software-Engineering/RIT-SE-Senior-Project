@@ -435,6 +435,14 @@ export default function StudentsTab(props) {
         let peerEvalPanels = [];
         Object.keys(semester.projects).forEach((projectKey) => {
           const project = semester.projects[projectKey];
+
+          if (
+            userContext.user.role === USERTYPES.COACH &&
+            !projectMap.hasOwnProperty(projectKey)
+          ) {
+            return;
+          }
+
           const submissions = coachFeedback[projectKey];
           if (!submissions || projectKey === "noProject") return;
           const hasSubmissions = submissions.length > 0;

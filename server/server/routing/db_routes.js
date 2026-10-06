@@ -3026,7 +3026,7 @@ module.exports = (db) => {
             FROM action_log
             JOIN main.users u on action_log.system_id = u.system_id
             JOIN main.actions a on action_log.action_template = a.action_id
-            WHERE action_log.project = ?  AND u.type = 'coach'
+            WHERE action_log.project = ?  AND u.type = 'coach' AND a.action_target = "peer_evaluation"
         `;
 
       db.query(getFeedbackQuery, req.query.project_id)
