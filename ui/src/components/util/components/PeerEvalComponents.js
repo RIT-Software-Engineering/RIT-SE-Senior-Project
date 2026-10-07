@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "semantic-ui-css/semantic.min.css";
+import ProfileCircle from "./ProfileCircle";
 import {
   FormInput,
   Grid,
@@ -96,11 +97,9 @@ export function QuestionFeedback({
                 style={{ marginBottom: "30px" }}
               >
                 {!isInline && (
-                  <Header
-                    textAlign="left"
-                    content={student}
-                    as={hasQuestions ? "h4" : "h3"}
-                  />
+                  <Header textAlign="left" as={hasQuestions ? "h4" : "h3"}>
+                    <ProfileCircle name={student} size="tiny" showFullName />
+                  </Header>
                 )}
                 <FormInput
                   name={name}
@@ -227,7 +226,7 @@ export function QuestionTable({
               <>
                 <TableRow key={student}>
                   <TableCell>
-                    <Header as="h4"> {student} </Header>
+                    <ProfileCircle name={student} size="tiny" showFullName />
                     {/* <Label size='large' basic>{student}</Label> */}
                   </TableCell>
                   {questions.map((question) => (
@@ -336,6 +335,7 @@ export function QuestionMoodRating({
                 padding: "10px",
                 marginBottom: "10px",
                 overflowX: "auto",
+                paddingBottom: "10px",
               }}
             >
               {/* Student Name */}
@@ -343,23 +343,22 @@ export function QuestionMoodRating({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingBottom: "8px",
+                  gap: "8px",
+                  paddingBottom: "4px",
                 }}
               >
-                <Header as={"h3"} style={{ fontSize: "1.2rem" }}>
-                  {isErrored && (
-                    <Icon
-                      size="tiny"
-                      name={"exclamation circle"}
-                      color={"red"}
-                    />
-                  )}
-                  <Header.Content
-                    as={isErrored ? "i" : null}
-                    content={student}
+                <ProfileCircle name={student} size="tiny" showFullName />
+                {isErrored && (
+                  <Icon
+                    name="exclamation circle"
+                    color="red"
+                    size="large"
+                    style={{
+                      margin: 0,
+                      position: "relative",
+                    }}
                   />
-                </Header>
+                )}
               </div>
 
               {/* Rating Levels */}
@@ -407,6 +406,7 @@ export function QuestionMoodRating({
                     <span
                       style={{
                         lineHeight: "1.15",
+                        textAlign: "center",
                       }}
                     >
                       {level}
