@@ -17,7 +17,7 @@ import { config, USERTYPES } from "../../../util/functions/constants";
 import { formatDateTime, formatDate } from "../../../util/functions/utils";
 import ToolTip from "../TimelinesView/Timeline/ToolTip";
 
-const MAX_VISIBLE_ACTIVITY = 5;
+const MAX_VISIBLE_ACTIVITY = 3;
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -326,9 +326,9 @@ export default function SinceLastVisit(props) {
               : `is ${daysOverdue} days overdue`;
 
           return {
-            id: `overdue-${action.action_id}-${today.toISOString().split("T")[0]}`,
+            id: `overdue-${action.action_id}-${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
             type: "action_overdue",
-            timestamp: today.toISOString().split("T")[0],
+            timestamp: today,
             daysOverdue,
             text: `"${action.action_title}" ${dayText}`,
             icon: "warning sign",
@@ -421,10 +421,7 @@ export default function SinceLastVisit(props) {
             const groupedLogs = new Map();
             (timeLogs || [])
               .filter(
-                (log) =>
-                  log.submission_datetime &&
-                  String(log.active) !== "0" &&
-                  !isOwnActivity(log, user),
+                (log) => log.submission_datetime && String(log.active) !== "0",
               )
               .forEach((log) => {
                 const studentId = String(log.system_id);
@@ -495,10 +492,9 @@ export default function SinceLastVisit(props) {
        * ---------------------------------------------------------------
        */
 
-      const combinedActivity = [
-        ...submissionActivity,
+      const dismissableActivity = [
         ...overdueActivity,
-        ...timeLogActivity,
+        ...submissionActivity,
       ].sort((a, b) => {
         const aDate = parseDate(a.timestamp);
         const bDate = parseDate(b.timestamp);
@@ -513,6 +509,8 @@ export default function SinceLastVisit(props) {
           return timeDifference;
         }
 
+        // If overdue reminders share the same timestamp,
+        // show the most overdue action first.
         if (a.type === "action_overdue" && b.type === "action_overdue") {
           return (b.daysOverdue || 0) - (a.daysOverdue || 0);
         }
@@ -520,7 +518,7 @@ export default function SinceLastVisit(props) {
         return 0;
       });
 
-      setActivity(combinedActivity);
+      setActivity([...timeLogActivity, ...dismissableActivity]);
     } catch (err) {
       console.error("Failed to load recent dashboard activity:", err);
 
@@ -546,15 +544,21 @@ export default function SinceLastVisit(props) {
     [user, dismissedAt],
   );
 
-  /**
-   * Filters activity to events that occurred after the current cutoff.
-   */
+  const timeLogActivity = useMemo(
+    () => activity.filter((item) => item.type === "time_log_summary"),
+    [activity],
+  );
+
   const visibleActivity = useMemo(() => {
     if (!cutoff) {
       return [];
     }
 
     return activity.filter((item) => {
+      if (item.type === "time_log_summary") {
+        return false;
+      }
+
       const activityDate = parseDate(item.timestamp);
 
       return activityDate && activityDate > cutoff;
@@ -577,7 +581,13 @@ export default function SinceLastVisit(props) {
       return;
     }
 
-    const newestActivityDate = parseDate(visibleActivity[0].timestamp);
+    const newestActivityDate = visibleActivity
+      .map((item) => parseDate(item.timestamp))
+      .filter(Boolean)
+      .reduce(
+        (latest, date) => (!latest || date > latest ? date : latest),
+        null,
+      );
 
     if (!newestActivityDate) {
       return;
@@ -700,6 +710,16 @@ export default function SinceLastVisit(props) {
       {loading && <Loader active inline="centered" />}
 
       {!loading && error && <Message negative>{error}</Message>}
+
+      {!loading && !error && timeLogActivity.length > 0 && (
+        <div className="recent-activity-time-logs">
+          {timeLogActivity.map((item) => renderActivity(item))}
+        </div>
+      )}
+
+      {!loading && !error && timeLogActivity.length > 0 && (
+        <div className="recent-activity-divider" />
+      )}
 
       {!loading && !error && visibleActivity.length === 0 && (
         <Message>No new project activity since the last visit.</Message>
