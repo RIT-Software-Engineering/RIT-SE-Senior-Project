@@ -81,10 +81,10 @@ export default function ProjectViewerModalContent(props) {
             `}
       </style>
       <h3>Team members</h3>
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
         <b>Students:</b>{" "}
         {projectMembers.students?.map((s) => (
-          <ProfileCircle key={s} name={s} showFullName size="tiny" />
+          <div style={{ overflowWrap: 'break-word', whiteSpace: 'normal' }}> <ProfileCircle key={s} name={s} showFullName size="tiny" /> </div>
         ))}{" "}
         <br />
       </div>
