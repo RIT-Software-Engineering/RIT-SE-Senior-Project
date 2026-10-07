@@ -12,7 +12,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(localizedFormat);
 
-
 export const parseDateNoOffset = (dateTime) => {
   return dayjs(dateTime);
 };
@@ -30,6 +29,13 @@ export const formatDateTime = (dateTime) => {
   let date = parseDayjsDate(dateTime);
   return `${date.format("L LT")}`;
 };
+
+export function formatActionTarget(actionTarget = "") {
+  return actionTarget
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
 
 export const formatDate = (date) => {
   let dateObj = parseDayjsDate(date);

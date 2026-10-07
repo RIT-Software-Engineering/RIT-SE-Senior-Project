@@ -11,7 +11,10 @@ import {
   Rating,
   Segment,
 } from "semantic-ui-react";
-import { formatDate } from "../../../../util/functions/utils";
+import {
+  formatDate,
+  formatActionTarget,
+} from "../../../../util/functions/utils";
 import { SecureFetch } from "../../../../util/functions/secureFetch";
 import EvalReview from "../../../../util/components/EvalReview";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
@@ -97,9 +100,7 @@ export default function SubmissionViewerModal(props) {
       trigger={<div onClick={loadSubmission}>{props.trigger}</div>}
       header={`Submission for ${
         props.action.action_title
-      } (${props.target[0]?.toUpperCase()}${props.target?.substring(
-        1,
-      )} Action)`}
+      } (${formatActionTarget(props.target)} Action)`}
       actions={[{ content: "Close", key: 0 }]}
       content={{
         content: (
@@ -164,7 +165,7 @@ export default function SubmissionViewerModal(props) {
             <Divider />
             <h3>Submission</h3>
             {(props.noSubmission || noSubmission) && (
-              <p>{noSubmissionText(props.target)}</p>
+              <p>{noSubmissionText(formatActionTarget(props.target))}</p>
             )}
 
             {/* Normal Submissions */}
