@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "semantic-ui-css/semantic.min.css";
+import ProfileCircle from "./ProfileCircle";
 import {
   FormInput,
   Grid,
@@ -80,7 +81,11 @@ export function QuestionFeedback({
               style={{ marginBottom: "30px" }}
             >
               {ordered ? `${index + 1}. ${question}` : question}
-              {required && <Header content="*" color={"red"} floated="left" />}
+              {required && (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {"\u00A0"}*
+                </span>
+              )}
             </Header>
           )}
           {students.map((student, students_index) => {
@@ -92,11 +97,9 @@ export function QuestionFeedback({
                 style={{ marginBottom: "30px" }}
               >
                 {!isInline && (
-                  <Header
-                    textAlign="left"
-                    content={student}
-                    as={hasQuestions ? "h4" : "h3"}
-                  />
+                  <Header textAlign="left" as={hasQuestions ? "h4" : "h3"}>
+                    <ProfileCircle name={student} size="tiny" showFullName />
+                  </Header>
                 )}
                 <FormInput
                   name={name}
@@ -223,7 +226,7 @@ export function QuestionTable({
               <>
                 <TableRow key={student}>
                   <TableCell>
-                    <Header as="h4"> {student} </Header>
+                    <ProfileCircle name={student} size="tiny" showFullName />
                     {/* <Label size='large' basic>{student}</Label> */}
                   </TableCell>
                   {questions.map((question) => (
@@ -312,7 +315,9 @@ export function QuestionMoodRating({
     <div style={{ width: "100%" }}>
       <Header as="h2" content={question} textAlign="left" dividing>
         {question + " "}
-        {required && <Header.Content content="*" style={{ color: "red" }} />}
+        {required && (
+          <span style={{ color: "red", fontWeight: "bold" }}>*</span>
+        )}
       </Header>
       <br />
       <Grid divided="vertically">
@@ -330,6 +335,7 @@ export function QuestionMoodRating({
                 padding: "10px",
                 marginBottom: "10px",
                 overflowX: "auto",
+                paddingBottom: "10px",
               }}
             >
               {/* Student Name */}
@@ -337,54 +343,74 @@ export function QuestionMoodRating({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingBottom: "8px",
+                  gap: "8px",
+                  paddingBottom: "4px",
                 }}
               >
-                <Header as={"h3"} style={{ fontSize: "1.2rem" }}>
-                  {isErrored && (
-                    <Icon
-                      size="tiny"
-                      name={"exclamation circle"}
-                      color={"red"}
-                    />
-                  )}
-                  <Header.Content
-                    as={isErrored ? "i" : null}
-                    content={student}
+                <ProfileCircle name={student} size="tiny" showFullName />
+                {isErrored && (
+                  <Icon
+                    name="exclamation circle"
+                    color="red"
+                    size="large"
+                    style={{
+                      margin: 0,
+                      position: "relative",
+                    }}
                   />
-                </Header>
+                )}
               </div>
 
               {/* Rating Levels */}
               <div
                 style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  justifyContent: "center",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+                  gap: "8px",
+                  width: "100%",
                 }}
               >
                 {levels.map((level, index) => (
                   <div
                     key={`col-${student}-${index}`}
+                    onClick={() => handleSelection(student, index)}
                     style={{
-                      textAlign: "center",
-                      display: "flex",
-                      flexDirection: "column",
+                      minWidth: "0",
+                      minHeight: "58px",
+                      padding: "8px",
+                      fontSize: "0.90rem",
+                      border: "1px solid var(--border-color)",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "grid",
+                      gridTemplateColumns: "22px 1fr",
                       alignItems: "center",
-                      minWidth: "80px",
+                      columnGap: "10px",
                     }}
                   >
                     <Radio
-                      style={{ margin: "8px auto" }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        height: "100%",
+                      }}
                       name={`Mood-${sentenceToCamelCase(question)}-${student}`}
                       value={index}
                       checked={selections[student] === index}
-                      onChange={() => handleSelection(student, index)}
+                      onChange={(e) => e.stopPropagation()}
                       required={required}
                     />
-                    {level}
+
+                    <span
+                      style={{
+                        lineHeight: "1.15",
+                        textAlign: "center",
+                      }}
+                    >
+                      {level}
+                    </span>
                   </div>
                 ))}
               </div>
