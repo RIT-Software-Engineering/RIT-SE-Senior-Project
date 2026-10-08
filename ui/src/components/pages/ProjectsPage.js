@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ProjectCard from "../shared/ProjectCard.js"
 import ProjectModal from "../shared/ProjectModal.js"
-import "../../css/components/pages/BrowseAllProjects.css"
-import "../../css/components/shared/projectCard.css"
-import { Icon, Input, Pagination } from "semantic-ui-react";
+import { Checkbox, Dropdown, Icon, Input, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import _ from "lodash";
 import uiConfig from "../../config/uiConfig.js";
+import "../../css/components/pages/ProjectsPage.css"
+import "../../css/components/shared/projectCard.css"
 
-const PROJECTS_PER_PAGE = 25;
+const PROJECTS_PER_PAGE = 9;
 
 /**
  * Projects page visible on main page of the website without signing in.
@@ -21,14 +21,44 @@ function ProjectsPage() {
   const [searchBarValue, setSearchBarValue] = useState("");
   const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
   const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
-  const [selectedSemester, setSelectedSemester] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [selectedAward, setSelectedAward] = useState(null);
+  const [availableMonths, setAvailableMonths] = useState([]);
+  const [selectedMonths, setSelectedMonths] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("any");
+  const [selectedAward, setSelectedAward] = useState("any");
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
+    getAllProjects();
+  }, []);
+
+  useEffect(() => {
+    setSelectedMonths(availableMonths);
+  }, [availableMonths]);
+
+  useEffect(() => {
     getPaginationData();
-  }, [pageChange]);
+  }, [activePage]);
+
+  const getAllProjects = () => {
+    SecureFetch(
+      `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=1000&page=0`,
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw response;
+        }
+      })
+      .then((data) => {
+        const months = getProjectDateRange(data.projects);
+        setAvailableMonths(months);
+        setSelectedMonths(months);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const getPaginationData = () => {
     SecureFetch(
@@ -79,6 +109,27 @@ function ProjectsPage() {
       });
   };
 
+  const getProjectDateRange = (projects) => {
+    const months = new Set();
+
+    projects.forEach((project) => {
+      let current = new Date(`${project.start_date}T00:00:00`);
+      const end = new Date(`${project.end_date}T00:00:00`);
+
+      while (current <= end){
+        months.add(
+          `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`
+        )
+
+        current.setMonth(current.getMonth() + 1)
+      }
+    });
+
+    return [...months].sort().reverse();
+
+  }
+
+
   return (
     <>
       <div className="row" style={{display: "flex", justifyContent: "center", marginTop: "60px", gap: "15px"}}>
@@ -86,6 +137,8 @@ function ProjectsPage() {
       </div>
 
       <div className="ui invisible divider"></div>
+
+      <div style={{width: "100%", margin: "0 auto"}}>
 
       <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "30px"}}>
         <Input
@@ -99,27 +152,78 @@ function ProjectsPage() {
         />
 
         <div>
-          <select className="dropdown" value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)}>
-            <option value="none">Semester</option>
-          </select>
+          <Dropdown
+            className="dropdown"
+            text="Months"
+            selection
+            closeOnChange={false}
+          >
+            <Dropdown.Menu>
+              {availableMonths.map((month) => (
+                <Dropdown.Item
+                  key={month}
+                  value={month}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedMonths((prev) => prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]);}}
+                >
+                  <Checkbox label={month} checked={selectedMonths.includes(month)} onClick={(e) => e.stopPropagation()} onChange={() => {}} />
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           <select className="dropdown" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-            <option value="none">Status</option>
+            <option value="any" disabled>Status</option>
+            <option value="any">Any Status</option>
+            <option value="current">Current</option>
           </select>
           <select className="dropdown" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
-            <option value="none">Award</option>
+            <option value="any" disabled>Award</option>
+            <option value="any">All</option>
             {Object.values(uiConfig.awards).map((award) => (
               <option key={award.id} value={award.id}>{award.name}</option>
             ))}
           </select>
         </div>
-      </div>
+        </div>
+        
 
-      <div className="ui invisible divider"></div>
+        <div className="ui invisible divider"></div>
 
-      <div className="projects-grid">
-        {projects?.map((project) => {
-          return <ProjectCard key={project.id} project={project} onClick={setSelectedProject}/>;
-        })}
+        <div style={{display: "flex", flexDirection: "column", justifyContent:"center"}}>
+          <div className="projects-grid">
+            {projects?.filter((project) => {
+              let current = new Date(`${project.start_date}T00:00:00`);
+              const end = new Date(`${project.end_date}T00:00:00`);
+
+              while (current <= end){
+                const month = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
+                if (selectedMonths.includes(month)) {
+                  return true;
+                }
+                current.setMonth(current.getMonth() + 1);
+              }
+              return false;
+            }).map((project) => {
+              return <ProjectCard key={project.id} project={project} onClick={setSelectedProject}/>;
+            })}
+          </div>
+
+        <Pagination
+          className="project-pagination"
+          activePage={activePage + 1}
+          totalPages={Math.ceil(projectCount/PROJECTS_PER_PAGE)}
+          onPageChange={(e, { activePage }) => {
+            setActivePage(activePage - 1);
+            setPageChange(pageChange + 1);
+          }}
+          prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
+          nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}
+          firstItem={null}
+          lastItem={null}
+        />
+        </div>
+      
       </div>
 
       <ProjectModal

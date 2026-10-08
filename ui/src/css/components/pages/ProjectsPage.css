@@ -1,0 +1,117 @@
+.projects-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    width: fit-content;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 50px;
+}
+
+.page-title {
+    font-size: 50px;
+    font-weight: 550;
+    color: black;
+}
+
+.page-title--orange {
+    color: #F76902;
+}
+
+.dropdown {
+    color: #F76902 !important;
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    text-align: right;
+    border: none !important;
+    background: none !important;
+    padding: none !important;
+}
+
+.dropdown:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.dropdown .text {
+    display: block !important;
+    color: #F76902 !important;
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    text-align: right;
+    background: none !important;
+}
+
+.dropdown .dropdown.icon {
+    display: none !important;
+}
+
+.dropdown::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1px solid #F76902;
+    border-bottom: 1px solid #F76902;
+    transform: translateY(-70%) rotate(45deg);
+}
+
+select.dropdown {
+    padding-right: 8px;
+}
+
+.search-bar input {
+    border: 1px solid #7C878E !important;
+    border-radius: 0 !important;
+    font-size: 15px;
+    width: 310px;
+    height: 40px;
+}
+
+.search-bar .ui.button {
+    background-color: #F76902;
+    border-radius: 0 !important;
+    color: white;
+    width: 80px;
+    height: 40px;
+    font-size: 15px;
+    justify-content: center;
+}
+
+.project-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    border: transparent !important;
+    box-shadow: none !important;
+}
+
+.project-pagination .item:not(.pagination-arrow){
+    width: 16px;
+    height: 16px;
+    font-size: 0 !important;
+    border-radius: 50% !important;
+    border: 1px solid black;
+    background: white !important;
+}
+
+.project-pagination .item:not(.pagination-arrow).active {
+    background: black !important;
+}
+
+.project-pagination .pagination-arrow {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    font-size: 20px;
+}
+
+.project-pagination .pagination-arrow::before {
+    display: none !important;
+}

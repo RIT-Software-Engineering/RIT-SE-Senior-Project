@@ -9,7 +9,7 @@ const uiConfig = {
     logoDark: "/assets/logo-dark.png",
   },
   logoPath:
-    "/assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg",
+    "/assets/Golisano_College of_Computing_and_Information_Sciences_LOGO.jpg",
   footers: {
     loggedOut: {
       address:
@@ -25,8 +25,8 @@ const uiConfig = {
     },
   },
   awards: {
-    outstanding: {
-      name: "Outstanding"
+    excellence: {
+      name: "Excellence"
     },
     creativity: {
       name: "Creativity"

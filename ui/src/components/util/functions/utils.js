@@ -214,3 +214,8 @@ export const useSessionStorage = (key, initialValue) => {
 
   return [value, updateValue];
 };
+
+export function getFormattedDate(date){
+  const tokens = date.split("-");
+  return `${tokens[0]}-${tokens[1]}`;
+}

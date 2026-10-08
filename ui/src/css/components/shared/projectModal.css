@@ -1,10 +1,27 @@
 .project-modal.ui.modal{
     border: 1px solid rgb(0, 0, 0);
-    border-radius: 40px !important;
-    overflow: hidden;
+    border-radius: 20px !important;
+    max-height: 450px;
+    max-width: 700px;
+
+    position: fixed !important;
+    transform: translate(-50%, calc(-50% - 100px)) !important;
 }
 
-.img {
+.project-modal.ui.modal > .header{
+    border-radius: 20px 20px 0 0 !important;
+    padding-right: 15px;
+}
+
+.project-modal.ui.modal > .content {
+    border-radius: 0 0 20px 20px !important;
+}
+
+.project-modal-title{
+    font-size: 25px;
+}
+
+.project-modal .img {
     object-fit: contain;
     width: 85%;
     height: 100%;
@@ -13,12 +30,24 @@
 .row .ui.header {
     display: flex;
     flex-direction: row;
+    border-radius: 20px !important;
 }
 
 .info-row {
   display: flex;
   white-space: nowrap;
-  align-items: center;
+  align-items: flex-start;
   padding-bottom: 10px;
-  gap: 8px;
+  gap: 9px;
+}
+
+.info-row .exemplary-generate-profile {
+  transform: translateY(-3px);
+}
+
+.close {
+    border: none;
+    background: none;
+    font-size: 20px;
+    padding-left: 10px;
 }
