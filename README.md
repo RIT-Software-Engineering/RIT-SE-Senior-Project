@@ -35,7 +35,8 @@ _**On first login, new user must change password by using the `passwd` command**
 ## Install/Develop locally
 
 - ### Using Dev Container
-  - You *may* need to add the following to your hosts file (`C:\Windows\System32\drivers\etc\hosts`):
+
+  - You _may_ need to add the following to your hosts file (`C:\Windows\System32\drivers\etc\hosts`):
     ```
     150.171.69.10 mcr.microsoft.com
     150.171.69.10 eastus.data.mcr.microsoft.com
@@ -54,7 +55,7 @@ _**On first login, new user must change password by using the `passwd` command**
 
 ## Run locally
 
-In order to get things running locally, you'll need to run `npm start ui` and `npm start server` in the root of the project.
+In order to get things running locally, you'll need to run `npm run ui` and `npm run server` in the root of the project.
 
 ## Deploying to production
 
@@ -93,10 +94,12 @@ After sshing into the server, cd into either prod or test project. Then run resp
 The site includes a Content Editor that allows administrators to edit HTML fragments stored in the database. These fragments are used to render portions of the site such as the homepage panel, sponsor information, and the logged-in/logged-out footers.
 
 ### Accessing the Content Editor
+
 - Log into the site with an account that has admin privileges.
 - Navigate to the Admin Tab -> Content Editor -> Page Editor
 
 ### Editing Content
+
 - The editor displays a list of named HTML blocks (e.g., `homePagePanel`, `sponsor`, `loggedInFooter`, `loggedOutFooter`).
 - Select the block you want to edit. The existing HTML will be displayed in a text box.
 - Make your changes directly in the editor.
@@ -104,7 +107,9 @@ The site includes a Content Editor that allows administrators to edit HTML fragm
 - Refresh the site to see your changes in action.
 
 ## Dependencies
+
 ### root
+
 `ajv`: seems to be unused as a dependency in the root level. Compiles JSON schemas to JavaScript code.
 
 `html-to-text`: converts HTML into formatted text. Unclear if this needs to be in root.
@@ -114,7 +119,8 @@ The following root dependencies are **devDependencies**:
 `husky`, `lint-staged`, `prettier`. These are used for the git hook and are covered in the [Technical Information](#technical-information) section of this README document.
 
 ### server
-`@google/generative-ai`: SDK that provides access to gemini, currently deprecated. Strongly consider switching to `@google/genai`. 
+
+`@google/generative-ai`: SDK that provides access to gemini, currently deprecated. Strongly consider switching to `@google/genai`.
 
 `cookie-parser`: reads data stored in cookies.
 
@@ -155,6 +161,7 @@ The following root dependencies are **devDependencies**:
 `sqlite3`: creates bindings to SQLite3 for Node, used to interact with the database.
 
 ### ui
+
 **CodeMirror** - A rich text interface for editing code while on a website.
 
 `@uiw/react-codemirror`: allows CodeMirror to be added as a react component.
