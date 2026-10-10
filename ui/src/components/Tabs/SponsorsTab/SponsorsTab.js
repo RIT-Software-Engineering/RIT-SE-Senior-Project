@@ -137,7 +137,7 @@ export default function SponsorsTab(props) {
           )}
         </>
       )}
-      <Table>
+      <Table className="stackable-hide-header">
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Name</TableHeaderCell>
@@ -171,7 +171,10 @@ export default function SponsorsTab(props) {
                 <TableCell>{sponsor.email}</TableCell>
                 <TableCell>{formatPhoneNumber(sponsor.phone)}</TableCell>
                 <TableCell>{sponsor.association}</TableCell>
-                <TableCell>{sponsor.type}</TableCell>
+                <TableCell>
+                  <span className="mobile-only-label">Type: </span>{" "}
+                  {sponsor.type}
+                </TableCell>
                 <TableCell>{status}</TableCell>
                 <TableCell>
                   <SponsorEditor

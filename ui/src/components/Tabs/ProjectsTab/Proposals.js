@@ -136,7 +136,10 @@ export default function Proposals(props) {
         <TableRow className={rowColor} key={idx}>
           <TableCell>{semesterMap[proposal.semester]}</TableCell>
           <TableCell>{proposal.display_name || proposal.title}</TableCell>
-          <TableCell>{proposal.status}</TableCell>
+          <TableCell>
+            <span className="mobile-only-label">Status: </span>{" "}
+            {proposal.status}
+          </TableCell>
           <TableCell>
             <div className="accordion-buttons-container">
               {props.viewOnly ? (
@@ -145,6 +148,7 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
+                  ``
                   <WebsiteViewerModal project={proposal} />
                   <a
                     href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
@@ -211,7 +215,7 @@ export default function Proposals(props) {
 
   const table = () => {
     return (
-      <Table sortable>
+      <Table sortable stackable className="stackable-hide-header">
         <TableHeader>
           <TableRow>
             <TableHeaderCell

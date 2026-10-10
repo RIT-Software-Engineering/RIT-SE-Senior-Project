@@ -172,7 +172,7 @@ const AuditLogs = () => {
         </Button>
       </div>
 
-      <Table celled striped selectable>
+      <Table celled striped selectable className="stackable-hide-header">
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Timestamp</TableHeaderCell>
@@ -187,12 +187,25 @@ const AuditLogs = () => {
             auditLogs.map((log) => (
               <TableRow key={log.audit_log_id}>
                 <TableCell style={{ whiteSpace: "nowrap" }}>
+                  <span className="mobile-only-label">Timestamp: </span>{" "}
                   {formatDateTime(log.audit_datetime)}
                 </TableCell>
-                <TableCell>{formatActor(log)}</TableCell>
-                <TableCell>{humanizeUnderscored(log.action_type)}</TableCell>
-                <TableCell>{humanizeUnderscored(log.entity_type)}</TableCell>
-                <TableCell>{log.message}</TableCell>
+                <TableCell>
+                  <span className="mobile-only-label">Actor: </span>{" "}
+                  {formatActor(log)}
+                </TableCell>
+                <TableCell>
+                  <span className="mobile-only-label">Type: </span>{" "}
+                  {humanizeUnderscored(log.action_type)}
+                </TableCell>
+                <TableCell>
+                  <span className="mobile-only-label">Category: </span>{" "}
+                  {humanizeUnderscored(log.entity_type)}
+                </TableCell>
+                <TableCell>
+                  <span className="mobile-only-label">Message: </span>{" "}
+                  {log.message}
+                </TableCell>
               </TableRow>
             ))
           ) : (
