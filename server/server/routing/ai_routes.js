@@ -225,11 +225,7 @@ function handleGenerationError(error, next) {
     return next(error);
   }
 
-  console.error("AI generation failed:", {
-    provider: AI_API_TYPE,
-    status: error.status || error.statusCode || null,
-    code: error.code || null,
-  });
+  console.error("AI generation failed:", error);
 
   const message =
     error.statusCode === 503
