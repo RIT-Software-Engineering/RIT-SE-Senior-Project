@@ -1,15 +1,91 @@
 const UserAuth = require("./user_auth");
 const router = require("express").Router();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const OpenAI = require("openai");
 
-let key = process.env.GOOGLE_API_KEY;
+const AI_API_TYPE = (process.env.AI_API_TYPE || "gemini").trim().toLowerCase();
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "qwen3:latest";
+const OPENAI_BASE_URL = (process.env.OPENAI_BASE_URL || "").trim();
 
-// Windows for some reason adds a double quote around Environment Variables
-if (key?.startsWith('"')) {
-  key = key.slice(1, -1);
+function normalizeKey(value) {
+  let key = (value || "").trim();
+  if (
+    key.length >= 2 &&
+    ((key.startsWith('"') && key.endsWith('"')) ||
+      (key.startsWith("'") && key.endsWith("'")))
+  ) {
+    key = key.slice(1, -1).trim();
+  }
+  return key;
 }
 
-const genAI = new GoogleGenerativeAI(key);
+const geminiKey = normalizeKey(process.env.GOOGLE_API_KEY);
+const openaiKey = normalizeKey(process.env.OPENAI_API_KEY);
+
+function isConfiguredKey(key) {
+  return (
+    key.length > 0 &&
+    !["INSERT_KEY_HERE", "ADD_KEY_HERE", "KEYHERE"].includes(key.toUpperCase())
+  );
+}
+
+function isProviderConfigured() {
+  if (AI_API_TYPE === "gemini") {
+    return isConfiguredKey(geminiKey) && Boolean(GEMINI_MODEL);
+  }
+  if (AI_API_TYPE === "openai") {
+    return (
+      isConfiguredKey(openaiKey) &&
+      Boolean(OPENAI_MODEL) &&
+      Boolean(OPENAI_BASE_URL)
+    );
+  }
+  return false;
+}
+
+function httpError(message, statusCode) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function requireValue(value, field) {
+  if (
+    value === undefined ||
+    value === null ||
+    (typeof value === "string" && !value.trim())
+  ) {
+    throw httpError(`Missing '${field}' in request body.`, 400);
+  }
+  return value;
+}
+
+function contextToText(value) {
+  return typeof value === "string" ? value : JSON.stringify(value);
+}
+
+let geminiClient;
+let openaiClient;
+
+function getGeminiClient() {
+  if (!geminiClient) {
+    geminiClient = new GoogleGenerativeAI(geminiKey);
+  }
+  return geminiClient;
+}
+
+function getOpenAIClient() {
+  if (!openaiClient) {
+    openaiClient = new OpenAI({
+      apiKey: openaiKey,
+      baseURL: OPENAI_BASE_URL,
+      timeout: 60_000,
+      maxRetries: 1,
+    });
+  }
+  return openaiClient;
+}
 
 const PROMPT_GENERATE_FEEDBACK_SUMMARY = `You are an writing assistant that is providing a student their project performance based upon their peer's feedback
 Summarize and anonymize the following peer review feedback from a student project. 
@@ -88,112 +164,106 @@ Output Specification:
     3. The summary should be a comprehensive paragraph written in a reflecting historical performance.  
 `;
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction: PROMPT_GENERATE_FEEDBACK_SUMMARY,
-});
-
-const completionModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction: PROMPT_GENERATE_FEEDBACK_COMPLETION,
-});
-
-const historicModel = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-  systemInstruction: PROMPT_GENERATE_HISTORIC_SUMMARY,
-});
-
-async function provide_summary(studentFeedback) {
-  try {
-    const context = `${studentFeedback}`;
-    const result = await model.generateContent(context);
-    return result.response.text();
-  } catch (error) {
-    console.error("Error generating content:", error);
+async function generateAIText(content, systemInstruction) {
+  if (!["gemini", "openai"].includes(AI_API_TYPE)) {
+    throw httpError(`Unsupported AI_API_TYPE: ${AI_API_TYPE}`, 500);
   }
-}
-
-async function provide_historic_summary(studentFeedback) {
-  try {
-    const context = `${studentFeedback}`;
-    const result = await historicModel.generateContent(context);
-    return result.response.text();
-  } catch (error) {
-    console.error("Error generating historic content:", error);
+  if (!isProviderConfigured()) {
+    throw httpError("The selected AI provider is not configured.", 503);
   }
-}
 
-async function generateResponse(prompt, context) {
-  try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-latest",
+  let text;
+  if (AI_API_TYPE === "gemini") {
+    const model = getGeminiClient().getGenerativeModel({
+      model: GEMINI_MODEL,
+      ...(systemInstruction ? { systemInstruction } : {}),
     });
-
-    const result = await model.generateContent({
-      contents: [
-        {
-          parts: [
-            {
-              text: `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}`,
-            },
-          ],
-        },
-      ],
-    });
-
-    return result.response.text();
-  } catch (error) {
-    console.error("Error generating content:", error);
-    if (error.status === 400 && error.message.includes("API key not valid")) {
-      const invalidKey = new Error("Invalid Key");
-      invalidKey.status = 400;
-      throw invalidKey;
+    const result = await model.generateContent(content);
+    text = result.response.text();
+  } else {
+    const messages = [];
+    if (systemInstruction) {
+      messages.push({ role: "system", content: systemInstruction });
     }
-    throw new Error("Failed to generate response.");
+    messages.push({ role: "user", content });
+
+    const response = await getOpenAIClient().chat.completions.create({
+      model: OPENAI_MODEL,
+      messages,
+    });
+    text = response.choices[0]?.message?.content;
   }
+
+  if (typeof text !== "string" || !text.trim()) {
+    throw new Error("The AI provider returned an empty response.");
+  }
+  return text;
+}
+
+function provide_summary(studentFeedback) {
+  return generateAIText(
+    contextToText(studentFeedback),
+    PROMPT_GENERATE_FEEDBACK_SUMMARY,
+  );
+}
+
+function provide_historic_summary(studentFeedback) {
+  return generateAIText(
+    contextToText(studentFeedback),
+    PROMPT_GENERATE_HISTORIC_SUMMARY,
+  );
+}
+
+function generateResponse(prompt, context) {
+  return generateAIText(
+    `Prompt: ${prompt}\n\nContext: ${JSON.stringify(context)}`,
+  );
+}
+
+function handleGenerationError(error, next) {
+  if (error.statusCode === 400) {
+    return next(error);
+  }
+
+  console.error("AI generation failed:", {
+    provider: AI_API_TYPE,
+    status: error.status || error.statusCode || null,
+    code: error.code || null,
+  });
+
+  const message =
+    error.statusCode === 503
+      ? "The AI provider is not configured. Please contact an administrator."
+      : "Failed to generate AI response.";
+  return next(httpError(message, error.statusCode === 503 ? 503 : 502));
 }
 
 module.exports = () => {
   router.post(
     "/GenerateSummary",
     [UserAuth.isCoachOrAdmin],
-    (req, res, next) => {
-      const context = req.body.context;
-
-      provide_summary(context)
-        .then((response) => {
-          res.type("text/plain");
-          res.status(200).send(response);
-        })
-        .catch((err) => {
-          console.error(err);
-          const error = new Error(err);
-          error.statusCode = 500;
-          error.message =
-            "Error generating summary with gemini-1.5-flash-latest";
-          return next(error);
-        });
+    async (req, res, next) => {
+      try {
+        const context = requireValue(req.body?.context, "context");
+        const response = await provide_summary(context);
+        return res.type("text/plain").status(200).send(response);
+      } catch (error) {
+        return handleGenerationError(error, next);
+      }
     },
   );
 
   router.post(
     "/GenerateHistoricSummary",
     [UserAuth.isCoachOrAdmin],
-    (req, res, next) => {
-      const context = req.body.context;
-
-      provide_historic_summary(context)
-        .then((response) => {
-          res.type("text/plain");
-          res.status(200).send(response);
-        })
-        .catch((err) => {
-          console.error(err);
-          const error = new Error(err);
-          error.statusCode = 500;
-          error.message = "Error generating historic summary";
-          return next(error);
-        });
+    async (req, res, next) => {
+      try {
+        const context = requireValue(req.body?.context, "context");
+        const response = await provide_historic_summary(context);
+        return res.type("text/plain").status(200).send(response);
+      } catch (error) {
+        return handleGenerationError(error, next);
+      }
     },
   );
 
@@ -201,50 +271,22 @@ module.exports = () => {
     "/GenerateResponse",
     [UserAuth.isCoachOrAdmin],
     async (req, res, next) => {
-      if (!key || key === "ADD_KEY_HERE") {
-        res.type("text/plain");
-        return res
-          .status(200)
-          .send("Invalid API key. Please let an admin know.");
+      try {
+        const prompt = requireValue(req.body?.prompt, "prompt");
+        const context = requireValue(req.body?.context, "context");
+        const response = await generateResponse(prompt, context);
+        return res.type("text/plain").status(200).send(response);
+      } catch (error) {
+        return handleGenerationError(error, next);
       }
-
-      const { prompt, context } = req.body;
-
-      if (!prompt || !context) {
-        return res
-          .status(200)
-          .json({ error: "Missing 'prompt' or 'context' in request body." });
-      }
-
-      generateResponse(prompt, context)
-        .then((response) => {
-          res.type("text/plain");
-          res.status(200).send(response);
-        })
-        .catch((err) => {
-          if (err.status === 400 && err.message.includes("Invalid Key")) {
-            // Invalid API key
-            return res
-              .type("text/plain")
-              .status(200)
-              .send("API key is not valid. Please let Admin know");
-          } else {
-            console.error("Error generating response:", err);
-            const error = new Error(err);
-            error.statusCode = 500;
-            error.message =
-              "Error generating summary with gemini-1.5-flash-latest";
-            return next(error);
-          }
-        });
     },
   );
 
-  router.get("/CheckGeminiKeyExists", [UserAuth.isCoachOrAdmin], (req, res) => {
-    const isValid = key && key.trim().length > 0 && key !== "INSERT_KEY_HERE";
-
-    res.status(200).json({ valid: isValid });
-  });
+  router.get(
+    ["/CheckAIKeyExists", "/CheckGeminiKeyExists"],
+    [UserAuth.isCoachOrAdmin],
+    (req, res) => res.status(200).json({ valid: isProviderConfigured() }),
+  );
 
   return router;
 };
