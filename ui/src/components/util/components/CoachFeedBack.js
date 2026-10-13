@@ -517,7 +517,7 @@ export default function CoachFeedback(props) {
               <Dimmer active={loadingStates[student]} inverted>
                 <Loader
                   active={loadingStates[student]}
-                  content="Generating Summerization from AI"
+                  content="Generating Summarization from AI"
                 />
               </Dimmer>
               {aiSummaryText[student] && (
