@@ -8,6 +8,25 @@ const uiConfig = {
     logoLight: "/assets/logo-light.png",
     logoDark: "/assets/logo-dark.png",
   },
+  recentActivity: {
+    enabled: true,
+
+    timeLogSummary: {
+      enabled: true,
+      title: "Time Log Summary",
+      showLogTimeButton: true,
+      includeCurrentUser: true,
+    },
+
+    activityFeed: {
+      enabled: true,
+      title: "Recent Activity",
+      maxVisible: 3,
+      allowDismiss: true,
+      showOverdueActions: true,
+      showActionSubmissions: true,
+    },
+  },
   logoPath:
     "/assets/Golisano _College of_Computing_and_Information_Sciences_LOGO.jpg",
   footers: {

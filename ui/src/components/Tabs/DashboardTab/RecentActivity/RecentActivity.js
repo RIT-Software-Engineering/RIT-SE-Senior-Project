@@ -1,6 +1,7 @@
 import "../../../../css/components/tabs/recentactivity.css";
 import WeeklyHoursViewer from "../../TimeTrackingTab/WeeklyHourViewer";
 import TimeLogPanel from "../../TimeTrackingTab/TimeLogPanel";
+import uiConfig from "../../../../config/uiConfig";
 
 import React, {
   useCallback,
@@ -18,7 +19,9 @@ import { config, USERTYPES } from "../../../util/functions/constants";
 import { formatDateTime, formatDate } from "../../../util/functions/utils";
 import ToolTip from "../TimelinesView/Timeline/ToolTip";
 
-const MAX_VISIBLE_ACTIVITY = 3;
+const recentActivityConfig = uiConfig.recentActivity;
+
+const MAX_VISIBLE_ACTIVITY = uiConfig.recentActivity.activityFeed.maxVisible;
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -261,32 +264,35 @@ export default function SinceLastVisit(props) {
 
       const actionLogs = await loadActionLogs(actions);
 
-      const submissionActivity = actionLogs
-        .filter((log) => !isOwnActivity(log, user))
-        .map((log) => {
-          const action = actionsById.get(String(log.action_template));
+      const submissionActivity = recentActivityConfig.activityFeed
+        .showActionSubmissions
+        ? actionLogs
+            .filter((log) => !isOwnActivity(log, user))
+            .map((log) => {
+              const action = actionsById.get(String(log.action_template));
 
-          if (!action || !log.submission_datetime) {
-            return null;
-          }
+              if (!action || !log.submission_datetime) {
+                return null;
+              }
 
-          const actor = getActorName(log);
+              const actor = getActorName(log);
 
-          return {
-            id: `submission-${log.action_log_id}`,
-            type: "action_submission",
-            timestamp: log.submission_datetime,
-            text: `submitted "${action.action_title}"`,
-            actorName: getActorName(log),
-            actorType: log.user_type,
-            icon: "check circle outline",
-            action,
-            projectId: log.project || projectId,
-            projectName: getProjectName(log),
-            semesterName: action.semester,
-          };
-        })
-        .filter(Boolean);
+              return {
+                id: `submission-${log.action_log_id}`,
+                type: "action_submission",
+                timestamp: log.submission_datetime,
+                text: `submitted "${action.action_title}"`,
+                actorName: getActorName(log),
+                actorType: log.user_type,
+                icon: "check circle outline",
+                action,
+                projectId: log.project || projectId,
+                projectName: getProjectName(log),
+                semesterName: action.semester,
+              };
+            })
+            .filter(Boolean)
+        : [];
 
       /*
        * --------------------------------------------------------------
@@ -302,44 +308,47 @@ export default function SinceLastVisit(props) {
 
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      const overdueActivity = actions
-        .map((action) => {
-          const dueDate = parseDate(action.due_date);
+      const overdueActivity = recentActivityConfig.activityFeed
+        .showOverdueActions
+        ? actions
+            .map((action) => {
+              const dueDate = parseDate(action.due_date);
 
-          if (!dueDate) {
-            return null;
-          }
+              if (!dueDate) {
+                return null;
+              }
 
-          if (action.state !== "red") {
-            return null;
-          }
+              if (action.state !== "red") {
+                return null;
+              }
 
-          const daysOverdue =
-            getCalendarDayNumber(today) - getCalendarDayNumber(dueDate);
+              const daysOverdue =
+                getCalendarDayNumber(today) - getCalendarDayNumber(dueDate);
 
-          if (daysOverdue < 1) {
-            return null;
-          }
+              if (daysOverdue < 1) {
+                return null;
+              }
 
-          const dayText =
-            daysOverdue === 1
-              ? "is 1 day overdue"
-              : `is ${daysOverdue} days overdue`;
+              const dayText =
+                daysOverdue === 1
+                  ? "is 1 day overdue"
+                  : `is ${daysOverdue} days overdue`;
 
-          return {
-            id: `overdue-${action.action_id}-${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
-            type: "action_overdue",
-            timestamp: today,
-            daysOverdue,
-            text: `"${action.action_title}" ${dayText}`,
-            icon: "warning sign",
-            action,
-            projectId,
-            projectName: "Current Project",
-            semesterName: action.semester,
-          };
-        })
-        .filter(Boolean);
+              return {
+                id: `overdue-${action.action_id}-${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
+                type: "action_overdue",
+                timestamp: today,
+                daysOverdue,
+                text: `"${action.action_title}" ${dayText}`,
+                icon: "warning sign",
+                action,
+                projectId,
+                projectName: "Current Project",
+                semesterName: action.semester,
+              };
+            })
+            .filter(Boolean)
+        : [];
 
       /*
        * ---------------------------------------------------------------
@@ -422,7 +431,11 @@ export default function SinceLastVisit(props) {
             const groupedLogs = new Map();
             (timeLogs || [])
               .filter(
-                (log) => log.submission_datetime && String(log.active) !== "0",
+                (log) =>
+                  log.submission_datetime &&
+                  String(log.active) !== "0" &&
+                  (recentActivityConfig.timeLogSummary.includeCurrentUser ||
+                    !isOwnActivity(log, user)),
               )
               .forEach((log) => {
                 const studentId = String(log.system_id);
@@ -726,44 +739,49 @@ export default function SinceLastVisit(props) {
 
       {!loading && error && <Message negative>{error}</Message>}
 
-      {!loading && !error && timeLogActivity.length > 0 && (
-        <>
-          <div className="recent-activity-section-header">
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "1rem",
-                }}
-              >
-                <h2
-                  className="since-last-visit-header"
-                  style={{ marginBottom: 0 }}
+      {recentActivityConfig.timeLogSummary.enabled &&
+        !loading &&
+        !error &&
+        timeLogActivity.length > 0 && (
+          <>
+            <div className="recent-activity-section-header">
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1rem",
+                  }}
                 >
-                  Time Log Summary
-                </h2>
+                  <h2
+                    className="since-last-visit-header"
+                    style={{ marginBottom: 0 }}
+                  >
+                    {recentActivityConfig.timeLogSummary.title}
+                  </h2>
 
-                <TimeLogPanel
-                  callback={loadActivity}
-                  header="Log Time"
-                  content="Log Project Time"
-                  viewOnly={user.view_only || user.mockUser?.view_only}
-                />
+                  {recentActivityConfig.timeLogSummary.showLogTimeButton && (
+                    <TimeLogPanel
+                      callback={loadActivity}
+                      header="Log Time"
+                      content="Log Project Time"
+                      viewOnly={user.view_only || user.mockUser?.view_only}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="recent-activity-time-logs">
-            {timeLogActivity.map((item) => renderActivity(item))}
-          </div>
+            <div className="recent-activity-time-logs">
+              {timeLogActivity.map((item) => renderActivity(item))}
+            </div>
 
-          <div className="recent-activity-divider" />
-        </>
-      )}
+            <div className="recent-activity-divider" />
+          </>
+        )}
 
-      {!loading && !error && (
+      {recentActivityConfig.activityFeed.enabled && !loading && !error && (
         <>
           <div
             className="recent-activity-section-header"
@@ -779,7 +797,7 @@ export default function SinceLastVisit(props) {
                 className="since-last-visit-header"
                 style={{ marginBottom: "0.25rem" }}
               >
-                Recent Activity
+                {recentActivityConfig.activityFeed.title}
               </h2>
 
               {cutoff && (
@@ -790,12 +808,13 @@ export default function SinceLastVisit(props) {
             </div>
 
             <div>
-              {visibleActivity.length > 0 && (
-                <Button fluid size="small" onClick={dismissActivity}>
-                  <Icon name="check" />
-                  Dismiss All
-                </Button>
-              )}
+              {recentActivityConfig.activityFeed.allowDismiss &&
+                visibleActivity.length > 0 && (
+                  <Button fluid size="small" onClick={dismissActivity}>
+                    <Icon name="check" />
+                    Dismiss All
+                  </Button>
+                )}
             </div>
           </div>
 
@@ -821,7 +840,9 @@ export default function SinceLastVisit(props) {
       )}
     </div>
   );
-
+  if (!recentActivityConfig.enabled) {
+    return null;
+  }
   if (user?.role === USERTYPES.STUDENT) {
     return activityContent;
   }
