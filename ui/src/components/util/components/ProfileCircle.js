@@ -42,9 +42,18 @@ export default function ProfileCircle(props) {
   useEffect(() => {
     if (!user?.system_id) return;
     let cancelled = false;
-    getAdditionalInfo(user.system_id).then((data) => {
-      if (!cancelled) setAdditionalInfo(data);
-    });
+
+    SecureFetch(
+      `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${user.system_id}`,
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled) setAdditionalInfo(data);
+      })
+      .catch((err) =>
+        console.error("Error fetching additional user info:", err),
+      );
+
     return () => {
       cancelled = true;
     };
@@ -79,25 +88,6 @@ export default function ProfileCircle(props) {
     }
 
     return "NA";
-  }
-
-  //chaching to reduce requests
-  const infoCache = new Map();
-
-  function getAdditionalInfo(systemId) {
-    if (!infoCache.has(systemId)) {
-      const p = SecureFetch(
-        `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`,
-      )
-        .then((r) => r.json())
-        .catch((err) => {
-          console.error("Error fetching additional user info:", err);
-          infoCache.delete(systemId);
-          return null;
-        });
-      infoCache.set(systemId, p);
-    }
-    return infoCache.get(systemId);
   }
 
   const profileElement = (
@@ -149,9 +139,10 @@ export default function ProfileCircle(props) {
     </div>
   );
 
-  const email = user?.email || additionalInfo?.email;
+  const contact = additionalInfo?.contact;
+  const info = additionalInfo?.additional_info;
 
-  if (!user?.system_id || (!email && !additionalInfo?.additional_info)) {
+  if (!user?.system_id || (!contact?.value && !info)) {
     return profileElement;
   }
 
@@ -163,12 +154,12 @@ export default function ProfileCircle(props) {
       content={
         <div>
           {name}
-          {additionalInfo?.preferred_contact && (
-            <div>Preferred Contact: {additionalInfo.preferred_contact}</div>
+          {contact?.value && (
+            <div>
+              {contact.label}: {contact.value}
+            </div>
           )}
-          {additionalInfo?.additional_info && (
-            <div>Additional Info: {additionalInfo.additional_info}</div>
-          )}
+          {info && <div>Additional Info: {info}</div>}
         </div>
       }
     />
