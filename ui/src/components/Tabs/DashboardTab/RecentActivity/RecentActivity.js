@@ -1,5 +1,6 @@
 import "../../../../css/components/tabs/recentactivity.css";
 import WeeklyHoursViewer from "../../TimeTrackingTab/WeeklyHourViewer";
+import TimeLogPanel from "../../TimeTrackingTab/TimeLogPanel";
 
 import React, {
   useCallback,
@@ -462,24 +463,23 @@ export default function SinceLastVisit(props) {
                 }
               });
 
-            timeLogActivity = Array.from(groupedLogs.values())
-              .filter((student) => student.latestSubmission)
-              .map((student) => ({
-                id: `time-log-summary-${student.systemId}`,
-                type: "time_log_summary",
-                timestamp: student.latestSubmission,
-                actorName: student.actorName,
-                icon: "clock outline",
-                action: null,
-                projectId: student.projectId,
-                thisWeek: student.thisWeek,
-                lastWeek: student.lastWeek,
-                text: `logged ${student.thisWeek} ${
-                  student.thisWeek === 1 ? "hour" : "hours"
-                } this week and ${student.lastWeek} ${
-                  student.lastWeek === 1 ? "hour" : "hours"
-                } last week`,
-              }));
+            const studentSummaries = Array.from(groupedLogs.values()).filter(
+              (student) => student.latestSubmission,
+            );
+
+            timeLogActivity =
+              studentSummaries.length > 0
+                ? [
+                    {
+                      id: "time-log-summary",
+                      type: "time_log_summary",
+                      summaries: studentSummaries,
+                      icon: "clock outline",
+                      action: null,
+                      projectId,
+                    },
+                  ]
+                : [];
           }
         } catch (err) {
           console.error("Failed to load time logs:", err);
@@ -602,11 +602,59 @@ export default function SinceLastVisit(props) {
 
   /**
    * Renders a single activity item.
-   *
-   * Action-related events reuse ToolTip so the existing action popup
-   * and ActionModal behavior remain available.
    */
   const renderActivity = (item) => {
+    if (item.type === "time_log_summary" && timeReport) {
+      const timeLogTrigger = (
+        <Button
+          basic
+          fluid
+          type="button"
+          className="recent-activity-time-button"
+        >
+          <div className="recent-activity-time-grid">
+            <div className="recent-activity-time-grid-header">
+              <span>Name</span>
+              <span>This Week</span>
+              <span>Last Week</span>
+            </div>
+
+            {item.summaries.map((student) => (
+              <div
+                key={student.systemId}
+                className="recent-activity-time-grid-row"
+              >
+                <div className="recent-activity-time-student">
+                  <ProfileCircle name={student.actorName} size="tiny" />
+                  <span>{student.actorName}</span>
+                </div>
+
+                <span>
+                  {student.thisWeek} {student.thisWeek === 1 ? "hour" : "hours"}
+                </span>
+
+                <span>
+                  {student.lastWeek} {student.lastWeek === 1 ? "hour" : "hours"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Button>
+      );
+
+      return (
+        <WeeklyHoursViewer
+          key={item.id}
+          trigger={timeLogTrigger}
+          projectName={timeReport.projectName}
+          semesterName={timeReport.semesterName}
+          weeks={timeReport.weeks}
+          timeLog={timeReport.timeLogs}
+          students={timeReport.students}
+        />
+      );
+    }
+
     const trigger = (
       <Button
         basic
@@ -674,70 +722,102 @@ export default function SinceLastVisit(props) {
 
   const activityContent = (
     <div className="since-last-visit">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1rem",
-        }}
-      >
-        <div>
-          <h2
-            className="since-last-visit-header"
-            style={{ marginBottom: "0.25rem" }}
-          >
-            Recent Activity
-          </h2>
-
-          {cutoff && (
-            <div className="since-last-visit-cutoff">
-              Showing activity since {formatDateTime(cutoff)}
-            </div>
-          )}
-        </div>
-
-        <div>
-          {visibleActivity.length > 0 && (
-            <Button fluid size="small" onClick={dismissActivity}>
-              <Icon name="check" />
-              Dismiss All
-            </Button>
-          )}
-        </div>
-      </div>
-
       {loading && <Loader active inline="centered" />}
 
       {!loading && error && <Message negative>{error}</Message>}
 
       {!loading && !error && timeLogActivity.length > 0 && (
-        <div className="recent-activity-time-logs">
-          {timeLogActivity.map((item) => renderActivity(item))}
-        </div>
+        <>
+          <div className="recent-activity-section-header">
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <h2
+                  className="since-last-visit-header"
+                  style={{ marginBottom: 0 }}
+                >
+                  Time Log Summary
+                </h2>
+
+                <TimeLogPanel
+                  callback={loadActivity}
+                  header="Log Time"
+                  content="Log Project Time"
+                  viewOnly={user.view_only || user.mockUser?.view_only}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="recent-activity-time-logs">
+            {timeLogActivity.map((item) => renderActivity(item))}
+          </div>
+
+          <div className="recent-activity-divider" />
+        </>
       )}
 
-      {!loading && !error && timeLogActivity.length > 0 && (
-        <div className="recent-activity-divider" />
-      )}
+      {!loading && !error && (
+        <>
+          <div
+            className="recent-activity-section-header"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "1rem",
+            }}
+          >
+            <div>
+              <h2
+                className="since-last-visit-header"
+                style={{ marginBottom: "0.25rem" }}
+              >
+                Recent Activity
+              </h2>
 
-      {!loading && !error && visibleActivity.length === 0 && (
-        <Message>No new project activity since the last visit.</Message>
-      )}
+              {cutoff && (
+                <div className="since-last-visit-cutoff">
+                  Showing activity since {formatDateTime(cutoff)}
+                </div>
+              )}
+            </div>
 
-      {!loading &&
-        !error &&
-        displayedActivity.map((item) => renderActivity(item))}
+            <div>
+              {visibleActivity.length > 0 && (
+                <Button fluid size="small" onClick={dismissActivity}>
+                  <Icon name="check" />
+                  Dismiss All
+                </Button>
+              )}
+            </div>
+          </div>
 
-      {!loading && !error && visibleActivity.length > MAX_VISIBLE_ACTIVITY && (
-        <Button
-          basic
-          fluid
-          size="small"
-          onClick={() => setShowAll((current) => !current)}
-        >
-          {showAll ? "Show Less" : `View All ${visibleActivity.length} Changes`}
-        </Button>
+          {visibleActivity.length === 0 && (
+            <Message>No new project activity since the last visit.</Message>
+          )}
+
+          {displayedActivity.map((item) => renderActivity(item))}
+
+          {visibleActivity.length > MAX_VISIBLE_ACTIVITY && (
+            <Button
+              basic
+              fluid
+              size="small"
+              onClick={() => setShowAll((current) => !current)}
+            >
+              {showAll
+                ? "Show Less"
+                : `View All ${visibleActivity.length} Changes`}
+            </Button>
+          )}
+        </>
       )}
     </div>
   );
