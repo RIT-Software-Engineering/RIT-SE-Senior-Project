@@ -4700,11 +4700,19 @@ module.exports = (db) => {
         WHERE system_id = ?
       `;
 
-      await db.query(updateQuery, [
-        additional_info,
-        JSON.stringify(pref),
-        system_id,
-      ]);
+      const params = [additional_info, JSON.stringify(pref), system_id];
+
+      try {
+        await db.query(updateQuery, params);
+        res
+          .status(200)
+          .send({ message: "Additional info updated successfully" });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
     },
   );
 

@@ -40,6 +40,7 @@
 .profile-edit {
   margin-left: 0.5em;
   margin-right: 0.5em;
+  margin-top: -0.2em;
 }
 
 .profile-dark {
@@ -61,4 +62,55 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.profile-box {
+  margin-bottom: 1em;
+}
+
+.profile-box > strong {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.profile-contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-top: 0.5em;
+  max-width: 90%;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 0.4em;
+  margin-top: -0.3em;
+}
+
+.profile-contact-value {
+  margin-left: 0.5em;
+  overflow-wrap: anywhere;
+  margin-top: 0.2em;
+}
+
+.profile-box .ui.input input,
+.profile-text {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.profile-text-small {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  margin-top: 0.25em;
+  min-width: 16em;
+}
+
+.dropdown {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  margin-left: 0.3em;
 }

@@ -269,9 +269,8 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                 </div>
               </div>
 
-              {/* Additional Info (Students Only) */}
               {user.role === USERTYPES.STUDENT && (
-                <div className="profile-marginbottom2">
+                <div className="profile-contact-fields">
                   <strong>Additional Info:</strong>
                   {isEditing ? (
                     <>
@@ -294,6 +293,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                       <div className="contact">
                         <strong>Preferred Contact:</strong>
                         <select
+                          className="dropdown"
                           value={preferredContact.method}
                           onChange={(e) =>
                             setPreferredContact({
@@ -310,6 +310,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
 
                         {preferredContact.method === "phone" && (
                           <input
+                            className="profile-text-small"
                             maxLength={30}
                             placeholder="Phone number"
                             value={preferredContact.value}
@@ -325,8 +326,9 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         {preferredContact.method === "other" && (
                           <>
                             <input
+                              className="profile-text-small"
                               maxLength={30}
-                              placeholder="Platform (e.g. Discord)"
+                              placeholder="Platform (Discord, Slack, etc.)"
                               value={preferredContact.label}
                               onChange={(e) =>
                                 setPreferredContact({
@@ -336,6 +338,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                               }
                             />
                             <input
+                              className="profile-text-small"
                               maxLength={100}
                               placeholder="Username / handle"
                               value={preferredContact.value}
@@ -349,25 +352,26 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                           </>
                         )}
                       </div>
-                      <Button
-                        onClick={handleSaveAdditionalInfo}
-                        primary
-                        size="small"
-                        className="profile-button"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setAdditionalInfo(originalAdditionalInfo);
-                          setPreferredContact(originalPreferredContact);
-                          setIsEditing(false);
-                        }}
-                        size="small"
-                        className="profile-cancel"
-                      >
-                        Cancel
-                      </Button>
+                      <div className="profile-buttons">
+                        <Button
+                          onClick={handleSaveAdditionalInfo}
+                          primary
+                          size="small"
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setAdditionalInfo(originalAdditionalInfo);
+                            setPreferredContact(originalPreferredContact);
+                            setIsEditing(false);
+                          }}
+                          size="small"
+                          className="profile-cancel"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     <>
@@ -375,10 +379,12 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         {additionalInfo || "No additional info available"}
                       </span>
                       <div>
-                        <strong>Preferred Contact:</strong>{" "}
-                        {contact
-                          ? `${contact.label}: ${contact.value}`
-                          : "Not set"}
+                        <strong>Preferred Contact:</strong>
+                        <div className="profile-contact-value">
+                          {contact
+                            ? `${contact.label}: ${contact.value}`
+                            : "Not set"}
+                        </div>
                       </div>
 
                       <Button
