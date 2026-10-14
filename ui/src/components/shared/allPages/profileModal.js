@@ -6,8 +6,11 @@ import { useSessionStorage, formatDateTime } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
 import "./../../../css/components/shared/profileModal.css";
 
+const EMPTY_CONTACT = { method: "email", label: "", value: "" };
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
+  console.log("ProfileModal user:", user);
   const [darkMode, setDarkMode] = useState(false);
+  const [contact, setContact] = useState(null);
   const [milestonePreference, setMilestonePreference] = useSessionStorage(
     "defaultMilestoneView",
     true,
@@ -22,9 +25,31 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [originalAdditionalInfo, setOriginalAdditionalInfo] = useState("");
+  const [preferredContact, setPreferredContact] = useState(EMPTY_CONTACT);
+  const [originalPreferredContact, setOriginalPreferredContact] =
+    useState(EMPTY_CONTACT);
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef(null);
   const hasFetchedData = useRef(false);
+
+  const loadAdditionalInfo = useCallback(() => {
+    if (!user?.user) return;
+    SecureFetch(config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const info = data?.additional_info || "";
+        setAdditionalInfo(info);
+        setOriginalAdditionalInfo(info);
+
+        const pc = { ...EMPTY_CONTACT, ...(data?.preferred_contact || {}) };
+        setPreferredContact(pc);
+        setOriginalPreferredContact(pc);
+
+        setContact(data?.contact || null);
+      })
+      .catch((err) => console.error("Failed to fetch additional info:", err));
+  }, [user?.user]);
+
   useEffect(() => {
     if (open && user?.user && !hasFetchedData.current) {
       hasFetchedData.current = true;
@@ -68,24 +93,14 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         })
         .catch((err) => console.error("Failed to fetch milestone view:", err));
 
-      SecureFetch(
-        config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const info = data?.additional_info || "";
-          console.log("Fetched additional info:", info);
-          setAdditionalInfo(info);
-          setOriginalAdditionalInfo(info);
-        })
-        .catch((err) => console.error("Failed to fetch additional info:", err));
+      loadAdditionalInfo();
     }
 
     // Reset flag when modal closes
     if (!open) {
       hasFetchedData.current = false;
     }
-  }, [open, user]);
+  }, [open, user, loadAdditionalInfo]);
 
   // Focus text area when entering edit mode
   useEffect(() => {
@@ -192,12 +207,14 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         body: JSON.stringify({
           system_id: user.user,
           additional_info: additionalInfo,
+          preferred_contact: preferredContact,
         }),
       });
 
       if (!response.ok) throw new Error("Failed to update additional info");
 
       setOriginalAdditionalInfo(additionalInfo);
+      setOriginalPreferredContact(preferredContact);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating additional info:", error);
@@ -275,6 +292,64 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         className="profile-text"
                         placeholder="Enter additional information..."
                       />
+                      <div className="contact">
+                        <strong>Preferred Contact:</strong>
+                        <select
+                          value={preferredContact.method}
+                          onChange={(e) =>
+                            setPreferredContact({
+                              method: e.target.value,
+                              label: "",
+                              value: "",
+                            })
+                          }
+                        >
+                          <option value="email">Email</option>
+                          <option value="phone">Phone</option>
+                          <option value="other">Other</option>
+                        </select>
+
+                        {preferredContact.method === "phone" && (
+                          <input
+                            maxLength={30}
+                            placeholder="Phone number"
+                            value={preferredContact.value}
+                            onChange={(e) =>
+                              setPreferredContact({
+                                ...preferredContact,
+                                value: e.target.value,
+                              })
+                            }
+                          />
+                        )}
+
+                        {preferredContact.method === "other" && (
+                          <>
+                            <input
+                              maxLength={30}
+                              placeholder="Platform (e.g. Discord)"
+                              value={preferredContact.label}
+                              onChange={(e) =>
+                                setPreferredContact({
+                                  ...preferredContact,
+                                  label: e.target.value,
+                                })
+                              }
+                            />
+                            <input
+                              maxLength={100}
+                              placeholder="Username / handle"
+                              value={preferredContact.value}
+                              onChange={(e) =>
+                                setPreferredContact({
+                                  ...preferredContact,
+                                  value: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
                       <Button
                         onClick={handleSaveAdditionalInfo}
                         primary
@@ -286,6 +361,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                       <Button
                         onClick={() => {
                           setAdditionalInfo(originalAdditionalInfo);
+                          setPreferredContact(originalPreferredContact);
                           setIsEditing(false);
                         }}
                         size="small"
@@ -299,6 +375,13 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                       <span className="profile-edit">
                         {additionalInfo || "No additional info available"}
                       </span>
+                      <div>
+                        <strong>Preferred Contact:</strong>{" "}
+                        {contact
+                          ? `${contact.label}: ${contact.value}`
+                          : "Not set"}
+                      </div>
+
                       <Button
                         onClick={() => setIsEditing(true)}
                         size="small"

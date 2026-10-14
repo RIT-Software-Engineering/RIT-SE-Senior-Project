@@ -30,6 +30,8 @@ export default function StudentRow(props) {
   const [peerReviews, setPeerReviews] = useState([]);
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const EMPTY_CONTACT = { method: "email", label: "", value: "" };
+  const [preferredContact, setPreferredContact] = useState(EMPTY_CONTACT);
   const [isEditing, setIsEditing] = useState(false);
   const [customPrompt, setCustomPrompt] = useState(
     PROMPT_GENERATE_HISTORIC_SUMMARY,
@@ -155,6 +157,10 @@ export default function StudentRow(props) {
       const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
       const response = await SecureFetch(url);
       const data = await response.json();
+      setPreferredContact({
+        ...EMPTY_CONTACT,
+        ...(data?.preferred_contact || {}),
+      });
 
       if (data && data.additional_info) {
         setAdditionalInfo(data.additional_info);
@@ -200,6 +206,7 @@ export default function StudentRow(props) {
         body: JSON.stringify({
           system_id: props.student.system_id,
           additional_info: additionalInfo,
+          preferred_contact: preferredContact,
         }),
       });
 
@@ -219,6 +226,14 @@ export default function StudentRow(props) {
       fetchAdditionalInfo();
     }
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
+
+  const contactText = () => {
+    const c = preferredContact;
+    if (c.method === "phone" && c.value) return `Phone: ${c.value}`;
+    if (c.method === "other" && c.value)
+      return `${c.label || "Other"}: ${c.value}`;
+    return `Email: ${props.student.email}`;
+  };
 
   if (!props.studentsTab) {
     // Helper function to get user status text
@@ -397,6 +412,10 @@ export default function StudentRow(props) {
                   {additionalInfo || "No additional info available"}
                 </span>
               )}
+            </p>
+
+            <p>
+              <strong>Preferred Contact:</strong> {contactText()}
             </p>
 
             {!props.isStudent && (

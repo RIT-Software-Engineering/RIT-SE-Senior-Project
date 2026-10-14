@@ -162,7 +162,10 @@ export default function ProfileCircle(props) {
       className="info-popup"
       content={
         <div>
-          {email && <div>Email: {email}</div>}
+          {name}
+          {additionalInfo?.preferred_contact && (
+            <div>Preferred Contact: {additionalInfo.preferred_contact}</div>
+          )}
           {additionalInfo?.additional_info && (
             <div>Additional Info: {additionalInfo.additional_info}</div>
           )}
