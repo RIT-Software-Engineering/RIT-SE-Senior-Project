@@ -9,3 +9,55 @@
 .homepage-view-more-btn {
   float: right;
 }
+
+.page-title {
+    font-size: 50px;
+    font-weight: 550;
+    color: black;
+}
+
+.page-title--orange {
+    color: #F76902;
+}
+
+.secondaryInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.secondaryInfoContainerLeft {
+  width: 30%;
+  text-align: center;
+  order: 1;
+}
+
+.secondaryInfoContainerRight {
+  width: 60%;
+  text-align: right;
+  outline: white;
+  order: 2;
+}
+
+.description {
+  display: flex;
+  justify-content: center;
+}
+
+.description .overviewText {
+  text-align: center;
+  width: 60%;
+}
+
+.button {
+  background-color: #F76902;
+  border-radius: 0px;
+  color: white !important;
+  border: none;
+}

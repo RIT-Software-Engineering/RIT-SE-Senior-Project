@@ -3,28 +3,60 @@ INSERT INTO
 VALUES
     (
         'homePagePanel',
-        '<div class="row">
-                                   <h2>Overview</h2>
-                               </div>
-                               <div class="row">
-                                   <p class="overviewText">
-                                       Senior Project is a capstone course completed by every Software Engineering senior. Small teams of
-                                       students are assigned to solve challenging, real-world software issues for companies and
-                                       organizations. External corporate and non-profit sponsors submit proposals for projects that teams
-                                       of 4 or 5 students will work on.
-                                   </p>
-                                   <p class="overviewText">
-                                       Over the course of two terms, each team works with a project sponsor, applying the software
-                                       engineering skills that the students learned in class and on co-op. They carry the project from
-                                       inception through an entire software development lifecycle. The end result is a functional software
-                                       tool ready for use by the sponsor''s organization.
-                                   </p>
-                               </div>'
+        '
+            <div class="description">
+                <p class="overviewText">
+                    A capstone course where small teams of students solve challenging, real-world, software issues for companies and organizations.
+                </p>
+            </div>'
+    ),
+    (
+        'secondaryInfoPanel',
+        '<div class="row secondaryInfoRow">
+            <div class="secondaryInfoContainerRight">
+            <p class="overviewText">
+                External sponsors, both corporate and non-profit, submit proposals that small teams of students will work on.
+
+                Over the course of two terms, each team works with a project sponsor, applying the software engineering skills that the students learned in the classroom and on co-op. They carry the project from inception through an entire software development lifecycle. The end result is a functional software tool ready for use by the sponsor&#39;s organization. 
+            </p>
+            </div>
+            <div class="secondaryInfoContainerLeft">
+                <p class="overviewText">
+                    Want to sponsor a project? Submit our proposal form here.
+                </p>
+                <div class="row">
+                    <button id="proposalBtn" class="button" onClick="clickHandler()">
+                        Sponsor a Project
+                    </button>
+                    <script>
+                        function clickHandler() {
+                            window.location.href = window.location.origin + "/proposal-form";
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+        '
+    ),
+    (
+        'currentProjectsPanel',
+        '<h2 class="ui header">What Our Students Are Working On</h2>
+        <div class="row">
+            <button id="allProjectsBtn" class="button" onClick="clickHandler()">
+                Browse All Projects
+            </button>
+            <script>
+                function clickHandler() {
+                    window.location.href = window.location.origin + "/projects";
+                }
+            </script>
+        </div>
+        '
     ),
     (
         'sponsor',
         '<div class="row">
-                             <h2 class="ui header">Become a Project Sponsor</h2>
+            <h2 class="ui header">Become a Project Sponsor</h2>
                          </div>
                          <div class="row">
                              <p>
