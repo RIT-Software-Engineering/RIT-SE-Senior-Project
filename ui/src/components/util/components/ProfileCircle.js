@@ -159,7 +159,7 @@ export default function ProfileCircle(props) {
               {contact.label}: {contact.value}
             </div>
           )}
-          {info && <div>Additional Info: {info}</div>}
+          {info && <div className="profile-hover">Additional Info: {info}</div>}
         </div>
       }
     />

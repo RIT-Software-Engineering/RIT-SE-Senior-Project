@@ -41,6 +41,13 @@
   margin-left: 0.5em;
   margin-right: 0.5em;
   margin-top: -0.2em;
+  overflow-wrap: break-word;
+  max-width: 16em;
+}
+
+.profile-hover {
+  max-width: 20em;
+  overflow-wrap: break-word;
 }
 
 .profile-dark {
