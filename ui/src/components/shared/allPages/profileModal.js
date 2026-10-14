@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
@@ -213,8 +213,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
 
       if (!response.ok) throw new Error("Failed to update additional info");
 
-      setOriginalAdditionalInfo(additionalInfo);
-      setOriginalPreferredContact(preferredContact);
+      loadAdditionalInfo();
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating additional info:", error);

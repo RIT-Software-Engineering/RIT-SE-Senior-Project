@@ -165,11 +165,11 @@ export default function StudentRow(props) {
       if (data && data.additional_info) {
         setAdditionalInfo(data.additional_info);
       } else {
-        setAdditionalInfo("No additional information available.");
+        setAdditionalInfo(data?.additional_info || "");
       }
     } catch (error) {
       console.error("Error fetching additional info:", error);
-      setAdditionalInfo("Error loading additional information.");
+      setAdditionalInfo("");
     }
   }, [props.student.system_id]);
 
@@ -206,7 +206,6 @@ export default function StudentRow(props) {
         body: JSON.stringify({
           system_id: props.student.system_id,
           additional_info: additionalInfo,
-          preferred_contact: preferredContact,
         }),
       });
 
@@ -217,15 +216,6 @@ export default function StudentRow(props) {
       console.error("Error updating additional info:", error);
     }
   };
-
-  useEffect(() => {
-    if (openModal) {
-      if (!props.isStudent) {
-        fetchPeerReviews();
-      }
-      fetchAdditionalInfo();
-    }
-  }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
   const contactText = () => {
     const c = preferredContact;
@@ -385,7 +375,10 @@ export default function StudentRow(props) {
                         Save
                       </Button>
                       <Button
-                        onClick={() => setIsEditing(false)}
+                        onClick={() => {
+                          setIsEditing(false);
+                          fetchAdditionalInfo();
+                        }}
                         size="small"
                         className="student-button-cancel"
                       >
