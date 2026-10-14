@@ -14,8 +14,10 @@ function ProjectCard({ project, exemplary = false, onClick }){
     };
 
     const getFirstSentence = (text) => {
+        const maxLength = 150;
         const match = text.match(/.*?[.!?](?:\s|$)/);
-        return (match ? match[0].trim() : text);
+        const sentence = match ? match[0].trim() : text
+        return (sentence.length > maxLength ? sentence.slice(0, maxLength-3) + "..." : sentence);
     }
 
     return (

@@ -25,11 +25,13 @@ const uiConfig = {
     },
   },
   awards: {
-    excellence: {
-      name: "Excellence"
+    Excellence: {
+      name: "Excellence",
+      sqlName: "outstanding"
     },
-    creativity: {
-      name: "Creativity"
+    Creativity: {
+      name: "Creativity",
+      sqlName: "creative"
     }
   }
 };

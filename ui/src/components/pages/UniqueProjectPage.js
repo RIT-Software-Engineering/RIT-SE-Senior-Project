@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button, Modal, Icon } from "semantic-ui-react";
+import { Button, Modal, Icon, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
+import { getFormattedDate } from "../util/functions/utils"
+import uiConfig from "../../config/uiConfig.js";
 import "./../../css/components/pages/UniqueProjectPage.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
@@ -44,6 +46,7 @@ function UniqueProjectPage({ projectData }) {
   const { url_slug } = useParams();
   const [posterOpen, setPosterOpen] = useState(false);
   const [imageOpen, setImageOpen] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const nodeRef = React.useRef(null);
 
   useEffect(() => {
@@ -113,7 +116,6 @@ function UniqueProjectPage({ projectData }) {
             // display project page link if slug has been defined
             project.url_slug !== null && project?.url_slug !== "" && (
               <div>
-                <Icon name="linkify" />{" "}
                 <Link to={`/projects/${project.url_slug}`}>
                   {`${baseProjectURL}${project.url_slug}`}
                 </Link>
@@ -122,14 +124,43 @@ function UniqueProjectPage({ projectData }) {
           }
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            {project?.poster_thumb && (
-              <img
-                src={`${basePosterURL}${project?.poster_thumb}`}
-                className="unique-project-zoom unique-project-media"
-                onClick={() => setPosterOpen(true)}
-                alt={project?.title + " Senior Project Thumbnail Poster"}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div>
+              {carouselIndex === 0 || !project.video ? (
+                <img
+                  className="unique-project-zoom unique-project-media"
+                  src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : `${uiConfig.logoPath}`}
+                  onClick={() => setPosterOpen(true)}
+                  alt={project?.title + " Senior Project Thumbnail Poster"}
+                />
+              ) : (
+                <video
+                  controls
+                  width="300px"
+                >
+                  <source
+                    src={`${baseVideoURL}${project.video}`}
+                    type="video/mp4"
+                  />
+                </video>
+              )}
+            </div>
+
+            {project.video && (
+              <Pagination
+                className="project-pagination"
+                activePage={carouselIndex + 1}
+                totalPages={2}
+                onPageChange={(e, { activePage }) => {
+                  setCarouselIndex(activePage - 1);
+                }}
+                prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
+                nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}
+                firstItem={null}
+                lastItem={null}
               />
             )}
+            </div>
             <Modal
               closeOnDimmerClick={false}
               className={"sticky"}
@@ -158,14 +189,6 @@ function UniqueProjectPage({ projectData }) {
                 <Button onClick={() => setPosterOpen(false)}>Close</Button>
               </Modal.Actions>
             </Modal>
-            {project?.video && (
-              <video controls className="unique-project-media">
-                <source
-                  src={`${baseVideoURL}${project?.video}`}
-                  type="video/mp4"
-                />
-              </video>
-            )}
             {project?.archive_image && (
               <img
                 src={`${baseImageURL}${project?.archive_image}`}
@@ -200,7 +223,7 @@ function UniqueProjectPage({ projectData }) {
               <div className="column">
                 <div className="ui small header">Dates</div>
                 <p>
-                  {project?.start_date} - {project?.end_date}
+                  {getFormattedDate(project.start_date)} - {getFormattedDate(project.end_date)}
                 </p>
                 {project?.team_name &&
                   project?.team_name !== "null" &&
@@ -228,6 +251,8 @@ function UniqueProjectPage({ projectData }) {
               <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
               </p>
+              <div className="ui small header">Keywords</div>
+              <div className="info-row">{project?.keywords}</div>
             </div>
           </div>
         </div>

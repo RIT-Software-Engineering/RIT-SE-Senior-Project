@@ -51,3 +51,12 @@
     font-size: 20px;
     padding-left: 10px;
 }
+
+.project-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    border: transparent !important;
+    box-shadow: none !important;
+}

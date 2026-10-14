@@ -11,18 +11,28 @@ import "../../css/components/shared/projectCard.css"
 
 const PROJECTS_PER_PAGE = 9;
 
+//based on zero-indexing
+const SPRING_SEMESTER_START_MONTH = 0;
+const SUMMER_SEMESTER_START_MONTH = 4;
+const FALL_SEMESTER_START_MONTH = 7;
+
+const SPRING_SEMESTER_END_MONTH = 4;
+const SUMMER_SEMESTER_END_MONTH = 7;
+const FALL_SEMESTER_END_MONTH = 11;
+
 /**
  * Projects page visible on main page of the website without signing in.
  **/
 function ProjectsPage() {
+  const [allProjects, setAllProjects] = useState([]);
   const [projects, setProjects] = useState([]);
   const [activePage, setActivePage] = useState(0);
   const [pageChange, setPageChange] = useState(0);
   const [searchBarValue, setSearchBarValue] = useState("");
   const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
   const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
-  const [availableMonths, setAvailableMonths] = useState([]);
-  const [selectedMonths, setSelectedMonths] = useState([]);
+  const [availableSemesters, setAvailableSemesters] = useState([]);
+  const [selectedSemesters, setSelectedSemesters] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("any");
   const [selectedAward, setSelectedAward] = useState("any");
   const [selectedProject, setSelectedProject] = useState(null);
@@ -32,12 +42,12 @@ function ProjectsPage() {
   }, []);
 
   useEffect(() => {
-    setSelectedMonths(availableMonths);
-  }, [availableMonths]);
+    setSelectedSemesters(availableSemesters);
+  }, [availableSemesters]);
 
   useEffect(() => {
-    getPaginationData();
-  }, [activePage]);
+    setActivePage(0);
+  }, [selectedSemesters, selectedStatus, selectedAward]);
 
   const getAllProjects = () => {
     SecureFetch(
@@ -51,29 +61,9 @@ function ProjectsPage() {
         }
       })
       .then((data) => {
-        const months = getProjectDateRange(data.projects);
-        setAvailableMonths(months);
-        setSelectedMonths(months);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const getPaginationData = () => {
-    SecureFetch(
-      `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=${PROJECTS_PER_PAGE}&page=${activePage}`,
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw response;
-        }
-      })
-      .then((data) => {
-        setProjects(data.projects);
-        setProjectCount(data.totalProjects);
+        setAllProjects(data.projects);
+        const semesters = getProjectDateRange(data.projects);
+        setAvailableSemesters(semesters);
       })
       .catch((error) => {
         console.error(error);
@@ -110,25 +100,111 @@ function ProjectsPage() {
   };
 
   const getProjectDateRange = (projects) => {
-    const months = new Set();
+    const semesters = new Set();
 
     projects.forEach((project) => {
-      let current = new Date(`${project.start_date}T00:00:00`);
-      const end = new Date(`${project.end_date}T00:00:00`);
+      const start = new Date(`${project.start_date}T00:00:00`);
+      const startMonth = start.getMonth();
 
-      while (current <= end){
-        months.add(
-          `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`
-        )
+      let end;
+      let endMonth;
 
-        current.setMonth(current.getMonth() + 1)
+      if (!project.end_date || project.end_date == ''){
+        end = new Date();
+        const todayMonth = end.getMonth();
+
+        if (todayMonth <= SPRING_SEMESTER_END_MONTH){
+          endMonth = SPRING_SEMESTER_END_MONTH;
+        } else if (todayMonth <= SUMMER_SEMESTER_END_MONTH){
+          endMonth = SUMMER_SEMESTER_END_MONTH;
+        } else {
+          endMonth = FALL_SEMESTER_END_MONTH;
+        }
+        end.setMonth(endMonth);
+      } else {
+        end = new Date(`${project.end_date}T00:00:00`);
+        endMonth = end.getMonth();
       }
-    });
 
-    return [...months].sort().reverse();
+      if (startMonth === SPRING_SEMESTER_START_MONTH) {
+        semesters.add(
+          `Spring ${start.getFullYear()}`
+        )
+      } else if (startMonth === SUMMER_SEMESTER_START_MONTH) {
+        semesters.add(
+          `Summer ${start.getFullYear()}`
+        )
+      } else if (startMonth === FALL_SEMESTER_START_MONTH){
+        semesters.add(
+          `Fall ${start.getFullYear()}`
+        )
+      }
+
+      if (endMonth === SPRING_SEMESTER_END_MONTH) {
+        semesters.add(
+          `Spring ${end.getFullYear()}`
+        )
+      } else if (endMonth === SUMMER_SEMESTER_END_MONTH) {
+        semesters.add(
+          `Summer ${end.getFullYear()}`
+        )
+      } else if (endMonth === FALL_SEMESTER_END_MONTH){
+        semesters.add(
+          `Fall ${end.getFullYear()}`
+        )
+      }
+      }
+    );
+
+    return [...semesters].sort().reverse();
 
   }
 
+  const filteredProjects = allProjects.filter((project) => {
+    const start = new Date(`${project.start_date}T00:00:00`);
+    const end = new Date(`${project.end_date}T00:00:00`);
+    const startMonth = start.getMonth();
+    const endMonth = end.getMonth();
+
+    let matchesSemester = false;
+              
+    if (startMonth === SPRING_SEMESTER_START_MONTH){
+      if (selectedSemesters.includes(`Spring ${start.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    } else if (startMonth === SUMMER_SEMESTER_START_MONTH){
+      if (selectedSemesters.includes(`Summer ${start.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    } else if (startMonth === FALL_SEMESTER_START_MONTH){
+      if (selectedSemesters.includes(`Fall ${start.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    }
+
+    if (endMonth === SPRING_SEMESTER_END_MONTH){
+      if (selectedSemesters.includes(`Spring ${end.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    } else if (endMonth === SUMMER_SEMESTER_END_MONTH){
+      if (selectedSemesters.includes(`Summer ${end.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    } else if (endMonth === FALL_SEMESTER_END_MONTH){
+      if (selectedSemesters.includes(`Fall ${end.getFullYear()}`)){
+        matchesSemester = true;
+      }
+    }
+
+    const matchesAward = selectedAward === "any" || project[uiConfig.awards[selectedAward]?.sqlName] === 1;
+    const matchesStatus = selectedStatus === "any" || project.end_date == '' || new Date(`${project.end_date}T00:00:00`) > new Date().setHours(0,0,0,0);
+
+    return matchesSemester && matchesAward && matchesStatus;
+  })
+
+  const totalPages = Math.ceil(filteredProjects.length/PROJECTS_PER_PAGE);
+
+  const paginatedProjects = filteredProjects.slice(activePage * PROJECTS_PER_PAGE, (activePage + 1) * PROJECTS_PER_PAGE);
 
   return (
     <>
@@ -154,20 +230,20 @@ function ProjectsPage() {
         <div>
           <Dropdown
             className="dropdown"
-            text="Months"
+            text="Semesters"
             selection
             closeOnChange={false}
           >
             <Dropdown.Menu>
-              {availableMonths.map((month) => (
+              {availableSemesters.map((semester) => (
                 <Dropdown.Item
-                  key={month}
-                  value={month}
+                  key={semester}
+                  value={semester}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedMonths((prev) => prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]);}}
+                    setSelectedSemesters((prev) => prev.includes(semester) ? prev.filter((s) => s !== semester) : [...prev, semester]);}}
                 >
-                  <Checkbox label={month} checked={selectedMonths.includes(month)} onClick={(e) => e.stopPropagation()} onChange={() => {}} />
+                  <Checkbox label={semester} checked={selectedSemesters.includes(semester)} onClick={(e) => e.stopPropagation()} onChange={() => {}} />
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -192,19 +268,7 @@ function ProjectsPage() {
 
         <div style={{display: "flex", flexDirection: "column", justifyContent:"center"}}>
           <div className="projects-grid">
-            {projects?.filter((project) => {
-              let current = new Date(`${project.start_date}T00:00:00`);
-              const end = new Date(`${project.end_date}T00:00:00`);
-
-              while (current <= end){
-                const month = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
-                if (selectedMonths.includes(month)) {
-                  return true;
-                }
-                current.setMonth(current.getMonth() + 1);
-              }
-              return false;
-            }).map((project) => {
+            {paginatedProjects.map((project) => {
               return <ProjectCard key={project.id} project={project} onClick={setSelectedProject}/>;
             })}
           </div>
@@ -212,10 +276,9 @@ function ProjectsPage() {
         <Pagination
           className="project-pagination"
           activePage={activePage + 1}
-          totalPages={Math.ceil(projectCount/PROJECTS_PER_PAGE)}
+          totalPages={totalPages}
           onPageChange={(e, { activePage }) => {
             setActivePage(activePage - 1);
-            setPageChange(pageChange + 1);
           }}
           prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
           nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}

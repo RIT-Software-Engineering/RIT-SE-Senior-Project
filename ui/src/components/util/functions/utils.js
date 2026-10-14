@@ -216,6 +216,11 @@ export const useSessionStorage = (key, initialValue) => {
 };
 
 export function getFormattedDate(date){
+  if (!date || date == ''){
+    return "Current";
+  }
   const tokens = date.split("-");
-  return `${tokens[0]}-${tokens[1]}`;
+  const monthDate = new Date();
+  monthDate.setMonth(tokens[1]-1);
+  return `${monthDate.toLocaleString('en-US', { month: 'long' })} ${tokens[0]}`;
 }

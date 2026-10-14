@@ -1,4 +1,4 @@
-import { Modal, Icon } from "semantic-ui-react";
+import { Modal, Icon, Pagination } from "semantic-ui-react";
 import ProfileCircle from "../util/components/ProfileCircle.js"
 import { useParams, Link } from "react-router-dom";
 import { config } from "../util/functions/constants";
@@ -6,7 +6,7 @@ import { getFormattedDate } from "../util/functions/utils"
 import { decode } from "html-entities";
 import uiConfig from "../../config/uiConfig.js";
 import "../../css/components/shared/projectModal.css";
-import { useState } from "react";
+import { act, useState } from "react";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
@@ -57,13 +57,43 @@ function ProjectModal({ project, open, onClose }){
             </span>
           </Modal.Header>
 
-          <div style={{ display: "flex", justifyContent: "center"}}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-            <img
-              src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : `${uiConfig.logoPath}`}
-              alt="Project Poster"
-              width="300px"
-            />
+            <div>
+              {carouselIndex === 0 || !project.video ? (
+                <img
+                  src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : `${uiConfig.logoPath}`}
+                  alt="Project Poster"
+                  width="300px"
+                />
+              ) : (
+                <video
+                  controls
+                  width="300px"
+                >
+                  <source
+                    src={`${baseVideoURL}${project.video}`}
+                    type="video/mp4"
+                  />
+                </video>
+              )}
+            </div>
+
+            {project.video && (
+              <Pagination
+                className="project-pagination"
+                activePage={carouselIndex + 1}
+                totalPages={2}
+                onPageChange={(e, { activePage }) => {
+                  setCarouselIndex(activePage - 1);
+                }}
+                prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
+                nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}
+                firstItem={null}
+                lastItem={null}
+              />
+            )}
+
           </div>
 
           <Modal.Content>
@@ -72,12 +102,14 @@ function ProjectModal({ project, open, onClose }){
               <div className="info-row"><div className="ui small header">Sponsor:</div>{project.sponsor}</div>
               <div className="info-row"><div className="ui small header">Faculty Coach:</div>{generateProfiles(project.coach, false)}</div>
               <div className="ui small header" style={{marginTop: "5px"}}>{decodeSynopsis(project.synopsis)}</div>
+              <div className="ui small header">Keywords</div>
+              <div className="info-row">{project?.keywords}</div>
               {
             // display project page link if slug has been defined
             project.url_slug !== null && project?.url_slug !== "" && (
-              <div className="ui small header" style={{marginTop: "5px"}}>
+              <div style={{marginTop: "5px"}}>
                 <Link to={`/projects/${project.url_slug}`}>
-                  Link
+                  {`${baseProjectURL}${project.url_slug}`}
                 </Link>
               </div>
             )
