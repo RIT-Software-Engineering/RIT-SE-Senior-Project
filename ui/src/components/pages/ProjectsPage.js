@@ -33,8 +33,8 @@ function ProjectsPage() {
   const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
   const [availableSemesters, setAvailableSemesters] = useState([]);
   const [selectedSemesters, setSelectedSemesters] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("any");
-  const [selectedAward, setSelectedAward] = useState("any");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedAward, setSelectedAward] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
@@ -167,7 +167,7 @@ function ProjectsPage() {
     const endMonth = end.getMonth();
 
     let matchesSemester = false;
-              
+    
     if (startMonth === SPRING_SEMESTER_START_MONTH){
       if (selectedSemesters.includes(`Spring ${start.getFullYear()}`)){
         matchesSemester = true;
@@ -196,8 +196,8 @@ function ProjectsPage() {
       }
     }
 
-    const matchesAward = selectedAward === "any" || project[uiConfig.awards[selectedAward]?.sqlName] === 1;
-    const matchesStatus = selectedStatus === "any" || project.end_date == '' || new Date(`${project.end_date}T00:00:00`) > new Date().setHours(0,0,0,0);
+    const matchesAward = selectedAward === "any" || selectedAward === "" || project[uiConfig.awards[selectedAward]?.sqlName] === 1;
+    const matchesStatus = selectedStatus === "any" || selectedStatus === "" || project.end_date == '' || new Date(`${project.end_date}T00:00:00`) > new Date().setHours(0,0,0,0);
 
     return matchesSemester && matchesAward && matchesStatus;
   })
@@ -249,13 +249,13 @@ function ProjectsPage() {
             </Dropdown.Menu>
           </Dropdown>
           <select className="dropdown" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-            <option value="any" disabled>Status</option>
+            <option value="" disabled>Status</option>
             <option value="any">Any Status</option>
             <option value="current">Current</option>
           </select>
           <select className="dropdown" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
-            <option value="any" disabled>Award</option>
-            <option value="any">All</option>
+            <option value="" disabled>Award</option>
+            <option value="any">Any or None</option>
             {Object.values(uiConfig.awards).map((award) => (
               <option key={award.id} value={award.id}>{award.name}</option>
             ))}
@@ -277,6 +277,8 @@ function ProjectsPage() {
           className="project-pagination"
           activePage={activePage + 1}
           totalPages={totalPages}
+          boundaryRange={1}
+          siblingRange={1}
           onPageChange={(e, { activePage }) => {
             setActivePage(activePage - 1);
           }}

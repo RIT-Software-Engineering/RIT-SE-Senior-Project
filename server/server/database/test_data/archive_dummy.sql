@@ -39,7 +39,7 @@ VALUES
 
     ('4', 'Name 4', 'Title 4', 'Team 4', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 4',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-4', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
