@@ -376,6 +376,7 @@ export default function ActionModal(props) {
       if (errors.length > 0) {
         setErrors(errors);
         setErrorFields(errorFields);
+        setFormTouched(false);
         return;
       }
 
@@ -462,7 +463,11 @@ export default function ActionModal(props) {
   }
 
   function onActionCancel() {
-    if (formTouched && !props.viewOnly) {
+    if (
+      formTouched &&
+      !props.viewOnly &&
+      submissionModalOpen !== MODAL_STATUS.SUCCESS
+    ) {
       openUnsavedModal(() => {
         setErrors([]);
         setFormTouched(false);
@@ -526,7 +531,7 @@ export default function ActionModal(props) {
       closeOnDimmerClick={false}
       closeOnEscape={false}
       closeIcon
-      onClose={() => setUnsavedModalOpen(false)}
+      onClose={onActionCancel}
     >
       <Modal.Header>Unsaved Changes</Modal.Header>
       <Modal.Content>
@@ -556,28 +561,7 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
-            setOpen(true);
-            props.isOpenCallback(true);
-            fetchStudentNames();
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => {
-              if (formTouched && !props.viewOnly) {
-                openUnsavedModal(() => {
-                  setErrors([]);
-                  setFormTouched(false);
-                  setOpen(false);
-                  props.isOpenCallback(false);
-                });
-              } else {
-                setOpen(false);
-                props.isOpenCallback(false);
-                setFormTouched(false);
-              }
-            }, 0);
-          }}
+          onClose={onActionCancel}
           onOpen={() => {
             console.log("ACTION MODAL OPEN");
             setOpen(true);
@@ -680,8 +664,9 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
+          onClose={onActionCancel}
+          onOpen={() => {
+            console.log("ACTION MODAL OPEN");
             setOpen(true);
             props.isOpenCallback(true);
             fetchStudentNames();
