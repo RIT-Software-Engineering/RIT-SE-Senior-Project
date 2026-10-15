@@ -74,29 +74,7 @@ function ProjectsPage() {
     // Input handling
     const input = value.replace(/[^a-zA-Z\d\s\-]/g, "");
     setSearchBarValue(input);
-    if (input.length === 0) return;
-    // If this is the first letter entered to value, keep track that a search is being made.
-    if (pageNumBeforeSearch === 0) {
-      setPageNumBeforeSearch(activePage + 1);
-    }
-    // If the search value is empty, don't do a search for projects, and return to the page originally on.
-    if (input === "") {
-      setActivePage(pageNumBeforeSearch - 1);
-      setPageNumBeforeSearch(0);
-      setPageChange(pageChange + 99);
-      return;
-    }
-    SecureFetch(
-      `${config.url.API_GET_SEARCH_FOR_ARCHIVES}/?resultLimit=${PROJECTS_PER_PAGE}&offset=${0}&searchQuery=${input}&inactive=false`,
-    )
-      .then((response) => response.json())
-      .then((results) => {
-        setProjectCount(results.projectCount);
-        setProjects(results.projects);
-      })
-      .catch((error) => {
-        alert("An issue occurred while searching for archive content " + error);
-      });
+    setActivePage(0);
   };
 
   const getProjectDateRange = (projects) => {
@@ -198,8 +176,9 @@ function ProjectsPage() {
 
     const matchesAward = selectedAward === "any" || selectedAward === "" || project[uiConfig.awards[selectedAward]?.sqlName] === 1;
     const matchesStatus = selectedStatus === "any" || selectedStatus === "" || project.end_date == '' || new Date(`${project.end_date}T00:00:00`) > new Date().setHours(0,0,0,0);
+    const matchesSearch = project.title?.toLowerCase().includes(searchBarValue.toLowerCase()) || project.title?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-    return matchesSemester && matchesAward && matchesStatus;
+    return matchesSemester && matchesAward && matchesStatus && matchesSearch;
   })
 
   const totalPages = Math.ceil(filteredProjects.length/PROJECTS_PER_PAGE);
