@@ -46,8 +46,21 @@ function ProjectModal({ project, open, onClose }){
       );
     };
 
+    const mediaItems = [
+      (project.poster_thumb
+        ? { type: "image", src: `${basePosterURL}${project.poster_thumb}` }
+        : { type: "image", src: uiConfig.logoPath }),
+      (project.archive_image
+        ? { type: "image", src: `${basePosterURL}${project.archive_image}` }
+        : { type: "image", src: uiConfig.logoPath }),
+      ...(project.video
+        ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
+        : []
+      )
+    ]
+
     return(
-        <Modal className="project-modal" open={open} onClose={onClose}>
+        <Modal className="project-modal" open={open} onClose={() => {onClose(); setCarouselIndex(0);}}>
           <Modal.Header style={{ display: "flex", justifyContent: "space-between", border: "transparent", paddingBottom: "20px" }}>
             <div className="project-modal-title">{project.title}</div>
             <span>{getFormattedDate(project.start_date)} - {getFormattedDate(project.end_date)}
@@ -60,30 +73,32 @@ function ProjectModal({ project, open, onClose }){
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
             <div>
-              {carouselIndex === 0 || !project.video ? (
-                <img
-                  src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : `${uiConfig.logoPath}`}
-                  alt="Project Poster"
-                  width="300px"
-                />
-              ) : (
-                <video
-                  controls
-                  width="300px"
-                >
-                  <source
-                    src={`${baseVideoURL}${project.video}`}
-                    type="video/mp4"
+              {
+                mediaItems[carouselIndex]?.type === "image" ? (
+                  <img
+                    src= {mediaItems[carouselIndex].src}
+                    width="300px"
                   />
-                </video>
-              )}
+                ) : (
+                  <video
+                    key={mediaItems[carouselIndex]?.src}
+                    controls
+                    width="300px"
+                  >
+                    <source
+                      src={mediaItems[carouselIndex]?.src}
+                      type="video/mp4"
+                    />
+                  </video>
+                )
+              }
             </div>
 
-            {project.video && (
+            {mediaItems.length > 1 && (
               <Pagination
                 className="project-pagination"
                 activePage={carouselIndex + 1}
-                totalPages={2}
+                totalPages={mediaItems.length}
                 onPageChange={(e, { activePage }) => {
                   setCarouselIndex(activePage - 1);
                 }}

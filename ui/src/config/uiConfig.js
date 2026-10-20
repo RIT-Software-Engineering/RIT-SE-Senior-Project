@@ -33,6 +33,20 @@ const uiConfig = {
       name: "Creativity",
       sqlName: "creative"
     }
+  },
+  terms: { //based on zero-indexing
+    spring: {
+      start: 0,
+      end: 4
+    },
+    summer: {
+      start: 4,
+      end: 7
+    },
+    fall: {
+      start: 7,
+      end: 11
+    }
   }
 };
 

@@ -12,25 +12,21 @@ import "../../css/components/shared/projectCard.css"
 const PROJECTS_PER_PAGE = 9;
 
 //based on zero-indexing
-const SPRING_SEMESTER_START_MONTH = 0;
-const SUMMER_SEMESTER_START_MONTH = 4;
-const FALL_SEMESTER_START_MONTH = 7;
+const SPRING_SEMESTER_START_MONTH = uiConfig.terms.spring.start;
+const SUMMER_SEMESTER_START_MONTH = uiConfig.terms.summer.start;
+const FALL_SEMESTER_START_MONTH = uiConfig.terms.fall.start;
 
-const SPRING_SEMESTER_END_MONTH = 4;
-const SUMMER_SEMESTER_END_MONTH = 7;
-const FALL_SEMESTER_END_MONTH = 11;
+const SPRING_SEMESTER_END_MONTH = uiConfig.terms.spring.end;
+const SUMMER_SEMESTER_END_MONTH = uiConfig.terms.summer.end;
+const FALL_SEMESTER_END_MONTH = uiConfig.terms.fall.end;
 
 /**
  * Projects page visible on main page of the website without signing in.
  **/
 function ProjectsPage() {
   const [allProjects, setAllProjects] = useState([]);
-  const [projects, setProjects] = useState([]);
   const [activePage, setActivePage] = useState(0);
-  const [pageChange, setPageChange] = useState(0);
   const [searchBarValue, setSearchBarValue] = useState("");
-  const [pageNumBeforeSearch, setPageNumBeforeSearch] = useState(0);
-  const [projectCount, setProjectCount] = useState(PROJECTS_PER_PAGE);
   const [availableSemesters, setAvailableSemesters] = useState([]);
   const [selectedSemesters, setSelectedSemesters] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -77,6 +73,11 @@ function ProjectsPage() {
     setActivePage(0);
   };
 
+  const getMonthName = (num) => {
+    const name = new Date(2000, num).toLocaleString('en-US', { month: 'long' });
+    return name;
+  }
+
   const getProjectDateRange = (projects) => {
     const semesters = new Set();
 
@@ -106,29 +107,29 @@ function ProjectsPage() {
 
       if (startMonth === SPRING_SEMESTER_START_MONTH) {
         semesters.add(
-          `Spring ${start.getFullYear()}`
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       } else if (startMonth === SUMMER_SEMESTER_START_MONTH) {
         semesters.add(
-          `Summer ${start.getFullYear()}`
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       } else if (startMonth === FALL_SEMESTER_START_MONTH){
         semesters.add(
-          `Fall ${start.getFullYear()}`
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       }
 
       if (endMonth === SPRING_SEMESTER_END_MONTH) {
         semesters.add(
-          `Spring ${end.getFullYear()}`
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       } else if (endMonth === SUMMER_SEMESTER_END_MONTH) {
         semesters.add(
-          `Summer ${end.getFullYear()}`
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       } else if (endMonth === FALL_SEMESTER_END_MONTH){
         semesters.add(
-          `Fall ${end.getFullYear()}`
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`
         )
       }
       }
@@ -147,29 +148,29 @@ function ProjectsPage() {
     let matchesSemester = false;
     
     if (startMonth === SPRING_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`Spring ${start.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     } else if (startMonth === SUMMER_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`Summer ${start.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     } else if (startMonth === FALL_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`Fall ${start.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     }
 
     if (endMonth === SPRING_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`Spring ${end.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     } else if (endMonth === SUMMER_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`Summer ${end.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     } else if (endMonth === FALL_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`Fall ${end.getFullYear()}`)){
+      if (selectedSemesters.includes(`${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
         matchesSemester = true;
       }
     }
@@ -208,8 +209,8 @@ function ProjectsPage() {
 
         <div>
           <Dropdown
-            className="dropdown"
-            text="Semesters"
+            className="dropdown--orange"
+            text="Terms"
             selection
             closeOnChange={false}
           >
@@ -227,14 +228,14 @@ function ProjectsPage() {
               ))}
             </Dropdown.Menu>
           </Dropdown>
-          <select className="dropdown" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+          <select className="dropdown--orange" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
             <option value="" disabled>Status</option>
-            <option value="any">Any Status</option>
+            <option value="any">All</option>
             <option value="current">Current</option>
           </select>
-          <select className="dropdown" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
+          <select className="dropdown--orange" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
             <option value="" disabled>Award</option>
-            <option value="any">Any or None</option>
+            <option value="any">All</option>
             {Object.values(uiConfig.awards).map((award) => (
               <option key={award.id} value={award.id}>{award.name}</option>
             ))}
