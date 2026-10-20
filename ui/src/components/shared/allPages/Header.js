@@ -62,7 +62,7 @@ function Header() {
                   history.push("/");
                 }}
               >
-                Home
+                HOME
               </Button>
               <Button
                 className="ui button"
@@ -70,7 +70,7 @@ function Header() {
                   history.push("/projects");
                 }}
               >
-                Projects
+                ALL PROJECTS
               </Button>
               <Button
                 className="ui button"
@@ -78,7 +78,7 @@ function Header() {
                   history.push("/sponsor");
                 }}
               >
-                Sponsor a Project
+                SPONSOR A PROJECT
               </Button>
             </>
           )}
