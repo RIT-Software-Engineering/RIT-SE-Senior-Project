@@ -357,7 +357,7 @@ export default function SinceLastVisit(props) {
        */
 
       let timeLogActivity = [];
-
+      
       if (config.url.API_GET_TIME_LOGS) {
         try {
           const timeLogsResponse = await SecureFetch(
@@ -367,7 +367,22 @@ export default function SinceLastVisit(props) {
 
           if (timeLogsResponse.ok) {
             const timeLogs = await timeLogsResponse.json();
+            
+            const avgTimeResponse = await SecureFetch(
+              `${config.url.API_GET_TIME_AVG}?project_id=${encodeURIComponent(projectId)}`,
+            );
 
+            const avgTimes = avgTimeResponse.ok
+              ? await avgTimeResponse.json()
+              : [];
+
+            const avgTimeByStudent = new Map(
+              avgTimes.map((student) => [
+                String(student.system_id),
+                Number(student.avgTime) || 0,
+              ]),
+            );
+            
             const projectsResponse = await SecureFetch(
               config.url.API_GET_MY_PROJECTS,
             );
@@ -476,9 +491,13 @@ export default function SinceLastVisit(props) {
                 }
               });
 
-            const studentSummaries = Array.from(groupedLogs.values()).filter(
-              (student) => student.latestSubmission,
-            );
+            const studentSummaries = Array.from(groupedLogs.values())
+              .filter((student) => student.latestSubmission)
+              .map((student) => ({
+                ...student,
+                weeklyAverage:
+                  avgTimeByStudent.get(String(student.systemId)) ?? 0,
+              }));
 
             timeLogActivity =
               studentSummaries.length > 0
@@ -630,6 +649,7 @@ export default function SinceLastVisit(props) {
               <span>Name</span>
               <span>This Week</span>
               <span>Last Week</span>
+              <span>Weekly Average</span>
             </div>
 
             {item.summaries.map((student) => (
@@ -649,6 +669,8 @@ export default function SinceLastVisit(props) {
                 <span>
                   {student.lastWeek} {student.lastWeek === 1 ? "hour" : "hours"}
                 </span>
+
+                <span>{student.weeklyAverage} {student.weeklyAverage === 1 ? "hour" : "hours"}</span>
               </div>
             ))}
           </div>
