@@ -194,7 +194,10 @@ export default function StudentRow(props) {
     }
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
-  const canOpen = props.isMyTeamTable || !props.isStudent;
+  const isTeammate = !!user?.project && user.project === props.student.project;
+  const canOpen =
+    !props.isFullList && (props.isMyTeamTable || !props.isStudent);
+  const canHover = canOpen || isTeammate;
 
   const handleSaveAdditionalInfo = async () => {
     try {
@@ -304,7 +307,7 @@ export default function StudentRow(props) {
               showFullName
               textUnderlined={canOpen}
               clickable={canOpen}
-              allowInfo={canOpen}
+              allowInfo={canHover}
             />
           </TableCell>
 
