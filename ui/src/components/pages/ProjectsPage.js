@@ -207,7 +207,7 @@ function ProjectsPage() {
           })}
         />
 
-        <div>
+        <div className="dropdown-filters">
           <Dropdown
             className="dropdown--orange"
             text="Terms"

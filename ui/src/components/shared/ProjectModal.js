@@ -9,6 +9,7 @@ import "../../css/components/shared/projectModal.css";
 import { act, useState } from "react";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
+const baseArchiveURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 
@@ -50,9 +51,9 @@ function ProjectModal({ project, open, onClose }){
       (project.poster_thumb
         ? { type: "image", src: `${basePosterURL}${project.poster_thumb}` }
         : { type: "image", src: uiConfig.logoPath }),
-      (project.archive_image
-        ? { type: "image", src: `${basePosterURL}${project.archive_image}` }
-        : { type: "image", src: uiConfig.logoPath }),
+      ...(project.archive_image
+        ? [{ type: "image", src: `${baseArchiveURL}${project.archive_image}` }]
+        : []),
       ...(project.video
         ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
         : []
