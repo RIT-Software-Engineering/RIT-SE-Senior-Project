@@ -40,7 +40,7 @@
     color: #F76902 !important;
     font-size: 20px !important;
     font-weight: 500 !important;
-    text-align: right;
+    text-align: right !important;
     background: none !important;
 }
 
@@ -62,6 +62,18 @@
 
 select.dropdown--orange {
     padding-right: 8px;
+}
+
+.ui.dropdown.dropdown--orange {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 31px !important;
+    margin-right: 20px;
+}
+
+.ui.dropdown.dropdown--orange > .text {
+    text-align: right !important;
+    width: 100%;
 }
 
 .search-bar input {

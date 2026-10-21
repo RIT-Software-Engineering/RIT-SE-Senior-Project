@@ -61,3 +61,22 @@
   color: white !important;
   border: none;
 }
+
+.current-projects-carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.pagination-arrow {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    font-size: 20px;
+}
+
+.pagination-arrow::before {
+    display: none !important;
+}

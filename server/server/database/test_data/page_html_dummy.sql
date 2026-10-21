@@ -40,8 +40,11 @@ VALUES
     ),
     (
         'currentProjectsPanel',
-        '<h2 class="ui header">What Our Students Are Working On</h2>
-        <div class="row">
+        '<h2 class="ui header">What Our Students Are Working On</h2>'
+    ),
+    (
+        'browseAllProjectsButton',
+        '<div class="row">
             <button id="allProjectsBtn" class="button" onClick="clickHandler()">
                 Browse All Projects
             </button>
@@ -50,8 +53,7 @@ VALUES
                     window.location.href = window.location.origin + "/projects";
                 }
             </script>
-        </div>
-        '
+        </div>'
     ),
     (
         'sponsor',

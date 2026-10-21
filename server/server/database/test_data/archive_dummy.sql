@@ -1,7 +1,7 @@
 INSERT INTO archive (project_id, name, title, team_name, members, sponsor, coach, poster_thumb, video, synopsis, keywords, url_slug, inactive, featured, start_date, end_date, creative, outstanding)
 VALUES
 
-    ('1_groweasy', 'GrowEasy Analytics Platform for Small Business Growth ', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doe', 'dummy/groweasy_thumb.png', 'dummy/sample_vid.mp4',
+    ('1_groweasy', 'GrowEasy Analytics Platform for Small Business Growth ', 'GrowEasy Analytics', 'GrowMasters', 'Miku Hatsune, Cloud Strife, Blaze Thunder, Tifa Lockhart', 'GrowEasy Inc.', 'John Doe', 'dummy/groweasy_thumb.png', '',
     'GrowEasy Analytics is a project aimed at developing an analytics platform for small businesses. The platform will focus on providing a user-friendly dashboard that allows
     businesses to analyze their market expansion strategies effectively. The project will address challenges such as data integration issues and the need for a limited budget and tight timeline.
     The team will work on creating a prototype of the dashboard, which will include features for market analysis and reporting. The platform will also ensure compliance with data privacy regulations
@@ -20,7 +20,7 @@ VALUES
     collaboration with SparkVibe Agency to ensure that the platform meets industry standards and client expectations.',
     'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -32,7 +32,7 @@ VALUES
     technical requirements.',
     'CRM, technology, scalability, startups', 'techtitan-solutions', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -41,7 +41,7 @@ VALUES
     'Description for Project 4',
     'marketing, AI, automation, social media', 'project-4', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -50,7 +50,7 @@ VALUES
     'Description for Project 5',
     'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -59,7 +59,7 @@ VALUES
     'Description for Project 6',
     'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -68,7 +68,7 @@ VALUES
     'Description for Project 7',
     'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),

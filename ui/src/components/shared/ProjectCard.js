@@ -7,7 +7,7 @@ import uiConfig from "../../config/uiConfig.js";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 
-function ProjectCard({ project, exemplary = false, onClick }){
+function ProjectCard({ project, cardClass="card", onClick }){
 
     const decodeSynopsis = (synopsis) => {
         return decode(synopsis).replace(/\r\n|\r/g, "\n");
@@ -21,7 +21,7 @@ function ProjectCard({ project, exemplary = false, onClick }){
     }
 
     return (
-        <div class="card" onClick={() => onClick(project)}>
+        <div className={cardClass} onClick={() => onClick(project)}>
             <div className="ui header project-title">{project.title}</div>
             <img
               src={project.poster_thumb ? [`${basePosterURL}${project.poster_thumb}`] : [`${uiConfig.logoPath}`]}
