@@ -25,7 +25,7 @@ VALUES
                     Want to sponsor a project? Submit our proposal form here.
                 </p>
                 <div class="row">
-                    <button id="proposalBtn" class="button" onClick="clickHandler()">
+                    <button id="proposalBtn" class="button homepage-button" onClick="clickHandler()">
                         Sponsor a Project
                     </button>
                     <script>
@@ -45,7 +45,7 @@ VALUES
     (
         'browseAllProjectsButton',
         '<div class="row">
-            <button id="allProjectsBtn" class="button" onClick="clickHandler()">
+            <button id="allProjectsBtn" class="button homepage-button" onClick="clickHandler()">
                 Browse All Projects
             </button>
             <script>
