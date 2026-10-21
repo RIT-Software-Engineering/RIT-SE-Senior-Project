@@ -21,6 +21,20 @@
   width: 100%;
 }
 
+.recent-activity-time-grid-header > span,
+.recent-activity-time-grid-row > span,
+.recent-activity-time-student > span {
+  color: var(--text-primary) !important;
+}
+
+.recent-activity-time-grid-row {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.recent-activity-time-grid-row:last-child {
+  border-bottom: none;
+}
+
 .recent-activity-time-grid-header,
 .recent-activity-time-grid-row {
   display: grid;
