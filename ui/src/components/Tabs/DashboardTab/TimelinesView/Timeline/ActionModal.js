@@ -363,15 +363,6 @@ export default function ActionModal(props) {
         }
       }
 
-      if (isPeerEval) {
-        for (let x = 0; x < formDataInputs.length; x++) {
-          const input = formDataInputs[x];
-          if (input.type === "radio" && input.checked) {
-            formData[input.name] = input.value;
-          }
-        }
-      }
-
       const formFiles = filesRef.current?.inputRef?.current?.files || [];
 
       if (file_types && formFiles.length === 0) {
