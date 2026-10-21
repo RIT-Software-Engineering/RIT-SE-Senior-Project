@@ -199,7 +199,7 @@ export default function ProjectTime(props) {
                       <TableRow>
                         {/*Headers for the table */}
                         <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Average Hours</TableHeaderCell>
+                        <TableHeaderCell>Weekly Average Hours</TableHeaderCell>
                         <TableHeaderCell>Total Hours</TableHeaderCell>
                       </TableRow>
                     </TableHeader>
@@ -237,7 +237,9 @@ export default function ProjectTime(props) {
                                 </div>
                               </TableCell>
                               <TableCell>
-                                {avgTime[idx]?.avgTime ?? 0}
+                                {avgTime.find(
+                                  (time) => time.system_id === timeStat.system_id
+                                )?.avgTime ?? 0}
                               </TableCell>
                               <TableCell>{totalHours}</TableCell>
                             </TableRow>

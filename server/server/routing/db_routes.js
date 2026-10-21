@@ -667,22 +667,90 @@ module.exports = (db) => {
     },
   );
 
-  db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
-    const sql =
-      "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id";
-    console.log(req.query.project_id);
+db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
+  try {
+    const projectId = req.query.project_id;
 
-    db.query(sql, [req.query.project_id])
-      .then((time) => {
-        console.log(time);
-        res.send(time);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
+      const [semester] = await db.query(
+        `SELECT sg.start_date, sg.end_date
+        FROM projects p
+        JOIN semester_group sg ON p.semester = sg.semester_id
+        WHERE p.project_id = ?`,
+        [projectId]
+      );
+
+      if (!semester) {
+        return res.status(404).send("Semester not found");
+      }
+
+      const semesterStart = dayjs(semester.start_date);
+      const semesterEnd = dayjs(semester.end_date);
+
+      const currentWeekStart = dayjs().startOf("week");
+
+      const semesterLastWeekEnd = semesterEnd
+        .endOf("week")
+        .add(1, "day")
+        .startOf("day");
+
+      const cutoff = currentWeekStart.isBefore(semesterLastWeekEnd)
+        ? currentWeekStart
+        : semesterLastWeekEnd;
+
+      const completedWeeks = Math.max(
+        0,
+        cutoff.diff(semesterStart.startOf("week"), "week")
+      );
+
+      const sql = `
+        WITH weekly_totals AS (
+          SELECT
+            system_id,
+            date(
+              work_date,
+              '-' || strftime('%w', work_date) || ' days'
+            ) AS week_start,
+            SUM(time_amount) AS weekly_hours
+          FROM time_log
+          WHERE project = ?
+            AND active != 0
+            AND date(work_date) >= date(?)
+            AND date(work_date) < date(?)
+            AND date(work_date) <= date(?)
+          GROUP BY system_id, week_start
+        )
+        SELECT
+          system_id,
+          COALESCE(
+            ROUND(
+              AVG(
+                CASE
+                  WHEN weekly_hours > 0 THEN weekly_hours
+                  ELSE NULL
+                END
+              ),
+              2
+            ),
+            0
+          ) AS avgTime
+        FROM weekly_totals
+        GROUP BY system_id
+      `;
+
+      const time = await db.query(sql, [
+        projectId,
+        semesterStart.format("YYYY-MM-DD"),
+        cutoff.format("YYYY-MM-DD"),
+        semesterEnd.format("YYYY-MM-DD"),
+      ]);
+
+      res.send(time);
+    } catch (err) {
+      console.error(err);
+      const error = new Error(err);
+      error.statusCode = 500;
+      return next(error);
+    }
   });
 
   db_router.post(
