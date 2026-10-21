@@ -1,11 +1,12 @@
 import "./../../../css/utils/profile.css";
-import React, { useState, useEffect } from "react";
+import "./../../../css/utils/tooltip.css";
+import React, { useState, useEffect, useContext } from "react";
 import { Popup } from "semantic-ui-react";
 import { SecureFetch } from "../functions/secureFetch";
 import { config } from "../functions/constants";
+import { UserContext } from "../functions/UserContext";
 
 export default function ProfileCircle(props) {
-  console.log("PROFILECIRCLE FILE VERSION: TEST123");
   const {
     user,
     name,
@@ -19,6 +20,7 @@ export default function ProfileCircle(props) {
     pillColor = "var(--bg-primary)",
     textUnderlined = false,
     clickable = false,
+    allowInfo = false,
   } = props;
 
   // Auto-detect coach role if name contains "Coach" and isStudent wasn't explicitly set to false
@@ -37,10 +39,16 @@ export default function ProfileCircle(props) {
     !actualIsStudent || ["admin", "coach"].includes(user?.role);
 
   const [additionalInfo, setAdditionalInfo] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+
+  const { user: viewer } = useContext(UserContext);
+  const isCorA = ["admin", "coach"].includes(viewer?.role);
+  const canSeeInfo =
+    isCorA ||
+    allowInfo ||
+    (!!user?.system_id && user.system_id === viewer?.user);
 
   useEffect(() => {
-    if (!user?.system_id) return;
+    if (!user?.system_id || !canSeeInfo) return;
     let cancelled = false;
 
     SecureFetch(
@@ -57,7 +65,7 @@ export default function ProfileCircle(props) {
     return () => {
       cancelled = true;
     };
-  }, [user?.system_id]);
+  }, [user?.system_id, canSeeInfo]);
 
   function randColorFromName(name) {
     const hash = Array.from(name).reduce(
@@ -142,7 +150,7 @@ export default function ProfileCircle(props) {
   const contact = additionalInfo?.contact;
   const info = additionalInfo?.additional_info;
 
-  if (!user?.system_id || (!contact?.value && !info)) {
+  if (!canSeeInfo || !user?.system_id || (!contact?.value && !info)) {
     return profileElement;
   }
 
@@ -150,10 +158,10 @@ export default function ProfileCircle(props) {
     <Popup
       on="hover"
       trigger={profileElement}
-      className="info-popup"
+      className="universal-tooltip"
       content={
         <div>
-          {name}
+          {name || (user ? `${user.fname} ${user.lname}` : "User")}
           {contact?.value && (
             <div>
               {contact.label}: {contact.value}

@@ -194,6 +194,8 @@ export default function StudentRow(props) {
     }
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
+  const canOpen = props.isMyTeamTable || !props.isStudent;
+
   const handleSaveAdditionalInfo = async () => {
     try {
       const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
@@ -295,13 +297,14 @@ export default function StudentRow(props) {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell onClick={() => setOpenModal(props.isMyTeamTable)}>
+          <TableCell onClick={() => canOpen && setOpenModal(true)}>
             <ProfileCircle
               user={props.student}
               size="tiny"
               showFullName
-              textUnderlined
-              clickable
+              textUnderlined={canOpen}
+              clickable={canOpen}
+              allowInfo={canOpen}
             />
           </TableCell>
 

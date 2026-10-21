@@ -1,0 +1,13 @@
+.ui.popup.universal-tooltip {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  padding: 12px 16px;
+  max-width: 250px;
+  overflow-wrap: break-word;
+}
+
+.ui.popup.universal-tooltip::before {
+  background-color: var(--bg-primary) !important;
+  box-shadow: none !important;
+}

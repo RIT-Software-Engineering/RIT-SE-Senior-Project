@@ -419,9 +419,10 @@ export default function ActionLogs(props) {
                             }}
                             name={action.mock_name ?? ""}
                             size="tiny"
-                            className="info-popup"
+                            className="universal-tooltip"
                             isStudent={false}
                             showFullName
+                            allowInfo
                           />
                           as
                         </>

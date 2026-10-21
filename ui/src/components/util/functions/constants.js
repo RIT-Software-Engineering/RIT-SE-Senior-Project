@@ -243,6 +243,12 @@ export const ACTION_STATES = {
   PURPLE: "purple", //used for break period
 };
 
+export const TOOLTIP_CONFIG = {
+  position: "top left",
+  mouseEnterDelay: 250,
+  mouseLeaveDelay: 100,
+};
+
 export const SERVER_TIMEZONE = "America/New_York";
 
 export const DEFAULT_UPLOAD_LIMIT = 15 * 1024 * 1024;
