@@ -269,7 +269,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                 </div>
               </div>
 
-              {user.role === USERTYPES.STUDENT && (
+              {[USERTYPES.STUDENT, USERTYPES.COACH].includes(user.role) && (
                 <div className="profile-contact-fields">
                   <strong>Additional Info:</strong>
                   {isEditing ? (

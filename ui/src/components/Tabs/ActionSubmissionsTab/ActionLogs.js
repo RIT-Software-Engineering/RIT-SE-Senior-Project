@@ -414,8 +414,8 @@ export default function ActionLogs(props) {
                         <>
                           <ProfileCircle
                             user={{
-                              system_id: action.system_id,
-                              email: action.email,
+                              system_id: action.mock_id,
+                              email: action.mock_email,
                             }}
                             name={action.mock_name ?? ""}
                             size="tiny"
@@ -437,6 +437,7 @@ export default function ActionLogs(props) {
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
+                        allowInfo
                         className="action-profile"
                       />
                     </span>
