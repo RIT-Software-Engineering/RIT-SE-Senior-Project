@@ -8,6 +8,13 @@
 }
 
 .ui.popup.universal-tooltip::before {
-  background-color: var(--bg-primary) !important;
-  box-shadow: none !important;
+  background: var(--bg-primary) !important;
+}
+
+.ui.top.popup.universal-tooltip::before {
+  box-shadow: 1px 1px 0 0 var(--border-color) !important;
+}
+
+.ui.bottom.popup.universal-tooltip::before {
+  box-shadow: -1px -1px 0 0 var(--border-color) !important;
 }

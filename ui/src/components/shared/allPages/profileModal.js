@@ -31,6 +31,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef(null);
   const hasFetchedData = useRef(false);
+  const [coaches, setCoaches] = useState([]);
 
   const loadAdditionalInfo = useCallback(() => {
     if (!user?.user) return;
@@ -92,6 +93,11 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
           );
         })
         .catch((err) => console.error("Failed to fetch milestone view:", err));
+
+      SecureFetch(config.url.API_GET_MY_COACHES)
+        .then((res) => res.json())
+        .then((data) => setCoaches(Array.isArray(data) ? data : []))
+        .catch((err) => console.error("Failed to fetch coaches:", err));
 
       loadAdditionalInfo();
     }
@@ -267,6 +273,28 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                     ? formatDateTime(user.last_login)
                     : "Never Logged In"}
                 </div>
+                {user.role === USERTYPES.STUDENT && coaches.length > 0 && (
+                  <div className="profile-coach">
+                    <strong>
+                      {coaches.length > 1 ? "Coaches:" : "Coach:"}
+                    </strong>
+                    {coaches.map((coach) => (
+                      <ProfileCircle
+                        key={coach.system_id}
+                        user={{
+                          system_id: coach.system_id,
+                          fname: coach.fname,
+                          lname: coach.lname,
+                          role: "coach",
+                        }}
+                        isStudent={false}
+                        size="tiny"
+                        showFullName
+                        allowInfo
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
               {[USERTYPES.STUDENT, USERTYPES.COACH].includes(user.role) && (

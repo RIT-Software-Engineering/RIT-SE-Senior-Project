@@ -5033,5 +5033,28 @@ module.exports = (db) => {
     },
   );
 
+  //get coach for student profile
+  db_router.get("/getMyCoaches", [UserAuth.isSignedIn], (req, res, next) => {
+    const projectId =
+      req.user.type === ROLES.STUDENT ? req.user.project : req.query.project_id;
+
+    if (!projectId) return res.send([]);
+
+    db.query(
+      `SELECT users.system_id, users.fname, users.lname
+        FROM project_coaches
+        JOIN users ON users.system_id = project_coaches.coach_id
+        WHERE project_coaches.project_id = ?
+        ORDER BY users.fname, users.lname`,
+      [projectId],
+    )
+      .then((coaches) => res.send(coaches))
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
+
   return db_router;
 };

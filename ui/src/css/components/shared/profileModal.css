@@ -28,6 +28,13 @@
   resize: vertical;
 }
 
+.profile-coach {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em 0.5em;
+}
+
 .profile-button {
   margin-top: 0.5em;
   margin-right: 0.5em;
