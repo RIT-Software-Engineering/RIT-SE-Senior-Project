@@ -10,7 +10,19 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Button, Icon, Loader, Message, Segment } from "semantic-ui-react";
+import {
+  Button,
+  Icon,
+  Loader,
+  Message,
+  Segment,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+} from "semantic-ui-react";
 
 import ProfileCircle from "../../../util/components/ProfileCircle";
 import { UserContext } from "../../../util/functions/UserContext";
@@ -638,45 +650,50 @@ export default function SinceLastVisit(props) {
   const renderActivity = (item) => {
     if (item.type === "time_log_summary" && timeReport) {
       const timeLogTrigger = (
-        <Button
-          basic
-          fluid
-          type="button"
-          className="recent-activity-time-button"
-        >
-          <div className="recent-activity-time-grid">
-            <div className="recent-activity-time-grid-header">
-              <span>Name</span>
-              <span>This Week</span>
-              <span>Last Week</span>
-              <span>Weekly Average</span>
-            </div>
+        <div className="recent-activity-time-table-trigger">
+          <Table celled unstackable>
+            <TableHeader>
+              <TableRow>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>This Week</TableHeaderCell>
+                <TableHeaderCell>Last Week</TableHeaderCell>
+                <TableHeaderCell>Weekly Average</TableHeaderCell>
+              </TableRow>
+            </TableHeader>
+      
+            <TableBody>
+              {item.summaries.map((student) => (
+                <TableRow key={student.systemId}>
+                  <TableCell>
+                    <div className="recent-activity-time-student">
+                      <ProfileCircle
+                        name={student.actorName}
+                        size="tiny"
+                      />
+                      <span>{student.actorName}</span>
+                    </div>
+                  </TableCell>
 
-            {item.summaries.map((student) => (
-              <div
-                key={student.systemId}
-                className="recent-activity-time-grid-row"
-              >
-                <div className="recent-activity-time-student">
-                  <ProfileCircle name={student.actorName} size="tiny" />
-                  <span>{student.actorName}</span>
-                </div>
+                  <TableCell>
+                    {student.thisWeek}{" "}
+                    {student.thisWeek === 1 ? "hour" : "hours"}
+                  </TableCell>
 
-                <span>
-                  {student.thisWeek} {student.thisWeek === 1 ? "hour" : "hours"}
-                </span>
+                  <TableCell>
+                    {student.lastWeek}{" "}
+                    {student.lastWeek === 1 ? "hour" : "hours"}
+                  </TableCell>
 
-                <span>
-                  {student.lastWeek} {student.lastWeek === 1 ? "hour" : "hours"}
-                </span>
-
-                <span>{student.weeklyAverage} {student.weeklyAverage === 1 ? "hour" : "hours"}</span>
-              </div>
-            ))}
-          </div>
-        </Button>
+                  <TableCell>
+                    {student.weeklyAverage}{" "}
+                    {student.weeklyAverage === 1 ? "hour" : "hours"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       );
-
       return (
         <WeeklyHoursViewer
           key={item.id}
