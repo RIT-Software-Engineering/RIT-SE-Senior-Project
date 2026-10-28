@@ -13,7 +13,10 @@ import ActionPanel from "./ActionPanel";
 import { formatDateNoOffset } from "../../../util/functions/utils";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import GanttChart from "../../DashboardTab/TimelinesView/Timeline/GanttChart";
-import { isSemesterActive } from "../../../util/functions/utils";
+import {
+  isSemesterActive,
+  formatActionTarget,
+} from "../../../util/functions/utils";
 import "../../../../css/components/tabs/action.css";
 
 export default function ActionTable(props) {
@@ -63,7 +66,7 @@ export default function ActionTable(props) {
       return (
         <TableRow key={i}>
           <TableCell>{action.action_title}</TableCell>
-          <TableCell>{typeLabel(action.action_target)}</TableCell>
+          <TableCell>{formatActionTarget(action.action_target)}</TableCell>
           <TableCell>{formatDateNoOffset(action.start_date)}</TableCell>
           <TableCell>{formatDateNoOffset(action.due_date)}</TableCell>
           <TableCell>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "semantic-ui-css/semantic.min.css";
+import ProfileCircle from "./ProfileCircle";
 import {
   FormInput,
   Grid,
@@ -20,6 +21,7 @@ import {
 } from "semantic-ui-react";
 
 import "./../../../css/utils/peer.css";
+
 const sentenceToCamelCase = (string = "") =>
   string.replaceAll(
     /(\w+).?/g,
@@ -81,7 +83,11 @@ export function QuestionFeedback({
               className="peer-header"
             >
               {ordered ? `${index + 1}. ${question}` : question}
-              {required && <Header content="*" color={"red"} floated="left" />}
+              {required && (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {"\u00A0"}*
+                </span>
+              )}
             </Header>
           )}
           {students.map((student, students_index) => {
@@ -90,11 +96,9 @@ export function QuestionFeedback({
             return (
               <div key={`${index}:${students_index}`} className="peer-header">
                 {!isInline && (
-                  <Header
-                    textAlign="left"
-                    content={student}
-                    as={hasQuestions ? "h4" : "h3"}
-                  />
+                  <Header textAlign="left" as={hasQuestions ? "h4" : "h3"}>
+                    <ProfileCircle name={student} size="tiny" showFullName />
+                  </Header>
                 )}
                 <FormInput
                   name={name}
@@ -217,7 +221,7 @@ export function QuestionTable({
               <>
                 <TableRow key={student}>
                   <TableCell>
-                    <Header as="h4"> {student} </Header>
+                    <ProfileCircle name={student} size="tiny" showFullName />
                     {/* <Label size='large' basic>{student}</Label> */}
                   </TableCell>
                   {questions.map((question) => (
@@ -296,18 +300,18 @@ export function QuestionMoodRating({
   const [selections, setSelections] = useState({});
 
   const handleSelection = (student, rating) => {
-    setSelections({
-      ...selections,
+    setSelections((prevSelections) => ({
+      ...prevSelections,
       [student]: rating,
-    });
+    }));
   };
 
   return (
     <div className="peer-question">
-      <Header as="h2" content={question} textAlign="left" dividing>
-        {question + " "}
+      <Header as="h2" textAlign="left" dividing>
+        {question}
         {required && (
-          <Header.Content content="*" className="peer-content-color" />
+          <span style={{ color: "red", fontWeight: "bold" }}>{"\u00A0"}*</span>
         )}
       </Header>
       <br />
@@ -315,38 +319,100 @@ export function QuestionMoodRating({
         {students.map((student) => {
           const name = `Mood-${sentenceToCamelCase(question)}-${student}`;
           const isErrored = errorFields.has(name);
+
           return (
-            <div key={student} className="peer-student">
+            <div
+              key={student}
+              className="peer-student"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid var(--border-color, #ddd)",
+                borderRadius: "10px",
+                padding: "10px",
+                marginBottom: "10px",
+                overflowX: "auto",
+              }}
+            >
               {/* Student Name */}
-              <div className="peer-name">
-                <Header as={"h3"} className="peer-error">
-                  {isErrored && (
-                    <Icon
-                      size="tiny"
-                      name={"exclamation circle"}
-                      color={"red"}
-                    />
-                  )}
-                  <Header.Content
-                    as={isErrored ? "i" : null}
-                    content={student}
+              <div
+                className="peer-name"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  paddingBottom: "4px",
+                }}
+              >
+                <ProfileCircle name={student} size="tiny" showFullName />
+                {isErrored && (
+                  <Icon
+                    className="peer-error"
+                    name="exclamation circle"
+                    color="red"
+                    size="large"
+                    style={{ margin: 0, position: "relative" }}
                   />
-                </Header>
+                )}
               </div>
 
               {/* Rating Levels */}
-              <div className="peer-rating">
+              <div
+                className="peer-rating"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${levels.length}, minmax(0, 1fr))`,
+                  gap: "8px",
+                  width: "100%",
+                }}
+              >
                 {levels.map((level, index) => (
-                  <div key={`col-${student}-${index}`} className="peer-levels">
+                  <div
+                    key={`col-${student}-${index}`}
+                    className="peer-levels"
+                    onClick={() => handleSelection(student, index)}
+                    style={{
+                      minWidth: 0,
+                      minHeight: "58px",
+                      padding: "8px",
+                      fontSize: "0.90rem",
+                      border: "1px solid var(--border-color, #ddd)",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      display: "grid",
+                      gridTemplateColumns: "22px 1fr",
+                      alignItems: "center",
+                      columnGap: "10px",
+                    }}
+                  >
                     <Radio
                       className="peer-radio"
-                      name={`Mood-${sentenceToCamelCase(question)}-${student}`}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                      name={name}
                       value={index}
                       checked={selections[student] === index}
-                      onChange={() => handleSelection(student, index)}
+                      onChange={(e, data) => {
+                        e.stopPropagation();
+                        handleSelection(student, data.value);
+                      }}
                       required={required}
+                      aria-label={level}
                     />
-                    {level}
+
+                    <span
+                      style={{
+                        lineHeight: "1.15",
+                        textAlign: "center",
+                      }}
+                    >
+                      {level}
+                    </span>
                   </div>
                 ))}
               </div>

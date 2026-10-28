@@ -16,7 +16,7 @@ export default function SemesterPanel(props) {
   let submissionModalMessages = {
     SUCCESS: "The semester has been updated.",
     FAIL: "We were unable to receive your update to the semester.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+    SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
   };
 
   let submitRoute =
