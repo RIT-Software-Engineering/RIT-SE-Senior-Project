@@ -25,7 +25,7 @@ export default function UserPanel(props) {
   let submissionModalMessages = {
     SUCCESS: "The user has been updated.",
     FAIL: "Error updating the user.",
-    SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+    SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
   };
 
   let submitRoute = config.url.API_POST_EDIT_USER;

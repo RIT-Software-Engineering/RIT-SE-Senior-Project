@@ -13,22 +13,17 @@ export default function ProjectViewerModal(props) {
     if (props.onClose) props.onClose();
   };
 
-  // Determine the trigger element.
-  // We use the custom trigger if provided, otherwise, default to the eye Button.
-  // The onClick handler is applied directly to ensure it works with Semantic UI layout.
   const triggerElement = props.trigger || (
-    <Button
-      icon="eye"
-      onClick={handleOpen} // Handler applied directly to the Button
-    />
+    <Button icon="eye" onClick={handleOpen} />
   );
 
   return (
     <ModalWrapper
       open={open}
+      onOpen={handleOpen}
       onClose={handleClose}
       closeOnDimmerClick={false}
-      trigger={triggerElement} // Pass the button directly
+      trigger={triggerElement}
       title={`Viewing "${props.project?.display_name || props.project?.title || "Project"}"`}
       actions={[<Button key="close" content="Close" onClick={handleClose} />]}
     >

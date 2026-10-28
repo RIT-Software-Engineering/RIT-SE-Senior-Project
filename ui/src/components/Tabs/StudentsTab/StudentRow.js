@@ -37,6 +37,7 @@ export default function StudentRow(props) {
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
   const [canUseAI, setCanUseAI] = useState(false);
+  const [isGeneratingAISummary, setIsGeneratingAISummary] = useState(false);
 
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -124,7 +125,11 @@ export default function StudentRow(props) {
   };
 
   const handleGenerateAISummary = async () => {
+    setIsGeneratingAISummary(true);
+
     try {
+      console.log("Starting AI summary generation...");
+
       const selectedStudentName = `${props.student.fname} ${props.student.lname}`;
       const sanitizedReviews = peerReviews.map((review) =>
         sanitizeReview(review, selectedStudentName),
@@ -142,11 +147,21 @@ export default function StudentRow(props) {
         },
       );
 
+      console.log("AI response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`AI request failed with status ${response.status}`);
+      }
+
       const textData = await response.text();
       setAiSummary(textData || "No Summary Generated");
+
+      console.log("AI summary generated successfully");
     } catch (error) {
       console.error("Error generating AI Summary:", error);
-      setAiSummary("Error generating summary");
+      setAiSummary("Error generating summary. Check the console for details.");
+    } finally {
+      setIsGeneratingAISummary(false);
     }
   };
 
@@ -559,6 +574,8 @@ export default function StudentRow(props) {
                   attached="bottom"
                   onClick={handleGenerateAISummary}
                   color="grey"
+                  loading={isGeneratingAISummary}
+                  disabled={isGeneratingAISummary}
                   content={
                     customPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
                       ? "Generate AI Summarization with Custom Prompt"

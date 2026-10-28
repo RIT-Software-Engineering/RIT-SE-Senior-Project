@@ -5,7 +5,7 @@
 .ui.form .required.field > label::after,
 .ui.form .field.required > label::after,
 h3.required-field::after {
-  content: " *";
+  content: "\00a0*";
   color: #db2828;
   font-weight: bold;
 }
