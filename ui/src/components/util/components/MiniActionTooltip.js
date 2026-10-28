@@ -1,4 +1,5 @@
 import { Popup } from "semantic-ui-react";
+import "../../../css/utils/tooltip.css";
 
 export function MiniActionTooltip({ trigger, action }) {
   let isDarkMode = document.body.classList.contains("dark-mode");
@@ -14,6 +15,7 @@ export function MiniActionTooltip({ trigger, action }) {
   return (
     <Popup
       trigger={trigger}
+      className="universal-tooltip"
       fluid
       content={
         <div>

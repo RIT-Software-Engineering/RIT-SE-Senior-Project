@@ -45,7 +45,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now')) || '-01-29'
         ),
-        NULL
+        '{"note": "Team name picked by group vote at the kickoff meeting"}'
     ),
     (
         15,
@@ -57,7 +57,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now')) || '-01-30'
         ),
-        NULL
+        '{"note": "Team name picked by group vote at the kickoff meeting"}'
     ),
     (
         15,
@@ -69,7 +69,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now')) || '-01-31'
         ),
-        NULL
+        '{"note": "Team name picked by group vote at the kickoff meeting"}'
     ),
     -- Project Proposal
     (
@@ -82,7 +82,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now')) || '-02-15'
         ),
-        NULL
+        '{"note": "Budget section is still a rough estimate"}'
     ),
     (
         16,
@@ -118,7 +118,31 @@ VALUES
         DATE(
             strftime('%Y', DATE('now')) || '-02-18'
         ),
-        NULL
+        '{"note": "Uploaded the wrong file first, this is the corrected version"}'
+    ),
+    (
+        16,
+        'aeg836',
+        NULL,
+        '7_carecraze',
+        '{"proposal":"CareCraze care coordination proposal"}',
+        'proposal_aeg836.pdf',
+        DATE(
+            strftime('%Y', DATE('now')) || '-02-19'
+        ),
+        '{"note": "Appendix with survey questions to follow"}'
+    ),
+    (
+        16,
+        'pks286',
+        NULL,
+        '8_dataforge',
+        '{"proposal":"DataForge data pipeline proposal"}',
+        'proposal_pks286.pdf',
+        DATE(
+            strftime('%Y', DATE('now')) || '-02-20'
+        ),
+        '{"note": "Scope is limited to the first two data sources for now"}'
     ),
     -- project timeline
     (
@@ -227,7 +251,7 @@ VALUES
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_rf9472.pdf',
         DATE('now', '-6 days'),
-        NULL
+        '{"note": "Roles may shift after the first sprint review"}'
     ),
     (
         22,
@@ -237,7 +261,7 @@ VALUES
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_ef9474.pdf',
         DATE('now', '-7 days'),
-        NULL
+        '{"note": "Submitting on behalf of the student as me (a coach)"}'
     ),
     (
         22,
@@ -478,7 +502,7 @@ VALUES
         '{"team_name":"GrowEasy", "email":"groweasy1@example.com"}',
         NULL,
         strftime('%Y', DATE('now', '-1 year')) || '-01-15',
-        NULL
+        '{"note": "Team name finalized with everyone on a group call"}'
     ),
     (
         2,
@@ -488,7 +512,7 @@ VALUES
         '{"proposal":"GrowEasy project proposal"}',
         'proposal_groweasy_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-02-01',
-        NULL
+        '{"note": "Draft proposal, budget section still rough"}'
     ),
     (
         3,
@@ -558,7 +582,7 @@ VALUES
         '{"analysis":"GrowEasy competitor analysis"}',
         'analysis_groweasy_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-05-15',
-        NULL
+        '{"note": "Only covers the three biggest competitors"}'
     ),
     (
         10,
@@ -568,7 +592,7 @@ VALUES
         '{"risks":"GrowEasy risk assessment"}',
         'risks_groweasy_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-06-01',
-        NULL
+        '{"note": "Supply risk section added after coach feedback"}'
     ),
     (
         11,
@@ -697,7 +721,7 @@ VALUES
         '{"team_name":"SmartSpark", "email":"smartspark1@example.com"}',
         NULL,
         strftime('%Y', DATE('now', '-1 year')) || '-01-20',
-        NULL
+        '{"note": "Team name chosen by group vote"}'
     ),
     (
         2,
@@ -707,7 +731,7 @@ VALUES
         '{"proposal":"SmartSpark project proposal"}',
         'proposal_smartspark_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-01-21',
-        NULL
+        '{"note": "First draft, will revise after team review"}'
     ),
     (
         3,
@@ -717,7 +741,7 @@ VALUES
         '{"timeline":"SmartSpark project timeline"}',
         'timeline_smartspark_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-02-05',
-        NULL
+        '{"note": "Milestone dates depend on supplier lead times"}'
     ),
     (
         4,
@@ -727,7 +751,7 @@ VALUES
         '{"report":"SmartSpark interim report"}',
         'report_smartspark_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-02-20',
-        NULL
+        '{"note": "Interim numbers are preliminary"}'
     ),
     (
         5,
@@ -737,7 +761,7 @@ VALUES
         '{"survey":"SmartSpark market research"}',
         'survey_smartspark_user1.pdf',
         strftime('%Y', DATE('now', '-1 year')) || '-02-21',
-        NULL
+        '{"note": "Survey sample was about 40 respondents"}'
     ),
     (
         6,
@@ -894,7 +918,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-01'
         ),
-        NULL
+        '{"note": "Submitting team name on behalf of the team lead as me (a coach)"}'
     ),
     (
         2,
@@ -918,7 +942,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-03'
         ),
-        NULL
+        '{"note": "Timeline assumes the prototype is ready by week 6"}'
     ),
     (
         4,
@@ -930,7 +954,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-04'
         ),
-        NULL
+        '{"note": "Testing results still being collected"}'
     ),
     (
         5,
@@ -942,7 +966,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-05'
         ),
-        NULL
+        '{"note": "Survey sent to students only, may add other groups later"}'
     ),
     (
         6,
@@ -954,7 +978,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-06'
         ),
-        NULL
+        '{"note": "Submitting on behalf of the student as me (a coach), portal upload was failing"}'
     ),
     (
         7,
@@ -1119,7 +1143,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-01'
         ),
-        NULL
+        '{"note": "Submitting team name on behalf of the team lead as me (a coach)"}'
     ),
     (
         2,
@@ -1131,7 +1155,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-02'
         ),
-        NULL
+        '{"note": "Proposal focuses on the small business segment only"}'
     ),
     (
         3,
@@ -1203,7 +1227,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-08'
         ),
-        NULL
+        '{"note": "Submitting on behalf of the student as me (a coach)"}'
     ),
     (
         9,
@@ -1215,7 +1239,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-09'
         ),
-        NULL
+        '{"note": "Pricing data comes from public websites only"}'
     ),
     (
         10,
@@ -1227,7 +1251,7 @@ VALUES
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-10'
         ),
-        NULL
+        '{"note": "Regulatory risks to be reviewed with the coach"}'
     ),
     (
         11,

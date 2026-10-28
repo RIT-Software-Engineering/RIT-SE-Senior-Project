@@ -12,6 +12,7 @@ import DOMpurify from "dompurify";
 import ProfileCircle from "../../../../util/components/ProfileCircle";
 import { formatDate } from "../../../../util/functions/utils";
 import "../../../../../css/components/tabs/tool.css";
+import "../../../../../css/utils/tooltip.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -232,7 +233,7 @@ export default function ToolTip(props) {
                         <Popup
                           content={noteText ? `Note: ${noteText}` : ""}
                           on="hover"
-                          className="note-popup"
+                          className="universal-tooltip"
                           trigger={trigger}
                         />
                       ) : (
@@ -309,7 +310,6 @@ export default function ToolTip(props) {
   return (
     <>
       <Popup
-        onClose={() => console.log("POPUP CLOSE")}
         open={popupOpen}
         header={props.action?.action_title}
         content={content()}
@@ -317,7 +317,7 @@ export default function ToolTip(props) {
         closeOnEscape={true}
         wide={hasMockedSubmission}
         inverted={document.body.classList.contains("dark-mode")}
-        className="tool-pop"
+        className="universal-tooltip"
         offset={[offsetX, 0]}
         trigger={props.trigger}
         on="click"

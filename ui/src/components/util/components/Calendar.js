@@ -4,6 +4,7 @@ import _ from "lodash";
 import { Button, Dropdown, Icon, Popup } from "semantic-ui-react";
 import "./../../../css/components/calendar.css";
 import "./../../../css/utils/responsive.css";
+import "./../../../css/utils/tooltip.css";
 import { MiniActionTooltip } from "./MiniActionTooltip.js";
 
 export function Calendar(props) {
@@ -299,6 +300,7 @@ export function Calendar(props) {
             </span>
             {breakPeriod.length > 0 && (
               <Popup
+                className="universal-tooltip"
                 content={
                   <div>
                     {breakPeriod.map((bp, index) => (
@@ -315,7 +317,6 @@ export function Calendar(props) {
                     ))}
                   </div>
                 }
-                inverted={isDarkMode}
                 position="top right"
                 hoverable
                 trigger={

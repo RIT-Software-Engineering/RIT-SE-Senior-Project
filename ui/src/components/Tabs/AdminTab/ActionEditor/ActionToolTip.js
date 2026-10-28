@@ -5,6 +5,7 @@ import { formatDateNoOffset } from "../../../util/functions/utils";
 import ActionPanel from "./ActionPanel";
 import PreviewHtml from "../../../util/components/PreviewHtml";
 import "../../../../css/components/tabs/action.css";
+import "../../../../css/utils/tooltip.css";
 
 const submissionTypeMap = {
   [ACTION_TARGETS.individual]: "Individual",
@@ -92,7 +93,7 @@ function ActionToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
-      className="action-pop"
+      className="universal-tooltip"
       trigger={props.trigger}
       on="click"
       offset={[offsetX, 0]}
