@@ -143,6 +143,9 @@ For users' preferences, like dark mode and milestone/gantt/calendar default view
 5. Additionally, when signed in as an admin last login times can be found type sorted in the Admin tab. Here you can see all user last login times including admins and coaches (as shown below)
    ![Last Login 4](images/lastlogin4.png)
 
+6. The Dashboard's [Recent Activity](dashboard.md#recent-activity) uses the user's previous visit as an activity cutoff. Sign in, note the displayed Recent Activity cutoff, sign out, allow or create new project activity, and sign in again. The new session should retain the previous login as the point from which new activity is shown rather than treating the current sign-in time as the beginning of the activity window.
+   ![Recent Activity](images/recentactivitycutoff.png)
+
 ## User Profile Circle
 
 1. All signed in users have a profile circle tied to their account to help improve visibility within the system. A user’s own profile circle can be visible on the top right corner alongside the “Profile” button.
