@@ -43,6 +43,7 @@ export default function SponsorsTab(props) {
       .then((sponsors) => {
         setSponsors(sponsors.sponsors);
         setSponsorsCount(sponsors.sponsorsCount);
+        console.log(sponsors.sponsors); ////
       })
       .catch((error) => {
         alert("Failed to get sponsors data " + error);
@@ -96,6 +97,7 @@ export default function SponsorsTab(props) {
         setIsSearchLoading(false);
         setSponsorsCount(results.sponsorsCount);
         setSponsors(results.sponsors);
+        console.log("get search for sponsor", results);
       })
       .catch((error) => {
         alert("An issue occurred while searching for sponsor content " + error);
