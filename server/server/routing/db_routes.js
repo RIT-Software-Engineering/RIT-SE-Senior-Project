@@ -697,11 +697,6 @@ db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
         ? currentWeekStart
         : semesterLastWeekEnd;
 
-      const completedWeeks = Math.max(
-        0,
-        cutoff.diff(semesterStart.startOf("week"), "week")
-      );
-
       const sql = `
         WITH weekly_totals AS (
           SELECT
@@ -718,16 +713,31 @@ db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
             AND date(work_date) < date(?)
             AND date(work_date) <= date(?)
           GROUP BY system_id, week_start
+        ),
+
+        active_weeks AS (
+          SELECT week_start
+          FROM weekly_totals
+          GROUP BY week_start
+          HAVING SUM(weekly_hours) > 0
         )
+
         SELECT
           system_id,
           COALESCE(
             ROUND(
-              AVG(
+              SUM(
                 CASE
-                  WHEN weekly_hours > 0 THEN weekly_hours
-                  ELSE NULL
+                  WHEN week_start IN (
+                    SELECT week_start FROM active_weeks
+                  )
+                  THEN weekly_hours
+                  ELSE 0
                 END
+              ) * 1.0 /
+              NULLIF(
+                (SELECT COUNT(*) FROM active_weeks),
+                0
               ),
               2
             ),
