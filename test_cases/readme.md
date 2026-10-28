@@ -15,6 +15,7 @@ This document outlines general test cases and their workflow procedures to ensur
 - [Announcements & Breaks](announcements.md) - Visibility, Creating, Editing, Deactivating, Breaks
 - [AI-Driven Integration](ai.md) - API Key, Student Progress Summarization, AI Coach Feedback Generation
 - [Peer Evaluations](evals.md) - Creation, Student & Coach Processes
+- [Dashboard](dashboard.md) - Time Log Summary, Recent Activity, Dismissal, Configuration
 
 ## Terminology
 

@@ -21,7 +21,7 @@ const uiConfig = {
     activityFeed: {
       enabled: true,
       title: "Recent Activity",
-      maxVisible: 3,
+      maxVisible: 5,
       allowDismiss: true,
       showOverdueActions: true,
       showActionSubmissions: true,
