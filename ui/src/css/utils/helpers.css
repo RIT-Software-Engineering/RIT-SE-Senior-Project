@@ -14,14 +14,15 @@
   cursor: pointer;
 }
 
-.fake-div, button.fake-div {
+.fake-div,
+button.fake-div {
   text-align: start;
   line-height: 1.4285em;
   display: block;
   unicode-bidi: isolate;
   width: 100%;
 
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 
   border-block-style: none;
   border-inline-style: none;
@@ -75,6 +76,10 @@
 
 .dashboard-menu-icon {
   margin-right: 5px;
+}
+
+.notes-field {
+  margin-top: 1em;
 }
 
 /* Dark Mode Styles */
