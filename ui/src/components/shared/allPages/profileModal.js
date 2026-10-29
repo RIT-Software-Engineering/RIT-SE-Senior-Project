@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
@@ -6,8 +6,11 @@ import { useSessionStorage, formatDateTime } from "../../util/functions/utils";
 import ProfileCircle from "../../util/components/ProfileCircle";
 import "./../../../css/components/shared/profileModal.css";
 
+const EMPTY_CONTACT = { method: "email", label: "", value: "" };
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
+  console.log("ProfileModal user:", user);
   const [darkMode, setDarkMode] = useState(false);
+  const [contact, setContact] = useState(null);
   const [milestonePreference, setMilestonePreference] = useSessionStorage(
     "defaultMilestoneView",
     true,
@@ -22,9 +25,32 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [originalAdditionalInfo, setOriginalAdditionalInfo] = useState("");
+  const [preferredContact, setPreferredContact] = useState(EMPTY_CONTACT);
+  const [originalPreferredContact, setOriginalPreferredContact] =
+    useState(EMPTY_CONTACT);
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef(null);
   const hasFetchedData = useRef(false);
+  const [coaches, setCoaches] = useState([]);
+
+  const loadAdditionalInfo = useCallback(() => {
+    if (!user?.user) return;
+    SecureFetch(config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const info = data?.additional_info || "";
+        setAdditionalInfo(info);
+        setOriginalAdditionalInfo(info);
+
+        const pc = { ...EMPTY_CONTACT, ...(data?.preferred_contact || {}) };
+        setPreferredContact(pc);
+        setOriginalPreferredContact(pc);
+
+        setContact(data?.contact || null);
+      })
+      .catch((err) => console.error("Failed to fetch additional info:", err));
+  }, [user?.user]);
+
   useEffect(() => {
     if (open && user?.user && !hasFetchedData.current) {
       hasFetchedData.current = true;
@@ -68,24 +94,19 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         })
         .catch((err) => console.error("Failed to fetch milestone view:", err));
 
-      SecureFetch(
-        config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
-      )
+      SecureFetch(config.url.API_GET_MY_COACHES)
         .then((res) => res.json())
-        .then((data) => {
-          const info = data?.additional_info || "";
-          console.log("Fetched additional info:", info);
-          setAdditionalInfo(info);
-          setOriginalAdditionalInfo(info);
-        })
-        .catch((err) => console.error("Failed to fetch additional info:", err));
+        .then((data) => setCoaches(Array.isArray(data) ? data : []))
+        .catch((err) => console.error("Failed to fetch coaches:", err));
+
+      loadAdditionalInfo();
     }
 
     // Reset flag when modal closes
     if (!open) {
       hasFetchedData.current = false;
     }
-  }, [open, user]);
+  }, [open, user, loadAdditionalInfo]);
 
   // Focus text area when entering edit mode
   useEffect(() => {
@@ -192,12 +213,13 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         body: JSON.stringify({
           system_id: user.user,
           additional_info: additionalInfo,
+          preferred_contact: preferredContact,
         }),
       });
 
       if (!response.ok) throw new Error("Failed to update additional info");
 
-      setOriginalAdditionalInfo(additionalInfo);
+      loadAdditionalInfo();
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating additional info:", error);
@@ -251,11 +273,32 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                     ? formatDateTime(user.last_login)
                     : "Never Logged In"}
                 </div>
+                {user.role === USERTYPES.STUDENT && coaches.length > 0 && (
+                  <div className="profile-coach">
+                    <strong>
+                      {coaches.length > 1 ? "Coaches:" : "Coach:"}
+                    </strong>
+                    {coaches.map((coach) => (
+                      <ProfileCircle
+                        key={coach.system_id}
+                        user={{
+                          system_id: coach.system_id,
+                          fname: coach.fname,
+                          lname: coach.lname,
+                          role: "coach",
+                        }}
+                        isStudent={false}
+                        size="tiny"
+                        showFullName
+                        allowInfo
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Additional Info (Students Only) */}
-              {user.role === USERTYPES.STUDENT && (
-                <div className="profile-marginbottom2">
+              {[USERTYPES.STUDENT, USERTYPES.COACH].includes(user.role) && (
+                <div className="profile-contact-fields">
                   <strong>Additional Info:</strong>
                   {isEditing ? (
                     <>
@@ -275,30 +318,103 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         className="profile-text"
                         placeholder="Enter additional information..."
                       />
-                      <Button
-                        onClick={handleSaveAdditionalInfo}
-                        primary
-                        size="small"
-                        className="profile-button"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setAdditionalInfo(originalAdditionalInfo);
-                          setIsEditing(false);
-                        }}
-                        size="small"
-                        className="profile-cancel"
-                      >
-                        Cancel
-                      </Button>
+                      <div className="contact">
+                        <strong>Preferred Contact:</strong>
+                        <select
+                          className="dropdown"
+                          value={preferredContact.method}
+                          onChange={(e) =>
+                            setPreferredContact({
+                              method: e.target.value,
+                              label: "",
+                              value: "",
+                            })
+                          }
+                        >
+                          <option value="email">Email</option>
+                          <option value="phone">Phone</option>
+                          <option value="other">Other</option>
+                        </select>
+
+                        {preferredContact.method === "phone" && (
+                          <input
+                            className="profile-text-small"
+                            maxLength={30}
+                            placeholder="Phone number"
+                            value={preferredContact.value}
+                            onChange={(e) =>
+                              setPreferredContact({
+                                ...preferredContact,
+                                value: e.target.value,
+                              })
+                            }
+                          />
+                        )}
+
+                        {preferredContact.method === "other" && (
+                          <>
+                            <input
+                              className="profile-text-small"
+                              maxLength={30}
+                              placeholder="Platform (Discord, Slack, etc.)"
+                              value={preferredContact.label}
+                              onChange={(e) =>
+                                setPreferredContact({
+                                  ...preferredContact,
+                                  label: e.target.value,
+                                })
+                              }
+                            />
+                            <input
+                              className="profile-text-small"
+                              maxLength={100}
+                              placeholder="Contact info"
+                              value={preferredContact.value}
+                              onChange={(e) =>
+                                setPreferredContact({
+                                  ...preferredContact,
+                                  value: e.target.value,
+                                })
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div className="profile-buttons">
+                        <Button
+                          onClick={handleSaveAdditionalInfo}
+                          primary
+                          size="small"
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setAdditionalInfo(originalAdditionalInfo);
+                            setPreferredContact(originalPreferredContact);
+                            setIsEditing(false);
+                          }}
+                          size="small"
+                          className="profile-cancel"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     <>
                       <span className="profile-edit">
                         {additionalInfo || "No additional info available"}
                       </span>
+                      <div>
+                        <strong>Preferred Contact:</strong>
+                        <div className="profile-contact-value">
+                          {contact
+                            ? `${contact.label}: ${contact.value}`
+                            : "Not set"}
+                        </div>
+                      </div>
+
                       <Button
                         onClick={() => setIsEditing(true)}
                         size="small"

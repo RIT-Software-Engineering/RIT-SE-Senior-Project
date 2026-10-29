@@ -4634,8 +4634,9 @@ module.exports = (db) => {
 
       try {
         const result = await db.query(
-          `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
-             FROM users WHERE system_id = ?`,
+          `SELECT email, json_extract(profile_info, '$.additional_info') AS additional_info,
+            json_extract(profile_info, '$.preferred_contact') AS preferred_contact
+           FROM users WHERE system_id = ?`,
           [requestedUserId],
         );
 
@@ -4645,7 +4646,27 @@ module.exports = (db) => {
           return next(error);
         }
 
-        res.send(result[0]);
+        const row = result[0];
+        let pref = null;
+        try {
+          pref = row.preferred_contact
+            ? JSON.parse(row.preferred_contact)
+            : null;
+        } catch {}
+
+        let contact = null;
+        if (!pref || pref.method === "email")
+          contact = { label: "Email", value: row.email };
+        else if (pref.method === "phone" && pref.value)
+          contact = { label: "Phone", value: pref.value };
+        else if (pref.method === "other" && pref.value)
+          contact = { label: pref.label || "Other", value: pref.value };
+
+        res.send({
+          additional_info: row.additional_info,
+          preferred_contact: pref,
+          contact,
+        });
       } catch (err) {
         const error = new Error("Database query failed");
         error.statusCode = 500;
@@ -4659,7 +4680,7 @@ module.exports = (db) => {
     "/editAdditionalInfo",
     [UserAuth.isSignedIn],
     async (req, res, next) => {
-      const { system_id, additional_info } = req.body;
+      const { system_id, additional_info, preferred_contact } = req.body;
 
       if (!system_id || additional_info === undefined) {
         return res
@@ -4667,14 +4688,29 @@ module.exports = (db) => {
           .send({ error: "system_id and additional_info are required" });
       }
 
+      const METHODS = ["email", "phone", "other"];
+      const pref = METHODS.includes(preferred_contact?.method)
+        ? {
+            method: preferred_contact.method,
+            label: String(preferred_contact.label || "")
+              .trim()
+              .slice(0, 30),
+            value: String(preferred_contact.value || "")
+              .trim()
+              .slice(0, 100),
+          }
+        : { method: "email", label: "", value: "" };
+
       const updateQuery = `
         UPDATE users
-        SET profile_info = json_set(profile_info, '$.additional_info', ?)
+        SET profile_info = json_set(profile_info, '$.additional_info', ?, '$.preferred_contact', json(?))
         WHERE system_id = ?
-    `;
+      `;
+
+      const params = [additional_info, JSON.stringify(pref), system_id];
 
       try {
-        await db.query(updateQuery, [additional_info, system_id]);
+        await db.query(updateQuery, params);
         res
           .status(200)
           .send({ message: "Additional info updated successfully" });
@@ -5003,6 +5039,29 @@ module.exports = (db) => {
       }
     },
   );
+
+  //get coach for student profile
+  db_router.get("/getMyCoaches", [UserAuth.isSignedIn], (req, res, next) => {
+    const projectId =
+      req.user.type === ROLES.STUDENT ? req.user.project : req.query.project_id;
+
+    if (!projectId) return res.send([]);
+
+    db.query(
+      `SELECT users.system_id, users.fname, users.lname
+        FROM project_coaches
+        JOIN users ON users.system_id = project_coaches.coach_id
+        WHERE project_coaches.project_id = ?
+        ORDER BY users.fname, users.lname`,
+      [projectId],
+    )
+      .then((coaches) => res.send(coaches))
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
 
   return db_router;
 };

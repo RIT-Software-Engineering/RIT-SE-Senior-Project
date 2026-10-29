@@ -78,7 +78,14 @@ export default function ProjectTime(props) {
                         .map((timeLog, idx) => {
                           let submittedBy = (
                             <span className="time-table">
-                              <ProfileCircle name={timeLog.name} showFullName />
+                              <ProfileCircle
+                                user={{ system_id: timeLog.mock_id }}
+                                name={timeLog.name}
+                                size="tiny"
+                                isStudent={false}
+                                showFullName
+                                allowInfo
+                              />
                               ({timeLog.system_id})
                             </span>
                           );
@@ -87,14 +94,21 @@ export default function ProjectTime(props) {
                             submittedBy = (
                               <span className="time-table">
                                 <ProfileCircle
-                                  name={timeLog.mock_name}
-                                  showFullName
+                                  user={{ system_id: timeLog.mock_id }}
+                                  name={timeLog.name}
+                                  size="tiny"
                                   isStudent={false}
+                                  showFullName
+                                  allowInfo
                                 />
                                 ({timeLog.mock_id}) as&nbsp;
                                 <ProfileCircle
+                                  user={{ system_id: timeLog.system_id }}
                                   name={timeLog.name}
+                                  size="tiny"
+                                  isStudent={false}
                                   showFullName
+                                  allowInfo
                                 />
                                 ({timeLog.system_id})
                               </span>
@@ -119,10 +133,12 @@ export default function ProjectTime(props) {
                                     {timeLog.mock_id ? (
                                       <>
                                         <ProfileCircle
+                                          user={{ system_id: timeLog.mock_id }}
                                           name={timeLog.mock_name ?? ""}
                                           size="tiny"
                                           isStudent={false}
                                           showFullName
+                                          allowInfo
                                         />
                                         <span className="time-profile">as</span>
                                       </>
@@ -130,9 +146,12 @@ export default function ProjectTime(props) {
                                       ""
                                     )}
                                     <ProfileCircle
+                                      user={{ system_id: timeLog.system_id }}
                                       name={timeLog.name ?? ""}
                                       size="tiny"
+                                      isStudent={false}
                                       showFullName
+                                      allowInfo
                                     />
                                   </div>
                                 </TableCell>
@@ -223,17 +242,12 @@ export default function ProjectTime(props) {
                               <TableCell>
                                 <div className="time-table-cell">
                                   <ProfileCircle
-                                    user={{
-                                      fname: timeStat.name
-                                        .toString()
-                                        .split(" ")[0],
-                                      lname: timeStat.name
-                                        .toString()
-                                        .split(" ")[1],
-                                    }}
+                                    user={{ system_id: timeStat.system_id }}
+                                    name={timeStat.name}
                                     size="tiny"
+                                    showFullName
+                                    allowInfo
                                   />
-                                  {timeStat.name}
                                 </div>
                               </TableCell>
                               <TableCell>
