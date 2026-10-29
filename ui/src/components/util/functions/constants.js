@@ -93,6 +93,7 @@ export const config = {
     API_GET_GANTT_VIEW: `${BASE_API_URL}/db/getGanttView`,
     API_GET_CALENDAR_VIEW: `${BASE_API_URL}/db/getCalendarView`,
     API_GET_MILESTONE_VIEW: `${BASE_API_URL}/db/getMilestoneView`,
+    API_GET_MY_COACHES: `${BASE_API_URL}/db/getMyCoaches`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
@@ -241,6 +242,12 @@ export const ACTION_STATES = {
   GREEN: "green",
   GREY: "grey",
   PURPLE: "purple", //used for break period
+};
+
+export const TOOLTIP_CONFIG = {
+  position: "top left",
+  mouseEnterDelay: 250,
+  mouseLeaveDelay: 100,
 };
 
 export const SERVER_TIMEZONE = "America/New_York";
