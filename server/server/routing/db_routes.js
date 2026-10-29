@@ -2774,20 +2774,18 @@ module.exports = (db) => {
                 system_id,
                 project,
                 form_data,
-                files,
-                notes
+                files
                 ${(req.user.mock && ",mock_id") || ""}
                 )
-            VALUES (?,?,?,?,?,?${(req.user.mock && ",?") || ""})
+            VALUES (?,?,?,?,?${(req.user.mock && ",?") || ""})
         `;
-      let notesJSON = JSON.stringify({ note: body.notes || "" });
+
       let params = [
         body.action_template,
         req.user.system_id,
         body.project,
         body.form_data,
         filenamesCSV,
-        notesJSON,
       ];
       if (req.user.mock) {
         params.push(req.user.mock.system_id);
@@ -3003,21 +3001,16 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project, 
-          CASE
-            WHEN actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?
-            THEN action_log.notes
-            ELSE NULL
-          END AS notes,
-          actions.action_title, actions.due_date,
-          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-          (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
-          (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
-          FROM action_log
-          JOIN actions ON actions.action_id = action_log.action_template
-          WHERE action_log.action_template = ? AND action_log.project = ?`;
-        params = [req.user.system_id, req.query.action_id, req.user.project];
+        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
+                        actions.action_title, actions.due_date,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
+                        (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
+                    FROM action_log
+                        JOIN actions ON actions.action_id = action_log.action_template
+                        WHERE action_log.action_template = ? AND action_log.project = ?`;
+        params = [req.query.action_id, req.user.project];
         break;
       case ROLES.COACH:
       case ROLES.ADMIN:
@@ -3406,21 +3399,21 @@ module.exports = (db) => {
 
     switch (req.user.type) {
       case ROLES.STUDENT:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.COACH:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                     FROM action_log
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
                     FROM action_log
                     WHERE action_log.action_log_id = ?`;
         params = [req.query.log_id];
