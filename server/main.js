@@ -14,7 +14,7 @@ const redeployDatabase = require("./db_setup");
  */
 async function startServer() {
   // Uncomment to reset the database during development.
-  await redeployDatabase();
+  // await redeployDatabase();
 
   // This is here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
   const routing = require("./server/routing/index");
