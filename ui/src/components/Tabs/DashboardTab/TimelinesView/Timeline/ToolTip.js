@@ -232,7 +232,7 @@ export default function ToolTip(props) {
                         <Popup
                           content={noteText ? `Note: ${noteText}` : ""}
                           on="hover"
-                          className="note-popup"
+                          className="universal-tooltip"
                           trigger={trigger}
                         />
                       ) : (
@@ -315,8 +315,7 @@ export default function ToolTip(props) {
         closeOnDocumentClick={closeOnDocClick}
         closeOnEscape={true}
         wide={hasMockedSubmission}
-        inverted={document.body.classList.contains("dark-mode")}
-        className="tool-pop"
+        className="universal-tooltip"
         offset={[offsetX, 0]}
         trigger={props.trigger}
         on="click"

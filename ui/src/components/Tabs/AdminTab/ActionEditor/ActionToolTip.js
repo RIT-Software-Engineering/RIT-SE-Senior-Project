@@ -92,7 +92,7 @@ function ActionToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
-      className="action-pop"
+      className="universal-tooltip"
       trigger={props.trigger}
       on="click"
       offset={[offsetX, 0]}
