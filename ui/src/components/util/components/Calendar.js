@@ -336,8 +336,7 @@ export function Calendar(props) {
                 exclusive={false}
                 basic
                 keepInViewPort={true}
-                inverted={isDarkMode}
-                className="calendar-day calendar-day-popup"
+                className="calendar-day universal-tooltip"
                 content={generateActionsForDay(actionsForDay, day, true)}
                 position="bottom center"
                 trigger={

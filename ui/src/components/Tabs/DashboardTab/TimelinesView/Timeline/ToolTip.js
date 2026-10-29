@@ -316,7 +316,6 @@ export default function ToolTip(props) {
         closeOnDocumentClick={closeOnDocClick}
         closeOnEscape={true}
         wide={hasMockedSubmission}
-        inverted={document.body.classList.contains("dark-mode")}
         className="universal-tooltip"
         offset={[offsetX, 0]}
         trigger={props.trigger}
