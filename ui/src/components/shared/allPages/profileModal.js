@@ -339,8 +339,8 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                         {preferredContact.method === "phone" && (
                           <input
                             className="profile-text-small"
-                            maxLength={30}
-                            placeholder="Phone number"
+                            maxLength={15}
+                            placeholder="(123) 456-7890"
                             value={preferredContact.value}
                             onChange={(e) =>
                               setPreferredContact({

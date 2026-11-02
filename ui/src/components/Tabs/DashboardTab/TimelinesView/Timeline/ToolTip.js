@@ -31,6 +31,7 @@ export default function ToolTip(props) {
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const [actionModalOpen, setActionModalOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [contactInfo, setContactInfo] = useState({});
 
   var [hasMockedSubmission, setHasMockedSubmission] = useState(false);
 
@@ -145,6 +146,9 @@ export default function ToolTip(props) {
                 "parsed:",
                 noteText,
               );
+              const extra = contactInfo[submission.system_id];
+              const contact = extra?.contact;
+              const info = extra?.additional_info;
               const trigger = (
                 <div className="fake-a tool-trigger">
                   {longSubmissionTitle ? (
@@ -228,16 +232,39 @@ export default function ToolTip(props) {
                     projectName={props.projectName}
                     isOpenCallback={isOpenCallback}
                     trigger={
-                      noteText ? (
-                        <Popup
-                          content={noteText ? `Note: ${noteText}` : ""}
-                          on="hover"
-                          className="universal-tooltip"
-                          trigger={trigger}
-                        />
-                      ) : (
-                        trigger
-                      )
+                      <Popup
+                        on="hover"
+                        className="universal-tooltip"
+                        trigger={trigger}
+                        onOpen={() => loadContactInfo(submission.system_id)}
+                        content={
+                          <div>
+                            {submission.name}
+                            {contact?.value && (
+                              <div>
+                                {contact.label}: {contact.value}
+                              </div>
+                            )}
+                            {info && (
+                              <div className="profile-hover">
+                                Additional Info: {info}
+                              </div>
+                            )}
+
+                            {noteText && (
+                              <>
+                                <div
+                                  style={{
+                                    borderTop: "1px solid var(--border-color)",
+                                    margin: "4px -16px",
+                                  }}
+                                />
+                                <div>Note: {noteText}</div>
+                              </>
+                            )}
+                          </div>
+                        }
+                      />
                     }
                   />
                 </span>
@@ -305,6 +332,15 @@ export default function ToolTip(props) {
       </>
     );
   }
+
+  const loadContactInfo = (systemId) => {
+    if (!systemId || contactInfo[systemId] !== undefined) return; // already requested
+    setContactInfo((prev) => ({ ...prev, [systemId]: null })); // mark as pending
+    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
+      .then((r) => r.json())
+      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
+      .catch((err) => console.error("Error fetching additional info:", err));
+  };
 
   return (
     <>
