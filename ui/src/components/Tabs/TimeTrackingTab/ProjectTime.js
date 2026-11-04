@@ -273,7 +273,7 @@ export default function ProjectTime(props) {
                                       style={{
                                         borderTop:
                                           "1px solid var(--border-color)",
-                                        margin: "6px 0",
+                                        margin: "6px -16px",
                                       }}
                                     />
                                     <div>Comment: {log.work_comment}</div>
