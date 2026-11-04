@@ -14,6 +14,7 @@ import {
   TableHeaderCell,
   TableRow,
   Icon,
+  Popup,
 } from "semantic-ui-react";
 import SubmissionViewerModal from "../DashboardTab/TimelinesView/Timeline/SubmissionViewerModal";
 import { SecureFetch } from "../../util/functions/secureFetch";
@@ -50,6 +51,35 @@ export default function ActionLogs(props) {
   const [openSubmissionIdx, setOpenSubmissionIdx] = useState(null);
 
   const unassignedStudentsStr = "Unassigned students";
+
+  const [hoverRow, setHoverRow] = useState(null);
+  const [contactInfo, setContactInfo] = useState({});
+
+  const loadContactInfo = (systemId) => {
+    if (!systemId || contactInfo[systemId] !== undefined) return;
+    setContactInfo((prev) => ({ ...prev, [systemId]: null }));
+    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
+      .then((r) => r.json())
+      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
+      .catch((err) => console.error("Error fetching additional info:", err));
+  };
+
+  const [notes, setNotes] = useState({});
+
+  const loadNote = (logId) => {
+    if (!logId || notes[logId] !== undefined) return;
+    setNotes((prev) => ({ ...prev, [logId]: "" }));
+    SecureFetch(`${config.url.API_GET_SUBMISSION}?log_id=${logId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        let note = "";
+        try {
+          note = data?.[0]?.notes ? JSON.parse(data[0].notes).note : "";
+        } catch (e) {}
+        setNotes((prev) => ({ ...prev, [logId]: note || "" }));
+      })
+      .catch((err) => console.error("Error fetching note:", err));
+  };
 
   const getPaginationData = () => {
     const apiUrl = `${config.url.API_GET_ALL_ACTION_LOGS}/?resultLimit=${LOGS_PER_PAGE}&offset=${activePage}`;
@@ -380,7 +410,6 @@ export default function ActionLogs(props) {
               <TableHeaderCell>Action Type</TableHeaderCell>
               <TableHeaderCell>Submitted By</TableHeaderCell>
               <TableHeaderCell>Submission Time</TableHeaderCell>
-              <TableHeaderCell>View</TableHeaderCell>
             </TableRow>
           </TableHeader>
 
@@ -395,13 +424,27 @@ export default function ActionLogs(props) {
 
               return (
                 <TableRow
-                  // Using same color schema as in-progress projects
-                  className={
-                    showNewSubmissionHighlight
-                      ? "action-row-highlight"
-                      : undefined
-                  }
                   key={idx}
+                  // Using same color schema as in-progress projects
+                  className={`action-row-clickable${
+                    showNewSubmissionHighlight ? " action-row-highlight" : ""
+                  }`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setHoverRow(null);
+                    setOpenSubmissionIdx(idx);
+                  }}
+                  onMouseEnter={(e) => {
+                    setHoverRow({
+                      idx,
+                      x: e.clientX,
+                      y: e.clientY,
+                      el: e.currentTarget,
+                    });
+                    loadContactInfo(action.system_id);
+                    loadNote(action.action_log_id);
+                  }}
+                  onMouseLeave={() => setHoverRow(null)}
                 >
                   {userContext.user?.role !== USERTYPES.STUDENT && (
                     <TableCell>{action.display_name || action.title}</TableCell>
@@ -413,10 +456,6 @@ export default function ActionLogs(props) {
                       {action.mock_id ? (
                         <>
                           <ProfileCircle
-                            user={{
-                              system_id: action.mock_id,
-                              email: action.mock_email,
-                            }}
                             name={action.mock_name ?? ""}
                             size="tiny"
                             className="universal-tooltip"
@@ -430,10 +469,6 @@ export default function ActionLogs(props) {
                         ""
                       )}
                       <ProfileCircle
-                        user={{
-                          system_id: action.system_id,
-                          email: action.email,
-                        }}
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
@@ -444,17 +479,6 @@ export default function ActionLogs(props) {
                   </TableCell>
                   <TableCell>
                     {formatDateTime(action.submission_datetime)}
-                  </TableCell>
-                  <TableCell>
-                    <>
-                      <SubmissionViewerModal
-                        projectName={action.display_name || action.title}
-                        semesterName={onlySemesters[action.semester]?.name}
-                        action={action}
-                        target={action?.action_target}
-                        trigger={<Button icon="eye" />}
-                      />
-                    </>
                   </TableCell>
                 </TableRow>
               );
@@ -475,6 +499,83 @@ export default function ActionLogs(props) {
             }}
           />
         </div>
+
+        {openSubmissionIdx !== null && actionLogs[openSubmissionIdx] && (
+          <SubmissionViewerModal
+            open
+            projectName={
+              actionLogs[openSubmissionIdx].display_name ||
+              actionLogs[openSubmissionIdx].title
+            }
+            semesterName={
+              onlySemesters[actionLogs[openSubmissionIdx].semester]?.name
+            }
+            action={actionLogs[openSubmissionIdx]}
+            target={actionLogs[openSubmissionIdx].action_target}
+            trigger={<span style={{ display: "none" }} />}
+            isOpenCallback={(isOpen) => {
+              if (!isOpen) setOpenSubmissionIdx(null);
+            }}
+          />
+        )}
+
+        {hoverRow &&
+          actionLogs[hoverRow.idx] &&
+          (() => {
+            const a = actionLogs[hoverRow.idx];
+            const extra = contactInfo[a.system_id];
+            const contact = extra?.contact;
+            const info = extra?.additional_info;
+            const noteText = notes[a.action_log_id] || "";
+
+            return (
+              <Popup
+                open
+                className="universal-tooltip"
+                position="bottom left"
+                offset={[0, 8]}
+                trigger={
+                  <span
+                    style={{
+                      position: "fixed",
+                      left: hoverRow.x,
+                      top: hoverRow.y,
+                      width: 0,
+                      height: 0,
+                      pointerEvents: "none",
+                    }}
+                  />
+                }
+                content={
+                  <div>
+                    {a.name}
+                    {contact?.value && (
+                      <div>
+                        {contact.label}: {contact.value}
+                      </div>
+                    )}
+                    {info && (
+                      <div className="profile-hover">
+                        Additional Info: {info}
+                      </div>
+                    )}
+
+                    {noteText && (
+                      <>
+                        <div
+                          style={{
+                            borderTop: "1px solid var(--border-color)",
+                            margin: "6px 0",
+                          }}
+                        />
+                        <div>Note: {noteText}</div>
+                      </>
+                    )}
+                  </div>
+                }
+              />
+            );
+          })()}
       </div>,
     );
   }
