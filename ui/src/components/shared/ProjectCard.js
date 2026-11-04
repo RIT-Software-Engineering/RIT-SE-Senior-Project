@@ -19,9 +19,33 @@ function ProjectCard({ project, cardClass="card", onClick }){
         const sentence = match ? match[0].trim() : text
         return (sentence.length > maxLength ? sentence.slice(0, maxLength-3) + "..." : sentence);
     }
+    
+    const awards = Object.values(uiConfig.awards).filter(
+        (award) => project[award.sqlName] === 1);
 
     return (
-        <div className={cardClass} onClick={() => onClick(project)}>
+        <div className={`${cardClass} ${awards.length === 0 ? "no-award" : ""}`} onClick={() => onClick(project)}>
+
+            {cardClass===("card-exemplary") && awards.length > 0 &&
+            <div className="award-sash" style={{ backgroundColor: awards[0].color}}>
+                <div className="ui header">{awards[0].name}</div>
+            </div>}
+
+            {(cardClass===("card-exemplary-left") || cardClass===("card-exemplary-right")) && awards.length > 0 &&
+            <div className="award-sash-side" style={{ backgroundColor: awards[0].color}}>
+                <div className="ui header">{awards[0].name}</div>
+            </div>}
+
+            {cardClass===("card-exemplary") && awards.length > 1 &&
+            <div className="award-sash-left" style={{ backgroundColor: awards[1].color}}>
+                <div className="ui header">{awards[1].name}</div>
+            </div>}
+
+            {(cardClass===("card-exemplary-left") || cardClass===("card-exemplary-right")) && awards.length > 1 &&
+            <div className="award-sash-left-side" style={{ backgroundColor: awards[1].color}}>
+                <div className="ui header">{awards[1].name}</div>
+            </div>}
+
             <div className="ui header project-title">{project.title}</div>
             <img
               src={project.poster_thumb ? [`${basePosterURL}${project.poster_thumb}`] : [`${uiConfig.logoPath}`]}

@@ -14,6 +14,7 @@ const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
+const baseArchiveURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -40,6 +41,7 @@ let generateProfiles = (stringUsers, isStudent = true) => {
     </p>
   );
 };
+
 
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
@@ -78,6 +80,12 @@ function UniqueProjectPage({ projectData }) {
     }
   }, [url_slug, project]);
 
+  useEffect(() => {
+    if (projectData !== undefined){
+      setProject(projectData);
+    }
+  }, [projectData]);
+
   /**
    * Decodes sanitized text so that it is readable without ugly letters
    * @param synopsis archive synopsis
@@ -87,70 +95,72 @@ function UniqueProjectPage({ projectData }) {
     return decode(synopsis).replace(/\r\n|\r/g, "\n");
   };
 
+  const mediaItems = [
+      (project?.poster_thumb
+        ? { type: "image", src: `${basePosterURL}${project.poster_thumb}` }
+        : { type: "image", src: uiConfig.logoPath }),
+      ...(project?.archive_image && project.archive_image !== "null"
+        ? [{ type: "image", src: `${baseArchiveURL}${project.archive_image}` }]
+        : []),
+      ...(project?.video && project.video !== "null"
+        ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
+        : []
+      )
+    ]
+
+  const awards = Object.values(uiConfig.awards).filter(
+    (award) => project?.[award.sqlName] === 1);
+
   return (
     <div>
       {project === undefined ? (
         <ErrorPage />
       ) : (
         <div ref={nodeRef}>
+          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
           <h1 className="ui header">
             {project.display_name || project.title}{" "}
           </h1>
-          {project?.outstanding === 1 && (
-            <Icon
-              name="trophy"
-              title={"Outstanding"}
-              size="large"
-              className="unique-project-direction"
-            />
-          )}
-          {project?.creative === 1 && (
-            <Icon
-              name="trophy"
-              title={"Creative"}
-              size="large"
-              className="unique-project-direction"
-            />
-          )}
-          {
-            // display project page link if slug has been defined
-            project.url_slug !== null && project?.url_slug !== "" && (
-              <div>
-                <Link to={`/projects/${project.url_slug}`}>
-                  {`${baseProjectURL}${project.url_slug}`}
-                </Link>
+
+          <div style={{ display: "flex", flexDirection: "column"}}>
+            {awards.map((award) => (
+              <div className="award-ribbon" style={{ backgroundColor: award.color, marginBottom: "10px"}}>
+                <div className="ui header">{award.name}</div>
               </div>
-            )
-          }
+            ))}
+            </div>
+          
+          </div>
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div>
-              {carouselIndex === 0 || !project.video ? (
-                <img
-                  className="unique-project-zoom unique-project-media"
-                  src={project.poster_thumb ? `${basePosterURL}${project.poster_thumb}` : `${uiConfig.logoPath}`}
-                  onClick={() => setPosterOpen(true)}
-                  alt={project?.title + " Senior Project Thumbnail Poster"}
-                />
-              ) : (
-                <video
-                  controls
-                  width="300px"
-                >
-                  <source
-                    src={`${baseVideoURL}${project.video}`}
-                    type="video/mp4"
+              {
+                mediaItems[carouselIndex]?.type === "image" ? (
+                  <img
+                    src= {mediaItems[carouselIndex].src}
+                    className="unique-project-img"
                   />
-                </video>
-              )}
+                ) : (
+                  <video
+                    key={mediaItems[carouselIndex]?.src}
+                    controls
+                    width="300px"
+                  >
+                    <source
+                      src={mediaItems[carouselIndex]?.src}
+                      type="video/mp4"
+                    />
+                  </video>
+                )
+              }
             </div>
 
-            {project.video && (
+            {mediaItems.length > 1 && (
               <Pagination
                 className="project-pagination"
                 activePage={carouselIndex + 1}
-                totalPages={2}
+                totalPages={mediaItems.length}
                 onPageChange={(e, { activePage }) => {
                   setCarouselIndex(activePage - 1);
                 }}
@@ -189,14 +199,6 @@ function UniqueProjectPage({ projectData }) {
                 <Button onClick={() => setPosterOpen(false)}>Close</Button>
               </Modal.Actions>
             </Modal>
-            {project?.archive_image && (
-              <img
-                src={`${baseImageURL}${project?.archive_image}`}
-                className="unique-project-zoom unique-project-media"
-                onClick={() => setImageOpen(true)}
-                alt={project?.title + " Senior Project Image"}
-              />
-            )}
             <Modal
               closeOnDimmerClick={false}
               className={"sticky"}
@@ -253,6 +255,16 @@ function UniqueProjectPage({ projectData }) {
               </p>
               <div className="ui small header">Keywords</div>
               <div className="info-row">{project?.keywords}</div>
+              <div className="ui invisible divider"></div>
+              {
+              // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                <div>
+                <Link to={`/projects/${project.url_slug}`}>
+                  {`${baseProjectURL}${project.url_slug}`}
+                </Link>
+              </div>
+              )}
             </div>
           </div>
         </div>

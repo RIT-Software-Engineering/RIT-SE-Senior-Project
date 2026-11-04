@@ -15,11 +15,12 @@
 }
 
 .card img {
-    object-fit: contain;
-    width: 85%;
-    height: 200px;
+    object-fit: cover;
+    height: auto;
+    max-height: 175px;
     flex: 1;
     min-height: 0;
+    border: 1px solid rgb(0, 0, 0);
 }
 
 .card-exemplary {
@@ -31,11 +32,11 @@
     border-radius: 14px;
     height: 409px;
     width: 495px;
-    padding-top: 20px;
     padding-bottom: 15px;
     padding-left: 15px;
     padding-right: 15px;
     background-color: #D9D9D9;
+    position: relative;
 }
 
 .card-exemplary-left {
@@ -46,18 +47,14 @@
     border: 1px solid rgb(0, 0, 0);
     border-radius: 14px;
     height: 421px;
-    padding-top: 20px;
     padding-bottom: 15px;
     padding-left: 15px;
     padding-right: 15px;
     background-color: #D9D9D9;
-    width: 262px;
-    clip-path: polygon(
-        0 0,
-        100% 5%,
-        100% 95%,
-        0 100%
-    );
+    width: 350px;
+
+    transform: perspective(400px) rotateY(15deg) skewX(0deg);
+    position: relative;
 }
 
 .card-exemplary-right {
@@ -68,40 +65,44 @@
     border: 1px solid rgb(0, 0, 0);
     border-radius: 14px;
     height: 421px;
-    padding-top: 20px;
     padding-bottom: 15px;
     padding-left: 15px;
     padding-right: 15px;
     background-color: #D9D9D9;
-    width: 262px;
-    clip-path: polygon(
-        0 5%,
-        100% 0%,
-        100% 100%,
-        0 95%
-    );
+    width: 350px;
+
+    transform: perspective(400px) rotateY(-15deg) skewX(0deg);
+    position: relative;
+}
+
+.card-exemplary-right::after{
+    content: "";
+    position: absolute;
 }
 
 .card-exemplary img {
-    object-fit: contain;
-    width: 85%;
-    height: 200px;
+    object-fit: cover;
+    border: 1px solid rgb(0, 0, 0) !important;
+    height: auto;
+    max-height: 200px;
     flex: 1;
     min-height: 0;
 }
 
 .card-exemplary-left img {
-    object-fit: contain;
-    width: 85%;
-    height: 200px;
+    object-fit: cover;
+    border: 1px solid rgb(0, 0, 0) !important;
+    height: auto;
+    max-height: 200px;
     flex: 1;
     min-height: 0;
 }
 
 .card-exemplary-right img {
-    object-fit: contain;
-    width: 85%;
-    height: 200px;
+    object-fit: cover;
+    border: 1px solid rgb(0, 0, 0) !important;
+    height: auto;
+    max-height: 200px;
     flex: 1;
     min-height: 0;
 }
@@ -112,4 +113,96 @@
 
 .ui.header.project-desc {
     font-size: 17px;
+}
+
+.award-sash {
+    position: absolute;
+    display: flex;
+    top: 56px;
+    right: -148px;
+    height: 40px;
+    width: 370px;
+    z-index: 3;
+
+    clip-path: polygon(
+        26% 0%,
+        59% 0%,
+        70% 100%,
+        15% 100%
+    );
+
+    transform: rotate(45deg);
+    justify-content: center;
+    align-items: center;
+    text-indent: -50px;
+}
+
+.award-sash-left {
+    position: absolute;
+    display: flex;
+    top: 17px;
+    right: 232px;
+    height: 40px;
+    width: 370px;
+    z-index: 3;
+
+    clip-path: polygon(
+        26% 0%,
+        59% 0%,
+        70% 100%,
+        15% 100%
+    );
+
+    transform: rotate(-45deg);
+    justify-content: center;
+    align-items: center;
+    text-indent: -50px;
+}
+
+.award-sash-side {
+    position: absolute;
+    display: flex;
+    top: 43px;
+    right: -118px;
+    height: 32px;
+    width: 291px;
+    z-index: 3;
+
+    clip-path: polygon(
+        26% 0%,
+        59% 0%,
+        70% 100%,
+        15% 100%
+    );
+
+    transform: rotate(45deg);
+    justify-content: center;
+    align-items: center;
+    text-indent: -50px;
+}
+
+.award-sash-left-side {
+    position: absolute;
+    display: flex;
+    top: 12px;
+    right: 145px;
+    height: 32px;
+    width: 290px;
+    z-index: 3;
+
+    clip-path: polygon(
+        26% 0%,
+        59% 0%,
+        70% 100%,
+        15% 100%
+    );
+
+    transform: rotate(-45deg);
+    justify-content: center;
+    align-items: center;
+    text-indent: -50px;
+}
+
+.no-award {
+    padding-top: 25px;
 }

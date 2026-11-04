@@ -10,7 +10,7 @@ VALUES
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
     1,
-    0
+    1
     ),
 
     ('2_smartspark', 'SmartSpark AI-Driven Marketing Campaign Tool', 'SmartSpark Marketing', 'SparkGenix', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
@@ -43,12 +43,12 @@ VALUES
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     '',
     0,
-    0
+    1
     ),
 
     ('5', 'Name 5', 'Title 5', 'Team 5', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 5',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-5', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
     0,
@@ -57,7 +57,7 @@ VALUES
 
     ('6', 'Name 6', 'Title 6', 'Team 6', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 6',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-6', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
     0,
@@ -66,16 +66,16 @@ VALUES
 
     ('7', 'Name 7', 'Title 7', 'Team 7', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 7',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-7', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
-    0,
-    0
+    1,
+    1
     ),
 
     ('8', 'Name 8', 'Title 8', 'Team 8', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 8',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-8', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -84,7 +84,7 @@ VALUES
 
     ('9', 'Name 9', 'Title 9', 'Team 9', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 9',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-9', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -93,7 +93,7 @@ VALUES
 
     ('10', 'Name 10', 'Title 10', 'Team 10', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 10',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-10', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -102,7 +102,7 @@ VALUES
 
     ('11', 'Name 11', 'Title 11', 'Team 11', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 11',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-11', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -111,7 +111,7 @@ VALUES
 
     ('12', 'Name 12', 'Title 12', 'Team 12', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 4',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-12', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -120,7 +120,7 @@ VALUES
 
     ('13', 'Name 13', 'Title 13', 'Team 13', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 5',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-13', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -129,7 +129,7 @@ VALUES
 
     ('14', 'Name 14', 'Title 14', 'Team 14', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 6',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-14', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -138,7 +138,7 @@ VALUES
 
     ('15', 'Name 15', 'Title 15', 'Team 15', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 7',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-15', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -147,7 +147,7 @@ VALUES
 
     ('16', 'Name 16', 'Title 16', 'Team 16', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 8',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-16', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -156,7 +156,7 @@ VALUES
 
     ('17', 'Name 17', 'Title 17', 'Team 17', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 9',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-17', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -165,7 +165,7 @@ VALUES
 
     ('18', 'Name 18', 'Title 18', 'Team 18', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 10',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-18', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -174,7 +174,7 @@ VALUES
 
     ('19', 'Name 19', 'Title 19', 'Team 19', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 9',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-19', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -183,7 +183,7 @@ VALUES
 
     ('20', 'Name 20', 'Title 20', 'Team 20', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 10',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-20', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -192,7 +192,7 @@ VALUES
 
     ('21', 'Name 21', 'Title 21', 'Team 21', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 11',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-21', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -201,7 +201,7 @@ VALUES
 
     ('22', 'Name 22', 'Title 22', 'Team 22', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 4',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-22', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -210,7 +210,7 @@ VALUES
 
     ('23', 'Name 23', 'Title 23', 'Team 23', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 5',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-23', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -219,7 +219,7 @@ VALUES
 
     ('24', 'Name 24', 'Title 24', 'Team 24', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 6',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-24', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -228,7 +228,7 @@ VALUES
 
     ('25', 'Name 25', 'Title 25', 'Team 25', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 7',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-25', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -237,7 +237,7 @@ VALUES
 
     ('26', 'Name 26', 'Title 26', 'Team 26', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 8',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-26', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -246,7 +246,7 @@ VALUES
 
     ('27', 'Name 27', 'Title 27', 'Team 27', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 9',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-27', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -255,7 +255,7 @@ VALUES
 
     ('28', 'Name 28', 'Title 28', 'Team 28', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 9',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-28', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -264,7 +264,7 @@ VALUES
 
     ('29', 'Name 29', 'Title 29', 'Team 29', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 10',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-29', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -273,7 +273,7 @@ VALUES
 
     ('30', 'Name 30', 'Title 30', 'Team 30', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 11',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-30', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -282,7 +282,7 @@ VALUES
 
     ('31', 'Name 31', 'Title 31', 'Team 31', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', '', '',
     'Description for Project 4',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-31', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,
@@ -291,7 +291,7 @@ VALUES
 
     ('32', 'Name 32', 'Title 32', 'Team 32', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 5',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-32', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -300,7 +300,7 @@ VALUES
 
     ('33', 'Name 33', 'Title 33', 'Team 33', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 6',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-33', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -309,7 +309,7 @@ VALUES
 
     ('34', 'Name 34', 'Title 34', 'Team 34', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 7',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-34', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
     0,
@@ -318,7 +318,7 @@ VALUES
 
     ('35', 'Name 35', 'Title 35', 'Team 35', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'Description for Project 8',
-    'marketing, AI, automation, social media', 'smartspark-marketing', '', 1,
+    'marketing, AI, automation, social media', 'project-35', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
     0,

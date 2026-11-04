@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import ExemplaryProject from "../shared/ExemplaryProject";
-import { Icon, Button, Pagination } from "semantic-ui-react";
+import { Icon, Container } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
@@ -26,11 +24,11 @@ function HomePage() {
   const [currentProjectSlide, setCurrentProjectSlide] = useState(0);
   const [featuredProjectSlide, setFeaturedProjectSlide] = useState(0);
 
-  const totalCurrentSlides = Math.ceil(currentProjects.length.PROJECTS_PER_SLIDE);
-  const visibleCurrentProjects = currentProjects.slice(currentProjectSlide*PROJECTS_PER_SLIDE, (currentProjectSlide+1)*PROJECTS_PER_SLIDE);
+  const totalCurrentSlides = Math.ceil(currentProjects.length/PROJECTS_PER_SLIDE);
+  const visibleCurrentProjects = currentProjects.length > 0 ? Array.from( { length: Math.min(PROJECTS_PER_SLIDE, currentProjects.length) }, (_, i) => currentProjects[(currentProjectSlide * PROJECTS_PER_SLIDE + i) % currentProjects.length]): [];
 
-  const totalFeaturedSlides = Math.ceil(featuredProjects.length.PROJECTS_PER_SLIDE);
-  const visibleFeaturedProjects = featuredProjects.slice(featuredProjectSlide*PROJECTS_PER_SLIDE, (featuredProjectSlide+1)*PROJECTS_PER_SLIDE);
+  const totalFeaturedSlides = Math.ceil(featuredProjects.length/PROJECTS_PER_SLIDE);
+  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(PROJECTS_PER_SLIDE, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * PROJECTS_PER_SLIDE + i) % featuredProjects.length]): [];
 
   /*
    * When the page initially loads, fetches random featured archives.
@@ -106,7 +104,7 @@ function HomePage() {
     const currentProjects = [];
 
     projects.forEach((project) => {
-      if (!project.end_date || project.end_date == ''){
+      if (!project.end_date || project.end_date === ''){
         currentProjects.push(project);
       } else {
         const today = new Date(`T00:00:00`);
@@ -118,42 +116,53 @@ function HomePage() {
     return currentProjects;
   }
 
+  console.log({
+  featuredProjectSlide,
+  totalFeaturedSlides,
+  isLastSlide: featuredProjectSlide >= totalFeaturedSlides - 1,
+});
+
   return (
     <>
+    <div className="homepage">
+      <Container>
       <div className="content">
-        <div className="row" style={{display: "flex", justifyContent: "center", marginTop: "60px", paddingBottom: "30px", gap: "15px"}}>
-        <div className="page-title">Welcome to</div><div className="page-title page-title--orange">{uiConfig.app.name}</div>
-      </div>
+        <p className="page-title">Welcome to <span class="orange">{uiConfig.app.name}</span></p>
         {homeHtml && (
           <InnerHTML html={homeHtml} className="ui homepage-panel" />
         )}
 
-        <div className="current-projects-carousel">
-          <button
-            className="pagination-arrow"
-            onClick={() => setFeaturedProjectSlide((prev) => prev - 1)}
-            disabled={featuredProjectSlide===0}
-          >
-            <Icon name="arrow alternate circle left"/>
-          </button>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        
+          <div className="projects-carousel-wrapper">
+            <button
+              className="pagination-arrow-left"
+              onClick={() => setFeaturedProjectSlide((prev) => (prev - 1 + totalFeaturedSlides) % totalFeaturedSlides)}
+            >
+              <Icon name="arrow alternate circle left outline"/>
+            </button>
 
-          <div className="current-projects-carousel">
-            {visibleFeaturedProjects.map((featuredProject, index) => {
-              const cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
-              return <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>;
-            })}
+            <div className="projects-carousel">
+              {visibleFeaturedProjects.map((featuredProject, index) => {
+                const cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
+                return <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>;
+              })}
+            </div>
+
+            <button
+              className="pagination-arrow-right"
+              onClick={() => setFeaturedProjectSlide((prev) => (prev + 1) % totalFeaturedSlides)}
+            >
+              <Icon name="arrow alternate circle right outline"/>
+            </button>
+            <div className="gradient-overlay-left"></div>
+            <div className="gradient-overlay-right"></div>
           </div>
-
-          <button
-            className="pagination-arrow"
-            onClick={() => setFeaturedProjectSlide((prev) => prev + 1)}
-            disabled={featuredProjectSlide>=totalFeaturedSlides-1}
-          >
-            <Icon name="arrow alternate circle right"/>
-          </button>
-        </div>
+        
       </div>
-      
+      </div>
+
+      </Container>
 
       <div className="ui invisible divider"></div>
       {secondaryInfoPanelHTML && (
@@ -161,32 +170,34 @@ function HomePage() {
         )}
       <div className="ui invisible divider"></div>
 
+      <Container>
+
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
         {currentProjectsHTML && (
             <InnerHTML html={currentProjectsHTML} className="ui homepage-panel" />
           )}
-        <div className="current-projects-carousel">
+        <div className="projects-carousel-wrapper">
+        <div className="projects-carousel">
           <button
-            className="pagination-arrow"
-            onClick={() => setCurrentProjectSlide((prev) => prev - 1)}
-            disabled={currentProjectSlide===0}
+            className="pagination-arrow-left-secondary"
+            onClick={() => setCurrentProjectSlide((prev) => (prev - 1 + totalCurrentSlides) % totalCurrentSlides)}
           >
-            <Icon name="arrow alternate circle left"/>
+            <Icon name="arrow alternate circle left outline"/>
           </button>
 
-          <div className="current-projects-carousel">
+          <div className="projects-carousel">
             {visibleCurrentProjects.map((currentProject) => {
               return <ProjectCard key={currentProject.id} project={currentProject} onClick={() => setSelectedProject(currentProject)}/>;
             })}
           </div>
 
           <button
-            className="pagination-arrow"
-            onClick={() => setCurrentProjectSlide((prev) => prev + 1)}
-            disabled={currentProjectSlide>=totalCurrentSlides-1}
+            className="pagination-arrow-right-secondary"
+            onClick={() => setCurrentProjectSlide((prev) => (prev + 1) % totalCurrentSlides)}
           >
-            <Icon name="arrow alternate circle right"/>
+            <Icon name="arrow alternate circle right outline"/>
           </button>
+        </div>
         </div>
         {browseAllProjectsHTML && (
           <InnerHTML html={browseAllProjectsHTML} className="ui homepage-panel" />
@@ -198,6 +209,8 @@ function HomePage() {
         open={selectedProject !== null}
         onClose={() => setSelectedProject(null)}
       />
+      </Container>
+    </div>
     </>
   );
 }

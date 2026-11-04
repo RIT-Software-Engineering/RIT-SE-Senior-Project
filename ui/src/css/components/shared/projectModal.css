@@ -21,10 +21,15 @@
     font-size: 25px;
 }
 
-.project-modal .img {
-    object-fit: contain;
-    width: 85%;
-    height: 100%;
+.project-modal img {
+    object-fit: cover;
+    height: auto;
+    width: auto;
+    max-height: 300px;
+    max-width: 500px;
+    min-height: 0;
+    min-width: 0;
+    border: 1px solid rgb(0, 0, 0) !important;
 }
 
 .row .ui.header {
@@ -35,14 +40,17 @@
 
 .info-row {
   display: flex;
+  flex-direction: row;
   white-space: nowrap;
-  align-items: flex-start;
+  align-items: baseline;
   padding-bottom: 10px;
   gap: 9px;
 }
 
 .info-row .exemplary-generate-profile {
   transform: translateY(-3px);
+  display: inline-flex;
+  flex-direction: row;
 }
 
 .close {
@@ -59,4 +67,24 @@
     gap: 2px;
     border: transparent !important;
     box-shadow: none !important;
+}
+
+.award-ribbon {
+    display: flex;
+    height: 30px;
+    width: 240px;
+    z-index: 3;
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        90% 50%,
+        100% 100%,
+        0 100%,
+        10% 50%
+    );
+
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
 }

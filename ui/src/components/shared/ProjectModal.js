@@ -51,14 +51,17 @@ function ProjectModal({ project, open, onClose }){
       (project.poster_thumb
         ? { type: "image", src: `${basePosterURL}${project.poster_thumb}` }
         : { type: "image", src: uiConfig.logoPath }),
-      ...(project.archive_image
+      ...(project.archive_image && project.archive_image !== "null"
         ? [{ type: "image", src: `${baseArchiveURL}${project.archive_image}` }]
         : []),
-      ...(project.video
+      ...(project.video && project.video !== "null"
         ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
         : []
       )
     ]
+
+    const awards = Object.values(uiConfig.awards).filter(
+      (award) => project[award.sqlName] === 1);
 
     return(
         <Modal className="project-modal" open={open} onClose={() => {onClose(); setCarouselIndex(0);}}>
@@ -73,12 +76,19 @@ function ProjectModal({ project, open, onClose }){
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
+            <div style={{ display: "flex", gap: "10px" }}>
+            {awards.map((award) => (
+              <div className="award-ribbon" style={{ backgroundColor: award.color}}>
+                <div className="ui header">{award.name}</div>
+              </div>
+            ))}
+            </div>
+
             <div>
               {
                 mediaItems[carouselIndex]?.type === "image" ? (
                   <img
                     src= {mediaItems[carouselIndex].src}
-                    width="300px"
                   />
                 ) : (
                   <video
@@ -114,10 +124,10 @@ function ProjectModal({ project, open, onClose }){
 
           <Modal.Content>
             <div>
-              <div className="info-row"><div className="ui small header">By {project.team_name}:</div>{generateProfiles(project.members, true)}</div>
-              <div className="info-row"><div className="ui small header">Sponsor:</div>{project.sponsor}</div>
+              <div className="info-row" style={{ paddingBottom: '0px'}}><div className="ui small header">By {project.team_name}:</div>{generateProfiles(project.members, true)}</div>
+              <div className="info-row" style={{ paddingBottom: '15px'}}><div className="ui small header">Sponsor:</div>{project.sponsor}</div>
               <div className="info-row"><div className="ui small header">Faculty Coach:</div>{generateProfiles(project.coach, false)}</div>
-              <div className="ui small header" style={{marginTop: "5px"}}>{decodeSynopsis(project.synopsis)}</div>
+              <div style={{marginTop: "5px"}}>{decodeSynopsis(project.synopsis)}</div>
               <div className="ui small header">Keywords</div>
               <div className="info-row">{project?.keywords}</div>
               {

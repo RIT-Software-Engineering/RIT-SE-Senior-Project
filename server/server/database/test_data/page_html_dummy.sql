@@ -14,15 +14,15 @@ VALUES
         'secondaryInfoPanel',
         '<div class="row secondaryInfoRow">
             <div class="secondaryInfoContainerRight">
-            <p class="overviewText">
+            <p class="overviewText outline">
                 External sponsors, both corporate and non-profit, submit proposals that small teams of students will work on.
-
+                <br/><br/>
                 Over the course of two terms, each team works with a project sponsor, applying the software engineering skills that the students learned in the classroom and on co-op. They carry the project from inception through an entire software development lifecycle. The end result is a functional software tool ready for use by the sponsor&#39;s organization. 
             </p>
             </div>
             <div class="secondaryInfoContainerLeft">
                 <p class="overviewText">
-                    Want to sponsor a project? Submit our proposal form here.
+                    Want to sponsor a project?<br/> Submit our proposal form here.
                 </p>
                 <div class="row">
                     <button id="proposalBtn" class="button homepage-button" onClick="clickHandler()">
@@ -40,7 +40,7 @@ VALUES
     ),
     (
         'currentProjectsPanel',
-        '<h2 class="ui header">What Our Students Are Working On</h2>'
+        '<h2 class="ui header" style="padding-top: 25px; padding-bottom: 15px;">What Our Students Are Working On</h2>'
     ),
     (
         'browseAllProjectsButton',
@@ -153,16 +153,16 @@ VALUES
                </button>
                <div class="content">
                  <ul>
-                                     <li>The project sponsor works with a senior team and their faculty coach.</li>
-                                     <li>
-                                         The students are responsible for the completion of the project. The faculty coach acts
-                                         primarily as guide and mentor.
-                                     </li>
-                                     <li>
-                                         The faculty coach will not actively manage the project, nor will he or she assume any
-                                         technical role other than general consultant.
-                                     </li>
-                                 </ul>
+                    <li>The project sponsor works with a senior team and their faculty coach.</li>
+                    <li>
+                        The students are responsible for the completion of the project. The faculty coach acts
+                        primarily as guide and mentor.
+                    </li>
+                    <li>
+                        The faculty coach will not actively manage the project, nor will he or she assume any
+                        technical role other than general consultant.
+                    </li>
+                    </ul>
                </div>
              <button class="title fake-div">
                  <i class="dropdown icon"></i>

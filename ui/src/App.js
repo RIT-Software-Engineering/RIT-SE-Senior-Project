@@ -25,10 +25,14 @@ function App() {
       <UserContextProvider>
         <ErrorBoundary>
           <Header />
+          
           <div id="page">
+            <Switch>
+                <Route path="/" component={HomePage} exact />
+            
+            <Route>
             <Container>
               <Switch>
-                <Route path="/" component={HomePage} exact />
                 <Route
                   path="/projects/:url_slug"
                   component={UniqueProjectPage}
@@ -43,6 +47,8 @@ function App() {
                 <Route component={ErrorPage} />
               </Switch>
             </Container>
+            </Route>
+            </Switch>
           </div>
           <Footer />
         </ErrorBoundary>

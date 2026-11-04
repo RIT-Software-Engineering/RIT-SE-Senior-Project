@@ -27,11 +27,13 @@ const uiConfig = {
   awards: {
     Excellence: {
       name: "Excellence",
-      sqlName: "outstanding"
+      sqlName: "outstanding",
+      color: "#009CBD"
     },
     Creativity: {
       name: "Creativity",
-      sqlName: "creative"
+      sqlName: "creative",
+      color: "#F6BE00"
     }
   },
   terms: { //based on zero-indexing
