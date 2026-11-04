@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Accordion,
   Icon,
   Pagination,
+  Popup,
   Table,
   TableBody,
   TableCell,
@@ -28,6 +29,10 @@ export default function ProjectTime(props) {
   const [avgTime, setAvgTime] = useState([]);
   const [weeks, setWeeks] = useState([]);
   const { eachWeekOfInterval, sub } = require("date-fns");
+  const modalTriggerRef = useRef(null);
+  const [openLog, setOpenLog] = useState(null);
+  const [contactInfo, setContactInfo] = useState({});
+  const [hoverRow, setHoverRow] = useState(null);
 
   useEffect(() => {
     SecureFetch(
@@ -44,6 +49,19 @@ export default function ProjectTime(props) {
       }),
     );
   }, [userContext, props.timeLogs, props.timeStats]);
+
+  useEffect(() => {
+    if (openLog) modalTriggerRef.current?.click();
+  }, [openLog]);
+
+  const loadContactInfo = (systemId) => {
+    if (!systemId || contactInfo[systemId] !== undefined) return;
+    setContactInfo((prev) => ({ ...prev, [systemId]: null }));
+    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
+      .then((r) => r.json())
+      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
+      .catch((err) => console.error("Error fetching additional info:", err));
+  };
 
   const resetKey = () => {
     props.reset();
@@ -69,7 +87,6 @@ export default function ProjectTime(props) {
                         <TableHeaderCell>Time in Hours</TableHeaderCell>
                         <TableHeaderCell>Comment</TableHeaderCell>
                         <TableHeaderCell>Submission Date</TableHeaderCell>
-                        <TableHeaderCell>View</TableHeaderCell>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -79,7 +96,6 @@ export default function ProjectTime(props) {
                           let submittedBy = (
                             <span className="time-table">
                               <ProfileCircle
-                                user={{ system_id: timeLog.mock_id }}
                                 name={timeLog.name}
                                 size="tiny"
                                 isStudent={false}
@@ -94,7 +110,6 @@ export default function ProjectTime(props) {
                             submittedBy = (
                               <span className="time-table">
                                 <ProfileCircle
-                                  user={{ system_id: timeLog.mock_id }}
                                   name={timeLog.name}
                                   size="tiny"
                                   isStudent={false}
@@ -103,7 +118,6 @@ export default function ProjectTime(props) {
                                 />
                                 ({timeLog.mock_id}) as&nbsp;
                                 <ProfileCircle
-                                  user={{ system_id: timeLog.system_id }}
                                   name={timeLog.name}
                                   size="tiny"
                                   isStudent={false}
@@ -120,25 +134,44 @@ export default function ProjectTime(props) {
                             idx >= currentPage * postsPerPage &&
                             idx <= currentPage * postsPerPage + postsPerPage - 1
                           ) {
-                            let rowClassName = "";
+                            let rowClassName = "time-row-clickable";
                             if (showNewSubmissionHighlight) {
-                              rowClassName = "time-row-new";
+                              rowClassName += " time-row-new";
                             } else if (timeLog.active === 0) {
-                              rowClassName = "time-row-deleted";
+                              rowClassName += " time-row-deleted";
                             }
                             return (
-                              <TableRow className={rowClassName} key={idx}>
+                              <TableRow
+                                className={rowClassName}
+                                key={idx}
+                                style={{ cursor: "pointer" }}
+                                onMouseEnter={(e) => {
+                                  setHoverRow({
+                                    log: timeLog,
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                  });
+                                  loadContactInfo(timeLog.system_id);
+                                }}
+                                onMouseLeave={() => setHoverRow(null)}
+                                onClick={() => {
+                                  setHoverRow(null);
+                                  setOpenLog({
+                                    log: timeLog,
+                                    n: Date.now(),
+                                    submittedBy,
+                                  });
+                                }}
+                              >
                                 <TableCell>
                                   <div className="time-table-cell">
                                     {timeLog.mock_id ? (
                                       <>
                                         <ProfileCircle
-                                          user={{ system_id: timeLog.mock_id }}
                                           name={timeLog.mock_name ?? ""}
                                           size="tiny"
                                           isStudent={false}
                                           showFullName
-                                          allowInfo
                                         />
                                         <span className="time-profile">as</span>
                                       </>
@@ -146,12 +179,10 @@ export default function ProjectTime(props) {
                                       ""
                                     )}
                                     <ProfileCircle
-                                      user={{ system_id: timeLog.system_id }}
                                       name={timeLog.name ?? ""}
                                       size="tiny"
                                       isStudent={false}
                                       showFullName
-                                      allowInfo
                                     />
                                   </div>
                                 </TableCell>
@@ -167,21 +198,6 @@ export default function ProjectTime(props) {
                                 </TableCell>
                                 <TableCell>
                                   {formatDateTime(timeLog.submission_datetime)}
-                                </TableCell>
-                                <TableCell>
-                                  <IndividualTimeModal
-                                    projectName={
-                                      props.proj.display_name ||
-                                      props.proj.title
-                                    }
-                                    semesterName={props.semester.name}
-                                    user={submittedBy}
-                                    timeLog={timeLog}
-                                    userId={timeLog.system_id}
-                                    id={timeLog.time_log_id}
-                                    delete={timeLog.active}
-                                    resetKey={resetKey}
-                                  />
                                 </TableCell>
                               </TableRow>
                             );
@@ -212,6 +228,83 @@ export default function ProjectTime(props) {
                         setCurrentPage(data.activePage - 1);
                       }}
                     />
+                    {hoverRow &&
+                      (() => {
+                        const log = hoverRow.log;
+                        const extra = contactInfo[log.system_id];
+                        const contact = extra?.contact;
+                        const info = extra?.additional_info;
+
+                        return (
+                          <Popup
+                            open
+                            className="universal-tooltip"
+                            position="bottom left"
+                            offset={[0, 8]}
+                            trigger={
+                              <span
+                                style={{
+                                  position: "fixed",
+                                  left: hoverRow.x,
+                                  top: hoverRow.y,
+                                  width: 0,
+                                  height: 0,
+                                  pointerEvents: "none",
+                                }}
+                              />
+                            }
+                            content={
+                              <div>
+                                {log.name}
+                                {contact?.value && (
+                                  <div>
+                                    {contact.label}: {contact.value}
+                                  </div>
+                                )}
+                                {info && (
+                                  <div className="profile-hover">
+                                    Additional Info: {info}
+                                  </div>
+                                )}
+
+                                {log.work_comment && (
+                                  <>
+                                    <div
+                                      style={{
+                                        borderTop:
+                                          "1px solid var(--border-color)",
+                                        margin: "6px 0",
+                                      }}
+                                    />
+                                    <div>Comment: {log.work_comment}</div>
+                                  </>
+                                )}
+                              </div>
+                            }
+                          />
+                        );
+                      })()}
+                    {openLog && (
+                      <IndividualTimeModal
+                        key={openLog.n}
+                        projectName={
+                          props.proj.display_name || props.proj.title
+                        }
+                        semesterName={props.semester.name}
+                        user={openLog.submittedBy}
+                        timeLog={openLog.log}
+                        userId={openLog.log.system_id}
+                        id={openLog.log.time_log_id}
+                        delete={openLog.log.active}
+                        resetKey={resetKey}
+                        trigger={
+                          <span
+                            ref={modalTriggerRef}
+                            style={{ display: "none" }}
+                          />
+                        }
+                      />
+                    )}
                   </div>
                   <Table>
                     <TableHeader>
@@ -242,7 +335,6 @@ export default function ProjectTime(props) {
                               <TableCell>
                                 <div className="time-table-cell">
                                   <ProfileCircle
-                                    user={{ system_id: timeStat.system_id }}
                                     name={timeStat.name}
                                     size="tiny"
                                     showFullName
