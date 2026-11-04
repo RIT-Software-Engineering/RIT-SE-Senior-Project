@@ -335,6 +335,7 @@ export default function ProjectTime(props) {
                               <TableCell>
                                 <div className="time-table-cell">
                                   <ProfileCircle
+                                    user={{ system_id: timeStat.system_id }}
                                     name={timeStat.name}
                                     size="tiny"
                                     showFullName
