@@ -29,6 +29,7 @@ export default function DashboardPage() {
   const [authError, setAuthError] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const history = useHistory();
+  const [myProjects, setMyProjects] = useState([]);
 
   // When dashboard loads, check who is currently signed in
   useEffect(() => {
@@ -53,13 +54,19 @@ export default function DashboardPage() {
         try {
           parsedProfileInfo = responseUser.profile_info
             ? JSON.parse(responseUser.profile_info.toString())
-            : { additional_info: "", dark_mode: false, gantt_view: true };
+            : {
+                additional_info: "",
+                dark_mode: false,
+                gantt_view: true,
+                recent_activity_view: true,
+              };
         } catch (error) {
           console.error("Error parsing profile_info:", error);
           parsedProfileInfo = {
             additional_info: "",
             dark_mode: false,
             gantt_view: true,
+            recent_activity_view: true,
           };
         }
         setUser({
@@ -100,6 +107,8 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const recentActivityEnabled =
+    user.role !== "admin" && user.profile_info?.recent_activity_view !== false;
   let panes = [];
   switch (user.role) {
     case "admin":
@@ -261,7 +270,25 @@ export default function DashboardPage() {
           },
           render: () => (
             <Tab.Pane>
-              <RecentActivity semesterData={semesterData} />
+              {recentActivityEnabled &&
+                user.role === "coach" &&
+                myProjects.map((project) => (
+                  <div key={project.project_id}>
+                    <h2>{project.display_name || project.title}</h2>
+
+                    <RecentActivity
+                      projectId={project.project_id}
+                      semesterData={semesterData}
+                    />
+                  </div>
+                ))}
+
+              {recentActivityEnabled && user.role === "student" && (
+                <RecentActivity
+                  projectId={user.project}
+                  semesterData={semesterData}
+                />
+              )}
               <TimeLinesView semesterData={semesterData} />
             </Tab.Pane>
           ),
@@ -284,6 +311,25 @@ export default function DashboardPage() {
   }
 
   panes.reverse();
+  useEffect(() => {
+    if (
+      user.role !== "coach" ||
+      user.profile_info?.recent_activity_view === false
+    ) {
+      setMyProjects([]);
+      return;
+    }
+
+    SecureFetch(config.url.API_GET_MY_PROJECTS)
+      .then((response) => response.json())
+      .then((projects) => {
+        setMyProjects(projects);
+      })
+      .catch((error) => {
+        console.error("Failed to get coach projects:", error);
+        setMyProjects([]);
+      });
+  }, [user.role, user.profile_info?.recent_activity_view]);
 
   useEffect(() => {
     const activeKey = panes[activeIndex]?.menuItem?.key;

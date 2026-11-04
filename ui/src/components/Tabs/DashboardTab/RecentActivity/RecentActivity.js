@@ -136,7 +136,7 @@ function getProjectName(log) {
   return log?.display_name || log?.title || "Current Project";
 }
 
-export default function SinceLastVisit(props) {
+export default function RecentActivity(props) {
   const { user } = useContext(UserContext);
 
   const [activity, setActivity] = useState([]);
@@ -145,8 +145,9 @@ export default function SinceLastVisit(props) {
   const [showAll, setShowAll] = useState(false);
   const [dismissedAt, setDismissedAt] = useState(null);
   const [timeReport, setTimeReport] = useState(null);
+  const [myProjects, setMyProjects] = useState([]);
 
-  const projectId = user?.project;
+  const projectId = props.projectId || user?.project;
 
   /**
    * Stores dismissal state separately for each user and project.
@@ -170,6 +171,20 @@ export default function SinceLastVisit(props) {
 
     setDismissedAt(localStorage.getItem(dismissalStorageKey));
   }, [dismissalStorageKey]);
+
+  /**
+   * Conditional for coaches with multiple projects
+   */
+  useEffect(() => {
+    if (user.role !== USERTYPES.COACH) {
+      return;
+    }
+
+    SecureFetch(config.url.API_GET_MY_PROJECTS)
+      .then((response) => response.json())
+      .then((projects) => setMyProjects(projects))
+      .catch((error) => console.error("Failed to get coach projects:", error));
+  }, [user.role]);
 
   /**
    * Loads action submission logs.
@@ -369,7 +384,7 @@ export default function SinceLastVisit(props) {
        */
 
       let timeLogActivity = [];
-      
+
       if (config.url.API_GET_TIME_LOGS) {
         try {
           const timeLogsResponse = await SecureFetch(
@@ -379,7 +394,7 @@ export default function SinceLastVisit(props) {
 
           if (timeLogsResponse.ok) {
             const timeLogs = await timeLogsResponse.json();
-            
+
             const avgTimeResponse = await SecureFetch(
               `${config.url.API_GET_TIME_AVG}?project_id=${encodeURIComponent(projectId)}`,
             );
@@ -394,7 +409,7 @@ export default function SinceLastVisit(props) {
                 Number(student.avgTime) || 0,
               ]),
             );
-            
+
             const projectsResponse = await SecureFetch(
               config.url.API_GET_MY_PROJECTS,
             );
@@ -660,16 +675,13 @@ export default function SinceLastVisit(props) {
                 <TableHeaderCell>Weekly Average</TableHeaderCell>
               </TableRow>
             </TableHeader>
-      
+
             <TableBody>
               {item.summaries.map((student) => (
                 <TableRow key={student.systemId}>
                   <TableCell>
                     <div className="recent-activity-time-student">
-                      <ProfileCircle
-                        name={student.actorName}
-                        size="tiny"
-                      />
+                      <ProfileCircle name={student.actorName} size="tiny" />
                       <span>{student.actorName}</span>
                     </div>
                   </TableCell>

@@ -93,6 +93,7 @@ export const config = {
     API_GET_GANTT_VIEW: `${BASE_API_URL}/db/getGanttView`,
     API_GET_CALENDAR_VIEW: `${BASE_API_URL}/db/getCalendarView`,
     API_GET_MILESTONE_VIEW: `${BASE_API_URL}/db/getMilestoneView`,
+    API_GET_RECENT_ACTIVITY_VIEW: `${BASE_API_URL}/db/getRecentActivityView`,
     //AI API calls
     API_GENERATE_SUMMARY: `${BASE_API_URL}/ai/GenerateSummary`,
     API_GENERATE_HISTORIC_SUMMARY: `${BASE_API_URL}/ai/GenerateHistoricSummary`,
@@ -129,6 +130,7 @@ export const config = {
     API_POST_SET_GANTT_VIEW: `${BASE_API_URL}/db/setGanttView`,
     API_POST_SET_CALENDAR_VIEW: `${BASE_API_URL}/db/setCalendarView`,
     API_POST_SET_MILESTONE_VIEW: `${BASE_API_URL}/db/setMilestoneView`,
+    API_POST_SET_RECENT_ACTIVITY_VIEW: `${BASE_API_URL}/db/setRecentActivityView`,
 
     //DELETE - Auth needed
     API_DELETE_FILE: `${BASE_API_URL}/db/removeFile`,

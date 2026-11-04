@@ -5086,5 +5086,80 @@ module.exports = (db) => {
     },
   );
 
+  // Recent Activity View Preferences
+  db_router.post(
+    "/setRecentActivityView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, recent_activity_view } = req.body;
+
+      const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(
+          profile_info,
+          '$.recent_activity_view',
+          ?
+        )
+        WHERE system_id = ?
+      `;
+
+      try {
+        await db.query(updateQuery, [recent_activity_view, system_id]);
+
+        res.status(200).send({
+          message: "Recent activity preference updated successfully",
+        });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.get(
+    "/getRecentActivityView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id } = req.query;
+
+      const query = `
+        SELECT JSON_EXTRACT(
+          profile_info,
+          '$.recent_activity_view'
+        ) AS recent_activity_view
+        FROM users
+        WHERE system_id = ?
+      `;
+
+      try {
+        const result = await db.query(query, [system_id]);
+
+        if (result.length === 0) {
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+
+        const raw = result[0].recent_activity_view;
+
+        const recent_activity_view =
+          raw === null || raw === undefined
+            ? true
+            : raw === true || raw === "true" || raw === 1 || raw === "1";
+
+        res.status(200).send({
+          recent_activity_view,
+        });
+      } catch (err) {
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
   return db_router;
 };
