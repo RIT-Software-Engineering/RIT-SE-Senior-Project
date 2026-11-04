@@ -146,9 +146,37 @@ body.dark-mode .ui.dropdown {
   border: 1px solid var(--border-color);
 }
 
+/* Dark mode dropdown menu */
 body.dark-mode .ui.dropdown .menu {
-  background-color: var(--text-primary);
+  background-color: var(--bg-footer-header);
   border: 1px solid var(--border-color);
+
+  /* Improve native scrollbar visibility */
+  color-scheme: dark;
+  scrollbar-width: auto;
+  scrollbar-color: #aaa var(--bg-footer-header);
+}
+
+/* Scrollbar width */
+body.dark-mode .ui.dropdown .menu::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Scrollbar track */
+body.dark-mode .ui.dropdown .menu::-webkit-scrollbar-track {
+  background-color: var(--bg-footer-header);
+}
+
+/* Scrollbar thumb */
+body.dark-mode .ui.dropdown .menu::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 6px;
+  border: 2px solid var(--bg-footer-header);
+}
+
+/* Hover effect */
+body.dark-mode .ui.dropdown .menu::-webkit-scrollbar-thumb:hover {
+  background-color: #ddd;
 }
 
 body.dark-mode .ui.dropdown .menu .item {
@@ -569,4 +597,15 @@ body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
 
 .ui.modal .close.icon {
   color: #fff !important;
+}
+
+/* v1.8.5: upload progress label in dark mode */
+.dark-mode .ui.progress.upload-progress > .label {
+  color: var(--text-primary);
+}
+
+.ui.modal {
+  border-radius: 10px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  padding: 12px;
 }

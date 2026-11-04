@@ -24,4 +24,5 @@
 
 .time-row-deleted {
   background: #ff999c;
+  text-decoration: line-through;
 }
