@@ -667,16 +667,16 @@ module.exports = (db) => {
     },
   );
 
-db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
-  try {
-    const projectId = req.query.project_id;
+  db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
+    try {
+      const projectId = req.query.project_id;
 
       const [semester] = await db.query(
         `SELECT sg.start_date, sg.end_date
         FROM projects p
         JOIN semester_group sg ON p.semester = sg.semester_id
         WHERE p.project_id = ?`,
-        [projectId]
+        [projectId],
       );
 
       if (!semester) {
@@ -699,7 +699,7 @@ db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
 
       const completedWeeks = Math.max(
         0,
-        cutoff.diff(semesterStart.startOf("week"), "week")
+        cutoff.diff(semesterStart.startOf("week"), "week"),
       );
 
       const sql = `
@@ -3002,6 +3002,7 @@ db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
                         WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target = 'peer_evaluation' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)
                         ) AND EXISTS (SELECT 1 FROM project_coaches pc JOIN action_log al ON al.system_id = pc.coach_id WHERE pc.project_id = ? AND al.action_template = actions.action_id AND al.project = ?) THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND date('now') < start_date THEN 'grey'
                         WHEN action_target = 'peer_evaluation' THEN 'red'
                         WHEN action_target IS 'individual' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)) THEN 'green'
                         WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
@@ -3331,7 +3332,7 @@ db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
             FROM action_log
             JOIN main.users u on action_log.system_id = u.system_id
             JOIN main.actions a on action_log.action_template = a.action_id
-            WHERE action_log.project = ?  AND u.type = 'coach'
+            WHERE action_log.project = ?  AND u.type = 'coach' AND a.action_target = "peer_evaluation"
         `;
 
       db.query(getFeedbackQuery, req.query.project_id)

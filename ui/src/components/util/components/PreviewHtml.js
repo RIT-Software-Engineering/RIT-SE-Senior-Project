@@ -47,7 +47,7 @@ export default function PreviewHtml(props) {
       });
   };
 
-  // auto load submssions when there are changes
+  // auto load submissions when there are changes
   useEffect(() => {
     if (props.autoLoadSubmissions) {
       loadActionSubmissions(props.projectId, props.action?.action_id);
@@ -110,6 +110,7 @@ export default function PreviewHtml(props) {
         </p>
       );
     }
+
     if (submissions?.length === 0) {
       return (
         <p>
@@ -147,16 +148,20 @@ export default function PreviewHtml(props) {
 
   function preActionContent() {
     const submissionType = submissionTypeMap[props.action?.action_target];
+
     return (
       <>
         <p>{props.action?.short_desc}</p>
         <p>Starts: {formatDateNoOffset(props.action?.start_date)}</p>
         <p>Due: {formatDateNoOffset(props.action?.due_date)}</p>
+
         {!props.previewOnly && <p>Project Title: {props.projectName}</p>}
+
         {submissionType != null && <p>Submission Type: {submissionType}</p>}
+
         {!props.previewOnly && (
           <div>
-            Submissons:
+            Submissions:
             {renderSubmissionsList()}
           </div>
         )}

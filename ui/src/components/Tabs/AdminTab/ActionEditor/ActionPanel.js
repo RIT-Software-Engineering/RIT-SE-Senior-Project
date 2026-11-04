@@ -304,12 +304,12 @@ export default function ActionPanel(props) {
     ? {
         SUCCESS: "The action has been created.",
         FAIL: "We were unable to create your action.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       }
     : {
         SUCCESS: "The action has been Edited.",
         FAIL: "We were unable to receive your edits.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
 
@@ -565,17 +565,16 @@ export default function ActionPanel(props) {
       data.action_target !== "break_period"
     ) {
       //if (!data.file_types?.trim()) {
-        //errorsFound.push({
-          //name: "file_types",
-          //message: "Please provide at least one allowed file type.",
-        //});
+      //errorsFound.push({
+      //name: "file_types",
+      //message: "Please provide at least one allowed file type.",
+      //});
       //}
-
       //if (!data.file_size?.trim()) {
-        //errorsFound.push({
-          //name: "file_size",
-          //message: "Please provide a file upload size limit.",
-        //});
+      //errorsFound.push({
+      //name: "file_size",
+      //message: "Please provide a file upload size limit.",
+      //});
       //}
     }
 

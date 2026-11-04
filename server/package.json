@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-ai": "node server/SummerizationAI.js"
+    "test-ai": "node server/SummarizationAI.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "nanoid": "^3.3.18",
     "node-fetch": "^2.7.0",
     "nodemon": "^3.1.10",
+    "openai": "^7.39.0",
     "passport": "^0.4.1",
     "passport-saml": "^3.2.4",
     "pdfkit": "^0.11.0",

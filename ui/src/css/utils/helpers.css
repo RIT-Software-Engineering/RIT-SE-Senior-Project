@@ -179,6 +179,7 @@ a,
   outline-offset: 2px;
 }
 
+/* Action Modal */
 .actionmodal-modal {
   position: fixed;
   top: 50%;
@@ -186,6 +187,7 @@ a,
   transform: translate(-50%, -50%);
 }
 
+/* Developer Interface */
 .dev-drop {
   margin-bottom: 24px;
 }
