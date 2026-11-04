@@ -74,7 +74,7 @@ export default function ProjectTime(props) {
                     </TableHeader>
                     <TableBody>
                       {props.timeLogs
-                        ?.filter((log) => log.project === props.proj.project_id)
+                        ?.filter((log) => log.project === props.proj.project_id).sort((a, b) => new Date(b.submission_datetime).getTime() - new Date(a.submission_datetime).getTime())
                         .map((timeLog, idx) => {
                           let submittedBy = (
                             <span className="time-table">
@@ -107,7 +107,7 @@ export default function ProjectTime(props) {
                             idx <= currentPage * postsPerPage + postsPerPage - 1
                           ) {
                             let rowClassName = "";
-                            if (showNewSubmissionHighlight) {
+                            if (showNewSubmissionHighlight && timeLog.active != 0) {
                               rowClassName = "time-row-new";
                             } else if (timeLog.active === 0) {
                               rowClassName = "time-row-deleted";
@@ -170,7 +170,7 @@ export default function ProjectTime(props) {
                                       props.proj.title
                                     }
                                     semesterName={props.semester.name}
-                                    user={submittedBy}
+                                    user={timeLog.name}
                                     timeLog={timeLog}
                                     userId={timeLog.system_id}
                                     id={timeLog.time_log_id}
@@ -213,7 +213,7 @@ export default function ProjectTime(props) {
                       <TableRow>
                         {/*Headers for the table */}
                         <TableHeaderCell>Name</TableHeaderCell>
-                        <TableHeaderCell>Average Hours</TableHeaderCell>
+                        <TableHeaderCell>Weekly Average Hours</TableHeaderCell>
                         <TableHeaderCell>Total Hours</TableHeaderCell>
                       </TableRow>
                     </TableHeader>
@@ -255,6 +255,9 @@ export default function ProjectTime(props) {
                                   Average Hours:{" "}
                                 </span>
                                 {avgTime[idx]?.avgTime ?? 0}
+                                {avgTime.find(
+                                  (time) => time.system_id === timeStat.system_id
+                                )?.avgTime ?? 0}
                               </TableCell>
                               <TableCell>
                                 <span className="mobile-only-label">

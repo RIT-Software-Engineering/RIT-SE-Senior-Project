@@ -1,3 +1,6 @@
+-- Recent semester-2 submissions, including CareCraze activity in the last 24 hours.
+-- Corrected a cross-team Link Hero peer-evaluation seed record.
+-- Historical semester-1 submissions remain attached to their original action_template IDs.
 INSERT INTO
     action_log (
         action_template,
@@ -17,9 +20,7 @@ VALUES
         '4_buzzboost',
         '{"team_name":"BuzzBoost", "email":"test"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-25'
-        )
+        DATETIME('now', '-20 days')
     ),
     (
         15,
@@ -28,9 +29,7 @@ VALUES
         '5_profitpulse',
         '{"team_name":"ProfitPulse", "email":"test"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-27'
-        )
+        DATETIME('now', '-18 days')
     ),
     (
         15,
@@ -39,9 +38,7 @@ VALUES
         '7_carecraze',
         '{"team_name":"CareCraze", "email":"test"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-29'
-        )
+        DATETIME('now', '-16 days')
     ),
     (
         15,
@@ -50,9 +47,7 @@ VALUES
         '8_dataforge',
         '{"team_name":"DataForge", "email":"test"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-30'
-        )
+        DATETIME('now', '-14 days')
     ),
     (
         15,
@@ -61,9 +56,7 @@ VALUES
         '9_ecoedge',
         '{"team_name":"EcoEdge", "email":"test"}',
         NULL,
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-31'
-        )
+        DATETIME('now', '-12 days')
     ),
     -- Project Proposal
     (
@@ -73,9 +66,7 @@ VALUES
         '4_buzzboost',
         '{"proposal" :"BuzzBoost marketing strategy proposal"}',
         'proposal_zh7558.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-15'
-        )
+        DATETIME('now', '-10 days')
     ),
     (
         16,
@@ -84,9 +75,7 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_lh7488.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-16'
-        )
+        DATETIME('now', '-8 days')
     ),
     (
         16,
@@ -95,9 +84,7 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_gs9947.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-17'
-        )
+        DATETIME('now', '-6 days')
     ),
     (
         16,
@@ -106,9 +93,7 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_cr8473.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-18'
-        )
+        DATETIME('now', '-3 days')
     ),
     -- project timeline
     (
@@ -118,9 +103,7 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_zh7558.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-08'
-        )
+        DATETIME('now', '-6 days')
     ),
     (
         17,
@@ -129,9 +112,7 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_lh7488.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-09'
-        )
+        DATETIME('now', '-4 days')
     ),
     (
         17,
@@ -140,9 +121,7 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_gs9947.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-10'
-        )
+        DATETIME('now', '-2 days')
     ),
     (
         17,
@@ -151,9 +130,7 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_cr8473.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-11'
-        )
+        DATETIME('now', '-3 hours')
     ),
     -- report submission
     (
@@ -163,9 +140,7 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_zh7558.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-12'
-        )
+        DATETIME('now', '-5 days')
     ),
     (
         18,
@@ -174,9 +149,7 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_lh7488.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-13'
-        )
+        DATETIME('now', '-3 days')
     ),
     (
         18,
@@ -185,9 +158,7 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_gs9947.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-14'
-        )
+        DATETIME('now', '-1 days')
     ),
     (
         18,
@@ -196,9 +167,7 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_cr8473.pdf',
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-15'
-        )
+        DATETIME('now', '-2 hours')
     ),
     -- Team Member Roles
     (
@@ -208,7 +177,7 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_rf9472.pdf',
-        DATE('now', '-6 days')
+        DATETIME('now', '-3 days')
     ),
     (
         22,
@@ -217,7 +186,7 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_ef9474.pdf',
-        DATE('now', '-7 days')
+        DATETIME('now', '-1 days')
     ),
     (
         22,
@@ -226,7 +195,7 @@ VALUES
         '4_buzzboost',
         '{"roles":"Zelda: Project Lead, Link: Designer, Glimmer: Developer, Comet: Analyst"}',
         'roles_zh7558.pdf',
-        DATE('now', '-7 days')
+        DATETIME('now', '-10 hours')
     ),
     -- Midterm Peer Evaluation Form
     (
@@ -286,7 +255,7 @@ VALUES
             "Submitter": "Zelda Hyrule"
             }',
         NULL,
-        DATE('now', '-6 days')
+        DATETIME('now', '-5 days')
     ),
     (
         29,
@@ -295,7 +264,7 @@ VALUES
         '4_buzzboost',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
         NULL,
-        DATE('now', '-6 days')
+        DATETIME('now', '-4 days')
     ),
     (
         29,
@@ -354,7 +323,7 @@ VALUES
                 "Submitter": "Glimmer Star"
             }',
         NULL,
-        DATE('now', '-6 days')
+        DATETIME('now', '-3 days')
     ),
     (
         29,
@@ -413,7 +382,7 @@ VALUES
             "Submitter": "Comet Rush"
             }',
         NULL,
-        DATE('now', '-6 days')
+        DATETIME('now', '-2 days')
     ),
     (
         29,
@@ -427,17 +396,153 @@ VALUES
         "Zelda Hyrule":{"Feedback":"Excellent! Continue balancing leadership with shared decision making.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},
         "Comet Rush":{"Feedback":"More consistent communication and earlier progress updates are recommended.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
         NULL,
-        DATE('now', '-6 days')
+        DATETIME('now', '-5 hours')
     ),
 
+    -- CareCraze: additional recent, team-correct submission records.
     (
-        29,
-        'lh7488',
+        16,
+        'aeg836',
         NULL,
         '7_carecraze',
-        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
+        '{"proposal":"CareCraze patient dashboard proposal"}',
+        'proposal_aeg836.pdf',
+        DATETIME('now', '-6 days')
+    ),
+    (
+        16,
+        'sb9047',
         NULL,
-        DATE('now', '-6 days')
+        '7_carecraze',
+        '{"proposal":"CareCraze UI and accessibility proposal"}',
+        'proposal_sb9047.pdf',
+        DATETIME('now', '-4 days')
+    ),
+    (
+        17,
+        'nb9374',
+        NULL,
+        '7_carecraze',
+        '{"timeline":"CareCraze sprint milestones: dashboard, API, integration, testing"}',
+        'timeline_carecraze.pdf',
+        DATETIME('now', '-3 days')
+    ),
+    (
+        18,
+        'aeg836',
+        NULL,
+        '7_carecraze',
+        '{"report":"CareCraze interim dashboard implementation report"}',
+        'report_aeg836.pdf',
+        DATETIME('now', '-2 days')
+    ),
+    (
+        18,
+        'nb9374',
+        NULL,
+        '7_carecraze',
+        '{"report":"CareCraze backend API progress report"}',
+        'report_nb9374.pdf',
+        DATETIME('now', '-28 hours')
+    ),
+    (
+        18,
+        'vw9474',
+        NULL,
+        '7_carecraze',
+        '{"report":"CareCraze test coverage and compliance report"}',
+        'report_vw9474.pdf',
+        DATETIME('now', '-10 hours')
+    ),
+    (
+        19,
+        'sb9047',
+        NULL,
+        '7_carecraze',
+        '{"survey":"CareCraze patient and clinician survey results"}',
+        'survey_carecraze.csv',
+        DATETIME('now', '-38 hours')
+    ),
+    (
+        20,
+        'vw9474',
+        NULL,
+        '7_carecraze',
+        '{"canvas":"CareCraze business model canvas for healthcare stakeholders"}',
+        'canvas_carecraze.pdf',
+        DATETIME('now', '-6 hours')
+    ),
+    (
+        22,
+        'nb9374',
+        NULL,
+        '7_carecraze',
+        '{"roles":"Aerith: Frontend Lead, Nova: Backend Lead, Sephiroth: UI and UX, Vapor: QA and Testing"}',
+        'roles_carecraze.pdf',
+        DATETIME('now', '-8 days')
+    ),
+    (
+        23,
+        'aeg836',
+        NULL,
+        '7_carecraze',
+        '{"analysis":"CareCraze analysis of healthcare portal competitors"}',
+        'analysis_carecraze.pdf',
+        DATETIME('now', '-5 hours')
+    ),
+    (
+        24,
+        'sb9047',
+        NULL,
+        '7_carecraze',
+        '{"risks":"CareCraze patient privacy, integration, and schedule risks"}',
+        'risks_carecraze.pdf',
+        DATETIME('now', '-4 hours')
+    ),
+    (
+        25,
+        'vw9474',
+        NULL,
+        '7_carecraze',
+        '{"marketing":"CareCraze outreach and user adoption plan"}',
+        'marketing_carecraze.pdf',
+        DATETIME('now', '-3 hours')
+    ),
+    (
+        29,
+        'aeg836',
+        NULL,
+        '7_carecraze',
+        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova kept the backend tasks moving and flagged integration issues early.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth provided careful reviews and spotted several UI regressions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor communicated test results clearly and helped verify fixes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Aerith Gainsborough"}',
+        NULL,
+        DATETIME('now', '-32 hours')
+    ),
+    (
+        29,
+        'nb9374',
+        NULL,
+        '7_carecraze',
+        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith coordinated the dashboard work and incorporated feedback quickly.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth was reliable with design reviews and test cases.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor proactively investigated accessibility and compliance questions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Nova Bright"}',
+        NULL,
+        DATETIME('now', '-16 hours')
+    ),
+    (
+        29,
+        'sb9047',
+        NULL,
+        '7_carecraze',
+        '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith kept the frontend implementation consistent with the design.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova handled API integration issues and documented the changes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor took initiative testing the patient dashboard workflows.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Sephiroth Blade"}',
+        NULL,
+        DATETIME('now', '-1 hour')
+    ),
+    (
+        32,
+        'nb9374',
+        NULL,
+        '7_carecraze',
+        '{"Meeting_Location":"CareCraze project room","Meeting_Date_Time":"Next Tuesday at 2:00 PM"}',
+        NULL,
+        DATETIME('now', '-90 minutes')
     ),
 
     
@@ -612,7 +717,7 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        DATE('now', '-6 days')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-03')
     ),
     (
         14,
@@ -621,7 +726,7 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        DATE('now', '-6 days')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04')
     ),
 
     (
@@ -637,7 +742,7 @@ VALUES
         "Tifa Lockhart":{"Feedback":"Communicated effectively and helped the team resolve disagreements constructively.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
         }',
         NULL,
-        DATE('now', '-6 days')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04')
     ),
     
     -- 2_smartspark

@@ -4,6 +4,7 @@ import {
   formatDateTime,
   formatDate,
   isSemesterActive,
+  formatActionTarget,
 } from "../../util/functions/utils";
 import {
   Pagination,
@@ -410,6 +411,7 @@ export default function ActionLogs(props) {
                   <TableCell>
                     <span className="mobile-only-label">Type: </span>
                     {action.action_target}
+                    {formatActionTarget(action.action_target)}
                   </TableCell>
                   <TableCell>
                     <span className="action-table">

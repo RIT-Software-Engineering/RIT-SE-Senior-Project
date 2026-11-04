@@ -32,7 +32,7 @@ export default function SponsorEditor(props) {
       .catch((error) => {
         console.error("Failed to get semestersData data" + error);
       });
-  }, []);
+  }, [props?.sponsor?.sponsor_id]);
 
   let initialState = {
     sponsor_id: props?.sponsor?.sponsor_id || "",

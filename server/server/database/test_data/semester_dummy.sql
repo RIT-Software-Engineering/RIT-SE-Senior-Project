@@ -9,7 +9,7 @@ VALUES
     (
         "Current Year",
         'SE',
-        DATE(strftime('%Y', DATE('now')) || '-01-01'),
+        DATE('now', 'start of month', '-1 month'),
         DATE(strftime('%Y', DATE('now')) || '-12-31')
     ),
     (
