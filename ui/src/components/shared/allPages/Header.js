@@ -190,12 +190,18 @@ function Header() {
     );
   };
 
-
   const renderSignInButton = () => {
+    let buttonClassName;
+    if (signedIn){
+      buttonClassName = "ui button";
+    }else{
+      buttonClassName = "ui button-secondary";
+    }
     return(
       <>
+      <div id="nav-buttons" className="ui right floated buttons">
       {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <Button onClick={signInOut} className="ui button-secondary">
+            <Button onClick={signInOut} className={buttonClassName}>
               <Icon name="sign-in" />
               {signInOutBtnText}
             </Button>
@@ -204,7 +210,7 @@ function Header() {
               closeOnDimmerClick={false}
               className={"sticky"}
               trigger={
-                <Button className="ui button-secondary">
+                <Button className={buttonClassName}>
                   <Icon name="sign-in" />
                   {devSignInBtnText}
                 </Button>
@@ -218,7 +224,7 @@ function Header() {
           )}
           {signedIn && (
             <Button
-              className="ui button-secondary"
+              className="ui button"
               onClick={() => setProfileModalOpen(true)}
             >
               <span className="header-span">
@@ -227,6 +233,7 @@ function Header() {
               </span>
             </Button>
           )}
+          </div>
           </>
     );
   };
@@ -234,6 +241,7 @@ function Header() {
   return (
     <div id="header">
       <div id="navbar">
+        {signedIn && <span>{uiConfig.app.name}</span>}
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
