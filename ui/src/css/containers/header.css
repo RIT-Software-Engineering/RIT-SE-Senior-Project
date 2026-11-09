@@ -54,6 +54,13 @@
   border: none;
 }
 
+#navbar .ui.button-secondary {
+  color: white;
+  background-color: #F76902;
+  border: none;
+  border-radius: 0%;
+}
+
 .header-span {
   display: inline-flex;
   align-items: center;

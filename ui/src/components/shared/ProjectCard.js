@@ -23,35 +23,51 @@ function ProjectCard({ project, cardClass="card", onClick }){
     const awards = Object.values(uiConfig.awards).filter(
         (award) => project[award.sqlName] === 1);
 
+    const truncateAwardName = (name, maxLength= 15) => {
+        return name.length > maxLength
+            ? name.slice(0, maxLength-3) + "..."
+            : name;
+     }
+
     return (
         <div className={`${cardClass} ${awards.length === 0 ? "no-award" : ""}`} onClick={() => onClick(project)}>
 
             {cardClass===("card-exemplary") && awards.length > 0 &&
             <div className="award-sash" style={{ backgroundColor: awards[0].color}}>
-                <div className="ui header">{awards[0].name}</div>
+                <div className="ui header">{truncateAwardName(awards[0].name)}</div>
             </div>}
 
             {(cardClass===("card-exemplary-left") || cardClass===("card-exemplary-right")) && awards.length > 0 &&
             <div className="award-sash-side" style={{ backgroundColor: awards[0].color}}>
-                <div className="ui header">{awards[0].name}</div>
+                <div className="ui header">{truncateAwardName(awards[0].name)}</div>
             </div>}
 
             {cardClass===("card-exemplary") && awards.length > 1 &&
             <div className="award-sash-left" style={{ backgroundColor: awards[1].color}}>
-                <div className="ui header">{awards[1].name}</div>
+                <div className="ui header">{truncateAwardName(awards[1].name)}</div>
             </div>}
 
             {(cardClass===("card-exemplary-left") || cardClass===("card-exemplary-right")) && awards.length > 1 &&
             <div className="award-sash-left-side" style={{ backgroundColor: awards[1].color}}>
-                <div className="ui header">{awards[1].name}</div>
+                <div className="ui header">{truncateAwardName(awards[1].name)}</div>
             </div>}
 
             <div className="ui header project-title">{project.title}</div>
+
+            {cardClass===("card") && awards.length > 0 &&
+            <div style={{ display: "flex", flexDirection:"column"}}>
+            {awards.map((award) => (
+              <div className="short-award-ribbon" style={{ backgroundColor: award.color}}>
+                <div className="ui header">{award.name}</div>
+              </div>
+            ))}
+            </div>}
+
             <img
               src={project.poster_thumb ? [`${basePosterURL}${project.poster_thumb}`] : [`${uiConfig.logoPath}`]}
               alt="Project Poster"
             />
-            <div className="ui header project-desc">{getFirstSentence(decodeSynopsis(project.synopsis))}</div>
+            <div className="ui header project-desc" style={{ paddingTop: "15px" }}>{getFirstSentence(decodeSynopsis(project.synopsis))}</div>
             <div className="ui header project-desc">{getFormattedDate(project.start_date)} - {getFormattedDate(project.end_date)}</div>
         </div>
     );

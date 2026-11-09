@@ -182,3 +182,24 @@
     white 100%
   );
 }
+
+.carousel-track {
+  overflow: hidden;
+  flex: 1;
+}
+
+.carousel-slide {
+  display: flex;
+  gap: 20px;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(450px);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}

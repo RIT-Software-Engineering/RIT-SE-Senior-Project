@@ -26,7 +26,7 @@ const uiConfig = {
   },
   awards: {
     Excellence: {
-      name: "Excellence",
+      name: "Excellence Award",
       sqlName: "outstanding",
       color: "#009CBD"
     },

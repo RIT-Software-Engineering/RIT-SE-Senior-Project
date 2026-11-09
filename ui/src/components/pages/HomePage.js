@@ -24,11 +24,25 @@ function HomePage() {
   const [currentProjectSlide, setCurrentProjectSlide] = useState(0);
   const [featuredProjectSlide, setFeaturedProjectSlide] = useState(0);
 
-  const totalCurrentSlides = Math.ceil(currentProjects.length/PROJECTS_PER_SLIDE);
-  const visibleCurrentProjects = currentProjects.length > 0 ? Array.from( { length: Math.min(PROJECTS_PER_SLIDE, currentProjects.length) }, (_, i) => currentProjects[(currentProjectSlide * PROJECTS_PER_SLIDE + i) % currentProjects.length]): [];
+  const [projectsPerSlide, setProjectsPerSlide] = useState(window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
 
-  const totalFeaturedSlides = Math.ceil(featuredProjects.length/PROJECTS_PER_SLIDE);
-  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(PROJECTS_PER_SLIDE, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * PROJECTS_PER_SLIDE + i) % featuredProjects.length]): [];
+  useEffect(() => {
+    const handleResize = () => {
+      setProjectsPerSlide(
+        window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE
+      );
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const totalCurrentSlides = Math.ceil(currentProjects.length/projectsPerSlide);
+  const visibleCurrentProjects = currentProjects.length > 0 ? Array.from( { length: Math.min(projectsPerSlide, currentProjects.length) }, (_, i) => currentProjects[(currentProjectSlide * projectsPerSlide + i) % currentProjects.length]): [];
+
+  const totalFeaturedSlides = Math.ceil(featuredProjects.length/projectsPerSlide);
+  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(projectsPerSlide, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * projectsPerSlide + i) % featuredProjects.length]): [];
+
+  
 
   /*
    * When the page initially loads, fetches random featured archives.
@@ -144,7 +158,12 @@ function HomePage() {
 
             <div className="projects-carousel">
               {visibleFeaturedProjects.map((featuredProject, index) => {
-                const cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
+                let cardClass;
+                if (projectsPerSlide===1){
+                  cardClass = "card-exemplary";
+                }else{
+                  cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
+                }
                 return <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>;
               })}
             </div>
@@ -185,7 +204,8 @@ function HomePage() {
             <Icon name="arrow alternate circle left outline"/>
           </button>
 
-          <div className="projects-carousel">
+
+          <div key={currentProjectSlide} className="projects-carousel carousel-slide">
             {visibleCurrentProjects.map((currentProject) => {
               return <ProjectCard key={currentProject.id} project={currentProject} onClick={() => setSelectedProject(currentProject)}/>;
             })}

@@ -82,39 +82,7 @@ function Header() {
               </Button>
             </>
           )}
-          {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <Button onClick={signInOut} className="ui button">
-              <Icon name="sign-in" />
-              {signInOutBtnText}
-            </Button>
-          ) : (
-            <Modal
-              closeOnDimmerClick={false}
-              className={"sticky"}
-              trigger={
-                <Button className="ui button">
-                  <Icon name="sign-in" />
-                  {devSignInBtnText}
-                </Button>
-              }
-              header="Developer Menu"
-              content={{
-                content: <DevSignInModalContent />,
-              }}
-              actions={["Cancel"]}
-            />
-          )}
-          {signedIn && (
-            <Button
-              className="ui button"
-              onClick={() => setProfileModalOpen(true)}
-            >
-              <span className="header-span">
-                <ProfileCircle user={user} size="tiny" />
-                <span className="header-profile">Profile</span>
-              </span>
-            </Button>
-          )}
+          
         </div>
         <div id="hamburger-menu" className="ui right floated buttons">
           <Button
@@ -222,10 +190,50 @@ function Header() {
     );
   };
 
+
+  const renderSignInButton = () => {
+    return(
+      <>
+      {process.env.REACT_APP_NODE_ENV === "production" ? (
+            <Button onClick={signInOut} className="ui button-secondary">
+              <Icon name="sign-in" />
+              {signInOutBtnText}
+            </Button>
+          ) : (
+            <Modal
+              closeOnDimmerClick={false}
+              className={"sticky"}
+              trigger={
+                <Button className="ui button-secondary">
+                  <Icon name="sign-in" />
+                  {devSignInBtnText}
+                </Button>
+              }
+              header="Developer Menu"
+              content={{
+                content: <DevSignInModalContent />,
+              }}
+              actions={["Cancel"]}
+            />
+          )}
+          {signedIn && (
+            <Button
+              className="ui button-secondary"
+              onClick={() => setProfileModalOpen(true)}
+            >
+              <span className="header-span">
+                <ProfileCircle user={user} size="tiny" />
+                <span className="header-profile">Profile</span>
+              </span>
+            </Button>
+          )}
+          </>
+    );
+  };
+
   return (
     <div id="header">
       <div id="navbar">
-        <span>{uiConfig.app.name}</span>
         {renderNavButtons()}
         <ProfileModal
           open={profileModalOpen}
@@ -233,6 +241,7 @@ function Header() {
           onClose={() => setProfileModalOpen(false)}
           user={user}
         />
+        {renderSignInButton()}
       </div>
       <div className="header-nav">
         <img
