@@ -141,6 +141,23 @@ VALUES
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-15 10:10:10')
         ),
         (
+        'rth4567',
+        'Rachel',
+        'Thompson',
+        'rachel.thompson@mail.edu',
+        'coach',
+        NULL,
+        NULL,
+        '',
+        0,
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        DATETIME(strftime('%Y', DATE('now')) || '-01-28 17:30:00'),
+        DATETIME(strftime('%Y', DATE('now')) || '-01-10 16:00:00')
+        ),
+
+        -- students
+
+        (
         'miku99',
         'Miku',
         'Hatsune',
@@ -150,7 +167,7 @@ VALUES
         '1_groweasy',
         '',
         0,
-        '{"additional_info":"Team scribe. I keep the meeting notes, so ask me if you missed something.", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-15 08:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 07:00:00')
         ),
@@ -164,7 +181,7 @@ VALUES
         '1_groweasy',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0117"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-17 09:30:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 08:30:00')
         ),
@@ -192,7 +209,7 @@ VALUES
         '1_groweasy',
         '',
         0,
-        '{"additional_info":"Commuter, so I am not on campus Fridays. Happy to hop on a call instead.", "preferred_contact":{"method":"other","label":"Discord","value":"tifa_l#0093"}, "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-21 11:15:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-26 10:15:00')
         ),
@@ -220,7 +237,7 @@ VALUES
         '2_smartspark',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Teams","value":"sonic.speed@mail.edu"}, "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-25 13:45:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 12:45:00')
         ),
@@ -234,7 +251,7 @@ VALUES
         '2_smartspark',
         '',
         0,
-        '{"additional_info":"Working on testing and QA. Please tag me on any pull request.", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-27 14:00:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-02 13:00:00')
         ),
@@ -248,7 +265,7 @@ VALUES
         '2_smartspark',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0168"}, "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-29 15:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-04 14:15:00')
         ),
@@ -262,7 +279,7 @@ VALUES
         '3_techtitan',
         '',
         0,
-        '{"additional_info":"Hardware and embedded side of the project. I own the Raspberry Pi demo.", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-31 16:30:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-06 15:30:00')
         ),
@@ -276,7 +293,7 @@ VALUES
         '3_techtitan',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Discord","value":"neonglow"}, "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-02-02 17:45:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-08 16:45:00')
         ),
@@ -290,7 +307,7 @@ VALUES
         '3_techtitan',
         '',
         0,
-        '{"additional_info":"Please do not call before 10am. Slack is fastest.", "preferred_contact":{"method":"other","label":"Slack","value":"@solid.snake"}, "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-02-04 18:00:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-10 17:00:00')
         ),
@@ -308,7 +325,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-02-06 19:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-12 18:15:00')
         ),
- 
+
         (
         'lh7488',
         'Link',
@@ -333,7 +350,7 @@ VALUES
         '4_buzzboost',
         '',
         0,
-        '{"additional_info":"Frontend lead. Best reached in the evenings, I am in the lab Tue/Thu afternoons.", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-15 09:45:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-20 08:45:00')
         ),
@@ -361,11 +378,11 @@ VALUES
         '4_buzzboost',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Discord","value":"cometrush#4821"}, "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
- 
+
         (
         'kp2872',
         'Kirby',
@@ -390,7 +407,7 @@ VALUES
         '11_vitavibe',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0126"}, "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-23 13:45:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 12:45:00')
         ),
@@ -404,7 +421,7 @@ VALUES
         '11_vitavibe',
         '',
         0,
-        '{"additional_info":"Design and UX. Figma file is linked in the team channel.", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
@@ -422,7 +439,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
- 
+
         (
         'saa384',
         'Samus',
@@ -433,7 +450,7 @@ VALUES
         '5_profitpulse',
         '',
         0,
-        '{"additional_info":"Project manager this semester. Standup notes go out every Monday.", "preferred_contact":{"method":"phone","value":"585-555-0155"}, "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-29 16:30:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-04 15:30:00')
         ),
@@ -461,7 +478,7 @@ VALUES
         '5_profitpulse',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Discord","value":"yoshi_dino#7710"}, "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
@@ -479,7 +496,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-02-04 19:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-10 18:15:00')
         ),
- 
+
         (
         'lac743',
         'Lara',
@@ -490,7 +507,7 @@ VALUES
         '6_nextwave',
         '',
         0,
-        '{"additional_info":"Backend and deployment. Ping me if the staging server is down.", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-13 08:30:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-18 07:30:00')
         ),
@@ -518,7 +535,7 @@ VALUES
         '6_nextwave',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Slack","value":"@donkey.kong"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-17 10:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 09:00:00')
         ),
@@ -536,7 +553,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
- 
+
         (
         'ks6237',
         'Kratos',
@@ -547,7 +564,7 @@ VALUES
         '12_flexflow',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0183"}, "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":false, "calendar_view":false}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-21 12:30:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-26 11:30:00')
         ),
@@ -575,7 +592,7 @@ VALUES
         '12_flexflow',
         '',
         0,
-        '{"additional_info":"Documentation and sponsor communication.", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
@@ -593,7 +610,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
- 
+
         (
         'aeg836',
         'Aerith',
@@ -618,7 +635,7 @@ VALUES
         '7_carecraze',
         '',
         0,
-        '{"additional_info":"Handling the database and API. Text me for anything urgent.", "preferred_contact":{"method":"phone","value":"585-555-0142"}, "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-31 17:45:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-06 16:45:00')
         ),
@@ -632,7 +649,7 @@ VALUES
         '7_carecraze',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Slack","value":"@sephiroth.blade"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
@@ -650,7 +667,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-02-04 19:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-10 18:15:00')
         ),
- 
+
         (
         'pks286',
         'Pikachu',
@@ -661,7 +678,7 @@ VALUES
         '8_dataforge',
         '',
         0,
-        '{"additional_info":"Data pipeline owner. Available most weekday mornings.", "preferred_contact":{"method":"other","label":"Discord","value":"pikachu_spark"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-13 08:30:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-18 07:30:00')
         ),
@@ -689,7 +706,7 @@ VALUES
         '8_dataforge',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0191"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-17 10:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-22 09:00:00')
         ),
@@ -707,7 +724,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-01-19 11:15:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-24 10:15:00')
         ),
- 
+
         (
         'rf9472',
         'Ryu',
@@ -732,7 +749,7 @@ VALUES
         '9_ecoedge',
         '',
         0,
-        '{"additional_info":"Sustainability research and the final report.", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":false, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-23 13:45:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-28 12:45:00')
         ),
@@ -746,7 +763,7 @@ VALUES
         '9_ecoedge',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"other","label":"Teams","value":"chun.li@mail.edu"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-25 14:00:00'),
         DATETIME(strftime('%Y', DATE('now', '-1 year')) || '-12-30 13:00:00')
         ),
@@ -764,7 +781,7 @@ VALUES
         DATETIME(strftime('%Y', DATE('now')) || '-01-27 15:15:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-02 14:15:00')
         ),
- 
+        
         (
         'sor8362',
         'Sora',
@@ -775,7 +792,7 @@ VALUES
         '10_trendtide',
         '',
         0,
-        '{"additional_info":"", "preferred_contact":{"method":"phone","value":"585-555-0134"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-01-29 16:30:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-04 15:30:00')
         ),
@@ -803,7 +820,7 @@ VALUES
         '10_trendtide',
         '',
         0,
-        '{"additional_info":"Analytics dashboard. Ask me about the charts.", "preferred_contact":{"method":"other","label":"Discord","value":"riku_dawn#2208"}, "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         DATETIME(strftime('%Y', DATE('now')) || '-02-02 18:00:00'),
         DATETIME(strftime('%Y', DATE('now')) || '-01-08 17:00:00')
         ),
