@@ -24,6 +24,7 @@
 
 .time-row-deleted {
   background: #ff999c;
+  text-decoration: line-through;
 }
 
 .ui.table tbody tr.time-row-clickable:hover > td {

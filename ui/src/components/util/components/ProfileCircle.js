@@ -23,7 +23,8 @@ export default function ProfileCircle(props) {
     allowInfo = false,
   } = props;
 
-  // Auto-detect coach role if name contains "Coach" and isStudent wasn't explicitly set to false
+  // Auto-detect coach role if name contains "Coach"
+  // and isStudent wasn't explicitly set to false
   const actualIsStudent =
     isStudent && !(name && name.toLowerCase().includes("coach"));
 
@@ -85,9 +86,12 @@ export default function ProfileCircle(props) {
 
     if (name) {
       const nameParts = name.split(" ").filter((part) => part.length > 0);
+
       if (nameParts.length === 1) {
+        // Single name - take first two characters
         return nameParts[0].substring(0, 2).toUpperCase();
       } else if (nameParts.length >= 2) {
+        // Multiple names - first initial and last initial
         return (
           nameParts[0].charAt(0).toUpperCase() +
           nameParts[nameParts.length - 1].charAt(0).toUpperCase()
@@ -98,6 +102,8 @@ export default function ProfileCircle(props) {
     return "NA";
   }
 
+  // Safely determine the name used for profile colors
+  const colorName = user?.fname || name?.split(" ")[0] || "User";
   const profileElement = (
     <div
       className={`profile-wrapper${pill ? " profile-wrapper-pill" : ""}${
@@ -114,12 +120,14 @@ export default function ProfileCircle(props) {
           "--profile-size": sizes[size]?.width || sizes["small"].width,
           "--profile-font-size":
             sizes[size]?.fontSize || sizes["small"].fontSize,
+
           backgroundColor:
             actualIsStudent && !["admin", "coach"].includes(user?.role)
-              ? randColorFromName(user?.fname || name.split(" ")[0] || "User")
+              ? randColorFromName(colorName)
               : "var(--bg-secondary)",
+
           border: highlightCircle
-            ? `2px solid ${randColorFromName(user?.fname || name.split(" ")[0] || "User")}`
+            ? `2px solid ${randColorFromName(colorName)}`
             : "none",
         }}
       >
@@ -135,11 +143,27 @@ export default function ProfileCircle(props) {
           </div>
         )}
       </div>
+
       {showFullName && (
         <span
           className={`profile-name${
             textUnderlined ? " profile-name-underlined" : ""
-          }${size === "tiny" ? " profile-name-truncated" : ""}`}
+          }`}
+          style={{
+            marginLeft: "5px",
+            fontStyle: "normal",
+            textDecoration: textUnderlined ? "underline" : "none",
+
+            // v1.8.5: Allow full names to display
+            // instead of truncating tiny profile names
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            overflow: "visible",
+            textOverflow: "clip",
+            maxWidth: "none",
+
+            display: size === "tiny" ? "inline-block" : "inline",
+          }}
         >
           {name || (user ? `${user.fname} ${user.lname}` : "User")}
         </span>
