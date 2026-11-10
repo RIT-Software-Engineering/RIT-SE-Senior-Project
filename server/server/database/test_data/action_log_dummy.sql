@@ -165,7 +165,7 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_lh7488.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
         NULL
     ),
     (
@@ -434,7 +434,8 @@ VALUES
         '7_carecraze',
         '{"proposal":"CareCraze patient dashboard proposal"}',
         'proposal_aeg836.pdf',
-        DATETIME('now', '-6 days')
+        DATETIME('now', '-6 days'),
+        NULL
     ),
     (
         16,
@@ -443,7 +444,8 @@ VALUES
         '7_carecraze',
         '{"proposal":"CareCraze UI and accessibility proposal"}',
         'proposal_sb9047.pdf',
-        DATETIME('now', '-4 days')
+        DATETIME('now', '-4 days'),
+        NULL
     ),
     (
         17,
@@ -452,7 +454,8 @@ VALUES
         '7_carecraze',
         '{"timeline":"CareCraze sprint milestones: dashboard, API, integration, testing"}',
         'timeline_carecraze.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     (
         18,
@@ -461,7 +464,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze interim dashboard implementation report"}',
         'report_aeg836.pdf',
-        DATETIME('now', '-2 days')
+        DATETIME('now', '-2 days'),
+        NULL
     ),
     (
         18,
@@ -470,7 +474,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze backend API progress report"}',
         'report_nb9374.pdf',
-        DATETIME('now', '-28 hours')
+        DATETIME('now', '-28 hours'),
+        NULL
     ),
     (
         18,
@@ -479,7 +484,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze test coverage and compliance report"}',
         'report_vw9474.pdf',
-        DATETIME('now', '-10 hours')
+        DATETIME('now', '-10 hours'),
+        NULL
     ),
     (
         19,
@@ -488,7 +494,8 @@ VALUES
         '7_carecraze',
         '{"survey":"CareCraze patient and clinician survey results"}',
         'survey_carecraze.csv',
-        DATETIME('now', '-38 hours')
+        DATETIME('now', '-38 hours'),
+        NULL
     ),
     (
         20,
@@ -497,7 +504,8 @@ VALUES
         '7_carecraze',
         '{"canvas":"CareCraze business model canvas for healthcare stakeholders"}',
         'canvas_carecraze.pdf',
-        DATETIME('now', '-6 hours')
+        DATETIME('now', '-6 hours'),
+        NULL
     ),
     (
         22,
@@ -506,7 +514,8 @@ VALUES
         '7_carecraze',
         '{"roles":"Aerith: Frontend Lead, Nova: Backend Lead, Sephiroth: UI and UX, Vapor: QA and Testing"}',
         'roles_carecraze.pdf',
-        DATETIME('now', '-8 days')
+        DATETIME('now', '-8 days'),
+        NULL
     ),
     (
         23,
@@ -515,7 +524,8 @@ VALUES
         '7_carecraze',
         '{"analysis":"CareCraze analysis of healthcare portal competitors"}',
         'analysis_carecraze.pdf',
-        DATETIME('now', '-5 hours')
+        DATETIME('now', '-5 hours'),
+        NULL
     ),
     (
         24,
@@ -524,7 +534,8 @@ VALUES
         '7_carecraze',
         '{"risks":"CareCraze patient privacy, integration, and schedule risks"}',
         'risks_carecraze.pdf',
-        DATETIME('now', '-4 hours')
+        DATETIME('now', '-4 hours'),
+        NULL
     ),
     (
         25,
@@ -533,7 +544,8 @@ VALUES
         '7_carecraze',
         '{"marketing":"CareCraze outreach and user adoption plan"}',
         'marketing_carecraze.pdf',
-        DATETIME('now', '-3 hours')
+        DATETIME('now', '-3 hours'),
+        NULL
     ),
     (
         29,
@@ -542,7 +554,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova kept the backend tasks moving and flagged integration issues early.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth provided careful reviews and spotted several UI regressions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor communicated test results clearly and helped verify fixes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Aerith Gainsborough"}',
         NULL,
-        DATETIME('now', '-32 hours')
+        DATETIME('now', '-32 hours'),
+        NULL
     ),
     (
         29,
@@ -551,7 +564,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith coordinated the dashboard work and incorporated feedback quickly.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth was reliable with design reviews and test cases.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor proactively investigated accessibility and compliance questions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Nova Bright"}',
         NULL,
-        DATETIME('now', '-16 hours')
+        DATETIME('now', '-16 hours'),
+        NULL
     ),
     (
         29,
@@ -560,7 +574,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith kept the frontend implementation consistent with the design.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova handled API integration issues and documented the changes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor took initiative testing the patient dashboard workflows.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Sephiroth Blade"}',
         NULL,
-        DATETIME('now', '-1 hour')
+        DATETIME('now', '-1 hour'),
+        NULL
     ),
     (
         32,
