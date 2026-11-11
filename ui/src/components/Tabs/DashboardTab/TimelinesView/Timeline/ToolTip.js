@@ -70,6 +70,15 @@ export default function ToolTip(props) {
     }
   };
 
+  const loadContactInfo = (systemId) => {
+    if (!systemId || contactInfo[systemId] !== undefined) return; // already requested
+    setContactInfo((prev) => ({ ...prev, [systemId]: null })); // mark as pending
+    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
+      .then((r) => r.json())
+      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
+      .catch((err) => console.error("Error fetching additional info:", err));
+  };
+
   const loadSubmission = (projectId, actionId) => {
     setLoadingSubmissions(true);
     SecureFetch(
@@ -332,15 +341,6 @@ export default function ToolTip(props) {
       </>
     );
   }
-
-  const loadContactInfo = (systemId) => {
-    if (!systemId || contactInfo[systemId] !== undefined) return; // already requested
-    setContactInfo((prev) => ({ ...prev, [systemId]: null })); // mark as pending
-    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
-      .then((r) => r.json())
-      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
-      .catch((err) => console.error("Error fetching additional info:", err));
-  };
 
   return (
     <>
