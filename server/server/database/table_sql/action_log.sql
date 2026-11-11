@@ -7,6 +7,7 @@ CREATE TABLE action_log (
     project         INTEGER NOT NULL,               
     form_data       TEXT,
     files           TEXT,
+    notes           TEXT DEFAULT '{"note": ""}',           -- Used for notes on submissions
     FOREIGN KEY (action_template) REFERENCES actions(action_id),
     FOREIGN KEY (system_id) REFERENCES users(system_id),
     FOREIGN KEY (project) REFERENCES projects(project_id)    

@@ -31,6 +31,7 @@ export default function ToolTip(props) {
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const [actionModalOpen, setActionModalOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [contactInfo, setContactInfo] = useState({});
 
   var [hasMockedSubmission, setHasMockedSubmission] = useState(false);
 
@@ -67,6 +68,15 @@ export default function ToolTip(props) {
     if (isOpen) {
       setPopupOpen(false);
     }
+  };
+
+  const loadContactInfo = (systemId) => {
+    if (!systemId || contactInfo[systemId] !== undefined) return; // already requested
+    setContactInfo((prev) => ({ ...prev, [systemId]: null })); // mark as pending
+    SecureFetch(`${config.url.API_GET_ADDITIONAL_INFO}?system_id=${systemId}`)
+      .then((r) => r.json())
+      .then((data) => setContactInfo((prev) => ({ ...prev, [systemId]: data })))
+      .catch((err) => console.error("Error fetching additional info:", err));
   };
 
   const loadSubmission = (projectId, actionId) => {
@@ -135,10 +145,95 @@ export default function ToolTip(props) {
               </p>
             )}
             {submissions?.map((submission) => {
+              // Gets notes for display on hover, I can revert this file if we don't like that.
+              let noteText = submission.notes
+                ? JSON.parse(submission.notes).note
+                : "";
+              console.log(
+                "submission notes raw:",
+                submission.notes,
+                "parsed:",
+                noteText,
+              );
+              const extra = contactInfo[submission.system_id];
+              const contact = extra?.contact;
+              const info = extra?.additional_info;
+              const trigger = (
+                <div className="fake-a tool-trigger">
+                  {longSubmissionTitle ? (
+                    <>
+                      {submission.mock_id && (
+                        <span className="tool-submission">
+                          <ProfileCircle
+                            name={submission.mock_name}
+                            isStudent={false}
+                            size="tiny"
+                          />
+                          <span className="tool-profile">
+                            {submission.mock_name} ({submission.mock_id}) as
+                          </span>
+                        </span>
+                      )}
+                      <span className="tool-submission">
+                        <ProfileCircle
+                          name={submission.name}
+                          size="tiny"
+                          isStudent={submission.user_type === "student"}
+                        />
+                        <span className="tool-whitespace">
+                          {submission.name} ({submission.system_id}) on{" "}
+                          {formatDateTime(submission.submission_datetime)}
+                          {renderIsLate(submission)}
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className={`tool-summary-line${
+                          submission.mock_id ? " tool-summary-line-indent" : ""
+                        }`}
+                      >
+                        {submission.mock_id && (
+                          <div className="tool-submit">
+                            <ProfileCircle
+                              name={submission.mock_name}
+                              showFullName
+                              isStudent={false}
+                              size="tiny"
+                              className="tool-as"
+                            />
+                            as
+                          </div>
+                        )}
+                        <div className="tool-submit">
+                          <ProfileCircle
+                            name={submission.name}
+                            showFullName
+                            size="tiny"
+                            isStudent={submission.user_type === "student"}
+                          />
+                          on
+                        </div>
+                        <div
+                          className={`tool-date${
+                            submission.mock_id ? " tool-date-indent" : ""
+                          }`}
+                        >
+                          {formatDateTime(submission.submission_datetime)}
+                          {renderIsLate(submission)}
+                        </div>
+                      </i>
+                    </>
+                  )}
+                </div>
+              );
               return (
-                <span className="tool-submission">
+                <span
+                  className="tool-submission"
+                  key={submission.action_log_id}
+                >
                   <SubmissionViewerModal
-                    key={submission.action_log_id}
                     action={submission}
                     title={props.action?.action_title}
                     target={props.action?.action_target}
@@ -146,77 +241,39 @@ export default function ToolTip(props) {
                     projectName={props.projectName}
                     isOpenCallback={isOpenCallback}
                     trigger={
-                      <div className="fake-a tool-trigger">
-                        {longSubmissionTitle ? (
-                          <>
-                            {submission.mock_id && (
-                              <span className="tool-submission">
-                                <ProfileCircle
-                                  name={submission.mock_name}
-                                  isStudent={false}
-                                  size="tiny"
-                                />
-                                <span className="tool-profile">
-                                  {submission.mock_name} ({submission.mock_id})
-                                  as
-                                </span>
-                              </span>
+                      <Popup
+                        on="hover"
+                        className="universal-tooltip"
+                        trigger={trigger}
+                        onOpen={() => loadContactInfo(submission.system_id)}
+                        content={
+                          <div>
+                            {submission.name}
+                            {contact?.value && (
+                              <div>
+                                {contact.label}: {contact.value}
+                              </div>
                             )}
-                            <span className="tool-submission">
-                              <ProfileCircle
-                                name={submission.name}
-                                size="tiny"
-                                isStudent={submission.user_type === "student"}
-                              />
-                              <span className="tool-whitespace">
-                                {submission.name} ({submission.system_id}) on{" "}
-                                {formatDateTime(submission.submission_datetime)}
-                                {renderIsLate(submission)}
-                              </span>
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <i
-                              className={`tool-summary-line${
-                                submission.mock_id
-                                  ? " tool-summary-line-indent"
-                                  : ""
-                              }`}
-                            >
-                              {submission.mock_id && (
-                                <div className="tool-submit">
-                                  <ProfileCircle
-                                    name={submission.mock_name}
-                                    showFullName
-                                    isStudent={false}
-                                    size="tiny"
-                                    className="tool-as"
-                                  />
-                                  as
-                                </div>
-                              )}
-                              <div className="tool-submit">
-                                <ProfileCircle
-                                  name={submission.name}
-                                  showFullName
-                                  size="tiny"
-                                  isStudent={submission.user_type === "student"}
+                            {info && (
+                              <div className="profile-hover">
+                                Additional Info: {info}
+                              </div>
+                            )}
+
+                            {noteText && (
+                              <>
+                                <div
+                                  style={{
+                                    borderTop: "1px solid var(--border-color)",
+                                    margin: "4px -16px",
+                                  }}
                                 />
-                                on
-                              </div>
-                              <div
-                                className={`tool-date${
-                                  submission.mock_id ? " tool-date-indent" : ""
-                                }`}
-                              >
-                                {formatDateTime(submission.submission_datetime)}
-                                {renderIsLate(submission)}
-                              </div>
-                            </i>
-                          </>
-                        )}
-                      </div>
+                                <div>Note: {noteText}</div>
+                              </>
+                            )}
+                          </div>
+                        }
+                      />
                     }
                   />
                 </span>
@@ -288,15 +345,13 @@ export default function ToolTip(props) {
   return (
     <>
       <Popup
-        onClose={() => console.log("POPUP CLOSE")}
         open={popupOpen}
         header={props.action?.action_title}
         content={content()}
         closeOnDocumentClick={closeOnDocClick}
         closeOnEscape={true}
         wide={hasMockedSubmission}
-        inverted={document.body.classList.contains("dark-mode")}
-        className="tool-pop"
+        className="universal-tooltip"
         offset={[offsetX, 0]}
         trigger={props.trigger}
         on="click"

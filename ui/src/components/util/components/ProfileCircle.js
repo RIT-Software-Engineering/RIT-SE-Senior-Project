@@ -1,6 +1,10 @@
-import React from "react";
-
 import "./../../../css/utils/profile.css";
+import "./../../../css/utils/tooltip.css";
+import React, { useState, useEffect, useContext } from "react";
+import { Popup } from "semantic-ui-react";
+import { SecureFetch } from "../functions/secureFetch";
+import { config } from "../functions/constants";
+import { UserContext } from "../functions/UserContext";
 
 export default function ProfileCircle(props) {
   const {
@@ -16,6 +20,7 @@ export default function ProfileCircle(props) {
     pillColor = "var(--bg-primary)",
     textUnderlined = false,
     clickable = false,
+    allowInfo = false,
   } = props;
 
   // Auto-detect coach role if name contains "Coach"
@@ -24,32 +29,44 @@ export default function ProfileCircle(props) {
     isStudent && !(name && name.toLowerCase().includes("coach"));
 
   const sizes = {
-    tiny: {
-      width: "20px",
-      height: "20px",
-      fontSize: "10px",
-    },
-    small: {
-      width: "40px",
-      height: "40px",
-      fontSize: "14px",
-    },
-    medium: {
-      width: "50px",
-      height: "50px",
-      fontSize: "20px",
-    },
-    large: {
-      width: "60px",
-      height: "60px",
-      fontSize: "25px",
-    },
-    huge: {
-      width: "80px",
-      height: "80px",
-      fontSize: "30px",
-    },
+    tiny: { width: "20px", height: "20px", fontSize: "10px" },
+    small: { width: "40px", height: "40px", fontSize: "14px" },
+    medium: { width: "50px", height: "50px", fontSize: "20px" },
+    large: { width: "60px", height: "60px", fontSize: "25px" },
+    huge: { width: "80px", height: "80px", fontSize: "30px" },
   };
+
+  const highlightCircle =
+    !actualIsStudent || ["admin", "coach"].includes(user?.role);
+
+  const [additionalInfo, setAdditionalInfo] = useState(null);
+
+  const { user: viewer } = useContext(UserContext);
+  const isCorA = ["admin", "coach"].includes(viewer?.role);
+  const canSeeInfo =
+    isCorA ||
+    allowInfo ||
+    (!!user?.system_id && user.system_id === viewer?.user);
+
+  useEffect(() => {
+    if (!user?.system_id || !canSeeInfo) return;
+    let cancelled = false;
+
+    SecureFetch(
+      `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${user.system_id}`,
+    )
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled) setAdditionalInfo(data);
+      })
+      .catch((err) =>
+        console.error("Error fetching additional user info:", err),
+      );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.system_id, canSeeInfo]);
 
   function randColorFromName(name) {
     const hash = Array.from(name).reduce(
@@ -61,14 +78,12 @@ export default function ProfileCircle(props) {
   }
 
   function generateInitials(user, name) {
-    // If user object with fname and lname is available, use those
     if (user?.fname && user?.lname) {
       return (
         user.fname.charAt(0).toUpperCase() + user.lname.charAt(0).toUpperCase()
       );
     }
 
-    // If only name string is available, handle it consistently
     if (name) {
       const nameParts = name.split(" ").filter((part) => part.length > 0);
 
@@ -87,13 +102,9 @@ export default function ProfileCircle(props) {
     return "NA";
   }
 
-  const highlightCircle =
-    !actualIsStudent || ["admin", "coach"].includes(user?.role);
-
   // Safely determine the name used for profile colors
   const colorName = user?.fname || name?.split(" ")[0] || "User";
-
-  return (
+  const profileElement = (
     <div
       className={`profile-wrapper${pill ? " profile-wrapper-pill" : ""}${
         clickable ? " profile-wrapper-clickable" : ""
@@ -158,5 +169,31 @@ export default function ProfileCircle(props) {
         </span>
       )}
     </div>
+  );
+
+  const contact = additionalInfo?.contact;
+  const info = additionalInfo?.additional_info;
+
+  if (!canSeeInfo || !user?.system_id || (!contact?.value && !info)) {
+    return profileElement;
+  }
+
+  return (
+    <Popup
+      on="hover"
+      trigger={profileElement}
+      className="universal-tooltip"
+      content={
+        <div>
+          {name || (user ? `${user.fname} ${user.lname}` : "User")}
+          {contact?.value && (
+            <div>
+              {contact.label}: {contact.value}
+            </div>
+          )}
+          {info && <div className="profile-hover">Additional Info: {info}</div>}
+        </div>
+      }
+    />
   );
 }

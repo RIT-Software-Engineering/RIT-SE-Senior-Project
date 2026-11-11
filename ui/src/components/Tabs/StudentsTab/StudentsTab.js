@@ -371,6 +371,7 @@ export default function StudentsTab(props) {
                         noAccordion={true}
                         viewOnly
                         studentsTab={true}
+                        isFullList
                         projectsData={semester.projects}
                         isStudent={userContext.user.role === USERTYPES.STUDENT}
                         isMyTeamTable={

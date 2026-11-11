@@ -113,17 +113,35 @@ For users' preferences, like dark mode and milestone/gantt/calendar default view
 2. To add or edit additional account information, sign in as a [student](#validating-student-sign-in), press the profile button in the top right corner. There should be an “additional info” field with an edit button.
    ![Profile Modal](images/profilemodal.png)
 
-3. Pressing the edit button should display a text box, and here you can add information that could be relevant to any projects. Pressing save will save the changes and they should display automatically before closing the modal.
+3. Pressing the edit button should display a text box and a "Preferred Contact" drowpdown with the options Email, Phone, and Other. In the text box you can add information that could be relevant to any projects. Pressing save will save the changes and they should display automatically.
    ![Profile Modal Additional Info](images/profilemodaladditionalinfo.png)
    ![Profile Modal Additional Info 2](images/profilemodaladditionalinfo2.png)
    ![Profile Modal Additional Info 3](images/profilemodaladditionalinfo3.png)
 
-4. Once the modal is closed verify that this can be seen by signing in as another student, or as the coach, within the same project.
+4. Press edit again and change the dropdown from "Email" to "Phone". In the new text field, enter a valid phone number. Press save and verify it has changed.
 
-5. Navigate to the “Students” tab and press on the name of the corresponding student whose additional information was just edited.
+5. Press edit one more time and change the dropdown from "Phone" to "Other". Enter a new method and contact info. Press save and verify that it has changed before closing the modal.
 
-6. This should bring up a modal of the students details which should also display the correct and updated additional information.
-   ![Student Details Modal](images/studentdetailsmodal.png)
+6. Once the modal is closed verify that this can be seen by signing in as another student, or as the coach, within the same project.
+
+7. Navigate to the “Students” tab and hover your mouse over the name of the corresponding student whose additional information was just edited.
+
+8. This should bring up a small tooltip displaying the updated information
+
+9. Click on the name of the stuent whose additional information was edited.
+
+10. This should bring up a modal of the students details which should also display the correct and updated additional information.
+    ![Student Details Modal](images/studentdetailsmodal.png)
+
+### Coach Account Information
+
+1. Coaches can add additional info and a preferred contact in the same way as students. Sign in as a [coach](#validating-coach-sign-in), press the profile button, and confirm the “additional info” field, edit button, and “Preferred Contact” dropdown are present.
+
+2. Edit and save the information using the same steps as for the student.
+
+3. Sign in as a student in one of Rachel's projects and open the profile modal. Under “Last Login”, a “Coach:” line should show Rachel's profile circle and name. If a project has more than one coach, the label reads “Coaches:”.
+
+4. Hover over the coach. A tooltip should show her name, preferred contact, and additional info.
 
 ## Last Login
 
