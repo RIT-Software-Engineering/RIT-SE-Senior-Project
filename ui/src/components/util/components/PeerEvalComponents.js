@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import "semantic-ui-css/semantic.min.css";
 import ProfileCircle from "./ProfileCircle";
 import {
@@ -163,8 +163,6 @@ export function QuestionTable({
   questions.forEach((question) => (questionRatings[question] = {}));
   const [selections, setSelections] = useState(questionRatings);
 
-  const pixelWidth = Math.floor(900 / questions.length);
-
   const handleRate = (student, question, rating) => {
     setSelections((prevSelections) => ({
       ...prevSelections,
@@ -187,29 +185,35 @@ export function QuestionTable({
           name={"asterisk"}
         />
       )}
-      <div className="peer-table">
-        <Table basic="very" celled collapsing unstackable>
+      <div className="peer-table peer-table-matrix">
+        <Table
+          basic="very"
+          unstackable
+          className="peer-rating-matrix"
+          style={{ minWidth: `${200 + questions.length * 170}px` }}
+        >
           <TableHeader>
             <TableRow>
-              <TableHeaderCell />
+              <TableHeaderCell className="peer-table-header-cell peer-table-name-header">
+                Team member
+              </TableHeaderCell>
+
               {questions.map((question) => {
-                const name = `${sentenceToCamelCase(question)}`;
+                const name = sentenceToCamelCase(question);
                 const isErrored = errorFields.has(name);
+
                 return (
                   <TableHeaderCell
-                    collapsing
-                    className="peer-table-header-cell"
-                    style={{ width: pixelWidth + "px" }}
                     key={question}
+                    className="peer-table-header-cell"
+                    textAlign="center"
                   >
-                    <Header as={"h4"}>
-                      <HeaderContent as={isErrored ? "i" : null}>
-                        {isErrored && (
-                          <Icon fitted name={"warning circle"} color={"red"} />
-                        )}{" "}
-                        {question}
-                      </HeaderContent>
-                    </Header>
+                    <span className="peer-table-header-label">
+                      {isErrored && (
+                        <Icon fitted name="warning circle" color="red" />
+                      )}
+                      {question}
+                    </span>
                   </TableHeaderCell>
                 );
               })}
@@ -218,14 +222,19 @@ export function QuestionTable({
 
           <TableBody>
             {students.map((student) => (
-              <>
-                <TableRow key={student}>
-                  <TableCell>
-                    <ProfileCircle name={student} size="tiny" showFullName />
-                    {/* <Label size='large' basic>{student}</Label> */}
+              <Fragment key={student}>
+                <TableRow className="peer-table-student-row">
+                  <TableCell className="peer-table-name-cell">
+                    <div className="peer-table-person">
+                      <ProfileCircle name={student} size="tiny" showFullName />
+                    </div>
                   </TableCell>
                   {questions.map((question) => (
-                    <TableCell key={student + question} textAlign="center">
+                    <TableCell
+                      key={student + question}
+                      className="peer-table-rating-cell"
+                      textAlign="center"
+                    >
                       <Rating
                         maxRating={scale}
                         defaultRating={selections[question][student] || ""}
@@ -253,7 +262,7 @@ export function QuestionTable({
                   ))}
                 </TableRow>
                 {feedback && (
-                  <TableRow key={student + "feedback"}>
+                  <TableRow className="peer-table-feedback-row">
                     <TableCell />
                     {questions.map((question) => (
                       <TableCell
@@ -271,7 +280,7 @@ export function QuestionTable({
                     ))}
                   </TableRow>
                 )}
-              </>
+              </Fragment>
             ))}
           </TableBody>
         </Table>

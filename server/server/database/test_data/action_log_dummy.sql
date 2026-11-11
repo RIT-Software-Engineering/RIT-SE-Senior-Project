@@ -9,7 +9,8 @@ INSERT INTO
         project,
         form_data,
         files,
-        submission_datetime
+        submission_datetime,
+        notes
     )
 VALUES
     -- Team Name Submission 
@@ -20,7 +21,9 @@ VALUES
         '4_buzzboost',
         '{"team_name":"BuzzBoost", "email":"test"}',
         NULL,
-        DATETIME('now', '-20 days')
+        DATETIME('now', '-20 days'),
+        '{"note": "Submitted on behalf zelda by me (the coach)"}'
+        
     ),
     (
         15,
@@ -29,7 +32,8 @@ VALUES
         '5_profitpulse',
         '{"team_name":"ProfitPulse", "email":"test"}',
         NULL,
-        DATETIME('now', '-18 days')
+        DATETIME('now', '-18 days'),
+        NULL
     ),
     (
         15,
@@ -38,7 +42,8 @@ VALUES
         '7_carecraze',
         '{"team_name":"CareCraze", "email":"test"}',
         NULL,
-        DATETIME('now', '-16 days')
+        DATETIME('now', '-16 days'),
+        NULL
     ),
     (
         15,
@@ -47,7 +52,8 @@ VALUES
         '8_dataforge',
         '{"team_name":"DataForge", "email":"test"}',
         NULL,
-        DATETIME('now', '-14 days')
+        DATETIME('now', '-14 days'),
+        NULL
     ),
     (
         15,
@@ -56,7 +62,8 @@ VALUES
         '9_ecoedge',
         '{"team_name":"EcoEdge", "email":"test"}',
         NULL,
-        DATETIME('now', '-12 days')
+        DATETIME('now', '-12 days'),
+        NULL
     ),
     -- Project Proposal
     (
@@ -66,7 +73,8 @@ VALUES
         '4_buzzboost',
         '{"proposal" :"BuzzBoost marketing strategy proposal"}',
         'proposal_zh7558.pdf',
-        DATETIME('now', '-10 days')
+        DATETIME('now', '-10 days'),
+        NULL
     ),
     (
         16,
@@ -75,7 +83,8 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_lh7488.pdf',
-        DATETIME('now', '-8 days')
+        DATETIME('now', '-8 days'),
+        '{"note": "Might need a resubmission later..."}'
     ),
     (
         16,
@@ -84,7 +93,8 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_gs9947.pdf',
-        DATETIME('now', '-6 days')
+        DATETIME('now', '-6 days'),
+        NULL
     ),
     (
         16,
@@ -93,7 +103,8 @@ VALUES
         '4_buzzboost',
         '{"proposal":"BuzzBoost marketing strategy proposal"}',
         'proposal_cr8473.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     -- project timeline
     (
@@ -103,7 +114,8 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_zh7558.pdf',
-        DATETIME('now', '-6 days')
+        DATETIME('now', '-6 days'),
+        NULL
     ),
     (
         17,
@@ -112,7 +124,8 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_lh7488.pdf',
-        DATETIME('now', '-4 days')
+        DATETIME('now', '-4 days'),
+        NULL
     ),
     (
         17,
@@ -121,7 +134,8 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_gs9947.pdf',
-        DATETIME('now', '-2 days')
+        DATETIME('now', '-2 days'),
+        NULL
     ),
     (
         17,
@@ -130,7 +144,8 @@ VALUES
         '4_buzzboost',
         '{"timeline":"Q1: Market research, Q2: Strategy development, Q3: Implementation, Q4: Review"}',
         'timeline_cr8473.pdf',
-        DATETIME('now', '-3 hours')
+        DATETIME('now', '-3 hours'),
+        NULL
     ),
     -- report submission
     (
@@ -140,7 +155,8 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_zh7558.pdf',
-        DATETIME('now', '-5 days')
+        DATETIME('now', '-5 days'),
+        NULL
     ),
     (
         18,
@@ -149,7 +165,8 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_lh7488.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     (
         18,
@@ -158,7 +175,8 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_gs9947.pdf',
-        DATETIME('now', '-1 days')
+        DATETIME('now', '-1 days'),
+        '{"note": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwjefjepiofjeifje;oafjedfjepifje;ofs;lfepfkjepodjkmdsfoejfpoejdojoiedjfepokjepofneodkeofje"}'
     ),
     (
         18,
@@ -167,7 +185,8 @@ VALUES
         '4_buzzboost',
         '{"report":"BuzzBoost final report"}',
         'report_cr8473.pdf',
-        DATETIME('now', '-2 hours')
+        DATETIME('now', '-2 hours'),
+        NULL
     ),
     -- Team Member Roles
     (
@@ -177,7 +196,8 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_rf9472.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     (
         22,
@@ -186,7 +206,8 @@ VALUES
         '9_ecoedge',
         '{"roles":"Ryu: Project Lead, Ember: Designer, Chun: Developer, Sparkle: Analyst"}',
         'roles_ef9474.pdf',
-        DATETIME('now', '-1 days')
+        DATETIME('now', '-1 days'),
+        NULL
     ),
     (
         22,
@@ -195,7 +216,8 @@ VALUES
         '4_buzzboost',
         '{"roles":"Zelda: Project Lead, Link: Designer, Glimmer: Developer, Comet: Analyst"}',
         'roles_zh7558.pdf',
-        DATETIME('now', '-10 hours')
+        DATETIME('now', '-10 hours'),
+        NULL
     ),
     -- Midterm Peer Evaluation Form
     (
@@ -255,7 +277,8 @@ VALUES
             "Submitter": "Zelda Hyrule"
             }',
         NULL,
-        DATETIME('now', '-5 days')
+        DATETIME('now', '-5 days'),
+        NULL
     ),
     (
         29,
@@ -264,7 +287,8 @@ VALUES
         '4_buzzboost',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"Princess Zelda was phenomenal, always keeping the team motivated and on track. The group worked hard, but her leadership made a huge difference.","Identify Disputes Or Problems That Happened And How They Were Handled.":"There was some confusion over who was handling the final presentation slides. We sorted it out by assigning clear roles in our last meeting."},"Students":{"Glimmer Star":{"Feedback":{"Cooperation And Attitude":"Glimmer was cooperative and contributed to discussions, though sometimes seemed less engaged.","Quantity Of Work":"Glimmer did their share, but the work was solid rather than outstanding.","Initiative":"Glimmer followed through on assigned tasks but didn’t take on extra responsibilities."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":4,"Initiative":3,"Dependability":2,"Group Maintenance":2}},"Zelda Hyrule":{"Feedback":{"Cooperation And Attitude":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Quantity Of Work":"Princess Zelda is incredible—always positive, supportive, and a true team player. She made this project fun!","Initiative":"Princess Zelda took charge when needed and always had great ideas to push us forward."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":5,"Group Maintenance":5}},"Comet Rush":{"Feedback":{"Cooperation And Attitude":"Comet worked okay with the team but got frustrated at times, which slowed us down.","Quantity Of Work":"Comet completed their tasks, but some submissions felt rushed.","Initiative":"Comet needed reminders to stay on track and didn’t volunteer for extra work."},"Ratings":{"Cooperation And Attitude":3,"Quantity Of Work":3,"Initiative":4,"Dependability":2,"Group Maintenance":2}}},"Submitter":"Link Hero"}',
         NULL,
-        DATETIME('now', '-4 days')
+        DATETIME('now', '-4 days'),
+        NULL
     ),
     (
         29,
@@ -323,7 +347,8 @@ VALUES
                 "Submitter": "Glimmer Star"
             }',
         NULL,
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     (
         29,
@@ -382,7 +407,8 @@ VALUES
             "Submitter": "Comet Rush"
             }',
         NULL,
-        DATETIME('now', '-2 days')
+        DATETIME('now', '-2 days'),
+        NULL
     ),
     (
         29,
@@ -396,7 +422,8 @@ VALUES
         "Zelda Hyrule":{"Feedback":"Excellent! Continue balancing leadership with shared decision making.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.333333333333333","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4","Group Maintenance":"3.666666666666667"},"SelfRating":{}},
         "Comet Rush":{"Feedback":"More consistent communication and earlier progress updates are recommended.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"3","Quantity Of Work":"3","Initiative":"2.9999999999999996","Dependability":"2","Group Maintenance":"2.333333333333333"},"SelfRating":{}}}}',
         NULL,
-        DATETIME('now', '-5 hours')
+        DATETIME('now', '-5 hours'),
+        NULL
     ),
 
     -- CareCraze: additional recent, team-correct submission records.
@@ -407,7 +434,8 @@ VALUES
         '7_carecraze',
         '{"proposal":"CareCraze patient dashboard proposal"}',
         'proposal_aeg836.pdf',
-        DATETIME('now', '-6 days')
+        DATETIME('now', '-6 days'),
+        NULL
     ),
     (
         16,
@@ -416,7 +444,8 @@ VALUES
         '7_carecraze',
         '{"proposal":"CareCraze UI and accessibility proposal"}',
         'proposal_sb9047.pdf',
-        DATETIME('now', '-4 days')
+        DATETIME('now', '-4 days'),
+        NULL
     ),
     (
         17,
@@ -425,7 +454,8 @@ VALUES
         '7_carecraze',
         '{"timeline":"CareCraze sprint milestones: dashboard, API, integration, testing"}',
         'timeline_carecraze.pdf',
-        DATETIME('now', '-3 days')
+        DATETIME('now', '-3 days'),
+        NULL
     ),
     (
         18,
@@ -434,7 +464,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze interim dashboard implementation report"}',
         'report_aeg836.pdf',
-        DATETIME('now', '-2 days')
+        DATETIME('now', '-2 days'),
+        NULL
     ),
     (
         18,
@@ -443,7 +474,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze backend API progress report"}',
         'report_nb9374.pdf',
-        DATETIME('now', '-28 hours')
+        DATETIME('now', '-28 hours'),
+        NULL
     ),
     (
         18,
@@ -452,7 +484,8 @@ VALUES
         '7_carecraze',
         '{"report":"CareCraze test coverage and compliance report"}',
         'report_vw9474.pdf',
-        DATETIME('now', '-10 hours')
+        DATETIME('now', '-10 hours'),
+        NULL
     ),
     (
         19,
@@ -461,7 +494,8 @@ VALUES
         '7_carecraze',
         '{"survey":"CareCraze patient and clinician survey results"}',
         'survey_carecraze.csv',
-        DATETIME('now', '-38 hours')
+        DATETIME('now', '-38 hours'),
+        NULL
     ),
     (
         20,
@@ -470,7 +504,8 @@ VALUES
         '7_carecraze',
         '{"canvas":"CareCraze business model canvas for healthcare stakeholders"}',
         'canvas_carecraze.pdf',
-        DATETIME('now', '-6 hours')
+        DATETIME('now', '-6 hours'),
+        NULL
     ),
     (
         22,
@@ -479,7 +514,8 @@ VALUES
         '7_carecraze',
         '{"roles":"Aerith: Frontend Lead, Nova: Backend Lead, Sephiroth: UI and UX, Vapor: QA and Testing"}',
         'roles_carecraze.pdf',
-        DATETIME('now', '-8 days')
+        DATETIME('now', '-8 days'),
+        NULL
     ),
     (
         23,
@@ -488,7 +524,8 @@ VALUES
         '7_carecraze',
         '{"analysis":"CareCraze analysis of healthcare portal competitors"}',
         'analysis_carecraze.pdf',
-        DATETIME('now', '-5 hours')
+        DATETIME('now', '-5 hours'),
+        NULL
     ),
     (
         24,
@@ -497,7 +534,8 @@ VALUES
         '7_carecraze',
         '{"risks":"CareCraze patient privacy, integration, and schedule risks"}',
         'risks_carecraze.pdf',
-        DATETIME('now', '-4 hours')
+        DATETIME('now', '-4 hours'),
+        NULL
     ),
     (
         25,
@@ -506,7 +544,8 @@ VALUES
         '7_carecraze',
         '{"marketing":"CareCraze outreach and user adoption plan"}',
         'marketing_carecraze.pdf',
-        DATETIME('now', '-3 hours')
+        DATETIME('now', '-3 hours'),
+        NULL
     ),
     (
         29,
@@ -515,7 +554,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova kept the backend tasks moving and flagged integration issues early.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth provided careful reviews and spotted several UI regressions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor communicated test results clearly and helped verify fixes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Aerith Gainsborough"}',
         NULL,
-        DATETIME('now', '-32 hours')
+        DATETIME('now', '-32 hours'),
+        NULL
     ),
     (
         29,
@@ -524,7 +564,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith coordinated the dashboard work and incorporated feedback quickly.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":5,"Initiative":5,"Dependability":4,"Group Maintenance":4}},"Sephiroth Blade":{"Feedback":{"Cooperation And Attitude":"Sephiroth was reliable with design reviews and test cases.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor proactively investigated accessibility and compliance questions.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Nova Bright"}',
         NULL,
-        DATETIME('now', '-16 hours')
+        DATETIME('now', '-16 hours'),
+        NULL
     ),
     (
         29,
@@ -533,7 +574,8 @@ VALUES
         '7_carecraze',
         '{"CoachFeedback":{"Provide Specific Comments About Any Members Or Situations":"The CareCraze team made steady progress on the patient dashboard this week.","Identify Disputes Or Problems That Happened And How They Were Handled":"A few API and UI assumptions differed, so the team clarified responsibilities during a meeting."},"Students":{"Aerith Gainsborough":{"Feedback":{"Cooperation And Attitude":"Aerith kept the frontend implementation consistent with the design.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":5,"Quantity Of Work":4,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Nova Bright":{"Feedback":{"Cooperation And Attitude":"Nova handled API integration issues and documented the changes.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":5,"Initiative":4,"Dependability":4,"Group Maintenance":4}},"Vapor Wave":{"Feedback":{"Cooperation And Attitude":"Vapor took initiative testing the patient dashboard workflows.","Quantity Of Work":"Contributed their assigned work and followed up on review feedback.","Initiative":"Volunteered to help with integration and testing when needed."},"Ratings":{"Cooperation And Attitude":4,"Quantity Of Work":4,"Initiative":5,"Dependability":4,"Group Maintenance":4}}},"Submitter":"Sephiroth Blade"}',
         NULL,
-        DATETIME('now', '-1 hour')
+        DATETIME('now', '-1 hour'),
+        NULL
     ),
     (
         32,
@@ -542,7 +584,8 @@ VALUES
         '7_carecraze',
         '{"Meeting_Location":"CareCraze project room","Meeting_Date_Time":"Next Tuesday at 2:00 PM"}',
         NULL,
-        DATETIME('now', '-90 minutes')
+        DATETIME('now', '-90 minutes'),
+        NULL
     ),
 
     
@@ -555,7 +598,8 @@ VALUES
         '1_groweasy',
         '{"team_name":"GrowEasy", "email":"groweasy1@example.com"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-01-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-01-15',
+        NULL
     ),
     (
         2,
@@ -564,7 +608,8 @@ VALUES
         '1_groweasy',
         '{"proposal":"GrowEasy project proposal"}',
         'proposal_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-01',
+        NULL
     ),
     (
         3,
@@ -573,7 +618,8 @@ VALUES
         '1_groweasy',
         '{"timeline":"GrowEasy project timeline"}',
         'timeline_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-15',
+        NULL
     ),
     (
         4,
@@ -582,7 +628,8 @@ VALUES
         '1_groweasy',
         '{"report":"GrowEasy interim report"}',
         'report_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-01',
+        NULL
     ),
     (
         5,
@@ -591,7 +638,8 @@ VALUES
         '1_groweasy',
         '{"survey":"GrowEasy market research"}',
         'survey_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-15',
+        NULL
     ),
     (
         6,
@@ -600,7 +648,8 @@ VALUES
         '1_groweasy',
         '{"canvas":"GrowEasy business model canvas"}',
         'canvas_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-04-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-04-01',
+        NULL
     ),
     (
         7,
@@ -609,7 +658,8 @@ VALUES
         '1_groweasy',
         '{"feedback":"GrowEasy prototype feedback"}',
         'feedback_groweasy_coach.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-04-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-04-15',
+        NULL
     ),
     (
         8,
@@ -618,7 +668,8 @@ VALUES
         '1_groweasy',
         '{"roles":"GrowEasy team roles"}',
         'roles_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-05-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-05-01',
+        NULL
     ),
     (
         9,
@@ -627,7 +678,8 @@ VALUES
         '1_groweasy',
         '{"analysis":"GrowEasy competitor analysis"}',
         'analysis_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-05-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-05-15',
+        NULL
     ),
     (
         10,
@@ -636,7 +688,8 @@ VALUES
         '1_groweasy',
         '{"risks":"GrowEasy risk assessment"}',
         'risks_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-06-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-06-01',
+        NULL
     ),
     (
         11,
@@ -645,7 +698,8 @@ VALUES
         '1_groweasy',
         '{"marketing":"GrowEasy marketing plan"}',
         'marketing_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-06-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-06-15',
+        NULL
     ),
     (
         12,
@@ -654,7 +708,8 @@ VALUES
         '1_groweasy',
         '{"financials":"GrowEasy financial projections"}',
         'financials_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-07-01'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-01',
+        NULL
     ),
     (
         13,
@@ -663,7 +718,8 @@ VALUES
         '1_groweasy',
         '{"presentation":"GrowEasy final presentation"}',
         'presentation_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-07-15'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-15',
+        NULL
     ),
     (
         13,
@@ -672,7 +728,8 @@ VALUES
         '1_groweasy',
         '{"presentation":"GrowEasy final presentation"}',
         'presentation_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-07-16'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-16',
+        '{"note": "Entered late but all is jolly and good in the world!"}'
     ),
     (
         13,
@@ -681,7 +738,8 @@ VALUES
         '1_groweasy',
         '{"presentation":"GrowEasy final presentation"}',
         'presentation_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-07-17'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-17',
+        NULL
     ),
     (
         13,
@@ -690,7 +748,8 @@ VALUES
         '1_groweasy',
         '{"presentation":"GrowEasy final presentation"}',
         'presentation_groweasy_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-07-18'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-18',
+        NULL
     ),
     (
         14,
@@ -699,7 +758,8 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-07-19'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-19',
+        NULL
     ),
     (
         14,
@@ -708,7 +768,8 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-07-20'
+        strftime('%Y', DATE('now', '-1 year')) || '-07-20',
+        NULL
     ),
     (
         14,
@@ -717,7 +778,8 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-03')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-03'),
+        NULL
     ),
     (
         14,
@@ -726,7 +788,8 @@ VALUES
         '1_groweasy',
         '{"peer_evaluation":"GrowEasy peer evaluation"}',
         NULL,
-        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04'),
+        NULL
     ),
 
     (
@@ -742,7 +805,8 @@ VALUES
         "Tifa Lockhart":{"Feedback":"Communicated effectively and helped the team resolve disagreements constructively.","UsedAI":false,"AverageRatings":{"Cooperation And Attitude":"4.666666666666667","Quantity Of Work":"4.333333333333333","Initiative":"4.333333333333333","Dependability":"4.666666666666667","Group Maintenance":"4.666666666666667"},"SelfRating":{}}}
         }',
         NULL,
-        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04')
+        DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-04'),
+        NULL
     ),
     
     -- 2_smartspark
@@ -753,7 +817,8 @@ VALUES
         '2_smartspark',
         '{"team_name":"SmartSpark", "email":"smartspark1@example.com"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-01-20'
+        strftime('%Y', DATE('now', '-1 year')) || '-01-20',
+        NULL
     ),
     (
         2,
@@ -762,7 +827,8 @@ VALUES
         '2_smartspark',
         '{"proposal":"SmartSpark project proposal"}',
         'proposal_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-01-21'
+        strftime('%Y', DATE('now', '-1 year')) || '-01-21',
+        NULL
     ),
     (
         3,
@@ -771,7 +837,8 @@ VALUES
         '2_smartspark',
         '{"timeline":"SmartSpark project timeline"}',
         'timeline_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-05'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-05',
+        NULL
     ),
     (
         4,
@@ -780,7 +847,8 @@ VALUES
         '2_smartspark',
         '{"report":"SmartSpark interim report"}',
         'report_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-20'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-20',
+        NULL
     ),
     (
         5,
@@ -789,7 +857,8 @@ VALUES
         '2_smartspark',
         '{"survey":"SmartSpark market research"}',
         'survey_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-21'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-21',
+        NULL
     ),
     (
         6,
@@ -798,7 +867,8 @@ VALUES
         '2_smartspark',
         '{"canvas":"SmartSpark business model canvas"}',
         'canvas_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-02-22'
+        strftime('%Y', DATE('now', '-1 year')) || '-02-22',
+        NULL
     ),
     (
         7,
@@ -807,7 +877,8 @@ VALUES
         '2_smartspark',
         '{"feedback":"SmartSpark prototype feedback"}',
         'feedback_smartspark_coach.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-04'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-04',
+        NULL
     ),
     (
         8,
@@ -816,7 +887,8 @@ VALUES
         '2_smartspark',
         '{"roles":"SmartSpark team roles"}',
         'roles_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-05'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-05',
+        NULL
     ),
     (
         9,
@@ -825,7 +897,8 @@ VALUES
         '2_smartspark',
         '{"analysis":"SmartSpark competitor analysis"}',
         'analysis_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-06'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-06',
+        NULL
     ),
     (
         10,
@@ -834,7 +907,8 @@ VALUES
         '2_smartspark',
         '{"risks":"SmartSpark risk assessment"}',
         'risks_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-20'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-20',
+        NULL
     ),
     (
         11,
@@ -843,7 +917,8 @@ VALUES
         '2_smartspark',
         '{"marketing":"SmartSpark marketing plan"}',
         'marketing_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-03-21'
+        strftime('%Y', DATE('now', '-1 year')) || '-03-21',
+        NULL
     ),
     (
         12,
@@ -852,7 +927,8 @@ VALUES
         '2_smartspark',
         '{"financials":"SmartSpark financial projections"}',
         'financials_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-04-17'
+        strftime('%Y', DATE('now', '-1 year')) || '-04-17',
+        NULL
     ),
     (
         13,
@@ -861,7 +937,8 @@ VALUES
         '2_smartspark',
         '{"presentation":"SmartSpark final presentation"}',
         'presentation_smartspark_user1.pdf',
-        strftime('%Y', DATE('now', '-1 year')) || '-04-18'
+        strftime('%Y', DATE('now', '-1 year')) || '-04-18',
+        NULL
     ),
     (
         14,
@@ -870,7 +947,8 @@ VALUES
         '2_smartspark',
         '{"peer_evaluation":"SmartSpark peer evaluation"}',
         NULL,
-        strftime('%Y', DATE('now', '-1 year')) || '-05-19'
+        strftime('%Y', DATE('now', '-1 year')) || '-05-19',
+        NULL
     ),
     (
         14,
@@ -881,7 +959,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-21'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -892,7 +971,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-22'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -903,7 +983,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-23'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -920,7 +1001,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-05-24'
-        )
+        ),
+        NULL
     ),
     -- 3_techtitan
     (
@@ -932,7 +1014,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-01'
-        )
+        ),
+        NULL
     ),
     (
         2,
@@ -943,7 +1026,8 @@ VALUES
         'proposal_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-02'
-        )
+        ),
+        NULL
     ),
     (
         3,
@@ -954,7 +1038,8 @@ VALUES
         'timeline_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-03'
-        )
+        ),
+        NULL
     ),
     (
         4,
@@ -965,7 +1050,8 @@ VALUES
         'report_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-04'
-        )
+        ),
+        NULL
     ),
     (
         5,
@@ -976,7 +1062,8 @@ VALUES
         'survey_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-05'
-        )
+        ),
+        NULL
     ),
     (
         6,
@@ -987,7 +1074,8 @@ VALUES
         'canvas_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-06'
-        )
+        ),
+        NULL
     ),
     (
         7,
@@ -998,7 +1086,8 @@ VALUES
         'feedback_techtitan_coach.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-07'
-        )
+        ),
+        NULL
     ),
     (
         8,
@@ -1009,7 +1098,8 @@ VALUES
         'roles_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-08'
-        )
+        ),
+        NULL
     ),
     (
         9,
@@ -1020,7 +1110,8 @@ VALUES
         'analysis_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-09'
-        )
+        ),
+        NULL
     ),
     (
         10,
@@ -1031,7 +1122,8 @@ VALUES
         'risks_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-10'
-        )
+        ),
+        NULL
     ),
     (
         11,
@@ -1042,7 +1134,8 @@ VALUES
         'marketing_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-11'
-        )
+        ),
+        NULL
     ),
     (
         12,
@@ -1053,7 +1146,8 @@ VALUES
         'financials_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-12'
-        )
+        ),
+        NULL
     ),
     (
         13,
@@ -1064,7 +1158,8 @@ VALUES
         'presentation_techtitan_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-13'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1075,7 +1170,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-14'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1086,7 +1182,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-15'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1097,7 +1194,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-16'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1108,7 +1206,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-17'
-        )
+        ),
+        NULL
     ),
 
     (
@@ -1126,7 +1225,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-06-18'
-        )
+        ),
+        NULL
     ),
 
     -- 5_profitpulse
@@ -1139,7 +1239,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-01'
-        )
+        ),
+        NULL
     ),
     (
         2,
@@ -1150,7 +1251,8 @@ VALUES
         'proposal_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-02'
-        )
+        ),
+        NULL
     ),
     (
         3,
@@ -1161,7 +1263,8 @@ VALUES
         'timeline_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-03'
-        )
+        ),
+        NULL
     ),
     (
         4,
@@ -1172,7 +1275,8 @@ VALUES
         'report_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-04'
-        )
+        ),
+        NULL
     ),
     (
         5,
@@ -1183,7 +1287,8 @@ VALUES
         'survey_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-05'
-        )
+        ),
+        NULL
     ),
     (
         6,
@@ -1194,7 +1299,8 @@ VALUES
         'canvas_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-06'
-        )
+        ),
+        NULL
     ),
     (
         7,
@@ -1205,7 +1311,8 @@ VALUES
         'feedback_profitpulse_coach.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-07'
-        )
+        ),
+        NULL
     ),
     (
         8,
@@ -1216,7 +1323,8 @@ VALUES
         'roles_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-08'
-        )
+        ),
+        NULL
     ),
     (
         9,
@@ -1227,7 +1335,8 @@ VALUES
         'analysis_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-09'
-        )
+        ),
+        NULL
     ),
     (
         10,
@@ -1238,7 +1347,8 @@ VALUES
         'risks_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-10'
-        )
+        ),
+        NULL
     ),
     (
         11,
@@ -1249,7 +1359,8 @@ VALUES
         'marketing_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-11'
-        )
+        ),
+        NULL
     ),
     (
         12,
@@ -1260,7 +1371,8 @@ VALUES
         'financials_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-12'
-        )
+        ),
+        NULL
     ),
     (
         13,
@@ -1271,7 +1383,8 @@ VALUES
         'presentation_profitpulse_user1.pdf',
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-13'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1282,7 +1395,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-14'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1293,7 +1407,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-15'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1304,7 +1419,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-16'
-        )
+        ),
+        NULL
     ),
 
     (
@@ -1316,7 +1432,8 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-17'
-        )
+        ),
+        NULL
     ),
     (
         14,
@@ -1333,5 +1450,6 @@ VALUES
         NULL,
         DATE(
             strftime('%Y', DATE('now', '-1 year')) || '-07-18'
-        )
+        ),
+        NULL
     );

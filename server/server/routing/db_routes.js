@@ -1375,28 +1375,15 @@ module.exports = (db) => {
     [UserAuth.isSignedIn, UserAuth.canWrite],
     async (req, res, next) => {
       let body = req.body;
+
       let files = req.files;
       const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured=?, outstanding=?, creative=?, priority=?,
-                                        title=?, project_id=?, team_name=?,
+                                    SET title=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
-                                    WHERE archive_id = ?`;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
+                                    WHERE archive_id = ? AND project_id = ?`;
 
       let files_uploaded = [];
 
@@ -1490,27 +1477,8 @@ module.exports = (db) => {
         video = body.video;
       }
 
-      const checkBox = (data) => {
-        if (data === "true" || data === "1") {
-          return 1;
-        }
-        return 0;
-      };
-
-      const strToInt = (data) => {
-        if (typeof data === "string") {
-          return parseInt(data);
-        }
-        return 0;
-      };
-
       let updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
         body.title,
-        body.project_id,
         body.team_name,
         body.members,
         body.sponsor,
@@ -1526,9 +1494,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
         body.archive_id,
+        req.user.project,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -1554,18 +1521,6 @@ module.exports = (db) => {
       .withMessage("Cannot be empty"),
     async (req, res, next) => {
       let body = req.body;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
 
@@ -1692,10 +1647,10 @@ module.exports = (db) => {
       };
 
       const updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
+        0, // featured
+        0, // outstanding
+        0, // creative
+        0, // priority
         body.title,
         body.project_id,
         body.team_name,
@@ -1713,8 +1668,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
+        "", // inactive
+        "", // locked
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -2857,18 +2812,20 @@ module.exports = (db) => {
                 system_id,
                 project,
                 form_data,
-                files
+                files,
+                notes
                 ${(req.user.mock && ",mock_id") || ""}
                 )
-            VALUES (?,?,?,?,?${(req.user.mock && ",?") || ""})
+            VALUES (?,?,?,?,?,?${(req.user.mock && ",?") || ""})
         `;
-
+      let notesJSON = JSON.stringify({ note: body.notes || "" });
       let params = [
         body.action_template,
         req.user.system_id,
         body.project,
         body.form_data,
         filenamesCSV,
+        notesJSON,
       ];
       if (req.user.mock) {
         params.push(req.user.mock.system_id);
@@ -3090,16 +3047,21 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
-                        actions.action_title, actions.due_date,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-                        (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
-                        (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
-                    FROM action_log
-                        JOIN actions ON actions.action_id = action_log.action_template
-                        WHERE action_log.action_template = ? AND action_log.project = ?`;
-        params = [req.query.action_id, req.user.project];
+        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project, 
+          CASE
+            WHEN actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?
+            THEN action_log.notes
+            ELSE NULL
+          END AS notes,
+          actions.action_title, actions.due_date,
+          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+          (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
+          (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
+          FROM action_log
+          JOIN actions ON actions.action_id = action_log.action_template
+          WHERE action_log.action_template = ? AND action_log.project = ?`;
+        params = [req.user.system_id, req.query.action_id, req.user.project];
         break;
       case ROLES.COACH:
       case ROLES.ADMIN:
@@ -3488,21 +3450,21 @@ module.exports = (db) => {
 
     switch (req.user.type) {
       case ROLES.STUDENT:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.COACH:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     WHERE action_log.action_log_id = ?`;
         params = [req.query.log_id];
@@ -4716,8 +4678,9 @@ module.exports = (db) => {
 
       try {
         const result = await db.query(
-          `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
-             FROM users WHERE system_id = ?`,
+          `SELECT email, json_extract(profile_info, '$.additional_info') AS additional_info,
+            json_extract(profile_info, '$.preferred_contact') AS preferred_contact
+           FROM users WHERE system_id = ?`,
           [requestedUserId],
         );
 
@@ -4727,7 +4690,27 @@ module.exports = (db) => {
           return next(error);
         }
 
-        res.send(result[0]);
+        const row = result[0];
+        let pref = null;
+        try {
+          pref = row.preferred_contact
+            ? JSON.parse(row.preferred_contact)
+            : null;
+        } catch {}
+
+        let contact = null;
+        if (!pref || pref.method === "email")
+          contact = { label: "Email", value: row.email };
+        else if (pref.method === "phone" && pref.value)
+          contact = { label: "Phone", value: pref.value };
+        else if (pref.method === "other" && pref.value)
+          contact = { label: pref.label || "Other", value: pref.value };
+
+        res.send({
+          additional_info: row.additional_info,
+          preferred_contact: pref,
+          contact,
+        });
       } catch (err) {
         const error = new Error("Database query failed");
         error.statusCode = 500;
@@ -4741,7 +4724,7 @@ module.exports = (db) => {
     "/editAdditionalInfo",
     [UserAuth.isSignedIn],
     async (req, res, next) => {
-      const { system_id, additional_info } = req.body;
+      const { system_id, additional_info, preferred_contact } = req.body;
 
       if (!system_id || additional_info === undefined) {
         return res
@@ -4749,14 +4732,29 @@ module.exports = (db) => {
           .send({ error: "system_id and additional_info are required" });
       }
 
+      const METHODS = ["email", "phone", "other"];
+      const pref = METHODS.includes(preferred_contact?.method)
+        ? {
+            method: preferred_contact.method,
+            label: String(preferred_contact.label || "")
+              .trim()
+              .slice(0, 30),
+            value: String(preferred_contact.value || "")
+              .trim()
+              .slice(0, 100),
+          }
+        : { method: "email", label: "", value: "" };
+
       const updateQuery = `
         UPDATE users
-        SET profile_info = json_set(profile_info, '$.additional_info', ?)
+        SET profile_info = json_set(profile_info, '$.additional_info', ?, '$.preferred_contact', json(?))
         WHERE system_id = ?
-    `;
+      `;
+
+      const params = [additional_info, JSON.stringify(pref), system_id];
 
       try {
-        await db.query(updateQuery, [additional_info, system_id]);
+        await db.query(updateQuery, params);
         res
           .status(200)
           .send({ message: "Additional info updated successfully" });
@@ -5160,6 +5158,28 @@ module.exports = (db) => {
       }
     },
   );
+  //get coach for student profile
+  db_router.get("/getMyCoaches", [UserAuth.isSignedIn], (req, res, next) => {
+    const projectId =
+      req.user.type === ROLES.STUDENT ? req.user.project : req.query.project_id;
+
+    if (!projectId) return res.send([]);
+
+    db.query(
+      `SELECT users.system_id, users.fname, users.lname
+        FROM project_coaches
+        JOIN users ON users.system_id = project_coaches.coach_id
+        WHERE project_coaches.project_id = ?
+        ORDER BY users.fname, users.lname`,
+      [projectId],
+    )
+      .then((coaches) => res.send(coaches))
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
 
   return db_router;
 };

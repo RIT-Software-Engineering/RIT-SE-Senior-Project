@@ -6,6 +6,118 @@
   overflow-x: auto;
 }
 
+/* Question Matrix Layout */
+
+.peer-table.peer-table-matrix {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(127, 127, 127, 0.24);
+  border-radius: 8px;
+}
+
+.peer-table-matrix .ui.table.peer-rating-matrix {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: transparent;
+  color: inherit;
+}
+
+/* Question headers */
+
+.peer-table-matrix
+  .ui.table.peer-rating-matrix
+  thead
+  th.peer-table-header-cell {
+  padding: 14px 16px;
+  background: rgba(127, 127, 127, 0.09);
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.24);
+}
+
+.peer-table-matrix
+  .ui.table.peer-rating-matrix
+  thead
+  th.peer-table-name-header {
+  width: 200px;
+  text-align: center;
+}
+
+.peer-table-matrix .peer-table-header-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  top: 3px;
+}
+
+/* Table rows */
+
+.peer-table-matrix .ui.table.peer-rating-matrix tbody td {
+  padding: 16px;
+  color: inherit;
+  vertical-align: middle;
+  border-top: 0;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.14);
+}
+
+.peer-table-matrix .ui.table.peer-rating-matrix tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Student names */
+
+.peer-table-matrix .ui.table.peer-rating-matrix tbody td.peer-table-name-cell {
+  width: 200px;
+  text-align: left;
+}
+
+.peer-table-matrix .peer-table-person {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 28px;
+  white-space: nowrap;
+}
+
+/* Star ratings */
+
+.peer-table-matrix
+  .ui.table.peer-rating-matrix
+  tbody
+  td.peer-table-rating-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Subtle hover effect */
+
+.peer-table-matrix .peer-table-student-row:hover td {
+  background: rgba(127, 127, 127, 0.055);
+}
+
+/* Smaller screens */
+
+@media (max-width: 640px) {
+  .peer-table-matrix
+    .ui.table.peer-rating-matrix
+    thead
+    th.peer-table-header-cell,
+  .peer-table-matrix .ui.table.peer-rating-matrix tbody td {
+    padding: 12px;
+  }
+}
+
 .peer-question {
   width: 100%;
 }
@@ -87,9 +199,7 @@
 }
 
 .peer-table-header-cell {
-  word-wrap: break-word;
-  text-align: center;
-  vertical-align: bottom;
+  overflow-wrap: break-word;
 }
 
 .peer-performance-heading {

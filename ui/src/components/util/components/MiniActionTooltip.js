@@ -13,6 +13,7 @@ export function MiniActionTooltip({ trigger, action }) {
 
   return (
     <Popup
+      className="universal-tooltip"
       trigger={trigger}
       fluid
       content={
@@ -27,7 +28,6 @@ export function MiniActionTooltip({ trigger, action }) {
       position="top center"
       on={["hover", "click"]}
       hideOnScroll
-      inverted={isDarkMode}
     />
   );
 }

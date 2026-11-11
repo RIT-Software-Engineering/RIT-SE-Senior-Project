@@ -78,6 +78,10 @@ button.fake-div {
   margin-right: 5px;
 }
 
+.notes-field {
+  margin-top: 1em;
+}
+
 /* Dark Mode Styles */
 
 .dark-mode a {
