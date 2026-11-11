@@ -8,6 +8,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -15,6 +16,7 @@ import {
   Icon,
   Loader,
   Message,
+  Popup,
   Segment,
   Table,
   TableBody,
@@ -132,12 +134,28 @@ function getActorName(log) {
   return log.name || log.system_id || "Unknown User";
 }
 
+function getSubmissionNote(value) {
+  if (!value) return "";
+
+  try {
+    const parsed = typeof value === "string" ? JSON.parse(value) : value;
+
+    if (typeof parsed === "string") return parsed.trim();
+    return typeof parsed?.note === "string" ? parsed.note.trim() : "";
+  } catch {
+    return String(value).trim();
+  }
+}
+
 function getProjectName(log) {
   return log?.display_name || log?.title || "Current Project";
 }
 
 export default function RecentActivity(props) {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const setUserRef = useRef(setUser);
+  setUserRef.current = setUser;
+  const [preferenceLoaded, setPreferenceLoaded] = useState(false);
 
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -148,6 +166,69 @@ export default function RecentActivity(props) {
   const [myProjects, setMyProjects] = useState([]);
 
   const projectId = props.projectId || user?.project;
+
+  useEffect(() => {
+    if (!user?.user) {
+      setPreferenceLoaded(false);
+      return;
+    }
+
+    const systemId = user.user;
+    let cancelled = false;
+
+    setPreferenceLoaded(false);
+
+    SecureFetch(
+      `${config.url.API_GET_RECENT_ACTIVITY_VIEW}?system_id=${encodeURIComponent(systemId)}`,
+    )
+      .then((res) => {
+        if (!res.ok)
+          throw new Error("Failed to load recent activity preference");
+        return res.json();
+      })
+      .then((data) => {
+        if (cancelled) return;
+
+        const enabled = data.recent_activity_view !== false;
+
+        setUserRef.current((currentUser) => {
+          if (currentUser.user !== systemId) return currentUser;
+
+          let profileInfo = currentUser.profile_info || {};
+
+          if (typeof profileInfo === "string") {
+            try {
+              profileInfo = JSON.parse(profileInfo);
+            } catch {
+              profileInfo = {};
+            }
+          }
+
+          // Don't update UserContext if the preference is already correct.
+          if (profileInfo.recent_activity_view === enabled) {
+            return currentUser;
+          }
+
+          return {
+            ...currentUser,
+            profile_info: {
+              ...profileInfo,
+              recent_activity_view: enabled,
+            },
+          };
+        });
+
+        setPreferenceLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Failed to load recent activity preference:", err);
+        if (!cancelled) setPreferenceLoaded(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.user]);
 
   /**
    * Stores dismissal state separately for each user and project.
@@ -316,6 +397,10 @@ export default function RecentActivity(props) {
                 projectId: log.project || projectId,
                 projectName: getProjectName(log),
                 semesterName: action.semester,
+                profileName: log.mock_name || log.name || log.system_id,
+                mockAs: log.mock_name ? log.name || log.system_id : null,
+                submissionNote: getSubmissionNote(log.notes),
+                profileUserId: log.mock_id || log.system_id,
               };
             })
             .filter(Boolean)
@@ -490,6 +575,9 @@ export default function RecentActivity(props) {
                     thisWeek: 0,
                     lastWeek: 0,
                     latestSubmission: null,
+                    profileName: log.mock_name || log.name || log.system_id,
+                    mockAs: log.mock_name ? log.name || log.system_id : null,
+                    profileUserId: log.mock_id || log.system_id,
                   });
                 }
 
@@ -592,8 +680,20 @@ export default function RecentActivity(props) {
    * Loads activity after the project becomes available.
    */
   useEffect(() => {
+    if (
+      !preferenceLoaded ||
+      !recentActivityConfig.enabled ||
+      user?.profile_info?.recent_activity_view === false
+    ) {
+      return;
+    }
+
     loadActivity();
-  }, [loadActivity]);
+  }, [
+    loadActivity,
+    preferenceLoaded,
+    user?.profile_info?.recent_activity_view,
+  ]);
 
   /**
    * Determines the timestamp after which activity should be displayed.
@@ -681,8 +781,17 @@ export default function RecentActivity(props) {
                 <TableRow key={student.systemId}>
                   <TableCell>
                     <div className="recent-activity-time-student">
-                      <ProfileCircle name={student.actorName} size="tiny" />
-                      <span>{student.actorName}</span>
+                      <ProfileCircle
+                        user={{
+                          system_id: student.profileUserId || student.systemId,
+                        }}
+                        name={student.profileName || student.actorName}
+                        size="tiny"
+                        isStudent={false}
+                        showFullName
+                        allowInfo
+                      />
+                      {student.mockAs && <span>(as {student.mockAs})</span>}
                     </div>
                   </TableCell>
 
@@ -734,15 +843,49 @@ export default function RecentActivity(props) {
           <Icon name={item.icon} />
 
           {item.actorName ? (
-            <ProfileCircle name={item.actorName} size="tiny" />
+            <ProfileCircle
+              user={
+                item.profileUserId
+                  ? { system_id: item.profileUserId }
+                  : undefined
+              }
+              name={item.profileName || item.actorName}
+              size="tiny"
+              isStudent={false}
+              showFullName
+              allowInfo
+            />
           ) : (
             <span />
           )}
 
           <span>
-            {item.actorName && `${item.actorName} `}
+            {item.mockAs && `(as ${item.mockAs}) `}
             {item.text}
           </span>
+
+          {item.type === "action_submission" && item.submissionNote && (
+            <Popup
+              className="universal-tooltip"
+              on="hover"
+              position="top center"
+              trigger={
+                <span
+                  className="recent-activity-note-indicator"
+                  aria-label="Submission notes"
+                  tabIndex={0}
+                >
+                  <Icon name="sticky note outline" />
+                </span>
+              }
+              content={
+                <div>
+                  <strong>Submission Notes</strong>
+                  <div>{item.submissionNote}</div>
+                </div>
+              }
+            />
+          )}
 
           <span className="recent-activity-date">
             {item.type === "action_overdue"
@@ -891,7 +1034,11 @@ export default function RecentActivity(props) {
       )}
     </div>
   );
-  if (!recentActivityConfig.enabled) {
+  if (
+    !recentActivityConfig.enabled ||
+    !preferenceLoaded ||
+    user?.profile_info?.recent_activity_view === false
+  ) {
     return null;
   }
   if (user?.role === USERTYPES.STUDENT) {

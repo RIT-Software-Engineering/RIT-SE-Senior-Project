@@ -122,6 +122,48 @@ function lookupNewlyInsertedId(db, table, idColumn, whereFields) {
     .then((rows) => (rows && rows[0] ? rows[0][idColumn] : null));
 }
 
+const DEFAULT_PROFILE_INFO = {
+  additional_info: "",
+  preferred_contact: { method: "email", label: "", value: "" },
+  dark_mode: false,
+  gantt_view: true,
+  calendar_view: false,
+  milestone_view: true,
+  recent_activity_view: true,
+};
+
+async function ensureProfileInfoDefaults(db, systemId) {
+  const entries = Object.entries(DEFAULT_PROFILE_INFO);
+
+  const profileJson = "COALESCE(NULLIF(TRIM(profile_info), ''), '{}')";
+
+  const updatePairs = entries.map(() => "?, json(?)").join(", ");
+  const missingConditions = entries
+    .map(() => `json_type(${profileJson}, ?) IS NULL`)
+    .join(" OR ");
+
+  const params = entries.flatMap(([key, value]) => [
+    `$.${key}`,
+    JSON.stringify(value),
+  ]);
+
+  const query = `
+    UPDATE users
+    SET profile_info = json_insert(
+      ${profileJson},
+      ${updatePairs}
+    )
+    WHERE system_id = ?
+      AND (${missingConditions})
+  `;
+
+  await db.query(query, [
+    ...params,
+    systemId,
+    ...entries.map(([key]) => `$.${key}`),
+  ]);
+}
+
 // Routes
 module.exports = (db) => {
   /**
@@ -475,11 +517,7 @@ module.exports = (db) => {
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
       // Default profile_info with required fields
-      const defaultProfileInfo = JSON.stringify({
-        additional_info: "",
-        dark_mode: false,
-        gantt_view: true,
-      });
+      const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
       const params = [
         body.system_id,
@@ -522,11 +560,7 @@ module.exports = (db) => {
 
         for (const user of users) {
           // Default profile_info with required fields
-          const defaultProfileInfo = JSON.stringify({
-            additional_info: "",
-            dark_mode: false,
-            gantt_view: true,
-          });
+          const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
           const values = [
             user.system_id,
@@ -3106,7 +3140,12 @@ module.exports = (db) => {
 
       switch (req.user.type) {
         case ROLES.STUDENT:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,             
+            CASE
+              WHEN actions.action_target = 'team' OR action_log.system_id = ?
+              THEN action_log.notes
+              ELSE NULL
+            END AS notes,
             actions.action_target, actions.action_title, actions.semester,
             projects.display_name, projects.title,
             (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
@@ -3114,10 +3153,16 @@ module.exports = (db) => {
               FROM action_log
             JOIN actions ON actions.action_id = action_log.action_template
             JOIN projects ON projects.project_id = action_log.project
+
             WHERE action_log.project = ?
             ORDER BY submission_datetime DESC
             LIMIT ? OFFSET ?`;
-          queryParams = [req.user.project, resultLimit, offset * resultLimit];
+          queryParams = [
+            req.user.system_id,
+            req.user.project,
+            resultLimit,
+            offset * resultLimit,
+          ];
           getActionLogCount = `SELECT COUNT(*) FROM action_log
               JOIN actions ON actions.action_id = action_log.action_template
               WHERE action_log.project = ?
@@ -3125,7 +3170,7 @@ module.exports = (db) => {
           countParams = [req.user.project, req.user.project];
           break;
         case ROLES.COACH:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project, action_log.notes,
               actions.action_target, actions.action_title, actions.semester,
               projects.display_name, projects.title,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
@@ -4677,6 +4722,8 @@ module.exports = (db) => {
       }
 
       try {
+        await ensureProfileInfoDefaults(db, requestedUserId);
+
         const result = await db.query(
           `SELECT email, json_extract(profile_info, '$.additional_info') AS additional_info,
             json_extract(profile_info, '$.preferred_contact') AS preferred_contact
@@ -4712,6 +4759,7 @@ module.exports = (db) => {
           contact,
         });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4806,6 +4854,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
         if (result.length === 0) {
           const error = new Error("User not found");
@@ -4818,6 +4868,7 @@ module.exports = (db) => {
 
         res.status(200).send({ dark_mode });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4918,6 +4969,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4936,6 +4988,7 @@ module.exports = (db) => {
 
         res.status(200).send({ gantt_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4989,6 +5042,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -5006,6 +5061,7 @@ module.exports = (db) => {
 
         res.status(200).send({ calendar_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -5059,6 +5115,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -5076,6 +5134,7 @@ module.exports = (db) => {
 
         res.status(200).send({ milestone_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -5132,6 +5191,8 @@ module.exports = (db) => {
       `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -5151,6 +5212,7 @@ module.exports = (db) => {
           recent_activity_view,
         });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
