@@ -416,6 +416,9 @@ export default function ActionLogs(props) {
 
           <TableBody>
             {actionLogs?.map((action, idx) => {
+              const isAStudent = students.some(
+                (s) => s.system_id === action.system_id,
+              );
               let submittedBy = `${action.name} (${action.system_id})`;
               if (action.mock_id) {
                 submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
@@ -461,7 +464,7 @@ export default function ActionLogs(props) {
                           <ProfileCircle
                             name={action.mock_name ?? ""}
                             size="tiny"
-                            className="universal-tooltip"
+                            className="action-profile"
                             isStudent={false}
                             showFullName
                             allowInfo
@@ -475,6 +478,7 @@ export default function ActionLogs(props) {
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
+                        isStudent={isAStudent}
                         allowInfo
                         className="action-profile"
                       />
