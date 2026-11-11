@@ -1360,28 +1360,15 @@ module.exports = (db) => {
     [UserAuth.isSignedIn, UserAuth.canWrite],
     async (req, res, next) => {
       let body = req.body;
+
       let files = req.files;
       const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured=?, outstanding=?, creative=?, priority=?,
-                                        title=?, project_id=?, team_name=?,
+                                    SET title=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
-                                    WHERE archive_id = ?`;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
+                                    WHERE archive_id = ? AND project_id = ?`;
 
       let files_uploaded = [];
 
@@ -1475,27 +1462,8 @@ module.exports = (db) => {
         video = body.video;
       }
 
-      const checkBox = (data) => {
-        if (data === "true" || data === "1") {
-          return 1;
-        }
-        return 0;
-      };
-
-      const strToInt = (data) => {
-        if (typeof data === "string") {
-          return parseInt(data);
-        }
-        return 0;
-      };
-
       let updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
         body.title,
-        body.project_id,
         body.team_name,
         body.members,
         body.sponsor,
@@ -1511,9 +1479,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
         body.archive_id,
+        req.user.project,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -1539,18 +1506,6 @@ module.exports = (db) => {
       .withMessage("Cannot be empty"),
     async (req, res, next) => {
       let body = req.body;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
 
@@ -1677,10 +1632,10 @@ module.exports = (db) => {
       };
 
       const updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
+        0, // featured
+        0, // outstanding
+        0, // creative
+        0, // priority
         body.title,
         body.project_id,
         body.team_name,
@@ -1698,8 +1653,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
+        "", // inactive
+        "", // locked
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
