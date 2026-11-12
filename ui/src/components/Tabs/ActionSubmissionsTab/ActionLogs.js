@@ -401,7 +401,7 @@ export default function ActionLogs(props) {
     semesterPanels.push(<h3>Action Submissions</h3>);
     semesterPanels.push(
       <div>
-        <Table>
+        <Table stackable className="stackable-hide-header">
           <TableHeader>
             <TableRow>
               {userContext.user?.role !== USERTYPES.STUDENT && (
@@ -452,6 +452,8 @@ export default function ActionLogs(props) {
                   )}
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>
+                    <span className="mobile-only-label">Type: </span>
+                    {action.action_target}
                     {formatActionTarget(action.action_target)}
                   </TableCell>
                   <TableCell>
@@ -481,6 +483,7 @@ export default function ActionLogs(props) {
                     </span>
                   </TableCell>
                   <TableCell>
+                    <span className="mobile-only-label">Submission Date: </span>{" "}
                     {formatDateTime(action.submission_datetime)}
                   </TableCell>
                 </TableRow>
