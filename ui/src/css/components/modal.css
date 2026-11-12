@@ -610,12 +610,6 @@ body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
   padding: 12px;
 }
 
-.ui.modal.sticky,
-body:not(.dark-mode) .ui.modal.sticky {
-  display: flex !important;
-  flex-direction: column;
-}
-
 .ui.modal.sticky > .header,
 .ui.modal.sticky > .actions {
   flex: 0 0 auto;
@@ -625,4 +619,16 @@ body:not(.dark-mode) .ui.modal.sticky {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+}
+
+body:not(.dark-mode) .ui.dimmer > .ui.modal.sticky,
+body.dark-mode .ui.dimmer > .ui.modal.sticky {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: block !important;
 }
