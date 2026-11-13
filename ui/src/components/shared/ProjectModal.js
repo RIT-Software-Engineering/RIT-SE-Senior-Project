@@ -76,9 +76,9 @@ function ProjectModal({ project, open, onClose }){
 
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div style={{ display: "flex", gap: "10px", alignItems:"center" }}>
             {awards.map((award) => (
-              <div className="award-ribbon" style={{ backgroundColor: award.color}}>
+              <div className="short-award-ribbon" style={{ backgroundColor: award.color}}>
                 <div className="ui header">{award.name}</div>
               </div>
             ))}

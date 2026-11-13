@@ -122,9 +122,9 @@ function UniqueProjectPage({ projectData }) {
             {project.display_name || project.title}{" "}
           </h1>
 
-          <div style={{ display: "flex", flexDirection: "column"}}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
             {awards.map((award) => (
-              <div className="award-ribbon" style={{ backgroundColor: award.color, marginBottom: "10px"}}>
+              <div className="short-award-ribbon" style={{ backgroundColor: award.color, marginBottom: "10px"}}>
                 <div className="ui header">{award.name}</div>
               </div>
             ))}

@@ -28,23 +28,3 @@
     min-width: 0;
     border: 1px solid rgb(0, 0, 0) !important;
 }
-
-.award-ribbon {
-    display: flex;
-    height: 30px;
-    width: 250px;
-    z-index: 3;
-
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        90% 50%,
-        100% 100%,
-        0 100%,
-        10% 50%
-    );
-
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}

@@ -18,6 +18,15 @@
   margin-bottom: 10px;
 }
 
+.dark-mode .page-title {
+  font-size: 50px;
+  font-weight: 550;
+  text-align: center;
+  padding-top: 20px;
+  margin-bottom: 10px;
+  color: white;
+}
+
 .orange {
   color: #F76902;
 }
@@ -58,6 +67,10 @@
   width: 60%;
 }
 
+.dark-mode .description .overviewText {
+  color: #D9D9D9;
+}
+
 .secondaryInfoContainerRight .outline {
   border: 1px solid white;
   border-radius: 20px;
@@ -72,10 +85,27 @@
   border: none;
 }
 
-.projects-carousel {
+.exemplary-projects-carousel {
   display: flex;
+  flex-direction: row;
   flex-wrap: nowrap;
   gap: 40px;
+}
+
+.current-projects-carousel {
+  position: relative;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 40px;
+}
+
+.projects-carousel-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .projects-carousel-wrapper {
@@ -84,6 +114,7 @@
   position: relative;
   padding-bottom: 53px;
   justify-content: center;
+  width: 100%;
 }
 
 .homepage-project-pagination {
@@ -107,6 +138,16 @@
   top: 300px;
   height: 200px;
   background: linear-gradient(to bottom, #fff, #D9D9D9);
+  z-index: -1;
+}
+
+.dark-mode .homepage::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  top: 300px;
+  height: 200px;
+  background: linear-gradient(to bottom, #1a1a1a, black);
   z-index: -1;
 }
 
@@ -158,24 +199,32 @@
   z-index: 4;
 }
 
+.dark-mode .pagination-arrow-left{
+  color: white;
+}
+
+.dark-mode .pagination-arrow-right{
+  color: white;
+}
+
+.dark-mode .pagination-arrow-left-secondary{
+  color: white;
+}
+
+.dark-mode .pagination-arrow-right-secondary{
+  color: white;
+}
+
 .gradient-overlay-right, .gradient-overlay-left {
   position: absolute;
   top: -30px;
   bottom: -30px;
   width: 35%;
-}
-
-.gradient-overlay-right{
-  right: -105px;
-  background: linear-gradient(
-    to right,
-    transparent 10%,
-    white 100%
-  );
+  pointer-events: none;
 }
 
 .gradient-overlay-left{
-  left: -105px;
+  left: 0;
   background: linear-gradient(
     to left,
     transparent 10%,
@@ -183,7 +232,35 @@
   );
 }
 
+.gradient-overlay-right{
+  right: 0;
+  background: linear-gradient(
+    to right,
+    transparent 10%,
+    white 100%
+  );
+}
+
+.dark-mode .gradient-overlay-right{
+  right: 0;
+  background: linear-gradient(
+    to right,
+    transparent 10%,
+    #1a1a1a 100%
+  );
+}
+
+.dark-mode .gradient-overlay-left{
+  left: 0;
+  background: linear-gradient(
+    to left,
+    transparent 10%,
+    #1a1a1a 100%
+  );
+}
+
 .carousel-track {
+  position: relative;
   overflow: hidden;
   flex: 1;
 }
@@ -191,15 +268,4 @@
 .carousel-slide {
   display: flex;
   gap: 20px;
-  animation: slideIn 0.5s ease-in-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(450px);
-  }
-
-  to {
-    transform: translateX(0);
-  }
 }

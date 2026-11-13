@@ -26,14 +26,16 @@ const uiConfig = {
   },
   awards: {
     Excellence: {
-      name: "Excellence Award",
+      name: "Excellence asjdfjdsjfasdfa",
       sqlName: "outstanding",
-      color: "#009CBD"
+      color: "#009CBD",
+      textColor: "#FFFF"
     },
     Creativity: {
       name: "Creativity",
       sqlName: "creative",
-      color: "#F6BE00"
+      color: "#F6BE00",
+      textColor: "#000"
     }
   },
   terms: { //based on zero-indexing

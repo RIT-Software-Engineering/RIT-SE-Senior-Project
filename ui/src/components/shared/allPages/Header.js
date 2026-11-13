@@ -82,8 +82,8 @@ function Header() {
               </Button>
             </>
           )}
-          
         </div>
+
         <div id="hamburger-menu" className="ui right floated buttons">
           <Button
             className="header-button"

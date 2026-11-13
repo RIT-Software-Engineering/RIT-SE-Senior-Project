@@ -6,7 +6,7 @@ VALUES
         '
             <div class="description">
                 <p class="overviewText">
-                    A capstone course where small teams of students solve challenging, real-world, software issues for companies and organizations.
+                    A capstone course where small teams of students solve challenging, real-world software issues for companies and organizations.
                 </p>
             </div>'
     ),
@@ -43,17 +43,8 @@ VALUES
         '<h2 class="ui header" style="padding-top: 25px; padding-bottom: 15px;">What Our Students Are Working On</h2>'
     ),
     (
-        'browseAllProjectsButton',
-        '<div class="row">
-            <button id="allProjectsBtn" class="button homepage-button" onClick="clickHandler()">
-                Browse All Projects
-            </button>
-            <script>
-                function clickHandler() {
-                    window.location.href = window.location.origin + "/projects";
-                }
-            </script>
-        </div>'
+        'additionalInfoPanel',
+        ''
     ),
     (
         'sponsor',

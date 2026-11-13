@@ -196,7 +196,8 @@ function ProjectsPage() {
 
       <div style={{width: "100%", margin: "0 auto"}}>
 
-      <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "30px"}}>
+      
+        <div className="filter-header">
         <Input
           className="search-bar"
           action="Go"
@@ -242,6 +243,8 @@ function ProjectsPage() {
           </select>
         </div>
         </div>
+
+        </div>
         
 
         <div className="ui invisible divider"></div>
@@ -269,7 +272,6 @@ function ProjectsPage() {
         />
         </div>
       
-      </div>
 
       <ProjectModal
         project={selectedProject}

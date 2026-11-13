@@ -1,5 +1,6 @@
 .projects-grid{
     display: grid;
+    justify-content: center;
     grid-template-columns: repeat(3, 1fr);
     gap: 60px;
     width: fit-content;
@@ -7,6 +8,18 @@
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 50px;
+}
+
+@media (max-width: 1175px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px){
+    .projects-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 .page-title {
@@ -19,6 +32,53 @@
     color: #F76902;
 }
 
+.dropdown-filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.filter-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1075px;
+    margin: 0 auto;
+    gap: clamp(10px, 4vw, 60px);
+}
+
+@media (max-width: 1000px) {
+    .filter-header {
+        flex-direction: column-reverse;
+        justify-content: center !important;
+        align-items: center;
+        gap: 16px;
+        margin-top: -20px;
+        margin-bottom: -20px;
+    }
+
+    .dropdown-filters {
+        justify-content: center !important;
+        margin-bottom: -20px;
+    }
+
+    .dropdown--orange {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .dropdown--orange .text {
+        text-align: center;
+    }
+
+    .ui.dropdown.dropdown--orange > .text {
+        text-align: center !important;
+}
+}
+
 .dropdown--orange {
     color: #F76902 !important;
     font-size: 20px !important;
@@ -27,6 +87,7 @@
     border: none !important;
     background: none !important;
     padding: none !important;
+    cursor: pointer !important;
 }
 
 .dropdown--orange:focus {
@@ -62,6 +123,8 @@
 
 select.dropdown--orange {
     padding-right: 8px;
+    field-sizing: content;
+    width: auto;
 }
 
 .ui.dropdown.dropdown--orange {
@@ -69,6 +132,7 @@ select.dropdown--orange {
     align-items: center;
     padding: 31px !important;
     margin-right: 20px;
+    cursor: pointer !important;
 }
 
 .ui.dropdown.dropdown--orange > .text {

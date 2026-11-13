@@ -9,8 +9,8 @@
     width: 318px;
     padding-top: 20px;
     padding-bottom: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
     background-color: #D9D9D9;
 }
 
@@ -37,6 +37,22 @@
     padding-right: 15px;
     background-color: #D9D9D9;
     position: relative;
+}
+
+.dark-mode .card-exemplary .ui.header{
+    color: black;
+}
+
+.dark-mode .card-exemplary-left .ui.header{
+    color: black;
+}
+
+.dark-mode .card-exemplary-right .ui.header{
+    color: black;
+}
+
+.dark-mode .card .ui.header{
+    color: black;
 }
 
 .card-exemplary-left {
@@ -123,7 +139,8 @@
     display: flex;
     top: 56px;
     right: -148px;
-    height: 40px;
+    height: auto;
+    min-height: 40px;
     width: 370px;
     z-index: 3;
 
@@ -138,6 +155,32 @@
     justify-content: center;
     align-items: center;
     text-indent: -50px;
+    overflow: clip;
+}
+
+.award-sash .ui.header,
+.award-sash-left .ui.header,
+.award-sash-side .ui.header,
+.award-sash-left-side .ui.header {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 23%;
+    line-height: 1.1;
+    flex-shrink: 1;
+}
+
+.award-sash .ui.header,
+.award-sash-left .ui.header {
+    font-size: clamp(0.8rem, 1rem, 1rem);
+}
+
+.award-sash-side .ui.header,
+.award-sash-left-side .ui.header {
+    font-size: clamp(0.4rem, 0.8rem, 0.8rem);
 }
 
 .award-sash-left {
@@ -212,9 +255,14 @@
 
 .short-award-ribbon {
     display: flex;
-    height: 25px;
-    width: 175px;
+    min-height: 25px;
+    width: fit-content;
+    height: fit-content;
+    min-width: 150px;
+    max-width: 600px;
     z-index: 3;
+    padding-right: 50px;
+    padding-left: 50px;
 
     clip-path: polygon(
         0 0,
@@ -229,4 +277,5 @@
     align-items: center;
     margin-top: -5px;
     margin-bottom: 10px;
+    text-align: center;
 }
