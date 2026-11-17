@@ -93,99 +93,7 @@ function Header() {
             <Icon name="bars" />
           </Button>
         </div>
-        <Sidebar
-          as={Menu}
-          animation="overlay"
-          direction="right"
-          visible={visible}
-          onHide={() => setVisible(false)}
-          vertical
-          inverted
-        >
-          <Menu.Item>
-            <Button
-              fluid
-              onClick={() => {
-                setVisible(false);
-                history.push("/");
-              }}
-            >
-              Home
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button
-              fluid
-              onClick={() => {
-                setVisible(false);
-                history.push("/projects");
-              }}
-            >
-              Projects
-            </Button>
-          </Menu.Item>
-          {signedIn && (
-            <Menu.Item>
-              <Button
-                fluid
-                onClick={() => {
-                  setVisible(false);
-                  history.push("/dashboard");
-                }}
-              >
-                Dashboard
-              </Button>
-            </Menu.Item>
-          )}
-          <Menu.Item>
-            <Button
-              fluid
-              onClick={() => {
-                setVisible(false);
-                history.push("/sponsor");
-              }}
-            >
-              Sponsor a Project
-            </Button>
-          </Menu.Item>
-          <Menu.Item>
-            <Button
-              fluid
-              onClick={() => {
-                setVisible(false);
-                setProfileModalOpen(true);
-              }}
-            >
-              Profile
-            </Button>
-          </Menu.Item>
-          {process.env.REACT_APP_NODE_ENV === "production" ? (
-            <Menu.Item>
-              <Button
-                fluid
-                onClick={() => {
-                  setVisible(false);
-                  signInOut();
-                }}
-              >
-                {signInOutBtnText}
-              </Button>
-            </Menu.Item>
-          ) : (
-            <Menu.Item>
-              <Modal
-                closeOnDimmerClick={false}
-                className={"sticky"}
-                trigger={<Button fluid>Dev Sign in/out</Button>}
-                header="Sign in/Sign Out"
-                content={{
-                  content: <DevSignInModalContent />,
-                }}
-                actions={["Cancel"]}
-              />
-            </Menu.Item>
-          )}
-        </Sidebar>
+        
       </>
     );
   };
@@ -239,7 +147,8 @@ function Header() {
   };
 
   return (
-    <div id="header">
+    <>
+    <div id="header" className={visible ? "menu-visible" : ""}>
       <div id="navbar">
         {signedIn && <span>{uiConfig.app.name}</span>}
         {renderNavButtons()}
@@ -283,6 +192,105 @@ function Header() {
       </div>
       <div className="header-divider" />
     </div>
+
+    <Sidebar
+          as={Menu}
+          animation="overlay"
+          direction="right"
+          visible={visible}
+          onHide={() => setVisible(false)}
+          vertical
+          inverted
+        >
+          <Menu.Item>
+            <Button
+              fluid
+              style={{color: "white", backgroundColor: "#1B1C1D"}}
+              onClick={() => {
+                setVisible(false);
+                history.push("/");
+              }}
+            >
+              Home
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button
+              fluid
+              style={{color: "white", backgroundColor: "#1B1C1D"}}
+              onClick={() => {
+                setVisible(false);
+                history.push("/projects");
+              }}
+            >
+              Projects
+            </Button>
+          </Menu.Item>
+          {signedIn && (
+            <Menu.Item>
+              <Button
+                fluid
+                onClick={() => {
+                  setVisible(false);
+                  history.push("/dashboard");
+                }}
+              >
+                Dashboard
+              </Button>
+            </Menu.Item>
+          )}
+          <Menu.Item>
+            <Button
+              fluid
+              style={{color: "white", backgroundColor: "#1B1C1D"}}
+              onClick={() => {
+                setVisible(false);
+                history.push("/sponsor");
+              }}
+            >
+              Sponsor a Project
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Button
+              fluid
+              style={{color: "white", backgroundColor: "#1B1C1D"}}
+              onClick={() => {
+                setVisible(false);
+                setProfileModalOpen(true);
+              }}
+            >
+              Profile
+            </Button>
+          </Menu.Item>
+          {process.env.REACT_APP_NODE_ENV === "production" ? (
+            <Menu.Item>
+              <Button
+                fluid
+                onClick={() => {
+                  setVisible(false);
+                  signInOut();
+                }}
+              >
+                {signInOutBtnText}
+              </Button>
+            </Menu.Item>
+          ) : (
+            <Menu.Item>
+              <Modal
+                closeOnDimmerClick={false}
+                className={"sticky"}
+                trigger={<Button fluid style={{color: "white", backgroundColor: "#1B1C1D"}}>Dev Sign in/out</Button>}
+                header="Sign in/Sign Out"
+                content={{
+                  content: <DevSignInModalContent />,
+                }}
+                actions={["Cancel"]}
+              />
+            </Menu.Item>
+          )}
+        </Sidebar>
+    </>
   );
 }
 

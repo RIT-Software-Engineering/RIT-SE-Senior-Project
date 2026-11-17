@@ -214,6 +214,7 @@ function ProjectsPage() {
             text="Terms"
             selection
             closeOnChange={false}
+            style={{ marginRight: 0}}
           >
             <Dropdown.Menu>
               {availableSemesters.map((semester) => (
@@ -256,20 +257,25 @@ function ProjectsPage() {
             })}
           </div>
 
-        <Pagination
-          className="project-pagination"
-          activePage={activePage + 1}
-          totalPages={totalPages}
-          boundaryRange={1}
-          siblingRange={1}
-          onPageChange={(e, { activePage }) => {
-            setActivePage(activePage - 1);
-          }}
-          prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
-          nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}
-          firstItem={null}
-          lastItem={null}
-        />
+        <div className="project-pagination">
+          <button
+            className= "pagination-arrow"
+            disabled={activePage === 0}
+            onClick={() => setActivePage((prev) => Math.max(0, prev-1))}
+          >
+            <Icon name="arrow alternate circle left"/>
+          </button>
+
+          <div className="ui header" style={{ margin: "0", paddingRight: "3.5px"}}>{activePage+1} of {totalPages}</div>
+
+          <button
+            className= "pagination-arrow"
+            disabled={activePage >= totalPages - 1}
+            onClick={() => setActivePage((prev) => Math.min(totalPages - 1, prev+1))}
+          >
+            <Icon name="arrow alternate circle right"/>
+          </button>
+        </div>
         </div>
       
 

@@ -1,0 +1,79 @@
+{
+  "name": "react-confirm-alert",
+  "version": "3.0.6",
+  "description": "react component confirm dialog.",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --inline",
+    "test": "npm run lint && mocha ./test/**/*.test.js --compilers js:babel-register",
+    "test:watch": "mocha ./test/**/*.test.js --compilers js:babel-register --watch",
+    "lint": "eslint ./src",
+    "clean": "rimraf lib",
+    "build": "npm run clean && cross-env NODE_ENV=production babel src --out-dir lib && npm run build:demo",
+    "build:demo": "cross-env NODE_ENV=production webpack --config webpack.config.production.js",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GA-MO/react-confirm-alert.git"
+  },
+  "keywords": [
+    "react alert example",
+    "redux confirm dialog",
+    "confirm alert react js",
+    "react-confirm-alert",
+    "react-confirm",
+    "confirm-dialog",
+    "confirm",
+    "dialog",
+    "react"
+  ],
+  "author": "Thawatchai Kuansombat (thawatchai.deartk@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GA-MO/react-confirm-alert/issues"
+  },
+  "homepage": "https://github.com/GA-MO/react-confirm-alert",
+  "typings": "./index.d.ts",
+  "files": [
+    "lib",
+    "src/react-confirm-alert.css",
+    "index.d.ts"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.5.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard-react": "^5.0.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^3.5.0",
+    "prop-types": "^15.6.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-hot-loader": "^4.3.3",
+    "rimraf": "^2.6.1",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=10.0.0"
+  }
+}

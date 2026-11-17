@@ -32,9 +32,10 @@ function HomePage() {
 
   const handleBrowseAllProjectsClick = () => {
     history.push(`${url}projects`);
+    window.scrollTo(0,0);
   }
 
-  const slideAnimations = {
+  const currentSlideAnimations = {
     enter: (direction) => ({
       x: direction > 0 ? 150 : -150,
       opacity: 0,
@@ -49,35 +50,66 @@ function HomePage() {
     }),
   };
 
-  const [projectsPerSlide, setProjectsPerSlide] = useState(window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
+  const featuredSlideAnimations = {
+    enter: (direction) => ({
+      opacity: 1,
+      rotateY: direction === 1 ? 50 : -50,
+      scale: 0.9,
+      x: direction === 1 ? 220: -220
+    }),
+    center: (index) => ({
+      opacity: 1,
+      rotateY: 0,
+      scale: index === 1 ? 1 : 0.9,
+      x: 0,
+    }),
+    exit: (direction, index) => ({
+      x: direction === 1 ? -220 : 220,
+      rotateY: -60,
+      scale: index === 0 ? 1.2 : 1,
+      opacity: 1
+    }),
+  }
+
+  const [featuredProjectsPerSlide, setFeaturedProjectsPerSlide] = useState(window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
   const [currentProjectsPerSlide, setCurrentProjectsPerSlide] = useState(window.innerWidth <= 750 ? 1 : window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
 
   useEffect(() => {
     const handleResize = () => {
-      setProjectsPerSlide(
+      const newFeaturedProjectsPerSlide = (
         window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE
       );
+
+      setFeaturedProjectsPerSlide(newFeaturedProjectsPerSlide);
+
+      setFeaturedProjectSlide((prev) => {
+        return Math.floor(( prev * featuredProjectsPerSlide )/newFeaturedProjectsPerSlide)
+      });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [featuredProjectsPerSlide]);
 
   useEffect(() => {
     const handleResize = () => {
-      setCurrentProjectsPerSlide(
+      const newCurrentProjectsPerSlide = (
         window.innerWidth <= 850 ? 1 : window.innerWidth <= 1200 ? 2 : PROJECTS_PER_SLIDE
       );
+
+      setCurrentProjectsPerSlide(newCurrentProjectsPerSlide);
+
+      setCurrentProjectSlide((prev) => {
+        return Math.floor(( prev * currentProjectsPerSlide )/newCurrentProjectsPerSlide);
+      });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [currentProjectsPerSlide]);
 
   const totalCurrentSlides = Math.ceil(currentProjects.length/currentProjectsPerSlide);
-  const visibleCurrentProjects = currentProjects.length > 0 ? Array.from( { length: Math.min(currentProjectsPerSlide, currentProjects.length) }, (_, i) => currentProjects[(currentProjectSlide * currentProjectsPerSlide + i) % currentProjects.length]): [];
-
-  const totalFeaturedSlides = Math.ceil(featuredProjects.length/projectsPerSlide);
-  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(projectsPerSlide, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * projectsPerSlide + i) % featuredProjects.length]): [];
-
+  const visibleCurrentProjects = currentProjects.slice(currentProjectSlide * currentProjectsPerSlide, (currentProjectSlide + 1) * currentProjectsPerSlide);
+  const totalFeaturedSlides = Math.ceil(featuredProjects.length/featuredProjectsPerSlide);
+  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(featuredProjectsPerSlide, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * featuredProjectsPerSlide + i) % featuredProjects.length]): [];
   
 
   /*
@@ -108,7 +140,9 @@ function HomePage() {
        setHomeHtml(htmlData[0]?.html);
       });
 
-    SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoPanel`)
+    SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoPanel`
+
+    )
       .then((response) => response.json())
       .then((htmlData) => {
        setSecondaryInfoPanelHTML(htmlData[0]?.html);
@@ -193,22 +227,35 @@ function HomePage() {
             <motion.div
               key={featuredProjectSlide}
               custom={slideDirection}
-              variants={slideAnimations}
+              variants={featuredSlideAnimations}
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.7, ease: "easeInOut", opacity: { duration: 0.9, ease: "easeInOut" } }}
               className="exemplary-projects-carousel"
               style={{ display: "flex", flexDirection: "row", gap: "20px" }}
             >
               {visibleFeaturedProjects.map((featuredProject, index) => {
                 let cardClass;
-                if (projectsPerSlide===1){
+                if (featuredProjectsPerSlide===1){
                   cardClass = "card-exemplary";
                 }else{
                   cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
                 }
-                return <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>;
+                return(
+                <motion.div
+                  key={featuredProject.id}
+                  custom={index}
+                  variants={featuredSlideAnimations}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
+                  style={{ transformStyle: "preserve-3d", perspective: "1000" }}
+                >
+                  <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>
+                </motion.div>
+                )
               })}
             </motion.div>
           </AnimatePresence>
@@ -226,7 +273,7 @@ function HomePage() {
             <div className="gradient-overlay-left"></div>
             <div className="gradient-overlay-right"></div>
           </div>
-          <div className="ui header">{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
+          <div className="ui header" style={{ margin: "0" }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
       </div>
       </div>
 
@@ -262,7 +309,7 @@ function HomePage() {
                 <motion.div
                   key={currentProject.id}
                   custom={slideDirection}
-                  variants={slideAnimations}
+                  variants={currentSlideAnimations}
                   initial="enter"
                   animate="center"
                   exit="exit"
@@ -288,7 +335,7 @@ function HomePage() {
           </button>
         </div>
         </div>
-        <div className="ui header">{currentProjectSlide + 1} of {totalCurrentSlides}</div>
+        <div className="ui header" style={{ marginTop: 15, marginBottom: 20 }}>{currentProjectSlide + 1} of {totalCurrentSlides}</div>
         <div class="row">
           <button id="allProjectsBtn" class="button homepage-button" onClick={handleBrowseAllProjectsClick}>
             Browse All Projects

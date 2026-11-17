@@ -1,6 +1,7 @@
 @import "./../base/variables.css";
 
 /* Header Responsive styles */
+
 @media only screen and (max-width: 768px) {
   #nav-buttons {
     display: none;
@@ -8,6 +9,10 @@
 
   #hamburger-menu {
     display: block;
+  }
+
+  #header.menu-visible {
+    display: none;
   }
 }
 

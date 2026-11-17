@@ -55,6 +55,11 @@
     color: black;
 }
 
+.card-exemplary, .card-exemplary-left, .card-exemplary-right {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
 .card-exemplary-left {
     display: flex;
     flex-direction: column;
