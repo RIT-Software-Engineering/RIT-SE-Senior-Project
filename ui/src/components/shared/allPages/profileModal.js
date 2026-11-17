@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
+import { UserContext } from "../../util/functions/UserContext";
 import { Modal, Button, Checkbox } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
@@ -8,6 +15,7 @@ import "./../../../css/components/shared/profileModal.css";
 
 const EMPTY_CONTACT = { method: "email", label: "", value: "" };
 const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
+  const { setUser } = useContext(UserContext);
   console.log("ProfileModal user:", user);
   const [darkMode, setDarkMode] = useState(false);
   const [contact, setContact] = useState(null);
@@ -23,6 +31,8 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
     "defaultCalendarView",
     false,
   );
+  const [recentActivityPreference, setRecentActivityPreference] =
+    useState(true);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [originalAdditionalInfo, setOriginalAdditionalInfo] = useState("");
   const [preferredContact, setPreferredContact] = useState(EMPTY_CONTACT);
@@ -94,6 +104,16 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
         })
         .catch((err) => console.error("Failed to fetch milestone view:", err));
 
+      SecureFetch(
+        config.url.API_GET_RECENT_ACTIVITY_VIEW + `?system_id=${user.user}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setRecentActivityPreference(data.recent_activity_view !== false);
+        })
+        .catch((err) =>
+          console.error("Failed to fetch recent activity preference:", err),
+        );
       SecureFetch(config.url.API_GET_MY_COACHES)
         .then((res) => res.json())
         .then((data) => setCoaches(Array.isArray(data) ? data : []))
@@ -198,6 +218,43 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
       sessionStorage.setItem("defaultCalendarView", newPreference.toString());
     } catch (err) {
       console.error("Error updating calendar view:", err);
+    }
+  };
+
+  const toggleRecentActivityPreference = async () => {
+    const newPreference = !recentActivityPreference;
+
+    try {
+      const res = await SecureFetch(
+        config.url.API_POST_SET_RECENT_ACTIVITY_VIEW,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            system_id: user.user,
+            recent_activity_view: newPreference,
+          }),
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to update recent activity preference");
+      }
+
+      setRecentActivityPreference(newPreference);
+
+      // Update the dashboard immediately without requiring a refresh.
+      setUser((currentUser) => ({
+        ...currentUser,
+        profile_info: {
+          ...currentUser.profile_info,
+          recent_activity_view: newPreference,
+        },
+      }));
+    } catch (err) {
+      console.error("Error updating recent activity preference:", err);
     }
   };
 
@@ -445,6 +502,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
               {/* Dashboard Defaults Section */}
               <div className="profile-dash">
                 <h3 className="profile-marginbottom1">Dashboard Defaults</h3>
+
                 <div className="profile-preference">
                   <strong className="profile-dark">Milestones View</strong>
                   <Checkbox
@@ -453,6 +511,7 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                     onChange={toggleMilestonePreference}
                   />
                 </div>
+
                 <div className="profile-preference">
                   <strong className="profile-dark">Gantt View</strong>
                   <Checkbox
@@ -461,7 +520,8 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                     onChange={toggleGanttPreference}
                   />
                 </div>
-                <div className="profile-calendar">
+
+                <div className="profile-preference">
                   <strong className="profile-dark">Calendar View</strong>
                   <Checkbox
                     toggle
@@ -469,6 +529,17 @@ const ProfileModal = ({ open, onClose, user, darkModeCallback }) => {
                     onChange={toggleCalendarPreference}
                   />
                 </div>
+
+                {user.role !== USERTYPES.ADMIN && (
+                  <div className="profile-preference">
+                    <strong className="profile-dark">Recent Activity</strong>
+                    <Checkbox
+                      toggle
+                      checked={recentActivityPreference}
+                      onChange={toggleRecentActivityPreference}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

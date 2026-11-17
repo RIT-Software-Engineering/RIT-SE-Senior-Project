@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Button, Checkbox, Divider } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../util/functions/constants";
 import { useSessionStorage } from "../../util/functions/utils";
+import { UserContext } from "../../util/functions/UserContext";
 import ProfileCircle from "../../util/components/ProfileCircle";
 
 export default function ProfileModalContent({
@@ -10,6 +11,7 @@ export default function ProfileModalContent({
   darkModeCallback,
   onClose,
 }) {
+  const { setUser } = useContext(UserContext);
   const [darkMode, setDarkMode] = useState(false);
   const [milestonePreference, setMilestonePreference] = useSessionStorage(
     "defaultMilestoneView",
@@ -23,6 +25,8 @@ export default function ProfileModalContent({
     "defaultCalendarView",
     false,
   );
+  const [recentActivityPreference, setRecentActivityPreference] =
+    useState(true);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [originalAdditionalInfo, setOriginalAdditionalInfo] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -63,6 +67,23 @@ export default function ProfileModalContent({
         })
         .catch((err) => console.error("Failed to fetch calendar view:", err));
 
+      SecureFetch(
+        config.url.API_GET_RECENT_ACTIVITY_VIEW + `?system_id=${user.user}`,
+      )
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Failed to fetch recent activity preference");
+          }
+
+          return res.json();
+        })
+        .then((data) => {
+          setRecentActivityPreference(data.recent_activity_view !== false);
+        })
+        .catch((err) =>
+          console.error("Failed to fetch recent activity preference:", err),
+        );
+
       SecureFetch(config.url.API_GET_MILESTONE_VIEW + `?system_id=${user.user}`)
         .then((res) => res.json())
         .then((data) => {
@@ -75,6 +96,16 @@ export default function ProfileModalContent({
         })
         .catch((err) => console.error("Failed to fetch milestone view:", err));
 
+      SecureFetch(
+        config.url.API_GET_RECENT_ACTIVITY_VIEW + `?system_id=${user.user}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setRecentActivityPreference(data.recent_activity_view !== false);
+        })
+        .catch((err) =>
+          console.error("Failed to fetch recent activity preference:", err),
+        );
       SecureFetch(
         config.url.API_GET_ADDITIONAL_INFO + `?system_id=${user.user}`,
       )
@@ -188,6 +219,42 @@ export default function ProfileModalContent({
       sessionStorage.setItem("defaultCalendarView", newPreference.toString());
     } catch (err) {
       console.error("Error updating calendar view:", err);
+    }
+  };
+
+  const toggleRecentActivityPreference = async () => {
+    const newPreference = !recentActivityPreference;
+
+    try {
+      const res = await SecureFetch(
+        config.url.API_POST_SET_RECENT_ACTIVITY_VIEW,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            system_id: user.user,
+            recent_activity_view: newPreference,
+          }),
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to update recent activity preference");
+      }
+
+      setRecentActivityPreference(newPreference);
+
+      setUser((currentUser) => ({
+        ...currentUser,
+        profile_info: {
+          ...currentUser.profile_info,
+          recent_activity_view: newPreference,
+        },
+      }));
+    } catch (err) {
+      console.error("Error updating recent activity preference:", err);
     }
   };
 
@@ -331,48 +398,75 @@ export default function ProfileModalContent({
             {/* Dashboard Defaults Section */}
             <div style={{ flex: 1 }}>
               <h3 style={{ marginBottom: "1em" }}>Dashboard Defaults</h3>
+
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "space-between",
                   marginBottom: "0.8em",
+                  width: "100%",
                 }}
               >
-                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                  Milestones View
-                </strong>
+                <strong>Milestones View</strong>
                 <Checkbox
                   toggle
                   checked={milestonePreference}
                   onChange={toggleMilestonePreference}
                 />
               </div>
+
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "space-between",
                   marginBottom: "0.8em",
+                  width: "100%",
                 }}
               >
-                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                  Gantt View
-                </strong>
+                <strong>Gantt View</strong>
                 <Checkbox
                   toggle
                   checked={ganttPreference}
                   onChange={toggleGanttPreference}
                 />
               </div>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <strong style={{ minWidth: "200px", marginRight: "1em" }}>
-                  Calendar View
-                </strong>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "0.8em",
+                  width: "100%",
+                }}
+              >
+                <strong>Calendar View</strong>
                 <Checkbox
                   toggle
                   checked={calendarPreference}
                   onChange={toggleCalendarPreference}
                 />
               </div>
+
+              {user.role !== USERTYPES.ADMIN && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <strong>Recent Activity</strong>
+                  <Checkbox
+                    toggle
+                    checked={recentActivityPreference}
+                    onChange={toggleRecentActivityPreference}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
