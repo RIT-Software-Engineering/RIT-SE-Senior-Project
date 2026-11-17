@@ -80,6 +80,28 @@ function parseDate(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function parseActivityTimestamp(value) {
+  if (!value) return null;
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().replace(" ", "T");
+    const hasTimezone = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(normalized);
+    const hasTime = /T\d{2}:\d{2}/.test(normalized);
+
+    const date = new Date(
+      hasTime && !hasTimezone ? `${normalized}Z` : normalized,
+    );
+
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  return parseDate(value);
+}
+
 /**
  * Returns the most recent activity cutoff timestamp.
  *
@@ -87,7 +109,9 @@ function parseDate(value) {
  * dismissal timestamp.
  */
 function getActivityCutoff(user, dismissedAt) {
-  const loginDate = parseDate(user?.prev_login) || parseDate(user?.last_login);
+  const loginDate =
+    parseActivityTimestamp(user?.prev_login) ||
+    parseActivityTimestamp(user?.last_login);
 
   const dismissedDate = parseDate(dismissedAt);
 
@@ -111,15 +135,6 @@ function isOwnActivity(log, user) {
     currentUserIds.includes(String(log.system_id)) ||
     (log.mock_id && currentUserIds.includes(String(log.mock_id)))
   );
-}
-
-function getActorName(log) {
-  if (log.mock_name) {
-    const actualUser = log.name || log.system_id || "Unknown User";
-    return `${log.mock_name} (as ${actualUser})`;
-  }
-
-  return log.name || log.system_id || "Unknown User";
 }
 
 function getSubmissionNote(value) {
@@ -448,26 +463,19 @@ export default function RecentActivity(props) {
                 return null;
               }
 
-              const actor = getActorName(log);
-
               return {
                 id: `submission-${log.action_log_id}`,
                 type: "action_submission",
                 timestamp: log.submission_datetime,
-                text: `submitted "${action.action_title}"`,
-                actorName: getActorName(log),
                 actorType: log.user_type,
                 icon: "check circle outline",
                 action,
                 projectId: log.project || projectId,
                 projectName: getProjectName(log),
                 semesterName: action.semester,
-                profileName: log.mock_name || log.name || log.system_id,
-                mockAs: log.mock_name ? log.name || log.system_id : null,
                 mockedById: log.mock_id || null,
                 mockedByName: log.mock_name || log.mock_id,
                 submissionNote: getSubmissionNote(log.notes),
-                profileUserId: log.mock_id || log.system_id,
                 tooltipUserId: log.system_id,
                 tooltipUserName: log.name || log.system_id,
               };
@@ -510,17 +518,11 @@ export default function RecentActivity(props) {
                 return null;
               }
 
-              const dayText =
-                daysOverdue === 1
-                  ? "is 1 day overdue"
-                  : `is ${daysOverdue} days overdue`;
-
               return {
                 id: `overdue-${action.action_id}-${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
                 type: "action_overdue",
                 timestamp: today,
                 daysOverdue,
-                text: `"${action.action_title}" ${dayText}`,
                 icon: "warning sign",
                 action,
                 projectId,
@@ -638,16 +640,11 @@ export default function RecentActivity(props) {
 
                 if (!groupedLogs.has(studentId)) {
                   groupedLogs.set(studentId, {
-                    actorName: getActorName(log),
                     systemId: log.system_id,
-                    projectId: log.project || projectId,
                     thisWeek: 0,
                     lastWeek: 0,
                     latestSubmission: null,
-                    profileName: log.name || log.system_id,
-                    mockAs: log.mock_name ? log.name || log.system_id : null,
-                    profileUserId: log.system_id,
-                    actorType: log.user_type,
+                    profileName: log.name || log.system_id || "Unknown User",
                   });
                 }
 
@@ -691,9 +688,6 @@ export default function RecentActivity(props) {
                       id: "time-log-summary",
                       type: "time_log_summary",
                       summaries: studentSummaries,
-                      icon: "clock outline",
-                      action: null,
-                      projectId,
                     },
                   ]
                 : [];
@@ -713,8 +707,8 @@ export default function RecentActivity(props) {
         ...overdueActivity,
         ...submissionActivity,
       ].sort((a, b) => {
-        const aDate = parseDate(a.timestamp);
-        const bDate = parseDate(b.timestamp);
+        const aDate = parseActivityTimestamp(a.timestamp);
+        const bDate = parseActivityTimestamp(b.timestamp);
 
         if (!aDate || !bDate) {
           return 0;
@@ -792,7 +786,7 @@ export default function RecentActivity(props) {
         return false;
       }
 
-      const activityDate = parseDate(item.timestamp);
+      const activityDate = parseActivityTimestamp(item.timestamp);
 
       return activityDate && activityDate > cutoff;
     });
@@ -815,7 +809,7 @@ export default function RecentActivity(props) {
     }
 
     const newestActivityDate = visibleActivity
-      .map((item) => parseDate(item.timestamp))
+      .map((item) => parseActivityTimestamp(item.timestamp))
       .filter(Boolean)
       .reduce(
         (latest, date) => (!latest || date > latest ? date : latest),
@@ -857,9 +851,9 @@ export default function RecentActivity(props) {
                     <div className="recent-activity-time-student">
                       <ProfileCircle
                         user={{
-                          system_id: student.profileUserId || student.systemId,
+                          system_id: student.systemId,
                         }}
-                        name={student.profileName || student.actorName}
+                        name={student.profileName}
                         size="tiny"
                         isStudent={true}
                         showFullName
@@ -916,7 +910,7 @@ export default function RecentActivity(props) {
           <Icon name={item.icon} />
 
           <div className="recent-activity-actor-line">
-            {item.type === "action_submission" ? (
+            {item.type === "action_submission" && (
               <>
                 {item.mockedById && (
                   <div style={{ pointerEvents: "none" }}>
@@ -952,20 +946,22 @@ export default function RecentActivity(props) {
                   )}
                 </div>
               </>
-            ) : (
-              item.actorName && (
-                <div style={{ pointerEvents: "none" }}>
-                  <ProfileCircle
-                    name={item.actorName}
-                    size="tiny"
-                    showFullName
-                    allowInfo={false}
-                  />
-                </div>
-              )
             )}
 
-            <span className="recent-activity-action-text">{item.text}</span>
+            <span className="recent-activity-action-text">
+              {item.type === "action_submission" ? (
+                <>
+                  submitted <strong>{item.action?.action_title}</strong>
+                </>
+              ) : (
+                <>
+                  <strong>{item.action?.action_title}</strong>{" "}
+                  {item.daysOverdue === 1
+                    ? "is 1 day overdue"
+                    : `is ${item.daysOverdue} days overdue`}
+                </>
+              )}
+            </span>
           </div>
 
           {item.type === "action_submission" && item.submissionNote && (
@@ -973,31 +969,11 @@ export default function RecentActivity(props) {
           )}
 
           <span className="recent-activity-date">
-            {item.type === "action_overdue"
-              ? formatDate(item.timestamp)
-              : formatDateTime(item.timestamp)}
+            {formatDateTime(item.timestamp)}
           </span>
         </div>
       </Button>
     );
-
-    if (item.type === "time_log_summary" && timeReport) {
-      return (
-        <WeeklyHoursViewer
-          key={item.id}
-          trigger={trigger}
-          projectName={timeReport.projectName}
-          semesterName={timeReport.semesterName}
-          weeks={timeReport.weeks}
-          timeLog={timeReport.timeLogs}
-          students={timeReport.students}
-        />
-      );
-    }
-
-    if (!item.action) {
-      return <div key={item.id}>{trigger}</div>;
-    }
 
     const actionTooltip = (
       <ToolTip
@@ -1158,7 +1134,14 @@ export default function RecentActivity(props) {
               basic
               fluid
               size="small"
-              onClick={() => setShowAll((current) => !current)}
+              onClick={(e) => {
+                setShowAll((current) => !current);
+
+                // Remove persistent focus after a mouse click.
+                if (e.detail > 0) {
+                  e.currentTarget.blur();
+                }
+              }}
             >
               {showAll
                 ? "Show Less"

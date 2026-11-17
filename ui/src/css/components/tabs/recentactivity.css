@@ -22,12 +22,6 @@
   min-width: 650px;
 }
 
-.recent-activity-time-student {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .recent-activity-time-table-trigger .ui.celled.table {
   border-color: #555 !important;
 }
@@ -53,14 +47,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.recent-activity-time-report-link {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 0.5rem;
-  opacity: 0.7;
 }
 
 .recent-activity-item {

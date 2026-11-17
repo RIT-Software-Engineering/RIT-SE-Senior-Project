@@ -21,6 +21,10 @@ export const parseDate = (dateTime) => {
 };
 
 const parseDayjsDate = (dateTime) => {
+  if (dateTime instanceof Date) {
+    return dayjs(dateTime).tz(SERVER_TIMEZONE);
+  }
+
   let newTime = dayjs(dateTime).utcOffset(0, true);
   return dayjs.tz(newTime, SERVER_TIMEZONE);
 };
