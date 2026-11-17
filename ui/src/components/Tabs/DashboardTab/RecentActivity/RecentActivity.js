@@ -675,6 +675,27 @@ export default function RecentActivity(props) {
 
             const studentSummaries = Array.from(groupedLogs.values())
               .filter((student) => student.latestSubmission)
+              .sort((a, b) => {
+                const aIsCurrentUser =
+                  String(a.systemId) === String(user?.user);
+                const bIsCurrentUser =
+                  String(b.systemId) === String(user?.user);
+
+                if (aIsCurrentUser !== bIsCurrentUser) {
+                  return aIsCurrentUser ? -1 : 1;
+                }
+
+                const aName = a.profileName || a.actorName || "";
+                const bName = b.profileName || b.actorName || "";
+
+                const aLastName = aName.trim().split(/\s+/).pop();
+                const bLastName = bName.trim().split(/\s+/).pop();
+
+                return (
+                  aLastName.localeCompare(bLastName) ||
+                  aName.localeCompare(bName)
+                );
+              })
               .map((student) => ({
                 ...student,
                 weeklyAverage:
