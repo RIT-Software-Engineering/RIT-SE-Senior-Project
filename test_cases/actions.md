@@ -72,7 +72,7 @@ Functionality is the same process for submission as an “Individual” action, 
 
 2. The action should turn green as completed, and the submission should be removed from “Relevant Actions”.
    ![Team Action 1](images/teamaction1.png)
-   Additionally, the submission details should be visible to all of the other team members unlike individual actions. Confirm this by clicking on the submission when signed in from a different account.
+   Additionally, the submission details and notes should be visible to all of the other team members unlike individual actions. Confirm this by clicking on the submission when signed in from a different account.
    ![Team Action 2](images/teamaction2.png)
    _Nova Bright_ Viewing the submission of _Aerith Gainsborough_ as a team member.
 

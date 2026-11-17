@@ -295,7 +295,7 @@ export default function ToolTip(props) {
          * However, action.state is based off of server time whereas if we parse action.start_date,
          * we need to deal with parsing with time zones and all of that.
          */}
-        {props.action?.action_target !== "break_period" && (
+        {props.action?.action_target !== "break_period" && !props.noPopup && (
           <Button
             fluid
             className="view-action-button"
@@ -316,7 +316,16 @@ export default function ToolTip(props) {
   if (props.noPopup) {
     return (
       <>
-        <div className={`no-popup-tooltip ${props.color}`}>
+        <div
+          className={`no-popup-tooltip ${props.color}`}
+          onClick={(e) => {
+            if (props.action?.action_target === "break_period") return;
+            if (!e.currentTarget.contains(e.target)) return;
+            if (e.target.closest(".fake-a, .tool-trigger, a, button")) return;
+            setPopupOpen(false);
+            setActionModalOpen(true);
+          }}
+        >
           <h4>{props.action?.action_title}</h4>
           {content()}
         </div>

@@ -10,6 +10,7 @@ export default function SubmissionViewerModal(props) {
 
   return (
     <ModalWrapper
+      className="exemplary-modal"
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}

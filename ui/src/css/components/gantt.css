@@ -228,6 +228,56 @@
   gap: var(--default-gap);
 }
 
+.relevant-actions-container .proposal-row-yellow {
+  --state-color: #fbbd08;
+}
+.relevant-actions-container .proposal-row-red {
+  --state-color: #db2828;
+}
+.relevant-actions-container .proposal-row-gray {
+  --state-color: #767676;
+}
+
+.relevant-actions-container .proposal-row-yellow,
+.relevant-actions-container .proposal-row-red,
+.relevant-actions-container .proposal-row-gray {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 4px solid var(--state-color);
+  border: 1px solid var(--border-gray);
+  border-top: 10px solid var(--state-color);
+  border-left: 4px solid var(--state-color);
+  border-radius: 6px;
+}
+
+.relevant-actions-container .proposal-row-yellow:hover,
+.relevant-actions-container .proposal-row-red:hover,
+.relevant-actions-container .proposal-row-gray:hover {
+  background: var(--bg-secondary) !important;
+  border-top: 8px solid var(--state-color);
+  border-left: 4px solid var(--state-color);
+  border-radius: 5px;
+}
+
+/* .relevant-actions-container .proposal-row-yellow,
+.relevant-actions-container .proposal-row-red,
+.relevant-actions-container .proposal-row-gray {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 4px solid var(--state-color);
+  border: 1px solid var(--border-gray); 
+  border-left: 6px solid var(--state-color);
+  border-radius: 6px;
+}
+
+.relevant-actions-container .proposal-row-yellow:hover,
+.relevant-actions-container .proposal-row-red:hover,
+.relevant-actions-container .proposal-row-gray:hover {
+  background: var(--bg-secondary) !important;
+  border-left: 4px solid var(--state-color);
+  border-radius: 5px;
+} */
+
 .no-popup-tooltip {
   grid-column: span 3 / auto;
   padding: var(--default-padding);
