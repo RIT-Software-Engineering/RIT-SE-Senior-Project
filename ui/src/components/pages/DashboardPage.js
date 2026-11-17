@@ -21,6 +21,7 @@ import ArchiveEditor from "../Tabs/AdminTab/ArchiveEditor/ArchiveEditor";
 import TimeLog from "../Tabs/TimeTrackingTab/TimeLog";
 import AuditLogs from "../Tabs/AuditLogsTab/AuditLogs";
 import RecentActivity from "../Tabs/DashboardTab/RecentActivity/RecentActivity";
+import { isSemesterActive } from "../util/functions/utils";
 import "./../../css/utils/helpers.css";
 
 export default function DashboardPage() {
@@ -272,17 +273,27 @@ export default function DashboardPage() {
             <Tab.Pane>
               {recentActivityEnabled &&
                 user.role === "coach" &&
-                myProjects.map((project) => (
-                  <div key={project.project_id}>
-                    <h2>{project.display_name || project.title}</h2>
+                myProjects
+                  .filter((project) => {
+                    const semester = semesterData.find(
+                      (s) => String(s.semester_id) === String(project.semester),
+                    );
 
-                    <RecentActivity
-                      projectId={project.project_id}
-                      semesterData={semesterData}
-                    />
-                  </div>
-                ))}
-
+                    return (
+                      semester?.start_date &&
+                      semester?.end_date &&
+                      isSemesterActive(semester.start_date, semester.end_date)
+                    );
+                  })
+                  .map((project) => (
+                    <div key={project.project_id}>
+                      <h2>{project.display_name || project.title}</h2>
+                      <RecentActivity
+                        projectId={project.project_id}
+                        semesterData={semesterData}
+                      />
+                    </div>
+                  ))}
               {recentActivityEnabled && user.role === "student" && (
                 <RecentActivity
                   projectId={user.project}

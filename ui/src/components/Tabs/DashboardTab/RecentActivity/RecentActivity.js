@@ -30,7 +30,11 @@ import ProfileCircle from "../../../util/components/ProfileCircle";
 import { UserContext } from "../../../util/functions/UserContext";
 import { SecureFetch } from "../../../util/functions/secureFetch";
 import { config, USERTYPES } from "../../../util/functions/constants";
-import { formatDateTime, formatDate } from "../../../util/functions/utils";
+import {
+  formatDateTime,
+  formatDate,
+  isSemesterActive,
+} from "../../../util/functions/utils";
 import ToolTip from "../TimelinesView/Timeline/ToolTip";
 
 const recentActivityConfig = uiConfig.recentActivity;
@@ -148,6 +152,7 @@ export default function RecentActivity(props) {
   const [dismissedAt, setDismissedAt] = useState(null);
   const [timeReport, setTimeReport] = useState(null);
   const [myProjects, setMyProjects] = useState([]);
+  const [projectsLoaded, setProjectsLoaded] = useState(false);
 
   const projectId = props.projectId || user?.project;
 
@@ -269,18 +274,63 @@ export default function RecentActivity(props) {
   }, [dismissalStorageKey]);
 
   /**
-   * Conditional for coaches with multiple projects
+   * Loads the user's projects to determine which belong
+   * to the currently active semester.
    */
   useEffect(() => {
-    if (user.role !== USERTYPES.COACH) {
-      return;
-    }
+    if (!user?.user) return;
+
+    let cancelled = false;
+
+    setProjectsLoaded(false);
 
     SecureFetch(config.url.API_GET_MY_PROJECTS)
-      .then((response) => response.json())
-      .then((projects) => setMyProjects(projects))
-      .catch((error) => console.error("Failed to get coach projects:", error));
-  }, [user.role]);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load projects");
+        }
+        return response.json();
+      })
+      .then((projects) => {
+        if (!cancelled) {
+          setMyProjects(projects);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to get projects:", error);
+        if (!cancelled) {
+          setMyProjects([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setProjectsLoaded(true);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.user, user?.role]);
+
+  /**
+   * Determines whether the selected project belongs
+   * to the currently active semester.
+   */
+  const currentProject = myProjects.find(
+    (project) => String(project.project_id) === String(projectId),
+  );
+
+  const currentSemester = props.semesterData?.find(
+    (semester) =>
+      String(semester.semester_id) === String(currentProject?.semester),
+  );
+
+  const isCurrentProjectSemester = Boolean(
+    currentSemester?.start_date &&
+      currentSemester?.end_date &&
+      isSemesterActive(currentSemester.start_date, currentSemester.end_date),
+  );
 
   /**
    * Loads action submission logs.
@@ -703,7 +753,9 @@ export default function RecentActivity(props) {
     if (
       !preferenceLoaded ||
       !recentActivityConfig.enabled ||
-      user?.profile_info?.recent_activity_view === false
+      user?.profile_info?.recent_activity_view === false ||
+      !projectsLoaded ||
+      !isCurrentProjectSemester
     ) {
       return;
     }
@@ -713,6 +765,8 @@ export default function RecentActivity(props) {
     loadActivity,
     preferenceLoaded,
     user?.profile_info?.recent_activity_view,
+    projectsLoaded,
+    isCurrentProjectSemester,
   ]);
 
   /**
@@ -1171,7 +1225,9 @@ export default function RecentActivity(props) {
   if (
     !recentActivityConfig.enabled ||
     !preferenceLoaded ||
-    user?.profile_info?.recent_activity_view === false
+    user?.profile_info?.recent_activity_view === false ||
+    !projectsLoaded ||
+    !isCurrentProjectSemester
   ) {
     return null;
   }
