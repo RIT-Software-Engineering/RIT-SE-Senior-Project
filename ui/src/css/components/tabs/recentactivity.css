@@ -81,6 +81,17 @@
   white-space: nowrap;
 }
 
+.recent-activity-mock-as .recent-activity-close-paren {
+  margin-left: -8px;
+}
+
+.recent-activity-mock-as {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 6px;
+}
+
 .since-last-visit .ui.basic.button {
   color: var(--text-primary);
 }

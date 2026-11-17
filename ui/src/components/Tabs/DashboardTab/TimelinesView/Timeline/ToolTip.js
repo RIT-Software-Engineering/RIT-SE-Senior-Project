@@ -302,6 +302,7 @@ export default function ToolTip(props) {
             onClick={(e) => {
               console.log("VIEW ACTION CLICKED");
               e.stopPropagation();
+              props.onActionModalOpen?.();
               setPopupOpen(false);
               setActionModalOpen(true);
             }}
@@ -335,6 +336,9 @@ export default function ToolTip(props) {
                 setActionModalOpen(false);
               }
               setActionModalOpen(isOpen);
+              if (!isOpen) {
+                props.onActionModalClose?.();
+              }
             }}
           />
         )}
@@ -393,6 +397,10 @@ export default function ToolTip(props) {
               setActionModalOpen(false);
             }
             setActionModalOpen(isOpen);
+
+            if (!isOpen) {
+              props.onActionModalClose?.();
+            }
           }}
         />
       )}

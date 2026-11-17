@@ -3150,7 +3150,7 @@ module.exports = (db) => {
             projects.display_name, projects.title,
             (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
             (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-            (SELECT type FROM users WHERE system_id = COALESCE(NULLIF(action_log.mock_id, ''), action_log.system_id)) AS user_type
+            (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
             JOIN actions ON actions.action_id = action_log.action_template
             JOIN projects ON projects.project_id = action_log.project
@@ -3176,7 +3176,7 @@ module.exports = (db) => {
               projects.display_name, projects.title,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-              (SELECT type FROM users WHERE system_id = COALESCE(NULLIF(action_log.mock_id, ''), action_log.system_id)) AS user_type
+              (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
             JOIN actions ON actions.action_id = action_log.action_template
             JOIN projects ON projects.project_id = action_log.project
@@ -3188,12 +3188,12 @@ module.exports = (db) => {
           countParams = [req.user.system_id];
           break;
         case ROLES.ADMIN:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project, action_log.notes,
               actions.action_target, actions.action_title, actions.semester,
               projects.display_name, projects.title,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-              (SELECT type FROM users WHERE system_id = COALESCE(NULLIF(action_log.mock_id, ''), action_log.system_id)) AS user_type
+              (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
                 JOIN actions ON actions.action_id = action_log.action_template
                 JOIN projects ON projects.project_id = action_log.project

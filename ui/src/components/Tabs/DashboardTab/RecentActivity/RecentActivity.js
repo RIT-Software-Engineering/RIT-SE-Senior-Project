@@ -39,22 +39,6 @@ const MAX_VISIBLE_ACTIVITY = uiConfig.recentActivity.activityFeed.maxVisible;
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-function parseDateOnly(value) {
-  if (!value) {
-    return null;
-  }
-
-  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-
-  if (!match) {
-    return null;
-  }
-
-  const [, year, month, day] = match;
-
-  return new Date(Number(year), Number(month) - 1, Number(day));
-}
-
 function getCalendarDayNumber(date) {
   return (
     Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY
@@ -167,6 +151,11 @@ export default function RecentActivity(props) {
 
   const projectId = props.projectId || user?.project;
 
+  const [hoverRow, setHoverRow] = useState(null);
+  const [contactInfo, setContactInfo] = useState({});
+  const requestedContacts = useRef(new Set());
+  const [actionModalVisible, setActionModalVisible] = useState(false);
+
   useEffect(() => {
     if (!user?.user) {
       setPreferenceLoaded(false);
@@ -229,6 +218,32 @@ export default function RecentActivity(props) {
       cancelled = true;
     };
   }, [user?.user]);
+
+  /**
+   * Fetches contact info for mouse-hover.
+   */
+  const loadContactInfo = (systemId) => {
+    if (!systemId || requestedContacts.current.has(systemId)) return;
+
+    requestedContacts.current.add(systemId);
+
+    SecureFetch(
+      `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${encodeURIComponent(systemId)}`,
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load contact info");
+        return res.json();
+      })
+      .then((data) => {
+        setContactInfo((prev) => ({
+          ...prev,
+          [systemId]: data,
+        }));
+      })
+      .catch((err) => {
+        console.error("Failed to load contact info:", err);
+      });
+  };
 
   /**
    * Stores dismissal state separately for each user and project.
@@ -399,8 +414,12 @@ export default function RecentActivity(props) {
                 semesterName: action.semester,
                 profileName: log.mock_name || log.name || log.system_id,
                 mockAs: log.mock_name ? log.name || log.system_id : null,
+                mockedById: log.mock_id || null,
+                mockedByName: log.mock_name || log.mock_id,
                 submissionNote: getSubmissionNote(log.notes),
                 profileUserId: log.mock_id || log.system_id,
+                tooltipUserId: log.system_id,
+                tooltipUserName: log.name || log.system_id,
               };
             })
             .filter(Boolean)
@@ -575,9 +594,9 @@ export default function RecentActivity(props) {
                     thisWeek: 0,
                     lastWeek: 0,
                     latestSubmission: null,
-                    profileName: log.mock_name || log.name || log.system_id,
+                    profileName: log.name || log.system_id,
                     mockAs: log.mock_name ? log.name || log.system_id : null,
-                    profileUserId: log.mock_id || log.system_id,
+                    profileUserId: log.system_id,
                     actorType: log.user_type,
                   });
                 }
@@ -788,11 +807,10 @@ export default function RecentActivity(props) {
                         }}
                         name={student.profileName || student.actorName}
                         size="tiny"
-                        isStudent={student.actorType === USERTYPES.STUDENT}
+                        isStudent={true}
                         showFullName
                         allowInfo
                       />
-                      {student.mockAs && <span>(as {student.mockAs})</span>}
                     </div>
                   </TableCell>
 
@@ -844,51 +862,60 @@ export default function RecentActivity(props) {
           <Icon name={item.icon} />
 
           <div className="recent-activity-actor-line">
-            {item.actorName && (
-              <ProfileCircle
-                user={
-                  item.profileUserId
-                    ? { system_id: item.profileUserId }
-                    : undefined
-                }
-                name={item.profileName || item.actorName}
-                size="tiny"
-                isStudent={item.actorType === USERTYPES.STUDENT}
-                showFullName
-                allowInfo
-              />
+            {item.type === "action_submission" ? (
+              <>
+                {item.mockedById && (
+                  <div style={{ pointerEvents: "none" }}>
+                    <ProfileCircle
+                      user={{ system_id: item.mockedById }}
+                      name={item.mockedByName}
+                      size="tiny"
+                      isStudent={false}
+                      showFullName
+                      allowInfo={false}
+                    />
+                  </div>
+                )}
+
+                <div
+                  className={item.mockedById ? "recent-activity-mock-as" : ""}
+                >
+                  {item.mockedById && <span>(as</span>}
+
+                  <div style={{ pointerEvents: "none" }}>
+                    <ProfileCircle
+                      user={{ system_id: item.tooltipUserId }}
+                      name={item.tooltipUserName}
+                      size="tiny"
+                      isStudent={item.actorType === USERTYPES.STUDENT}
+                      showFullName
+                      allowInfo={false}
+                    />
+                  </div>
+
+                  {item.mockedById && (
+                    <span className="recent-activity-close-paren">)</span>
+                  )}
+                </div>
+              </>
+            ) : (
+              item.actorName && (
+                <div style={{ pointerEvents: "none" }}>
+                  <ProfileCircle
+                    name={item.actorName}
+                    size="tiny"
+                    showFullName
+                    allowInfo={false}
+                  />
+                </div>
+              )
             )}
 
-            {item.mockAs && <span>(as {item.mockAs})</span>}
-            <span>{item.text}</span>
+            <span className="recent-activity-action-text">{item.text}</span>
           </div>
 
-          <span>
-            {item.mockAs && `(as ${item.mockAs}) `}
-            {item.text}
-          </span>
-
           {item.type === "action_submission" && item.submissionNote && (
-            <Popup
-              className="universal-tooltip"
-              on="hover"
-              position="top center"
-              trigger={
-                <span
-                  className="recent-activity-note-indicator"
-                  aria-label="Submission notes"
-                  tabIndex={0}
-                >
-                  <Icon name="sticky note outline" />
-                </span>
-              }
-              content={
-                <div>
-                  <strong>Submission Notes</strong>
-                  <div>{item.submissionNote}</div>
-                </div>
-              }
-            />
+            <Icon name="sticky note outline" aria-label="Has submission note" />
           )}
 
           <span className="recent-activity-date">
@@ -918,7 +945,7 @@ export default function RecentActivity(props) {
       return <div key={item.id}>{trigger}</div>;
     }
 
-    return (
+    const actionTooltip = (
       <ToolTip
         key={item.id}
         trigger={trigger}
@@ -927,7 +954,57 @@ export default function RecentActivity(props) {
         projectName={item.projectName}
         semesterName={item.semesterName}
         reloadTimelineActions={loadActivity}
+        onActionModalOpen={() => {
+          setActionModalVisible(true);
+          setHoverRow(null);
+        }}
+        onActionModalClose={() => {
+          setActionModalVisible(false);
+          setHoverRow(null);
+        }}
       />
+    );
+
+    if (item.type !== "action_submission") {
+      return actionTooltip;
+    }
+
+    return (
+      <div
+        key={item.id}
+        onMouseEnter={(e) => {
+          if (actionModalVisible) return;
+
+          setHoverRow({
+            item,
+            x: e.clientX,
+            y: e.clientY,
+          });
+
+          loadContactInfo(item.tooltipUserId);
+        }}
+        onMouseMove={(e) => {
+          if (actionModalVisible) return;
+
+          const x = e.clientX;
+          const y = e.clientY;
+
+          setHoverRow((prev) => {
+            if (prev?.item.id !== item.id) {
+              return { item, x, y };
+            }
+
+            if (Math.abs(prev.x - x) < 4 && Math.abs(prev.y - y) < 4) {
+              return prev;
+            }
+
+            return { ...prev, x, y };
+          });
+        }}
+        onMouseLeave={() => setHoverRow(null)}
+      >
+        {actionTooltip}
+      </div>
     );
   };
 
@@ -1035,6 +1112,59 @@ export default function RecentActivity(props) {
             </Button>
           )}
         </>
+      )}
+
+      {!actionModalVisible && hoverRow?.item?.type === "action_submission" && (
+        <Popup
+          open
+          className="universal-tooltip"
+          position="bottom left"
+          offset={[0, 8]}
+          style={{ pointerEvents: "none" }}
+          trigger={
+            <span
+              style={{
+                position: "fixed",
+                left: hoverRow.x,
+                top: hoverRow.y,
+                width: 0,
+                height: 0,
+                pointerEvents: "none",
+              }}
+            />
+          }
+          content={
+            <div>
+              {hoverRow.item.tooltipUserName}
+
+              {contactInfo[hoverRow.item.tooltipUserId]?.contact?.value && (
+                <div>
+                  {contactInfo[hoverRow.item.tooltipUserId].contact.label}:{" "}
+                  {contactInfo[hoverRow.item.tooltipUserId].contact.value}
+                </div>
+              )}
+
+              {contactInfo[hoverRow.item.tooltipUserId]?.additional_info && (
+                <div className="profile-hover">
+                  Additional Info:{" "}
+                  {contactInfo[hoverRow.item.tooltipUserId].additional_info}
+                </div>
+              )}
+
+              {hoverRow.item.submissionNote && (
+                <>
+                  <div
+                    style={{
+                      borderTop: "1px solid var(--border-color)",
+                      margin: "6px -16px",
+                    }}
+                  />
+                  <div>Note: {hoverRow.item.submissionNote}</div>
+                </>
+              )}
+            </div>
+          }
+        />
       )}
     </div>
   );
