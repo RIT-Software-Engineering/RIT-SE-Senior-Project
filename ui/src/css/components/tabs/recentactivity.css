@@ -41,6 +41,14 @@
   background: var(--bg-hover);
 }
 
+.recent-activity-actor-line {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0px;
+  min-width: 0;
+}
+
 .recent-activity-time-student {
   display: flex;
   align-items: center;

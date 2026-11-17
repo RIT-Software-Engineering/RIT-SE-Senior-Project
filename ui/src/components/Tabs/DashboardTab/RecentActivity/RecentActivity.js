@@ -578,6 +578,7 @@ export default function RecentActivity(props) {
                     profileName: log.mock_name || log.name || log.system_id,
                     mockAs: log.mock_name ? log.name || log.system_id : null,
                     profileUserId: log.mock_id || log.system_id,
+                    actorType: log.user_type,
                   });
                 }
 
@@ -787,7 +788,7 @@ export default function RecentActivity(props) {
                         }}
                         name={student.profileName || student.actorName}
                         size="tiny"
-                        isStudent={false}
+                        isStudent={student.actorType === USERTYPES.STUDENT}
                         showFullName
                         allowInfo
                       />
@@ -842,22 +843,25 @@ export default function RecentActivity(props) {
         <div className="recent-activity-content">
           <Icon name={item.icon} />
 
-          {item.actorName ? (
-            <ProfileCircle
-              user={
-                item.profileUserId
-                  ? { system_id: item.profileUserId }
-                  : undefined
-              }
-              name={item.profileName || item.actorName}
-              size="tiny"
-              isStudent={false}
-              showFullName
-              allowInfo
-            />
-          ) : (
-            <span />
-          )}
+          <div className="recent-activity-actor-line">
+            {item.actorName && (
+              <ProfileCircle
+                user={
+                  item.profileUserId
+                    ? { system_id: item.profileUserId }
+                    : undefined
+                }
+                name={item.profileName || item.actorName}
+                size="tiny"
+                isStudent={item.actorType === USERTYPES.STUDENT}
+                showFullName
+                allowInfo
+              />
+            )}
+
+            {item.mockAs && <span>(as {item.mockAs})</span>}
+            <span>{item.text}</span>
+          </div>
 
           <span>
             {item.mockAs && `(as ${item.mockAs}) `}
