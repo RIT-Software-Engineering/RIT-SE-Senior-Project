@@ -1,0 +1,107 @@
+.since-last-visit {
+  color: var(--text-primary);
+}
+
+.since-last-visit-header {
+  color: var(--text-primary);
+}
+
+.since-last-visit-cutoff {
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.recent-activity-time-table-trigger {
+  width: 100%;
+  overflow-x: auto;
+  cursor: pointer;
+}
+
+.recent-activity-time-table-trigger .ui.table {
+  margin: 0;
+  min-width: 650px;
+}
+
+.recent-activity-time-table-trigger .ui.celled.table {
+  border-color: #555 !important;
+}
+
+.recent-activity-time-table-trigger .ui.celled.table tr th,
+.recent-activity-time-table-trigger .ui.celled.table tr td {
+  border-color: #555 !important;
+}
+
+.recent-activity-time-table-trigger:hover .ui.table {
+  background: var(--bg-hover);
+}
+
+.recent-activity-actor-line {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0px;
+  min-width: 0;
+}
+
+.recent-activity-time-student {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recent-activity-item {
+  min-height: 40px !important;
+}
+
+.recent-activity-content {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.recent-activity-date {
+  margin-left: auto;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.recent-activity-mock-as .recent-activity-close-paren {
+  margin-left: -8px;
+}
+
+.recent-activity-mock-as {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 6px;
+}
+
+.since-last-visit .ui.basic.button {
+  color: var(--text-primary);
+}
+
+.recent-activity-divider {
+  border-top: 1px solid var(--border-light);
+  margin: 1rem 0;
+}
+
+.dark-mode .since-last-visit .ui.basic.button {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 1px var(--border-light) inset !important;
+}
+
+.dark-mode .since-last-visit .ui.basic.button:hover,
+.dark-mode .since-last-visit .ui.basic.button:focus,
+.dark-mode .since-last-visit .ui.basic.button:active {
+  color: var(--text-primary) !important;
+  background: var(--bg-hover) !important;
+  box-shadow: 0 0 0 1px var(--border-light) inset !important;
+}
+
+.dark-mode .recent-activity-content,
+.dark-mode .recent-activity-date {
+  color: inherit;
+}

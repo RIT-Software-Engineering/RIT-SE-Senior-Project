@@ -9,6 +9,7 @@ import {
   MessageHeader,
   MessageList,
   Modal,
+  TextArea,
 } from "semantic-ui-react";
 import {
   ACTION_TARGETS,
@@ -50,6 +51,7 @@ export default function ActionModal(props) {
     if (props.open) {
       props.isOpenCallback?.(true);
       fetchStudentNames();
+      setNotes("");
       setFormTouched(false);
       setReadyToMark(false);
       setTimeout(() => setReadyToMark(true), 250);
@@ -67,6 +69,7 @@ export default function ActionModal(props) {
   const [unsavedModalOpen, setUnsavedModalOpen] = useState(false);
   const [pendingCloseAction, setPendingCloseAction] = useState(null);
   const isPeerEval = props.action_target === ACTION_TARGETS.peer_evaluation;
+  const [notes, setNotes] = useState("");
 
   const fetchStudentNames = () => {
     if (user.role === USERTYPES.STUDENT) {
@@ -360,15 +363,6 @@ export default function ActionModal(props) {
         }
       }
 
-      if (isPeerEval) {
-        for (let x = 0; x < formDataInputs.length; x++) {
-          const input = formDataInputs[x];
-          if (input.type === "radio" && input.checked) {
-            formData[input.name] = input.value;
-          }
-        }
-      }
-
       const formFiles = filesRef.current?.inputRef?.current?.files || [];
       if (file_types && formFiles.length === 0)
         errors.push("You must upload files");
@@ -376,6 +370,7 @@ export default function ActionModal(props) {
       if (errors.length > 0) {
         setErrors(errors);
         setErrorFields(errorFields);
+        setFormTouched(false);
         return;
       }
 
@@ -388,6 +383,7 @@ export default function ActionModal(props) {
       }
 
       body.append("form_data", JSON.stringify(formData));
+      body.append("notes", notes.trim());
       for (let i = 0; i < formFiles?.length || 0; i++) {
         body.append("attachments", formFiles[i]);
       }
@@ -462,7 +458,11 @@ export default function ActionModal(props) {
   }
 
   function onActionCancel() {
-    if (formTouched && !props.viewOnly) {
+    if (
+      formTouched &&
+      !props.viewOnly &&
+      submissionModalOpen !== MODAL_STATUS.SUCCESS
+    ) {
       openUnsavedModal(() => {
         setErrors([]);
         setFormTouched(false);
@@ -526,7 +526,7 @@ export default function ActionModal(props) {
       closeOnDimmerClick={false}
       closeOnEscape={false}
       closeIcon
-      onClose={() => setUnsavedModalOpen(false)}
+      onClose={onActionCancel}
     >
       <Modal.Header>Unsaved Changes</Modal.Header>
       <Modal.Content>
@@ -556,28 +556,7 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
-            setOpen(true);
-            props.isOpenCallback(true);
-            fetchStudentNames();
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => {
-              if (formTouched && !props.viewOnly) {
-                openUnsavedModal(() => {
-                  setErrors([]);
-                  setFormTouched(false);
-                  setOpen(false);
-                  props.isOpenCallback(false);
-                });
-              } else {
-                setOpen(false);
-                props.isOpenCallback(false);
-                setFormTouched(false);
-              }
-            }, 0);
-          }}
+          onClose={onActionCancel}
           onOpen={() => {
             console.log("ACTION MODAL OPEN");
             setOpen(true);
@@ -680,8 +659,9 @@ export default function ActionModal(props) {
           closeOnEscape={false}
           closeIcon={true}
           className={"sticky"}
-          onClose={() => {
-            console.log("modal open");
+          onClose={onActionCancel}
+          onOpen={() => {
+            console.log("ACTION MODAL OPEN");
             setOpen(true);
             props.isOpenCallback(true);
             fetchStudentNames();
@@ -766,6 +746,23 @@ export default function ActionModal(props) {
               </div>
               <br />
               {fileUpload(props.file_types, props.file_size)}
+              {!isPeerEval && (
+                <div className="ui form notes-field">
+                  <div className="field">
+                    <label>Submission Notes (optional)</label>
+                    <TextArea
+                      rows={3}
+                      maxLength={500}
+                      placeholder="Add a note for this submission"
+                      value={notes}
+                      onChange={(e, data) => {
+                        setNotes(data.value);
+                        markFormAsTouched();
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
               {errors.length > 0 && (
                 <div className="submission-errors">
                   <br />

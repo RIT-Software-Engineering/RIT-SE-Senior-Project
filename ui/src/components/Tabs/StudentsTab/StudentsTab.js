@@ -371,6 +371,7 @@ export default function StudentsTab(props) {
                         noAccordion={true}
                         viewOnly
                         studentsTab={true}
+                        isFullList
                         projectsData={semester.projects}
                         isStudent={userContext.user.role === USERTYPES.STUDENT}
                         isMyTeamTable={
@@ -430,6 +431,14 @@ export default function StudentsTab(props) {
         let peerEvalPanels = [];
         Object.keys(semester.projects).forEach((projectKey) => {
           const project = semester.projects[projectKey];
+
+          if (
+            userContext.user.role === USERTYPES.COACH &&
+            !projectMap.hasOwnProperty(projectKey)
+          ) {
+            return;
+          }
+
           const submissions = coachFeedback[projectKey];
           if (!submissions || projectKey === "noProject") return;
           const hasSubmissions = submissions.length > 0;
@@ -525,7 +534,10 @@ export default function StudentsTab(props) {
       });
 
       if (peerEvalSemesterPanels.length > 0) {
-        semesterPanels.push(peerEvalSemesterPanels, <h3>Peer Evaluations</h3>);
+        semesterPanels.push(
+          [...peerEvalSemesterPanels].reverse(),
+          <h3>Peer Evaluations</h3>,
+        );
       }
     }
 
@@ -606,7 +618,7 @@ export default function StudentsTab(props) {
       userContext.user.role !== USERTYPES.ADMIN &&
       activeProjects.length !== 0
     ) {
-      semesterPanels.push(activeProjects, <h3>My Teams</h3>);
+      semesterPanels.push([...activeProjects].reverse(), <h3>My Teams</h3>);
     }
   }
 

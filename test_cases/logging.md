@@ -47,6 +47,14 @@
 2. Additionally, the Time Log Report should dynamically update and correctly show when time logs were made by students.  
    ![Time Log Report](images/timelogreport.png)
 
+3. Weekly Average Hours should only include completed weeks of the semester. The current incomplete week should not contribute to the displayed average even if time has already been logged during that week.
+
+4. A completed week where no active time has been logged by any student on the project should not be included when calculating Weekly Average Hours. This prevents weeks before a project's work begins from artificially lowering every student's average.
+
+5. To verify the calculation, create or use data across several completed weeks. For example, if a student logged 4 hours, 0 hours, and 2 hours across three completed project-active weeks, their Weekly Average Hours should be `(4 + 0 + 2) / 3 = 2`. If an additional completed week contains 0 hours across the entire project, that week should not change the student's average.
+
+6. Confirm that the Weekly Average Hours value displayed in the Logging tab matches the Weekly Average value displayed in the Dashboard's [Time Log Summary](dashboard.md#time-log-summary).
+
 ### Admin Visibility
 
 1. When signed in as an admin, all time logs across all projects should be visible within the logging tab.  
