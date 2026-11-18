@@ -22,6 +22,7 @@ export default function SubmissionViewerModalContent({
 }) {
   const [submission, setSubmission] = useState({});
   const [files, setFiles] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [noSub, setNoSub] = useState(true);
   const [due, setDue] = useState(null);
   const [late, setLate] = useState(false);
@@ -48,8 +49,18 @@ export default function SubmissionViewerModalContent({
         if (data?.length > 0) {
           const formData = JSON.parse(data[0].form_data.toString());
           const fileData = data[0].files ? data[0].files.split(",") : [];
+          const notesData = data[0].notes ? data[0].notes.split(",") : [];
           setSubmission(formData);
           setFiles(fileData);
+
+          let noteText = "";
+          try {
+            noteText = data[0].notes ? JSON.parse(data[0].notes).note : "";
+          } catch (e) {
+            noteText = ""; //unlikely, but if something gets messed up it wont die
+          }
+          setNotes(noteText || "");
+
           setNoSub(
             Object.keys(formData || {}).length === 0 &&
               (!fileData || fileData.length === 0),
@@ -112,7 +123,7 @@ export default function SubmissionViewerModalContent({
           <b>Due:</b> {formatDate(action.due_date)}
         </p>
         <p>
-          <b>Project:</b> {projectName}
+          <b>Semester/Project:</b> {semesterName} – {projectName}
         </p>
         <p>
           <b>Submission Type:</b> {target}
@@ -137,9 +148,6 @@ export default function SubmissionViewerModalContent({
       )}
 
       <Divider />
-      <p>
-        <b>Semester/Project:</b> {semesterName} – {projectName}
-      </p>
 
       {/* Who submitted */}
       <p style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -177,14 +185,27 @@ export default function SubmissionViewerModalContent({
           on {formatDate(action.submission_datetime)}
         </span>
 
-        {due && <span style={{ marginLeft: 5 }}>(Due {formatDate(due)})</span>}
-
         {late && (
           <span style={{ color: "red", marginLeft: 5, fontWeight: "bold" }}>
             {day} day{day !== 1 && "s"} late
           </span>
         )}
       </p>
+
+      {notes &&
+        !noSubmission &&
+        !noSub &&
+        !IS_PEER_EVAL && ( // Display notes only when submission is viewable
+          <Segment
+            style={{
+              border: "1px solid var(--border-color)",
+              backgroundColor: "var(--bg-primary)",
+              overflowWrap: "break-word",
+            }}
+          >
+            <b>Notes: </b> {notes.length > 0 ? notes : "None"}
+          </Segment>
+        )}
 
       <Divider />
       <h3>Submission</h3>

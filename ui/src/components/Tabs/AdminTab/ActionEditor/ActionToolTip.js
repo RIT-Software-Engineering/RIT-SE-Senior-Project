@@ -72,6 +72,7 @@ function ActionToolTip(props) {
             projectId={props.projectId}
             header={`Currently Viewing "${props.action.action_title}"`}
             key={"viewHtml-" + props.index}
+            previewOnly={true}
           />
         </div>
       </div>
@@ -92,7 +93,7 @@ function ActionToolTip(props) {
       header={props.action?.action_title}
       content={content()}
       closeOnDocumentClick={closeOnDocClick}
-      className="action-pop"
+      className="universal-tooltip"
       trigger={props.trigger}
       on="click"
       offset={[offsetX, 0]}

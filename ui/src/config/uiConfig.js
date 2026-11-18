@@ -8,6 +8,25 @@ const uiConfig = {
     logoLight: "/assets/logo-light.png",
     logoDark: "/assets/logo-dark.png",
   },
+  recentActivity: {
+    enabled: true,
+
+    timeLogSummary: {
+      enabled: true,
+      title: "Time Log Summary",
+      showLogTimeButton: true,
+      includeCurrentUser: true,
+    },
+
+    activityFeed: {
+      enabled: true,
+      title: "Recent Activity",
+      maxVisible: 3,
+      allowDismiss: true,
+      showOverdueActions: true,
+      showActionSubmissions: true,
+    },
+  },
   logoPath:
     "/assets/Golisano_College of_Computing_and_Information_Sciences_LOGO.jpg",
   footers: {
@@ -29,29 +48,30 @@ const uiConfig = {
       name: "Excellence asjdfjdsjfasdfa",
       sqlName: "outstanding",
       color: "#009CBD",
-      textColor: "#000"
+      textColor: "#000",
     },
     Creativity: {
       name: "Creativity",
       sqlName: "creative",
       color: "#F6BE00",
-      textColor: "#000"
-    }
+      textColor: "#000",
+    },
   },
-  terms: { //based on zero-indexing
+  terms: {
+    //based on zero-indexing
     spring: {
       start: 0,
-      end: 4
+      end: 4,
     },
     summer: {
       start: 4,
-      end: 7
+      end: 7,
     },
     fall: {
       start: 7,
-      end: 11
-    }
-  }
+      end: 11,
+    },
+  },
 };
 
 export default uiConfig;

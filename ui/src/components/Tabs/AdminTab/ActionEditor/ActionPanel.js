@@ -304,12 +304,12 @@ export default function ActionPanel(props) {
     ? {
         SUCCESS: "The action has been created.",
         FAIL: "We were unable to create your action.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       }
     : {
         SUCCESS: "The action has been Edited.",
         FAIL: "We were unable to receive your edits.",
-        SUBMISSON_ERROR: "There were invalid inputs. Please try again.",
+        SUBMISSION_ERROR: "There were invalid inputs. Please try again.",
       };
   let semesterMap = {};
 
@@ -470,6 +470,7 @@ export default function ActionPanel(props) {
         "Upload Files (No spaces and ensure . prefix is added - Example: .png,.pdf,.txt, .doc, .docx)",
       placeHolder: "CSV format please - No filetypes = no files uploaded",
       name: file_types,
+      required: false,
     },
     {
       type: "input",
@@ -477,6 +478,7 @@ export default function ActionPanel(props) {
         "File Upload Limit (Default 15 MB) (Number and then either KB, MB, or GB after - Example: 500 KB, 10 MB, 1 GB) (Server limit currently 1GB)",
       placeHolder: "File Upload Limit",
       name: file_size,
+      required: false,
     },
     {
       type: "activeCheckbox",
@@ -562,19 +564,18 @@ export default function ActionPanel(props) {
       data.action_target !== "coach_announcement" &&
       data.action_target !== "break_period"
     ) {
-      if (!data.file_types?.trim()) {
-        errorsFound.push({
-          name: "file_types",
-          message: "Please provide at least one allowed file type.",
-        });
-      }
-
-      if (!data.file_size?.trim()) {
-        errorsFound.push({
-          name: "file_size",
-          message: "Please provide a file upload size limit.",
-        });
-      }
+      //if (!data.file_types?.trim()) {
+      //errorsFound.push({
+      //name: "file_types",
+      //message: "Please provide at least one allowed file type.",
+      //});
+      //}
+      //if (!data.file_size?.trim()) {
+      //errorsFound.push({
+      //name: "file_size",
+      //message: "Please provide a file upload size limit.",
+      //});
+      //}
     }
 
     return errorsFound; // no errors found

@@ -132,6 +132,7 @@ export default function StudentTeamTable(props) {
             callback={props.callback}
             isStudent={props.isStudent}
             isMyTeamTable={props.isMyTeamTable}
+            isFullList={props.isFullList}
           />
         ))}
       </TableBody>

@@ -10,8 +10,9 @@ import {
   MessageHeader,
   MessageList,
   Icon,
+  Progress,
 } from "semantic-ui-react";
-import { SecureFetch } from "../../util/functions/secureFetch";
+import { SecureUpload } from "../../util/functions/secureFetch";
 import PhoneInput from "react-phone-number-input/input";
 import us from "react-phone-number-input/locale/en";
 import ReactCodeMirror from "@uiw/react-codemirror";
@@ -34,17 +35,18 @@ export default function DatabaseTableEditor(props) {
   let submissionModalMessages = props.submissionModalMessages;
   let submitRoute = props.submitRoute;
   let formFieldArray = props.formFieldArray;
-  let date = new Date();
 
   const [submissionModalOpen, setSubmissionModalOpen] = useState(
     MODAL_STATUS.CLOSED,
   );
   const [formData, setFormData] = useState(initialState);
   const [open, setOpen] = React.useState(false);
-  const [errors, setErrors] = useState(props.errors);
+  const [errors, setErrors] = useState(props.errors ?? []);
   const [errorSubmitted, setErrorSubmitted] = useState(false);
   const ignoreNextChangeRef = useRef(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const formRef = useRef(null);
   const [formTouched, setFormTouched] = useState(false);
   const [readyToMark, setReadyToMark] = useState(false);
@@ -56,7 +58,7 @@ export default function DatabaseTableEditor(props) {
     setFormData(initialState);
   }, [initialState]);
   useEffect(() => {
-    setErrors(props.errors);
+    setErrors(props.errors ?? []);
   }, [props.errors]);
 
   const generateModalFields = () => {
@@ -101,6 +103,7 @@ export default function DatabaseTableEditor(props) {
               content: "Cancel",
               positive: false,
               onClick: (event) => {
+                setSubmissionModalOpen(MODAL_STATUS.CLOSED);
                 handleCancel(event);
               },
             },
@@ -130,6 +133,7 @@ export default function DatabaseTableEditor(props) {
         setReadyToMark(false);
         setSubmissionModalOpen(MODAL_STATUS.CLOSED);
         setOpen(false);
+        props.isOpenCallback?.(false);
         if (props.callback) props.callback(true);
         if (props.reload) props.reloadData();
         break;
@@ -154,25 +158,9 @@ export default function DatabaseTableEditor(props) {
     );
   }
 
-  function handleCancel() {
-    if (formTouched && !props.viewOnly) {
-      setPendingCloseAction(() => () => {
-        setErrors([]);
-        setFormData(initialState);
-        formRef.current = null;
-        setFormTouched(false);
-        setOpen(false);
-        props.isOpenCallback?.(false);
-      });
-      setUnsavedModalOpen(true);
-      return;
-    }
-    setErrors([]);
-    setFormData(initialState);
-    formRef.current = null;
-    setFormTouched(false);
-    setOpen(false);
-    props.isOpenCallback?.(false);
+  function handleCancel(event) {
+    event?.preventDefault?.();
+    requestClose();
   }
 
   const markFormAsTouched = () => {
@@ -244,7 +232,8 @@ export default function DatabaseTableEditor(props) {
   }
 
   const handleSubmit = async function (e) {
-    e.preventDefault();
+    e?.preventDefault?.();
+    if (isUploading) return;
 
     let cleanedFormData = { ...formData };
     if (cleanedFormData.file_types) {
@@ -254,50 +243,60 @@ export default function DatabaseTableEditor(props) {
       );
     }
 
-    const dataToSubmit = !!props.preSubmit
+    const preparedData = props.preSubmit
       ? props.preSubmit(cleanedFormData)
       : cleanedFormData;
 
-    if (dataToSubmit === null) {
+    if (preparedData === null) {
       formRef.current = cleanedFormData;
       setErrorSubmitted(true);
       setSubmissionModalOpen(MODAL_STATUS.SUBMISSION_ERROR);
       return;
     }
 
+    // Copy data so serializing changed_fields doesn't mutate component state.
+    const dataToSubmit = { ...preparedData };
     setErrorSubmitted(false);
-    let body = new FormData();
-    if ("changed_fields" in dataToSubmit) {
-      if (typeof dataToSubmit["changed_fields"] === "object") {
-        dataToSubmit["changed_fields"] = JSON.stringify(
-          dataToSubmit["changed_fields"],
-        );
-      }
+    const body = new FormData();
+    if (
+      "changed_fields" in dataToSubmit &&
+      typeof dataToSubmit.changed_fields === "object"
+    ) {
+      dataToSubmit.changed_fields = JSON.stringify(dataToSubmit.changed_fields);
     }
     Object.keys(dataToSubmit).forEach((key) => {
-      if (key === "dataOnSubmit")
-        dataToSubmit[key] = dataToSubmit[key] + date.toLocaleDateString();
-      body.append(key, dataToSubmit[key]);
+      const value =
+        key === "dataOnSubmit"
+          ? dataToSubmit[key] + new Date().toLocaleDateString()
+          : dataToSubmit[key];
+      body.append(key, value);
     });
 
-    SecureFetch(submitRoute, { method: "post", body: body })
-      .then((response) => {
-        if (response.status === 200) {
-          ignoreNextChangeRef.current = true;
-          setFormTouched(false);
-          setReadyToMark(false);
-          setJustSaved(true);
-          setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
-          formRef.current = null;
-        } else {
-          setSubmissionModalOpen(MODAL_STATUS.FAIL);
-          formRef.current = null;
-        }
-      })
-      .catch((error) => {
-        console.error(error);
+    setIsUploading(true);
+    setUploadProgress(0);
+    try {
+      const response = await SecureUpload(
+        submitRoute,
+        { method: "post", body },
+        (progress) => setUploadProgress(progress),
+      );
+      if (response.status === 200) {
+        ignoreNextChangeRef.current = true;
+        setFormTouched(false);
+        setReadyToMark(false);
+        setJustSaved(true);
+        setSubmissionModalOpen(MODAL_STATUS.SUCCESS);
+        formRef.current = null;
+      } else {
         setSubmissionModalOpen(MODAL_STATUS.FAIL);
-      });
+        formRef.current = null;
+      }
+    } catch (error) {
+      console.error(error);
+      setSubmissionModalOpen(MODAL_STATUS.FAIL);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   let fieldComponents = [];
@@ -738,6 +737,34 @@ export default function DatabaseTableEditor(props) {
     }, 300);
   };
 
+  const resetFormAndClose = () => {
+    setErrors([]);
+    setErrorSubmitted(false);
+    setFormData(initialState);
+    formRef.current = null;
+    setFormTouched(false);
+    setReadyToMark(false);
+    setOpen(false);
+    props.isOpenCallback?.(false);
+  };
+
+  const requestClose = () => {
+    // Prevent a stacked preview or status modal from dismissing the editor.
+    if (suppressParentCloseRef.current || isUploading) return;
+    if (justSaved) {
+      setJustSaved(false);
+      resetFormAndClose();
+      return;
+    }
+    if (formTouched && !props.viewOnly) {
+      // Do not close the editor until the user confirms discarding changes.
+      setPendingCloseAction(() => resetFormAndClose);
+      setUnsavedModalOpen(true);
+      return;
+    }
+    resetFormAndClose();
+  };
+
   const unsavedChangesModal = (
     <Modal
       open={unsavedModalOpen}
@@ -766,250 +793,141 @@ export default function DatabaseTableEditor(props) {
     </Modal>
   );
 
-  if (props.isOpenCallback) {
-    return (
-      <>
+  return (
+    <>
+      <Modal
+        closeOnDimmerClick={false}
+        closeOnEscape={false}
+        className="sticky"
+        closeIcon
+        trigger={trigger}
+        open={open}
+        onClose={requestClose}
+        onOpen={() => {
+          ignoreNextChangeRef.current = false;
+          setUploadProgress(0);
+          setIsUploading(false);
+          setOpen(true);
+          props.isOpenCallback?.(true);
+          setFormTouched(false);
+          setReadyToMark(false);
+          setTimeout(() => setReadyToMark(true), 250);
+          setJustSaved(false);
+        }}
+      >
+        <Modal.Header>{props.header}</Modal.Header>
+        <Modal.Content>
+          {errors?.length > 0 && (
+            <div className="submission-errors">
+              <Message error>
+                <MessageHeader>
+                  <Icon name="warning circle" /> Errors:
+                </MessageHeader>
+                <MessageList>
+                  {errors.map((err) => (
+                    <li key={err.name}>{err.message}</li>
+                  ))}
+                </MessageList>
+              </Message>
+              <br />
+            </div>
+          )}
+
+          <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
+          {isUploading && (
+            <Progress
+              className="upload-progress"
+              percent={uploadProgress}
+              progress
+              indicating={uploadProgress < 100}
+              success={uploadProgress === 100}
+            >
+              {uploadProgress < 100
+                ? `Uploading... ${uploadProgress}%`
+                : "Upload complete. Processing submission..."}
+            </Progress>
+          )}
+          {props.childComponents}
+          {props.body}
+        </Modal.Content>
+        <Modal.Actions>
+          {modalActions().map(({ key, onClick, ...buttonProps }) => (
+            <Button
+              key={key}
+              {...buttonProps}
+              disabled={isUploading || buttonProps.disabled}
+              onClick={(event) => {
+                event.stopPropagation();
+                if (onClick) onClick(event);
+                else requestClose();
+              }}
+            />
+          ))}
+        </Modal.Actions>
+      </Modal>
+
+      <Modal
+        className="stacked"
+        closeOnDimmerClick={false}
+        size="tiny"
+        open={!!submissionModalOpen}
+        {...generateModalFields()}
+        onClose={() => {
+          suppressParentCloseRef.current = true;
+          closeSubmissionModal();
+          setTimeout(() => {
+            suppressParentCloseRef.current = false;
+          }, 100);
+        }}
+        dimmer={false}
+        mountNode={document.body}
+      />
+
+      {props.preview?.enabled && (
         <Modal
+          className="stacked"
+          open={showPreview}
+          size="large"
+          onClose={closePreview}
+          closeOnEscape
           closeOnDimmerClick={false}
-          closeOnEscape={false}
-          className={"sticky"}
-          closeIcon={true}
-          trigger={trigger}
-          onClose={() => {
-            if (justSaved) {
-              setFormTouched(false);
-              setJustSaved(false);
-              setOpen(false);
-              props.isOpenCallback(false);
-              return;
-            }
-            if (formTouched && !props.viewOnly) {
-              setOpen(false);
-              setPendingCloseAction(() => () => {
-                setErrors([]);
-                setFormData(initialState);
-                formRef.current = null;
-                setFormTouched(false);
-                setOpen(false);
-                props.isOpenCallback(false);
-              });
-              setUnsavedModalOpen(true);
-              return;
-            }
-            setOpen(false);
-            props.isOpenCallback(false);
-          }}
-          onOpen={() => {
-            setOpen(true);
-            props.isOpenCallback(true);
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => setReadyToMark(true), 250);
-            setJustSaved(false);
-          }}
-          open={open}
-          header={props.header}
-          content={{
-            content: (
-              <>
-                {errors?.length > 0 && (
-                  <div className="submission-errors">
-                    <Message error>
-                      <MessageHeader>
-                        <Icon name="warning circle" /> Errors:
-                      </MessageHeader>
-                      <MessageList>
-                        {errors.map((err) => (
-                          <li key={err.name}>{err.message}</li>
-                        ))}
-                      </MessageList>
-                    </Message>
-                    <br />
-                  </div>
-                )}
-                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
-                {props.childComponents}
-                {props.body}
-              </>
-            ),
-          }}
-          actions={modalActions()}
-        />
-        <Modal
-          className={"stacked"}
-          closeOnDimmerClick={false}
-          size="tiny"
-          open={!!submissionModalOpen}
-          {...generateModalFields()}
-          onClose={() => {
-            suppressParentCloseRef.current = true;
-            closeSubmissionModal();
-            setTimeout(() => {
-              suppressParentCloseRef.current = false;
-            }, 100);
-          }}
-          dimmer="false"
+          dimmer={false}
           mountNode={document.body}
-        />
-        {props.preview?.enabled && (
-          <Modal
-            className="stacked"
-            open={showPreview}
-            size="large"
-            onClose={closePreview}
-            closeOnEscape
-            closeOnDimmerClick={false}
-            dimmer={false}
-            mountNode={document.body}
-            header={props.preview.title ?? "Preview"}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "20%",
-              transform: "translate(-50%,-50%)",
-              margin: 0,
-              zIndex: 2000,
-            }}
-            content={{
-              content: (
-                <div
-                  style={{
-                    padding: "1rem",
-                    maxHeight: "70vh",
-                    overflowY: "auto",
-                  }}
-                >
-                  {props.preview.render?.(formData)}
-                </div>
-              ),
-            }}
-            actions={[
-              {
-                key: "close",
-                content: "Close",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  closePreview(e);
-                },
-              },
-            ]}
-          />
-        )}
-        {unsavedChangesModal}
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Modal
-          closeOnDimmerClick={false}
-          closeOnEscape={false}
-          className={"sticky"}
-          closeIcon={true}
-          trigger={trigger}
-          onClose={() => {
-            if (justSaved) {
-              setFormTouched(false);
-              setJustSaved(false);
-              setOpen(false);
-              return;
-            }
-            if (formTouched && !props.viewOnly) {
-              setOpen(false);
-              setPendingCloseAction(() => () => {
-                setErrors([]);
-                setFormData(initialState);
-                formRef.current = null;
-                setFormTouched(false);
-                setOpen(false);
-              });
-              setUnsavedModalOpen(true);
-              return;
-            }
-            setOpen(false);
+          header={props.preview.title ?? "Preview"}
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "20%",
+            transform: "translate(-50%,-50%)",
+            margin: 0,
+            zIndex: 2000,
           }}
-          onOpen={() => {
-            setOpen(true);
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => setReadyToMark(true), 250);
-            setJustSaved(false);
-          }}
-          open={open}
-          header={props.header}
           content={{
             content: (
-              <>
-                {errors?.length > 0 && (
-                  <div className="submission-errors">
-                    <Message error>
-                      <MessageHeader>
-                        <Icon name="warning circle" /> Errors:
-                      </MessageHeader>
-                      <MessageList>
-                        {errors.map((err) => (
-                          <li key={err.name}>{err.message}</li>
-                        ))}
-                      </MessageList>
-                    </Message>
-                    <br />
-                  </div>
-                )}
-                <Form onChange={markFormAsTouched}>{fieldComponents}</Form>
-                {props.childComponents}
-                {props.body}
-              </>
+              <div
+                style={{
+                  padding: "1rem",
+                  maxHeight: "70vh",
+                  overflowY: "auto",
+                }}
+              >
+                {props.preview.render?.(formData)}
+              </div>
             ),
           }}
-          actions={modalActions()}
-        />
-        {props.preview?.enabled && (
-          <Modal
-            open={showPreview}
-            size="large"
-            onClose={closePreview}
-            closeOnEscape
-            closeOnDimmerClick={false}
-            header={props.preview.title ?? "Preview"}
-            content={{
-              content: (
-                <div
-                  style={{
-                    padding: "1rem",
-                    maxHeight: "70vh",
-                    overflowY: "auto",
-                  }}
-                >
-                  {props.preview.render?.(formData)}
-                </div>
-              ),
-            }}
-            actions={[
-              {
-                key: "close",
-                content: "Close",
-                onClick: (e) => {
-                  e.stopPropagation();
-                  closePreview(e);
-                },
+          actions={[
+            {
+              key: "close",
+              content: "Close",
+              onClick: (e) => {
+                e.stopPropagation();
+                closePreview(e);
               },
-            ]}
-          />
-        )}
-        <Modal
-          className={"stacked"}
-          closeOnDimmerClick={false}
-          closeIcon={true}
-          size="tiny"
-          open={!!submissionModalOpen}
-          {...generateModalFields()}
-          onClose={() => {
-            closeSubmissionModal();
-            setFormTouched(false);
-          }}
+            },
+          ]}
         />
-        {unsavedChangesModal}
-      </>
-    );
-  }
+      )}
+      {unsavedChangesModal}
+    </>
+  );
 }

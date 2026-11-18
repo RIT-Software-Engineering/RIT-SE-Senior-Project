@@ -6,15 +6,14 @@ import ErrorPage from "../pages/ErrorPage";
 import { SecureFetch } from "../util/functions/secureFetch";
 import { decode } from "html-entities";
 import ProfileCircle from "../util/components/ProfileCircle";
-import { getFormattedDate } from "../util/functions/utils"
-import uiConfig from "../../config/uiConfig.js";
+import { getFormattedDate } from "../util/functions/utils";
+import uiConfig from "../../config/uiConfig";
 import "./../../css/components/pages/UniqueProjectPage.css";
 
 const basePosterURL = `${config.url.API_GET_ARCHIVE_POSTER}?fileName=`;
 const baseVideoURL = `${config.url.API_GET_ARCHIVE_VIDEO}?fileName=`;
 const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
-const baseArchiveURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
@@ -41,7 +40,6 @@ let generateProfiles = (stringUsers, isStudent = true) => {
     </p>
   );
 };
-
 
 function UniqueProjectPage({ projectData }) {
   const [project, setProject] = useState(projectData);
@@ -81,7 +79,7 @@ function UniqueProjectPage({ projectData }) {
   }, [url_slug, project]);
 
   useEffect(() => {
-    if (projectData !== undefined){
+    if (projectData !== undefined) {
       setProject(projectData);
     }
   }, [projectData]);
@@ -95,21 +93,40 @@ function UniqueProjectPage({ projectData }) {
     return decode(synopsis).replace(/\r\n|\r/g, "\n");
   };
 
-  const mediaItems = [
-      (project?.poster_thumb
-        ? { type: "image", src: `${basePosterURL}${project.poster_thumb}` }
-        : { type: "image", src: uiConfig.logoPath }),
-      ...(project?.archive_image && project.archive_image !== "null"
-        ? [{ type: "image", src: `${baseArchiveURL}${project.archive_image}` }]
-        : []),
-      ...(project?.video && project.video !== "null"
-        ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
-        : []
-      )
-    ]
+  const hasPoster = Boolean(
+    project?.poster_thumb && project.poster_thumb !== "null",
+  );
+  const hasArchiveImage = Boolean(
+    project?.archive_image && project.archive_image !== "null",
+  );
 
-  const awards = Object.values(uiConfig.awards).filter(
-    (award) => project?.[award.sqlName] === 1);
+  const mediaItems = [
+    {
+      type: "image",
+      src: hasPoster
+        ? `${basePosterURL}${project.poster_thumb}`
+        : hasArchiveImage
+          ? `${baseImageURL}${project.archive_image}`
+          : uiConfig.logoPath,
+      kind: hasPoster ? "poster" : hasArchiveImage ? "archive" : "placeholder",
+    },
+    ...(hasPoster && hasArchiveImage
+      ? [
+          {
+            type: "image",
+            src: `${baseImageURL}${project.archive_image}`,
+            kind: "archive",
+          },
+        ]
+      : []),
+    ...(project?.video && project.video !== "null"
+      ? [{ type: "video", src: `${baseVideoURL}${project.video}` }]
+      : []),
+  ];
+
+  const awards = Object.values(uiConfig.awards || {}).filter(
+    (award) => project?.[award.sqlName] === 1,
+  );
 
   return (
     <div>
@@ -117,59 +134,89 @@ function UniqueProjectPage({ projectData }) {
         <ErrorPage />
       ) : (
         <div ref={nodeRef}>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-          <h1 className="ui header">
-            {project.display_name || project.title}{" "}
-          </h1>
-
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
-            {awards.map((award) => (
-              <div className="short-award-ribbon" style={{ backgroundColor: award.color, marginBottom: "10px"}}>
-                <div className="ui header">{award.name}</div>
-              </div>
-            ))}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <h1 className="ui header">
+              {project.display_name || project.title}{" "}
+            </h1>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {awards.map((award) => (
+                <div
+                  key={award.sqlName}
+                  className="short-award-ribbon"
+                  style={{ backgroundColor: award.color, marginBottom: "10px" }}
+                >
+                  <div className="ui header">{award.name}</div>
+                </div>
+              ))}
             </div>
-          
           </div>
           <div className="ui invisible divider"></div>
           <div className="ui relaxed centered grid">
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div>
-              {
-                mediaItems[carouselIndex]?.type === "image" ? (
-                  <img
-                    src= {mediaItems[carouselIndex].src}
-                    className="unique-project-img"
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {mediaItems[carouselIndex]?.type === "image" ? (
+                <img
+                  src={mediaItems[carouselIndex].src}
+                  className="unique-project-img unique-project-zoom"
+                  style={{ cursor: "zoom-in" }}
+                  onClick={() => {
+                    if (mediaItems[carouselIndex].kind === "archive") {
+                      setImageOpen(true);
+                    } else {
+                      setPosterOpen(true);
+                    }
+                  }}
+                  alt={`${project.display_name || project.title} Senior Project Image`}
+                />
+              ) : (
+                <video
+                  key={mediaItems[carouselIndex]?.src}
+                  controls
+                  width="300px"
+                >
+                  <source
+                    src={mediaItems[carouselIndex]?.src}
+                    type="video/mp4"
                   />
-                ) : (
-                  <video
-                    key={mediaItems[carouselIndex]?.src}
-                    controls
-                    width="300px"
-                  >
-                    <source
-                      src={mediaItems[carouselIndex]?.src}
-                      type="video/mp4"
-                    />
-                  </video>
-                )
-              }
-            </div>
-
-            {mediaItems.length > 1 && (
-              <Pagination
-                className="project-pagination"
-                activePage={carouselIndex + 1}
-                totalPages={mediaItems.length}
-                onPageChange={(e, { activePage }) => {
-                  setCarouselIndex(activePage - 1);
-                }}
-                prevItem={{ content: <Icon name="arrow alternate circle left"/>, className: "pagination-arrow"}}
-                nextItem={{ content: <Icon name="arrow alternate circle right"/>, className: "pagination-arrow"}}
-                firstItem={null}
-                lastItem={null}
-              />
-            )}
+                </video>
+              )}
+              {mediaItems.length > 1 && (
+                <Pagination
+                  className="project-pagination"
+                  activePage={carouselIndex + 1}
+                  totalPages={mediaItems.length}
+                  onPageChange={(e, { activePage }) => {
+                    setCarouselIndex(activePage - 1);
+                  }}
+                  prevItem={{
+                    content: <Icon name="arrow alternate circle left" />,
+                    className: "pagination-arrow",
+                  }}
+                  nextItem={{
+                    content: <Icon name="arrow alternate circle right" />,
+                    className: "pagination-arrow",
+                  }}
+                  firstItem={null}
+                  lastItem={null}
+                />
+              )}
             </div>
             <Modal
               closeOnDimmerClick={false}
@@ -184,13 +231,25 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_thumb}`}
+                    src={
+                      project?.poster_thumb
+                        ? `${basePosterURL}${project?.poster_thumb}`
+                        : project?.archive_image
+                          ? `${baseImageURL}${project?.archive_image}`
+                          : uiConfig.logoPath
+                    }
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_full}`}
+                    src={
+                      project?.poster_full
+                        ? `${basePosterURL}${project?.poster_full}`
+                        : project?.archive_image
+                          ? `${baseImageURL}${project?.archive_image}`
+                          : uiConfig.logoPath
+                    }
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
@@ -225,7 +284,8 @@ function UniqueProjectPage({ projectData }) {
               <div className="column">
                 <div className="ui small header">Dates</div>
                 <p>
-                  {getFormattedDate(project.start_date)} - {getFormattedDate(project.end_date)}
+                  {getFormattedDate(project.start_date)} -{" "}
+                  {getFormattedDate(project.end_date)}
                 </p>
                 {project?.team_name &&
                   project?.team_name !== "null" &&
@@ -235,8 +295,6 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
-                <div className="ui small header">Students</div>
-                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -248,23 +306,31 @@ function UniqueProjectPage({ projectData }) {
           </div>
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
-            <div className="column">
+            <div>
+              <div className="ui small header">Students</div>
+              {generateProfiles(project?.members, true)}
+              <div className="ui invisible divider"></div>
+              {
+                // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                  <>
+                    <div className="ui small header">Link</div>
+                    <div>
+                      <Link to={`/projects/${project.url_slug}`}>
+                        {`${baseProjectURL}${project.url_slug}`}
+                      </Link>
+                    </div>
+                  </>
+                )
+              }
               <div className="ui small header">Synopsis</div>
               <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
               </p>
               <div className="ui small header">Keywords</div>
-              <div className="info-row">{project?.keywords}</div>
-              <div className="ui invisible divider"></div>
-              {
-              // display project page link if slug has been defined
-                project.url_slug !== null && project?.url_slug !== "" && (
-                <div>
-                <Link to={`/projects/${project.url_slug}`}>
-                  {`${baseProjectURL}${project.url_slug}`}
-                </Link>
-              </div>
-              )}
+              <p className="unique-project-whitespace info-row">
+                {project?.keywords}
+              </p>
             </div>
           </div>
         </div>
