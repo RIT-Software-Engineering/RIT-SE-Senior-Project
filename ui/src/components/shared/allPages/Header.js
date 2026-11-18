@@ -108,7 +108,7 @@ function Header() {
               closeOnDimmerClick={false}
               className={"sticky"}
               trigger={
-                <Button className={buttonClassName}>
+                <Button className={buttonClassName} style={{height: "43px"}}>
                   <Icon name="sign-in" />
                   {devSignInBtnText}
                 </Button>
