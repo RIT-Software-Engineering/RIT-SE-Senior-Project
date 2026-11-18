@@ -456,7 +456,6 @@ export default function ActionLogs(props) {
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>
                     <span className="mobile-only-label">Type: </span>
-                    {action.action_target}
                     {formatActionTarget(action.action_target)}
                   </TableCell>
                   <TableCell>

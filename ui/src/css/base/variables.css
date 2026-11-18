@@ -8,12 +8,12 @@
   --bg-button-hover: #f0f0f0;
   --bg-footer: black;
   --bg-unfinished-action: #fff6f6;
-  --bg-inprogress-action: #fffaf3;
+  --bg-inprogress-action: #fff6d4;
   --bg-finished-action: #fcfff5;
 
   --border-color: black;
   --border-gray: #666666;
-  --border-light: #f0f0f0;
+  --border-gray-light: #f0f0f0;
 
   --default-br: 0.5em;
   --default-padding: 0.5em;
@@ -50,7 +50,7 @@
   --bg-button-hover: #3a3a3a;
   --bg-footer-header: #333333;
   --bg-unfinished-action: #4d1c1c;
-  --bg-inprogress-action: #665c40;
+  --bg-inprogress-action: #a18c52;
   --bg-finished-action: #2c3e2c;
 
   --menu-item: #444;

@@ -16,6 +16,7 @@ import { formatDateTime } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
 import { PROMPT_GENERATE_HISTORIC_SUMMARY } from "../../util/functions/constants";
 import ProfileCircle from "../../util/components/ProfileCircle";
+import ProfileModal from "../../shared/allPages/profileModal";
 import "./../../../css/components/tabs/student.css";
 
 dayjs.extend(utc);
@@ -43,6 +44,7 @@ export default function StudentRow(props) {
 
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
+  const isSelf = props.student.system_id === currentUserID;
 
   const handleAccordionClick = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -189,7 +191,7 @@ export default function StudentRow(props) {
   }, [props.student.system_id]);
 
   useEffect(() => {
-    if (openModal) {
+    if (openModal && !isSelf) {
       if (!props.isStudent) {
         SecureFetch(`${config.url.API_CHECK_GEMINI_KEY_EXISTS}`)
           .then((res) => res.json())
@@ -321,7 +323,7 @@ export default function StudentRow(props) {
               user={props.student}
               size="tiny"
               showFullName
-              textUnderlined={canOpen}
+              textUnderlined={canHover}
               clickable={canOpen}
               allowInfo={canHover}
             />
@@ -344,324 +346,339 @@ export default function StudentRow(props) {
           )}
         </TableRow>
 
-        <Modal
-          open={openModal}
-          closeOnDimmerClick={false}
-          closeIcon={true}
-          onClose={() => setOpenModal(false)}
-          size="small"
-          className="student-modal"
-        >
-          <Modal.Header>Student Details</Modal.Header>
-          <Modal.Content>
-            <p className="student-detail">
-              <strong>Name:</strong>
-              <ProfileCircle
-                name={`${props.student.fname} ${props.student.lname}`}
-                size="tiny"
-                className="student-name"
-              />
-              <span>
-                {props.student.fname} {props.student.lname}
-              </span>
-            </p>
-            <p>
-              <strong>Email:</strong> {props.student.email}
-            </p>
-            <p>
-              <strong>Last Login:</strong>{" "}
-              {props.student.last_login
-                ? dayjs(props.student.last_login)
-                    .utc(true)
-                    .local()
-                    .format("MM/DD/YYYY HH:mm:ss")
-                : "Never Logged in"}
-            </p>
-            <p>
-              <strong>Additional Info:</strong>
-              {props.isStudent && props.student.system_id === currentUserID ? (
-                <>
-                  {isEditing ? (
-                    <>
-                      <textarea
-                        value={additionalInfo}
-                        onChange={(e) => setAdditionalInfo(e.target.value)}
-                        rows={4}
-                        className="student-text"
-                      />
-                      <Button
-                        onClick={handleSaveAdditionalInfo}
-                        primary
-                        size="small"
-                        className="student-button-save"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setIsEditing(false);
-                          fetchAdditionalInfo();
-                        }}
-                        size="small"
-                        className="student-button-cancel"
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <span className="student-addtion">
-                        {additionalInfo || "No additional info available"}
-                      </span>
-                      <Button
-                        onClick={() => setIsEditing(true)}
-                        size="small"
-                        className="student-button-edit"
-                      >
-                        Edit
-                      </Button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <span className="student-button-edit">
-                  {additionalInfo || "No additional info available"}
+        {isSelf ? (
+          <ProfileModal
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            user={{ ...props.student, ...user }}
+            darkModeCallback={props.darkModeCallback}
+          />
+        ) : (
+          <Modal
+            open={openModal}
+            closeOnDimmerClick={false}
+            closeIcon={true}
+            onClose={() => setOpenModal(false)}
+            size="small"
+            className="student-modal"
+          >
+            <Modal.Header>Student Details</Modal.Header>
+            <Modal.Content>
+              <p className="student-detail">
+                <strong>Name:</strong>
+                <ProfileCircle
+                  name={`${props.student.fname} ${props.student.lname}`}
+                  size="tiny"
+                  className="student-name"
+                />
+                <span>
+                  {props.student.fname} {props.student.lname}
                 </span>
-              )}
-            </p>
-
-            <p>
-              <strong>Preferred Contact:</strong> {contactText()}
-            </p>
-
-            {!props.isStudent && (
-              <>
-                <Accordion styled fluid>
-                  {peerReviews.length > 0 ? (
-                    peerReviews.map((review, index) => {
-                      let studentReview = {};
-                      try {
-                        const form = JSON.parse(review.form_data);
-                        const studentName = `${props.student.fname} ${props.student.lname}`;
-
-                        // Check if this is coach feedback or peer feedback
-                        if (review.type === "coach" && form.CoachFeedback) {
-                          // Handle coach feedback structure
-                          studentReview = form.CoachFeedback[studentName] || {};
-                        } else {
-                          // Handle regular peer feedback structure
-                          studentReview = form.Students
-                            ? form.Students[studentName] || {}
-                            : {};
-                        }
-                      } catch (e) {
-                        console.error("Error parsing review form_data:", e);
-                      }
-                      return (
-                        <div key={index}>
-                          <Accordion.Title
-                            active={activeIndex === index}
-                            index={index}
-                            onClick={() => handleAccordionClick(index)}
-                            className="student-title"
-                          >
-                            <Icon name="dropdown" />
-                            <ProfileCircle
-                              user={{
-                                fname: review.fname,
-                                lname: review.lname,
-                                type: review.type,
-                              }}
-                              isStudent={review.type === "student"}
-                              size="tiny"
-                              className="student-profile"
-                            />
-                            Review by {review.fname} {review.lname} on{" "}
-                            {formatDateTime(review.submission_datetime)}
-                          </Accordion.Title>
-                          <Accordion.Content active={activeIndex === index}>
-                            {studentReview.Feedback || studentReview.Ratings ? (
-                              <div>
-                                {studentReview.Feedback && (
-                                  <div>
-                                    <p>
-                                      <strong>Feedback:</strong>
-                                    </p>
-                                    {(() => {
-                                      // Handle different feedback data types
-                                      const feedback = studentReview.Feedback;
-
-                                      if (typeof feedback === "string") {
-                                        return (
-                                          <p className="student-feedback">
-                                            {feedback}
-                                          </p>
-                                        );
-                                      } else if (Array.isArray(feedback)) {
-                                        // If it's an array, join it back to a string
-                                        return (
-                                          <p className="student-feedback">
-                                            {feedback.join("")}
-                                          </p>
-                                        );
-                                      } else if (
-                                        typeof feedback === "object" &&
-                                        feedback !== null
-                                      ) {
-                                        // If it's an object, check if it's array-like (numeric keys)
-                                        const keys = Object.keys(feedback);
-                                        const isArrayLike =
-                                          keys.every(
-                                            (key) => !isNaN(parseInt(key)),
-                                          ) && keys.length > 0;
-
-                                        if (isArrayLike) {
-                                          // Convert array-like object back to string
-                                          const sortedKeys = keys.sort(
-                                            (a, b) => parseInt(a) - parseInt(b),
-                                          );
-                                          const reconstructedString = sortedKeys
-                                            .map((key) => feedback[key])
-                                            .join("");
-                                          return (
-                                            <p className="student-feedback">
-                                              {reconstructedString}
-                                            </p>
-                                          );
-                                        } else {
-                                          // Regular object with key-value pairs
-                                          return Object.entries(feedback).map(
-                                            ([question, answer]) => (
-                                              <p key={question}>
-                                                <strong>{question}:</strong>{" "}
-                                                {answer}
-                                              </p>
-                                            ),
-                                          );
-                                        }
-                                      } else {
-                                        return <p>No feedback available.</p>;
-                                      }
-                                    })()}
-                                  </div>
-                                )}
-                                {studentReview.Ratings && (
-                                  <div>
-                                    <p>
-                                      <strong>Ratings:</strong>
-                                    </p>
-                                    {typeof studentReview.Ratings ===
-                                      "object" &&
-                                    studentReview.Ratings !== null ? (
-                                      Object.entries(studentReview.Ratings).map(
-                                        ([question, rating]) => (
-                                          <p key={question}>
-                                            <strong>{question}:</strong>{" "}
-                                            {rating}
-                                          </p>
-                                        ),
-                                      )
-                                    ) : (
-                                      <p>{studentReview.Ratings}</p>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <p>No review details available.</p>
-                            )}
-                          </Accordion.Content>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <p>No peer reviews available.</p>
-                  )}
-                </Accordion>
-                <div className="student-accordian">
-                  <textarea
-                    readOnly
-                    value={aiSummary}
-                    rows={aiSummary === "No Summary Generated" ? 2 : 6}
-                    className={`student-ai-summary-textarea${
-                      aiSummary === "No Summary Generated"
-                        ? " student-ai-summary-textarea-empty"
-                        : ""
-                    }`}
-                  />
-                </div>
-                <Button
-                  attached="bottom"
-                  onClick={handleGenerateAISummary}
-                  color="grey"
-                  loading={isGeneratingAISummary}
-                  disabled={isGeneratingAISummary}
-                  content={
-                    customPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                      ? "Generate AI Summarization with Custom Prompt"
-                      : "Generate AI Summarization"
-                  }
-                ></Button>
-                <div>
-                  <Button
-                    attached="bottom"
-                    onClick={() => {
-                      setIsEditingPrompt(!isEditingPrompt);
-                      setTempPrompt(customPrompt);
-                    }}
-                  >
-                    {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
-                  </Button>
-                  {isEditingPrompt && (
-                    <div className="student-editing">
-                      <textarea
-                        value={tempPrompt}
-                        onChange={(e) => setTempPrompt(e.target.value)}
-                        rows={8}
-                        className={`student-prompt-textarea${
-                          tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
-                            ? " student-prompt-textarea-modified"
-                            : ""
-                        }`}
-                      />
-                      <div>
+              </p>
+              <p>
+                <strong>Email:</strong> {props.student.email}
+              </p>
+              <p>
+                <strong>Last Login:</strong>{" "}
+                {props.student.last_login
+                  ? dayjs(props.student.last_login)
+                      .utc(true)
+                      .local()
+                      .format("MM/DD/YYYY HH:mm:ss")
+                  : "Never Logged in"}
+              </p>
+              <p>
+                <strong>Additional Info:</strong>
+                {props.isStudent &&
+                props.student.system_id === currentUserID ? (
+                  <>
+                    {isEditing ? (
+                      <>
+                        <textarea
+                          value={additionalInfo}
+                          onChange={(e) => setAdditionalInfo(e.target.value)}
+                          rows={4}
+                          className="student-text"
+                        />
                         <Button
-                          color="blue"
-                          onClick={() => {
-                            setCustomPrompt(tempPrompt);
-                            setIsEditingPrompt(false);
-                          }}
+                          onClick={handleSaveAdditionalInfo}
+                          primary
+                          size="small"
+                          className="student-button-save"
                         >
                           Save
                         </Button>
                         <Button
-                          color="red"
                           onClick={() => {
-                            setCustomPrompt(PROMPT_GENERATE_HISTORIC_SUMMARY);
-                            setIsEditingPrompt(false);
+                            setIsEditing(false);
+                            fetchAdditionalInfo();
                           }}
-                        >
-                          Reset
-                        </Button>
-                        <Button
-                          color="grey"
-                          onClick={() => {
-                            setIsEditingPrompt(false);
-                          }}
+                          size="small"
+                          className="student-button-cancel"
                         >
                           Cancel
                         </Button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="student-addtion">
+                          {additionalInfo || "No additional info available"}
+                        </span>
+                        <Button
+                          onClick={() => setIsEditing(true)}
+                          size="small"
+                          className="student-button-edit"
+                        >
+                          Edit
+                        </Button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <span className="student-button-edit">
+                    {additionalInfo || "No additional info available"}
+                  </span>
+                )}
+              </p>
+
+              <p>
+                <strong>Preferred Contact:</strong> {contactText()}
+              </p>
+
+              {!props.isStudent && (
+                <>
+                  <Accordion styled fluid>
+                    {peerReviews.length > 0 ? (
+                      peerReviews.map((review, index) => {
+                        let studentReview = {};
+                        try {
+                          const form = JSON.parse(review.form_data);
+                          const studentName = `${props.student.fname} ${props.student.lname}`;
+
+                          // Check if this is coach feedback or peer feedback
+                          if (review.type === "coach" && form.CoachFeedback) {
+                            // Handle coach feedback structure
+                            studentReview =
+                              form.CoachFeedback[studentName] || {};
+                          } else {
+                            // Handle regular peer feedback structure
+                            studentReview = form.Students
+                              ? form.Students[studentName] || {}
+                              : {};
+                          }
+                        } catch (e) {
+                          console.error("Error parsing review form_data:", e);
+                        }
+                        return (
+                          <div key={index}>
+                            <Accordion.Title
+                              active={activeIndex === index}
+                              index={index}
+                              onClick={() => handleAccordionClick(index)}
+                              className="student-title"
+                            >
+                              <Icon name="dropdown" />
+                              <ProfileCircle
+                                user={{
+                                  fname: review.fname,
+                                  lname: review.lname,
+                                  type: review.type,
+                                }}
+                                textUnderlined={canOpen}
+                                isStudent={review.type === "student"}
+                                size="tiny"
+                                className="student-profile"
+                              />
+                              Review by {review.fname} {review.lname} on{" "}
+                              {formatDateTime(review.submission_datetime)}
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndex === index}>
+                              {studentReview.Feedback ||
+                              studentReview.Ratings ? (
+                                <div>
+                                  {studentReview.Feedback && (
+                                    <div>
+                                      <p>
+                                        <strong>Feedback:</strong>
+                                      </p>
+                                      {(() => {
+                                        // Handle different feedback data types
+                                        const feedback = studentReview.Feedback;
+
+                                        if (typeof feedback === "string") {
+                                          return (
+                                            <p className="student-feedback">
+                                              {feedback}
+                                            </p>
+                                          );
+                                        } else if (Array.isArray(feedback)) {
+                                          // If it's an array, join it back to a string
+                                          return (
+                                            <p className="student-feedback">
+                                              {feedback.join("")}
+                                            </p>
+                                          );
+                                        } else if (
+                                          typeof feedback === "object" &&
+                                          feedback !== null
+                                        ) {
+                                          // If it's an object, check if it's array-like (numeric keys)
+                                          const keys = Object.keys(feedback);
+                                          const isArrayLike =
+                                            keys.every(
+                                              (key) => !isNaN(parseInt(key)),
+                                            ) && keys.length > 0;
+
+                                          if (isArrayLike) {
+                                            // Convert array-like object back to string
+                                            const sortedKeys = keys.sort(
+                                              (a, b) =>
+                                                parseInt(a) - parseInt(b),
+                                            );
+                                            const reconstructedString =
+                                              sortedKeys
+                                                .map((key) => feedback[key])
+                                                .join("");
+                                            return (
+                                              <p className="student-feedback">
+                                                {reconstructedString}
+                                              </p>
+                                            );
+                                          } else {
+                                            // Regular object with key-value pairs
+                                            return Object.entries(feedback).map(
+                                              ([question, answer]) => (
+                                                <p key={question}>
+                                                  <strong>{question}:</strong>{" "}
+                                                  {answer}
+                                                </p>
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          return <p>No feedback available.</p>;
+                                        }
+                                      })()}
+                                    </div>
+                                  )}
+                                  {studentReview.Ratings && (
+                                    <div>
+                                      <p>
+                                        <strong>Ratings:</strong>
+                                      </p>
+                                      {typeof studentReview.Ratings ===
+                                        "object" &&
+                                      studentReview.Ratings !== null ? (
+                                        Object.entries(
+                                          studentReview.Ratings,
+                                        ).map(([question, rating]) => (
+                                          <p key={question}>
+                                            <strong>{question}:</strong>{" "}
+                                            {rating}
+                                          </p>
+                                        ))
+                                      ) : (
+                                        <p>{studentReview.Ratings}</p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <p>No review details available.</p>
+                              )}
+                            </Accordion.Content>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p>No peer reviews available.</p>
+                    )}
+                  </Accordion>
+                  <div className="student-accordian">
+                    <textarea
+                      readOnly
+                      value={aiSummary}
+                      rows={aiSummary === "No Summary Generated" ? 2 : 6}
+                      className={`student-ai-summary-textarea${
+                        aiSummary === "No Summary Generated"
+                          ? " student-ai-summary-textarea-empty"
+                          : ""
+                      }`}
+                    />
+                  </div>
+                  <Button
+                    attached="bottom"
+                    onClick={handleGenerateAISummary}
+                    color="grey"
+                    loading={isGeneratingAISummary}
+                    disabled={isGeneratingAISummary}
+                    content={
+                      customPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
+                        ? "Generate AI Summarization with Custom Prompt"
+                        : "Generate AI Summarization"
+                    }
+                  ></Button>
+                  <div>
+                    <Button
+                      attached="bottom"
+                      onClick={() => {
+                        setIsEditingPrompt(!isEditingPrompt);
+                        setTempPrompt(customPrompt);
+                      }}
+                    >
+                      {isEditingPrompt ? "Close Prompt Editor" : "Edit Prompt"}
+                    </Button>
+                    {isEditingPrompt && (
+                      <div className="student-editing">
+                        <textarea
+                          value={tempPrompt}
+                          onChange={(e) => setTempPrompt(e.target.value)}
+                          rows={8}
+                          className={`student-prompt-textarea${
+                            tempPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
+                              ? " student-prompt-textarea-modified"
+                              : ""
+                          }`}
+                        />
+                        <div>
+                          <Button
+                            color="blue"
+                            onClick={() => {
+                              setCustomPrompt(tempPrompt);
+                              setIsEditingPrompt(false);
+                            }}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            color="red"
+                            onClick={() => {
+                              setCustomPrompt(PROMPT_GENERATE_HISTORIC_SUMMARY);
+                              setIsEditingPrompt(false);
+                            }}
+                          >
+                            Reset
+                          </Button>
+                          <Button
+                            color="grey"
+                            onClick={() => {
+                              setIsEditingPrompt(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </Modal.Content>
-          <Modal.Actions>
-            <Button onClick={() => setOpenModal(false)}>Close</Button>
-          </Modal.Actions>
-        </Modal>
+                    )}
+                  </div>
+                </>
+              )}
+            </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={() => setOpenModal(false)}>Close</Button>
+            </Modal.Actions>
+          </Modal>
+        )}
       </>
     );
   }
