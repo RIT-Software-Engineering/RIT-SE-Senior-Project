@@ -1,7 +1,6 @@
 @import "./../base/variables.css";
 
 #header {
-  height: var(--header-footer-height);
   background-color: white;
   transition: background-color 0.3s ease;
   box-shadow: 0 2px 10px black;

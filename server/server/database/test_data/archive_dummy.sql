@@ -77,7 +77,7 @@ VALUES
     'Description for Project 8',
     'marketing, AI, automation, social media', 'project-8', '', 1,
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-2 year')) || '-12-31'),
+    '',
     0,
     0
     ),

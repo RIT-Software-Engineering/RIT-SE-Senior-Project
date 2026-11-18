@@ -83,16 +83,6 @@ function Header() {
             </>
           )}
         </div>
-
-        <div id="hamburger-menu" className="ui right floated buttons">
-          <Button
-            className="header-button"
-            icon
-            onClick={() => setVisible(true)}
-          >
-            <Icon name="bars" />
-          </Button>
-        </div>
         
       </>
     );
@@ -148,7 +138,7 @@ function Header() {
 
   return (
     <>
-    <div id="header" className={visible ? "menu-visible" : ""}>
+    <div id="header">
       <div id="navbar">
         {signedIn && <span>{uiConfig.app.name}</span>}
         {renderNavButtons()}
@@ -189,19 +179,30 @@ function Header() {
             window.location.reload();
           }}
         ></span>
+
+        <div id="hamburger-menu" className="ui right floated buttons">
+          <Button
+            basic
+            className="header-button"
+            icon
+            onClick={() => setVisible(true)}
+          >
+            <Icon name="bars" style={{ fontSize: "20px", display: "flex", alignItems: "center", justifyContent: "center" }} />
+          </Button>
+        </div>
       </div>
       <div className="header-divider" />
     </div>
 
     <Sidebar
-          as={Menu}
-          animation="overlay"
-          direction="right"
-          visible={visible}
-          onHide={() => setVisible(false)}
-          vertical
-          inverted
-        >
+      as={Menu}
+      animation="overlay"
+      direction="right"
+      visible={visible}
+      onHide={() => setVisible(false)}
+      vertical
+      inverted
+    >
           <Menu.Item>
             <Button
               fluid

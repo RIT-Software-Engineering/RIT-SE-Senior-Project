@@ -4,24 +4,15 @@ VALUES
     (
         'homePagePanel',
         '
-            <div class="description">
-                <p class="overviewText">
-                    A capstone course where small teams of students solve challenging, real-world software issues for companies and organizations.
-                </p>
-            </div>'
+            <p>
+                A capstone course where small teams of students solve challenging, real-world software issues for companies and organizations.
+            </p>
+        '
     ),
     (
-        'secondaryInfoPanel',
-        '<div class="row secondaryInfoRow">
-            <div class="secondaryInfoContainerRight">
-            <p class="overviewText outline">
-                External sponsors, both corporate and non-profit, submit proposals that small teams of students will work on.
-                <br/><br/>
-                Over the course of two terms, each team works with a project sponsor, applying the software engineering skills that the students learned in the classroom and on co-op. They carry the project from inception through an entire software development lifecycle. The end result is a functional software tool ready for use by the sponsor&#39;s organization. 
-            </p>
-            </div>
-            <div class="secondaryInfoContainerLeft">
-                <p class="overviewText">
+        'secondaryInfoLeftPanel',
+        '<div>
+                <p>
                     Want to sponsor a project?<br/> Submit our proposal form here.
                 </p>
                 <div class="row">
@@ -34,13 +25,23 @@ VALUES
                         }
                     </script>
                 </div>
-            </div>
+        </div>
+        '
+    ),
+    (
+        'secondaryInfoRightPanel',
+        '<div>
+            <p>
+                External sponsors, both corporate and non-profit, submit proposals that small teams of students will work on.
+                <br/><br/>
+                Over the course of two terms, each team works with a project sponsor, applying the software engineering skills that the students learned in the classroom and on co-op. They carry the project from inception through an entire software development lifecycle. The end result is a functional software tool ready for use by the sponsor&#39;s organization. 
+            </p>
         </div>
         '
     ),
     (
         'currentProjectsPanel',
-        '<h2 class="ui header" style="padding-top: 25px; padding-bottom: 15px;">What Our Students Are Working On</h2>'
+        '<h2>What Our Students Are Working On</h2>'
     ),
     (
         'additionalInfoPanel',

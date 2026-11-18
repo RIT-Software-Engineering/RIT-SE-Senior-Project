@@ -19,7 +19,8 @@ function HomePage() {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
   const [homeHtml, setHomeHtml] = useState("");
-  const [secondaryInfoPanelHTML, setSecondaryInfoPanelHTML] = useState("");
+  const [secondaryInfoPanelLeftHTML, setSecondaryInfoPanelLeftHTML] = useState("");
+  const [secondaryInfoPanelRightHTML, setSecondaryInfoPanelRightHTML] = useState("");
   const [currentProjectsHTML, setCurrentProjectsHTML] = useState("");
   const [additionalInfoPanelHTML, setAdditionalInfoPanelHTML] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
@@ -140,12 +141,16 @@ function HomePage() {
        setHomeHtml(htmlData[0]?.html);
       });
 
-    SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoPanel`
-
-    )
+    SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoLeftPanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setSecondaryInfoPanelHTML(htmlData[0]?.html);
+       setSecondaryInfoPanelLeftHTML(htmlData[0]?.html);
+      });
+
+    SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoRightPanel`)
+      .then((response) => response.json())
+      .then((htmlData) => {
+       setSecondaryInfoPanelRightHTML(htmlData[0]?.html);
       });
 
     SecureFetch(`${config.url.API_GET_HTML}?name=currentProjectsPanel`)
@@ -205,10 +210,13 @@ function HomePage() {
     <div className="homepage">
       <div className="content">
         <p className="page-title">Welcome to <span class="orange">{uiConfig.app.name}</span></p>
-        {homeHtml && (
-          <InnerHTML html={homeHtml} className="ui homepage-panel" />
-        )}
-
+        <div className="ui homepage-panel description"> 
+          <div className="description">
+          {homeHtml && (
+            <InnerHTML html={homeHtml} className="overviewText"/>
+          )}
+          </div>
+        </div>
         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
         
           <div className="projects-carousel-wrapper">
@@ -273,21 +281,31 @@ function HomePage() {
             <div className="gradient-overlay-left"></div>
             <div className="gradient-overlay-right"></div>
           </div>
-          <div className="ui header" style={{ margin: "0" }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
+          <div className="ui header" style={{ marginTop: 10, marginBottom: 10 }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
       </div>
       </div>
 
       <div className="ui invisible divider"></div>
-      {secondaryInfoPanelHTML && (
-          <InnerHTML html={secondaryInfoPanelHTML} className="ui homepage-panel" />
-        )}
+      <div className="row secondaryInfoRow ui homepage-panel">
+        <div class="secondaryInfoContainerLeft">
+        {secondaryInfoPanelLeftHTML && (
+            <InnerHTML html={secondaryInfoPanelLeftHTML} className="ui homepage-panel overviewText" />
+          )}
+        </div>
+
+        <div class="secondaryInfoContainerRight">
+        {secondaryInfoPanelRightHTML && (
+            <InnerHTML html={secondaryInfoPanelRightHTML} className="ui homepage-panel overviewText outline" />
+          )}
+        </div>
+      </div>
       <div className="ui invisible divider"></div>
 
       <Container>
 
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
         {currentProjectsHTML && (
-            <InnerHTML html={currentProjectsHTML} className="ui homepage-panel" />
+            <InnerHTML html={currentProjectsHTML} className="ui homepage-panel header" style={{paddingTop: 15, paddingBottom: 25}} />
           )}
         <div className="projects-carousel-wrapper">
         <div className="current-projects-carousel">
@@ -335,7 +353,7 @@ function HomePage() {
           </button>
         </div>
         </div>
-        <div className="ui header" style={{ marginTop: 15, marginBottom: 20 }}>{currentProjectSlide + 1} of {totalCurrentSlides}</div>
+        <div className="ui header" style={{ marginTop: 20, marginBottom: 25 }}>{currentProjectSlide + 1} of {totalCurrentSlides}</div>
         <div class="row">
           <button id="allProjectsBtn" class="button homepage-button" onClick={handleBrowseAllProjectsClick}>
             Browse All Projects

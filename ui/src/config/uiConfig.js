@@ -29,7 +29,7 @@ const uiConfig = {
       name: "Excellence asjdfjdsjfasdfa",
       sqlName: "outstanding",
       color: "#009CBD",
-      textColor: "#FFFF"
+      textColor: "#000"
     },
     Creativity: {
       name: "Creativity",

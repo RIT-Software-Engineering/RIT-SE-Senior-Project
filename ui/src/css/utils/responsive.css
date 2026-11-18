@@ -7,12 +7,16 @@
     display: none;
   }
 
-  #hamburger-menu {
-    display: block;
+  #header #navbar {
+    display: none;
   }
 
-  #header.menu-visible {
-    display: none;
+  #header {
+    height: 6em;
+  }
+
+  .header-nav {
+    justify-content: space-between;
   }
 }
 
@@ -29,6 +33,10 @@
 
   #nav-buttons {
     display: inline-flex;
+  }
+
+  #header {
+    height: --header-footer-height;
   }
 }
 
