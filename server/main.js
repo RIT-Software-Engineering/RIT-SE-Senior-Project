@@ -3,18 +3,31 @@
  * @author Tom Amaral <txa2269@rit.edu>
  */
 
+/**
+ * FOR DEVELOPMENT USE ONLY
+ *
+ * Uncomment the following line to reset the database.
+ */
+const redeployDatabase = require("./db_setup");
+
+/**
+ * Starts the server, ensuring the database is created before routing
+ */
+async function startServer() {
+  // Uncomment to reset the database during development.
+  await redeployDatabase();
+
+  // This is here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
+  const routing = require("./server/routing/index");
+
+  // Attach route handlers
+  app.use("/", routing);
+  app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
+  app.listen(port);
+}
 "use strict";
 // Leave importing dotenv as the topmost thing
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
-
-/**
- *
- * FOR DEVELOPMENT USE ONLY
- *
- * UNCOMMENT THIS TO RESET DATABASE
- */
-const redeployDatabase = require("./db_setup");
-redeployDatabase();
 
 // Imports
 const express = require("express");
@@ -64,9 +77,4 @@ app.use("/resource", express.static(path.join(__dirname, "resource")));
 // Serve static files from doc directory TODO/check if this is needed
 app.use("/doc", express.static(path.join(__dirname, "doc")));
 
-// This is down here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
-const routing = require("./server/routing/index");
-// Attach route handlers
-app.use("/", routing);
-app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
-app.listen(port);
+startServer();

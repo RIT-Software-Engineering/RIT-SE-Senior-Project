@@ -122,6 +122,48 @@ function lookupNewlyInsertedId(db, table, idColumn, whereFields) {
     .then((rows) => (rows && rows[0] ? rows[0][idColumn] : null));
 }
 
+const DEFAULT_PROFILE_INFO = {
+  additional_info: "",
+  preferred_contact: { method: "email", label: "", value: "" },
+  dark_mode: false,
+  gantt_view: true,
+  calendar_view: false,
+  milestone_view: true,
+  recent_activity_view: true,
+};
+
+async function ensureProfileInfoDefaults(db, systemId) {
+  const entries = Object.entries(DEFAULT_PROFILE_INFO);
+
+  const profileJson = "COALESCE(NULLIF(TRIM(profile_info), ''), '{}')";
+
+  const updatePairs = entries.map(() => "?, json(?)").join(", ");
+  const missingConditions = entries
+    .map(() => `json_type(${profileJson}, ?) IS NULL`)
+    .join(" OR ");
+
+  const params = entries.flatMap(([key, value]) => [
+    `$.${key}`,
+    JSON.stringify(value),
+  ]);
+
+  const query = `
+    UPDATE users
+    SET profile_info = json_insert(
+      ${profileJson},
+      ${updatePairs}
+    )
+    WHERE system_id = ?
+      AND (${missingConditions})
+  `;
+
+  await db.query(query, [
+    ...params,
+    systemId,
+    ...entries.map(([key]) => `$.${key}`),
+  ]);
+}
+
 // Routes
 module.exports = (db) => {
   /**
@@ -475,11 +517,7 @@ module.exports = (db) => {
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
       // Default profile_info with required fields
-      const defaultProfileInfo = JSON.stringify({
-        additional_info: "",
-        dark_mode: false,
-        gantt_view: true,
-      });
+      const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
       const params = [
         body.system_id,
@@ -522,11 +560,7 @@ module.exports = (db) => {
 
         for (const user of users) {
           // Default profile_info with required fields
-          const defaultProfileInfo = JSON.stringify({
-            additional_info: "",
-            dark_mode: false,
-            gantt_view: true,
-          });
+          const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
           const values = [
             user.system_id,
@@ -668,21 +702,104 @@ module.exports = (db) => {
   );
 
   db_router.get("/avgTime", [UserAuth.isSignedIn], async (req, res, next) => {
-    const sql =
-      "SELECT ROUND(AVG(CASE WHEN active != 0 THEN time_amount ELSE NULL END), 2)  AS avgTime, system_id FROM time_log WHERE project = ? GROUP BY system_id";
-    console.log(req.query.project_id);
+    try {
+      const projectId = req.query.project_id;
 
-    db.query(sql, [req.query.project_id])
-      .then((time) => {
-        console.log(time);
-        res.send(time);
-      })
-      .catch((err) => {
-        console.error(err);
-        const error = new Error(err);
-        error.statusCode = 500;
-        return next(error);
-      });
+      const [semester] = await db.query(
+        `SELECT sg.start_date, sg.end_date
+        FROM projects p
+        JOIN semester_group sg ON p.semester = sg.semester_id
+        WHERE p.project_id = ?`,
+        [projectId],
+      );
+
+      if (!semester) {
+        return res.status(404).send("Semester not found");
+      }
+
+      const semesterStart = dayjs(semester.start_date);
+      const semesterEnd = dayjs(semester.end_date);
+
+      const currentWeekStart = dayjs().startOf("week");
+
+      const semesterLastWeekEnd = semesterEnd
+        .endOf("week")
+        .add(1, "day")
+        .startOf("day");
+
+      const cutoff = currentWeekStart.isBefore(semesterLastWeekEnd)
+        ? currentWeekStart
+        : semesterLastWeekEnd;
+
+      const completedWeeks = Math.max(
+        0,
+        cutoff.diff(semesterStart.startOf("week"), "week"),
+      );
+
+      const sql = `
+        WITH weekly_totals AS (
+          SELECT
+            system_id,
+            date(
+              work_date,
+              '-' || strftime('%w', work_date) || ' days'
+            ) AS week_start,
+            SUM(time_amount) AS weekly_hours
+          FROM time_log
+          WHERE project = ?
+            AND active != 0
+            AND date(work_date) >= date(?)
+            AND date(work_date) < date(?)
+            AND date(work_date) <= date(?)
+          GROUP BY system_id, week_start
+        ),
+
+        active_weeks AS (
+          SELECT week_start
+          FROM weekly_totals
+          GROUP BY week_start
+          HAVING SUM(weekly_hours) > 0
+        )
+
+        SELECT
+          system_id,
+          COALESCE(
+            ROUND(
+              SUM(
+                CASE
+                  WHEN week_start IN (
+                    SELECT week_start FROM active_weeks
+                  )
+                  THEN weekly_hours
+                  ELSE 0
+                END
+              ) * 1.0 /
+              NULLIF(
+                (SELECT COUNT(*) FROM active_weeks),
+                0
+              ),
+              2
+            ),
+            0
+          ) AS avgTime
+        FROM weekly_totals
+        GROUP BY system_id
+      `;
+
+      const time = await db.query(sql, [
+        projectId,
+        semesterStart.format("YYYY-MM-DD"),
+        cutoff.format("YYYY-MM-DD"),
+        semesterEnd.format("YYYY-MM-DD"),
+      ]);
+
+      res.send(time);
+    } catch (err) {
+      console.error(err);
+      const error = new Error(err);
+      error.statusCode = 500;
+      return next(error);
+    }
   });
 
   db_router.post(
@@ -1292,28 +1409,15 @@ module.exports = (db) => {
     [UserAuth.isSignedIn, UserAuth.canWrite],
     async (req, res, next) => {
       let body = req.body;
+
       let files = req.files;
       const updateArchiveQuery = `UPDATE ${DB_CONFIG.tableNames.archive}
-                                    SET featured=?, outstanding=?, creative=?, priority=?,
-                                        title=?, project_id=?, team_name=?,
+                                    SET title=?, team_name=?,
                                         members=?, sponsor=?, coach=?,
                                         poster_thumb=?, poster_full=?, archive_image=?, synopsis=?,
                                         video=?, name=?, dept=?,
                                         start_date=?, end_date=?, keywords=?, url_slug=?, inactive=?, locked=?
-                                    WHERE archive_id = ?`;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
+                                    WHERE archive_id = ? AND project_id = ?`;
 
       let files_uploaded = [];
 
@@ -1407,27 +1511,8 @@ module.exports = (db) => {
         video = body.video;
       }
 
-      const checkBox = (data) => {
-        if (data === "true" || data === "1") {
-          return 1;
-        }
-        return 0;
-      };
-
-      const strToInt = (data) => {
-        if (typeof data === "string") {
-          return parseInt(data);
-        }
-        return 0;
-      };
-
       let updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
         body.title,
-        body.project_id,
         body.team_name,
         body.members,
         body.sponsor,
@@ -1443,9 +1528,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
         body.archive_id,
+        req.user.project,
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -1471,18 +1555,6 @@ module.exports = (db) => {
       .withMessage("Cannot be empty"),
     async (req, res, next) => {
       let body = req.body;
-      const inactive =
-        body.inactive === "true"
-          ? dayjs().format(CONSTANTS.datetime_format)
-          : "";
-      const locked =
-        body.locked === "true"
-          ? req.user.fname +
-            " " +
-            req.user.lname +
-            " locked at " +
-            dayjs().format(CONSTANTS.datetime_format)
-          : "";
 
       const name = body.url_slug; //this value needs to be unique, but isn't used, so this is a relatively safe method.
 
@@ -1609,10 +1681,10 @@ module.exports = (db) => {
       };
 
       const updateArchiveParams = [
-        checkBox(body.featured),
-        checkBox(body.outstanding),
-        checkBox(body.creative),
-        strToInt(body.priority),
+        0, // featured
+        0, // outstanding
+        0, // creative
+        0, // priority
         body.title,
         body.project_id,
         body.team_name,
@@ -1630,8 +1702,8 @@ module.exports = (db) => {
         body.end_date,
         body.keywords,
         body.url_slug,
-        inactive,
-        locked,
+        "", // inactive
+        "", // locked
       ];
 
       db.query(updateArchiveQuery, updateArchiveParams)
@@ -2774,18 +2846,20 @@ module.exports = (db) => {
                 system_id,
                 project,
                 form_data,
-                files
+                files,
+                notes
                 ${(req.user.mock && ",mock_id") || ""}
                 )
-            VALUES (?,?,?,?,?${(req.user.mock && ",?") || ""})
+            VALUES (?,?,?,?,?,?${(req.user.mock && ",?") || ""})
         `;
-
+      let notesJSON = JSON.stringify({ note: body.notes || "" });
       let params = [
         body.action_template,
         req.user.system_id,
         body.project,
         body.form_data,
         filenamesCSV,
+        notesJSON,
       ];
       if (req.user.mock) {
         params.push(req.user.mock.system_id);
@@ -2932,9 +3006,11 @@ module.exports = (db) => {
                         WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
                         WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                        WHEN action_target = 'peer_evaluation' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) + 1 THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)
+                        ) AND EXISTS (SELECT 1 FROM project_coaches pc JOIN action_log al ON al.system_id = pc.coach_id WHERE pc.project_id = ? AND al.action_template = actions.action_id AND al.project = ?) THEN 'green'
+                        WHEN action_target = 'peer_evaluation' AND date('now') < start_date THEN 'grey'
                         WHEN action_target = 'peer_evaluation' THEN 'red'
-                        WHEN action_target IS 'individual' AND COUNT(DISTINCT system_id) IS (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'green'
+                        WHEN action_target IS 'individual' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)) THEN 'green'
                         WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
                         WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
                         WHEN date('now') > due_date AND action_target IS 'individual' AND COUNT(DISTINCT system_id) != (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'red'
@@ -2949,6 +3025,10 @@ module.exports = (db) => {
             GROUP BY actions.action_id`;
 
       db.query(getTimelineActions, [
+        req.query.project_id,
+        req.query.project_id,
+        req.query.project_id,
+        req.query.project_id,
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,
@@ -3001,16 +3081,21 @@ module.exports = (db) => {
       case ROLES.STUDENT:
         // NOTE: Technically, users are able to see if coaches submitted actions to other projects, but they should not be able to see the actual submission content form this query so that should be fine
         //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
-        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project,
-                        actions.action_title, actions.due_date,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
-                        (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
-                        (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
-                    FROM action_log
-                        JOIN actions ON actions.action_id = action_log.action_template
-                        WHERE action_log.action_template = ? AND action_log.project = ?`;
-        params = [req.query.action_id, req.user.project];
+        getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id, action_log.project, 
+          CASE
+            WHEN actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?
+            THEN action_log.notes
+            ELSE NULL
+          END AS notes,
+          actions.action_title, actions.due_date,
+          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
+          (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+          (SELECT users.type FROM users WHERE users.system_id = action_log.system_id) AS user_type,
+          (SELECT users.type FROM users WHERE users.system_id = action_log.mock_id) AS mock_type
+          FROM action_log
+          JOIN actions ON actions.action_id = action_log.action_template
+          WHERE action_log.action_template = ? AND action_log.project = ?`;
+        params = [req.user.system_id, req.query.action_id, req.user.project];
         break;
       case ROLES.COACH:
       case ROLES.ADMIN:
@@ -3055,18 +3140,30 @@ module.exports = (db) => {
 
       switch (req.user.type) {
         case ROLES.STUDENT:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,             
+            CASE
+              WHEN actions.action_target = 'team' OR action_log.system_id = ?
+              THEN action_log.notes
+              ELSE NULL
+            END AS notes,
             actions.action_target, actions.action_title, actions.semester,
             projects.display_name, projects.title,
             (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-            (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+            (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+            (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
             JOIN actions ON actions.action_id = action_log.action_template
             JOIN projects ON projects.project_id = action_log.project
+
             WHERE action_log.project = ?
             ORDER BY submission_datetime DESC
             LIMIT ? OFFSET ?`;
-          queryParams = [req.user.project, resultLimit, offset * resultLimit];
+          queryParams = [
+            req.user.system_id,
+            req.user.project,
+            resultLimit,
+            offset * resultLimit,
+          ];
           getActionLogCount = `SELECT COUNT(*) FROM action_log
               JOIN actions ON actions.action_id = action_log.action_template
               WHERE action_log.project = ?
@@ -3074,11 +3171,12 @@ module.exports = (db) => {
           countParams = [req.user.project, req.user.project];
           break;
         case ROLES.COACH:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project, action_log.notes,
               actions.action_target, actions.action_title, actions.semester,
               projects.display_name, projects.title,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+              (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
             JOIN actions ON actions.action_id = action_log.action_template
             JOIN projects ON projects.project_id = action_log.project
@@ -3090,11 +3188,12 @@ module.exports = (db) => {
           countParams = [req.user.system_id];
           break;
         case ROLES.ADMIN:
-          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project,
+          getActionLogQuery = `SELECT action_log.action_log_id, action_log.submission_datetime AS submission_datetime, action_log.action_template, action_log.system_id, action_log.mock_id,  action_log.project, action_log.notes,
               actions.action_target, actions.action_title, actions.semester,
               projects.display_name, projects.title,
               (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.system_id) name,
-              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name
+              (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = action_log.mock_id) mock_name,
+              (SELECT type FROM users WHERE system_id = action_log.system_id) AS user_type
               FROM action_log
                 JOIN actions ON actions.action_id = action_log.action_template
                 JOIN projects ON projects.project_id = action_log.project
@@ -3139,7 +3238,8 @@ module.exports = (db) => {
           //          This is because of the "OR users.type = '${ROLES.COACH}'" part of the following query.
           getTimeLogQuery = `SELECT time_log.time_log_id, time_log.submission_datetime, time_log.time_amount, time_log.system_id, time_log.mock_id, time_log.project, time_log.work_date, time_log.work_comment,time_log.active,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) mock_name,
+                        (SELECT type FROM users WHERE system_id = COALESCE(NULLIF(time_log.mock_id, ''), time_log.system_id)) AS user_type
                     FROM time_log
                         WHERE time_log.project = ?
                         ORDER BY
@@ -3150,7 +3250,8 @@ module.exports = (db) => {
         case ROLES.ADMIN:
           getTimeLogQuery = `SELECT time_log.*,
                         (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.system_id) AS name,
-                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) AS mock_name
+                        (SELECT group_concat(users.fname || ' ' || users.lname) FROM users WHERE users.system_id = time_log.mock_id) AS mock_name,
+                        (SELECT type FROM users WHERE system_id = COALESCE(NULLIF(time_log.mock_id, ''), time_log.system_id)) AS user_type
                     FROM time_log
                     WHERE time_log.project = ?`;
           params = [req.query.project_id];
@@ -3258,7 +3359,7 @@ module.exports = (db) => {
             FROM action_log
             JOIN main.users u on action_log.system_id = u.system_id
             JOIN main.actions a on action_log.action_template = a.action_id
-            WHERE action_log.project = ?  AND u.type = 'coach'
+            WHERE action_log.project = ?  AND u.type = 'coach' AND a.action_target = "peer_evaluation"
         `;
 
       db.query(getFeedbackQuery, req.query.project_id)
@@ -3399,21 +3500,21 @@ module.exports = (db) => {
 
     switch (req.user.type) {
       case ROLES.STUDENT:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN actions ON actions.action_id = action_log.action_template
                     WHERE action_log.action_log_id = ? AND (actions.action_target = '${ACTION_TARGETS.TEAM}' OR action_log.system_id = ?)`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.COACH:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     JOIN project_coaches ON project_coaches.project_id = action_log.project
                     WHERE action_log.action_log_id = ? AND project_coaches.coach_id = ?`;
         params = [req.query.log_id, req.user.system_id];
         break;
       case ROLES.ADMIN:
-        getSubmissionQuery = `SELECT action_log.form_data, action_log.files
+        getSubmissionQuery = `SELECT action_log.form_data, action_log.files, action_log.notes
                     FROM action_log
                     WHERE action_log.action_log_id = ?`;
         params = [req.query.log_id];
@@ -4626,9 +4727,12 @@ module.exports = (db) => {
       }
 
       try {
+        await ensureProfileInfoDefaults(db, requestedUserId);
+
         const result = await db.query(
-          `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
-             FROM users WHERE system_id = ?`,
+          `SELECT email, json_extract(profile_info, '$.additional_info') AS additional_info,
+            json_extract(profile_info, '$.preferred_contact') AS preferred_contact
+           FROM users WHERE system_id = ?`,
           [requestedUserId],
         );
 
@@ -4638,8 +4742,29 @@ module.exports = (db) => {
           return next(error);
         }
 
-        res.send(result[0]);
+        const row = result[0];
+        let pref = null;
+        try {
+          pref = row.preferred_contact
+            ? JSON.parse(row.preferred_contact)
+            : null;
+        } catch {}
+
+        let contact = null;
+        if (!pref || pref.method === "email")
+          contact = { label: "Email", value: row.email };
+        else if (pref.method === "phone" && pref.value)
+          contact = { label: "Phone", value: pref.value };
+        else if (pref.method === "other" && pref.value)
+          contact = { label: pref.label || "Other", value: pref.value };
+
+        res.send({
+          additional_info: row.additional_info,
+          preferred_contact: pref,
+          contact,
+        });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4652,7 +4777,7 @@ module.exports = (db) => {
     "/editAdditionalInfo",
     [UserAuth.isSignedIn],
     async (req, res, next) => {
-      const { system_id, additional_info } = req.body;
+      const { system_id, additional_info, preferred_contact } = req.body;
 
       if (!system_id || additional_info === undefined) {
         return res
@@ -4660,14 +4785,29 @@ module.exports = (db) => {
           .send({ error: "system_id and additional_info are required" });
       }
 
+      const METHODS = ["email", "phone", "other"];
+      const pref = METHODS.includes(preferred_contact?.method)
+        ? {
+            method: preferred_contact.method,
+            label: String(preferred_contact.label || "")
+              .trim()
+              .slice(0, 30),
+            value: String(preferred_contact.value || "")
+              .trim()
+              .slice(0, 100),
+          }
+        : { method: "email", label: "", value: "" };
+
       const updateQuery = `
         UPDATE users
-        SET profile_info = json_set(profile_info, '$.additional_info', ?)
+        SET profile_info = json_set(profile_info, '$.additional_info', ?, '$.preferred_contact', json(?))
         WHERE system_id = ?
-    `;
+      `;
+
+      const params = [additional_info, JSON.stringify(pref), system_id];
 
       try {
-        await db.query(updateQuery, [additional_info, system_id]);
+        await db.query(updateQuery, params);
         res
           .status(200)
           .send({ message: "Additional info updated successfully" });
@@ -4719,6 +4859,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
         if (result.length === 0) {
           const error = new Error("User not found");
@@ -4731,6 +4873,7 @@ module.exports = (db) => {
 
         res.status(200).send({ dark_mode });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4831,6 +4974,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4849,6 +4993,7 @@ module.exports = (db) => {
 
         res.status(200).send({ gantt_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4902,6 +5047,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4919,6 +5066,7 @@ module.exports = (db) => {
 
         res.status(200).send({ calendar_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4972,6 +5120,8 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
+
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4989,6 +5139,7 @@ module.exports = (db) => {
 
         res.status(200).send({ milestone_view });
       } catch (err) {
+        console.error("Original database error:", err);
         const error = new Error("Database query failed");
         error.statusCode = 500;
         error.details = err.message;
@@ -4996,6 +5147,106 @@ module.exports = (db) => {
       }
     },
   );
+
+  // Recent Activity View Preferences
+  db_router.post(
+    "/setRecentActivityView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id, recent_activity_view } = req.body;
+
+      const updateQuery = `
+        UPDATE users
+        SET profile_info = json_set(
+          profile_info,
+          '$.recent_activity_view',
+          ?
+        )
+        WHERE system_id = ?
+      `;
+
+      try {
+        await db.query(updateQuery, [recent_activity_view, system_id]);
+
+        res.status(200).send({
+          message: "Recent activity preference updated successfully",
+        });
+      } catch (err) {
+        const error = new Error("Database update failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+
+  db_router.get(
+    "/getRecentActivityView",
+    [UserAuth.isSignedIn],
+    async (req, res, next) => {
+      const { system_id } = req.query;
+
+      const query = `
+        SELECT JSON_EXTRACT(
+          profile_info,
+          '$.recent_activity_view'
+        ) AS recent_activity_view
+        FROM users
+        WHERE system_id = ?
+      `;
+
+      try {
+        await ensureProfileInfoDefaults(db, system_id);
+
+        const result = await db.query(query, [system_id]);
+
+        if (result.length === 0) {
+          const error = new Error("User not found");
+          error.statusCode = 404;
+          return next(error);
+        }
+
+        const raw = result[0].recent_activity_view;
+
+        const recent_activity_view =
+          raw === null || raw === undefined
+            ? true
+            : raw === true || raw === "true" || raw === 1 || raw === "1";
+
+        res.status(200).send({
+          recent_activity_view,
+        });
+      } catch (err) {
+        console.error("Original database error:", err);
+        const error = new Error("Database query failed");
+        error.statusCode = 500;
+        error.details = err.message;
+        next(error);
+      }
+    },
+  );
+  //get coach for student profile
+  db_router.get("/getMyCoaches", [UserAuth.isSignedIn], (req, res, next) => {
+    const projectId =
+      req.user.type === ROLES.STUDENT ? req.user.project : req.query.project_id;
+
+    if (!projectId) return res.send([]);
+
+    db.query(
+      `SELECT users.system_id, users.fname, users.lname
+        FROM project_coaches
+        JOIN users ON users.system_id = project_coaches.coach_id
+        WHERE project_coaches.project_id = ?
+        ORDER BY users.fname, users.lname`,
+      [projectId],
+    )
+      .then((coaches) => res.send(coaches))
+      .catch((err) => {
+        const error = new Error(err);
+        error.statusCode = 500;
+        return next(error);
+      });
+  });
 
   return db_router;
 };

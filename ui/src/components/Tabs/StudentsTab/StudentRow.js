@@ -30,6 +30,8 @@ export default function StudentRow(props) {
   const [peerReviews, setPeerReviews] = useState([]);
   const [aiSummary, setAiSummary] = useState("No Summary Generated");
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const EMPTY_CONTACT = { method: "email", label: "", value: "" };
+  const [preferredContact, setPreferredContact] = useState(EMPTY_CONTACT);
   const [isEditing, setIsEditing] = useState(false);
   const [customPrompt, setCustomPrompt] = useState(
     PROMPT_GENERATE_HISTORIC_SUMMARY,
@@ -37,6 +39,7 @@ export default function StudentRow(props) {
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
   const [tempPrompt, setTempPrompt] = useState(customPrompt);
   const [canUseAI, setCanUseAI] = useState(false);
+  const [isGeneratingAISummary, setIsGeneratingAISummary] = useState(false);
 
   const { user } = useContext(UserContext);
   const currentUserID = user?.user;
@@ -124,7 +127,11 @@ export default function StudentRow(props) {
   };
 
   const handleGenerateAISummary = async () => {
+    setIsGeneratingAISummary(true);
+
     try {
+      console.log("Starting AI summary generation...");
+
       const selectedStudentName = `${props.student.fname} ${props.student.lname}`;
       const sanitizedReviews = peerReviews.map((review) =>
         sanitizeReview(review, selectedStudentName),
@@ -142,11 +149,21 @@ export default function StudentRow(props) {
         },
       );
 
+      console.log("AI response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`AI request failed with status ${response.status}`);
+      }
+
       const textData = await response.text();
       setAiSummary(textData || "No Summary Generated");
+
+      console.log("AI summary generated successfully");
     } catch (error) {
       console.error("Error generating AI Summary:", error);
-      setAiSummary("Error generating summary");
+      setAiSummary("Error generating summary. Check the console for details.");
+    } finally {
+      setIsGeneratingAISummary(false);
     }
   };
 
@@ -155,15 +172,19 @@ export default function StudentRow(props) {
       const url = `${config.url.API_GET_ADDITIONAL_INFO}?system_id=${props.student.system_id}`;
       const response = await SecureFetch(url);
       const data = await response.json();
+      setPreferredContact({
+        ...EMPTY_CONTACT,
+        ...(data?.preferred_contact || {}),
+      });
 
       if (data && data.additional_info) {
         setAdditionalInfo(data.additional_info);
       } else {
-        setAdditionalInfo("No additional information available.");
+        setAdditionalInfo(data?.additional_info || "");
       }
     } catch (error) {
       console.error("Error fetching additional info:", error);
-      setAdditionalInfo("Error loading additional information.");
+      setAdditionalInfo("");
     }
   }, [props.student.system_id]);
 
@@ -188,6 +209,11 @@ export default function StudentRow(props) {
     }
   }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
 
+  const isTeammate = !!user?.project && user.project === props.student.project;
+  const canOpen =
+    !props.isFullList && (props.isMyTeamTable || !props.isStudent);
+  const canHover = canOpen || isTeammate;
+
   const handleSaveAdditionalInfo = async () => {
     try {
       const url = `${config.url.API_POST_EDIT_ADDITIONAL_INFO}`;
@@ -211,14 +237,13 @@ export default function StudentRow(props) {
     }
   };
 
-  useEffect(() => {
-    if (openModal) {
-      if (!props.isStudent) {
-        fetchPeerReviews();
-      }
-      fetchAdditionalInfo();
-    }
-  }, [openModal, fetchAdditionalInfo, fetchPeerReviews, props.isStudent]);
+  const contactText = () => {
+    const c = preferredContact;
+    if (c.method === "phone" && c.value) return `Phone: ${c.value}`;
+    if (c.method === "other" && c.value)
+      return `${c.label || "Other"}: ${c.value}`;
+    return `Email: ${props.student.email}`;
+  };
 
   if (!props.studentsTab) {
     // Helper function to get user status text
@@ -290,13 +315,14 @@ export default function StudentRow(props) {
     return (
       <>
         <TableRow key={props.student.system_id}>
-          <TableCell onClick={() => setOpenModal(props.isMyTeamTable)}>
+          <TableCell onClick={() => canOpen && setOpenModal(true)}>
             <ProfileCircle
               user={props.student}
               size="tiny"
               showFullName
-              textUnderlined
-              clickable
+              textUnderlined={canOpen}
+              clickable={canOpen}
+              allowInfo={canHover}
             />
           </TableCell>
 
@@ -370,7 +396,10 @@ export default function StudentRow(props) {
                         Save
                       </Button>
                       <Button
-                        onClick={() => setIsEditing(false)}
+                        onClick={() => {
+                          setIsEditing(false);
+                          fetchAdditionalInfo();
+                        }}
                         size="small"
                         className="student-button-cancel"
                       >
@@ -397,6 +426,10 @@ export default function StudentRow(props) {
                   {additionalInfo || "No additional info available"}
                 </span>
               )}
+            </p>
+
+            <p>
+              <strong>Preferred Contact:</strong> {contactText()}
             </p>
 
             {!props.isStudent && (
@@ -559,6 +592,8 @@ export default function StudentRow(props) {
                   attached="bottom"
                   onClick={handleGenerateAISummary}
                   color="grey"
+                  loading={isGeneratingAISummary}
+                  disabled={isGeneratingAISummary}
                   content={
                     customPrompt !== PROMPT_GENERATE_HISTORIC_SUMMARY
                       ? "Generate AI Summarization with Custom Prompt"

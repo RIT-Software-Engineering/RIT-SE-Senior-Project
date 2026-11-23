@@ -21,89 +21,65 @@ const PRESERVE_FILES = [
   "resource/archiveVideos/trendtide-real-time-market-trend-prediction-dashboard-video",
 ];
 
-function dropAllTables() {
-  return new Promise((resolve, reject) => {
-    let sql = `
-            SELECT 
-                name
-            FROM 
-                sqlite_master 
-            WHERE 
-                type ='table' AND 
-                name NOT LIKE 'sqlite_%';
-        `;
-    db.query(sql)
-      .then((values) => {
-        let delString = "";
-        for (let obj of values) {
-          delString = `DROP TABLE IF EXISTS ${obj["name"]};\n`;
-          Promise.resolve(
-            db.query(delString).catch((err) => {
-              reject(`${obj["name"]} : ${err}`);
-            }),
-          );
-        }
-        setTimeout(() => {
-          resolve();
-        }, 1000);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+async function dropAllTables() {
+  const sql = `
+    SELECT name
+    FROM sqlite_master
+    WHERE type = 'table'
+      AND name NOT LIKE 'sqlite_%';
+  `;
+
+  const values = await db.query(sql);
+
+  for (const obj of values) {
+    try {
+      await db.query(`DROP TABLE IF EXISTS ${obj.name};`);
+    } catch (err) {
+      throw `${obj.name} : ${err}`;
+    }
+  }
 }
 
-function createAllTables() {
-  return new Promise((resolve, reject) => {
-    fs.readdir(table_sql_path, (err, files) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+async function createAllTables() {
+  const files = await fs.promises.readdir(table_sql_path);
 
-      files
-        .filter((file) => file.toString() != "create_all_tables.sql")
-        .filter((file) => file.toString().endsWith(".sql"))
-        .forEach((file) => {
-          fs.readFile(path.join(table_sql_path, file), "utf8", (_err, sql) => {
-            Promise.resolve(
-              db.query(sql).catch((err) => {
-                reject(`${file} : ${err}`);
-              }),
-            );
-          });
-        });
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
-  });
+  const sqlFiles = files
+    .filter((file) => file.toString() !== "create_all_tables.sql")
+    .filter((file) => file.toString().endsWith(".sql"));
+
+  for (const file of sqlFiles) {
+    const sql = await fs.promises.readFile(
+      path.join(table_sql_path, file),
+      "utf8",
+    );
+
+    try {
+      await db.query(sql);
+    } catch (err) {
+      throw `${file} : ${err}`;
+    }
+  }
 }
 
-function populateDummyData() {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dummy_data_path, (err, files) => {
-      if (err) {
-        reject(err);
-      }
+async function populateDummyData() {
+  const files = await fs.promises.readdir(dummy_data_path);
 
-      files
-        .filter((file) => file.toString() != "fill_test_data.sql")
-        .filter((file) => file.toString().endsWith(".sql"))
-        .forEach((file) => {
-          fs.readFile(path.join(dummy_data_path, file), "utf8", (_err, sql) => {
-            Promise.resolve(
-              db.query(sql).catch((err) => {
-                reject(`${file} : ${err}`);
-              }),
-            );
-          });
-        });
-      setTimeout(() => {
-        resolve();
-      }, 3000);
-    });
-  });
+  const sqlFiles = files
+    .filter((file) => file.toString() !== "fill_test_data.sql")
+    .filter((file) => file.toString().endsWith(".sql"));
+
+  for (const file of sqlFiles) {
+    const sql = await fs.promises.readFile(
+      path.join(dummy_data_path, file),
+      "utf8",
+    );
+
+    try {
+      await db.query(sql);
+    } catch (err) {
+      throw `${file} : ${err}`;
+    }
+  }
 }
 
 function clearUploadedFiles() {

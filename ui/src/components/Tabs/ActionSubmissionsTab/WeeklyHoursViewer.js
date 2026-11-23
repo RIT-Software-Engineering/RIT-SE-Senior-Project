@@ -16,15 +16,30 @@ import "./../../../css/components/tabs/weekly.css";
 export default function WeeklyHoursViewer(props) {
   const [open, setOpen] = useState(false);
 
-  function getAverageHours(sum, hoursPerWeek) {
-    let avg = 0;
-    const filtered = hoursPerWeek.filter((item) => item != 0);
+  function getAverageHours(weeklyHours = [], semWeeks = []) {
+    const today = new Date();
 
-    if (filtered.length !== 0 && sum != 0) {
-      avg = sum / filtered.length;
+    const completedWeeks = semWeeks
+      .map((week, index) => ({ week, index }))
+      .filter(({ week }) => {
+        const endDate = new Date(week.endDate);
+        endDate.setHours(23, 59, 59, 999);
+
+        return endDate < today;
+      });
+
+    if (completedWeeks.length === 0) {
+      return "0.00";
     }
-    return avg.toFixed(2);
+
+    const completedHours = completedWeeks.reduce(
+      (sum, { index }) => sum + (Number(weeklyHours[index]) || 0),
+      0
+    );
+
+    return (completedHours / completedWeeks.length).toFixed(2);
   }
+
   return (
     <Modal
       closeOnDimmerClick={false}
@@ -49,7 +64,7 @@ export default function WeeklyHoursViewer(props) {
           )}
         </div>
       }
-      header={`${props.project} Time Log Report (Average Hours calculations only include weeks in which a team
+      header={`${props.project} Time Log Report (Weekly Average Hours calculations only include weeks in which a team
                 member reported hours.)`}
       actions={[{ content: "Close", key: 0 }]}
       content={{
@@ -68,7 +83,7 @@ export default function WeeklyHoursViewer(props) {
                       formatDate(week.endDate)
                     }`}</TableHeaderCell>
                   ))}
-                  <TableHeaderCell>Average Hours</TableHeaderCell>
+                  <TableHeaderCell>Weekly Average Hours</TableHeaderCell>
                   <TableHeaderCell>Total Hours</TableHeaderCell>
                 </TableRow>
               </TableHeader>
@@ -77,7 +92,7 @@ export default function WeeklyHoursViewer(props) {
                   let weekly = props.userLogs[student.system_id]?.weeklyHours;
 
                   const sum = props.userLogs[student.system_id]?.totalHours;
-                  const avg = getAverageHours(sum, props.hoursPerWeek);
+                  const avg = getAverageHours(weekly, props.semWeeks);
 
                   return (
                     <TableRow>

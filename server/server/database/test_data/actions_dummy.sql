@@ -1,3 +1,5 @@
+-- Rolling test dates for semester 2; semester 1 and named holidays remain historical/calendar dates.
+-- SQLite evaluates DATE('now') when the seed script runs.
 INSERT INTO
     actions (
         semester,
@@ -406,12 +408,8 @@ VALUES
         '',
         'Come up with team name',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-01-20'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-01'
-        ),
+        DATE('now', '-24 days'),
+        DATE('now', '-10 days'),
         '<div><h2>Week 1 Artifacts, Tasks, and Deliverables</h2>
 
         <form class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
@@ -436,12 +434,8 @@ VALUES
         '',
         'Submit your project proposal',
         'individual',
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-10'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-02-20'
-        ),
+        DATE('now', '-14 days'),
+        DATE('now', '-2 days'),
         '<h1>Submit Project Proposal</h1>
         <p>
             Your team is required to submit a detailed project proposal outlining your projects objectives, scope, deliverables, and timeline. The proposal should include:
@@ -463,12 +457,8 @@ VALUES
         '',
         'Create and submit a project timeline with milestones',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-01'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-03-15'
-        ),
+        DATE('now', '-9 days'),
+        DATE('now', '+4 days'),
         '<h1>Submit Project Timeline</h1>
         <p>
             Develop a comprehensive timeline for your project, including all major milestones, deadlines, and deliverables. Your timeline should:
@@ -488,12 +478,8 @@ VALUES
         '',
         'Turn in your interim report',
         'individual',
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-05'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-04-20'
-        ),
+        DATE('now', '-8 days'),
+        DATE('now', '+8 days'),
         '<h1>Submit your interim report</h1>
         <p>
             The interim report should summarize your progress so far, including:
@@ -513,12 +499,8 @@ VALUES
         '',
         'Conduct a survey to identify target market needs',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-05-01'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-05-15'
-        ),
+        DATE('now', '-7 days'),
+        DATE('now', '+12 days'),
         '<h1>Submit Market Research Survey Results</h1>
         <p>
             Conduct a survey or interviews to gather insights about your target market. Your submission should include:
@@ -537,12 +519,8 @@ VALUES
         '',
         'Develop and submit your business model canvas',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-06-01'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-10'
-        ),
+        DATE('now', '-4 days'),
+        DATE('now', '+17 days'),
         '<h1>Submit Business Model Canvas</h1>
         <p>
             Complete a business model canvas for your project. Be sure to address all nine building blocks:
@@ -567,12 +545,8 @@ VALUES
         '',
         'Collect feedback on your application prototype',
         'coach',
-        DATE(
-            strftime('%Y', DATE('now')) || '-06-10'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-15'
-        ),
+        DATE('now', '-3 days'),
+        DATE('now', '+20 days'),
         '<h1>Submit Prototype Feedback</h1>
         <p>
             Gather feedback from users, stakeholders, or your coach on your current prototype. Your submission should include:
@@ -611,12 +585,8 @@ VALUES
         '',
         'Analyze competitors and submit findings',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-08-05'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-09-15'
-        ),
+        DATE('now', '-6 days'),
+        DATE('now', '+9 days'),
         '<h1>Submit Competitor Analysis</h1>
         <p>
             Research and analyze at least three competitors or similar solutions. Your analysis should include:
@@ -635,12 +605,8 @@ VALUES
         '',
         'Identify and submit potential project risks',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-09-20'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-10-05'
-        ),
+        DATE('now', '-5 days'),
+        DATE('now', '+14 days'),
         '<h1>Submit Risk Assessment</h1>
         <p>
             Identify potential risks that could impact your project. For each risk, provide:
@@ -659,12 +625,8 @@ VALUES
         '',
         'Develop and submit a marketing strategy',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-10-10'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-10-25'
-        ),
+        DATE('now', '-2 days'),
+        DATE('now', '+18 days'),
         '<h1>Submit Marketing Plan</h1>
         <p>
             Create a marketing plan for your project. Your plan should include:
@@ -684,12 +646,8 @@ VALUES
         '',
         'Submit projected financials for the project',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-11-01'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-11-15'
-        ),
+        DATE('now', '+7 days'),
+        DATE('now', '+25 days'),
         '<h1>Submit Financial Projections</h1>
         <p>
             Prepare financial projections for your project. Include:
@@ -709,12 +667,8 @@ VALUES
         '',
         'Prepare and submit the final project presentation',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-11-20'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-12-01'
-        ),
+        DATE('now', '+17 days'),
+        DATE('now', '+35 days'),
         '<h1>Submit Final Presentation</h1>',
         '.pdf,.pptx'
     ),
@@ -724,12 +678,8 @@ VALUES
         '',
         'Evaluate your team members',
         'peer_evaluation',
-        DATE(
-            strftime('%Y', DATE('now')) || '-12-02'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-12-04'
-        ),
+        DATE('now', '+25 days'),
+        DATE('now', '+41 days'),
         '<h1>Peer Evaluation</h1>
         <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <h2>Instructions</h2>
@@ -777,12 +727,8 @@ VALUES
         '',
         'Evaluate your team members',
         'peer_evaluation',
-        DATE(
-            strftime('%Y', DATE('now')) || '-06-28'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-22'
-        ),
+        DATE('now', '-12 days'),
+        DATE('now', '+7 days'),
         '<h1>Peer Evaluation</h1>
         <form style="text-align: left;" class="ui form" action="/db/submitAction" method="POST" enctype="multipart/form-data">
             <h2>Instructions</h2>
@@ -831,8 +777,8 @@ VALUES
         '',
         'Welcome',
         'student_announcement',
-        DATE(strftime('%Y', DATE('now')) || '-01-02'),
-        DATE(strftime('%Y', DATE('now')) || '-02-20'),
+        DATE('now', '-14 days'),
+        DATE('now', '+14 days'),
         '<h1>Welcome to the Senior Project Course</h1>
             <p>Welcome to the Senior Project Course! This course is designed to help you develop
              your skills in project management, teamwork, and problem-solving. Throughout the course, you will work on a team project that will allow you to apply what you have learned in previous courses.</p>
@@ -861,12 +807,8 @@ VALUES
         '',
         'Schedule a meeting to discuss project progress',
         'team',
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-09'
-        ),
-        DATE(
-            strftime('%Y', DATE('now')) || '-07-15'
-        ),
+        DATE('now', '-3 days'),
+        DATE('now', '+6 days'),
         '<h1>Submit Meeting Plan</h1>
         <p>
             Create a plan for your upcoming meeting. Your submission should include:
@@ -895,8 +837,8 @@ VALUES
         '',
         'Getting started with the Senior Project Application',
         'coach_announcement',
-        DATE(strftime('%Y', DATE('now')) || '-01-02'),
-        DATE(strftime('%Y', DATE('now')) || '-02-20'),
+        DATE('now', '-14 days'),
+        DATE('now', '+14 days'),
         '
             <h1>Welcome Coaches!</h1>
             <p>Welcome to the Senior Project Application! This application is designed to help you manage your team projects and track your progress throughout the course.</p>

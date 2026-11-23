@@ -16,6 +16,8 @@ const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 const baseArchiveURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
+const CONTENT_HEIGHT = 250;
+
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
   if (!nameString) return "";
@@ -184,13 +186,25 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_thumb}`}
+                    src={
+                      project?.poster_thumb
+                        ? `${basePosterURL}${project?.poster_thumb}`
+                        : project?.archive_image
+                          ? `${baseImageURL}${project?.archive_image}`
+                          : uiConfig.logoPath
+                    }
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={`${basePosterURL}${project?.poster_full}`}
+                    src={
+                      project?.poster_full
+                        ? `${basePosterURL}${project?.poster_full}`
+                        : project?.archive_image
+                          ? `${baseImageURL}${project?.archive_image}`
+                          : uiConfig.logoPath
+                    }
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
@@ -235,8 +249,6 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
-                <div className="ui small header">Students</div>
-                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -248,7 +260,23 @@ function UniqueProjectPage({ projectData }) {
           </div>
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
-            <div className="column">
+            <div>
+              <div className="ui small header">Students</div>
+              {generateProfiles(project?.members, true)}
+              <div className="ui invisible divider"></div>
+              {
+                // display project page link if slug has been defined
+                project.url_slug !== null && project?.url_slug !== "" && (
+                  <>
+                    <div className="ui small header">Link</div>
+                    <div>
+                      <Link to={`/projects/${project.url_slug}`}>
+                        {`${baseProjectURL}${project.url_slug}`}
+                      </Link>
+                    </div>
+                  </>
+                )
+              }
               <div className="ui small header">Synopsis</div>
               <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
@@ -265,6 +293,9 @@ function UniqueProjectPage({ projectData }) {
                 </Link>
               </div>
               )}
+
+              <div className="ui small header">Keywords</div>
+              <p className="unique-project-whitespace">{project?.keywords}</p>
             </div>
           </div>
         </div>

@@ -129,9 +129,11 @@ export default function WeeklyHourViewer(props) {
                     <TableCell>
                       <div className="weeklyhour-table-cell">
                         <ProfileCircle
+                          user={{ system_id: stu.system_id }}
                           name={stu.name}
                           showFullName
                           size="tiny"
+                          allowInfo
                         />
                       </div>
                     </TableCell>

@@ -21,6 +21,10 @@ export const parseDate = (dateTime) => {
 };
 
 const parseDayjsDate = (dateTime) => {
+  if (dateTime instanceof Date) {
+    return dayjs(dateTime).tz(SERVER_TIMEZONE);
+  }
+
   let newTime = dayjs(dateTime).utcOffset(0, true);
   return dayjs.tz(newTime, SERVER_TIMEZONE);
 };
@@ -29,6 +33,13 @@ export const formatDateTime = (dateTime) => {
   let date = parseDayjsDate(dateTime);
   return `${date.format("L LT")}`;
 };
+
+export function formatActionTarget(actionTarget = "") {
+  return actionTarget
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
 
 export const formatDate = (date) => {
   let dateObj = parseDayjsDate(date);
