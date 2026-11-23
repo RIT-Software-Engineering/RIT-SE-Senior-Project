@@ -6,11 +6,11 @@ import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
 import InnerHTML from "dangerously-set-html-content";
 import uiConfig from "../../config/uiConfig";
-import ProjectCard from "../shared/ProjectCard.js"
-import ProjectModal from "../shared/ProjectModal.js"
+import ProjectCard from "../shared/ProjectCard.js";
+import ProjectModal from "../shared/ProjectModal.js";
 import "./../../css/components/pages/Homepage.css";
 import "./../../css/components/pages/ProjectsPage.css";
-import "../../css/components/shared/projectCard.css"
+import "../../css/components/shared/projectCard.css";
 
 const PROJECTS_PER_SLIDE = 3;
 
@@ -19,8 +19,10 @@ function HomePage() {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [currentProjects, setCurrentProjects] = useState([]);
   const [homeHtml, setHomeHtml] = useState("");
-  const [secondaryInfoPanelLeftHTML, setSecondaryInfoPanelLeftHTML] = useState("");
-  const [secondaryInfoPanelRightHTML, setSecondaryInfoPanelRightHTML] = useState("");
+  const [secondaryInfoPanelLeftHTML, setSecondaryInfoPanelLeftHTML] =
+    useState("");
+  const [secondaryInfoPanelRightHTML, setSecondaryInfoPanelRightHTML] =
+    useState("");
   const [currentProjectsHTML, setCurrentProjectsHTML] = useState("");
   const [additionalInfoPanelHTML, setAdditionalInfoPanelHTML] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
@@ -34,8 +36,8 @@ function HomePage() {
 
   const handleBrowseAllProjectsClick = () => {
     history.push(`${url}projects`);
-    window.scrollTo(0,0);
-  }
+    window.scrollTo(0, 0);
+  };
 
   const currentSlideAnimations = {
     enter: (direction) => ({
@@ -44,91 +46,75 @@ function HomePage() {
     }),
     center: {
       x: 0,
-      opacity: 1
+      opacity: 1,
     },
     exit: (direction) => ({
       x: direction > 0 ? -150 : 150,
-      opacity: 0
+      opacity: 0,
     }),
   };
 
-  const featuredSlideAnimations = {
-    enter: (direction) => ({
-      opacity: 1,
-      x: direction === 1 ? 1700: -1700
-    }),
-    center: ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.7,
-        ease: "easeInOut",
-        delay: 0.05
-      }
-    }),
-    exit: (direction) => ({
-      x: direction === 1 ? -1200 : 1200,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeInOut"
-      }
-    }),
-  }
-
   const featuredCardAnimations = {
-    enter: ({direction}) => {
+    enter: ({ direction }) => {
       return {
-        opacity: 1,
+        opacity: 0,
+        x: direction === 1 ? 250 : -250,
         rotateY: direction === 1 ? -175 : 175,
         scale: 0.8,
-      }
+      };
     },
-    center: ({direction, index, total = 3}) => {
-      const leadingIndex = direction === 1 ? index : total - 1 - index;
+    center: ({ index }) => {
       return {
         opacity: 1,
-        rotateY: 0,
-        scale: index === 1 ? 1 : 0.9,
+        x: 0,
+        rotateY:
+          featuredProjectsPerSlide === 1
+            ? 0
+            : index === 0
+              ? 25
+              : index === 2
+                ? -25
+                : 0,
+        scale: index === 1 || featuredProjectsPerSlide === 1 ? 1 : 0.9,
         transition: {
-          duration: 0.5,
-          ease: "easeInOut",
-          delay: 0.1 + leadingIndex * 0.1
+          duration: 0.55,
+          ease: [0.4, 0.8, 0.4, 1],
         },
-      }
+      };
     },
     exit: (custom) => {
       const direction = custom?.direction ?? custom;
-      const index = custom?. index ?? 0;
-      const total = custom?.total ?? 3;
-      const leadingIndex = direction === 1 ? index : total - 1 - index;
+      const index = custom?.index;
       return {
-        opacity: 1,
+        opacity: 0,
+        x: direction === 1 ? -250 : 250,
         rotateY: direction === 1 ? 90 : -90,
-        scale: index === 1 ? 1 : 0.9,
+        scale: index != 1 || featuredProjectsPerSlide === 1 ? 1.5 : 0.9,
         transition: {
-        duration: 0.4,
-        ease: "easeInOut",
-        delay: leadingIndex * 0.1
-      }
-      }
-    }
-  }
+          duration: 0.4,
+          ease: [0.4, 0.8, 0.4, 1],
+        },
+      };
+    },
+  };
 
-  const [featuredProjectsPerSlide, setFeaturedProjectsPerSlide] = useState(window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
-  const [currentProjectsPerSlide, setCurrentProjectsPerSlide] = useState(window.innerWidth <= 750 ? 1 : window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
+  const [featuredProjectsPerSlide, setFeaturedProjectsPerSlide] = useState(
+    window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE,
+  );
+  const [currentProjectsPerSlide, setCurrentProjectsPerSlide] = useState(
+    window.innerWidth <= 750
+      ? 1
+      : window.innerWidth <= 1200
+        ? 1
+        : PROJECTS_PER_SLIDE,
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      const newFeaturedProjectsPerSlide = (
-        window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE
-      );
+      const newFeaturedProjectsPerSlide =
+        window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE;
 
       setFeaturedProjectsPerSlide(newFeaturedProjectsPerSlide);
-
-      setFeaturedProjectSlide((prev) => {
-        return Math.floor(( prev * featuredProjectsPerSlide )/newFeaturedProjectsPerSlide)
-      });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -136,34 +122,52 @@ function HomePage() {
 
   useEffect(() => {
     const handleResize = () => {
-      const newCurrentProjectsPerSlide = (
-        window.innerWidth <= 850 ? 1 : window.innerWidth <= 1200 ? 2 : PROJECTS_PER_SLIDE
-      );
+      const newCurrentProjectsPerSlide =
+        window.innerWidth <= 850
+          ? 1
+          : window.innerWidth <= 1200
+            ? 2
+            : PROJECTS_PER_SLIDE;
 
       setCurrentProjectsPerSlide(newCurrentProjectsPerSlide);
 
       setCurrentProjectSlide((prev) => {
-        return Math.floor(( prev * currentProjectsPerSlide )/newCurrentProjectsPerSlide);
+        return Math.floor(
+          (prev * currentProjectsPerSlide) / newCurrentProjectsPerSlide,
+        );
       });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [currentProjectsPerSlide]);
 
-  const totalCurrentSlides = Math.ceil(currentProjects.length/currentProjectsPerSlide);
-  const visibleCurrentProjects = currentProjects.slice(currentProjectSlide * currentProjectsPerSlide, (currentProjectSlide + 1) * currentProjectsPerSlide);
-  const totalFeaturedSlides = Math.ceil(featuredProjects.length/featuredProjectsPerSlide);
-  const visibleFeaturedProjects = featuredProjects.length > 0 ? Array.from( { length: Math.min(featuredProjectsPerSlide, featuredProjects.length) }, (_, i) => featuredProjects[(featuredProjectSlide * featuredProjectsPerSlide + i) % featuredProjects.length]): [];
-  
+  const totalCurrentSlides = Math.ceil(
+    currentProjects.length / currentProjectsPerSlide,
+  );
+  const visibleCurrentProjects = currentProjects.slice(
+    currentProjectSlide * currentProjectsPerSlide,
+    (currentProjectSlide + 1) * currentProjectsPerSlide,
+  );
+  const totalFeaturedSlides = featuredProjects.length;
+  const visibleFeaturedProjects =
+    featuredProjects.length > 0
+      ? Array.from(
+          {
+            length: Math.min(featuredProjectsPerSlide, featuredProjects.length),
+          },
+          (_, i) =>
+            featuredProjects[
+              (featuredProjectSlide + i) % featuredProjects.length
+            ],
+        )
+      : [];
 
   /*
    * When the page initially loads, fetches random featured archives.
    * The secureFetch after it is for getting the HTML from the database to display above exemplary projects.
    */
   useEffect(() => {
-    SecureFetch(
-      `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=1000&page=0`,
-    )
+    SecureFetch(`${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=1000&page=0`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -181,31 +185,31 @@ function HomePage() {
     SecureFetch(`${config.url.API_GET_HTML}?name=homePagePanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setHomeHtml(htmlData[0]?.html);
+        setHomeHtml(htmlData[0]?.html);
       });
 
     SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoLeftPanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setSecondaryInfoPanelLeftHTML(htmlData[0]?.html);
+        setSecondaryInfoPanelLeftHTML(htmlData[0]?.html);
       });
 
     SecureFetch(`${config.url.API_GET_HTML}?name=secondaryInfoRightPanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setSecondaryInfoPanelRightHTML(htmlData[0]?.html);
+        setSecondaryInfoPanelRightHTML(htmlData[0]?.html);
       });
 
     SecureFetch(`${config.url.API_GET_HTML}?name=currentProjectsPanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setCurrentProjectsHTML(htmlData[0]?.html);
+        setCurrentProjectsHTML(htmlData[0]?.html);
       });
 
     SecureFetch(`${config.url.API_GET_HTML}?name=additionalInfoPanel`)
       .then((response) => response.json())
       .then((htmlData) => {
-       setAdditionalInfoPanelHTML(htmlData[0]?.html);
+        setAdditionalInfoPanelHTML(htmlData[0]?.html);
       });
   }, []);
 
@@ -226,7 +230,7 @@ function HomePage() {
       .catch((error) => {
         console.error(error);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
     setCurrentProjects(getCurrentProjects(projects));
@@ -236,188 +240,256 @@ function HomePage() {
     const currentProjects = [];
 
     projects.forEach((project) => {
-      if (!project.end_date || project.end_date === ''){
+      if (!project.end_date || project.end_date === "") {
         currentProjects.push(project);
       } else {
         const today = new Date(`T00:00:00`);
-        if (today <= project.end_date){
+        if (today <= project.end_date) {
           currentProjects.push(project);
         }
       }
-    })
+    });
     return currentProjects;
-  }
+  };
 
   return (
     <>
-    <div className="homepage">
-      <div className="content">
-        <p className="page-title">Welcome to <span class="orange">{uiConfig.app.name}</span></p>
-        <div className="ui homepage-panel description" style={{marginBottom: "-50px"}}> 
-          <div className="description">
-          {homeHtml && (
-            <InnerHTML html={homeHtml} className="overviewText"/>
-          )}
-          </div>
-        </div>
-        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        
-          <div className="projects-carousel-wrapper" style={{paddingTop: "75px", paddingBottom: "75px"}}>
-            <div className="projects-carousel-content">
-              <button
-              className="pagination-arrow-left"
-              onClick={() => {
-                setFeaturedSlideDirection(-1);
-                setFeaturedProjectSlide((prev) => (prev - 1 + totalFeaturedSlides) % totalFeaturedSlides)}}
-              >
-              <Icon name="arrow alternate circle left outline"/>
-            </button>
-
-            <div className="exemplary-projects-carousel">
-            <AnimatePresence mode="popLayout" custom={featuredSlideDirection}>
-            <motion.div
-              key={featuredProjectSlide}
-              custom={featuredSlideDirection}
-              variants={featuredSlideAnimations}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.7, ease: "easeInOut", opacity: { duration: 0.9, ease: "easeInOut" } }}
-              className="exemplary-projects-carousel"
-              style={{ display: "flex", flexDirection: "row", gap: "20px", perspective: "1000px", transformStyle: "preserve-3d" }}
-            >
-              {visibleFeaturedProjects.map((featuredProject, index) => {
-                let cardClass;
-                if (featuredProjectsPerSlide===1){
-                  cardClass = "card-exemplary";
-                }else{
-                  cardClass = (index === 0) ? "card-exemplary-left" : (index === 2) ? "card-exemplary-right" : "card-exemplary";
-                }
-                return(
-                <motion.div
-                  key={featuredProject.id}
-                  custom={{ direction: featuredSlideDirection, index}}
-                  variants={featuredCardAnimations}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
-                  style={{ transformStyle: "preserve-3d", transformOrigin: index === 0 ? "right center" : index === 2 ? "left center" : "center center", }}
-                >
-                  <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>
-                </motion.div>
-                )
-              })}
-            </motion.div>
-          </AnimatePresence>
-          </div>
-
-            <button
-              className="pagination-arrow-right"
-              onClick={() => {
-                setFeaturedSlideDirection(1);
-                setFeaturedProjectSlide((prev) => (prev + 1) % totalFeaturedSlides)}}
-            >
-              <Icon name="arrow alternate circle right outline"/>
-            </button>
+      <div className="homepage">
+        <div className="content">
+          <p className="page-title">
+            Welcome to <span class="orange">{uiConfig.app.name}</span>
+          </p>
+          <div
+            className="ui homepage-panel description"
+            style={{ marginBottom: "-50px" }}
+          >
+            <div className="description">
+              {homeHtml && (
+                <InnerHTML html={homeHtml} className="overviewText" />
+              )}
             </div>
-            <div className="gradient-overlay-left"></div>
-            <div className="gradient-overlay-right"></div>
           </div>
-          <div className="ui header" style={{ marginTop: -40, marginBottom: 20 }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
-      </div>
-      </div>
-
-      <div className="ui invisible divider"></div>
-      <div className="row secondaryInfoRow ui homepage-panel">
-        <div class="secondaryInfoContainerLeft">
-        {secondaryInfoPanelLeftHTML && (
-            <InnerHTML html={secondaryInfoPanelLeftHTML} className="ui homepage-panel overviewText" />
-          )}
-        </div>
-
-        <div class="secondaryInfoContainerRight">
-        {secondaryInfoPanelRightHTML && (
-            <InnerHTML html={secondaryInfoPanelRightHTML} className="ui homepage-panel overviewText outline" />
-          )}
-        </div>
-      </div>
-      <div className="ui invisible divider"></div>
-
-      <Container>
-
-      <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        {currentProjectsHTML && (
-            <InnerHTML html={currentProjectsHTML} className="ui homepage-panel header" style={{paddingTop: 15, paddingBottom: 25}} />
-          )}
-        <div className="projects-carousel-wrapper">
-        <div className="current-projects-carousel">
-          <button
-            className="pagination-arrow-left-secondary"
-            onClick={() => {
-              setCurrentSlideDirection(-1);
-              setCurrentProjectSlide((prev) => Math.max(0, prev - 1))}}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <Icon name="arrow alternate circle left outline"/>
-          </button>
-
-          <AnimatePresence mode="wait" custom={currentSlideDirection}>
-            <motion.div
-              className="current-projects-carousel"
-              key={currentProjectSlide}
-              >
-              {visibleCurrentProjects.map((currentProject, index) => (
-                <motion.div
-                  key={currentProject.id}
-                  custom={currentSlideDirection}
-                  variants={currentSlideAnimations}
-                  initial="enter"
-                  whileInView="center"
-                  viewport={{ once: true, amount: 0.5 }}
-                  exit="exit"
-                  transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
+            <div
+              className="projects-carousel-wrapper"
+              style={{ paddingTop: "75px", paddingBottom: "75px" }}
+            >
+              <div className="projects-carousel-content">
+                <button
+                  className="pagination-arrow-left"
+                  onClick={() => {
+                    setFeaturedSlideDirection(-1);
+                    setFeaturedProjectSlide(
+                      (prev) =>
+                        (prev - 1 + totalFeaturedSlides) % totalFeaturedSlides,
+                    );
+                  }}
                 >
-                  <ProjectCard
-                    project={currentProject}
-                    onClick={() => setSelectedProject(currentProject)}
-                 />
-                </motion.div>
-              ))}
-              </motion.div>
-            </AnimatePresence>
-          
+                  <Icon name="arrow alternate circle left outline" />
+                </button>
 
-          <button
-            className="pagination-arrow-right-secondary"
-            onClick={() => {
-              setCurrentSlideDirection(1);
-              setCurrentProjectSlide((prev) => (prev + 1) % totalCurrentSlides)}}
-          >
-            <Icon name="arrow alternate circle right outline"/>
-          </button>
-        </div>
-        </div>
-        <div className="ui header" style={{ marginTop: 20, marginBottom: 25 }}>{currentProjectSlide + 1} of {totalCurrentSlides}</div>
-        <div class="row">
-          <button id="allProjectsBtn" class="button homepage-button" onClick={handleBrowseAllProjectsClick}>
-            Browse All Projects
-          </button>
+                <div className="exemplary-projects-carousel">
+                  <AnimatePresence
+                    mode="popLayout"
+                    initial={false}
+                    custom={{ direction: featuredSlideDirection }}
+                  >
+                    {visibleFeaturedProjects.map((featuredProject, index) => {
+                      const key =
+                        featuredProject.id ??
+                        featuredProject._id ??
+                        featuredProject.project_id ??
+                        featuredProject.title;
+
+                      let cardClass;
+                      if (featuredProjectsPerSlide === 1) {
+                        cardClass = "card-exemplary";
+                      } else {
+                        cardClass =
+                          index === 0
+                            ? "card-exemplary-left"
+                            : index === 2
+                              ? "card-exemplary-right"
+                              : "card-exemplary";
+                      }
+
+                      return (
+                        <motion.div
+                          layout="position"
+                          key={key}
+                          custom={{ direction: featuredSlideDirection, index }}
+                          variants={featuredCardAnimations}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          style={{ transformStyle: "preserve-3d" }}
+                        >
+                          <ProjectCard
+                            project={featuredProject}
+                            onClick={() => setSelectedProject(featuredProject)}
+                            cardClass={cardClass}
+                          />
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+
+                <button
+                  className="pagination-arrow-right"
+                  onClick={() => {
+                    setFeaturedSlideDirection(1);
+                    setFeaturedProjectSlide(
+                      (prev) => (prev + 1) % totalFeaturedSlides,
+                    );
+                  }}
+                >
+                  <Icon name="arrow alternate circle right outline" />
+                </button>
+              </div>
+              <div className="gradient-overlay-left"></div>
+              <div className="gradient-overlay-right"></div>
+            </div>
+            <div
+              className="ui header"
+              style={{ marginTop: -40, marginBottom: 20 }}
+            >
+              {featuredProjectSlide + 1} of {totalFeaturedSlides}
+            </div>
+          </div>
         </div>
 
         <div className="ui invisible divider"></div>
+        <div className="row secondaryInfoRow ui homepage-panel">
+          <div class="secondaryInfoContainerLeft">
+            {secondaryInfoPanelLeftHTML && (
+              <InnerHTML
+                html={secondaryInfoPanelLeftHTML}
+                className="ui homepage-panel overviewText"
+              />
+            )}
+          </div>
 
-        {additionalInfoPanelHTML && (
-          <InnerHTML html={additionalInfoPanelHTML} className="ui homepage-panel"  style={{paddingTop: 15, textAlign: "center"}} />
-        )}
+          <div class="secondaryInfoContainerRight">
+            {secondaryInfoPanelRightHTML && (
+              <InnerHTML
+                html={secondaryInfoPanelRightHTML}
+                className="ui homepage-panel overviewText outline"
+              />
+            )}
+          </div>
+        </div>
+        <div className="ui invisible divider"></div>
+
+        <Container>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {currentProjectsHTML && (
+              <InnerHTML
+                html={currentProjectsHTML}
+                className="ui homepage-panel header"
+                style={{ paddingTop: 15, paddingBottom: 25 }}
+              />
+            )}
+            <div className="projects-carousel-wrapper">
+              <div className="current-projects-carousel">
+                <button
+                  className="pagination-arrow-left-secondary"
+                  onClick={() => {
+                    setCurrentSlideDirection(-1);
+                    setCurrentProjectSlide((prev) => Math.max(0, prev - 1));
+                  }}
+                >
+                  <Icon name="arrow alternate circle left outline" />
+                </button>
+
+                <AnimatePresence mode="wait" custom={currentSlideDirection}>
+                  <motion.div
+                    className="current-projects-carousel"
+                    key={currentProjectSlide}
+                  >
+                    {visibleCurrentProjects.map((currentProject, index) => (
+                      <motion.div
+                        key={currentProject.id}
+                        custom={currentSlideDirection}
+                        variants={currentSlideAnimations}
+                        initial="enter"
+                        whileInView="center"
+                        viewport={{ once: true, amount: 0.5 }}
+                        exit="exit"
+                        transition={{
+                          duration: 0.4,
+                          ease: "easeInOut",
+                          delay: index * 0.1,
+                        }}
+                      >
+                        <ProjectCard
+                          project={currentProject}
+                          onClick={() => setSelectedProject(currentProject)}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+
+                <button
+                  className="pagination-arrow-right-secondary"
+                  onClick={() => {
+                    setCurrentSlideDirection(1);
+                    setCurrentProjectSlide(
+                      (prev) => (prev + 1) % totalCurrentSlides,
+                    );
+                  }}
+                >
+                  <Icon name="arrow alternate circle right outline" />
+                </button>
+              </div>
+            </div>
+            <div
+              className="ui header"
+              style={{ marginTop: 20, marginBottom: 25 }}
+            >
+              {currentProjectSlide + 1} of {totalCurrentSlides}
+            </div>
+            <div class="row">
+              <button
+                id="allProjectsBtn"
+                class="button homepage-button"
+                onClick={handleBrowseAllProjectsClick}
+              >
+                Browse All Projects
+              </button>
+            </div>
+
+            <div className="ui invisible divider"></div>
+
+            {additionalInfoPanelHTML && (
+              <InnerHTML
+                html={additionalInfoPanelHTML}
+                className="ui homepage-panel"
+                style={{ paddingTop: 15, textAlign: "center" }}
+              />
+            )}
+          </div>
+
+          <ProjectModal
+            project={selectedProject}
+            open={selectedProject !== null}
+            onClose={() => setSelectedProject(null)}
+          />
+        </Container>
       </div>
-
-      <ProjectModal
-        project={selectedProject}
-        open={selectedProject !== null}
-        onClose={() => setSelectedProject(null)}
-      />
-      </Container>
-    </div>
     </>
   );
 }

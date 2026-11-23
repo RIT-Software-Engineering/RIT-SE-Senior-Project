@@ -28,7 +28,7 @@
 }
 
 .orange {
-  color: #F76902;
+  color: #f76902;
 }
 
 .secondaryInfoRow {
@@ -68,7 +68,7 @@
 }
 
 .dark-mode .description .overviewText {
-  color: #D9D9D9;
+  color: #d9d9d9;
 }
 
 .secondaryInfoContainerRight .outline {
@@ -79,7 +79,7 @@
 }
 
 .homepage-button {
-  background-color: #F76902;
+  background-color: #f76902;
   border-radius: 0px;
   color: white !important;
   border: none;
@@ -93,9 +93,13 @@
 
 .exemplary-projects-carousel {
   display: flex;
-  flex-direction: row;
+  position: relative;
   flex-wrap: nowrap;
-  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
+  perspective: 1200px;
 }
 
 .current-projects-carousel {
@@ -124,12 +128,12 @@
 }
 
 .homepage-project-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    border: transparent !important;
-    box-shadow: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border: transparent !important;
+  box-shadow: none !important;
 }
 
 .homepage {
@@ -143,7 +147,7 @@
   width: 100%;
   top: 300px;
   height: 200px;
-  background: linear-gradient(to bottom, #fff, #D9D9D9);
+  background: linear-gradient(to bottom, #fff, #d9d9d9);
   z-index: -1;
 }
 
@@ -205,21 +209,24 @@
   z-index: 4;
 }
 
-.pagination-arrow-right:hover, .pagination-arrow-left:hover,
-.pagination-arrow-right-secondary:hover, .pagination-arrow-left-secondary:hover {
+.pagination-arrow-right:hover,
+.pagination-arrow-left:hover,
+.pagination-arrow-right-secondary:hover,
+.pagination-arrow-left-secondary:hover {
   cursor: pointer;
-  color: #F76902;
+  color: #f76902;
   transition: all 0.25s ease;
 }
 
 .dark-mode .pagination-arrow-left,
 .dark-mode .pagination-arrow-right,
 .dark-mode .pagination-arrow-left-secondary,
-.dark-mode .pagination-arrow-right-secondary{
+.dark-mode .pagination-arrow-right-secondary {
   color: white;
 }
 
-.gradient-overlay-right, .gradient-overlay-left {
+.gradient-overlay-right,
+.gradient-overlay-left {
   position: absolute;
   top: -30px;
   bottom: -30px;
@@ -227,40 +234,24 @@
   pointer-events: none;
 }
 
-.gradient-overlay-left{
+.gradient-overlay-left {
   left: 0;
-  background: linear-gradient(
-    to left,
-    transparent 10%,
-    white 100%
-  );
+  background: linear-gradient(to left, transparent 10%, white 100%);
 }
 
-.gradient-overlay-right{
+.gradient-overlay-right {
   right: 0;
-  background: linear-gradient(
-    to right,
-    transparent 10%,
-    white 100%
-  );
+  background: linear-gradient(to right, transparent 10%, white 100%);
 }
 
-.dark-mode .gradient-overlay-right{
+.dark-mode .gradient-overlay-right {
   right: 0;
-  background: linear-gradient(
-    to right,
-    transparent 10%,
-    #1a1a1a 100%
-  );
+  background: linear-gradient(to right, transparent 10%, #1a1a1a 100%);
 }
 
-.dark-mode .gradient-overlay-left{
+.dark-mode .gradient-overlay-left {
   left: 0;
-  background: linear-gradient(
-    to left,
-    transparent 10%,
-    #1a1a1a 100%
-  );
+  background: linear-gradient(to left, transparent 10%, #1a1a1a 100%);
 }
 
 .carousel-track {
