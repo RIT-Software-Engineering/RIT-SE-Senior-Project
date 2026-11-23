@@ -34,7 +34,7 @@ export default function WeeklyHoursViewer(props) {
 
     const completedHours = completedWeeks.reduce(
       (sum, { index }) => sum + (Number(weeklyHours[index]) || 0),
-      0
+      0,
     );
 
     return (completedHours / completedWeeks.length).toFixed(2);

@@ -25,7 +25,7 @@ async function startServer() {
   app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
   app.listen(port);
 }
-"use strict";
+("use strict");
 // Leave importing dotenv as the topmost thing
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
