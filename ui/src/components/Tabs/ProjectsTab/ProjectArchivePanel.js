@@ -1,6 +1,7 @@
 import DatabaseTableEditor from "../../shared/editors/DatabaseTableEditor";
 import { config, USERTYPES } from "../../util/functions/constants";
 import React, { useEffect, useState, useContext } from "react";
+import { Popup } from "semantic-ui-react";
 import { SecureFetch } from "../../util/functions/secureFetch";
 import { slugify } from "../../util/functions/utils";
 import { UserContext } from "../../util/functions/UserContext";
@@ -434,19 +435,28 @@ export default function ProjectArchivePanel(props) {
   return (
     <>
       {canEdit && (
-        <DatabaseTableEditor
-          initialState={initialState}
-          submissionModalMessages={submissionModalMessages}
-          submitRoute={submitRouter}
-          formFieldArray={formFieldArray}
-          header={newArchive ? "Create Website" : "Edit Website"}
-          button={newArchive ? "plus" : "edit"}
-          callback={() => {
-            loadArchiveData(props.project);
-          }}
-          viewOnly={props.viewOnly}
-          preSubmit={preSubmit}
-          errors={errors}
+        <Popup
+          content={newArchive ? "Create public display" : "Edit public display"}
+          className="universal-tooltip"
+          position="top center"
+          trigger={
+            <span>
+              <DatabaseTableEditor
+                initialState={initialState}
+                submissionModalMessages={submissionModalMessages}
+                submitRoute={submitRouter}
+                formFieldArray={formFieldArray}
+                header={newArchive ? "Create Website" : "Edit Website"}
+                button={newArchive ? "plus" : "edit"}
+                callback={() => {
+                  loadArchiveData(props.project);
+                }}
+                viewOnly={props.viewOnly}
+                preSubmit={preSubmit}
+                errors={errors}
+              />
+            </span>
+          }
         />
       )}
     </>

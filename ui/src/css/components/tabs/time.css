@@ -30,13 +30,13 @@
 .time-row-new {
   font-weight: bold;
   box-shadow:
-    inset 5px 0 0 0 var(--action-bar-proposal-yellow),
+    inset 6px 0 0 0 var(--action-bar-proposal-yellow),
     inset 0 -0 0 0 var(--action-bar-proposal-yellow);
 }
 
 .time-row-deleted {
   box-shadow:
-    inset 5px 0 0 0 var(--action-bar-proposal-red),
+    inset 6px 0 0 0 var(--action-bar-proposal-red),
     inset 0 -0 0 0 var(--action-bar-proposal-red);
   text-decoration: line-through;
 }
@@ -55,6 +55,28 @@
   box-shadow:
     inset -1px 1px 0 0 var(--text-primary),
     inset 0 -1px 0 0 var(--text-primary);
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.table tbody tr[class*="time-row-new"] {
+    box-shadow: none !important;
+    border-left: 6px solid var(--action-bar-proposal-yellow) !important;
+  }
+
+  .ui.table tbody tr[class*="time-row-deleted"] {
+    box-shadow: none !important;
+    border-left: 6px solid var(--action-bar-proposal-red) !important;
+  }
+
+  .ui.table tbody tr[class*="time-row-clickable"]:hover > td,
+  .ui.table tbody tr[class*="time-row-clickable"]:hover > td:first-child,
+  .ui.table tbody tr[class*="time-row-clickable"]:hover > td:last-child {
+    box-shadow: none !important;
+  }
+  .ui.table tbody tr[class*="time-row-clickable"]:hover {
+    outline: 1px solid var(--text-primary);
+    outline-offset: -1px;
+  }
 }
 
 .time-table-cell .proposal-row-yellow {

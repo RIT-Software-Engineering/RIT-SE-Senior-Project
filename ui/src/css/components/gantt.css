@@ -229,13 +229,13 @@
 }
 
 .relevant-actions-container .proposal-row-yellow {
-  --state-color: #fbbd08;
+  --state-color: var(--action-bar-proposal-yellow);
 }
 .relevant-actions-container .proposal-row-red {
-  --state-color: #db2828;
+  --state-color: var(--action-bar-proposal-red);
 }
 .relevant-actions-container .proposal-row-gray {
-  --state-color: #767676;
+  --state-color: var(--action-bar-proposal-gray);
 }
 
 .relevant-actions-container .proposal-row-yellow,
@@ -257,6 +257,7 @@
   border-top: 8px solid var(--state-color);
   border-left: 4px solid var(--state-color);
   border-radius: 5px;
+  cursor: pointer;
 }
 
 /* .relevant-actions-container .proposal-row-yellow,

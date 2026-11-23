@@ -33,9 +33,16 @@
 
 .action-row-highlight {
   box-shadow:
-    inset 5px 0 0 0 var(--action-bar-proposal-yellow),
+    inset 6px 0 0 0 var(--action-bar-proposal-yellow),
     inset 0 -0 0 0 var(--action-bar-proposal-yellow);
   font-weight: bold;
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.table tbody tr[class*="action-row-"] {
+    box-shadow: none !important;
+    border-left: 6px solid var(--action-bar-proposal-yellow) !important;
+  }
 }
 
 .accordion-buttons-container-static {
