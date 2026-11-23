@@ -3001,31 +3001,57 @@ module.exports = (db) => {
       // Add a case for when the action target is 'peer_evaluation'
       // The action is not done unless compelted by all students, AND the coach has passed it through
       //   - For better UI/UX, if the coach has not passed it through and the students have; the peer evaluation visual on the dashboard should be red INSTEAD of directly falling onto the UNHANDLED-CASE
+
       let getTimelineActions = `SELECT action_title, action_id, start_date, due_date, semester, action_target, date_deleted, short_desc, file_types, file_size, page_html,
-                    CASE
-                        WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
-                        WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
-                        WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
-                        WHEN action_target = 'peer_evaluation' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)
-                        ) AND EXISTS (SELECT 1 FROM project_coaches pc JOIN action_log al ON al.system_id = pc.coach_id WHERE pc.project_id = ? AND al.action_template = actions.action_id AND al.project = ?) THEN 'green'
-                        WHEN action_target = 'peer_evaluation' AND date('now') < start_date THEN 'grey'
-                        WHEN action_target = 'peer_evaluation' THEN 'red'
-                        WHEN action_target IS 'individual' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.project = ? AND u.system_id NOT IN (SELECT action_log.system_id FROM action_log WHERE action_log.action_template = actions.action_id AND action_log.project = ?)) THEN 'green'
-                        WHEN start_date <= date('now') AND due_date >= date('now') THEN 'yellow'
-                        WHEN date('now') > due_date AND system_id IS NULL THEN 'red'
-                        WHEN date('now') > due_date AND action_target IS 'individual' AND COUNT(DISTINCT system_id) != (SELECT COUNT(DISTINCT system_id) FROM users WHERE users.project = ?) THEN 'red'
-                        WHEN date('now') < start_date THEN 'grey'
-                    ELSE 'UNHANDLED-CASE'
-                END AS 'state'
-            FROM actions
-            LEFT JOIN action_log
-                ON action_log.action_template = actions.action_id AND action_log.project = ?
-                WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
-                AND actions.action_target NOT IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}')
-            GROUP BY actions.action_id`;
+                          CASE
+                              WHEN date('now') < date(start_date) THEN 'grey'
+
+                              WHEN action_target IS 'admin' AND system_id IS NOT NULL THEN 'green'
+                              WHEN action_target IS 'coach' AND system_id IS NOT NULL THEN 'green'
+                              WHEN action_target IS 'team' AND system_id IS NOT NULL THEN 'green'
+
+                              WHEN action_target = 'peer_evaluation' AND NOT EXISTS (
+                                  SELECT 1 FROM users u
+                                  WHERE u.project = ? AND u.type = 'student'
+                                  AND NOT EXISTS (
+                                      SELECT 1 FROM action_log al
+                                      WHERE al.action_template = actions.action_id
+                                      AND al.project = ?
+                                      AND al.system_id = u.system_id
+                                  )
+                              ) AND EXISTS (
+                                  SELECT 1 FROM project_coaches pc
+                                  JOIN action_log al ON al.system_id = pc.coach_id
+                                  WHERE pc.project_id = ?
+                                  AND al.action_template = actions.action_id
+                                  AND al.project = ?
+                              ) THEN 'green'
+
+                              WHEN action_target IS 'individual' AND NOT EXISTS (
+                                  SELECT 1 FROM users u
+                                  WHERE u.project = ? AND u.type = 'student'
+                                  AND NOT EXISTS (
+                                      SELECT 1 FROM action_log al
+                                      WHERE al.action_template = actions.action_id
+                                      AND al.project = ?
+                                      AND al.system_id = u.system_id
+                                  )
+                              ) THEN 'green'
+
+                              WHEN date('now') BETWEEN date(start_date) AND date(due_date) THEN 'yellow'
+
+                              WHEN date('now') > date(due_date) THEN 'red'
+
+                          ELSE 'UNHANDLED-CASE'
+                      END AS 'state'
+                  FROM actions
+                  LEFT JOIN action_log
+                      ON action_log.action_template = actions.action_id AND action_log.project = ?
+                      WHERE actions.date_deleted = '' AND actions.semester = (SELECT distinct projects.semester FROM projects WHERE projects.project_id = ?)
+                      AND actions.action_target NOT IN ('${ACTION_TARGETS.COACH_ANNOUNCEMENT}', '${ACTION_TARGETS.STUDENT_ANNOUNCEMENT}')
+                  GROUP BY actions.action_id`;
 
       db.query(getTimelineActions, [
-        req.query.project_id,
         req.query.project_id,
         req.query.project_id,
         req.query.project_id,

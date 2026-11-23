@@ -5,8 +5,6 @@
 
 /**
  * FOR DEVELOPMENT USE ONLY
- *
- * Uncomment the following line to reset the database.
  */
 const redeployDatabase = require("./db_setup");
 
@@ -15,7 +13,7 @@ const redeployDatabase = require("./db_setup");
  */
 async function startServer() {
   // Uncomment to reset the database during development.
-  await redeployDatabase();
+  //await redeployDatabase();
 
   // This is here because saml_routes needs to be initialized after the express.urlencoded() middleware to be able to process Shibboleth logins
   const routing = require("./server/routing/index");
@@ -25,7 +23,7 @@ async function startServer() {
   app.use(errorHandler); // Handles all backend errors, MUST BE IMPLEMENTED LAST
   app.listen(port);
 }
-"use strict";
+("use strict");
 // Leave importing dotenv as the topmost thing
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
