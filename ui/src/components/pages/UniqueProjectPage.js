@@ -16,8 +16,6 @@ const baseImageURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 const baseProjectURL = `${config.url.BASE_URL}/projects/`;
 const baseArchiveURL = `${config.url.API_GET_ARCHIVE_IMAGE}?fileName=`;
 
-const CONTENT_HEIGHT = 250;
-
 // Helper function to format comma-separated name lists with proper spacing
 const listNames = (nameString) => {
   if (!nameString) return "";
@@ -295,7 +293,9 @@ function UniqueProjectPage({ projectData }) {
               )}
 
               <div className="ui small header">Keywords</div>
-              <p className="unique-project-whitespace">{project?.keywords}</p>
+              <p className="unique-project-whitespace info-row">
+                {project?.keywords}
+              </p>
             </div>
           </div>
         </div>
