@@ -928,7 +928,17 @@ export default function RecentActivity(props) {
         className="recent-activity-item"
       >
         <div className="recent-activity-content">
-          <Icon name={item.icon} />
+          <Icon
+            name={item.icon}
+            style={{
+              color:
+                item.type === "action_overdue"
+                  ? "var(--action-bar-proposal-red)"
+                  : item.type === "action_submission"
+                    ? "var(--action-bar-proposal-green)"
+                    : undefined,
+            }}
+          />
 
           <div className="recent-activity-actor-line">
             {item.type === "action_submission" && (
@@ -1060,7 +1070,11 @@ export default function RecentActivity(props) {
   };
 
   const activityContent = (
-    <div className="since-last-visit">
+    <div
+      className={`since-last-visit${
+        user?.role === USERTYPES.COACH ? " recent-activity-coach" : ""
+      }`}
+    >
       {loading && <Loader active inline="centered" />}
 
       {!loading && error && <Message negative>{error}</Message>}
@@ -1102,8 +1116,6 @@ export default function RecentActivity(props) {
             <div className="recent-activity-time-logs">
               {timeLogActivity.map((item) => renderActivity(item))}
             </div>
-
-            <div className="recent-activity-divider" />
           </>
         )}
 
@@ -1116,27 +1128,43 @@ export default function RecentActivity(props) {
               justifyContent: "space-between",
               alignItems: "center",
               marginBottom: "1rem",
+              flexWrap: "wrap",
+              gap: "1rem",
             }}
           >
-            <div>
-              <h2
-                className="since-last-visit-header"
-                style={{ marginBottom: "0.25rem" }}
-              >
-                {recentActivityConfig.activityFeed.title}
-              </h2>
+            <h2 className="since-last-visit-header" style={{ margin: 0 }}>
+              {recentActivityConfig.activityFeed.title}
+            </h2>
 
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                marginLeft: "auto",
+                flexShrink: 0,
+              }}
+            >
               {cutoff && (
-                <div className="since-last-visit-cutoff">
+                <span
+                  className="since-last-visit-cutoff"
+                  style={{ whiteSpace: "nowrap" }}
+                >
                   Showing activity since {formatDateTime(cutoff)}
-                </div>
+                </span>
               )}
-            </div>
 
-            <div>
               {recentActivityConfig.activityFeed.allowDismiss &&
                 visibleActivity.length > 0 && (
-                  <Button fluid size="small" onClick={dismissActivity}>
+                  <Button
+                    size="small"
+                    style={{
+                      margin: 0,
+                      flexShrink: 0,
+                      whiteSpace: "nowrap",
+                    }}
+                    onClick={dismissActivity}
+                  >
                     <Icon name="check" />
                     Dismiss All
                   </Button>
@@ -1235,8 +1263,6 @@ export default function RecentActivity(props) {
   ) {
     return null;
   }
-  if (user?.role === USERTYPES.STUDENT) {
-    return activityContent;
-  }
-  return <Segment>{activityContent}</Segment>;
+
+  return activityContent;
 }
