@@ -316,11 +316,6 @@ function UniqueProjectPage({ projectData }) {
                   </div>
                 )
               }
-
-              <div className="ui small header">Keywords</div>
-              <p className="unique-project-whitespace info-row">
-                {project?.keywords}
-              </p>
             </div>
           </div>
         </div>
