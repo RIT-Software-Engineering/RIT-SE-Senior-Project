@@ -668,29 +668,6 @@ export default function ActionModal(props) {
             setFormTouched(false);
             setReadyToMark(false);
             setTimeout(() => setReadyToMark(true), 250);
-            setTimeout(() => {
-              if (formTouched && !props.viewOnly) {
-                openUnsavedModal(() => {
-                  setErrors([]);
-                  setFormTouched(false);
-                  setOpen(false);
-                  props.isOpenCallback(false);
-                });
-              } else {
-                setOpen(false);
-                props.isOpenCallback(false);
-                setFormTouched(false);
-              }
-            }, 0);
-          }}
-          onOpen={() => {
-            console.log("ACTION MODAL OPEN");
-            setOpen(true);
-            props.isOpenCallback(true);
-            fetchStudentNames();
-            setFormTouched(false);
-            setReadyToMark(false);
-            setTimeout(() => setReadyToMark(true), 250);
           }}
           open={open}
           trigger={
