@@ -161,7 +161,7 @@ export default function Proposals(props) {
                     }
                   />
                   <Popup
-                    content="View public profile"
+                    content="View public display"
                     className="universal-tooltip"
                     position="top center"
                     trigger={
@@ -198,29 +198,63 @@ export default function Proposals(props) {
                 </>
               ) : (
                 <>
-                  <ProjectViewerModal
-                    project={proposal}
-                    semesterMap={semesterMap}
+                  <Popup
+                    content="View Public Display"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <ProjectViewerModal
+                          project={proposal}
+                          semesterMap={semesterMap}
+                        />
+                      </span>
+                    }
                   />
-                  <WebsiteViewerModal project={proposal} />
-                  <a
-                    href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
-                    className="ui icon button"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Icon name="download" />
-                  </a>
+                  <Popup
+                    content="View Archive"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <WebsiteViewerModal project={proposal} />
+                      </span>
+                    }
+                  />
+                  <Popup
+                    content="Download PDF"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <a
+                        href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                        className="ui icon button"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Icon name="download" />
+                      </a>
+                    }
+                  />
                   {(!props.requireMembershipCheck ||
                     projectPermissions[proposal.project_id] ||
                     userContext.user?.role === USERTYPES.ADMIN) && (
-                    <ProjectEditorModal
-                      viewOnly={props.viewOnly}
-                      project={proposal}
-                      semesterData={props.semesterData}
-                      activeCoaches={props.activeCoaches}
-                      activeSponsors={props.activeSponsors}
-                      callback={props.callback}
+                    <Popup
+                      content="Edit Project"
+                      className="universal-tooltip"
+                      position="top center"
+                      trigger={
+                        <span>
+                          <ProjectEditorModal
+                            viewOnly={props.viewOnly}
+                            project={proposal}
+                            semesterData={props.semesterData}
+                            activeCoaches={props.activeCoaches}
+                            activeSponsors={props.activeSponsors}
+                            callback={props.callback}
+                          />
+                        </span>
+                      }
                     />
                   )}
                 </>
