@@ -25,6 +25,7 @@ const uiConfig = {
       allowDismiss: true,
       showOverdueActions: true,
       showActionSubmissions: true,
+      includeCurrentUser: false,
     },
   },
   logoPath:

@@ -455,7 +455,11 @@ export default function RecentActivity(props) {
       const submissionActivity = recentActivityConfig.activityFeed
         .showActionSubmissions
         ? actionLogs
-            .filter((log) => !isOwnActivity(log, user))
+            .filter(
+              (log) =>
+                recentActivityConfig.activityFeed.includeCurrentUser ||
+                !isOwnActivity(log, user),
+            )
             .map((log) => {
               const action = actionsById.get(String(log.action_template));
 
