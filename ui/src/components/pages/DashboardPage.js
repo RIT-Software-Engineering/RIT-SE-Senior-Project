@@ -286,7 +286,10 @@ export default function DashboardPage() {
                     );
                   })
                   .map((project) => (
-                    <div key={project.project_id}>
+                    <div
+                      key={project.project_id}
+                      className="recent-activity-coach-project"
+                    >
                       <h2>{project.display_name || project.title}</h2>
                       <RecentActivity
                         projectId={project.project_id}
