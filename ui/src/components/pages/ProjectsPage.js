@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import ProjectCard from "../shared/ProjectCard.js"
-import ProjectModal from "../shared/ProjectModal.js"
+import ProjectCard from "../shared/ProjectCard.js";
+import ProjectModal from "../shared/ProjectModal.js";
 import { Checkbox, Dropdown, Icon, Input, Pagination } from "semantic-ui-react";
 import { config } from "../util/functions/constants";
 import { SecureFetch } from "../util/functions/secureFetch";
+import { decode } from "html-entities";
 import _ from "lodash";
 import uiConfig from "../../config/uiConfig.js";
-import "../../css/components/pages/ProjectsPage.css"
-import "../../css/components/shared/projectCard.css"
+import "../../css/components/pages/ProjectsPage.css";
+import "../../css/components/shared/projectCard.css";
 
 const PROJECTS_PER_PAGE = 9;
 
@@ -46,9 +47,7 @@ function ProjectsPage() {
   }, [selectedSemesters, selectedStatus, selectedAward]);
 
   const getAllProjects = () => {
-    SecureFetch(
-      `${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=1000&page=0`,
-    )
+    SecureFetch(`${config.url.API_GET_ACTIVE_ARCHIVES}?resultLimit=1000&page=0`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -73,10 +72,14 @@ function ProjectsPage() {
     setActivePage(0);
   };
 
+  const decodeSynopsis = (synopsis) => {
+    return decode(synopsis).replace(/\r\n|\r/g, "\n");
+  };
+
   const getMonthName = (num) => {
-    const name = new Date(2000, num).toLocaleString('en-US', { month: 'long' });
+    const name = new Date(2000, num).toLocaleString("en-US", { month: "long" });
     return name;
-  }
+  };
 
   const getProjectDateRange = (projects) => {
     const semesters = new Set();
@@ -88,13 +91,13 @@ function ProjectsPage() {
       let end;
       let endMonth;
 
-      if (!project.end_date || project.end_date == ''){
+      if (!project.end_date || project.end_date == "") {
         end = new Date();
         const todayMonth = end.getMonth();
 
-        if (todayMonth <= SPRING_SEMESTER_END_MONTH){
+        if (todayMonth <= SPRING_SEMESTER_END_MONTH) {
           endMonth = SPRING_SEMESTER_END_MONTH;
-        } else if (todayMonth <= SUMMER_SEMESTER_END_MONTH){
+        } else if (todayMonth <= SUMMER_SEMESTER_END_MONTH) {
           endMonth = SUMMER_SEMESTER_END_MONTH;
         } else {
           endMonth = FALL_SEMESTER_END_MONTH;
@@ -107,37 +110,35 @@ function ProjectsPage() {
 
       if (startMonth === SPRING_SEMESTER_START_MONTH) {
         semesters.add(
-          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
       } else if (startMonth === SUMMER_SEMESTER_START_MONTH) {
         semesters.add(
-          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
-      } else if (startMonth === FALL_SEMESTER_START_MONTH){
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
+      } else if (startMonth === FALL_SEMESTER_START_MONTH) {
         semesters.add(
-          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
       }
 
       if (endMonth === SPRING_SEMESTER_END_MONTH) {
         semesters.add(
-          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
       } else if (endMonth === SUMMER_SEMESTER_END_MONTH) {
         semesters.add(
-          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
-      } else if (endMonth === FALL_SEMESTER_END_MONTH){
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
+      } else if (endMonth === FALL_SEMESTER_END_MONTH) {
         semesters.add(
-          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`
-        )
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        );
       }
-      }
-    );
+    });
 
     return [...semesters].sort().reverse();
-
-  }
+  };
 
   const filteredProjects = allProjects.filter((project) => {
     const start = new Date(`${project.start_date}T00:00:00`);
@@ -146,138 +147,224 @@ function ProjectsPage() {
     const endMonth = end.getMonth();
 
     let matchesSemester = false;
-    
-    if (startMonth === SPRING_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+
+    if (startMonth === SPRING_SEMESTER_START_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
-    } else if (startMonth === SUMMER_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+    } else if (startMonth === SUMMER_SEMESTER_START_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
-    } else if (startMonth === FALL_SEMESTER_START_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+    } else if (startMonth === FALL_SEMESTER_START_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
     }
 
-    if (endMonth === SPRING_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+    if (endMonth === SPRING_SEMESTER_END_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(SPRING_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SPRING_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
-    } else if (endMonth === SUMMER_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+    } else if (endMonth === SUMMER_SEMESTER_END_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(SUMMER_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(SUMMER_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
-    } else if (endMonth === FALL_SEMESTER_END_MONTH){
-      if (selectedSemesters.includes(`${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`)){
+    } else if (endMonth === FALL_SEMESTER_END_MONTH) {
+      if (
+        selectedSemesters.includes(
+          `${getMonthName(FALL_SEMESTER_START_MONTH)} ${start.getFullYear()} - ${getMonthName(FALL_SEMESTER_END_MONTH)} ${start.getFullYear()}`,
+        )
+      ) {
         matchesSemester = true;
       }
     }
 
-    const matchesAward = selectedAward === "any" || selectedAward === "" || project[uiConfig.awards[selectedAward]?.sqlName] === 1;
-    const matchesStatus = selectedStatus === "any" || selectedStatus === "" || project.end_date == '' || new Date(`${project.end_date}T00:00:00`) > new Date().setHours(0,0,0,0);
-    const matchesSearch = project.title?.toLowerCase().includes(searchBarValue.toLowerCase()) || project.title?.toLowerCase().includes(searchBarValue.toLowerCase());
+    const matchesAward =
+      selectedAward === "any" ||
+      selectedAward === "" ||
+      project[uiConfig.awards[selectedAward]?.sqlName] === 1;
+    const matchesStatus =
+      selectedStatus === "any" ||
+      selectedStatus === "" ||
+      project.end_date == "" ||
+      new Date(`${project.end_date}T00:00:00`) >
+        new Date().setHours(0, 0, 0, 0);
+    const matchesSearch =
+      project.title?.toLowerCase().includes(searchBarValue.toLowerCase()) ||
+      decodeSynopsis(project.synopsis)
+        ?.toLowerCase()
+        .includes(searchBarValue.toLowerCase());
 
     return matchesSemester && matchesAward && matchesStatus && matchesSearch;
-  })
+  });
 
-  const totalPages = Math.ceil(filteredProjects.length/PROJECTS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
 
-  const paginatedProjects = filteredProjects.slice(activePage * PROJECTS_PER_PAGE, (activePage + 1) * PROJECTS_PER_PAGE);
+  const paginatedProjects = filteredProjects.slice(
+    activePage * PROJECTS_PER_PAGE,
+    (activePage + 1) * PROJECTS_PER_PAGE,
+  );
 
   return (
     <>
-      <div className="row" style={{display: "flex", justifyContent: "center", marginTop: "60px", gap: "15px"}}>
-        <div className="page-title">Browse All</div><div className="page-title page-title--orange">Projects</div>
+      <div
+        className="row"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "60px",
+          gap: "15px",
+        }}
+      >
+        <div className="page-title">Browse All</div>
+        <div className="page-title page-title--orange">Projects</div>
       </div>
 
       <div className="ui invisible divider"></div>
 
-      <div style={{width: "100%", margin: "0 auto"}}>
-
-      
+      <div style={{ width: "100%", margin: "0 auto" }}>
         <div className="filter-header">
-        <Input
-          className="search-bar"
-          action="Go"
-          placeholder="Search"
-          value={searchBarValue}
-          onChange={_.debounce(handleSearchChange, 500, {
-            leading: true,
-          })}
-        />
-
-        <div className="dropdown-filters">
-          <Dropdown
-            className="dropdown--orange"
-            text="Terms"
-            selection
-            closeOnChange={false}
-            style={{ marginRight: 0}}
-          >
-            <Dropdown.Menu>
-              {availableSemesters.map((semester) => (
-                <Dropdown.Item
-                  key={semester}
-                  value={semester}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedSemesters((prev) => prev.includes(semester) ? prev.filter((s) => s !== semester) : [...prev, semester]);}}
-                >
-                  <Checkbox label={semester} checked={selectedSemesters.includes(semester)} onClick={(e) => e.stopPropagation()} onChange={() => {}} />
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <select className="dropdown--orange" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-            <option value="" disabled>Status</option>
-            <option value="any">All</option>
-            <option value="current">Current</option>
-          </select>
-          <select className="dropdown--orange" value={selectedAward} onChange={(e) => setSelectedAward(e.target.value)}>
-            <option value="" disabled>Award</option>
-            <option value="any">All</option>
-            {Object.values(uiConfig.awards).map((award) => (
-              <option key={award.id} value={award.id}>{award.name}</option>
-            ))}
-          </select>
-        </div>
-        </div>
-
-        </div>
-        
-
-        <div className="ui invisible divider"></div>
-
-        <div style={{display: "flex", flexDirection: "column", justifyContent:"center"}}>
-          <div className="projects-grid">
-            {paginatedProjects.map((project) => {
-              return <ProjectCard key={project.id} project={project} onClick={setSelectedProject}/>;
+          <Input
+            className="search-bar"
+            action="Go"
+            placeholder="Search"
+            value={searchBarValue}
+            onChange={_.debounce(handleSearchChange, 500, {
+              leading: true,
             })}
+          />
+
+          <div className="dropdown-filters">
+            <Dropdown
+              className="dropdown--orange"
+              text="Terms"
+              selection
+              closeOnChange={false}
+              style={{ marginRight: 0 }}
+            >
+              <Dropdown.Menu>
+                {availableSemesters.map((semester) => (
+                  <Dropdown.Item
+                    key={semester}
+                    value={semester}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedSemesters((prev) =>
+                        prev.includes(semester)
+                          ? prev.filter((s) => s !== semester)
+                          : [...prev, semester],
+                      );
+                    }}
+                  >
+                    <Checkbox
+                      label={semester}
+                      checked={selectedSemesters.includes(semester)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => {}}
+                    />
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            <select
+              className="dropdown--orange"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="" disabled>
+                Status
+              </option>
+              <option value="any">All</option>
+              <option value="current">Current</option>
+            </select>
+            <select
+              className="dropdown--orange"
+              value={selectedAward}
+              onChange={(e) => setSelectedAward(e.target.value)}
+            >
+              <option value="" disabled>
+                Award
+              </option>
+              <option value="any">All</option>
+              {Object.values(uiConfig.awards).map((award) => (
+                <option key={award.id} value={award.id}>
+                  {award.name}
+                </option>
+              ))}
+            </select>
           </div>
+        </div>
+      </div>
+
+      <div className="ui invisible divider"></div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <div className="projects-grid">
+          {paginatedProjects.map((project) => {
+            return (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onClick={setSelectedProject}
+              />
+            );
+          })}
+        </div>
 
         <div className="project-pagination">
           <button
-            className= "pagination-arrow"
+            className="pagination-arrow"
             disabled={activePage === 0}
-            onClick={() => setActivePage((prev) => Math.max(0, prev-1))}
+            onClick={() => setActivePage((prev) => Math.max(0, prev - 1))}
           >
-            <Icon name="arrow alternate circle left"/>
+            <Icon name="arrow alternate circle left" />
           </button>
 
-          <div className="ui header" style={{ margin: "0", paddingRight: "3.5px"}}>{activePage+1} of {totalPages}</div>
+          <div
+            className="ui header"
+            style={{ margin: "0", paddingRight: "3.5px" }}
+          >
+            {totalPages === 0 ? 0 : activePage + 1} of {totalPages}
+          </div>
 
           <button
-            className= "pagination-arrow"
+            className="pagination-arrow"
             disabled={activePage >= totalPages - 1}
-            onClick={() => setActivePage((prev) => Math.min(totalPages - 1, prev+1))}
+            onClick={() =>
+              setActivePage((prev) => Math.min(totalPages - 1, prev + 1))
+            }
           >
-            <Icon name="arrow alternate circle right"/>
+            <Icon name="arrow alternate circle right" />
           </button>
         </div>
-        </div>
-      
+      </div>
 
       <ProjectModal
         project={selectedProject}

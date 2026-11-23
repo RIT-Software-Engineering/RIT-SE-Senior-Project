@@ -9,8 +9,8 @@ VALUES
     'analytics, business, growth, dashboard', 'groweasy-analytics', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
-    1,
-    1
+    0,
+    0
     ),
 
     ('2_smartspark', 'SmartSpark AI-Driven Marketing Campaign Tool', 'SmartSpark Marketing', 'SparkGenix', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
@@ -43,7 +43,7 @@ VALUES
     DATE(strftime('%Y', DATE('now', '-2 year')) || '-01-01'),
     '',
     0,
-    1
+    0
     ),
 
     ('5_echocraft', 'EchoCraft AI Copywriting Assistant', 'EchoCraft Studio', 'Team 5', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
@@ -69,8 +69,8 @@ VALUES
     'marketing, AI, automation, social media', 'adspark-engine', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     '',
-    1,
-    1
+    0,
+    0
     ),
 
     ('8_brandbridge', 'BrandBridge Influencer Discovery Hub', 'BrandBridge Connect', 'Team 8', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
@@ -95,9 +95,9 @@ VALUES
     'LeadMagnet AI deploys customizable chat assistants on landing pages and social messaging channels to qualify inbound prospects. Captured lead profiles sync directly with agency CRM pipelines for immediate sales follow-up.',
     'marketing, AI, automation, social media', 'leadmagnet-ai', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
-    1
+    0
     ),
 
     ('11_buzzmetrics', 'BuzzMetrics Competitor Benchmarking Suite', 'BuzzMetrics Pro', 'Team 11', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
@@ -346,16 +346,16 @@ VALUES
     'CartNudge Ads syncs e-commerce checkout abandonment events directly to paid social audiences within minutes, serving dynamic product carousels with time-sensitive discount codes.',
     'marketing, AI, automation, social media', 'cartnudge-ads', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
-    1
+    0
     ),
 
     ('39_brandpulse', 'BrandPulse Visual Logo & Mention Scanner', 'BrandPulse Vision', 'Team 39', 'Pixel Blaze, Sonic Speed, Luna Sparkle, Zack Fair', 'SparkVibe Agency', 'John Doe', 'dummy/smartspark_thumb.png', '',
     'BrandPulse Vision uses computer vision to detect untagged brand logos and product placements in user-uploaded photos and videos across public social feeds.',
     'marketing, AI, automation, social media', 'brandpulse-vision', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
-    DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
+    '',
     0,
     0
     ),
@@ -392,7 +392,7 @@ VALUES
     'marketing, AI, automation, social media', 'adfatigue-watch', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
-    0,
+    1,
     1
     ),
 
@@ -428,7 +428,7 @@ VALUES
     'marketing, AI, automation, social media', 'lookalikeai-data', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
-    0,
+    1,
     1
     ),
 
@@ -545,7 +545,7 @@ VALUES
     'marketing, AI, automation, social media', 'pulsebrief-ai', '', 1,
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-01-01'),
     DATE(strftime('%Y', DATE('now', '-1 year')) || '-12-31'),
-    0,
+    1,
     1
     )
 ;

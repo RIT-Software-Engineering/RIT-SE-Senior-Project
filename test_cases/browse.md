@@ -40,3 +40,5 @@
 5. After clicking an award, clicking All should return to displaying all projects regardless of award status.
 
 6. Typing in a word into the search bar should update the results so that only projects that have the input in the title or description appear.
+
+7. Using filters that do not apply to any project should result in no projects being displayed with the pagination being 0 of 0 and both arrows disabled. This can be done by typing random letters into the search bar.
