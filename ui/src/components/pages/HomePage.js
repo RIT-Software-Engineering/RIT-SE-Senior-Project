@@ -407,8 +407,12 @@ function HomePage() {
                 <button
                   className="pagination-arrow-left-secondary"
                   onClick={() => {
+                    if (totalCurrentSlides <= 1) return;
                     setCurrentSlideDirection(-1);
-                    setCurrentProjectSlide((prev) => Math.max(0, prev - 1));
+                    setCurrentProjectSlide(
+                      (prev) =>
+                        (prev - 1 + totalCurrentSlides) % totalCurrentSlides,
+                    );
                   }}
                 >
                   <Icon name="arrow alternate circle left outline" />

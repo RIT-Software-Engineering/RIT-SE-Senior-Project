@@ -91,6 +91,11 @@
   cursor: pointer;
 }
 
+#proposalBtn:hover {
+  background-color: #d9d9d9;
+  color: black !important;
+}
+
 .exemplary-projects-carousel {
   display: flex;
   position: relative;
