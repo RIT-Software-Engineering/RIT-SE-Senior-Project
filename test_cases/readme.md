@@ -16,6 +16,8 @@ This document outlines general test cases and their workflow procedures to ensur
 - [AI-Driven Integration](ai.md) - API Key, Student Progress Summarization, AI Coach Feedback Generation
 - [Peer Evaluations](evals.md) - Creation, Student & Coach Processes
 - [Dashboard](dashboard.md) - Time Log Summary, Recent Activity, Dismissal, Configuration
+- [Showcase](showcase.md) - Featured Projects, Description, Current Projects, Header
+- [Browse](browse.md) - Browse All Projects, Filtering
 
 ## Terminology
 
