@@ -110,6 +110,8 @@ function UniqueProjectPage({ projectData }) {
     (award) => project?.[award.sqlName] === 1,
   );
 
+  console.log("video", mediaItems);
+
   return (
     <div>
       {project === undefined ? (
@@ -175,7 +177,7 @@ function UniqueProjectPage({ projectData }) {
 
               {mediaItems.length > 1 && (
                 <Pagination
-                  className="project-pagination"
+                  className="project-pagination media"
                   activePage={carouselIndex + 1}
                   totalPages={mediaItems.length}
                   onPageChange={(e, { activePage }) => {
