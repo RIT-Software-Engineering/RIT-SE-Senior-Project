@@ -45,7 +45,7 @@ VALUES
     ),
     (
         'additionalInfoPanel',
-        ''
+        '<h1>Congratulations To Our Recent Graduates!</h1>'
     ),
     (
         'sponsor',

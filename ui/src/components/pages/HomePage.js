@@ -372,7 +372,8 @@ function HomePage() {
                   custom={currentSlideDirection}
                   variants={currentSlideAnimations}
                   initial="enter"
-                  animate="center"
+                  whileInView="center"
+                  viewport={{ once: true, amount: 0.5 }}
                   exit="exit"
                   transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
                 >
@@ -402,11 +403,13 @@ function HomePage() {
             Browse All Projects
           </button>
         </div>
-      </div>
 
-      {additionalInfoPanelHTML && (
-          <InnerHTML html={additionalInfoPanelHTML} className="ui homepage-panel" /> //empty additional panel
+        <div className="ui invisible divider"></div>
+
+        {additionalInfoPanelHTML && (
+          <InnerHTML html={additionalInfoPanelHTML} className="ui homepage-panel"  style={{paddingTop: 15, textAlign: "center"}} />
         )}
+      </div>
 
       <ProjectModal
         project={selectedProject}
