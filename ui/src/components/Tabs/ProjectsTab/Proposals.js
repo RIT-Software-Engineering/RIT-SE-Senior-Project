@@ -148,7 +148,6 @@ export default function Proposals(props) {
                     project={proposal}
                     semesterMap={semesterMap}
                   />
-                  ``
                   <WebsiteViewerModal project={proposal} />
                   <a
                     href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
