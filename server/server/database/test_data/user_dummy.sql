@@ -621,7 +621,7 @@ VALUES
         '7_carecraze',
         '',
         0,
-        '{"additional_info":"", "dark_mode":true, "gantt_view":true, "milestone_view":true, "calendar_view":true}',
+        '{"additional_info":"", "gantt_view":true, "milestone_view":true, "calendar_view":true}',
         '2025-01-29 16:30:00',
         '2025-01-04 15:30:00'
         ),
