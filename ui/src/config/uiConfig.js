@@ -45,33 +45,32 @@ const uiConfig = {
   },
   awards: {
     Excellence: {
-      name: "Excellence asjdfjdsjfasdfa",
+      name: "Excellence",
       sqlName: "outstanding",
       color: "#009CBD",
-      textColor: "#000",
+      textColor: "#000"
     },
     Creativity: {
       name: "Creativity",
       sqlName: "creative",
       color: "#F6BE00",
-      textColor: "#000",
-    },
+      textColor: "#000"
+    }
   },
-  terms: {
-    //based on zero-indexing
+  terms: { //based on zero-indexing
     spring: {
       start: 0,
-      end: 4,
+      end: 4
     },
     summer: {
       start: 4,
-      end: 7,
+      end: 7
     },
     fall: {
       start: 7,
-      end: 11,
-    },
-  },
+      end: 11
+    }
+  }
 };
 
 export default uiConfig;

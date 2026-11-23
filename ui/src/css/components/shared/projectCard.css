@@ -39,18 +39,9 @@
     position: relative;
 }
 
-.dark-mode .card-exemplary .ui.header{
-    color: black;
-}
-
-.dark-mode .card-exemplary-left .ui.header{
-    color: black;
-}
-
-.dark-mode .card-exemplary-right .ui.header{
-    color: black;
-}
-
+.dark-mode .card-exemplary .ui.header,
+.dark-mode .card-exemplary-left .ui.header,
+.dark-mode .card-exemplary-right .ui.header,
 .dark-mode .card .ui.header{
     color: black;
 }
@@ -58,6 +49,12 @@
 .card-exemplary, .card-exemplary-left, .card-exemplary-right {
     transform-style: preserve-3d;
     backface-visibility: hidden;
+}
+
+.card:hover, .card-exemplary:hover, .card-exemplary-left:hover, .card-exemplary-right:hover {
+    cursor: pointer;
+    background-color: #ededed;
+    transition: all 0.3s ease;
 }
 
 .card-exemplary-left {
@@ -101,24 +98,8 @@
     position: absolute;
 }
 
-.card-exemplary img {
-    object-fit: cover;
-    border: 1px solid rgb(0, 0, 0) !important;
-    height: auto;
-    max-height: 200px;
-    flex: 1;
-    min-height: 0;
-}
-
-.card-exemplary-left img {
-    object-fit: cover;
-    border: 1px solid rgb(0, 0, 0) !important;
-    height: auto;
-    max-height: 200px;
-    flex: 1;
-    min-height: 0;
-}
-
+.card-exemplary img,
+.card-exemplary-left img,
 .card-exemplary-right img {
     object-fit: cover;
     border: 1px solid rgb(0, 0, 0) !important;

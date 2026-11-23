@@ -85,6 +85,12 @@
   border: none;
 }
 
+.homepage-button:hover {
+  background-color: black;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
 .exemplary-projects-carousel {
   display: flex;
   flex-direction: row;
@@ -199,18 +205,16 @@
   z-index: 4;
 }
 
-.dark-mode .pagination-arrow-left{
-  color: white;
+.pagination-arrow-right:hover, .pagination-arrow-left:hover,
+.pagination-arrow-right-secondary:hover, .pagination-arrow-left-secondary:hover {
+  cursor: pointer;
+  color: #F76902;
+  transition: all 0.25s ease;
 }
 
-.dark-mode .pagination-arrow-right{
-  color: white;
-}
-
-.dark-mode .pagination-arrow-left-secondary{
-  color: white;
-}
-
+.dark-mode .pagination-arrow-left,
+.dark-mode .pagination-arrow-right,
+.dark-mode .pagination-arrow-left-secondary,
 .dark-mode .pagination-arrow-right-secondary{
   color: white;
 }

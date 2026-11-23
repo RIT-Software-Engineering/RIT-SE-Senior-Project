@@ -226,12 +226,12 @@ export const useSessionStorage = (key, initialValue) => {
   return [value, updateValue];
 };
 
-export function getFormattedDate(date) {
-  if (!date || date == "") {
+export function getFormattedDate(date){
+  if (!date || date == ''){
     return "Current";
   }
   const tokens = date.split("-");
   const monthDate = new Date();
-  monthDate.setMonth(tokens[1] - 1);
-  return `${monthDate.toLocaleString("en-US", { month: "long" })} ${tokens[0]}`;
+  monthDate.setMonth(tokens[1]-1);
+  return `${monthDate.toLocaleString('en-US', { month: 'long' })} ${tokens[0]}`;
 }

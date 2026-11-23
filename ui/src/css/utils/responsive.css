@@ -18,6 +18,25 @@
   .header-nav {
     justify-content: space-between;
   }
+
+  .secondaryInfoRow {
+    flex-direction: column-reverse;
+    gap: 15px;
+    justify-content: center;
+    padding-bottom: 10px;
+  }
+
+  .secondaryInfoContainerRight {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-left: 55px;
+  }
+
+  .secondaryInfoContainerLeft {
+    width: 100%;
+  }
 }
 
 /* @media only screen and (max-device-width: 768px) {

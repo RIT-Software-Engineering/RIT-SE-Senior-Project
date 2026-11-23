@@ -180,6 +180,12 @@ select.dropdown--orange {
     font-size: 20px;
 }
 
+.project-pagination .pagination-arrow:not(:disabled):hover {
+    cursor: pointer;
+    color: #F76902;
+    transition: all 0.25s ease;
+}
+
 .project-pagination .pagination-arrow::before {
     display: none !important;
 }

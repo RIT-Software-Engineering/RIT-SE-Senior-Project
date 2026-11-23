@@ -52,11 +52,27 @@
   border: none;
 }
 
+#navbar .ui.button:hover {
+  color: #F76902;
+  transition: all 0.25s ease;
+}
+
+#navbar .ui.button:focus {
+  outline: none;
+  text-decoration: underline 3px;
+  text-underline-offset: 5px;
+}
+
 #navbar .ui.button-secondary {
   color: white;
   background-color: #F76902;
   border: none;
   border-radius: 0%;
+}
+
+#navbar .ui.button-secondary:hover {
+  color: #000;
+  transition: all 0.25s ease;
 }
 
 .header-span {

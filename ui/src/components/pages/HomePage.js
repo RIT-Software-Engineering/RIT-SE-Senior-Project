@@ -26,7 +26,8 @@ function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentProjectSlide, setCurrentProjectSlide] = useState(0);
   const [featuredProjectSlide, setFeaturedProjectSlide] = useState(0);
-  const [slideDirection, setSlideDirection] = useState(1);
+  const [currentSlideDirection, setCurrentSlideDirection] = useState(1);
+  const [featuredSlideDirection, setFeaturedSlideDirection] = useState(1);
 
   const history = useHistory();
   const { url } = useRouteMatch();
@@ -54,22 +55,64 @@ function HomePage() {
   const featuredSlideAnimations = {
     enter: (direction) => ({
       opacity: 1,
-      rotateY: direction === 1 ? 50 : -50,
-      scale: 0.9,
-      x: direction === 1 ? 220: -220
+      x: direction === 1 ? 1700: -1700
     }),
-    center: (index) => ({
+    center: ({
       opacity: 1,
-      rotateY: 0,
-      scale: index === 1 ? 1 : 0.9,
       x: 0,
+      transition: {
+        duration: 0.7,
+        ease: "easeInOut",
+        delay: 0.05
+      }
     }),
-    exit: (direction, index) => ({
-      x: direction === 1 ? -220 : 220,
-      rotateY: -60,
-      scale: index === 0 ? 1.2 : 1,
-      opacity: 1
+    exit: (direction) => ({
+      x: direction === 1 ? -1200 : 1200,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
     }),
+  }
+
+  const featuredCardAnimations = {
+    enter: ({direction}) => {
+      return {
+        opacity: 1,
+        rotateY: direction === 1 ? -175 : 175,
+        scale: 0.8,
+      }
+    },
+    center: ({direction, index, total = 3}) => {
+      const leadingIndex = direction === 1 ? index : total - 1 - index;
+      return {
+        opacity: 1,
+        rotateY: 0,
+        scale: index === 1 ? 1 : 0.9,
+        transition: {
+          duration: 0.5,
+          ease: "easeInOut",
+          delay: 0.1 + leadingIndex * 0.1
+        },
+      }
+    },
+    exit: (custom) => {
+      const direction = custom?.direction ?? custom;
+      const index = custom?. index ?? 0;
+      const total = custom?.total ?? 3;
+      const leadingIndex = direction === 1 ? index : total - 1 - index;
+      return {
+        opacity: 1,
+        rotateY: direction === 1 ? 90 : -90,
+        scale: index === 1 ? 1 : 0.9,
+        transition: {
+        duration: 0.4,
+        ease: "easeInOut",
+        delay: leadingIndex * 0.1
+      }
+      }
+    }
   }
 
   const [featuredProjectsPerSlide, setFeaturedProjectsPerSlide] = useState(window.innerWidth <= 1200 ? 1 : PROJECTS_PER_SLIDE);
@@ -210,7 +253,7 @@ function HomePage() {
     <div className="homepage">
       <div className="content">
         <p className="page-title">Welcome to <span class="orange">{uiConfig.app.name}</span></p>
-        <div className="ui homepage-panel description"> 
+        <div className="ui homepage-panel description" style={{marginBottom: "-50px"}}> 
           <div className="description">
           {homeHtml && (
             <InnerHTML html={homeHtml} className="overviewText"/>
@@ -219,29 +262,29 @@ function HomePage() {
         </div>
         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
         
-          <div className="projects-carousel-wrapper">
+          <div className="projects-carousel-wrapper" style={{paddingTop: "75px", paddingBottom: "75px"}}>
             <div className="projects-carousel-content">
               <button
               className="pagination-arrow-left"
               onClick={() => {
-                setSlideDirection(-1);
+                setFeaturedSlideDirection(-1);
                 setFeaturedProjectSlide((prev) => (prev - 1 + totalFeaturedSlides) % totalFeaturedSlides)}}
               >
               <Icon name="arrow alternate circle left outline"/>
             </button>
 
             <div className="exemplary-projects-carousel">
-            <AnimatePresence mode="wait" custom={slideDirection}>
+            <AnimatePresence mode="popLayout" custom={featuredSlideDirection}>
             <motion.div
               key={featuredProjectSlide}
-              custom={slideDirection}
+              custom={featuredSlideDirection}
               variants={featuredSlideAnimations}
               initial="enter"
               animate="center"
               exit="exit"
               transition={{ duration: 0.7, ease: "easeInOut", opacity: { duration: 0.9, ease: "easeInOut" } }}
               className="exemplary-projects-carousel"
-              style={{ display: "flex", flexDirection: "row", gap: "20px" }}
+              style={{ display: "flex", flexDirection: "row", gap: "20px", perspective: "1000px", transformStyle: "preserve-3d" }}
             >
               {visibleFeaturedProjects.map((featuredProject, index) => {
                 let cardClass;
@@ -253,13 +296,13 @@ function HomePage() {
                 return(
                 <motion.div
                   key={featuredProject.id}
-                  custom={index}
-                  variants={featuredSlideAnimations}
+                  custom={{ direction: featuredSlideDirection, index}}
+                  variants={featuredCardAnimations}
                   initial="enter"
                   animate="center"
                   exit="exit"
                   transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
-                  style={{ transformStyle: "preserve-3d", perspective: "1000" }}
+                  style={{ transformStyle: "preserve-3d", transformOrigin: index === 0 ? "right center" : index === 2 ? "left center" : "center center", }}
                 >
                   <ProjectCard key={featuredProject.id} project={featuredProject} onClick={() => setSelectedProject(featuredProject)} cardClass={cardClass}/>
                 </motion.div>
@@ -272,7 +315,7 @@ function HomePage() {
             <button
               className="pagination-arrow-right"
               onClick={() => {
-                setSlideDirection(1);
+                setFeaturedSlideDirection(1);
                 setFeaturedProjectSlide((prev) => (prev + 1) % totalFeaturedSlides)}}
             >
               <Icon name="arrow alternate circle right outline"/>
@@ -281,7 +324,7 @@ function HomePage() {
             <div className="gradient-overlay-left"></div>
             <div className="gradient-overlay-right"></div>
           </div>
-          <div className="ui header" style={{ marginTop: 10, marginBottom: 10 }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
+          <div className="ui header" style={{ marginTop: -40, marginBottom: 20 }}>{featuredProjectSlide + 1} of {totalFeaturedSlides}</div>
       </div>
       </div>
 
@@ -312,13 +355,13 @@ function HomePage() {
           <button
             className="pagination-arrow-left-secondary"
             onClick={() => {
-              setSlideDirection(-1);
+              setCurrentSlideDirection(-1);
               setCurrentProjectSlide((prev) => Math.max(0, prev - 1))}}
           >
             <Icon name="arrow alternate circle left outline"/>
           </button>
 
-          <AnimatePresence mode="wait" custom={slideDirection}>
+          <AnimatePresence mode="wait" custom={currentSlideDirection}>
             <motion.div
               className="current-projects-carousel"
               key={currentProjectSlide}
@@ -326,10 +369,11 @@ function HomePage() {
               {visibleCurrentProjects.map((currentProject, index) => (
                 <motion.div
                   key={currentProject.id}
-                  custom={slideDirection}
+                  custom={currentSlideDirection}
                   variants={currentSlideAnimations}
                   initial="enter"
-                  animate="center"
+                  whileInView="center"
+                  viewport={{ once: true, amount: 0.5 }}
                   exit="exit"
                   transition={{ duration: 0.4, ease: "easeInOut", delay: index * 0.1 }}
                 >
@@ -346,7 +390,7 @@ function HomePage() {
           <button
             className="pagination-arrow-right-secondary"
             onClick={() => {
-              setSlideDirection(1);
+              setCurrentSlideDirection(1);
               setCurrentProjectSlide((prev) => (prev + 1) % totalCurrentSlides)}}
           >
             <Icon name="arrow alternate circle right outline"/>
@@ -359,11 +403,13 @@ function HomePage() {
             Browse All Projects
           </button>
         </div>
-      </div>
 
-      {additionalInfoPanelHTML && (
-          <InnerHTML html={additionalInfoPanelHTML} className="ui homepage-panel" /> //empty additional panel
+        <div className="ui invisible divider"></div>
+
+        {additionalInfoPanelHTML && (
+          <InnerHTML html={additionalInfoPanelHTML} className="ui homepage-panel"  style={{paddingTop: 15, textAlign: "center"}} />
         )}
+      </div>
 
       <ProjectModal
         project={selectedProject}
