@@ -54,6 +54,46 @@ const ACTION_TARGETS = {
   PEER_EVALUATION: "peer_evaluation",
 };
 
+const DEFAULT_PROFILE_INFO = {
+  additional_info: "",
+  dark_mode: false,
+  gantt_view: true,
+  calendar_view: false,
+  milestone_view: true,
+};
+
+async function ensureProfileInfoDefaults(db, systemId) {
+  const entries = Object.entries(DEFAULT_PROFILE_INFO);
+
+  const profileJson = "COALESCE(NULLIF(TRIM(profile_info), ''), '{}')";
+
+  const updatePairs = entries.map(() => "?, json(?)").join(", ");
+  const missingConditions = entries
+    .map(() => `json_type(${profileJson}, ?) IS NULL`)
+    .join(" OR ");
+
+  const params = entries.flatMap(([key, value]) => [
+    `$.${key}`,
+    JSON.stringify(value),
+  ]);
+
+  const query = `
+    UPDATE users
+    SET profile_info = json_insert(
+      ${profileJson},
+      ${updatePairs}
+    )
+    WHERE system_id = ?
+      AND (${missingConditions})
+  `;
+
+  await db.query(query, [
+    ...params,
+    systemId,
+    ...entries.map(([key]) => `$.${key}`),
+  ]);
+}
+
 // Routes
 module.exports = (db) => {
   /**
@@ -304,11 +344,7 @@ module.exports = (db) => {
       const viewOnly = body.viewOnly === "true" ? "TRUE" : "FALSE";
 
       // Default profile_info with required fields
-      const defaultProfileInfo = JSON.stringify({
-        additional_info: "",
-        dark_mode: false,
-        gantt_view: true,
-      });
+      const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
       const params = [
         body.system_id,
@@ -350,11 +386,7 @@ module.exports = (db) => {
 
         for (const user of users) {
           // Default profile_info with required fields
-          const defaultProfileInfo = JSON.stringify({
-            additional_info: "",
-            dark_mode: false,
-            gantt_view: true,
-          });
+          const defaultProfileInfo = JSON.stringify(DEFAULT_PROFILE_INFO);
 
           const values = [
             user.system_id,
@@ -4129,6 +4161,7 @@ module.exports = (db) => {
       }
 
       try {
+        await ensureProfileInfoDefaults(db, requestedUserId);
         const result = await db.query(
           `SELECT json_extract(profile_info, '$.additional_info') AS additional_info
              FROM users WHERE system_id = ?`,
@@ -4222,6 +4255,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
         if (result.length === 0) {
           const error = new Error("User not found");
@@ -4334,6 +4368,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4405,6 +4440,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {
@@ -4475,6 +4511,7 @@ module.exports = (db) => {
     `;
 
       try {
+        await ensureProfileInfoDefaults(db, system_id);
         const result = await db.query(query, [system_id]);
 
         if (result.length === 0) {

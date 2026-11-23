@@ -23,7 +23,7 @@ function Header() {
     // This is set when the /whoami endpoint gets hit (currently happening in the Dashboard.js).
     setSignedIn(Object.keys(user).length !== 0);
     setDarkMode(
-      ["true", "1"].includes(user?.profile_info?.dark_mode.toString().trim()),
+      ["true", "1"].includes(user?.profile_info?.dark_mode?.toString().trim()),
     );
   }, [user]);
   const [profileModalOpen, setProfileModalOpen] = useState(false);

@@ -75,7 +75,9 @@ export default function DashboardPage() {
         });
         if (responseUser.system_id) {
           const darkPref = ["1", "true"].includes(
-            parsedProfileInfo.dark_mode.toString().trim().toLowerCase(),
+            String(parsedProfileInfo.dark_mode ?? false)
+              .trim()
+              .toLowerCase(),
           );
           document.body.classList.toggle("dark-mode", darkPref);
         }
