@@ -207,25 +207,13 @@ function UniqueProjectPage({ projectData }) {
                 project?.poster_full === "" ? (
                   <img
                     className="ui fluid image"
-                    src={
-                      project?.poster_thumb
-                        ? `${basePosterURL}${project?.poster_thumb}`
-                        : project?.archive_image
-                          ? `${baseImageURL}${project?.archive_image}`
-                          : uiConfig.logoPath
-                    }
+                    src={`${basePosterURL}${project?.poster_thumb}`}
                     alt={project?.title + " Senior Project Full Size Poster"}
                   />
                 ) : (
                   <img
                     className="ui fluid image"
-                    src={
-                      project?.poster_full
-                        ? `${basePosterURL}${project?.poster_full}`
-                        : project?.archive_image
-                          ? `${baseImageURL}${project?.archive_image}`
-                          : uiConfig.logoPath
-                    }
+                    src={`${basePosterURL}${project?.poster_full}`}
                     alt={project?.title + " Senior Project Thumbnail Poster"}
                   />
                 )}
@@ -271,6 +259,8 @@ function UniqueProjectPage({ projectData }) {
                       <p>{project?.team_name}</p>
                     </>
                   )}
+                <div className="ui small header">Students</div>
+                {generateProfiles(project?.members, true)}
               </div>
               <div className="column">
                 <div className="ui small header">Sponsor</div>
@@ -282,23 +272,7 @@ function UniqueProjectPage({ projectData }) {
           </div>
           <div className="ui invisible divider"></div>
           <div className="ui attached stackable padded grid">
-            <div>
-              <div className="ui small header">Students</div>
-              {generateProfiles(project?.members, true)}
-              <div className="ui invisible divider"></div>
-              {
-                // display project page link if slug has been defined
-                project.url_slug !== null && project?.url_slug !== "" && (
-                  <>
-                    <div className="ui small header">Link</div>
-                    <div>
-                      <Link to={`/projects/${project.url_slug}`}>
-                        {`${baseProjectURL}${project.url_slug}`}
-                      </Link>
-                    </div>
-                  </>
-                )
-              }
+            <div className="column">
               <div className="ui small header">Synopsis</div>
               <p className="unique-project-whitespace">
                 {decodeSynopsis(project?.synopsis)}
