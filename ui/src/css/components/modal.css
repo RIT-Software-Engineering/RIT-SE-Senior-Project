@@ -609,3 +609,26 @@ body.dark-mode .ui.dimmer > .ui.modal.unsaved-modal {
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
   padding: 12px;
 }
+
+.ui.modal.sticky > .header,
+.ui.modal.sticky > .actions {
+  flex: 0 0 auto;
+}
+
+.ui.modal.sticky > .content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+body:not(.dark-mode) .ui.dimmer > .ui.modal.sticky,
+body.dark-mode .ui.dimmer > .ui.modal.sticky {
+  position: absolute !important;
+  top: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: block !important;
+}

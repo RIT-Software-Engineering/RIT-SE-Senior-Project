@@ -228,6 +228,79 @@
   gap: var(--default-gap);
 }
 
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  .proposal-row-yellow {
+  --state-color: var(--action-bar-proposal-yellow);
+}
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  .proposal-row-red {
+  --state-color: var(--action-bar-proposal-red);
+}
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  .proposal-row-gray {
+  --state-color: var(--action-bar-proposal-gray);
+}
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  .proposal-row-green {
+  --state-color: var(--action-bar-proposal-green);
+}
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  .proposal-row-purple {
+  --state-color: var(--action-bar-proposal-purple);
+}
+
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  :is(
+    .proposal-row-yellow,
+    .proposal-row-red,
+    .proposal-row-gray,
+    .proposal-row-green,
+    .proposal-row-purple
+  ) {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 4px solid var(--state-color);
+  border: 1px solid var(--border-gray);
+  border-top: 10px solid var(--state-color);
+  border-left: 4px solid var(--state-color);
+  border-radius: 6px;
+}
+
+:is(.relevant-actions-container, .actions-container, .gantt-chart)
+  :is(
+    .proposal-row-yellow,
+    .proposal-row-red,
+    .proposal-row-gray,
+    .proposal-row-green,
+    .proposal-row-purple
+  ):hover {
+  background: var(--bg-secondary) !important;
+  border-top: 8px solid var(--state-color);
+  border-left: 4px solid var(--state-color);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.actions-container .action-bar {
+  border: 2px solid var(--state-color);
+  border-radius: 8px;
+}
+
+.actions-container .action-bar:hover {
+  border: 2px solid var(--state-color);
+  border-top: 4px solid var(--state-color);
+  border-left: 3px solid var(--state-color);
+  border-right: 3px solid var(--state-color);
+  border-radius: 6px;
+}
+
+.gantt-chart .action-bar {
+  border-top: 4px solid var(--state-color);
+}
+.gantt-chart .action-bar:hover {
+  border-top: 4px solid var(--state-color);
+}
+
 .no-popup-tooltip {
   grid-column: span 3 / auto;
   padding: var(--default-padding);

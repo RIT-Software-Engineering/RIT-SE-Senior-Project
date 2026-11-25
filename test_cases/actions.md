@@ -46,21 +46,22 @@ For this example, we will again be using the mocked data from [resetting the dat
 1. [Signed in as a student](authentication.md#validating-student-sign-in), proceed to an individual action submission modal using the “View Action” button. Remember, “Individual” actions are limited to Students, “Coach” actions are limited to Coaches, and “Team” actions can be submitted by any member of the group. For demonstration purposes, we will be using the mock data project “TrendTide Analytics” and its respective Students and coaches. Below is an example action we will initially complete as “Aerith Gainsborough".
    ![Individual Action 1](images/individualaction1.png)
 
-2. We can see a that no previous submission exists on the action as seen on the preview card, so let us add another to verify functionality. Again, we have selected a simple action to complete for general demonstration purposes.
+2. We can see a that a few previous submissions exist, but let us add another to verify functionality. Again, we have selected a simple action to complete for general demonstration purposes.
    ![Individual Action 2](images/individualaction2.png)
 
-3. Now add a corresponding file but don't submit yet, if you click off the action modal or click x you should
+3. Now add a corresponding file and note but don't submit yet, if you click off the action modal or click x you should
    see a confirmation modal asking if you are sure discarding changes, click "Keep Working" and press "Submit."
    ![Individual Action 3](images/individualaction3.png)
-4. Now, verify that the access visibility is correct for the completed actions when signed in as “Aerith Gainsborough". The following is what the expanded submission links should look like
+4. Now, verify that the access visibility is correct for the completed actions when signed in as “Aerith Gainsborough". Hovering the submission link should show a popup containing the submission note. The following is what the expanded submission links should look like
+   ![Individual Action 3.5](images/individualaction3.5.png)
    ![Individual Action 4](images/individualaction4.png)
-   If we were to sign in as another student within the same project, they would not be able to see the submission, as it is only visible to the user who submitted it and their coaches.
+   If we were to sign in as another student within the same project, they would not be able to see the submission, or the note on hover, as it is only visible to the user who submitted it and their coaches.
    ![Individual Action 5](images/individualaction5.png)
 
 5. Once Student visibility is confirmed, [sign in as a coach](authentication.md#validating-coach-sign-in) (for this specific scenario we will use "Laura Martin") and verify that the Coach for the projects can see all student submissions.
    ![Individual Action 6](images/individualaction6.png)
 
-The “Logging” tab also displays the completed actions and follows the same visibility procedures as the dashboard tab. In addition to this, “Individual” actions must be completed by all members of the team in order to be considered done. Once completed, they will no longer be visible in the “Relevant Actions” group, and in the “Milestones” section, the action should now have a green border and display all of the submissions as seen below.
+The “Logging” tab also displays the completed actions and follows the same visibility procedures as the dashboard tab. In addition to this, “Individual” actions must be completed by all members of the team in order to be considered done. Once completed, they will no longer be visible in the “Relevant Actions” group, and in the “Milestones” section. Log in as Sepiroth Blade and complete a submission for this same action. The milestone item should now appear green once completed.
 ![Individual Action 7](images/individualaction7.png)
 
 ### Team Actions
@@ -71,7 +72,7 @@ Functionality is the same process for submission as an “Individual” action, 
 
 2. The action should turn green as completed, and the submission should be removed from “Relevant Actions”.
    ![Team Action 1](images/teamaction1.png)
-   Additionally, the submission details should be visible to all of the other team members unlike individual actions. Confirm this by clicking on the submission when signed in from a different account.
+   Additionally, the submission details and notes should be visible to all of the other team members unlike individual actions. Confirm this by clicking on the submission when signed in from a different account.
    ![Team Action 2](images/teamaction2.png)
    _Nova Bright_ Viewing the submission of _Aerith Gainsborough_ as a team member.
 

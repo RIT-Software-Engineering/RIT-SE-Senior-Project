@@ -103,6 +103,11 @@ input[id^="hidden_"]:invalid {
   outline-color: var(--border-color);
 }
 
+.project-buttons .ui.button {
+  font-size: 0.85rem;
+  padding: 9px 18px;
+}
+
 .project-editor-input-container {
   display: flex;
   flex-direction: column;
@@ -168,6 +173,33 @@ td.attachments {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.project-row-green {
+  --state-color: var(--action-bar-proposal-green);
+}
+.project-row-purple {
+  --state-color: var(--action-bar-proposal-purple);
+}
+.project-row-red {
+  --state-color: var(--action-bar-proposal-red);
+}
+.project-row-yellow {
+  --state-color: var(--action-bar-proposal-yellow);
+}
+.project-row-gray {
+  --state-color: var(--action-bar-proposal-gray);
+}
+
+.ui.table tbody tr[class*="project-row-"] {
+  box-shadow: inset 6px 0 0 0 var(--state-color);
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.table tbody tr[class*="project-row-"] {
+    box-shadow: none !important;
+    border-left: 6px solid var(--state-color);
+  }
 }
 
 /* Dark Mode Styles */

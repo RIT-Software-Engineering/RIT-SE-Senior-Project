@@ -82,6 +82,10 @@ button.fake-div {
   margin-top: 1em;
 }
 
+.ui.modal.sticky.dev-signin-modal > .content {
+  overflow: visible;
+}
+
 /* Dark Mode Styles */
 
 .dark-mode a {

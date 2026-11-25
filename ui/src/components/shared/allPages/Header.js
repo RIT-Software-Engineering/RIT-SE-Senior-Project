@@ -90,7 +90,7 @@ function Header() {
           ) : (
             <Modal
               closeOnDimmerClick={false}
-              className={"sticky"}
+              className={"dev-sign-in-modal"}
               trigger={
                 <Button className="ui button">
                   <Icon name="sign-in" />
@@ -207,7 +207,7 @@ function Header() {
             <Menu.Item>
               <Modal
                 closeOnDimmerClick={false}
-                className={"sticky"}
+                className={"dev-sign-in-modal"}
                 trigger={<Button fluid>Dev Sign in/out</Button>}
                 header="Sign in/Sign Out"
                 content={{

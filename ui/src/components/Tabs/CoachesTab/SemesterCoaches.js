@@ -29,7 +29,7 @@ export default function SemesterCoaches({ coaches, semesterId }) {
               title: `${coach.fname} ${coach.lname}`,
               content: {
                 content: (
-                  <Table>
+                  <Table className="stackable-hide-header">
                     <TableHeader>
                       <TableRow>
                         <TableHeaderCell>Project</TableHeaderCell>
@@ -52,8 +52,16 @@ export default function SemesterCoaches({ coaches, semesterId }) {
                                 {project.display_name || project.title}
                               </TableCell>
                               <TableCell>{project.organization}</TableCell>
-                              <TableCell>{project.status}</TableCell>
                               <TableCell>
+                                <span className="mobile-only-label">
+                                  Status:{" "}
+                                </span>{" "}
+                                {project.status}
+                              </TableCell>
+                              <TableCell>
+                                <span className="mobile-only-label">
+                                  Coaches:{" "}
+                                </span>
                                 <ViewProjectMembers
                                   projectId={project.project_id}
                                   projectName={
@@ -63,6 +71,9 @@ export default function SemesterCoaches({ coaches, semesterId }) {
                                 />
                               </TableCell>
                               <TableCell>
+                                <span className="mobile-only-label">
+                                  Students:{" "}
+                                </span>
                                 <ViewProjectMembers
                                   projectId={project.project_id}
                                   projectName={

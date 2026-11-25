@@ -9,6 +9,7 @@ import {
   TableRow,
   Accordion,
   Button,
+  Popup,
 } from "semantic-ui-react";
 import ProjectEditorModal from "./ProjectEditorModal";
 import ProjectArchivePanel from "./ProjectArchivePanel";
@@ -118,42 +119,72 @@ export default function Proposals(props) {
     return proposalData.proposals.map((proposal, idx) => {
       let rowColor;
       switch (proposal.status) {
-        case PROJECT_STATUSES.ARCHIVED:
         case PROJECT_STATUSES.COMPLETE:
-          rowColor = "proposal-row-gray";
+          rowColor = "project-row-green";
           break;
         case PROJECT_STATUSES.CANDIDATE:
-          rowColor = "proposal-row-green";
+          rowColor = "project-row-purple";
+          break;
+        case PROJECT_STATUSES.NEEDS_REVISION:
+          rowColor = "project-row-red";
           break;
         case PROJECT_STATUSES.IN_PROGRESS:
-          rowColor = "proposal-row-yellow";
+          rowColor = "project-row-yellow";
           break;
         default:
-          rowColor = "";
+          rowColor = "project-row-gray";
           break;
       }
       return (
         <TableRow className={rowColor} key={idx}>
           <TableCell>{semesterMap[proposal.semester]}</TableCell>
           <TableCell>{proposal.display_name || proposal.title}</TableCell>
-          <TableCell>{proposal.status}</TableCell>
           <TableCell>
-            <div className="accordion-buttons-container">
+            <span className="mobile-only-label">Status: </span>{" "}
+            {proposal.status}
+          </TableCell>
+          <TableCell>
+            <div className="accordion-buttons-container project-buttons">
               {props.viewOnly ? (
                 <>
-                  <ProjectViewerModal
-                    project={proposal}
-                    semesterMap={semesterMap}
+                  <Popup
+                    content="View"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <ProjectViewerModal
+                          project={proposal}
+                          semesterMap={semesterMap}
+                        />
+                      </span>
+                    }
                   />
-                  <WebsiteViewerModal project={proposal} />
-                  <a
-                    href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
-                    className="ui icon button"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Icon name="download" />
-                  </a>
+                  <Popup
+                    content="View public display"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <WebsiteViewerModal project={proposal} />
+                      </span>
+                    }
+                  />
+                  <Popup
+                    content="Download PDF"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <a
+                        href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                        className="ui icon button"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Icon name="download" />
+                      </a>
+                    }
+                  />
                   <ProjectArchivePanel
                     viewOnly={props.viewOnlyArchive}
                     project={proposal}
@@ -167,29 +198,63 @@ export default function Proposals(props) {
                 </>
               ) : (
                 <>
-                  <ProjectViewerModal
-                    project={proposal}
-                    semesterMap={semesterMap}
+                  <Popup
+                    content="View Public Display"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <ProjectViewerModal
+                          project={proposal}
+                          semesterMap={semesterMap}
+                        />
+                      </span>
+                    }
                   />
-                  <WebsiteViewerModal project={proposal} />
-                  <a
-                    href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
-                    className="ui icon button"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Icon name="download" />
-                  </a>
+                  <Popup
+                    content="View Archive"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <span>
+                        <WebsiteViewerModal project={proposal} />
+                      </span>
+                    }
+                  />
+                  <Popup
+                    content="Download PDF"
+                    className="universal-tooltip"
+                    position="top center"
+                    trigger={
+                      <a
+                        href={`${config.url.API_GET_PROPOSAL_PDF}?project_id=${proposal.project_id}`}
+                        className="ui icon button"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Icon name="download" />
+                      </a>
+                    }
+                  />
                   {(!props.requireMembershipCheck ||
                     projectPermissions[proposal.project_id] ||
                     userContext.user?.role === USERTYPES.ADMIN) && (
-                    <ProjectEditorModal
-                      viewOnly={props.viewOnly}
-                      project={proposal}
-                      semesterData={props.semesterData}
-                      activeCoaches={props.activeCoaches}
-                      activeSponsors={props.activeSponsors}
-                      callback={props.callback}
+                    <Popup
+                      content="Edit Project"
+                      className="universal-tooltip"
+                      position="top center"
+                      trigger={
+                        <span>
+                          <ProjectEditorModal
+                            viewOnly={props.viewOnly}
+                            project={proposal}
+                            semesterData={props.semesterData}
+                            activeCoaches={props.activeCoaches}
+                            activeSponsors={props.activeSponsors}
+                            callback={props.callback}
+                          />
+                        </span>
+                      }
                     />
                   )}
                 </>
@@ -211,7 +276,7 @@ export default function Proposals(props) {
 
   const table = () => {
     return (
-      <Table sortable>
+      <Table sortable stackable className="stackable-hide-header">
         <TableHeader>
           <TableRow>
             <TableHeaderCell

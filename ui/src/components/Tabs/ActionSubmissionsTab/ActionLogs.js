@@ -401,7 +401,7 @@ export default function ActionLogs(props) {
     semesterPanels.push(<h3>Action Submissions</h3>);
     semesterPanels.push(
       <div>
-        <Table>
+        <Table stackable className="stackable-hide-header">
           <TableHeader>
             <TableRow>
               {userContext.user?.role !== USERTYPES.STUDENT && (
@@ -416,6 +416,9 @@ export default function ActionLogs(props) {
 
           <TableBody>
             {actionLogs?.map((action, idx) => {
+              const isAStudent = students.some(
+                (s) => s.system_id === action.system_id,
+              );
               let submittedBy = `${action.name} (${action.system_id})`;
               if (action.mock_id) {
                 submittedBy = `${action.mock_name} (${action.mock_id}) as ${action.name} (${action.system_id})`;
@@ -452,6 +455,7 @@ export default function ActionLogs(props) {
                   )}
                   <TableCell>{action.action_title}</TableCell>
                   <TableCell>
+                    <span className="mobile-only-label">Type: </span>
                     {formatActionTarget(action.action_target)}
                   </TableCell>
                   <TableCell>
@@ -461,7 +465,7 @@ export default function ActionLogs(props) {
                           <ProfileCircle
                             name={action.mock_name ?? ""}
                             size="tiny"
-                            className="universal-tooltip"
+                            className="action-profile"
                             isStudent={false}
                             showFullName
                             allowInfo
@@ -475,12 +479,14 @@ export default function ActionLogs(props) {
                         name={action.name ?? ""}
                         size="tiny"
                         showFullName
+                        isStudent={isAStudent}
                         allowInfo
                         className="action-profile"
                       />
                     </span>
                   </TableCell>
                   <TableCell>
+                    <span className="mobile-only-label">Submission Date: </span>{" "}
                     {formatDateTime(action.submission_datetime)}
                   </TableCell>
                 </TableRow>
