@@ -283,7 +283,7 @@
 
 .actions-container .action-bar {
   border: 2px solid var(--state-color);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .actions-container .action-bar:hover {
@@ -291,7 +291,7 @@
   border-top: 4px solid var(--state-color);
   border-left: 3px solid var(--state-color);
   border-right: 3px solid var(--state-color);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .gantt-chart .action-bar {
